@@ -1,0 +1,66 @@
+@startuml architecture--runtime-lifecycle--activity
+' Document: ../../アーキテクチャ設計書.md
+' Section: Runtime Flow
+' Purpose: 読み込み・初期化・実行・結果出力の流れ（設計案）
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #475569
+skinparam LineColor #475569
+skinparam componentStyle rectangle
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #64748B
+skinparam activityBackgroundColor #EFF6FF
+skinparam activityBorderColor #64748B
+skinparam activityDiamondBackgroundColor #FFF7ED
+skinparam noteBackgroundColor #FFFBEA
+skinparam noteBorderColor #D6C77A
+skinparam classBackgroundColor #EFF6FF
+skinparam classBorderColor #64748B
+skinparam packageBackgroundColor #F8FAFC
+skinparam packageBorderColor #94A3B8
+
+title 読み込み・初期化・実行・結果出力の流れ（設計案）
+
+start
+partition "定義・設定の解決" {
+  :1. NEDを読み込む;
+  :2. ASTへ解析する;
+  :3. 検証する;
+  :4. Model IRへ解決する;
+  :5. INIを読み込む;
+  :6. パラメータの上書きを適用する;
+  :7. Resolved Modelを作る;
+}
+partition "実行準備" {
+  :8. Module Registryでsimple moduleの型を解決する;
+  :9. simple moduleのNetworkNodesを生成する;
+  :10. ポート・接続を検証する;
+  :11. 各実行インスタンスを一度だけ初期化する;
+  :12. 初期イベントを登録する;
+  note right
+    初期化・登録の具体的な方式は未確定。
+    直接呼び出しと初期化イベントの併用による
+    二重初期化を避ける（DIR-TBD-009）。
+  end note
+}
+partition "実行・出力" {
+  :13. 設定時間に従ってイベントを実行し、
+時系列指標を記録する;
+  note right
+    同時刻・終了時刻の境界はDIR-TBD-004、
+    計測規則はDIR-TBD-006で確定する。
+  end note
+  :14. 集計値を確定する;
+  :15. 結果を出力する;
+}
+stop
+legend bottom
+  正常系の概略。不正入力ではイベント実行を開始しない。
+  実行・出力の失敗は正常終了と区別する。
+  診断・停止範囲・途中結果はDIR-TBD-009で確定する。
+endlegend
+@enduml

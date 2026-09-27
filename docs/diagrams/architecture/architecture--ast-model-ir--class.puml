@@ -1,0 +1,48 @@
+@startuml architecture--ast-model-ir--class
+' Document: ../../アーキテクチャ設計書.md
+' Section: AST vs Model IR
+' Purpose: ASTとModel IRが保持する情報（概念）
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #475569
+skinparam LineColor #475569
+skinparam componentStyle rectangle
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #64748B
+skinparam activityBackgroundColor #EFF6FF
+skinparam activityBorderColor #64748B
+skinparam activityDiamondBackgroundColor #FFF7ED
+skinparam noteBackgroundColor #FFFBEA
+skinparam noteBorderColor #D6C77A
+skinparam classBackgroundColor #EFF6FF
+skinparam classBorderColor #64748B
+skinparam packageBackgroundColor #F8FAFC
+skinparam packageBorderColor #94A3B8
+
+title ASTとModel IRが保持する情報（概念）
+
+left to right direction
+hide methods
+class "AST" as ast <<構文表現>> {
+  package declaration
+  module declarations
+  textual type references
+  parameter expressions
+}
+class "Model IR" as ir <<正規化したモデル>> {
+  resolved type names
+  explicit Node definitions
+  explicit Port definitions
+  validated Connections
+  resolved default ParameterSet
+}
+ast --> ir : 意味検証・正規化
+note bottom of ir
+  RuntimeはASTではなくModel IRを使う。
+  具体的なRustの型定義を確定する図ではない。
+end note
+@enduml

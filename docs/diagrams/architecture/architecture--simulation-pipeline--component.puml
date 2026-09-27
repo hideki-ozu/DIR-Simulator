@@ -1,0 +1,74 @@
+@startuml architecture--simulation-pipeline--component
+' Document: ../../アーキテクチャ設計書.md
+' Section: Architecture Overview
+' Purpose: モデル定義からシミュレーション結果まで（設計案）
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #475569
+skinparam LineColor #475569
+skinparam componentStyle rectangle
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #64748B
+skinparam activityBackgroundColor #EFF6FF
+skinparam activityBorderColor #64748B
+skinparam activityDiamondBackgroundColor #FFF7ED
+skinparam noteBackgroundColor #FFFBEA
+skinparam noteBorderColor #D6C77A
+skinparam classBackgroundColor #EFF6FF
+skinparam classBorderColor #64748B
+skinparam packageBackgroundColor #F8FAFC
+skinparam packageBorderColor #94A3B8
+
+title モデル定義からシミュレーション結果まで（設計案）
+
+top to bottom direction
+artifact "NED\n構造・型・既定値" as ned
+component "Lexer / Parser" as parser
+artifact "AST" as ast
+artifact "Model IR" as ir
+artifact "INI\nインスタンス別設定" as ini
+component "Parameter Override\n型の既定値から値を解決" as config
+artifact "Resolved Model" as resolved
+component "Simple Module Registry\n型とRust実装の対応付け" as registry
+component "Rust NetworkNodes\n実行インスタンス" as nodes
+component "Simulation Runtime" as runtime
+component "Queue" as queue
+component "Resource" as resource
+component "Arbitration" as arbitration
+component "Metrics\n記録・集計" as metrics
+artifact "CSV" as csv
+artifact "JSON" as json
+ned --> parser
+parser --> ast
+ast --> ir
+ini --> config
+ir --> resolved
+config --> resolved
+resolved --> registry
+registry --> nodes
+nodes --> runtime
+runtime --> queue
+runtime --> resource
+runtime --> arbitration
+queue --> metrics
+resource --> metrics
+arbitration --> metrics
+metrics --> csv
+metrics --> json
+note right of resolved
+  INIはModel IRを変更しない。
+  解決結果をResolved Modelへ反映する。
+end note
+note right of registry
+  compoundは構造として展開する。
+  振る舞い実装の対象はsimple module。
+end note
+legend bottom
+  矢印は処理・データの関係を示す。
+  並列実行や確定した公開APIを示すものではない。
+endlegend
+@enduml

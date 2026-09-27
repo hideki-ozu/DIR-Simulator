@@ -1,0 +1,42 @@
+@startuml architecture--ned-parsing--activity
+' Document: ../../アーキテクチャ設計書.md
+' Section: NED Parser Architecture
+' Purpose: NEDからModel IRへの解析（設計案）
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #475569
+skinparam LineColor #475569
+skinparam componentStyle rectangle
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #64748B
+skinparam activityBackgroundColor #EFF6FF
+skinparam activityBorderColor #64748B
+skinparam activityDiamondBackgroundColor #FFF7ED
+skinparam noteBackgroundColor #FFFBEA
+skinparam noteBorderColor #D6C77A
+skinparam classBackgroundColor #EFF6FF
+skinparam classBorderColor #64748B
+skinparam packageBackgroundColor #F8FAFC
+skinparam packageBorderColor #94A3B8
+
+title NEDからModel IRへの解析（設計案）
+
+start
+:NED source;
+:Lexer;
+:Token Stream;
+:Parser;
+:AST;
+:Semantic Validation
+意味検証;
+:Model IR;
+stop
+legend bottom
+  公開NED仕様に基づく独立実装。
+  受理構文と検証規則はDIR-TBD-002で確定する。
+endlegend
+@enduml

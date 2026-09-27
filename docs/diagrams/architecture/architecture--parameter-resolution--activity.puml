@@ -1,0 +1,43 @@
+@startuml architecture--parameter-resolution--activity
+' Document: ../../アーキテクチャ設計書.md
+' Section: Parameter Model
+' Purpose: 型の既定値とINIによるパラメータ解決（設計案）
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #475569
+skinparam LineColor #475569
+skinparam componentStyle rectangle
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #64748B
+skinparam activityBackgroundColor #EFF6FF
+skinparam activityBorderColor #64748B
+skinparam activityDiamondBackgroundColor #FFF7ED
+skinparam noteBackgroundColor #FFFBEA
+skinparam noteBorderColor #D6C77A
+skinparam classBackgroundColor #EFF6FF
+skinparam classBorderColor #64748B
+skinparam packageBackgroundColor #F8FAFC
+skinparam packageBorderColor #94A3B8
+
+title 型の既定値とINIによるパラメータ解決（設計案）
+
+start
+:NEDの型にあるデフォルト値を取得;
+:インスタンス用に値を複製
+（clone）;
+:INIのインスタンス別指定を適用
+（merge）;
+note right
+  指定値を優先し、未指定値を保持する。
+  型・物理量を検証する（DIR-REQ-052）。
+  記法・単位・丸めは
+  DIR-TBD-002 / 003 / 004で確定する。
+end note
+:Resolved ParameterSet;
+:Module Factoryへ確定値を渡す;
+stop
+@enduml

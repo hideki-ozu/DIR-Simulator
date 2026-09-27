@@ -1,0 +1,34 @@
+@startuml readme--definition-initialization-runtime--component
+' Document: ../../../README.md
+' Section: 3層アーキテクチャ
+' Purpose: DIRの3層アーキテクチャ
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #475569
+skinparam LineColor #475569
+skinparam componentStyle rectangle
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #64748B
+skinparam activityBackgroundColor #EFF6FF
+skinparam activityBorderColor #64748B
+skinparam activityDiamondBackgroundColor #FFF7ED
+skinparam noteBackgroundColor #FFFBEA
+skinparam noteBorderColor #D6C77A
+skinparam classBackgroundColor #EFF6FF
+skinparam classBorderColor #64748B
+skinparam packageBackgroundColor #F8FAFC
+skinparam packageBorderColor #94A3B8
+
+title DIRの3層アーキテクチャ
+
+top to bottom direction
+component "Definition\n定義 / NED" as definition
+component "Initialization\n初期化 / INI" as initialization
+component "Runtime\n実行 / Rust" as runtime
+definition --> initialization
+initialization --> runtime
+@enduml

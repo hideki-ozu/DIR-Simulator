@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""Refresh both traceability reports from the staged Git index."""
+
+from __future__ import annotations
+
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+
+REPORTS = (
+    "docs/要件トレーサビリティ一覧.md",
+    "docs/要件トレーサビリティ一覧.html",
+)
+EXACT_INPUTS = {
+    *REPORTS,
+    "scripts/check_traceability.py",
+    "scripts/generate_traceability.py",
+}
+
+
+def is_traceability_input(path: str) -> bool:
+    return path in EXACT_INPUTS or (
+        path.startswith("docs/")
+        and path.endswith(".md")
+        and "templates" not in Path(path).parts
+    )
+
+
+def run(command: list[str], root: Path, **kwargs) -> subprocess.CompletedProcess:
+    return subprocess.run(command, cwd=root, check=False, **kwargs)
+
+
+def main() -> int:
+    root_result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    root = Path(root_result.stdout.strip())
+    staged_result = run(
+        ["git", "diff", "--cached", "--name-only", "-z", "--diff-filter=ACMRD"], root,
+        capture_output=True,
+        text=True,
+        encoding=sys.getfilesystemencoding(),
+        errors="surrogateescape",
+    )
+    if staged_result.returncode != 0:
+        print(staged_result.stderr, file=sys.stderr, end="")
+        return staged_result.returncode
+    staged_paths = staged_result.stdout.split("\0")
+    if not any(is_traceability_input(path) for path in staged_paths):
+        return 0
+
+    with tempfile.TemporaryDirectory(prefix="dir-trace-index-") as temporary:
+        snapshot = Path(temporary) / "repository"
+        snapshot.mkdir()
+        checkout = run(
+            ["git", "checkout-index", "--all", f"--prefix={snapshot}/"], root
+        )
+        if checkout.returncode != 0:
+            return checkout.returncode
+
+        generator = snapshot / "scripts/generate_traceability.py"
+        if not generator.is_file():
+            print(
+                "要件トレーサビリティ一覧を更新できません。"
+                "scripts/generate_traceability.py をステージしてください。",
+                file=sys.stderr,
+            )
+            return 1
+
+        generated = run(["python3", str(generator)], root)
+        missing = [name for name in REPORTS if not (snapshot / name).is_file()]
+        if missing:
+            print(
+                "要件トレーサビリティ一覧を生成できませんでした: " + ", ".join(missing),
+                file=sys.stderr,
+            )
+            return 1
+
+        for name in REPORTS:
+            worktree_report = root / name
+            worktree_report.parent.mkdir(parents=True, exist_ok=True)
+            worktree_report.write_bytes((snapshot / name).read_bytes())
+        added = run(["git", "add", "--", *REPORTS], root)
+        if added.returncode != 0:
+            return added.returncode
+        print("Updated and staged traceability Markdown and HTML from staged documents.")
+
+        if generated.returncode != 0:
+            print(
+                "追跡データに構造エラーがあるためコミットを中止します。"
+                "エラー一覧と赤い状態を確認してください。",
+                file=sys.stderr,
+            )
+        return generated.returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
