@@ -194,11 +194,7 @@ class Check:
             p
             for p in self.docs.rglob("*.md")
             if "templates" not in p.relative_to(self.docs).parts
-            and p
-            not in (
-                self.docs / "初期設計構想文書.md",
-                self.docs / "要件トレーサビリティ一覧.md",
-            )
+            and p != self.docs / "要件トレーサビリティ一覧.md"
         )
         for p in paths:
             text = self.read(p)
