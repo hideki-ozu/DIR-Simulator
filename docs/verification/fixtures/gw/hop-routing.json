@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "gateways": [
+    {
+      "node": "Chain.g1",
+      "ports": [
+        "Chain.g1.a",
+        "Chain.g1.b"
+      ],
+      "routes": [
+        {
+          "id": "ab",
+          "ingress": "Chain.g1.a",
+          "egress": [
+            "Chain.g1.b"
+          ],
+          "format": "standard",
+          "id_min": 0,
+          "id_max": 0
+        }
+      ],
+      "hop_limit": 2
+    },
+    {
+      "node": "Chain.g2",
+      "ports": [
+        "Chain.g2.a",
+        "Chain.g2.b"
+      ],
+      "routes": [
+        {
+          "id": "ab",
+          "ingress": "Chain.g2.a",
+          "egress": [
+            "Chain.g2.b"
+          ],
+          "format": "standard",
+          "id_min": 0,
+          "id_max": 0
+        }
+      ],
+      "hop_limit": 2
+    },
+    {
+      "node": "Chain.g3",
+      "ports": [
+        "Chain.g3.a",
+        "Chain.g3.b"
+      ],
+      "routes": [
+        {
+          "id": "ab",
+          "ingress": "Chain.g3.a",
+          "egress": [
+            "Chain.g3.b"
+          ],
+          "format": "standard",
+          "id_min": 0,
+          "id_max": 0
+        }
+      ],
+      "hop_limit": 2
+    }
+  ]
+}

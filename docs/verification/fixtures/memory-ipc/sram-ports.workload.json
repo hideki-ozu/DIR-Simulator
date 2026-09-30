@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "a",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.sram",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "write",
+        "address": 0,
+        "length": 2,
+        "hex": "aabb"
+      }
+    },
+    {
+      "id": "b",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.sram",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "read",
+        "address": 0,
+        "length": 2
+      }
+    },
+    {
+      "id": "c",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.sram",
+      "times": [
+        "1ps"
+      ],
+      "request": {
+        "op": "write",
+        "address": 1,
+        "length": 1,
+        "hex": "cc"
+      }
+    }
+  ]
+}

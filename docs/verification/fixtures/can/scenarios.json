@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "provenance": "Analytic expected projections; fields use integer ps for fixture reading, output D strings must be parsed before comparison",
+  "scenarios": [
+    {
+      "name": "competition",
+      "config": "competition.ini",
+      "expected": {
+        "termination": "events_exhausted",
+        "generated": 2,
+        "success": 2,
+        "dropped": 0,
+        "received": 4,
+        "requests": [
+          {
+            "id": "a:0",
+            "sof_ps": 0,
+            "eof_ps": 100000000,
+            "release_ps": 106000000
+          },
+          {
+            "id": "b:0",
+            "sof_ps": 106000000,
+            "eof_ps": 200000000,
+            "release_ps": 206000000
+          }
+        ]
+      }
+    },
+    {
+      "name": "queue-full",
+      "config": "queue-full.ini",
+      "expected": {
+        "generated": 2,
+        "success": 1,
+        "dropped": 1,
+        "dropped_ids": [
+          "a:1"
+        ],
+        "received": 2
+      }
+    },
+    {
+      "name": "capacity-zero",
+      "config": "capacity-zero.ini",
+      "expected": {
+        "generated": 1,
+        "success": 0,
+        "dropped": 1,
+        "attempts": 0,
+        "received": 0
+      }
+    },
+    {
+      "name": "eof-boundary",
+      "config": "eof-boundary.ini",
+      "expected": {
+        "termination": "time_limit",
+        "generated": 1,
+        "success": 0,
+        "in_flight": 1,
+        "receiver_rows": 0,
+        "bus_state": "transmitting"
+      }
+    },
+    {
+      "name": "after-eof",
+      "config": "after-eof.ini",
+      "expected": {
+        "termination": "time_limit",
+        "generated": 1,
+        "success": 1,
+        "received": 2,
+        "bus_state": "intermission",
+        "release_ps": null
+      }
+    },
+    {
+      "name": "delay-filter",
+      "config": "delay-filter.ini",
+      "expected": {
+        "generated": 1,
+        "success": 1,
+        "received": 1,
+        "filtered": 1,
+        "sof_ps": 3000000,
+        "eof_ps": 103000000,
+        "release_ps": 109000000,
+        "b_observed_ps": 108000000,
+        "b_received_ps": 115000000,
+        "c_observed_ps": 105000000
+      }
+    },
+    {
+      "name": "release-arrival",
+      "config": "release-arrival.ini",
+      "expected": {
+        "sof_order": [
+          "b:0",
+          "a:0",
+          "b:1"
+        ],
+        "sof_times_ps": [
+          0,
+          100000000,
+          206000000
+        ]
+      }
+    },
+    {
+      "name": "mixed-generators",
+      "config": "mixed-generators.ini",
+      "expected": {
+        "termination": "time_limit",
+        "generated_order": [
+          "a:0",
+          "b:0",
+          "a:1",
+          "b:1",
+          "a:2"
+        ],
+        "generated_times_ps": [
+          2000000,
+          2000000,
+          12000000,
+          12000000,
+          22000000
+        ],
+        "in_flight": 1,
+        "pending": 4,
+        "success": 0
+      }
+    }
+  ]
+}

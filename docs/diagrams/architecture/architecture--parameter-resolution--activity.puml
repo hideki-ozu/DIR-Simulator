@@ -1,6 +1,6 @@
 @startuml architecture--parameter-resolution--activity
 ' Document: ../../アーキテクチャ設計書.md
-' Section: Parameter Model
+' Section: 正規値とパラメータ
 ' Purpose: 型の既定値とINIによるパラメータ解決（設計案）
 
 skinparam backgroundColor white
@@ -33,9 +33,9 @@ start
 （merge）;
 note right
   指定値を優先し、未指定値を保持する。
-  型・物理量を検証する（DIR-REQ-052）。
+  型・物理量を検証する（DIR-REQ-0052）。
   記法・単位・丸めは
-  DIR-TBD-002 / 003 / 004で確定する。
+  NED・設定・実行詳細仕様に従う。
 end note
 :Resolved ParameterSet;
 :Module Factoryへ確定値を渡す;

@@ -1,0 +1,82 @@
+[
+  {
+    "schema_name": "can.request",
+    "schema_version": 1,
+    "record_id": "gw:source:0/Main.gw/ab/Main.gw.b",
+    "subject": "Main.gw.b",
+    "request_id": "gw:source:0/Main.gw/ab/Main.gw.b",
+    "origin_request_id": "source:0",
+    "time_ps": "206000000",
+    "data": {
+      "request_id": "gw:source:0/Main.gw/ab/Main.gw.b",
+      "source": "Main.gw.b",
+      "bus": "Main.busB",
+      "status": "success",
+      "generated_ps": "100000000",
+      "ready_ps": "100000000",
+      "sof_ps": "100000000",
+      "eof_ps": "200000000",
+      "payload_bits": "0",
+      "serialized_bits": "50",
+      "model_fields": {
+        "profile": "can.cc.multibus.v1",
+        "schema_version": 1,
+        "crc15": "0",
+        "stuff_bits": "6",
+        "frame_bits": "50",
+        "intermission_bits": "3",
+        "bitrate_bps": "500000",
+        "planned_eof_ps": "200000000",
+        "planned_release_ps": "206000000",
+        "release_ps": "206000000",
+        "origin_request_id": "source:0",
+        "parent_request_id": "source:0",
+        "gw_hops": "1"
+      },
+      "attempts": "1",
+      "retries": "0",
+      "drop_reason": null
+    }
+  },
+  {
+    "schema_name": "can.receiver",
+    "schema_version": 1,
+    "record_id": "gw:source:0/Main.gw/ab/Main.gw.b/Main.sink",
+    "subject": "Main.sink",
+    "request_id": "gw:source:0/Main.gw/ab/Main.gw.b",
+    "origin_request_id": "source:0",
+    "time_ps": "200000000",
+    "data": {
+      "request_id": "gw:source:0/Main.gw/ab/Main.gw.b",
+      "receiver": "Main.sink",
+      "status": "received",
+      "observed_ps": "200000000",
+      "received_ps": "200000000"
+    }
+  },
+  {
+    "schema_name": "gw.forward",
+    "schema_version": 1,
+    "record_id": "gw:source:0/Main.gw/ab/Main.gw.b",
+    "subject": "Main.gw",
+    "request_id": "source:0",
+    "origin_request_id": "source:0",
+    "time_ps": "100000000",
+    "data": {
+      "forward_id": "gw:source:0/Main.gw/ab/Main.gw.b",
+      "parent_request_id": "source:0",
+      "origin_request_id": "source:0",
+      "gateway": "Main.gw",
+      "ingress": "Main.gw.a",
+      "egress": "Main.gw.b",
+      "route_id": "ab",
+      "gw_hops": "1",
+      "received_ps": "100000000",
+      "planned_forward_ps": "100000000",
+      "forwarded_ps": "100000000",
+      "child_request_id": "gw:source:0/Main.gw/ab/Main.gw.b",
+      "status": "submitted",
+      "reason": null
+    }
+  }
+]

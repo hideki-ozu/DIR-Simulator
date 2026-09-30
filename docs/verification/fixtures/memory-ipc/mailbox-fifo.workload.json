@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "a",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.mailbox",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "send",
+        "actor": "sender",
+        "hex": "cafe"
+      }
+    },
+    {
+      "id": "b",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.mailbox",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "send",
+        "actor": "sender",
+        "hex": "babe"
+      }
+    },
+    {
+      "id": "c",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.mailbox",
+      "times": [
+        "3ps"
+      ],
+      "request": {
+        "op": "receive",
+        "actor": "receiver"
+      }
+    },
+    {
+      "id": "d",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.mailbox",
+      "times": [
+        "7ps"
+      ],
+      "request": {
+        "op": "receive",
+        "actor": "receiver"
+      }
+    }
+  ]
+}

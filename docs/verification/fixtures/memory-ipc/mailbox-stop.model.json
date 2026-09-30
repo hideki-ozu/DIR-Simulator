@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "profile": "memory.ipc.transaction.v1",
+  "ddr": [
+    {
+      "node": "Main.ddr",
+      "size": 32,
+      "initial": [],
+      "queue_capacity": 4,
+      "banks": 2,
+      "row_bytes": 4,
+      "rows_per_bank": 4,
+      "width_bytes": 2,
+      "open_ps": "3",
+      "close_ps": "2",
+      "column_ps": "2",
+      "beat_ps": "1",
+      "refresh_interval_ps": "100",
+      "refresh_ps": "5",
+      "fault_ranges": []
+    }
+  ],
+  "sram": [
+    {
+      "node": "Main.sram",
+      "size": 16,
+      "initial": [],
+      "queue_capacity": 4,
+      "ports": 2,
+      "read_ps": "4",
+      "write_ps": "4",
+      "fault_ranges": []
+    }
+  ],
+  "shared": [
+    {
+      "node": "Main.shared",
+      "slots": 1,
+      "slot_bytes": 4,
+      "queue_capacity": 4,
+      "publish_ps": "3",
+      "consume_ps": "5",
+      "producers": [
+        "producer"
+      ],
+      "consumers": [
+        "consumer"
+      ]
+    }
+  ],
+  "dma": [
+    {
+      "node": "Main.dma",
+      "queue_capacity": 4,
+      "chunk_bytes": 4,
+      "setup_ps": "2",
+      "notify_ps": "2"
+    }
+  ],
+  "mailboxes": [
+    {
+      "node": "Main.mailbox",
+      "capacity": 1,
+      "payload_bytes": 4,
+      "queue_capacity": 4,
+      "service_ps": "2",
+      "notify_ps": "5",
+      "senders": [
+        "sender"
+      ],
+      "receivers": [
+        "receiver"
+      ]
+    }
+  ]
+}

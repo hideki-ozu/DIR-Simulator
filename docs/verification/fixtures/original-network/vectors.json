@@ -1,0 +1,617 @@
+{
+  "schema_version": 1,
+  "fd": [
+    {
+      "name": "brs4",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "01020304",
+        "brs": true,
+        "nominal_bits": 30,
+        "data_bits": 80,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "2ca7e6ff8e69a467d1223c3e3d4a08055122bf85b9f65d51475dd5fb798411e4"
+      },
+      "expected": [
+        100000000,
+        106000000,
+        4
+      ]
+    },
+    {
+      "name": "brs64-realistic-count-range",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 600,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "c7ef80bcb1e130f62f3278f381fbfc72848ec6661bba94c4b7e4b5bc6f703b0e"
+      },
+      "expected": [
+        380000000,
+        386000000,
+        15
+      ]
+    },
+    {
+      "name": "no-brs4",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "01020304",
+        "brs": false,
+        "nominal_bits": 110,
+        "data_bits": 0,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "566add39350f2c780a64f44b1ddba16e7d7fbe1d279e6d6b2c2354e389d0aa68"
+      },
+      "expected": [
+        220000000,
+        226000000,
+        4
+      ]
+    },
+    {
+      "name": "ceil-empty",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "",
+        "brs": true,
+        "nominal_bits": 31,
+        "data_bits": 17,
+        "nominal_rate": 333333,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "9f21a697310e34ada9830be6f9cfc7ba1637938580123613de0104dc8bda3301"
+      },
+      "expected": [
+        101500094,
+        110500103,
+        0
+      ]
+    },
+    {
+      "name": "dlc-0",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 88,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "850753c6a7bd377ec42e3cb0c5b334a938810f8448c6a26c9e6f62ad90189aae"
+      },
+      "expected": [
+        124000000,
+        130000000,
+        0
+      ]
+    },
+    {
+      "name": "dlc-1",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "00",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 96,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "dad89ee6c69507755f57818c12660b2cabd59e707465a676c1e8b975d6f503a4"
+      },
+      "expected": [
+        128000000,
+        134000000,
+        1
+      ]
+    },
+    {
+      "name": "dlc-2",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "0000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 104,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "03e2d7dc7145a8c0b0eb27284cb0f0181ae4076150d24cb6a846820558f78e72"
+      },
+      "expected": [
+        132000000,
+        138000000,
+        2
+      ]
+    },
+    {
+      "name": "dlc-3",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 112,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "aef43b469bc23db277fcbf94bda8cb99c318e87b70eb30bd1aa136a6d1976b04"
+      },
+      "expected": [
+        136000000,
+        142000000,
+        3
+      ]
+    },
+    {
+      "name": "dlc-4",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "00000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 120,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "79644c3f4fa7efc0e5ff62f43e23d37ab58432af1ac8610e034eb90b4bb5baed"
+      },
+      "expected": [
+        140000000,
+        146000000,
+        4
+      ]
+    },
+    {
+      "name": "dlc-5",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "0000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 128,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "7c80383a51d2ad249eb48d8e06469cad05f4db71f8a15ba68f91953aaca0e134"
+      },
+      "expected": [
+        144000000,
+        150000000,
+        5
+      ]
+    },
+    {
+      "name": "dlc-6",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 136,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "b2794260de39ce7de2e29e34512163fd9f3ee15bda5336d64245f3ba06f91e43"
+      },
+      "expected": [
+        148000000,
+        154000000,
+        6
+      ]
+    },
+    {
+      "name": "dlc-7",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "00000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 144,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "960c5a29febfe2cf064fd67625606e8df9fbffb1139f4413c370723a883dce20"
+      },
+      "expected": [
+        152000000,
+        158000000,
+        7
+      ]
+    },
+    {
+      "name": "dlc-8",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "0000000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 152,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "b9089a38aa323fe2f776f3bed794e5213b5ce30081c787aaef588ffdcbf6438c"
+      },
+      "expected": [
+        156000000,
+        162000000,
+        8
+      ]
+    },
+    {
+      "name": "dlc-9",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "000000000000000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 184,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "73adaaa485084ebe3148edb898dfe2e734b5cb6c6bd221ed532f85f3d5a9ded5"
+      },
+      "expected": [
+        172000000,
+        178000000,
+        9
+      ]
+    },
+    {
+      "name": "dlc-10",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "00000000000000000000000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 216,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "dd1a882e51f838adf2de55b4f5bdc4af298eeb0be5d1ec4418d3152766d0ffff"
+      },
+      "expected": [
+        188000000,
+        194000000,
+        10
+      ]
+    },
+    {
+      "name": "dlc-11",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "0000000000000000000000000000000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 248,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "f8e26bdb06ce66b255a86f976898515b514a731524092e295e4e31f632d24bcf"
+      },
+      "expected": [
+        204000000,
+        210000000,
+        11
+      ]
+    },
+    {
+      "name": "dlc-12",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "000000000000000000000000000000000000000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 280,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "c97fb3b9344bd5a36bcc2478a46927976fcc32e0c22f7e7df11417f638922d13"
+      },
+      "expected": [
+        220000000,
+        226000000,
+        12
+      ]
+    },
+    {
+      "name": "dlc-13",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "0000000000000000000000000000000000000000000000000000000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 344,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "6ef4536e1657077ea12db70a91c17bd795cdf4101fe7dd8bfae97fb1bf91790c"
+      },
+      "expected": [
+        252000000,
+        258000000,
+        13
+      ]
+    },
+    {
+      "name": "dlc-14",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 472,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "5cd69b75c58dcddbd1652cd0878b46feef5c4c80d975a68d647b35207c99668d"
+      },
+      "expected": [
+        316000000,
+        322000000,
+        14
+      ]
+    },
+    {
+      "name": "dlc-15",
+      "input": {
+        "format": "standard",
+        "id": 0,
+        "data": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "brs": true,
+        "nominal_bits": 40,
+        "data_bits": 600,
+        "nominal_rate": 500000,
+        "data_rate": 2000000,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "binding_sha256": "9dbaba8347a3c6d718ec67d5511d228c1f21baedafe08e4f6edc8a02279e14e6"
+      },
+      "expected": [
+        380000000,
+        386000000,
+        15
+      ]
+    }
+  ],
+  "fd_invalid": [
+    {
+      "name": "length9",
+      "patch": {
+        "data": "000000000000000000"
+      }
+    },
+    {
+      "name": "length63",
+      "patch": {
+        "data": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "name": "length65",
+      "patch": {
+        "data": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "name": "id-overflow",
+      "patch": {
+        "id": 2048
+      }
+    },
+    {
+      "name": "bits-short",
+      "patch": {
+        "data_bits": 31
+      }
+    },
+    {
+      "name": "no-brs-data",
+      "patch": {
+        "brs": false
+      }
+    },
+    {
+      "name": "empty-evidence",
+      "patch": {
+        "evidence": ""
+      }
+    },
+    {
+      "name": "rate-inversion",
+      "patch": {
+        "data_rate": 100000
+      }
+    },
+    {
+      "name": "payload-binding",
+      "patch": {
+        "data": "ffffffff"
+      }
+    }
+  ],
+  "t1": [
+    {
+      "name": "a-to-b",
+      "input": {
+        "rate": 100000000,
+        "duplex": "full",
+        "roles": [
+          "master",
+          "slave"
+        ],
+        "mac_bytes": 64,
+        "tx": 100000,
+        "rx": 200000,
+        "propagation": 1000
+      },
+      "expected": [
+        5760000,
+        6720000,
+        6061000
+      ]
+    },
+    {
+      "name": "b-to-a",
+      "input": {
+        "rate": 100000000,
+        "duplex": "full",
+        "roles": [
+          "master",
+          "slave"
+        ],
+        "mac_bytes": 64,
+        "tx": 300000,
+        "rx": 400000,
+        "propagation": 1000
+      },
+      "expected": [
+        5760000,
+        6720000,
+        6461000
+      ]
+    },
+    {
+      "name": "max-zero-phy",
+      "input": {
+        "rate": 100000000,
+        "duplex": "full",
+        "roles": [
+          "master",
+          "slave"
+        ],
+        "mac_bytes": 1518,
+        "tx": 0,
+        "rx": 0,
+        "propagation": 0
+      },
+      "expected": [
+        122080000,
+        123040000,
+        122080000
+      ]
+    }
+  ],
+  "t1_invalid": [
+    {
+      "name": "gigabit",
+      "patch": {
+        "rate": 1000000000
+      }
+    },
+    {
+      "name": "half",
+      "patch": {
+        "duplex": "half"
+      }
+    },
+    {
+      "name": "two-master",
+      "patch": {
+        "roles": [
+          "master",
+          "master"
+        ]
+      }
+    }
+  ],
+  "arbitration_expected": [
+    0,
+    106000000,
+    100000000,
+    206000000
+  ],
+  "stop": [
+    {
+      "eof": 100000000,
+      "arrival": 100000010,
+      "T": 100000000,
+      "expected": [
+        "transmitting",
+        false
+      ]
+    },
+    {
+      "eof": 100000000,
+      "arrival": 100000010,
+      "T": 100000001,
+      "expected": [
+        "serialized",
+        false
+      ]
+    },
+    {
+      "eof": 100000000,
+      "arrival": 100000010,
+      "T": 100000010,
+      "expected": [
+        "serialized",
+        false
+      ]
+    },
+    {
+      "eof": 100000000,
+      "arrival": 100000010,
+      "T": 100000011,
+      "expected": [
+        "serialized",
+        true
+      ]
+    },
+    {
+      "eof": 5760000,
+      "arrival": 6061000,
+      "T": 5760000,
+      "expected": [
+        "transmitting",
+        false
+      ]
+    },
+    {
+      "eof": 5760000,
+      "arrival": 6061000,
+      "T": 6061000,
+      "expected": [
+        "serialized",
+        false
+      ]
+    },
+    {
+      "eof": 5760000,
+      "arrival": 6061000,
+      "T": 6061001,
+      "expected": [
+        "serialized",
+        true
+      ]
+    }
+  ]
+}

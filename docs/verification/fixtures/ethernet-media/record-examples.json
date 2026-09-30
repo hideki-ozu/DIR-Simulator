@@ -1,0 +1,119 @@
+[
+  {
+    "schema_name": "ethernet.attempt",
+    "schema_version": 1,
+    "record_id": "a:0@Main.a.tx#1",
+    "subject": "Main.a.tx",
+    "request_id": "a:0",
+    "origin_request_id": null,
+    "time_ps": "100000",
+    "data": {
+      "transfer_id": "a:0@Main.a.tx",
+      "physical_link": "ab",
+      "from_port": "Main.a.tx",
+      "to_port": "Main.b.rx",
+      "number": "1",
+      "sof_ps": "0",
+      "planned_eof_ps": "5760000",
+      "planned_release_ps": "6720000",
+      "planned_arrival_ps": "5860000",
+      "collision_ps": "100000",
+      "planned_jam_start_ps": "640000",
+      "planned_jam_end_ps": "960000",
+      "jam_end_ps": null,
+      "eof_ps": null,
+      "release_ps": null,
+      "arrival_ps": null,
+      "backoff_slots": null,
+      "backoff_until_ps": null,
+      "status": "jamming",
+      "planned_mdi_sof_ps": "0",
+      "planned_mdi_eof_ps": null,
+      "planned_peer_mdi_sof_ps": "100000",
+      "planned_peer_mdi_eof_ps": null
+    }
+  },
+  {
+    "schema_name": "ethernet.frame",
+    "schema_version": 1,
+    "record_id": "a:0",
+    "subject": "Main.a",
+    "request_id": "a:0",
+    "origin_request_id": null,
+    "time_ps": "0",
+    "data": {
+      "source": "Main.a",
+      "src_mac": "02:00:00:00:00:01",
+      "dst_mac": "02:00:00:00:00:02",
+      "ether_type": "2048",
+      "data_hex": "",
+      "pad_bytes": "46",
+      "mac_bytes": "64",
+      "fcs_hex": "a9e82eb4",
+      "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+      "generated_ps": "0",
+      "ready_ps": "0"
+    }
+  },
+  {
+    "schema_name": "ethernet.phy_link",
+    "schema_version": 1,
+    "record_id": "ab",
+    "subject": "@media:ab",
+    "request_id": null,
+    "origin_request_id": null,
+    "time_ps": "0",
+    "data": {
+      "a": "Main.a.tx",
+      "b": "Main.b.tx",
+      "phy_mode": "100base-tx",
+      "duplex": "half",
+      "bitrate_bps": "100000000",
+      "propagation_ps": "100000",
+      "a_phy": {
+        "role": "none",
+        "tx_latency_ps": "0",
+        "rx_latency_ps": "0"
+      },
+      "b_phy": {
+        "role": "none",
+        "tx_latency_ps": "0",
+        "rx_latency_ps": "0"
+      },
+      "link_state": "up",
+      "seed": "1",
+      "deference_policy": "continuous-idle-96.v1",
+      "backoff_policy": "sha256-beb.v1"
+    }
+  },
+  {
+    "schema_name": "ethernet.transfer",
+    "schema_version": 2,
+    "record_id": "a:0@Main.a.tx",
+    "subject": "Main.a.tx",
+    "request_id": "a:0",
+    "origin_request_id": null,
+    "time_ps": "100000",
+    "data": {
+      "frame_id": "a:0",
+      "parent_transfer_id": null,
+      "from_port": "Main.a.tx",
+      "to_port": "Main.b.rx",
+      "queued_ps": "0",
+      "sof_ps": "0",
+      "eof_ps": null,
+      "release_ps": null,
+      "arrival_ps": null,
+      "planned_eof_ps": null,
+      "planned_release_ps": null,
+      "planned_arrival_ps": null,
+      "status": "jamming",
+      "drop_reason": null,
+      "physical_link": "ab",
+      "attempt_count": "1",
+      "collision_count": "1",
+      "last_attempt_id": "a:0@Main.a.tx#1",
+      "backoff_until_ps": null
+    }
+  }
+]

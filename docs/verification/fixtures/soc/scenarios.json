@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "evidence": "Independent analytic fixture expectations; product execution unperformed.",
+  "cases": [
+    {
+      "name": "soc-round-robin",
+      "test": "DIR-TEST-0044",
+      "config": "soc-round-robin.ini",
+      "T": 100,
+      "expected": {
+        "transactions": [
+          {
+            "id": "a:0",
+            "start": 0,
+            "end": 30,
+            "status": "completed",
+            "response": "OKAY",
+            "active_plan": null
+          },
+          {
+            "id": "b:0",
+            "start": 30,
+            "end": 60,
+            "status": "completed",
+            "response": "OKAY",
+            "active_plan": null
+          },
+          {
+            "id": "a:1",
+            "start": 60,
+            "end": 90,
+            "status": "completed",
+            "response": "OKAY",
+            "active_plan": null
+          }
+        ],
+        "delivered_bits": 192,
+        "busy_ps": 90
+      }
+    },
+    {
+      "name": "soc-capacity-stop",
+      "test": "DIR-TEST-0045",
+      "config": "soc-capacity-stop.ini",
+      "T": 40,
+      "expected": {
+        "transactions": [
+          {
+            "id": "a:0",
+            "start": 0,
+            "end": 20,
+            "status": "completed",
+            "response": "ERROR",
+            "active_plan": null
+          },
+          {
+            "id": "a:1",
+            "start": null,
+            "end": null,
+            "status": "dropped",
+            "response": null,
+            "active_plan": null
+          },
+          {
+            "id": "a:2",
+            "start": 20,
+            "end": null,
+            "status": "active",
+            "response": null,
+            "active_plan": {
+              "resource": "Main.bus",
+              "hop": 0,
+              "start_ps": 20,
+              "planned_end_ps": 40
+            }
+          }
+        ],
+        "delivered_bits": 0,
+        "busy_ps": 40
+      }
+    },
+    {
+      "name": "ahb-wait-error",
+      "test": "DIR-TEST-0046",
+      "config": "ahb-wait-error.ini",
+      "T": 100,
+      "expected": {
+        "transactions": [
+          {
+            "id": "a:0",
+            "start": 0,
+            "end": 40,
+            "status": "completed",
+            "response": "OKAY",
+            "active_plan": null
+          },
+          {
+            "id": "b:0",
+            "start": 40,
+            "end": 90,
+            "status": "completed",
+            "response": "ERROR",
+            "active_plan": null
+          }
+        ],
+        "delivered_bits": 32,
+        "busy_ps": 90
+      }
+    },
+    {
+      "name": "ahb-boundary",
+      "test": "DIR-TEST-0047",
+      "config": "ahb-boundary.ini",
+      "T": 30,
+      "expected": {
+        "transactions": [
+          {
+            "id": "a:0",
+            "start": 0,
+            "end": null,
+            "status": "active",
+            "response": null,
+            "active_plan": {
+              "resource": "Main.bus",
+              "hop": 0,
+              "start_ps": 0,
+              "planned_end_ps": 30
+            }
+          },
+          {
+            "id": "a:1",
+            "start": null,
+            "end": null,
+            "status": "dropped",
+            "response": null,
+            "active_plan": null
+          }
+        ],
+        "delivered_bits": 0,
+        "busy_ps": 30
+      }
+    },
+    {
+      "name": "noc-xy",
+      "test": "DIR-TEST-0048",
+      "config": "noc-xy.ini",
+      "T": 70,
+      "expected": {
+        "transactions": [
+          {
+            "id": "a:0",
+            "start": 0,
+            "end": 60,
+            "status": "completed",
+            "response": "OKAY",
+            "active_plan": null
+          }
+        ],
+        "hops": [
+          [
+            "a:0",
+            "Main.r00:out_east",
+            0,
+            20
+          ],
+          [
+            "a:0",
+            "Main.r10:out_north",
+            20,
+            40
+          ],
+          [
+            "a:0",
+            "Main.r11:local_out",
+            40,
+            60
+          ]
+        ],
+        "delivered_bits": 64
+      }
+    },
+    {
+      "name": "noc-backpressure",
+      "test": "DIR-TEST-0049",
+      "config": "noc-backpressure.ini",
+      "T": 65,
+      "expected": {
+        "transactions": [
+          {
+            "id": "a:0",
+            "start": 0,
+            "end": 50,
+            "status": "completed",
+            "response": "OKAY",
+            "active_plan": null
+          },
+          {
+            "id": "a:1",
+            "start": 40,
+            "end": 60,
+            "status": "completed",
+            "response": "OKAY",
+            "active_plan": null
+          },
+          {
+            "id": "a:2",
+            "start": 50,
+            "end": null,
+            "status": "active",
+            "response": null,
+            "active_plan": {
+              "resource": "Main.r10:local_out",
+              "hop": 1,
+              "start_ps": 60,
+              "planned_end_ps": 70
+            }
+          },
+          {
+            "id": "a:3",
+            "start": null,
+            "end": null,
+            "status": "dropped",
+            "response": null,
+            "active_plan": null
+          },
+          {
+            "id": "b:0",
+            "start": 0,
+            "end": 40,
+            "status": "completed",
+            "response": "OKAY",
+            "active_plan": null
+          }
+        ],
+        "hops": [
+          [
+            "a:0",
+            "Main.r00:out_east",
+            0,
+            10
+          ],
+          [
+            "b:0",
+            "Main.r10:local_out",
+            0,
+            40
+          ],
+          [
+            "a:0",
+            "Main.r10:local_out",
+            40,
+            50
+          ],
+          [
+            "a:1",
+            "Main.r00:out_east",
+            40,
+            50
+          ],
+          [
+            "a:1",
+            "Main.r10:local_out",
+            50,
+            60
+          ],
+          [
+            "a:2",
+            "Main.r00:out_east",
+            50,
+            60
+          ]
+        ],
+        "delivered_bits": 192
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
-DIR Simulatorは、ネットワークおよびSoCシステムを対象としたRust製の離散イベント型シミュレータです。
+DIR Simulatorは、CAN／CAN FD・Ethernet・SoC通信・メモリ・IPCと接続デバイスを対象としたRust製の離散イベント型シミュレータです。
 次の3層モデルを採用しています。
 
 1. **Definition（定義）** — NEDの構造記述の一部に対応
@@ -13,21 +13,11 @@ DIR Simulatorは、ネットワークおよびSoCシステムを対象としたR
 
 ## 目標
 
-- NEDの構造記述機能のうち、実用的な範囲で高い互換性を確保する
-- OMNeT++のC++ APIとの互換性ではなく、RustネイティブのランタイムAPIを提供する
-- 以下を共通のシミュレーションモデルで扱う
-  - CAN / CAN-FD
-  - Ethernet（100BASE-T1 / 100BASE-TX）
-  - ゲートウェイとスイッチ
-  - SoCバス / インターコネクト
-  - NoC
-  - DDR / SRAM
-  - 共有メモリIPC
-  - DMA / メールボックスIPC
-- 遅延、バッファ、共有資源、調停、メトリクスを明示的にモデル化する
-- 決定的な離散イベント実行を実現する
+CANノードと共有バスの通信を仮想時刻上で実行し、負荷・ビットレート・容量の違いによる遅延、競合、バッファ使用量と性能を比較します。
+構造をNED、実験条件をINI、振る舞いをRustで記述し、時系列・集計値をCSVとJSONで取得する計画です。
 
-上記は評価対象とする分野です。再現する各モデルの振る舞い・精度は、[要件定義の未確定事項](docs/要件定義書.md#6-未確定事項不足の管理)で管理しています。
+基準モデルはClassical CANです。追加モデルとして、GWで接続する独立CANバス、AXIのManager・Interconnect・Ram、EthernetのEndpoint・Link・Switchを要件から詳細設計・検証まで規定しました。0.1.0は単一CAN、次のメジャー1.0.0はGW・複数バス、AXI・Ethernetは1.0.0以後の追加計画です。各profileの初期機能を固定し、追加機能は版付き登録契約で拡張します。
+初期モデルは標準11bit・拡張29bitのClassical CANデータフレームを扱う`can.cc.ideal.v1`です。内容からCRC・stuff bitを求め、理想ACKを扱います。詳細は[CANモデル仕様](docs/specs/models/CANモデル詳細機能仕様書.md)、判断履歴は[解決済みTBD台帳](docs/要件定義書.md#6-未確定事項不足の管理)に記載しています。
 
 ## 3層アーキテクチャ
 
@@ -51,17 +41,13 @@ Rustモジュールで振る舞いを実装します。Module Registry（モジ�
 
 ## 互換性の方針
 
-DIRは、OMNeT++を完全に置き換えることを**目的としていません**。
-
-初期段階の方針は以下のとおりです。
-
-- NEDの構造記述との互換性：対象
-- `omnetpp.ini`との完全互換：対象外。DIRの設定仕様として定義
-- OMNeT++のC++ランタイムAPIとの互換性：対象外
-- `.msg`との互換性：対象外
-- INETのバイナリ / APIとの互換性：対象外
-- INET / NEDのインポートや対応付け：将来的な検討事項
-- Parquet、OMNeT++の`.vec`・`.sca`出力：現時点では対象外
+| 項目 | 方針・範囲注釈 |
+| --- | --- |
+| NED | 構造記述の定義済みサブセットを採用 |
+| INI | DIR独自設定を定義。注：omnetpp.ini完全互換は対象外 |
+| 実行 | Rustネイティブの登録契約を採用。注：OMNeT++ C++ API、.msg、INETバイナリ/API互換は対象外 |
+| 出力 | CSV・JSONを採用。注：Parquet、.vec、.scaは初期対象外 |
+| 将来の対応付け | INET/NEDとの対応付けは独立した追加仕様で扱う |
 
 NEDの構文対応と、INIによるパラメータの値解決は区別します。DIRではNED型の共通のデフォルト値をINIでインスタンスごとに上書きします。対応構文とOMNeT++との意味上の差分は要件定義で管理します。
 
@@ -69,14 +55,29 @@ DIRは、OMNeT++の実装コードを移植するのではなく、公開ドキ�
 
 ## ドキュメント
 
-- [要件定義書](docs/要件定義書.md)：固定ID付き要件と親子関係、分解状態、受け入れ条件、未確定事項
+- [要件定義書](docs/要件定義書.md)：固定ID付き要件、受け入れ条件、未確定事項
+- [要件階層（別紙HTML）](docs/要件階層.html)：全有効要件の主親・階層上の位置・分解状態（自動生成）
 - [機能仕様書](docs/機能仕様書.md)：固定機能ID、入出力、正常時・境界・異常時の振る舞い、全要件から機能への対応と充足確認
 - [要件トレーサビリティ一覧](docs/要件トレーサビリティ一覧.md)：要件ごとの経路を1セル1IDで横に並べた対応表と未接続項目（自動生成）。[背景色付きHTML版](docs/要件トレーサビリティ一覧.html)はローカルのブラウザで開けます。
 - [アーキテクチャ設計書](docs/アーキテクチャ設計書.md)：責務分担、内部モデル、API案
 - [トレーサビリティ管理規約](docs/トレーサビリティ管理規約.md)：6工程の対応記録、全経路検査、変更影響の逆引き
 - [ドキュメント作成・運用規約](docs/ドキュメント作成・運用規約.md)：文書体系、要件分解・詳細化・検証の運用、記述テンプレート、文書と図の命名・配置
 
-詳細機能仕様・詳細設計・検証仕様は、規約に定めた分野から段階的に作成します。現在は要件の初期分解と作成先を反映した段階で、詳細文書の作成・仕様確定・実装検証は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。
+
+| 詳細仕様・方針 | 内容 |
+| --- | --- |
+| [NED詳細機能仕様書](docs/specs/NED詳細機能仕様書.md) | 構造・型・接続 |
+| [設定詳細機能仕様書](docs/specs/設定詳細機能仕様書.md) | INI・値・単位 |
+| [実行詳細機能仕様書](docs/specs/実行詳細機能仕様書.md) | 時刻・順序・終了 |
+| [資源詳細機能仕様書](docs/specs/資源詳細機能仕様書.md) | 容量・占有・遅延 |
+| [結果詳細機能仕様書](docs/specs/結果詳細機能仕様書.md) | 計測・集計・出力 |
+| [診断詳細機能仕様書](docs/specs/診断詳細機能仕様書.md) | 失敗分類・部分結果 |
+| [インタフェース詳細機能仕様書](docs/specs/インタフェース詳細機能仕様書.md) | CLI・登録・拡張 |
+| [CANモデル詳細機能仕様書](docs/specs/models/CANモデル詳細機能仕様書.md) | 仲裁・CRC・負荷 |
+| [品質・配布方針](docs/品質・配布方針.md) | 性能・精度・出自管理 |
+| [将来拡張計画](docs/将来拡張計画.md) | v1.0.0のGW・複数バスと他プロトコルへの境界 |
+
+16分野の詳細機能仕様、共通実行・CAN・GW・AXI・Ethernet・profile統合の10詳細設計と10検証仕様（59ケース）、各モデルの入力fixture・独立期待値を作成しました。製品実装・実行試験、および他分野の専用詳細設計・検証の残分担は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[コミット時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-commit)に従い、変更文書ごとにコミット準備時に一度更新します。
 
 図の編集元（`.puml`）と表示用SVGは `docs/diagrams/<文書ID>/` に保存しています。ローカルのPlantUMLで全図を更新・確認できます。
 
@@ -85,23 +86,67 @@ python3 scripts/render_diagrams.py
 python3 scripts/render_diagrams.py --check
 ```
 
-要件から検証までの対応は次で点検できます。通常検査は未完了を報告し、`--strict` は経路に不足があれば失敗します。詳細文書が未作成の現段階では厳格検査は未完了になります。
+要件から検証までの対応は次で点検できます。通常検査は未完了を報告し、`--strict` は経路に不足があれば失敗します。全体の下流工程に未割当があるため、全要件の厳格検査は未完了になります。CANモデル固有の形式・仲裁等、および追加95要件は詳細設計・検証ケースまで接続しています。
 
 ```bash
 python3 scripts/check_traceability.py
 python3 scripts/check_traceability.py --strict
-python3 scripts/check_traceability.py --impact DIR-FUNC-008
+python3 scripts/check_traceability.py --impact DIR-FUNC-0008
 ```
 
-一覧のMarkdown版とHTML版は `python3 scripts/generate_traceability.py` で同時に更新できます。`--check` で両方の生成結果が最新か確認できます。HTML版は薄い背景色で工程と未割当を区別します。Markdown表示側が装飾を除去する場合も、ブラウザでHTML版を開けば背景色を確認できます。コミット時に両方を自動更新する場合は、初回のみ `git config core.hooksPath .githooks` を実行します。
+トレーサビリティ一覧のMarkdown版・HTML版と要件階層の別紙HTMLは `python3 scripts/generate_traceability.py` で同時に更新できます。階層の編集元は `docs/要件階層.json` です。`--check` で3ファイルの鮮度と階層データの整合性を確認できます。HTML版は薄い背景色で工程と未割当を区別します。Markdown表示側が装飾を除去する場合も、ブラウザでHTML版を開けば背景色を確認できます。コミット時に3ファイルを自動更新する場合は、初回のみ `git config core.hooksPath .githooks` を実行します。
 
 ## 開発状況
 
-初期設計 / プロジェクトの立ち上げ段階です。要件とAPIは草案であり、実行可能なシミュレータはまだ実装していません。
-モデルの再現範囲、NED/INIの詳細、時間と終了条件、バッファ・調停、計測定義、実行環境などの未確定事項を要件定義にまとめています。
+仕様策定段階です。初期仕様の方式・値・境界を規定し、アーキテクチャへ反映しました。実行可能なシミュレータは未実装です。
+CANの再現範囲、NED/INIの詳細、時間と終了条件、バッファ・調停、計測定義、実行環境を詳細仕様に規定しました。要件193件、機能48件、受け入れ条件52件、TBD台帳15件（全件解決済み）を表形式で管理しています。番号付きIDは`DIR-REQ-0001`のように4桁です。
 
 ## ライセンス
 
 DIR Simulatorのプロジェクト作成物は、別途ライセンス表示がある場合を除き、MIT LicenseまたはApache License 2.0のいずれか（利用者が選択）で利用できます。対象にはソースコード、文書、テンプレート、PlantUMLソース、生成図を含みます。ライセンス本文は [`LICENSE-MIT`](LICENSE-MIT) と [`LICENSE-APACHE`](LICENSE-APACHE)、適用範囲は [`LICENSE`](LICENSE) を参照してください。
 
-第三者の素材・依存関係はこの許諾の対象外で、それぞれのライセンス条件に従います。配布条件と出自の確認方法は、要件定義書の `DIR-TBD-010` で引き続き管理します。
+第三者の素材・依存関係はこの許諾の対象外で、それぞれのライセンス条件に従います。配布条件と出自の確認方法は[品質・配布方針](docs/品質・配布方針.md)に規定しています。
+
+## CAN実装の入口
+
+| 資料 | 内容 |
+| --- | --- |
+| [CAN詳細機能仕様](docs/specs/models/CANモデル詳細機能仕様書.md) | 入出力・bit計算・時刻・仲裁・状態の外部契約 |
+| [CAN詳細設計](docs/design/CANモデル詳細設計書.md) | BusContext、codec、シリアライズ、状態遷移と処理手順 |
+| [共通実行詳細設計](docs/design/実行詳細設計書.md) | ヒープ・dirty集合・EffectBatch・確定journal・登録 |
+| [CAN検証仕様](docs/verification/cases/CANモデル検証仕様書.md) | 6ケース、NED/INI/workload、bitvectorとシナリオ期待値 |
+| [共通実行検証仕様](docs/verification/cases/共通実行検証仕様書.md) | 4ケース、時刻・順序・失敗・拡張 |
+
+仕様に同梱したCAN bitvectorの照合は次で実行できます。これは期待値の確認であり、製品シミュレータの動作試験とは区別します。
+
+```bash
+python3 docs/verification/fixtures/can/verify_vectors.py
+```
+
+## 追加モデル実装の入口
+
+| モデル | 機能仕様 | 詳細設計 | 検証仕様 |
+| --- | --- | --- | --- |
+| GW | [仕様](docs/specs/models/GWモデル詳細機能仕様書.md) | [設計](docs/design/GWモデル詳細設計書.md) | [検証](docs/verification/cases/GWモデル検証仕様書.md) |
+| AXI | [仕様](docs/specs/models/AXIモデル詳細機能仕様書.md) | [設計](docs/design/AXIモデル詳細設計書.md) | [検証](docs/verification/cases/AXIモデル検証仕様書.md) |
+| Ethernet | [仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md) | [設計](docs/design/Ethernetモデル詳細設計書.md) | [検証](docs/verification/cases/Ethernetモデル検証仕様書.md) |
+| profile統合 | [仕様](docs/specs/拡張モデル共通詳細機能仕様書.md) | [設計](docs/design/複数モデル統合詳細設計書.md) | [検証](docs/verification/cases/拡張モデル統合検証仕様書.md) |
+
+| Ethernet媒体 | 追加した評価範囲 |
+| --- | --- |
+| 10/100Mbps半二重 | CSMA/CDのcarrier sense、衝突、jam、backoff、再試行上限、送信待ちを評価 |
+| 1000BASE-T1 | 全二重1Gbps、MASTER/SLAVEの構成、両端PHY固定遅延を評価。注：半二重はT1の動作モードには含まれない |
+| v1互換 | 既存Ethernetの全二重profileを維持し、媒体別設定はethernet.l2.store-forward.v2で選択 |
+| 実装資料 | [媒体詳細仕様](docs/specs/models/Ethernet媒体拡張詳細機能仕様書.md)、[詳細設計](docs/design/Ethernet媒体拡張詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet媒体拡張検証仕様書.md) |
+
+## 当初対象の網羅
+
+当初の15対象と追加した10BASE-T・1000BASE-T1は、0.1.0のClassical CANと[将来対応予定の16対象](docs/要件定義書.md#original-target-coverage)に分けて管理し、将来対応予定表で有効要件へ対応付けています。対象範囲と段階的な実装順序を分け、CAN FD・100BASE-T1・SoC／AHB／NoC・DDR／SRAM・共有メモリIPC／DMA／メールボックスIPCも要件から検証ケースまで規定します。
+
+| 対象 | 仕様 | 設計 | 検証 |
+| --- | --- | --- | --- |
+| CAN FD・100BASE-T1 | [詳細仕様](docs/specs/models/CANFD・100BASE-T1詳細機能仕様書.md) | [詳細設計](docs/design/CANFD・100BASE-T1詳細設計書.md) | [検証仕様](docs/verification/cases/CANFD・100BASE-T1検証仕様書.md) |
+| SoC・AHB・NoC | [詳細仕様](docs/specs/models/SoC・AHB・NoC詳細機能仕様書.md) | [詳細設計](docs/design/SoC・AHB・NoC詳細設計書.md) | [検証仕様](docs/verification/cases/SoC・AHB・NoC検証仕様書.md) |
+| DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC | [詳細仕様](docs/specs/models/メモリ・IPC詳細機能仕様書.md) | [詳細設計](docs/design/メモリ・IPC詳細設計書.md) | [検証仕様](docs/verification/cases/メモリ・IPC検証仕様書.md) |
+
+CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。全追加モデルの製品実装・実行試験は未実施です。

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "gateways": [
+    {
+      "node": "Multi.gw",
+      "ports": [
+        "Multi.gw.a",
+        "Multi.gw.b",
+        "Multi.gw.c"
+      ],
+      "routes": [
+        {
+          "id": "ab",
+          "ingress": "Multi.gw.a",
+          "egress": [
+            "Multi.gw.b",
+            "Multi.gw.c"
+          ],
+          "format": "standard",
+          "id_min": 0,
+          "id_max": 0
+        }
+      ]
+    }
+  ]
+}

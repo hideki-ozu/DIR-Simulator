@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "gateways": [
+    {
+      "node": "Main.gw",
+      "ports": [
+        "Main.gw.a",
+        "Main.gw.b"
+      ],
+      "routes": [
+        {
+          "id": "ab",
+          "ingress": "Main.gw.a",
+          "egress": [
+            "Main.gw.b"
+          ],
+          "format": "standard",
+          "id_min": 0,
+          "id_max": 10
+        },
+        {
+          "id": "overlap",
+          "ingress": "Main.gw.a",
+          "egress": [
+            "Main.gw.b"
+          ],
+          "format": "standard",
+          "id_min": 10,
+          "id_max": 20
+        }
+      ]
+    }
+  ]
+}

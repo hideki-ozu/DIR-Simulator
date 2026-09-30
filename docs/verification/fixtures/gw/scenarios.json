@@ -1,0 +1,205 @@
+{
+  "evidence": "analytic_expected_projection_not_simulator_results",
+  "cases": [
+    {
+      "name": "independent",
+      "config": "independent.ini",
+      "expected": {
+        "sof_ps": {
+          "source:0": 0,
+          "other:0": 0,
+          "gw:source:0/Main.gw/ab/Main.gw.b": 100000000
+        },
+        "eof_ps": {
+          "source:0": 100000000,
+          "other:0": 94000000,
+          "gw:source:0/Main.gw/ab/Main.gw.b": 200000000
+        }
+      }
+    },
+    {
+      "name": "delay",
+      "config": "delay.ini",
+      "expected": {
+        "sof_ps": {
+          "source:0": 3000000,
+          "other:0": 0,
+          "gw:source:0/Main.gw/ab/Main.gw.b": 200000000
+        },
+        "eof_ps": {
+          "source:0": 103000000,
+          "other:0": 188000000,
+          "gw:source:0/Main.gw/ab/Main.gw.b": 400000000
+        },
+        "ingress_observed_ps": 108000000,
+        "ingress_received_ps": 115000000,
+        "copy_generated_ps": 126000000,
+        "copy_ready_ps": 139000000,
+        "sink_observed_ps": 405000000,
+        "sink_received_ps": 412000000,
+        "path_delay_ps": 412000000
+      }
+    },
+    {
+      "name": "queue",
+      "config": "queue.ini",
+      "expected": {
+        "source_eof_ps": [
+          100000000,
+          210000000,
+          320000000
+        ],
+        "copy_sof_ps": [
+          100000000,
+          524000000,
+          null
+        ],
+        "copy_eof_ps": [
+          500000000,
+          924000000,
+          null
+        ],
+        "copy_status": [
+          "success",
+          "success",
+          "dropped"
+        ],
+        "copy_drop_reason": [
+          null,
+          null,
+          "queue_full"
+        ]
+      }
+    },
+    {
+      "name": "capacity-zero",
+      "config": "capacity-zero.ini",
+      "expected": {
+        "copy_status": "dropped",
+        "copy_drop_reason": "queue_full",
+        "attempts": 0
+      }
+    },
+    {
+      "name": "forward-boundary",
+      "config": "forward-boundary.ini",
+      "expected": {
+        "forward_status": "processing",
+        "planned_forward_ps": 120000000,
+        "child_request_count": 0
+      }
+    },
+    {
+      "name": "eof-boundary",
+      "config": "eof-boundary.ini",
+      "expected": {
+        "copy_status": "in_flight",
+        "copy_eof_ps": null,
+        "copy_planned_eof_ps": 200000000
+      }
+    },
+    {
+      "name": "no-route",
+      "config": "no-route.ini",
+      "expected": {
+        "forward_status": "filtered",
+        "reason": "no_route",
+        "child_request_count": 0
+      }
+    },
+    {
+      "name": "rx-filter",
+      "config": "rx-filter.ini",
+      "expected": {
+        "receiver_status": "filtered",
+        "forward_count": 0
+      }
+    },
+    {
+      "name": "multicast",
+      "config": "multicast.ini",
+      "expected": {
+        "child_eof_ps": {
+          "Multi.gw.b": 300000000,
+          "Multi.gw.c": 150000000
+        },
+        "origin": "source:0",
+        "copy_count": 2
+      }
+    },
+    {
+      "name": "multicast-drop",
+      "config": "multicast-drop.ini",
+      "expected": {
+        "copy_status": {
+          "Multi.gw.b": "success",
+          "Multi.gw.c": "dropped"
+        },
+        "reason_c": "queue_full"
+      }
+    },
+    {
+      "name": "hop",
+      "config": "hop.ini",
+      "expected": {
+        "hops": [
+          1,
+          2,
+          3
+        ],
+        "forwarded_ps": [
+          100000000,
+          200000000,
+          300000000
+        ],
+        "statuses": [
+          "submitted",
+          "submitted",
+          "dropped"
+        ],
+        "reason": "dropped_hop_limit",
+        "child_request_count": 2
+      }
+    },
+    {
+      "name": "invalid-overlap",
+      "config": "invalid-overlap.ini",
+      "expected": {
+        "prepare_failure": "route_overlap"
+      }
+    },
+    {
+      "name": "invalid-owner",
+      "config": "invalid-owner.ini",
+      "expected": {
+        "prepare_failure": "owner_overlap"
+      }
+    },
+    {
+      "name": "invalid-cycle",
+      "config": "invalid-cycle.ini",
+      "expected": {
+        "prepare_failure": "route_cycle"
+      }
+    },
+    {
+      "name": "disjoint-cycle",
+      "config": "disjoint-cycle.ini",
+      "expected": {
+        "prepare_valid": true,
+        "request_count": 0
+      }
+    },
+    {
+      "name": "independent-only",
+      "config": "independent-only.ini",
+      "expected": {
+        "sof_ps": {
+          "source:0": 0,
+          "other:0": 0
+        },
+        "forward_count": 0
+      }
+    }
+  ]
+}

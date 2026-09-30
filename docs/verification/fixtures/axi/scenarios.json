@@ -1,0 +1,4092 @@
+{
+  "schema_version": 1,
+  "provenance": "Project analytic expected projections, not simulator output",
+  "scenarios": [
+    {
+      "name": "read-write",
+      "config": "read-write.ini",
+      "expected": {
+        "termination": "events_exhausted",
+        "transactions": [
+          {
+            "request_id": "a:0",
+            "status": "completed",
+            "grant_ps": 0,
+            "completed_ps": 40000,
+            "response": "OKAY",
+            "read_data": []
+          },
+          {
+            "request_id": "b:0",
+            "status": "completed",
+            "grant_ps": 40000,
+            "completed_ps": 70000,
+            "response": "OKAY",
+            "read_data": [
+              "11013303",
+              "04660688"
+            ]
+          }
+        ],
+        "handshakes": [
+          {
+            "request_id": "a:0",
+            "channel": "AW",
+            "beat": null,
+            "time_ps": 10000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 0,
+            "time_ps": 20000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 1,
+            "time_ps": 30000,
+            "valid_since_ps": 30000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "B",
+            "beat": null,
+            "time_ps": 40000,
+            "valid_since_ps": 40000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "AR",
+            "beat": null,
+            "time_ps": 50000,
+            "valid_since_ps": 50000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "R",
+            "beat": 0,
+            "time_ps": 60000,
+            "valid_since_ps": 60000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "R",
+            "beat": 1,
+            "time_ps": 70000,
+            "valid_since_ps": 70000
+          }
+        ],
+        "memory_hex": "1101330304660688000000000000000000000000000000000000000000000000",
+        "memory_time_ps": 30000,
+        "metrics": {
+          "summary": [
+            {
+              "target": "$all",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.completed",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "$all",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 55000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.okay",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.bus_utilization",
+              "value": {
+                "numerator": 7,
+                "denominator": 10
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.completed",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 55000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.okay",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_bits",
+              "value": 64,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_throughput_bps",
+              "value": {
+                "numerator": 640000000,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_bits",
+              "value": 32,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_throughput_bps",
+              "value": {
+                "numerator": 320000000,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 40000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 2,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 70000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 7,
+                "denominator": 10
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 2,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 40000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            }
+          ],
+          "windows": [
+            {
+              "start_ps": 0,
+              "end_ps": 25000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 1,
+                  "denominator": 1
+                },
+                "axi.read_bits": 0,
+                "axi.written_bits": 16,
+                "axi.read_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 640000000,
+                  "denominator": 1
+                }
+              }
+            },
+            {
+              "start_ps": 25000,
+              "end_ps": 50000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 1,
+                  "denominator": 1
+                },
+                "axi.read_bits": 0,
+                "axi.written_bits": 16,
+                "axi.read_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 640000000,
+                  "denominator": 1
+                }
+              }
+            },
+            {
+              "start_ps": 50000,
+              "end_ps": 75000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 4,
+                  "denominator": 5
+                },
+                "axi.read_bits": 64,
+                "axi.written_bits": 0,
+                "axi.read_throughput_bps": {
+                  "numerator": 2560000000,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            },
+            {
+              "start_ps": 75000,
+              "end_ps": 100000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "axi.read_bits": 0,
+                "axi.written_bits": 0,
+                "axi.read_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "round-robin",
+      "config": "round-robin.ini",
+      "expected": {
+        "termination": "events_exhausted",
+        "transactions": [
+          {
+            "request_id": "a:0",
+            "status": "completed",
+            "grant_ps": 0,
+            "completed_ps": 20000,
+            "response": "OKAY",
+            "read_data": [
+              "00010203"
+            ]
+          },
+          {
+            "request_id": "b:0",
+            "status": "completed",
+            "grant_ps": 20000,
+            "completed_ps": 40000,
+            "response": "OKAY",
+            "read_data": [
+              "00010203"
+            ]
+          },
+          {
+            "request_id": "a:1",
+            "status": "completed",
+            "grant_ps": 40000,
+            "completed_ps": 60000,
+            "response": "OKAY",
+            "read_data": [
+              "00010203"
+            ]
+          }
+        ],
+        "handshakes": [
+          {
+            "request_id": "a:0",
+            "channel": "AR",
+            "beat": null,
+            "time_ps": 10000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "R",
+            "beat": 0,
+            "time_ps": 20000,
+            "valid_since_ps": 20000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "AR",
+            "beat": null,
+            "time_ps": 30000,
+            "valid_since_ps": 30000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "R",
+            "beat": 0,
+            "time_ps": 40000,
+            "valid_since_ps": 40000
+          },
+          {
+            "request_id": "a:1",
+            "channel": "AR",
+            "beat": null,
+            "time_ps": 50000,
+            "valid_since_ps": 50000
+          },
+          {
+            "request_id": "a:1",
+            "channel": "R",
+            "beat": 0,
+            "time_ps": 60000,
+            "valid_since_ps": 60000
+          }
+        ],
+        "memory_hex": "0001020304050607000000000000000000000000000000000000000000000000",
+        "memory_time_ps": 0,
+        "metrics": {
+          "summary": [
+            {
+              "target": "$all",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.completed",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "$all",
+              "metric": "axi.generated",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 40000,
+                "denominator": 1
+              },
+              "sample_count": 3,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.okay",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 3,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.bus_utilization",
+              "value": {
+                "numerator": 3,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.completed",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.generated",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 40000,
+                "denominator": 1
+              },
+              "sample_count": 3,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.okay",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_bits",
+              "value": 96,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_throughput_bps",
+              "value": {
+                "numerator": 960000000,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 3,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_bits",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_throughput_bps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.completed",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 40000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.okay",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_max",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 4,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_max",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 2,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 40000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 2,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 1,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            }
+          ],
+          "windows": [
+            {
+              "start_ps": 0,
+              "end_ps": 100000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 3,
+                  "denominator": 5
+                },
+                "axi.read_bits": 96,
+                "axi.written_bits": 0,
+                "axi.read_throughput_bps": {
+                  "numerator": 960000000,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "backpressure",
+      "config": "backpressure.ini",
+      "expected": {
+        "termination": "events_exhausted",
+        "transactions": [
+          {
+            "request_id": "a:0",
+            "status": "completed",
+            "grant_ps": 0,
+            "completed_ps": 110000,
+            "response": "OKAY",
+            "read_data": []
+          },
+          {
+            "request_id": "b:0",
+            "status": "completed",
+            "grant_ps": 110000,
+            "completed_ps": 160000,
+            "response": "OKAY",
+            "read_data": [
+              "11013303",
+              "04660688"
+            ]
+          }
+        ],
+        "handshakes": [
+          {
+            "request_id": "a:0",
+            "channel": "AW",
+            "beat": null,
+            "time_ps": 20000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 0,
+            "time_ps": 50000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 1,
+            "time_ps": 80000,
+            "valid_since_ps": 60000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "B",
+            "beat": null,
+            "time_ps": 110000,
+            "valid_since_ps": 100000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "AR",
+            "beat": null,
+            "time_ps": 120000,
+            "valid_since_ps": 120000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "R",
+            "beat": 0,
+            "time_ps": 140000,
+            "valid_since_ps": 140000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "R",
+            "beat": 1,
+            "time_ps": 160000,
+            "valid_since_ps": 150000
+          }
+        ],
+        "memory_hex": "1101330304660688000000000000000000000000000000000000000000000000",
+        "memory_time_ps": 80000,
+        "metrics": {
+          "summary": [
+            {
+              "target": "$all",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.completed",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "$all",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 135000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.okay",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 55000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.bus_utilization",
+              "value": {
+                "numerator": 4,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.completed",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 135000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.okay",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_bits",
+              "value": 64,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_throughput_bps",
+              "value": {
+                "numerator": 320000000,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 55000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_bits",
+              "value": 32,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_throughput_bps",
+              "value": {
+                "numerator": 160000000,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 110000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 11,
+                "denominator": 20
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 160000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 4,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 11,
+                "denominator": 20
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 110000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            }
+          ],
+          "windows": [
+            {
+              "start_ps": 0,
+              "end_ps": 200000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 4,
+                  "denominator": 5
+                },
+                "axi.read_bits": 64,
+                "axi.written_bits": 32,
+                "axi.read_throughput_bps": {
+                  "numerator": 320000000,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 160000000,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "responses",
+      "config": "responses.ini",
+      "expected": {
+        "termination": "events_exhausted",
+        "transactions": [
+          {
+            "request_id": "a:0",
+            "status": "completed",
+            "grant_ps": 0,
+            "completed_ps": 40000,
+            "response": "SLVERR",
+            "read_data": []
+          },
+          {
+            "request_id": "b:0",
+            "status": "completed",
+            "grant_ps": 40000,
+            "completed_ps": 70000,
+            "response": "SLVERR",
+            "read_data": [
+              "00000000",
+              "00000000"
+            ]
+          },
+          {
+            "request_id": "c:0",
+            "status": "completed",
+            "grant_ps": 70000,
+            "completed_ps": 90000,
+            "response": "DECERR",
+            "read_data": [
+              "00000000"
+            ]
+          }
+        ],
+        "handshakes": [
+          {
+            "request_id": "a:0",
+            "channel": "AW",
+            "beat": null,
+            "time_ps": 10000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 0,
+            "time_ps": 20000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 1,
+            "time_ps": 30000,
+            "valid_since_ps": 30000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "B",
+            "beat": null,
+            "time_ps": 40000,
+            "valid_since_ps": 40000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "AR",
+            "beat": null,
+            "time_ps": 50000,
+            "valid_since_ps": 50000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "R",
+            "beat": 0,
+            "time_ps": 60000,
+            "valid_since_ps": 60000
+          },
+          {
+            "request_id": "b:0",
+            "channel": "R",
+            "beat": 1,
+            "time_ps": 70000,
+            "valid_since_ps": 70000
+          },
+          {
+            "request_id": "c:0",
+            "channel": "AR",
+            "beat": null,
+            "time_ps": 80000,
+            "valid_since_ps": 80000
+          },
+          {
+            "request_id": "c:0",
+            "channel": "R",
+            "beat": 0,
+            "time_ps": 90000,
+            "valid_since_ps": 90000
+          }
+        ],
+        "memory_hex": "0001020304050607000000000000000000000000000000000000000000000000",
+        "memory_time_ps": 0,
+        "metrics": {
+          "summary": [
+            {
+              "target": "$all",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.completed",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.decerr",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "$all",
+              "metric": "axi.generated",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 200000,
+                "denominator": 3
+              },
+              "sample_count": 3,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.slverr",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 110000,
+                "denominator": 3
+              },
+              "sample_count": 3,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.bus_utilization",
+              "value": {
+                "numerator": 3,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.completed",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.decerr",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.generated",
+              "value": 3,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 200000,
+                "denominator": 3
+              },
+              "sample_count": 3,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_bits",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_throughput_bps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.slverr",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 110000,
+                "denominator": 3
+              },
+              "sample_count": 3,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_bits",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_throughput_bps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.completed",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.decerr",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 65000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_max",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 13,
+                "denominator": 15
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_max",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 7,
+                "denominator": 15
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.slverr",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 35000,
+                "denominator": 1
+              },
+              "sample_count": 2,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 70000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 7,
+                "denominator": 15
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 4,
+                "denominator": 15
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.slverr",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 40000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            }
+          ],
+          "windows": [
+            {
+              "start_ps": 0,
+              "end_ps": 150000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 3,
+                  "denominator": 5
+                },
+                "axi.read_bits": 0,
+                "axi.written_bits": 0,
+                "axi.read_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "capacity",
+      "config": "capacity.ini",
+      "expected": {
+        "termination": "events_exhausted",
+        "transactions": [
+          {
+            "request_id": "a:0",
+            "status": "completed",
+            "grant_ps": 0,
+            "completed_ps": 20000,
+            "response": "OKAY",
+            "read_data": [
+              "00010203"
+            ]
+          },
+          {
+            "request_id": "a:1",
+            "status": "dropped",
+            "grant_ps": null,
+            "completed_ps": null,
+            "response": null,
+            "read_data": []
+          }
+        ],
+        "handshakes": [
+          {
+            "request_id": "a:0",
+            "channel": "AR",
+            "beat": null,
+            "time_ps": 10000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "R",
+            "beat": 0,
+            "time_ps": 20000,
+            "valid_since_ps": 20000
+          }
+        ],
+        "memory_hex": "0001020304050607000000000000000000000000000000000000000000000000",
+        "memory_time_ps": 0,
+        "metrics": {
+          "summary": [
+            {
+              "target": "$all",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.dropped",
+              "value": 1,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "$all",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.bus_utilization",
+              "value": {
+                "numerator": 2,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.dropped",
+              "value": 1,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_bits",
+              "value": 32,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_throughput_bps",
+              "value": {
+                "numerator": 640000000,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_bits",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_throughput_bps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.dropped",
+              "value": 1,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 20000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 2,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.generated",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_max",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_max",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.wait_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            }
+          ],
+          "windows": [
+            {
+              "start_ps": 0,
+              "end_ps": 50000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 2,
+                  "denominator": 5
+                },
+                "axi.read_bits": 32,
+                "axi.written_bits": 0,
+                "axi.read_throughput_bps": {
+                  "numerator": 640000000,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop-mid-write",
+      "config": "stop-mid-write.ini",
+      "expected": {
+        "termination": "time_limit",
+        "transactions": [
+          {
+            "request_id": "a:0",
+            "status": "active",
+            "grant_ps": 0,
+            "completed_ps": null,
+            "response": "OKAY",
+            "read_data": []
+          },
+          {
+            "request_id": "b:0",
+            "status": "pending",
+            "grant_ps": null,
+            "completed_ps": null,
+            "response": null,
+            "read_data": []
+          }
+        ],
+        "handshakes": [
+          {
+            "request_id": "a:0",
+            "channel": "AW",
+            "beat": null,
+            "time_ps": 10000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 0,
+            "time_ps": 20000,
+            "valid_since_ps": 10000
+          }
+        ],
+        "memory_hex": "1101330304050607000000000000000000000000000000000000000000000000",
+        "memory_time_ps": 20000,
+        "metrics": {
+          "summary": [
+            {
+              "target": "$all",
+              "metric": "axi.active",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "$all",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.pending",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.active",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.bus_utilization",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.pending",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_bits",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_throughput_bps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_bits",
+              "value": 16,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_throughput_bps",
+              "value": {
+                "numerator": 1600000000,
+                "denominator": 3
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.active",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.pending",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.wait_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            }
+          ],
+          "windows": [
+            {
+              "start_ps": 0,
+              "end_ps": 30000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 1,
+                  "denominator": 1
+                },
+                "axi.read_bits": 0,
+                "axi.written_bits": 16,
+                "axi.read_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 1600000000,
+                  "denominator": 3
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop-response",
+      "config": "stop-response.ini",
+      "expected": {
+        "termination": "time_limit",
+        "transactions": [
+          {
+            "request_id": "a:0",
+            "status": "active",
+            "grant_ps": 0,
+            "completed_ps": null,
+            "response": "OKAY",
+            "read_data": []
+          },
+          {
+            "request_id": "b:0",
+            "status": "pending",
+            "grant_ps": null,
+            "completed_ps": null,
+            "response": null,
+            "read_data": []
+          }
+        ],
+        "handshakes": [
+          {
+            "request_id": "a:0",
+            "channel": "AW",
+            "beat": null,
+            "time_ps": 10000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 0,
+            "time_ps": 20000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 1,
+            "time_ps": 30000,
+            "valid_since_ps": 30000
+          }
+        ],
+        "memory_hex": "1101330304660688000000000000000000000000000000000000000000000000",
+        "memory_time_ps": 30000,
+        "metrics": {
+          "summary": [
+            {
+              "target": "$all",
+              "metric": "axi.active",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "$all",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.pending",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.active",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.bus_utilization",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.generated",
+              "value": 2,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.pending",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_bits",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_throughput_bps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_bits",
+              "value": 32,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_throughput_bps",
+              "value": {
+                "numerator": 800000000,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.active",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.pending",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.wait_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            }
+          ],
+          "windows": [
+            {
+              "start_ps": 0,
+              "end_ps": 40000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 1,
+                  "denominator": 1
+                },
+                "axi.read_bits": 0,
+                "axi.written_bits": 32,
+                "axi.read_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 800000000,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "zero-strobe",
+      "config": "zero-strobe.ini",
+      "expected": {
+        "termination": "events_exhausted",
+        "transactions": [
+          {
+            "request_id": "a:0",
+            "status": "completed",
+            "grant_ps": 0,
+            "completed_ps": 30000,
+            "response": "OKAY",
+            "read_data": []
+          }
+        ],
+        "handshakes": [
+          {
+            "request_id": "a:0",
+            "channel": "AW",
+            "beat": null,
+            "time_ps": 10000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "W",
+            "beat": 0,
+            "time_ps": 20000,
+            "valid_since_ps": 10000
+          },
+          {
+            "request_id": "a:0",
+            "channel": "B",
+            "beat": null,
+            "time_ps": 30000,
+            "valid_since_ps": 30000
+          }
+        ],
+        "memory_hex": "0001020304050607000000000000000000000000000000000000000000000000",
+        "memory_time_ps": 0,
+        "metrics": {
+          "summary": [
+            {
+              "target": "$all",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "$all",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 30000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "$all",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.bus_utilization",
+              "value": {
+                "numerator": 3,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 30000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_bits",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.read_throughput_bps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_bits",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.bus",
+              "metric": "axi.written_throughput_bps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.completed",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.generated",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.latency_mean_ps",
+              "value": {
+                "numerator": 30000,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.okay",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 3,
+                "denominator": 5
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_max",
+              "value": 1,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m0",
+              "metric": "axi.wait_mean_ps",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": 1,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.active",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.completed",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.decerr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.dropped",
+              "value": 0,
+              "sample_count": null,
+              "reason": "outstanding_full"
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.generated",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.latency_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.okay",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_max",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.outstanding_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.pending",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_max",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.queue_mean",
+              "value": {
+                "numerator": 0,
+                "denominator": 1
+              },
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.slverr",
+              "value": 0,
+              "sample_count": null,
+              "reason": null
+            },
+            {
+              "target": "Main.m1",
+              "metric": "axi.wait_mean_ps",
+              "value": null,
+              "sample_count": 0,
+              "reason": null
+            }
+          ],
+          "windows": [
+            {
+              "start_ps": 0,
+              "end_ps": 50000,
+              "values": {
+                "axi.bus_utilization": {
+                  "numerator": 3,
+                  "denominator": 5
+                },
+                "axi.read_bits": 0,
+                "axi.written_bits": 0,
+                "axi.read_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "axi.written_throughput_bps": {
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

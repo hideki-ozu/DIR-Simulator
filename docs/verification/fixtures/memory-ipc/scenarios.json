@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "ddr-row-refresh",
+      "test": "DIR-TEST-0050",
+      "ini": "ddr-row-refresh.ini",
+      "config": "ddr-row-refresh.model.json",
+      "workload": "ddr-row-refresh.workload.json",
+      "stop_ps": "33",
+      "expected": {
+        "grants": [
+          "0",
+          "7",
+          "11",
+          "25"
+        ],
+        "completions": [
+          "7",
+          "11",
+          "20",
+          "32"
+        ],
+        "row_hits": [
+          false,
+          true,
+          false,
+          false
+        ],
+        "refresh_start": "20",
+        "refresh_end": "25",
+        "read_hex": [
+          "aabbccdd",
+          "aabbccdd"
+        ],
+        "final_hex": "aabbccdd00000000112233440000000000000000000000000000000000000000",
+        "committed_bytes": "8",
+        "busy_ps": "27"
+      }
+    },
+    {
+      "id": "ddr-stop",
+      "test": "DIR-TEST-0051",
+      "ini": "ddr-stop.ini",
+      "config": "ddr-stop.model.json",
+      "workload": "ddr-stop.workload.json",
+      "stop_ps": "7",
+      "expected": {
+        "first_status": "active",
+        "first_completion": null,
+        "final_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "committed_bytes": "0",
+        "busy_ps": "7"
+      }
+    },
+    {
+      "id": "ddr-errors",
+      "test": "DIR-TEST-0051",
+      "ini": "ddr-errors.ini",
+      "config": "ddr-errors.model.json",
+      "workload": "ddr-errors.workload.json",
+      "stop_ps": "10",
+      "expected": {
+        "reasons": {
+          "b:0": "memory_fault",
+          "c:0": "queue_full",
+          "d:0": "address_error",
+          "e:0": "address_error"
+        },
+        "first_completion": "6",
+        "committed_bytes": "0"
+      }
+    },
+    {
+      "id": "sram-ports",
+      "test": "DIR-TEST-0052",
+      "ini": "sram-ports.ini",
+      "config": "sram-ports.model.json",
+      "workload": "sram-ports.workload.json",
+      "stop_ps": "9",
+      "expected": {
+        "ports": [
+          0,
+          1,
+          0
+        ],
+        "grants": [
+          "0",
+          "0",
+          "4"
+        ],
+        "completions": [
+          "4",
+          "4",
+          "8"
+        ],
+        "read_hex": "aabb",
+        "final_hex": "aacc0000000000000000000000000000",
+        "busy_ps": "12",
+        "busy_denominator_ps": "18",
+        "committed_bytes": "3"
+      }
+    },
+    {
+      "id": "sram-stop",
+      "test": "DIR-TEST-0053",
+      "ini": "sram-stop.ini",
+      "config": "sram-stop.model.json",
+      "workload": "sram-stop.workload.json",
+      "stop_ps": "8",
+      "expected": {
+        "last_status": "active",
+        "last_completion": null,
+        "final_hex": "aabb0000000000000000000000000000",
+        "committed_bytes": "2",
+        "busy_ps": "12",
+        "busy_denominator_ps": "16"
+      }
+    },
+    {
+      "id": "shared-ownership",
+      "test": "DIR-TEST-0054",
+      "ini": "shared-ownership.ini",
+      "config": "shared-ownership.model.json",
+      "workload": "shared-ownership.workload.json",
+      "stop_ps": "12",
+      "expected": {
+        "publish_completion": "3",
+        "consume_completion": "10",
+        "read_hex": "beef",
+        "slot_state": "free",
+        "slot_hex": "",
+        "reasons": {
+          "b:0": "full",
+          "d:0": "empty",
+          "e:0": "access_denied"
+        },
+        "published": "1",
+        "consumed": "1"
+      }
+    },
+    {
+      "id": "shared-stop",
+      "test": "DIR-TEST-0055",
+      "ini": "shared-stop.ini",
+      "config": "shared-stop.model.json",
+      "workload": "shared-stop.workload.json",
+      "stop_ps": "3",
+      "expected": {
+        "slot_state": "publishing",
+        "owner": "producer",
+        "slot_hex": "",
+        "published": "0",
+        "consumed": "0",
+        "completion": null
+      }
+    },
+    {
+      "id": "dma-memory-content",
+      "test": "DIR-TEST-0056",
+      "ini": "dma-memory-content.ini",
+      "config": "dma-memory-content.model.json",
+      "workload": "dma-memory-content.workload.json",
+      "stop_ps": "25",
+      "expected": {
+        "read_completion": [
+          "5",
+          "15"
+        ],
+        "write_completion": [
+          "12",
+          "22"
+        ],
+        "data_done": "22",
+        "notified": "24",
+        "final_hex": "01020304f0f1f2f3000000000000000000000000000000000000000000000000",
+        "committed_bytes": "8",
+        "status": "completed",
+        "reason": "ok"
+      }
+    },
+    {
+      "id": "dma-stop",
+      "test": "DIR-TEST-0057",
+      "ini": "dma-stop.ini",
+      "config": "dma-stop.model.json",
+      "workload": "dma-stop.workload.json",
+      "stop_ps": "22",
+      "expected": {
+        "write_completion": [
+          "12",
+          null
+        ],
+        "data_done": null,
+        "notified": null,
+        "final_hex": "0102030400000000000000000000000000000000000000000000000000000000",
+        "committed_bytes": "4",
+        "status": "writing"
+      }
+    },
+    {
+      "id": "dma-fault-prefix",
+      "test": "DIR-TEST-0057",
+      "ini": "dma-fault-prefix.ini",
+      "config": "dma-fault-prefix.model.json",
+      "workload": "dma-fault-prefix.workload.json",
+      "stop_ps": "20",
+      "expected": {
+        "failed_ps": "15",
+        "data_done": null,
+        "notified": null,
+        "final_hex": "0102030400000000000000000000000000000000000000000000000000000000",
+        "committed_bytes": "4",
+        "status": "failed",
+        "reason": "child_memory_fault"
+      }
+    },
+    {
+      "id": "mailbox-fifo",
+      "test": "DIR-TEST-0058",
+      "ini": "mailbox-fifo.ini",
+      "config": "mailbox-fifo.model.json",
+      "workload": "mailbox-fifo.workload.json",
+      "stop_ps": "10",
+      "expected": {
+        "completions": [
+          "2",
+          "4",
+          "6",
+          "9"
+        ],
+        "reasons": [
+          "ok",
+          "full",
+          "ok",
+          "empty"
+        ],
+        "received_hex": "cafe",
+        "received_message_id": "a:0",
+        "notify_planned": "7",
+        "notify_delivered": "7",
+        "queue_length": "0",
+        "sent": "1",
+        "received": "1"
+      }
+    },
+    {
+      "id": "mailbox-stop",
+      "test": "DIR-TEST-0059",
+      "ini": "mailbox-stop.ini",
+      "config": "mailbox-stop.model.json",
+      "workload": "mailbox-stop.workload.json",
+      "stop_ps": "7",
+      "expected": {
+        "notify_planned": "7",
+        "notify_delivered": null,
+        "queue_length": "0",
+        "sent": "1",
+        "received": "1",
+        "received_hex": "cafe"
+      }
+    },
+    {
+      "id": "dma-offer-order",
+      "test": "DIR-TEST-0057",
+      "ini": "dma-offer-order.ini",
+      "config": "dma-offer-order.model.json",
+      "workload": "dma-offer-order.workload.json",
+      "stop_ps": "6",
+      "expected": {
+        "offer_keys": [
+          [
+            "a",
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            "z",
+            0,
+            1,
+            0,
+            0
+          ]
+        ],
+        "external_completion": "5",
+        "child_reason": "queue_full",
+        "parent_status": "failed",
+        "parent_reason": "child_queue_full",
+        "parent_completed_ps": "2",
+        "committed_bytes": "0",
+        "final_hex": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  ]
+}

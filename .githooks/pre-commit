@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh both traceability reports from the staged Git index."""
+"""Refresh traceability reports from the staged Git index."""
 
 from __future__ import annotations
 
@@ -12,11 +12,14 @@ from pathlib import Path
 REPORTS = (
     "docs/要件トレーサビリティ一覧.md",
     "docs/要件トレーサビリティ一覧.html",
+    "docs/要件階層.html",
 )
 EXACT_INPUTS = {
     *REPORTS,
+    "docs/要件階層.json",
     "scripts/check_traceability.py",
     "scripts/generate_traceability.py",
+    "scripts/requirement_hierarchy.py",
 }
 
 
@@ -81,6 +84,16 @@ def main() -> int:
             )
             return 1
 
+        # A failed generator can leave the staged snapshot's old reports in
+        # place. Never copy or stage those when its inputs are invalid.
+        if generated.returncode != 0:
+            print(
+                "階層または追跡データに構造エラーがあるためコミットを中止します。"
+                "上記の診断を確認してください。",
+                file=sys.stderr,
+            )
+            return generated.returncode
+
         for name in REPORTS:
             worktree_report = root / name
             worktree_report.parent.mkdir(parents=True, exist_ok=True)
@@ -88,15 +101,8 @@ def main() -> int:
         added = run(["git", "add", "--", *REPORTS], root)
         if added.returncode != 0:
             return added.returncode
-        print("Updated and staged traceability Markdown and HTML from staged documents.")
-
-        if generated.returncode != 0:
-            print(
-                "追跡データに構造エラーがあるためコミットを中止します。"
-                "エラー一覧と赤い状態を確認してください。",
-                file=sys.stderr,
-            )
-        return generated.returncode
+        print("Updated and staged all traceability reports from staged documents.")
+        return 0
 
 
 if __name__ == "__main__":

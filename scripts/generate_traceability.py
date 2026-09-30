@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate requirement-scoped horizontal traceability reports."""
+"""Generate traceability reports and the requirement hierarchy HTML annex."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 from check_traceability import Check, NEXT
+import requirement_hierarchy
 
 
 OUTPUT = Path("docs/要件トレーサビリティ一覧.md")
@@ -130,8 +131,8 @@ def acceptance_link(check: Check, acceptance: str) -> str:
 def affected_requirements(check: Check) -> tuple[set[str], bool]:
     requirements: set[str] = set()
     has_unscoped_error = False
-    requirement_pattern = re.compile(r"DIR-REQ-\d{3}", re.I)
-    function_pattern = re.compile(r"DIR-FUNC-\d{3}", re.I)
+    requirement_pattern = re.compile(r"DIR-REQ-\d{4}(?!\d)", re.I)
+    function_pattern = re.compile(r"DIR-FUNC-\d{4}(?!\d)", re.I)
     for error in check.errors:
         mentioned = {value.upper() for value in requirement_pattern.findall(error)}
         for function in (value.upper() for value in function_pattern.findall(error)):
@@ -895,7 +896,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="fail if either generated document is missing or out of date",
+        help="fail if any generated report or hierarchy annex is missing or out of date",
     )
     args = parser.parse_args(argv)
 
@@ -909,15 +910,19 @@ def main(argv: list[str] | None = None) -> int:
         for acceptance in sorted(acceptance_ids, key=number_key):
             if acceptance.lower() not in req_anchors:
                 check.err(f"{requirement}: unknown acceptance-condition anchor {acceptance}")
-    md_path, html_path = root / OUTPUT, root / HTML_OUTPUT
-    markdown = render(check)
-    html_report = render_html(check)
+    try:
+        hierarchy = requirement_hierarchy.load(check)
+    except ValueError as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 1
+    reports = {
+        OUTPUT: render(check),
+        HTML_OUTPUT: render_html(check),
+        requirement_hierarchy.OUTPUT: requirement_hierarchy.render(check, hierarchy, CSS),
+    }
     if args.check:
-        stale = []
-        if not _is_current(md_path, markdown):
-            stale.append(OUTPUT)
-        if not _is_current(html_path, html_report):
-            stale.append(HTML_OUTPUT)
+        stale = [output for output, content in reports.items()
+                 if not _is_current(root / output, content)]
         for output in stale:
             print(
                 f"{output.as_posix()} is stale; run python3 scripts/generate_traceability.py",
@@ -928,19 +933,19 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"error: {error}", file=sys.stderr)
         if stale or check.errors:
             return 1
-        print(f"{OUTPUT.as_posix()} and {HTML_OUTPUT.as_posix()} are up to date")
+        print("All traceability reports and the hierarchy annex are up to date")
         return 0
 
     try:
-        md_path.parent.mkdir(parents=True, exist_ok=True)
-        html_path.parent.mkdir(parents=True, exist_ok=True)
-        md_path.write_text(markdown, encoding="utf-8")
-        html_path.write_text(html_report, encoding="utf-8")
+        for output, content in reports.items():
+            path = root / output
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
     except OSError as error:
         print(f"cannot write generated reports: {error}", file=sys.stderr)
         return 1
     print(
-        f"generated {OUTPUT.as_posix()} and {HTML_OUTPUT.as_posix()}: "
+        f"generated traceability Markdown/HTML and hierarchy HTML: "
         f"{len(check.requirements)} requirements, {len(check.nodes)} trace nodes, "
         f"{len(check.gaps(check.requirements))} incomplete items"
     )

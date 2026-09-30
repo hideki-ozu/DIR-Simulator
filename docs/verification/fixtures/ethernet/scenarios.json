@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "profile": "ethernet.l2.store-forward.v1",
+  "scenarios": [
+    {
+      "name": "unicast",
+      "config": "unicast.ini",
+      "workload": "unicast.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 1,
+        "offered": 2,
+        "serialized": 2,
+        "dropped": 0,
+        "received": 1,
+        "filtered": 0,
+        "deliveries": [
+          {
+            "frame_id": "a:0",
+            "node": "Main.b",
+            "received_ps": "1156000"
+          }
+        ],
+        "transfer_times": [
+          {
+            "id": "a:0@Main.a.tx",
+            "sof_ps": "0",
+            "eof_ps": "576000",
+            "release_ps": "672000",
+            "arrival_ps": "577000"
+          },
+          {
+            "id": "a:0@Main.sw.tx_b",
+            "sof_ps": "579000",
+            "eof_ps": "1155000",
+            "release_ps": "1251000",
+            "arrival_ps": "1156000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "duplex",
+      "config": "duplex.ini",
+      "workload": "duplex.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 2,
+        "offered": 4,
+        "serialized": 4,
+        "dropped": 0,
+        "received": 2,
+        "filtered": 0,
+        "deliveries": [
+          {
+            "frame_id": "a:0",
+            "node": "Main.b",
+            "received_ps": "24420000"
+          },
+          {
+            "frame_id": "b:0",
+            "node": "Main.a",
+            "received_ps": "1156000"
+          }
+        ],
+        "transfer_times": [
+          {
+            "id": "a:0@Main.a.tx",
+            "sof_ps": "0",
+            "eof_ps": "12208000"
+          },
+          {
+            "id": "b:0@Main.sw.tx_a",
+            "sof_ps": "579000",
+            "eof_ps": "1155000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "broadcast",
+      "config": "broadcast.ini",
+      "workload": "broadcast.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 1,
+        "offered": 3,
+        "serialized": 3,
+        "dropped": 0,
+        "received": 2,
+        "filtered": 0,
+        "delivery_ps": "1156000"
+      }
+    },
+    {
+      "name": "unknown-unicast",
+      "config": "unknown-unicast.ini",
+      "workload": "unknown-unicast.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 1,
+        "offered": 3,
+        "serialized": 3,
+        "dropped": 0,
+        "received": 0,
+        "filtered": 2,
+        "filter_reason": "destination_mismatch"
+      }
+    },
+    {
+      "name": "source-full",
+      "config": "source-full.ini",
+      "workload": "source-full.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 2,
+        "offered": 3,
+        "serialized": 2,
+        "dropped": 1,
+        "received": 1,
+        "drop_ids": [
+          "a:1@Main.a.tx"
+        ]
+      }
+    },
+    {
+      "name": "egress-full",
+      "config": "egress-full.ini",
+      "workload": "egress-full.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 2,
+        "offered": 4,
+        "serialized": 3,
+        "dropped": 1,
+        "received": 1,
+        "drop_ids": [
+          "c:0@Main.sw.tx_b"
+        ]
+      }
+    },
+    {
+      "name": "zero-capacity",
+      "config": "zero-capacity.ini",
+      "workload": "zero-capacity.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 1,
+        "offered": 1,
+        "serialized": 0,
+        "dropped": 1,
+        "received": 0,
+        "drop_ids": [
+          "a:0@Main.a.tx"
+        ]
+      }
+    },
+    {
+      "name": "eof-boundary",
+      "config": "eof-boundary.ini",
+      "workload": "eof-boundary.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 1,
+        "offered": 1,
+        "transmitting": 1,
+        "serialized": 0,
+        "receptions": 0,
+        "termination": "time_limit"
+      }
+    },
+    {
+      "name": "arrival-boundary",
+      "config": "arrival-boundary.ini",
+      "workload": "arrival-boundary.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 1,
+        "offered": 1,
+        "serialized": 1,
+        "receptions": 0,
+        "termination": "time_limit"
+      }
+    },
+    {
+      "name": "switch-processing",
+      "config": "switch-processing.ini",
+      "workload": "switch-processing.json",
+      "model_config": "model.json",
+      "expected": {
+        "generated": 1,
+        "offered": 1,
+        "serialized": 1,
+        "receptions": 1,
+        "processing": 1,
+        "termination": "time_limit"
+      }
+    },
+    {
+      "name": "bad-fdb",
+      "config": "bad-fdb.ini",
+      "workload": "bad-fdb.json",
+      "model_config": "bad-fdb-model.json",
+      "expected": {
+        "termination": "prep_failed",
+        "exit_code": 2,
+        "code": "E-0001",
+        "reason": "invalid_connection",
+        "callbacks": 0
+      }
+    },
+    {
+      "name": "bad-payload",
+      "config": "bad-payload.ini",
+      "workload": "bad-payload.json",
+      "model_config": "model.json",
+      "expected": {
+        "termination": "prep_failed",
+        "exit_code": 2,
+        "code": "E-0001",
+        "reason": "invalid_range",
+        "callbacks": 0
+      }
+    }
+  ]
+}

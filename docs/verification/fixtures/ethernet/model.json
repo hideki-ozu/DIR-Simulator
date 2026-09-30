@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "endpoints": [
+    {
+      "instance": "Main.a",
+      "mac": "02:00:00:00:00:01"
+    },
+    {
+      "instance": "Main.b",
+      "mac": "02:00:00:00:00:02"
+    },
+    {
+      "instance": "Main.c",
+      "mac": "02:00:00:00:00:03"
+    }
+  ],
+  "switches": [
+    {
+      "instance": "Main.sw",
+      "forward_delay_ps": "2000",
+      "fdb": [
+        {
+          "dst_mac": "02:00:00:00:00:01",
+          "egress": "Main.sw.tx_a"
+        },
+        {
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "Main.sw.tx_b"
+        },
+        {
+          "dst_mac": "02:00:00:00:00:03",
+          "egress": "Main.sw.tx_c"
+        }
+      ]
+    }
+  ]
+}

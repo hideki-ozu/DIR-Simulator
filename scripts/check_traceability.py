@@ -11,10 +11,13 @@ from collections import defaultdict, deque
 from dataclasses import dataclass
 from pathlib import Path
 
-REQ = re.compile(r"\*\*(DIR-REQ-\d{3})\*\*", re.I)
-RREQ = re.compile(r"DIR-REQ-\d{3}", re.I)
-RFUNC = re.compile(r"DIR-FUNC-(\d{3})", re.I)
-RAC = re.compile(r"DIR-AC-\d{3}", re.I)
+REQ = re.compile(
+    r'<a\s+id=["\'](dir-req-\d{4})["\']\s*></a>\s*\*\*(DIR-REQ-\d{4})\*\*',
+    re.I,
+)
+RREQ = re.compile(r"DIR-REQ-\d{4}(?!\d)", re.I)
+RFUNC = re.compile(r"DIR-FUNC-(\d{4})(?!\d)", re.I)
+RAC = re.compile(r"DIR-AC-\d{4}(?!\d)", re.I)
 ANCHOR = re.compile(r'<a\s+id=["\']([^"\']+)["\']\s*></a>', re.I)
 DOCID = re.compile(r"^文書ID：[ \t]*`([^`\n]+)`[ \t]*$", re.M)
 FENCE = re.compile(r"^```([^\n]*)\n(.*?)^```\s*$", re.M | re.S)
@@ -63,10 +66,10 @@ def obj(raw):
 def funcs(cell):
     out = {int(x) for x in RFUNC.findall(cell)}
     for a, b in re.findall(
-        r"DIR-FUNC-(\d{3}).{0,80}?[〜~].{0,80}?DIR-FUNC-(\d{3})", cell, re.I
+        r"DIR-FUNC-(\d{4})(?!\d).{0,80}?[〜~].{0,80}?DIR-FUNC-(\d{4})(?!\d)", cell, re.I
     ):
         out.update(range(min(int(a), int(b)), max(int(a), int(b)) + 1))
-    return {f"DIR-FUNC-{x:03d}" for x in out}
+    return {f"DIR-FUNC-{x:04d}" for x in out}
 
 
 class Check:
@@ -102,8 +105,27 @@ class Check:
         rp, fp = self.docs / "要件定義書.md", self.docs / "機能仕様書.md"
         rt, ft = self.read(rp), self.read(fp)
         counts = defaultdict(int)
-        for x in REQ.findall(unfenced(rt)):
-            counts[C(x)] += 1
+        in_requirement_table = False
+        for line in unfenced(rt).splitlines():
+            if not line.lstrip().startswith("|"):
+                in_requirement_table = False
+                continue
+            cells = line.split("|")
+            if len(cells) < 3:
+                continue
+            if cells[1].strip() == "要件ID" and cells[2].strip() == "名称":
+                in_requirement_table = True
+                continue
+            if not in_requirement_table or re.fullmatch(r"[-:\s]+", cells[1]):
+                continue
+            match = REQ.fullmatch(cells[1].strip())
+            if not match:
+                self.err(f"docs/要件定義書.md: invalid requirement ID cell: {cells[1].strip()}")
+                continue
+            anchor, ident = match.groups()
+            if anchor != ident.lower():
+                self.err(f"docs/要件定義書.md: {ident}: requirement anchor mismatch {anchor}")
+            counts[C(ident)] += 1
         self.requirements = set(counts)
         if not self.requirements:
             self.err("docs/要件定義書.md: no canonical requirements")
@@ -116,10 +138,10 @@ class Check:
                 self.err(f"{requirement}: missing explicit requirement anchor")
         fa = set(ANCHOR.findall(unfenced(ft)))
         self.functions = {
-            anchor.upper() for anchor in fa if re.fullmatch(r"dir-func-\d{3}", anchor)
+            anchor.upper() for anchor in fa if re.fullmatch(r"dir-func-\d{4}", anchor)
         }
         if not self.functions:
-            self.err("docs/機能仕様書.md: no explicit dir-func-NNN anchors")
+            self.err("docs/機能仕様書.md: no explicit dir-func-NNNN anchors")
         start = re.search(r"^### 11\.2\..*$", ft, re.M)
         if not start:
             self.err("docs/機能仕様書.md: missing §11.2 mapping table")
@@ -265,7 +287,7 @@ class Check:
         doc = DOCID.search(unfenced(self.read(p)))
         anchor = ""
         if stage == "verification":
-            valid = bool(re.fullmatch(r"DIR-TEST-\d{3}", ident))
+            valid = bool(re.fullmatch(r"DIR-TEST-\d{4}", ident))
             anchor = ident.lower()
         else:
             valid = bool(
@@ -405,7 +427,7 @@ class Check:
 
     def impact(self, raw):
         ident = (
-            C(raw) if re.fullmatch(r"DIR-(?:REQ|FUNC|TEST)-\d{3}", raw, re.I) else raw
+            C(raw) if re.fullmatch(r"DIR-(?:REQ|FUNC|TEST)-\d{4}", raw, re.I) else raw
         )
         if ident not in (set(self.nodes) | self.requirements | self.functions):
             raise ValueError(f"unknown trace ID: {raw}")

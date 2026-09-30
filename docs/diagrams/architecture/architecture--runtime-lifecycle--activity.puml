@@ -1,6 +1,6 @@
 @startuml architecture--runtime-lifecycle--activity
 ' Document: ../../アーキテクチャ設計書.md
-' Section: Runtime Flow
+' Section: 準備・実行・終了・診断
 ' Purpose: 読み込み・初期化・実行・結果出力の流れ（設計案）
 
 skinparam backgroundColor white
@@ -42,17 +42,18 @@ partition "実行準備" {
   :11. 各実行インスタンスを一度だけ初期化する;
   :12. 初期イベントを登録する;
   note right
-    初期化・登録の具体的な方式は未確定。
-    直接呼び出しと初期化イベントの併用による
-    二重初期化を避ける（DIR-TBD-009）。
+    initializeを直接一度ずつ呼び出す。
+    初期化中の通知もキューへ登録し、
+    全初期化後に時刻0の処理へ進む。
   end note
 }
 partition "実行・出力" {
   :13. 設定時間に従ってイベントを実行し、
 時系列指標を記録する;
   note right
-    同時刻・終了時刻の境界はDIR-TBD-004、
-    計測規則はDIR-TBD-006で確定する。
+    完了・解放、到着、仲裁の順。
+    実行区間は[0,T)、正常観測終端はT。
+    計測規則は結果詳細仕様を適用する。
   end note
   :14. 集計値を確定する;
   :15. 結果を出力する;
@@ -61,6 +62,6 @@ stop
 legend bottom
   正常系の概略。不正入力ではイベント実行を開始しない。
   実行・出力の失敗は正常終了と区別する。
-  診断・停止範囲・途中結果はDIR-TBD-009で確定する。
+  診断・停止範囲・途中結果は診断詳細仕様を適用する。
 endlegend
 @enduml

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "profile": "axi4.transaction.v1",
+  "clock_period": "10ns",
+  "managers": [
+    {
+      "node": "Main.m0",
+      "max_outstanding": 1,
+      "b_ready": "1",
+      "r_ready": "1"
+    },
+    {
+      "node": "Main.m1",
+      "max_outstanding": 2,
+      "b_ready": "1",
+      "r_ready": "1"
+    }
+  ],
+  "interconnect": "Main.bus",
+  "ram": {
+    "node": "Main.ram",
+    "base": 4096,
+    "size": 32,
+    "initial": [
+      {
+        "offset": 0,
+        "data": "0001020304050607"
+      }
+    ],
+    "aw_ready": "1",
+    "w_ready": "1",
+    "ar_ready": "1",
+    "read_latency_cycles": 1,
+    "write_response_cycles": 1,
+    "error_ranges": []
+  }
+}

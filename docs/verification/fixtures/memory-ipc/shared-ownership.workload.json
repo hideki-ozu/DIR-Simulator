@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "a",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.shared",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "publish",
+        "actor": "producer",
+        "hex": "beef"
+      }
+    },
+    {
+      "id": "b",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.shared",
+      "times": [
+        "4ps"
+      ],
+      "request": {
+        "op": "publish",
+        "actor": "producer",
+        "hex": "cafe"
+      }
+    },
+    {
+      "id": "c",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.shared",
+      "times": [
+        "5ps"
+      ],
+      "request": {
+        "op": "consume",
+        "actor": "consumer"
+      }
+    },
+    {
+      "id": "d",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.shared",
+      "times": [
+        "11ps"
+      ],
+      "request": {
+        "op": "consume",
+        "actor": "consumer"
+      }
+    },
+    {
+      "id": "e",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.shared",
+      "times": [
+        "6ps"
+      ],
+      "request": {
+        "op": "publish",
+        "actor": "intruder",
+        "hex": "01"
+      }
+    }
+  ]
+}

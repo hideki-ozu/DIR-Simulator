@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "base_config": "read-write.ini",
+  "target_generator": "a",
+  "mutations": [
+    {
+      "name": "unaligned",
+      "field": "address",
+      "value": 4097
+    },
+    {
+      "name": "cross-4k",
+      "field": "address",
+      "value": 8188
+    },
+    {
+      "name": "burst-zero",
+      "field": "beats",
+      "value": 0
+    },
+    {
+      "name": "burst-too-large",
+      "field": "beats",
+      "value": 257
+    },
+    {
+      "name": "bad-strobe",
+      "field": "write_strobes",
+      "value": [
+        16,
+        10
+      ]
+    },
+    {
+      "name": "wrong-data-count",
+      "field": "write_data",
+      "value": [
+        "11223344"
+      ]
+    },
+    {
+      "name": "odd-hex",
+      "field": "write_data",
+      "value": [
+        "123",
+        "55667788"
+      ]
+    },
+    {
+      "name": "unsupported-burst",
+      "field": "burst",
+      "value": "WRAP"
+    },
+    {
+      "name": "boolean-address",
+      "field": "address",
+      "value": true
+    }
+  ],
+  "expected": {
+    "termination": "prep_failed",
+    "exit_code": 2,
+    "code": "E-0001",
+    "event_callbacks": 0
+  }
+}

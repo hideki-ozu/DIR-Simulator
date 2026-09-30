@@ -1,6 +1,6 @@
 @startuml architecture--protocol-models--component
 ' Document: ../../アーキテクチャ設計書.md
-' Section: Protocol Crates
+' Section: 全対象モデルと拡張境界
 ' Purpose: プロトコルcrateと構成要素（設計案）
 
 skinparam backgroundColor white
@@ -26,41 +26,40 @@ skinparam packageBorderColor #94A3B8
 title プロトコルcrateと構成要素（設計案）
 
 top to bottom direction
-package "sim-can" as can {
-  component "CanFrame" as canframe
-  component "CanController" as cancontroller
-  component "CanBus" as canbus
-  component "CanArbitration" as canarbitration
-  canframe -[hidden]down-> cancontroller
-  cancontroller -[hidden]down-> canbus
-  canbus -[hidden]down-> canarbitration
+package "共通実行" {
+ component "ProfileRegistry / PreparedProfile" as registry
+ component "Engine / EffectBatch / journal" as engine
+ registry --> engine
 }
-package "sim-ethernet" as ethernet {
-  component "EthernetFrame" as ethframe
-  component "EthernetLink" as ethlink
-  component "EthernetSwitch" as ethswitch
-  ethframe -[hidden]down-> ethlink
-  ethlink -[hidden]down-> ethswitch
+package "sim-can" {
+ component "Controller / BusContext\nCRC / stuffing / arbitration" as can
 }
-package "sim-soc" as soc {
-  component "CpuCore" as cpu
-  component "DmaEngine" as dma
-  component "AxiInterconnect" as axi
-  component "MemoryController" as memory
-  component "MemoryRequest" as request
-  component "MemoryResponse" as response
-  cpu -[hidden]down-> dma
-  dma -[hidden]down-> axi
-  axi -[hidden]down-> memory
-  memory -[hidden]down-> request
-  request -[hidden]down-> response
+package "sim-gw" {
+ component "Routing coordinator\n独立CANバス / コピー追跡" as gw
 }
-can -[hidden]right-> ethernet
-ethernet -[hidden]right-> soc
+package "sim-axi" {
+ component "Manager / Interconnect / Ram\n5チャネル / round-robin" as axi
+}
+package "sim-ethernet" {
+ component "Endpoint / Switch / Link\n全二重 / FDB / 出力FIFO\nCSMA/CD共有媒体 / 100・1000BASE-T1" as ethernet
+}
+package "追加モデル" {
+ component "CAN FD\n証跡付き位相別bit数" as fd
+ component "SoC共有バス / AHB / NoC\nFIFO / 仲裁 / XY経路" as soc
+ component "DDR / SRAM / IPC / DMA\nbyte内容 / 所有権 / 通知" as memory
+}
+fd --> registry : FD profile
+soc --> registry : transaction profiles
+memory --> registry : memory-ipc profile
+can --> registry : 既定profile + 固定Multibus型
+can --> engine : 汎用イベント・計測
+ gw --> can : CAN状態機械の再利用
+ gw --> registry : multibus profile
+ axi --> registry : transaction profile
+ ethernet --> registry : L2 profile
 legend bottom
-  構成要素の所属を示す。型の継承・通信経路・依存関係は示さない。
-  sim-ethernetの対象：100BASE-T1 / 100BASE-TX。
-  各crateはregister_modules()でRegistryへ登録する構成を検討中。
-  再現範囲・必須動作はDIR-TBD-001で確定する。
+  全構成は設計段階。製品実装・実行試験は未実施。
+  0.1.0は単一CAN、1.0.0はGW、残る追加モデルは1.0.0以後の計画。
+  各モデルの詳細仕様・設計・検証が外部契約と処理を規定する。
 endlegend
 @enduml

@@ -1,0 +1,293 @@
+{
+  "provenance": "Independent analytic projections; simulator not executed",
+  "cases": [
+    {
+      "name": "collision",
+      "config": "collision.ini",
+      "expected": {
+        "collision_ps": [
+          100000,
+          100000
+        ],
+        "planned_jam_start_ps": [
+          640000,
+          640000
+        ],
+        "jam_end_ps": [
+          960000,
+          960000
+        ],
+        "backoff_slots": [
+          0,
+          1
+        ],
+        "backoff_until_ps": [
+          960000,
+          6080000
+        ],
+        "retry_sof_ps": [
+          2020000,
+          8840000
+        ],
+        "retry_eof_ps": [
+          7780000,
+          14600000
+        ],
+        "received_ps": [
+          7880000,
+          14700000
+        ]
+      }
+    },
+    {
+      "name": "collision-repeat",
+      "config": "collision-repeat.ini",
+      "expected": {
+        "attempt1_slots": [
+          1,
+          1
+        ],
+        "attempt2_sof_ps": 6080000,
+        "attempt2_collision_ps": 6180000,
+        "attempt2_jam_end_ps": 7040000,
+        "attempt2_slots": [
+          3,
+          0
+        ],
+        "attempt3_sof_ps": {
+          "a": 22400000,
+          "b": 8100000
+        }
+      }
+    },
+    {
+      "name": "carrier",
+      "config": "carrier.ini",
+      "expected": {
+        "sof_ps": {
+          "a": 0,
+          "b": 6820000
+        },
+        "collision_count": 0
+      }
+    },
+    {
+      "name": "arrival-tie",
+      "config": "arrival-tie.ini",
+      "expected": {
+        "sof_ps": {
+          "a": 0,
+          "b": 6820000
+        },
+        "collision_count": 0
+      }
+    },
+    {
+      "name": "late-start",
+      "config": "late-start.ini",
+      "expected": {
+        "sof_ps": [
+          0,
+          50000
+        ],
+        "collision_ps": [
+          150000,
+          100000
+        ],
+        "jam_end_ps": [
+          960000,
+          1010000
+        ]
+      }
+    },
+    {
+      "name": "zero-propagation",
+      "config": "zero-propagation.ini",
+      "expected": {
+        "collision_ps": [
+          0,
+          0
+        ],
+        "jam_end_ps": [
+          960000,
+          960000
+        ],
+        "retry_sof_ps": [
+          1920000,
+          8640000
+        ]
+      }
+    },
+    {
+      "name": "half-10",
+      "config": "half-10.ini",
+      "expected": {
+        "collision_ps": [
+          1000000,
+          1000000
+        ],
+        "planned_jam_start_ps": [
+          6400000,
+          6400000
+        ],
+        "jam_end_ps": [
+          9600000,
+          9600000
+        ],
+        "retry_sof_ps": [
+          20200000,
+          88400000
+        ]
+      }
+    },
+    {
+      "name": "queue-retry",
+      "config": "queue-retry.ini",
+      "expected": {
+        "at_ps": 300000,
+        "current": "a:0@Main.a.tx",
+        "waiting": [
+          "a:1@Main.a.tx"
+        ],
+        "dropped": "a:2@Main.a.tx",
+        "reason": "queue_full"
+      }
+    },
+    {
+      "name": "stop-jam",
+      "config": "stop-jam.ini",
+      "expected": {
+        "status": "jamming",
+        "jam_end_ps": null,
+        "jam_ps_per_output": 160000,
+        "tx_ps_per_output": 800000,
+        "reception_count": 0
+      }
+    },
+    {
+      "name": "stop-backoff",
+      "config": "stop-backoff.ini",
+      "expected": {
+        "a_status": "deferred",
+        "b_status": "backoff",
+        "jam_ps_per_output": 320000,
+        "reception_count": 0
+      }
+    },
+    {
+      "name": "invalid-slot",
+      "config": "invalid-slot.ini",
+      "expected": {
+        "prepare_rule": "half_slot_bound"
+      }
+    },
+    {
+      "name": "slot-upper",
+      "config": "slot-upper.ini",
+      "expected": {
+        "prepare_valid": true
+      }
+    },
+    {
+      "name": "t1-duplex",
+      "config": "t1-duplex.ini",
+      "expected": {
+        "sof_ps": [
+          0,
+          0
+        ],
+        "eof_ps": [
+          576000,
+          576000
+        ],
+        "release_ps": [
+          672000,
+          672000
+        ],
+        "arrival_ps": [
+          877000,
+          1277000
+        ],
+        "collisions": 0
+      }
+    },
+    {
+      "name": "t1-pipeline",
+      "config": "t1-pipeline.ini",
+      "expected": {
+        "sof_ps": [
+          0,
+          672000
+        ],
+        "release_ps": [
+          672000,
+          1344000
+        ],
+        "arrival_ps": [
+          2577000,
+          3249000
+        ],
+        "received_count": 2
+      }
+    },
+    {
+      "name": "t1-boundary",
+      "config": "t1-boundary.ini",
+      "expected": {
+        "arrival_ps": null,
+        "planned_arrival_ps": 877000,
+        "reception_count": 0
+      }
+    },
+    {
+      "name": "t1-after-boundary",
+      "config": "t1-after-boundary.ini",
+      "expected": {
+        "arrival_ps": 877000,
+        "received_count": 1
+      }
+    },
+    {
+      "name": "t1-max-frame",
+      "config": "t1-max-frame.ini",
+      "expected": {
+        "eof_ps": 12208000,
+        "release_ps": 12304000,
+        "arrival_ps": 12509000
+      }
+    },
+    {
+      "name": "invalid-t1-half",
+      "config": "invalid-t1-half.ini",
+      "expected": {
+        "prepare_rule": "phy_duplex"
+      }
+    },
+    {
+      "name": "invalid-t1-roles",
+      "config": "invalid-t1-roles.ini",
+      "expected": {
+        "prepare_rule": "phy_roles"
+      }
+    },
+    {
+      "name": "mixed",
+      "config": "mixed.ini",
+      "expected": {
+        "sof_ps": {
+          "a:0@Mix.a.tx": 0,
+          "b:0@Mix.b.tx": 0,
+          "b:0@Mix.sw.tx_c": 577000,
+          "a:0@Mix.sw.tx_b": 5860000,
+          "b:0@Mix.sw.tx_a": 6820000,
+          "a:0@Mix.sw.tx_c": 7297000
+        },
+        "arrival_ps": {
+          "a:0@Mix.sw.tx_b": 6437000,
+          "b:0@Mix.sw.tx_a": 12680000
+        },
+        "collision_count": 0
+      }
+    }
+  ]
+}

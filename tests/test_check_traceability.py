@@ -26,17 +26,21 @@ class TestTraceabilityChecker(unittest.TestCase):
         (docs / "specs").mkdir()
         (docs / "design").mkdir()
         (docs / "verification" / "cases").mkdir(parents=True)
-        reqs = ["DIR-REQ-001", "DIR-REQ-002"] if shared else ["DIR-REQ-001"]
+        reqs = ["DIR-REQ-0001", "DIR-REQ-0002"] if shared else ["DIR-REQ-0001"]
         (docs / "要件定義書.md").write_text(
             "\n".join(
-                ["文書ID：`requirements`"]
-                + [f'<a id="{x.lower()}"></a>**{x}**' for x in reqs]
+                [
+                    "文書ID：`requirements`",
+                    "| 要件ID | 名称 | 要件（条件・対象・期待結果） | 検証先・確認内容 | TBD・注釈 |",
+                    "| --- | --- | --- | --- | --- |",
+                ]
+                + [f'| <a id="{x.lower()}"></a>**{x}** | x | body | test | — |' for x in reqs]
             )
             + (
                 "\n```trace-exception\n"
                 + json.dumps(
                     {
-                        "requirement": "DIR-REQ-001",
+                        "requirement": "DIR-REQ-0001",
                         "reason": "constraint",
                         "stages": ["requirement", "verification"],
                     }
@@ -47,11 +51,24 @@ class TestTraceabilityChecker(unittest.TestCase):
             ),
             encoding="utf-8",
         )
+        hierarchy = [
+            {
+                "id": requirement,
+                "parent": None if index == 0 else reqs[0],
+                "position": "上位" if index == 0 else "下位",
+                "decomposition": "未分解" if index == 0 else "子要件へ分解",
+            }
+            for index, requirement in enumerate(reqs)
+        ]
+        (docs / "要件階層.json").write_text(
+            json.dumps({"schema_version": 1, "requirements": hierarchy}, ensure_ascii=False),
+            encoding="utf-8",
+        )
         rows = "\n".join(
-            f"| [{r}]() | x | [DIR-FUNC-001](#dir-func-001) |" for r in reqs
+            f"| [{r}]() | x | [DIR-FUNC-0001](#dir-func-0001) |" for r in reqs
         )
         (docs / "機能仕様書.md").write_text(
-            '文書ID：`functions`\n<a id="dir-func-001"></a>**DIR-FUNC-001**\n### 11.2. map\n| a | b | c |\n|---|---|---|\n'
+            '文書ID：`functions`\n<a id="dir-func-0001"></a>**DIR-FUNC-0001**\n### 11.2. map\n| a | b | c |\n|---|---|---|\n'
             + rows,
             encoding="utf-8",
         )
@@ -68,7 +85,7 @@ class TestTraceabilityChecker(unittest.TestCase):
         ):
             data = {
                 "id": (
-                    "DIR-TEST-001" if stage == "verification" else f"{docid}#{anchor}"
+                    "DIR-TEST-0001" if stage == "verification" else f"{docid}#{anchor}"
                 ),
                 "stage": stage,
                 "requirements": reqscope or reqs,
@@ -85,9 +102,9 @@ class TestTraceabilityChecker(unittest.TestCase):
             doc(
                 docs / "verification" / "cases" / "v.md",
                 "v",
-                "dir-test-001",
+                "dir-test-0001",
                 "verification",
-                ["DIR-REQ-001"],
+                ["DIR-REQ-0001"],
             )
         else:
             doc(
@@ -95,7 +112,7 @@ class TestTraceabilityChecker(unittest.TestCase):
                 "s",
                 "s",
                 "spec",
-                ["DIR-FUNC-001"],
+                ["DIR-FUNC-0001"],
                 state="draft" if pending else "confirmed",
                 pend=["waiting"] if pending else [],
             )
@@ -105,7 +122,7 @@ class TestTraceabilityChecker(unittest.TestCase):
                 doc(
                     docs / "verification" / "cases" / "v.md",
                     "v",
-                    "dir-test-001",
+                    "dir-test-0001",
                     "verification",
                     ["d#d"],
                 )
@@ -134,6 +151,64 @@ class TestTraceabilityChecker(unittest.TestCase):
         )
         result = self.check(root, "--strict")
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_only_anchored_requirement_table_rows_are_canonical(self):
+        temp, root = self.build()
+        self.addCleanup(temp.cleanup)
+        path = root / "docs/要件定義書.md"
+        path.write_text(
+            path.read_text(encoding="utf-8")
+            + "\n\n| `DIR-REQ-0099` | 廃止 | — | — | — |\n"
+            + '<a id="dir-req-0098"></a>**DIR-REQ-0098**\n',
+            encoding="utf-8",
+        )
+        result = self.check(root, "--strict")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("1 requirements", result.stdout)
+
+    def test_requirement_table_anchor_must_match_its_id(self):
+        temp, root = self.build()
+        self.addCleanup(temp.cleanup)
+        path = root / "docs/要件定義書.md"
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                'id="dir-req-0001"', 'id="dir-req-0002"'
+            ),
+            encoding="utf-8",
+        )
+        result = self.check(root)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("requirement anchor mismatch", result.stderr)
+
+    def test_three_and_five_digit_ids_do_not_match_four_digit_ids(self):
+        for malformed in ("DIR-REQ-001", "DIR-REQ-00001"):
+            with self.subTest(malformed=malformed):
+                temp, root = self.build()
+                self.addCleanup(temp.cleanup)
+                path = root / "docs/機能仕様書.md"
+                path.write_text(
+                    path.read_text(encoding="utf-8").replace(
+                        "[DIR-REQ-0001]()", f"[{malformed}]()"
+                    ),
+                    encoding="utf-8",
+                )
+                result = self.check(root)
+                self.assertEqual(result.returncode, 1)
+                self.assertIn("has 0 mapping rows", result.stderr)
+
+    def test_malformed_requirement_table_id_is_reported(self):
+        temp, root = self.build()
+        self.addCleanup(temp.cleanup)
+        path = root / "docs/要件定義書.md"
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                "**DIR-REQ-0001**", "**DIR-REQ-001**"
+            ),
+            encoding="utf-8",
+        )
+        result = self.check(root)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("invalid requirement ID cell", result.stderr)
 
     def test_dangling_branch_fails_strict_even_with_no_structural_error(self):
         temp, root = self.build(dangling=True)
@@ -168,7 +243,7 @@ class TestTraceabilityChecker(unittest.TestCase):
         temp, root = self.build()
         self.addCleanup(temp.cleanup)
         p = root / "docs/specs/s.md"
-        text = p.read_text().replace("DIR-FUNC-001", "DIR-REQ-001")
+        text = p.read_text().replace("DIR-FUNC-0001", "DIR-REQ-0001")
         p.write_text(text, encoding="utf-8")
         self.assertEqual(self.check(root).returncode, 1)
         temp2, root2 = self.build()
@@ -177,7 +252,7 @@ class TestTraceabilityChecker(unittest.TestCase):
         p2.write_text(
             p2.read_text()
             .replace("s#s", "s#missing")
-            .replace("DIR-FUNC-001", "DIR-FUNC-999"),
+            .replace("DIR-FUNC-0001", "DIR-FUNC-0999"),
             encoding="utf-8",
         )
         self.assertEqual(self.check(root2).returncode, 1)
@@ -189,12 +264,12 @@ class TestTraceabilityChecker(unittest.TestCase):
         for p in (root / "docs").rglob("*.md"):
             if p.name != "要件定義書.md" and p.name != "機能仕様書.md":
                 p.write_text(
-                    p.read_text().replace(', "DIR-REQ-002"', ""), encoding="utf-8"
+                    p.read_text().replace(', "DIR-REQ-0002"', ""), encoding="utf-8"
                 )
-        result = self.check(root, "--strict", "--requirement", "DIR-REQ-002")
+        result = self.check(root, "--strict", "--requirement", "DIR-REQ-0002")
         self.assertEqual(result.returncode, 1)
         self.assertIn("has no spec allocation", result.stdout)
-        impact = self.check(root, "--impact", "DIR-REQ-001")
+        impact = self.check(root, "--impact", "DIR-REQ-0001")
         self.assertEqual(impact.returncode, 0)
         self.assertIn("downstream affected", impact.stdout)
 
@@ -211,18 +286,18 @@ class TestTraceabilityChecker(unittest.TestCase):
         # The architecture node only receives a spec allocation scoped to REQ-001.
         spec = root / "docs/specs/s.md"
         spec.write_text(
-            spec.read_text().replace(', "DIR-REQ-002"', ""), encoding="utf-8"
+            spec.read_text().replace(', "DIR-REQ-0002"', ""), encoding="utf-8"
         )
         result = self.check(root)
         self.assertEqual(result.returncode, 1)
-        self.assertIn("does not cover DIR-REQ-002", result.stderr)
+        self.assertIn("does not cover DIR-REQ-0002", result.stderr)
 
     def test_duplicate_document_id_anchor_and_json_key_fail_cleanly(self):
         temp, root = self.build()
         self.addCleanup(temp.cleanup)
         extra = root / "docs/design/extra.md"
         extra.write_text(
-            '文書ID：`d`\n<a id="x"></a>\n<a id="x"></a>\n```trace\n{"id":"d#x","id":"d#x","stage":"design","requirements":["DIR-REQ-001"],"upstream":[],"state":"draft","pending":["waiting"]}\n```',
+            '文書ID：`d`\n<a id="x"></a>\n<a id="x"></a>\n```trace\n{"id":"d#x","id":"d#x","stage":"design","requirements":["DIR-REQ-0001"],"upstream":[],"state":"draft","pending":["waiting"]}\n```',
             encoding="utf-8",
         )
         result = self.check(root)
@@ -236,7 +311,7 @@ class TestTraceabilityChecker(unittest.TestCase):
         self.addCleanup(temp.cleanup)
         path = root / "docs/specs/s.md"
         path.write_text(
-            path.read_text().replace('["DIR-FUNC-001"]', "[]"), encoding="utf-8"
+            path.read_text().replace('["DIR-FUNC-0001"]', "[]"), encoding="utf-8"
         )
         result = self.check(root)
         self.assertEqual(result.returncode, 1)
@@ -252,9 +327,9 @@ class TestTraceabilityChecker(unittest.TestCase):
             "verification/cases/v.md",
         ):
             (root / "docs" / name).unlink()
-        result = self.check(root, "--impact", "DIR-FUNC-001")
+        result = self.check(root, "--impact", "DIR-FUNC-0001")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("DIR-REQ-001:DIR-FUNC-001 missing spec allocation", result.stdout)
+        self.assertIn("DIR-REQ-0001:DIR-FUNC-0001 missing spec allocation", result.stdout)
 
     def edit_node(self, root, name, **changes):
         path = root / "docs" / name
@@ -288,8 +363,8 @@ class TestTraceabilityChecker(unittest.TestCase):
         extra.write_text(
             source.read_text()
             .replace("`v`", "`extra`")
-            .replace("TEST-001", "TEST-002")
-            .replace("test-001", "test-002"),
+            .replace("TEST-0001", "TEST-0002")
+            .replace("test-0001", "test-0002"),
             encoding="utf-8",
         )
         self.edit_node(
@@ -301,7 +376,7 @@ class TestTraceabilityChecker(unittest.TestCase):
         )
         result = self.check(root, "--strict")
         self.assertEqual(result.returncode, 1)
-        self.assertIn("DIR-TEST-002 has no upstream allocation", result.stdout)
+        self.assertIn("DIR-TEST-0002 has no upstream allocation", result.stdout)
 
     def test_draft_structure_can_pass_but_pending_exception_cannot(self):
         temp, root = self.build()
@@ -310,7 +385,7 @@ class TestTraceabilityChecker(unittest.TestCase):
         self.assertEqual(self.check(root, "--strict").returncode, 0)
         temp, root = self.build(exception=True)
         self.addCleanup(temp.cleanup)
-        result = self.check(root, "--strict", "--impact", "DIR-REQ-001")
+        result = self.check(root, "--strict", "--impact", "DIR-REQ-0001")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("pending gaps: (none)", result.stdout)
         self.edit_node(
@@ -321,7 +396,7 @@ class TestTraceabilityChecker(unittest.TestCase):
         )
         result = self.check(root, "--strict")
         self.assertEqual(result.returncode, 1)
-        self.assertIn("DIR-TEST-001 has pending work", result.stdout)
+        self.assertIn("DIR-TEST-0001 has pending work", result.stdout)
 
     def test_impact_does_not_cross_requirement_scopes_at_a_merge(self):
         temp, root = self.build(shared=True)
@@ -330,18 +405,18 @@ class TestTraceabilityChecker(unittest.TestCase):
         functions.write_text(
             functions.read_text()
             .replace(
-                "### 11.2.", '<a id="dir-func-002"></a>**DIR-FUNC-002**\n### 11.2.'
+                "### 11.2.", '<a id="dir-func-0002"></a>**DIR-FUNC-0002**\n### 11.2.'
             )
             .replace(
-                "| [DIR-REQ-002]() | x | [DIR-FUNC-001](#dir-func-001) |",
-                "| [DIR-REQ-002]() | x | [DIR-FUNC-002](#dir-func-002) |",
+                "| [DIR-REQ-0002]() | x | [DIR-FUNC-0001](#dir-func-0001) |",
+                "| [DIR-REQ-0002]() | x | [DIR-FUNC-0002](#dir-func-0002) |",
             ),
             encoding="utf-8",
         )
         # Shared spec and architecture carry both scopes; design and test only REQ-001.
-        self.edit_node(root, "specs/s.md", upstream=["DIR-FUNC-001", "DIR-FUNC-002"])
-        self.edit_node(root, "design/d.md", requirements=["DIR-REQ-001"])
-        self.edit_node(root, "verification/cases/v.md", requirements=["DIR-REQ-001"])
+        self.edit_node(root, "specs/s.md", upstream=["DIR-FUNC-0001", "DIR-FUNC-0002"])
+        self.edit_node(root, "design/d.md", requirements=["DIR-REQ-0001"])
+        self.edit_node(root, "verification/cases/v.md", requirements=["DIR-REQ-0001"])
         result = self.check(root, "--impact", "d#d")
         self.assertEqual(result.returncode, 0, result.stderr)
         upstream = next(
@@ -349,21 +424,21 @@ class TestTraceabilityChecker(unittest.TestCase):
             for line in result.stdout.splitlines()
             if line.startswith("upstream roots:")
         )
-        self.assertIn("DIR-FUNC-001", upstream)
-        self.assertNotIn("DIR-FUNC-002", upstream)
-        self.assertNotIn("DIR-REQ-002", upstream)
-        result = self.check(root, "--impact", "DIR-REQ-002")
+        self.assertIn("DIR-FUNC-0001", upstream)
+        self.assertNotIn("DIR-FUNC-0002", upstream)
+        self.assertNotIn("DIR-REQ-0002", upstream)
+        result = self.check(root, "--impact", "DIR-REQ-0002")
         downstream = next(
             line
             for line in result.stdout.splitlines()
             if line.startswith("downstream affected:")
         )
         self.assertNotIn("d#d", downstream)
-        self.assertNotIn("DIR-TEST-001", downstream)
+        self.assertNotIn("DIR-TEST-0001", downstream)
 
     def test_noncanonical_ids_invalid_types_and_cycles_fail_without_tracebacks(self):
         for name, changes in [
-            ("verification/cases/v.md", {"id": "dir-test-001"}),
+            ("verification/cases/v.md", {"id": "dir-test-0001"}),
             ("specs/s.md", {"id": "s#S"}),
             ("specs/s.md", {"stage": {"invalid": True}}),
             ("specs/s.md", {"requirements": [None]}),
@@ -373,7 +448,7 @@ class TestTraceabilityChecker(unittest.TestCase):
                 temp, root = self.build()
                 self.addCleanup(temp.cleanup)
                 self.edit_node(root, name, **changes)
-                result = self.check(root, "--strict", "--impact", "DIR-FUNC-001")
+                result = self.check(root, "--strict", "--impact", "DIR-FUNC-0001")
                 self.assertEqual(result.returncode, 1)
                 self.assertIn("error:", result.stderr)
                 self.assertNotIn("Traceback", result.stderr)
@@ -384,23 +459,23 @@ class TestTraceabilityChecker(unittest.TestCase):
         path = root / "docs/機能仕様書.md"
         text = path.read_text().replace(
             "### 11.2.",
-            '<a id="dir-func-002"></a>**DIR-FUNC-002**\n<a id="dir-func-003"></a>**DIR-FUNC-003**\n### 11.2.',
+            '<a id="dir-func-0002"></a>**DIR-FUNC-0002**\n<a id="dir-func-0003"></a>**DIR-FUNC-0003**\n### 11.2.',
         )
         text = text.replace(
-            "| x | [DIR-FUNC-001](#dir-func-001) |",
-            "| DIR-FUNC-999 | [DIR-FUNC-001](#dir-func-001)〜[DIR-FUNC-003](#dir-func-003) | DIR-FUNC-998 |",
+            "| x | [DIR-FUNC-0001](#dir-func-0001) |",
+            "| DIR-FUNC-0999 | [DIR-FUNC-0001](#dir-func-0001)〜[DIR-FUNC-0003](#dir-func-0003) | DIR-FUNC-0998 |",
         )
         path.write_text(text, encoding="utf-8")
         result = self.check(root, "--strict")
         self.assertEqual(result.returncode, 1)
         self.assertEqual(result.stderr, "")
-        self.assertIn("DIR-FUNC-002 has no spec allocation", result.stdout)
-        self.assertIn("DIR-FUNC-003 has no spec allocation", result.stdout)
+        self.assertIn("DIR-FUNC-0002 has no spec allocation", result.stdout)
+        self.assertIn("DIR-FUNC-0003 has no spec allocation", result.stdout)
 
     def test_duplicate_sources_missing_document_ids_and_empty_sources_are_errors(self):
         for name, change in [
-            ("要件定義書.md", lambda t: t + "\n**DIR-REQ-001**"),
-            ("機能仕様書.md", lambda t: t + "\n| [DIR-REQ-001]() | x | DIR-FUNC-001 |"),
+            ("要件定義書.md", lambda t: t + '\n| <a id="dir-req-0001"></a>**DIR-REQ-0001** | duplicate | body | test | — |'),
+            ("機能仕様書.md", lambda t: t + "\n| [DIR-REQ-0001]() | x | DIR-FUNC-0001 |"),
             ("アーキテクチャ設計書.md", lambda t: t + "\n文書ID：`another`"),
             ("アーキテクチャ設計書.md", lambda t: t.replace("文書ID：`a`", "")),
             ("要件定義書.md", lambda t: "文書ID：`requirements`"),

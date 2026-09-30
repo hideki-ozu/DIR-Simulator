@@ -1,0 +1,65 @@
+{
+  "base_config": "mailbox-fifo.model.json",
+  "mutations": [
+    {
+      "id": "geometry",
+      "path": [
+        "ddr",
+        0,
+        "size"
+      ],
+      "value": 31,
+      "rule": "geometry_size"
+    },
+    {
+      "id": "refresh",
+      "path": [
+        "ddr",
+        0,
+        "refresh_ps"
+      ],
+      "value": "100",
+      "rule": "refresh_interval"
+    },
+    {
+      "id": "ports",
+      "path": [
+        "sram",
+        0,
+        "ports"
+      ],
+      "value": 0,
+      "rule": "port_count"
+    },
+    {
+      "id": "slot_capacity",
+      "path": [
+        "shared",
+        0,
+        "slots"
+      ],
+      "value": 0,
+      "rule": "slot_count"
+    },
+    {
+      "id": "chunk",
+      "path": [
+        "dma",
+        0,
+        "chunk_bytes"
+      ],
+      "value": 0,
+      "rule": "chunk_size"
+    },
+    {
+      "id": "mail_capacity",
+      "path": [
+        "mailboxes",
+        0,
+        "capacity"
+      ],
+      "value": 1025,
+      "rule": "mailbox_capacity"
+    }
+  ]
+}

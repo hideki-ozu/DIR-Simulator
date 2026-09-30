@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "a",
+      "kind": "axi.explicit.v1",
+      "node": "Main.m0",
+      "times": [
+        "0ps"
+      ],
+      "transaction": {
+        "operation": "write",
+        "address": 4096,
+        "beats": 2,
+        "write_data": [
+          "11223344",
+          "55667788"
+        ],
+        "write_strobes": [
+          5,
+          10
+        ]
+      }
+    },
+    {
+      "id": "b",
+      "kind": "axi.explicit.v1",
+      "node": "Main.m1",
+      "times": [
+        "0ps"
+      ],
+      "transaction": {
+        "operation": "read",
+        "address": 4096,
+        "beats": 2
+      }
+    },
+    {
+      "id": "c",
+      "kind": "axi.explicit.v1",
+      "node": "Main.m0",
+      "times": [
+        "0ps"
+      ],
+      "transaction": {
+        "operation": "read",
+        "address": 8192,
+        "beats": 1
+      }
+    }
+  ]
+}
