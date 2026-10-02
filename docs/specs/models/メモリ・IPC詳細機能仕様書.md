@@ -1,12 +1,13 @@
 # メモリ・IPC詳細機能仕様書
 
-文書バージョン：`0.1.0`
-対象GitHubバージョン：`未リリース（main @ 7738b55）`
+文書バージョン：`0.1.1`
+対象GitHubバージョン：`v0.1`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版。メモリ・IPCの仕様・設計・解析fixtureを定義 |
 
 文書ID：`spec-memory-ipc`
@@ -23,6 +24,22 @@
 | 時刻と停止 | 全latency/refresh/notificationは正ps、容量は下記範囲。checked u128で式を評価し、予約時刻をu64へ検査。E-0004はそのcallback効果をcommit前に破棄。Tのeventは実行せずqueued/active/publishing/notifying等を保存。失敗時も成功journal prefixのbyte内容と件数だけを公開する |
 | 結果エラー | 未知node/op・schema・入力長違反・未配置参照はprepare E-0001。実行時address_error、queue_full、access_denied、empty、full、memory_faultは通常responseで実行継続。message型違反はE-0002 invalid_event、owner/世代不整合はmodel_failed |
 | 組合せ | 本profile内で複数DDR/SRAM、共有slot、mailbox、DMAを配置可能。DMAだけがDDR/SRAMの同一サービスを参照する。shared/mailbox内容はそれぞれの所有領域内で完結する。注：AXI接続、cache coherence、CPU命令実行、共有slotをDMAが直接更新する経路、他profileとの混成は本版の対象外。将来の複合profileは新しい版付きadapterで追加する |
+
+## 構成・動作・結果をつなぐ確認単位
+
+本profileの五つの親要件は1.0.0以後の将来対象である。それぞれの構成子要件が容量・初期内容・時間定数を確定し、動作子要件がadmission・dispatch・内容公開を定め、結果子要件がbyte内容・応答・停止prefixの対応を確認する。以下は各節の契約をつなぐ読み方である。
+
+| 親要件 | 準備から資源利用まで | 内容・終了結果の確認 |
+| --- | --- | --- |
+| [DDRメモリ](../../要件定義書.md#dir-req-0198) | [ddr](#ddr)の形状・初期byte・行境界を検証し、単一FIFO serviceでopen rowとrefreshによる待ちを適用する | completionで公開/採取したbyteとrow/refresh状態を[DIR-AC-0048](../../要件定義書.md#dir-ac-0048)で照合する |
+| [SRAMメモリ](../../要件定義書.md#dir-req-0202) | [sram](#sram)の範囲・port数を確定し、FIFO先頭から空portを割り当てる | 同時completionのdispatch ordinal順で決まる内容とport占有を[DIR-AC-0049](../../要件定義書.md#dir-ac-0049)で照合する |
+| [共有メモリIPC](../../要件定義書.md#dir-req-0206) | [shared](#shared)のactor権限・slotを確定し、publish/consumeの所有権を進める | 公開前、ready、consume中の内容とownerを[DIR-AC-0050](../../要件定義書.md#dir-ac-0050)で照合する |
+| [DMA](../../要件定義書.md#dir-req-0210) | [dma](#dma)の両端範囲を検証し、chunkごとのread/write childを通常DDR/SRAM資源へofferする | write済みcommitted_bytes、親子要求、data_doneと通知完了の差を[DIR-AC-0051](../../要件定義書.md#dir-ac-0051)で照合する |
+| [メールボックスIPC](../../要件定義書.md#dir-req-0214) | [mailbox](#mailbox)のactor、操作待機容量、payload FIFO容量を確定し、send/receiveをservice順に評価する | enqueue/dequeueと遅延notificationを別に追い、payload残数と通知状態を[DIR-AC-0052](../../要件定義書.md#dir-ac-0052)で照合する |
+
+共通phase順とjournalは状態確定の土台であり、どの時点で内容が可視になるかはモデル固有である。DDR/SRAMはcompletion、sharedはpublish completion、mailboxはsend completion、DMAの進捗は各write childのcommitで決まる。DMAの成功終端はその後の通知、mailbox sendの成功終端はenqueue時であり、同じ通知待ちとして親要求の状態を統一しない。
+
+Tで打ち切る確認では未完了writeの予定byteを現メモリへ補わず、公開済みslot、FIFO内payload、DMAの部分進捗と未通知行を[records](#records)の完全schemaへ対応付ける。親要件の判断は[詳細設計](../../design/メモリ・IPC詳細設計書.md)の所有状態と[検証仕様](../../verification/cases/メモリ・IPC検証仕様書.md)の独立期待値を合わせ、通常responseの拒否と実行失敗を区別して行う。
 
 <a id="ddr"></a>
 

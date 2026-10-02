@@ -1,12 +1,13 @@
 # Ethernetモデル詳細機能仕様書
 
-文書バージョン：`0.1.0`
-対象GitHubバージョン：`未リリース（main @ 7738b55）`
+文書バージョン：`0.1.1`
+対象GitHubバージョン：`v0.1`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：Ethernet L2の入力・時間・蓄積交換・結果契約を確定。親要件の交換責務を追跡し、共通profile・codec登録境界と照合。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
 
 文書ID：`spec-ethernet-models`
@@ -15,6 +16,20 @@
 | --- | --- |
 | 適用 | 本書の基準契約はethernet.l2.store-forward.v1。半二重と1000BASE-T1はv2の[媒体仕様](Ethernet媒体拡張詳細機能仕様書.md)を併用 |
 | 状態 | 仕様・設計・検証入力を具体化。製品実装・製品試験は未実施 |
+
+## L2通信を確認する三つの母数
+
+[Ethernet L2通信](../../要件定義書.md#dir-req-0145)の親要件は、元frameの生成、方向別linkでの送信、Switchでの交換、endpointでの受信をつないで判断する。Ethernetは1.0.0以後の将来対象であり、仕様の具体化と製品提供の完了は別に管理する。
+
+| 確認段階 | 本書の担当節 | 評価の単位 |
+| --- | --- | --- |
+| 入力とframe構築 | [profile](#profile)・[wire](#wire) | 準備時にMAC bytes・padding・FCSを確定し、generatorの発火ごとに元frameを一回生成する。接続tree、MAC、FDB、方向対の不整合は実行開始前に診断する |
+| 送信と蓄積交換 | [wire](#wire)・[switch](#switch) | hopごとのtransferをoutput FIFOへofferし、SOF/EOF/release/arrivalを記録する。Switch到達後の処理完了でFDB又はfloodの出力copyを決める |
+| 到達と終了結果 | [outputs](#outputs) | arrivalごとのreceptionから受信・forward・filter・処理待ちを判定し、frame→transfer→receptionと子transferを関連付ける。共通停止・journal・窓集計を適用する |
+
+一つのbroadcast frameが複数egressへ分岐すれば、generatedは一件でもtransferと受信件数は増える。満杯egressだけのcopy破棄、別egressの成功、EOF済みでarrival未到達のcopyを同じ実行に保持できることを確認する。serialized、release済み、endpoint receivedはそれぞれ異なる到達境界であり、送信量と受信遅延の標本を対応する境界から求める。
+
+親要件の確認にはframe/linkの[DIR-AC-0034](../../要件定義書.md#dir-ac-0034)、交換の[DIR-AC-0035](../../要件定義書.md#dir-ac-0035)、結果・停止の[DIR-AC-0036](../../要件定義書.md#dir-ac-0036)を組み合わせる。半二重と1000BASE-T1は[媒体拡張仕様](Ethernet媒体拡張詳細機能仕様書.md)の差分を加え、選択したprofileごとの契約で判断する。
 
 <a id="profile"></a>
 

@@ -1,12 +1,13 @@
 # NED詳細機能仕様書
 
-文書バージョン：`0.1.0`
-対象GitHubバージョン：`未リリース（main @ 7738b55）`
+文書バージョン：`0.1.1`
+対象GitHubバージョン：`v0.1`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初期版の具体的な入力・正常・異常時契約を確定。字句・構文・値解決と登録照合の決定的契約を補完。GW・AXI・Ethernetの登録型・capabilityとprofile別構成検証へ接続。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
 
 文書ID：`spec-ned`
@@ -16,6 +17,10 @@
 ## 1. 収集・文法・型解決
 
 [読み込み](../機能仕様書.md#dir-func-0002)、[階層展開](../機能仕様書.md#dir-func-0003)、[型解決](../機能仕様書.md#dir-func-0004)の契約を具体化する。参照版は[公式 OMNeT++ 6.4 タグの NED 言語説明](https://github.com/omnetpp/omnetpp/blob/omnetpp-6.4.0/doc/src/manual/ch-ned-lang.tex)。以下は独自実装の採用範囲であり、OMNeT++全体への互換性宣言ではない。
+
+[構造定義の親要件](../要件定義書.md#dir-req-0005)は、ファイルの読込成功に加え、選択networkの各配置、型・実装対応、接続経路、型の基準値を設定解決へ渡せる状態までを求める。本書の子要件に対応する規則は、宣言の解釈から展開・登録照合・結線検証までを分担する。入力はNEDファイル集合、選択networkと固定Registryであり、出力は元位置を保持した型宣言・展開構造・接続識別である。確定パラメータの採用は[値解決](設定詳細機能仕様書.md#values)、実行オブジェクトの生成は[ライフサイクル](診断詳細機能仕様書.md#lifecycle)へ引き継ぐ。
+
+現行の適用例はClassical CANの`can.cc.ideal.v1`とする。後段の追加モデルへの適用は[将来profileの登録契約](拡張モデル共通詳細機能仕様書.md#selection)を示すもので、0.1.0の提供対象と実装完了を示すものではない。
 
 <a id="syntax"></a>
 
@@ -149,6 +154,8 @@
 
 ## 4. 最小の完全入力と境界例
 
+[接続妥当性の親要件](../要件定義書.md#dir-req-0021)は、ノード存在・ポート存在・方向・protocol/message/schema版の各判定を組み合わせて確認する。compound境界の内側・外側はそれぞれの接続側を検査し、simpleの端点まで経路を解決して初めて配送可能な接続となる。構造上の適合に加えて、同じControllerのtx/rxが同じBusの対へ届くという[CAN構成条件](models/CANモデル詳細機能仕様書.md)を満たすことが、選択networkを初期化へ渡す共同の確認境界である。
+
 <a id="examples"></a>
 
 ```trace
@@ -182,7 +189,7 @@
 | channel上書き | INIへ `[Channel Main::a.tx]`<br>`delay = 2ns` を追記。aの送信経路だけ2000ps、bの送信経路は0。a送信のb観測に2000psが追加される |
 | 異常例 | a.txの辺を二度記述：重複接続側。b.rxへの辺削除：未接続。`a.unknown`：未知gate。`demo.Missing`：未知型。Mainにgate宣言追加：root境界禁止。いずれも `E-0001` の入力失敗、原因・ファイル行列・対象パスを通知し準備失敗として終了する |
 | 独自型の再利用確認 | `channel OtherWire { parameters: @class("dir.link.FixedDelay"); double delay @unit(s) = default(1ns); }` を同じpackageに追加し二つの辺で `demo.OtherWire` を参照すると別インスタンス二つが各1000psを保持。`@class("unknown")` に変えると未登録実装として拒否 |
-| 検証先 | [DIR-AC-0001](../要件定義書.md#dir-ac-0001)、[DIR-AC-0002](../要件定義書.md#dir-ac-0002)、[DIR-AC-0014](../要件定義書.md#dir-ac-0014)。仕様レビュー対象は収集・型・属性・結線の正常／異常対。詳細設計と実装試験は未作成であり検証合格を表さない |
+| 検証先 | [DIR-AC-0001](../要件定義書.md#dir-ac-0001)、[DIR-AC-0002](../要件定義書.md#dir-ac-0002)、[DIR-AC-0014](../要件定義書.md#dir-ac-0014)。仕様レビュー対象は収集・型・属性・結線の正常／異常対。[入力・設定詳細設計](../design/入力・設定詳細設計書.md)と[入力・設定検証仕様](../verification/cases/入力・設定検証仕様書.md)を規定済み。製品試験は未実施であり検証合格を表さない |
 
 ## 拡張モデルの型と構成
 
@@ -198,9 +205,9 @@
 | --- | --- |
 | Ethernet媒体型 | EndpointV2/SwitchV2/LinkV2を別の固定登録キーとして使用。scalarポート・channel・compound境界の既存構文で構成し、半二重の逆方向経路対はprofile側で一つの共有媒体へ結合する。[媒体仕様](models/Ethernet媒体拡張詳細機能仕様書.md) |
 
-## 当初対象への適用
+## 将来対応モデルへの適用
 
 | 項目 | 契約 |
 | --- | --- |
-| 初期モデル | 追加モデルの固定登録型・scalar gate・配置条件は各正本を適用する。既存文法とRegistryで型を解決し、profile固有の構成を専用validatorで検証する。 |
+| 将来モデル | 追加モデルの固定登録型・scalar gate・配置条件は各正本を適用する。既存文法とRegistryで型を解決し、profile固有の構成を専用validatorで検証する。 |
 | 正本 | [CAN FD・100BASE-T1](models/CANFD・100BASE-T1詳細機能仕様書.md)、[SoC・AHB・NoC](models/SoC・AHB・NoC詳細機能仕様書.md)、[DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC](models/メモリ・IPC詳細機能仕様書.md) |

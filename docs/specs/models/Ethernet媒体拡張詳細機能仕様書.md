@@ -1,12 +1,13 @@
 # Ethernet媒体拡張詳細機能仕様書
 
-文書バージョン：`0.1.0`
-対象GitHubバージョン：`未リリース（main @ 7738b55）`
+文書バージョン：`0.1.1`
+対象GitHubバージョン：`v0.1`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版。10/100半二重CSMA/CDと1000BASE-T1全二重媒体を定義 |
 
 文書ID：`spec-ethernet-media`
@@ -16,6 +17,20 @@
 | 状態 | 仕様・設計・解析fixtureを確定。製品実装・製品試験は未実施 |
 | 基盤 | `ethernet.l2.store-forward.v2`を明示選択する。[v1仕様](Ethernetモデル詳細機能仕様書.md)のframe/FCS/FDB/tree/処理遅延を再利用し、本書が媒体アクセスと結果差分を定義する。v1入力・出力を保持する |
 | 忠実度 | MAC時間・信号の伝搬区間・衝突・再送・固定PHY遅延の離散イベントモデル。注：波形、符号化/FECのbitstream、規格全文適合認証、実機誤り率、10BASE-T1S/PLCAは対象外 |
+
+## Ethernet親要件に加える媒体の分担
+
+本書は[Ethernet L2通信](../../要件定義書.md#dir-req-0145)のうち、半二重と1000BASE-T1の子要件を具体化する。v1のframe・交換契約を再利用し、媒体アクセスとPHY観測の差分をv2で選ぶ。提供は1.0.0以後の将来対象である。
+
+| 確認する経過 | 本書の担当節 | v1・共通基盤との境界 |
+| --- | --- | --- |
+| 半二重の構成から再送まで | [half-config](#half-config)→[csma](#csma) | 物理対と伝搬境界を準備検証し、carrier、IFG、衝突、jam、BEB、試行上限を確定する。同じtransferの再試行として保持し、正常frameのFCS/FDB規則はv1を使う |
+| T1の構成から受信まで | [t1](#t1)→[records](#records) | 1Gbps全二重とmaster/slave、TX/RX PHY値を確定し、MAC EOFから方向別arrivalを計算する。PHY遅延は受信へ加え、MAC releaseと方向独立性は保持する |
+| Switchと終了結果 | [records](#records) | 成功arrivalだけがreception・Switch交換へ進む。copyとattemptの母数を分け、衝突途中・jam途中・backoff待ちを共通[0,T)と確定journalで保存する |
+
+半二重で衝突したattemptは信号占有とjamを残す一方、正常serializedやreceptionを増やさない。再送で成功したcopyは一件のtransferに複数attemptを持つ。ある物理対の衝突が別のfull/T1対を止めないことも、Switchを含む親要件の連携確認に含める。
+
+[DIR-AC-0039](../../要件定義書.md#dir-ac-0039)のcarrier/jam、[DIR-AC-0040](../../要件定義書.md#dir-ac-0040)のBEB/終了、[DIR-AC-0041](../../要件定義書.md#dir-ac-0041)のT1時刻、[DIR-AC-0042](../../要件定義書.md#dir-ac-0042)の媒体独立・v1回帰を選択profileに対応付けて確認する。
 
 <a id="half-config"></a>
 

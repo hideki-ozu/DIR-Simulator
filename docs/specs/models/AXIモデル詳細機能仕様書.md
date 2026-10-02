@@ -1,12 +1,13 @@
 # AXIモデル詳細機能仕様書
 
-文書バージョン：`0.1.0`
-対象GitHubバージョン：`未リリース（main @ 7738b55）`
+文書バージョン：`0.1.1`
+対象GitHubバージョン：`v0.1`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：AXI4 transaction profileの入力・五チャネル・RAM・応答・結果を確定 |
 
 文書ID：`spec-axi-models`
@@ -14,6 +15,20 @@
 | 項目 | 内容 |
 | --- | --- |
 | 文書状態 | 契約確定。製品実装・製品実行試験は未実施 |
+
+## 親要件とtransactionの確認順序
+
+[AXI読書き評価](../../要件定義書.md#dir-req-0133)は構成・要求入力、容量と競合、五チャネル、RAM内容、応答、打切りを合わせた評価能力を表す。提供は1.0.0以後の将来対象であり、本書の契約確定はリリース完了を示さない。
+
+| 確認段階 | 担当する契約 | 結果をつなぐ観点 |
+| --- | --- | --- |
+| 構成と要求の受理 | [profile](#profile)・[transactions](#transactions) | Manager・Interconnect・Ramの接続とクロックを確定し、aligned INCR、4KiB境界、ストローブとManager容量を検査する。入力不正と生成時outstanding_fullを区別する |
+| 選出とチャネル進行 | [channels](#channels) | Manager内FIFOとManager間round-robinからgrantを決め、AW/W/B又はAR/RのVALID標本・READY待ち・handshakeを独立のedge列で照合する |
+| データ・応答・終了 | [memory](#memory)・[records](#records) | commit済みWSTRB byteとread snapshotをRAM行へ対応付け、B/RLAST到達でcompletedを確定する。共通journalと[0,T)から未完了・部分データを保存する |
+
+writeの一部WがT未満に到達しBがT以上にある場合、RAM更新済みbyteは保持され、transactionはactiveである。応答がDECERR/SLVERRでもB/RLASTまで到達すればcompletedとして容量を解放するため、正常protocol応答のerrorと実行失敗を別に確認する。`completed=okay+slverr+decerr`とRAM byte内容の両方がこの経過と一致する必要がある。
+
+親要件の確認は入力・容量の[DIR-AC-0031](../../要件定義書.md#dir-ac-0031)、チャネル・終了の[DIR-AC-0032](../../要件定義書.md#dir-ac-0032)、メモリ・再現性の[DIR-AC-0033](../../要件定義書.md#dir-ac-0033)を合わせる。ps時刻、phase、診断、schema2包絡は共通基盤の分担で、五チャネル依存・byte順・応答選択はAXI固有の分担である。
 
 ## 1. プロファイル・配置と登録
 
