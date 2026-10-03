@@ -1,0 +1,203 @@
+'use strict';
+// Optional real-browser gate. Run with PLAYWRIGHT_MODULE pointing to an installed
+// playwright package and DIR_SIMULATOR_BIN pointing to the just-built binary.
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const {spawn, spawnSync} = require('node:child_process');
+const repo = path.resolve(__dirname, '..');
+let playwright;
+try { playwright = require(process.env.PLAYWRIGHT_MODULE || 'playwright'); }
+catch (error) { if (process.env.PLAYWRIGHT_MODULE || error.code !== 'MODULE_NOT_FOUND') throw error; }
+const binary = process.env.DIR_SIMULATOR_BIN || path.join(repo, 'target/debug/dir-simulator');
+
+async function main() {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'dir-editor-browser-'));
+  const input = path.join(root, 'input'), exports = path.join(root, 'exports'), state = path.join(root, 'state');
+  fs.mkdirSync(path.join(input, 'models/demo'), {recursive: true});
+  fs.mkdirSync(exports);
+  fs.copyFileSync(path.join(repo, 'examples/can/baseline.ini'), path.join(input, 'project.ini'));
+  fs.copyFileSync(path.join(repo, 'examples/can/baseline.json'), path.join(input, 'baseline.json'));
+  const ned = fs.readFileSync(path.join(repo, 'examples/can/models/demo/Main.ned'), 'utf8').replace('input rx_c; output tx_c;', 'input rx_c; output tx_c;\n  input receive_d; output send_d;');
+  fs.writeFileSync(path.join(input, 'models/demo/Main.ned'), ned);
+  const process = spawn(binary, ['ned-editor', '--config', path.join(input, 'project.ini'), '--export-root', exports, '--state-root', state], {cwd: root, stdio: ['ignore', 'pipe', 'pipe']});
+  let browser;
+  const errors = [];
+  try {
+    const startup = await new Promise((resolve, reject) => {
+      let out = '', err = '';
+      const timer = setTimeout(() => reject(new Error('Editor startup timed out')), 15000);
+      process.stderr.on('data', bytes => { err += bytes; });
+      process.on('exit', () => { clearTimeout(timer); reject(new Error('Editor exited during startup: ' + err)); });
+      process.stdout.on('data', bytes => { out += bytes; if (out.includes('\n')) { clearTimeout(timer); resolve(JSON.parse(out.split('\n')[0])); } });
+    });
+    const url = new URL(startup.url), secret = new URLSearchParams(url.hash.slice(1)).get('session'), origin = url.origin;
+    const get = async (route, headers = {}) => fetch(origin + route, {headers: {'X-Editor-Session': secret, ...headers}});
+    assert.equal((await fetch(origin + '/api/session')).status, 403);
+    assert.equal((await get('/api/session', {Origin: 'http://other.invalid'})).status, 403);
+    const badHostStatus = await new Promise((resolve, reject) => { const request = require('node:http').get(origin + '/api/session', {headers: {Host: 'other.invalid', 'X-Editor-Session': secret}}, response => { response.resume(); resolve(response.statusCode); }); request.on('error', reject); });
+    assert.equal(badHostStatus, 403);
+    assert.equal((await fetch(origin + '/api/writer', {method: 'POST', headers: {'X-Editor-Session': secret, 'Content-Type': 'application/json', Origin: 'http://other.invalid'}, body: '{"action":"register"}'})).status, 403);
+    assert.equal((await fetch(origin + '/api/writer', {method: 'POST', headers: {'X-Editor-Session': secret, 'Content-Type': 'application/json', Origin: origin}, body: '{"action":"register","action":"claim"}'})).status, 400);
+    assert.equal((await fetch(origin + '/assets/missing.js')).status, 404);
+    browser = await playwright.chromium.launch({headless: true});
+    const context = await browser.newContext({viewport: {width: 1600, height: 1050}});
+    const page = await context.newPage();
+    page.setDefaultTimeout(15000);
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error' && !message.text().startsWith('Failed to load resource')) errors.push(message.text()); });
+    await page.goto(startup.url);
+    try { await page.waitForFunction(() => !document.getElementById('source-editor').disabled); } catch (error) { const stateView = await (await get('/api/session')).json(); throw new Error(error.message + ' · ' + JSON.stringify({notice: await page.locator('#notice-text').innerText(), status: await page.locator('#status').innerText(), diagnostics: stateView.diagnostics, errors})); }
+    assert.equal(new URL(page.url()).hash, '');
+    assert.equal(await page.locator('#graph .graph-node').count(), 4);
+    assert.equal(await page.locator('#instances button').count(), 5);
+    const confirm = async title => {
+      await page.waitForFunction(title => document.getElementById('editor-dialog').open && document.getElementById('dialog-title').textContent === title, title);
+      await page.locator('#dialog-submit').click();
+    };
+    await page.locator('#add-child').click();
+    await page.locator('#child-type').selectOption('demo.Controller');
+    await page.locator('#child-name').fill('d');
+    await page.locator('#dialog-submit').click();
+    await confirm('型定義の変更');
+    await page.waitForFunction(() => document.querySelectorAll('#graph .graph-node').length === 5);
+    await page.locator('#can-pair').click();
+    await page.locator('#can-controller').selectOption('d');
+    await page.locator('#can-bus').selectOption('bus');
+    await page.locator('#can-input').selectOption('receive_d');
+    await page.locator('#can-output').selectOption('send_d');
+    await page.locator('#can-tx-channel').fill('demo.Wire');
+    await page.locator('#can-rx-channel').fill('demo.Wire');
+    await page.locator('#dialog-submit').click();
+    await confirm('型定義の変更');
+    await page.waitForFunction(() => document.getElementById('source-editor').value.includes('d.tx --> demo.Wire --> bus.receive_d;'));
+    await page.locator('#undo').click();
+    await page.waitForFunction(() => !document.getElementById('source-editor').value.includes('d.tx -->'));
+    await page.locator('#redo').click();
+    await page.waitForFunction(() => document.getElementById('source-editor').value.includes('d.tx -->'));
+    await page.locator('#validate').click();
+    await page.waitForFunction(() => document.getElementById('status').textContent.includes('実行準備OK'));
+    // Only the browser holds the raw fragment credential. The second tab is read-only.
+    const second = await context.newPage();
+    await second.goto(startup.url);
+    await second.waitForFunction(() => document.getElementById('writer-claim').hidden === false);
+    assert.equal(await second.locator('#source-editor').evaluate(el => el.readOnly), true);
+    await second.close();
+    await page.locator('#instances button').filter({hasText: 'Main.d'}).click();
+    await page.waitForFunction(() => document.getElementById('parameter-context').textContent.includes('Main.d'));
+    await page.waitForFunction(() => document.getElementById('parameters').textContent.includes('queueCapacity'));
+    assert.match(await page.locator('#parameters').innerText(), /64/);
+    await page.locator('#types button').filter({hasText: 'demo.Main'}).click();
+    await page.waitForFunction(() => document.getElementById('graph-title').textContent === 'demo.Main');
+    const source = page.locator('#source-editor');
+    const valid = await source.inputValue();
+    await source.fill(valid + '\nnetwork Incomplete {');
+    await page.waitForFunction(() => document.getElementById('graph-state').textContent.includes('過去の正常'));
+    assert.equal(await source.inputValue(), valid + '\nnetwork Incomplete {');
+    await source.fill(valid + '\n// 日本語😀 local source retained\n');
+    await page.waitForFunction(() => !document.getElementById('graph-state').textContent.includes('過去の正常') && !document.getElementById('source-state').textContent.includes('未送信'));
+    // Saving waits for the composition to end, including text not yet in the buffer.
+    const finalSource = valid + '\n// 日本語😀 local source retained\n// IME 確定した入力\n';
+    await source.dispatchEvent('compositionstart', {data: '確定'});
+    await source.fill(finalSource);
+    fs.rmSync(input, {recursive: true});
+    await page.locator('#save-as').click();
+    await page.locator('#destination-name').fill('edited');
+    await page.locator('#dialog-submit').click();
+    await page.waitForFunction(() => document.getElementById('status').textContent.includes('入力反映待ち'));
+    const exported = path.join(exports, 'edited');
+    assert.equal(fs.existsSync(path.join(exported, 'project.ini')), false);
+    await source.dispatchEvent('compositionend', {data: '確定'});
+    await page.waitForFunction(() => document.getElementById('output-path').textContent.endsWith('/edited'));
+    assert.ok(fs.existsSync(path.join(exported, 'project.ini')));
+    assert.ok(fs.readFileSync(path.join(exported, 'ned/0001/demo/Main.ned'), 'utf8').includes('// 日本語😀 local source retained'));
+    const result = spawnSync(binary, ['validate', '--config', path.join(exported, 'project.ini')], {cwd: root, encoding: 'utf8'});
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(JSON.parse(result.stdout).node_count, '5');
+    const ini = fs.readFileSync(path.join(exported, 'project.ini'), 'utf8');
+    assert.ok(!ini.includes(input));
+    const beforeAlign = (await (await get('/api/session')).json()).revision;
+    await page.locator('#align').click();
+    const alignDeadline = Date.now() + 15000;
+    while ((await (await get('/api/session')).json()).revision === beforeAlign) {
+      assert.ok(Date.now() < alignDeadline, 'Layout change did not finish');
+      await new Promise(resolve => setTimeout(resolve, 25));
+    }
+    assert.equal(await page.locator('#editor-dialog').evaluate(el => el.open), false);
+    await page.locator('#overwrite').click();
+    const targets = await page.locator('#overwrite-target option').allTextContents();
+    const managedIndex = targets.findIndex(text => text.includes('/edited'));
+    assert.ok(managedIndex >= 0);
+    await page.locator('#overwrite-target').selectOption({index: managedIndex});
+    await page.locator('#dialog-submit').click();
+    await confirm('上書き保存');
+    await page.waitForFunction(() => document.getElementById('status').textContent.includes('保存済み'));
+    assert.ok(fs.existsSync(path.join(exported, 'ned/0001/demo/Main.ned.layout.json')));
+    const saved = fs.readFileSync(path.join(exported, 'ned/0001/demo/Main.ned'), 'utf8');
+    const savedView = await (await get('/api/session')).json();
+    // textarea uses LF for display; the server and saved file retain raw CRLF.
+    assert.equal(saved, savedView.source.text);
+    assert.equal(saved.replace(/\r\n/g, '\n'), finalSource);
+    if (ned.includes('\r\n')) assert.ok(saved.includes('\r\n'));
+    assert.ok(!saved.includes('\r\r\n'));
+    // Standard modules are available even when baseline did not define them.
+    assert.equal(await page.locator('#builtin-palette button').count(), 7);
+    await page.locator('[data-catalog-id="@builtin:Gateway"]').click();
+    assert.equal(await page.locator('#child-type').inputValue(), '@builtin:Gateway');
+    await page.locator('#child-name').fill('gatewayAdded');
+    await page.locator('#dialog-submit').click();
+    await page.waitForFunction(() => document.getElementById('editor-dialog').open && document.getElementById('dialog-title').textContent === '型定義の変更');
+    assert.match(await page.locator('#dialog-body').innerText(), /Multibus/);
+    await page.locator('#dialog-submit').click();
+    await page.waitForFunction(() => document.querySelectorAll('#graph .graph-node').length === 6);
+    assert.match(await source.inputValue(), /dir\.can\.MultibusController/);
+    const migrated = await (await get('/api/session')).json();
+    assert.equal(migrated.files.filter(f => f.role === 'model_config').length, 1);
+    await page.locator('#undo').click();
+    await page.waitForFunction(() => document.querySelectorAll('#graph .graph-node').length === 5);
+    assert.equal(await source.inputValue(), finalSource);
+    const undone = await (await get('/api/session')).json();
+    assert.equal(undone.files.filter(f => f.role === 'model_config').length, 0);
+    await page.locator('#redo').click();
+    await page.waitForFunction(() => document.querySelectorAll('#graph .graph-node').length === 6);
+    await page.locator('#new-project').click();
+    await page.locator('#project-template').selectOption('multibus-gateway');
+    await page.locator('#project-name-input').fill('BrowserProject');
+    await page.locator('#dialog-submit').click();
+    await confirm('新規プロジェクトを作成');
+    await page.waitForFunction(() => document.getElementById('graph-title').textContent === 'BrowserProject.Main');
+    assert.equal(await page.locator('#project-name').innerText(), 'BrowserProject');
+    assert.equal(await page.locator('#reload').isDisabled(), true);
+    assert.equal(await page.locator('#builtin-palette button').count(), 7);
+    await page.locator('#files button').filter({hasText:'INI 設定'}).click();
+    await page.waitForFunction(() => document.getElementById('source-editor').value.startsWith('[General]'));
+    await source.fill((await source.inputValue()).replace('sim-time-limit = 10ms', 'sim-time-limit = 20ms'));
+    await page.locator('#files button').filter({hasText:'JSON モデル設定'}).click();
+    await page.waitForFunction(() => document.getElementById('source-editor').value.includes('"rx_queue_capacity"'));
+    const routing = JSON.parse(await source.inputValue());
+    routing.gateways[0].processing_delay = '25us';
+    await source.fill(JSON.stringify(routing, null, 2) + '\n');
+    await page.locator('#save-as').click();
+    await page.locator('#destination-name').fill('new-project');
+    await page.locator('#dialog-submit').click();
+    await page.waitForFunction(() => document.getElementById('output-path').textContent.includes('/new-project'));
+    const created = path.join(exports, 'new-project');
+    assert.match(fs.readFileSync(path.join(created, 'project.ini'),'utf8'), /sim-time-limit = 20ms/);
+    assert.equal(JSON.parse(fs.readFileSync(path.join(created,'data/model-config.json'),'utf8')).gateways[0].processing_delay,'25us');
+    const checked = spawnSync(binary, ['validate','--config',path.join(created,'project.ini')], {cwd:root,encoding:'utf8'});
+    assert.equal(checked.status,0,checked.stderr);
+    assert.equal(JSON.parse(checked.stdout).network,'BrowserProject.Main');
+    assert.equal(JSON.parse(checked.stdout).status,'valid');
+    assert.deepEqual(errors, []);
+    console.log('NED browser round-trip passed: auth, hierarchy, editing/export, standard Gateway migration/undo, New from template, INI/JSON edits, standalone CLI validation.');
+  } finally {
+    if (browser) await browser.close();
+    process.kill('SIGTERM');
+    await new Promise(resolve => process.exitCode !== null ? resolve() : process.once('exit', resolve));
+    fs.rmSync(root, {recursive: true, force: true});
+  }
+}
+require('node:test')('NED editor real-browser and project export round-trip', {skip: playwright ? false : 'Playwright is not installed; set PLAYWRIGHT_MODULE to run the browser gate'}, async () => {
+  try { await main(); } catch (error) { error.message = String(error.message).replace(/#session=[a-f0-9]{64}/g, '#session=[redacted]'); if (error.stack) error.stack = error.stack.replace(/#session=[a-f0-9]{64}/g, '#session=[redacted]'); throw error; }
+});

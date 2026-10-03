@@ -33,7 +33,7 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
         } else if rest.starts_with("\r\n") {
             cursor += 2;
         } else if rest.starts_with("//") {
-            cursor += rest.find('\n').unwrap_or(rest.len());
+            cursor += rest.find('\n').map_or(rest.len(), |offset| offset + 1);
         } else if let Some(comment) = rest.strip_prefix("/*") {
             let end = comment
                 .find("*/")
@@ -118,19 +118,19 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
 }
 
 #[derive(Clone, Debug)]
-struct Parameter {
+pub struct Parameter {
     scalar: String,
     unit: Option<String>,
     default: Option<String>,
 }
 #[derive(Clone, Debug)]
-struct Connection {
+pub struct Connection {
     start: String,
     end: String,
     channel: Option<String>,
 }
 #[derive(Clone, Debug)]
-pub(super) struct Declaration {
+pub struct Declaration {
     pub(super) name: String,
     kind: String,
     implementation: Option<String>,
@@ -140,7 +140,45 @@ pub(super) struct Declaration {
     connections: Vec<Connection>,
     source: String,
 }
+impl Parameter {
+    pub fn scalar(&self) -> &str {
+        &self.scalar
+    }
+    pub fn unit(&self) -> Option<&str> {
+        self.unit.as_deref()
+    }
+    pub fn default(&self) -> Option<&str> {
+        self.default.as_deref()
+    }
+}
+impl Connection {
+    pub fn start(&self) -> &str {
+        &self.start
+    }
+    pub fn end(&self) -> &str {
+        &self.end
+    }
+    pub fn channel(&self) -> Option<&str> {
+        self.channel.as_deref()
+    }
+}
 impl Declaration {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+    pub fn kind(&self) -> &str {
+        &self.kind
+    }
+    pub fn parameters(&self) -> &BTreeMap<String, Parameter> {
+        &self.parameters
+    }
+    pub fn children(&self) -> &[(String, String)] {
+        &self.children
+    }
+    pub fn connections(&self) -> &[Connection] {
+        &self.connections
+    }
+
     pub(super) fn fail(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
         error(format!(
             "{}: {}: {}",
@@ -152,10 +190,10 @@ impl Declaration {
     pub(super) fn simple(&self) -> bool {
         self.kind == "simple"
     }
-    pub(super) fn implementation(&self) -> Option<&str> {
+    pub fn implementation(&self) -> Option<&str> {
         self.implementation.as_deref()
     }
-    pub(super) fn gates(&self) -> &BTreeMap<String, bool> {
+    pub fn gates(&self) -> &BTreeMap<String, bool> {
         &self.gates
     }
     pub(super) fn require_parameters(&self, schema: &[(&str, &str, Option<&str>)]) -> Result<()> {
@@ -477,7 +515,7 @@ pub(super) enum TypedValue {
     Boolean,
     String(String),
 }
-fn typed_value(parameter: &Parameter, value: &str) -> Result<TypedValue> {
+pub(super) fn typed_value(parameter: &Parameter, value: &str) -> Result<TypedValue> {
     match parameter.scalar.as_str() {
         "string" => Ok(TypedValue::String(string_literal(value)?)),
         "bool" if matches!(value, "true" | "false") => Ok(TypedValue::Boolean),

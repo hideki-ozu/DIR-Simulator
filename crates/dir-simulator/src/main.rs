@@ -3,12 +3,45 @@ use serde_json::json;
 use std::path::Path;
 use std::process::ExitCode;
 
-const HELP: &str = "DIR Simulator — Classical CAN, multiple buses and Gateway\n\nUsage:\n  dir-simulator validate --config PATH\n  dir-simulator run --config PATH --output DIR\n  dir-simulator view --input results.json --output viewer.html\n  dir-simulator --help\n  dir-simulator --version\n\nInput: NED topology, INI settings and JSON workload.\nOutput: manifest.json, results.json, events.csv, summary.csv, diagnostics.jsonl\nViewer: standalone local HTML; preserves existing files and opens no browser.\n";
+const HELP: &str = "DIR Simulator — Classical CAN, multiple buses and Gateway\n\nUsage:\n  dir-simulator validate --config PATH\n  dir-simulator run --config PATH --output DIR\n  dir-simulator view --input results.json --output viewer.html\n  dir-simulator ned-editor [--config PATH] [--export-root DIR] [--state-root DIR]\n  dir-simulator --help\n  dir-simulator --version\n\nInput: NED topology, INI settings and JSON workload.\nOutput: manifest.json, results.json, events.csv, summary.csv, diagnostics.jsonl\nViewer: standalone local HTML; preserves existing files and opens no browser.\n";
 
 fn diagnostic(d: &Diagnostic) {
     eprintln!("{}", serde_json::to_string(d).expect("diagnostic JSON"));
 }
 fn execute(args: &[String]) -> Result<u8, Diagnostic> {
+    if args.first().is_some_and(|a| a == "ned-editor") {
+        if args.len() == 2 && args[1] == "--help" {
+            println!(
+                "dir-simulator ned-editor [--config PATH] [--export-root DIR] [--state-root DIR]"
+            );
+            return Ok(0);
+        }
+        let mut options = std::collections::BTreeMap::new();
+        let mut i = 1;
+        while i < args.len() {
+            let key = &args[i];
+            if !["--config", "--export-root", "--state-root"].contains(&key.as_str())
+                || options.contains_key(key)
+            {
+                return Err(Diagnostic::prepare(format!(
+                    "unknown or duplicate option {key}"
+                )));
+            }
+            let value = args
+                .get(i + 1)
+                .filter(|v| !v.is_empty() && !v.starts_with("--"))
+                .ok_or_else(|| Diagnostic::prepare(format!("missing value for {key}")))?;
+            options.insert(key.clone(), std::path::PathBuf::from(value));
+            i += 2;
+        }
+        let config = options.remove("--config");
+        dir_simulator::tool::ned_editor::serve(dir_simulator::tool::ned_editor::EditorOptions {
+            config,
+            export_root: options.remove("--export-root"),
+            state_root: options.remove("--state-root"),
+        })?;
+        return Ok(0);
+    }
     if args == ["--version"] {
         println!("dir-simulator {}", env!("CARGO_PKG_VERSION"));
         return Ok(0);

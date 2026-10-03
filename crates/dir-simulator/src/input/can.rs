@@ -11,6 +11,18 @@ use std::collections::{BTreeMap, BTreeSet};
 struct CanRules<'a> {
     profile: &'a str,
 }
+pub(super) fn validate_parameter_literal(
+    declaration: &Declaration,
+    name: &str,
+    value: &str,
+    profile: &str,
+) -> Result<()> {
+    let parameter = declaration
+        .parameters()
+        .get(name)
+        .ok_or_else(|| error("Unknown parameter"))?;
+    CanRules { profile }.validate_value(declaration, name, &ned::typed_value(parameter, value)?)
+}
 impl ModelRules for CanRules<'_> {
     fn validate_value(
         &self,

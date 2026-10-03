@@ -1,20 +1,24 @@
 # DIR Simulator
 
-文書バージョン：`1.0.2`
+文書バージョン：`1.0.3`
 対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.3` | `2026-10-04` | PR6の診断・仲裁・提供状態とOMNeT由来成果物削除を保持し、mainのNEDエディタ・保存復旧を統合。分岐して公開した履歴を両方保持 |
 | `1.0.2` | `2026-10-03` | Issue #4対応：OMNeT++を用いた比較結果・添付資料への案内を削除し、DIR単独の検証範囲を明確化 |
 | `1.0.1` | `2026-10-03` | レビュー修正：診断保持API、Viewer試験の前提、保存済みOMNeT比較手順を明確化 |
+| `1.0.1` | `2026-10-04` | NEDエディタの新規作成、全標準部品、UIでのmodule組立・Gateway／送信設定、保存と操作文書への案内を追加 |
 | `1.0.0` | `2026-10-03` | GW・複数CAN、RX保持、Busゲート名自由化、ソース分割、ビューアの送受信と前後ステップ、比較証跡を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | Classical CANのCLI・ライブラリ、結果ビューア、実行例、OMNeT++比較の利用方法を集約し、v0.1公開版を確定 |
 
+分岐中にPR6とmainで同じ版番号を別々に公開したため、過去の更新履歴は両方保持している。
+
 文書ID：`readme`
 
-対象タグは`v1.0.0`、文書版は`1.0.2`です。Cargoパッケージ版は`0.1.0`です。
+対象タグは`v1.0.0`、文書版は`1.0.3`です。Cargoパッケージ版は`0.1.0`です。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
@@ -127,6 +131,17 @@ npm install --prefix tmp/viewer-tests playwright@1.62.1
 ./tmp/viewer-tests/node_modules/.bin/playwright install chromium
 NODE_PATH="$PWD/tmp/viewer-tests/node_modules" node tests/viewer_browser.cjs
 ```
+
+### NEDエディタ
+
+NEDエディタは内部テンプレートから新規作成でき、標準のController・Bus・Gateway・Fanoutなどを常に配置できます。空のMultibusネットワークから、複合moduleの作成、境界ポート追加、Busとの結線、Gatewayの複数出口への転送、送信データ・実体別パラメータをUIで設定できます。NED・INI・JSONの原文も編集できます。読込後は入力を閉じ、通常は一式を別フォルダへ保存します。保存前に共通prepareで検証し、上書きは対象を明示して確認します。`--config`を省略するとMultibusの新規プロジェクトを開きます。
+
+```bash
+mkdir -p /tmp/dir-editor-exports
+./target/debug/dir-simulator ned-editor --config examples/can/baseline.ini --export-root /tmp/dir-editor-exports
+```
+
+表示されたローカルURLをブラウザで開きます。[NED-editor仕様書](docs/tools/ned-editor/NED-editor仕様書.md)と[NED-editor取扱説明書](docs/tools/ned-editor/NED-editor取扱説明書.md)に設計・操作・復旧手順を記載しています。
 
 ### 対応範囲と検証
 
