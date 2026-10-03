@@ -12,6 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "tools/omnet_comparison/compare.py"
+if not SCRIPT.is_file():
+    raise unittest.SkipTest("OMNeT++ comparison tools are maintained outside this repository")
 SPEC = importlib.util.spec_from_file_location("omnet_comparison", SCRIPT)
 comparison = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(comparison)

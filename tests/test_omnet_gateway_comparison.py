@@ -11,6 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests/fixtures/omnet_gateway"
+if not (ROOT / "tools/omnet_comparison/gateway_compare.py").is_file():
+    raise unittest.SkipTest("OMNeT++ comparison tools are maintained outside this repository")
 sys.path.insert(0, str(ROOT / "tools/omnet_comparison"))
 import gateway_compare  # noqa: E402
 
