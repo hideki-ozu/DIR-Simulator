@@ -1,0 +1,722 @@
+{
+  "date": "2026-10-03",
+  "change": "Implement agreed source layout with common/CAN/Gateway data ownership, request lineage separated from CAN records, runtime callback separation, run/output reservation separation, tool/viewer relocation and updated design documents.",
+  "base_commit": "ea122c9420de89bddaeedac174c2686018bb0dec",
+  "source_state": "Current working tree including pre-existing uncommitted CAN/Gateway and input/output refactors. Baseline captured from a copy of that working tree, not Git HEAD. No commit, push, tag or version revision performed.",
+  "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+  "source_sha256": {
+    "Cargo.lock": "f6a341a962b81b736c8d5ee4fa1589a45973ba83e09f04df08400d30d70456a6",
+    "Cargo.toml": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc",
+    "crates/dir-simulator/Cargo.toml": "943ed9e9f7029f34eaa8d36a9b0917bf0934d86f4a33609037776a03647a3eae",
+    "crates/dir-simulator/src/input/can/tests.rs": "e9c52637371cd8de5060a2034690e762783075c97f97345f47bd49a7105cb5c5",
+    "crates/dir-simulator/src/input/can.rs": "c8fb075622d0a8b7186d632a33263cf25a1d610fc6dc563df24dd16ad1698722",
+    "crates/dir-simulator/src/input/gateway.rs": "a4b69c04e34467aa4be4f5af0ea491554b2f2b7b83743e36506e7e1860c81188",
+    "crates/dir-simulator/src/input/ned/tests.rs": "c72c66c33cc775afa8771af20ef586230a1e773ade4601fb802ba5d206a62219",
+    "crates/dir-simulator/src/input/ned.rs": "62536c864712562385c404d37f56df825513a98758959c22dcb05bc120a31f8d",
+    "crates/dir-simulator/src/input/tests.rs": "62f958dfbd4f5c81254bfa2570aee12ac74e0775b0a24d89cf3418a03d38d7c8",
+    "crates/dir-simulator/src/input.rs": "7a533f59c40333b53b207c6bcec14d86c6eeb43ac0fcc9e7e35bffefc4c5521c",
+    "crates/dir-simulator/src/lib/snapshot/can.rs": "be02eb163d7a8c588dfc2fed58158aca834a2f5bedb69051c4b16fca0ac3db6d",
+    "crates/dir-simulator/src/lib/snapshot/common.rs": "22e728a9b8d90ca7bf55d4d6f1a33c455448703be5a0a6e35efd28fb7d7cb5dd",
+    "crates/dir-simulator/src/lib/snapshot/gateway.rs": "27cd4504f2163aeb55a84502040a8d299dbaff27ad49ce504135dac5396a3885",
+    "crates/dir-simulator/src/lib/snapshot.rs": "7012a9b21b09f2ab6c2e2ec3cf3c9ddfffe0235ec5815fbe755a225d64da0089",
+    "crates/dir-simulator/src/lib/types/can.rs": "92b0fe28035fe52bc740e683d496acfa5b28e4b79786436c91662997c682c0f3",
+    "crates/dir-simulator/src/lib/types/common.rs": "fb094d38a637d646232091f2bbe5d3ea9e1c03964bcefe0334d0c4c377d56107",
+    "crates/dir-simulator/src/lib/types/gateway.rs": "f34e844018a5ed788767dbf4bc0fd3dbebc5b8bf6cd7ab9b81197bb1eca5d27d",
+    "crates/dir-simulator/src/lib/types/prepared.rs": "974bff6272c30f9227ccbdc1a124dc9c51a21a2874d27d1f1eb7845ed052877f",
+    "crates/dir-simulator/src/lib/types.rs": "fe587ee20ea1397ef7ef5eea77e653d23af57377a904c5538165bf3573f176b5",
+    "crates/dir-simulator/src/lib.rs": "ab57d588f7c3f8af1d49c9b084d3cd1c189a6aa910627397674c7d47e99e9bdc",
+    "crates/dir-simulator/src/main.rs": "91f2b5f85a96092cc0a2f279a47736e4014db23c6eef476781cfdf913e43c566",
+    "crates/dir-simulator/src/output/aggregate.rs": "5b444d30c57c92fad4d4e02fd5a4998cda633518339ef619332efa2b7974d0aa",
+    "crates/dir-simulator/src/output/csv.rs": "3e7b0356e89b284782e75a4b30fb7f9c09a62827eecb60a0ac0d764941987adc",
+    "crates/dir-simulator/src/output/json.rs": "521fed37cde3e030bc60226be3edc53c9ed489ac24ca9eb626a7feb74c4c9bd3",
+    "crates/dir-simulator/src/output/metadata.rs": "6d2faac1acdb3d3f1d5e0553514bb8324c10d8166b6b85280e955587d3ab5d61",
+    "crates/dir-simulator/src/output/model_records.rs": "080b77f747b634626d57a480314168ddb467d7a73caa141a525a3aae61f62022",
+    "crates/dir-simulator/src/output/publish.rs": "f9ec2e3c8678dcccfde01d4e587dde5ef4568fa49e22452781ede04e4337dfff",
+    "crates/dir-simulator/src/output/reservation.rs": "c4e3b270ea20d1457882a661ee08b6d174bb97d4a608546b10dc946edb724ec9",
+    "crates/dir-simulator/src/output/tests.rs": "98f600d155d274d0619a324d990b9a17a6b0dc22a7032fbca36d5dcf47eca1a8",
+    "crates/dir-simulator/src/output.rs": "191a4b75bffdb46ba885af621c758d166359283fd95ab28a6955aec9169aca10",
+    "crates/dir-simulator/src/run.rs": "e51a4df2a94687a853fb96428645422bee5acef6f22acc45369d17cce76494ec",
+    "crates/dir-simulator/src/runtime/can/protocol.rs": "2992807158651b2e6f2e08cbf954c1dacb9745e090e8cddfa1f182c357d5b565",
+    "crates/dir-simulator/src/runtime/can/tests.rs": "3b840c924b526b87b079f3f67f9e2c21095ab62f96793ae7ef87f53ea38e9b69",
+    "crates/dir-simulator/src/runtime/can.rs": "352d0d49fb0c1966ef01810aab751c1ef5b51b370c74080b5e2212820fbcf794",
+    "crates/dir-simulator/src/runtime/engine.rs": "bbe32dd7593c6a78818fb41ef1229c5808d7714c42f03d6974407582891f468b",
+    "crates/dir-simulator/src/runtime/gateway.rs": "3738784e4b478ae11adafc992c2b3cde0625d735583dbe910cf134c535156c16",
+    "crates/dir-simulator/src/runtime/scheduler.rs": "da0814e2505b034cea31e68d492b851ef97da7585b1696bc2fad92bc87f8ee4f",
+    "crates/dir-simulator/src/runtime/tests.rs": "4b734815a97884fd3cf4694a496f2738c4f00ded2f4ef018cac6723ed604b662",
+    "crates/dir-simulator/src/runtime.rs": "39c3ebe697da9f81e2bde0ad173df4090b45f0cfdae1b527a9c3e1ab0866be0a",
+    "crates/dir-simulator/src/tool/viewer/assets/app.js": "0e96afe34d586afb7abba00e3e20c0e84d6cb916381a3a801fcd51a0875968fb",
+    "crates/dir-simulator/src/tool/viewer/assets/index.html": "d8e8e2932cf7aad8e5ce0985c64c985e4008e0d5bfea5edaa0459300bb7042b5",
+    "crates/dir-simulator/src/tool/viewer/assets/model.js": "ba9e6fdb0cc64910b116b1b8e13100ae4c0aea0017979cd1b2b055c1e0e225be",
+    "crates/dir-simulator/src/tool/viewer/assets/style.css": "76f9e68dbae1a275e39176df4916ad0fe792fdd8e36f83a917c6ac7d0bd131b3",
+    "crates/dir-simulator/src/tool/viewer/tests.rs": "c282c1c92763b20697569d4fc5cd60ecec8afd62823cc75d67cae22d9bcbc822",
+    "crates/dir-simulator/src/tool/viewer.rs": "b5eee324ff074220e63b4911b9803317c780c05be9e8a044e170449cd38ff5c8",
+    "crates/dir-simulator/src/tool.rs": "1e8b688c9a3c46b90dcea56fa49f7537a052e3f17041e7abda9f84ea7940c98b",
+    "crates/dir-simulator/tests/can_scenarios.rs": "26d5d0c632461954b14bd1517580664eb3c96af5a0f4d9fbb82a2a4aec76c465",
+    "crates/dir-simulator/tests/cli.rs": "4c9a9eac5097cbdbf3fc0accadb12e25a0f9dda012af627714ba1fd08a7f5df1",
+    "crates/dir-simulator/tests/gateway.rs": "07749be31b73279ba08ad8e0640b123f550b8acf47e57efb78286d423ed50e95",
+    "crates/dir-simulator/tests/viewer_cli.rs": "a283be42361e94800ad1bdec5ee6bb5677e9c17a2d2455b26a5fbef2f82dbcfc",
+    "rust-toolchain.toml": "dc8a9e7668c882190e58da244ac78e86d0d9875140a6249849f49b74d7382a76",
+    "tests/viewer_browser.cjs": "c0e05b71ac0c1cf6cc0070a3f4a0bc61a2a88eb0de1861f59a3f7c23d7d17536",
+    "tests/viewer_model.test.cjs": "190502e78d9fad38166d436080aa61dc19b5a8f2a7ade7e7234dcab9ef2aa279"
+  },
+  "checks": [
+    {
+      "command": "cargo test --locked",
+      "result": "PASS",
+      "tests": 66,
+      "breakdown": {
+        "library": 40,
+        "can_scenarios": 5,
+        "cli": 6,
+        "gateway": 8,
+        "viewer_cli": 6,
+        "doctests": 1
+      }
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "result": "PASS"
+    },
+    {
+      "command": "cargo clippy --locked --all-targets -- -D warnings",
+      "result": "PASS"
+    },
+    {
+      "command": "node --test tests/viewer_model.test.cjs",
+      "result": "PASS",
+      "tests": 15
+    },
+    {
+      "command": "NODE_PATH=\"$PWD/tmp/viewer-tests/node_modules\" node tests/viewer_browser.cjs",
+      "result": "PASS",
+      "browser_output": "PASS: viewer playback, seek, filters/details, responsive layout, validation, exact times, topology animation, schema2 independent buses/Gateway processing/copy/origin/boundary, zero horizon; no network or browser errors"
+    },
+    {
+      "command": "python3 scripts/check_traceability.py --strict",
+      "result": "PASS",
+      "requirements": 193,
+      "functions": 48,
+      "nodes": 225,
+      "structural_errors": 0,
+      "incomplete_requirements": 0,
+      "incomplete_items": 0
+    },
+    {
+      "command": "python3 scripts/generate_traceability.py --check",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "baseline_tests": {
+    "command": "CARGO_TARGET_DIR=/tmp/dir-structure-36nb3xzf/baseline-target cargo test --locked",
+    "source": "/tmp/dir-structure-36nb3xzf/before-source",
+    "result": "PASS",
+    "tests": 63
+  },
+  "baseline_binary_provenance": "Fresh debug build from saved before-source used for baseline capture. The previously built live binary was preserved but not used as the comparison baseline.",
+  "api_changes": {
+    "preserved_paths": [
+      "prepare",
+      "run",
+      "RunReport",
+      "Diagnostic",
+      "PreparedSimulation",
+      "types",
+      "snapshot",
+      "runtime::simulate",
+      "output::export",
+      "can::{WireFrame,serialize,accepts,end_time}",
+      "viewer::write"
+    ],
+    "prepared_fields": "PreparedSimulation.common / .can / .gateway",
+    "snapshot_fields": "Snapshot.common / .can / .gateway",
+    "request_lineage": "GatewaySnapshot.request_lineage keyed by request_id owns origin_request_id, parent_request_id and gw_hops. Native requests also receive lineage.",
+    "output_contract": "Existing JSON schema 1/2 and CSV preserved through explicit exporters; Rust nested fields are an intentional source-level API change."
+  },
+  "new_regressions": [
+    "Request ID set equals lineage keys, with consistent parent/origin/hop and forward-child association at every max-events boundary across multicast, multicast-drop, hop and capacity-zero fixtures.",
+    "Failed routing preflight leaves no fanout forwarding rows or child lineage.",
+    "Missing schema2 request lineage returns E-0003 instead of a fabricated record."
+  ],
+  "viewer_asset_relocation": {
+    "crates/dir-simulator/viewer/index.html": {
+      "destination": "crates/dir-simulator/src/tool/viewer/assets/index.html",
+      "sha256": "d8e8e2932cf7aad8e5ce0985c64c985e4008e0d5bfea5edaa0459300bb7042b5",
+      "exact_bytes_equal": true
+    },
+    "crates/dir-simulator/viewer/style.css": {
+      "destination": "crates/dir-simulator/src/tool/viewer/assets/style.css",
+      "sha256": "76f9e68dbae1a275e39176df4916ad0fe792fdd8e36f83a917c6ac7d0bd131b3",
+      "exact_bytes_equal": true
+    },
+    "crates/dir-simulator/viewer/model.js": {
+      "destination": "crates/dir-simulator/src/tool/viewer/assets/model.js",
+      "sha256": "ba9e6fdb0cc64910b116b1b8e13100ae4c0aea0017979cd1b2b055c1e0e225be",
+      "exact_bytes_equal": true
+    },
+    "crates/dir-simulator/viewer/app.js": {
+      "destination": "crates/dir-simulator/src/tool/viewer/assets/app.js",
+      "sha256": "0e96afe34d586afb7abba00e3e20c0e84d6cb916381a3a801fcd51a0875968fb",
+      "exact_bytes_equal": true
+    }
+  },
+  "execution_comparison": {
+    "schema_version": 1,
+    "baseline_binary_sha256": "856937041060a6d988a35b1f5836b97e77b4daf7a058f450e2901bc5215a97c1",
+    "after_binary_sha256": "a07e5910ebc844f7ac939be5b28f09fe138f50ee1d5e057d4a22841fec404f44",
+    "source_config_set_unchanged": true,
+    "config_set_mismatches": [],
+    "binary_provenance_validation": {
+      "field": "metadata.binary_sha256",
+      "baseline_phase_index_sha256": "856937041060a6d988a35b1f5836b97e77b4daf7a058f450e2901bc5215a97c1",
+      "after_phase_index_sha256": "a07e5910ebc844f7ac939be5b28f09fe138f50ee1d5e057d4a22841fec404f44",
+      "baseline_successful_results_checked": 25,
+      "after_successful_results_checked": 25,
+      "all_successful_results_match_their_phase_binary": true
+    },
+    "raw_integrity_validation": {
+      "baseline": {
+        "raw_outputs_checked": 125,
+        "raw_manifest_entries_checked": 100
+      },
+      "after": {
+        "raw_outputs_checked": 125,
+        "raw_manifest_entries_checked": 100
+      },
+      "captured_phase_binaries_match_index_sha256": true,
+      "manifests_checked_before_normalization": true
+    },
+    "counts": {
+      "configs": 28,
+      "validate_equal": 28,
+      "run_equal": 28,
+      "normalized_artifacts_equal": 28,
+      "configs_with_any_difference": 0
+    },
+    "comparisons": [
+      {
+        "config": "docs/verification/fixtures/can/after-eof.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/capacity-zero.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/competition.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/delay-filter.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/eof-boundary.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/mixed-generators.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/queue-full.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/release-arrival.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/capacity-zero.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/delay.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/disjoint-cycle.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/eof-boundary.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/forward-boundary.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/hop.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/independent-only.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/independent.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/invalid-cycle.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          2,
+          2
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          null,
+          null
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/invalid-overlap.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          2,
+          2
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          null,
+          null
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/invalid-owner.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          2,
+          2
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          null,
+          null
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/multicast-drop.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/multicast.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/no-route.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/queue.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/rx-filter.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "examples/can/baseline.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "examples/can/contention.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "examples/can/overload.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "examples/gateway/fanout.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      }
+    ],
+    "normalization": {
+      "json_keys": [
+        "binary_sha256",
+        "finished_at_utc",
+        "manifest_path",
+        "output_path",
+        "run_id",
+        "started_at_utc"
+      ],
+      "json_artifacts": "raw bytes retained; only volatile JSON string tokens replaced, preserving number lexemes, key order, escaping, and whitespace",
+      "binary_sha256_rule": "normalized only after captured binary and every successful results.json matched the phase index binary hash",
+      "csv_field": "run_id",
+      "csv_rule": "raw CSV must round-trip byte-for-byte with canonical quoting before only run_id cells are replaced",
+      "manifest_hashes_and_sizes": "recomputed from normalized output artifacts",
+      "simulation timing, diagnostics, numeric lexical forms, and all other fields": "preserved and compared"
+    }
+  },
+  "comparison_scope": {
+    "configs": 28,
+    "accepted_and_run": 25,
+    "expected_rejected": 3,
+    "successful_run_output_files": 125,
+    "manifest_entries_per_phase": 100,
+    "normalization": "Only volatile run IDs, timestamps, output/manifest paths, and verified binary hashes are substituted. JSON/JSONL number spellings and whitespace, and CSV escaping/line endings remain byte-preserving. Raw hashes, sizes and manifests verified before normalization."
+  },
+  "review": {
+    "implementation": "Independent Astra review found no blocking changes to event order, arithmetic, preflight/publication boundaries, input/output contracts or reservation lifetime.",
+    "documents": "Clarified fanout atomicity: route commits all forwarding rows/reservations together; later per-egress forward callbacks commit child requests independently."
+  },
+  "validation_limits": [
+    "Coverage is the recorded unit/integration/browser suites and 28 configurations, not full specification conformance or performance validation.",
+    "Engine retains existing concrete CAN/Gateway events and a single state owner; generic model registry/arena and future models remain outside this restructure.",
+    "NED editor and resumable checkpoints are not implemented."
+  ],
+  "local_evidence_root": "/tmp/dir-structure-36nb3xzf",
+  "local_log_sha256": {
+    "cargo-test.log": "bc6ad981800e628ce7166352efea1c1f8e8ff8db4fbca092ef4a89bb47f76b77",
+    "after-tests.log": "233aabc8f988dd0fe708432acdb833d6e758ad35b7f7ecea56308cda917e8ac8",
+    "comparison.json": "4c0f0aa56f8f29342bc675e835369d565b946f9bb92b63f0de91fac08d117758",
+    "baseline/index.json": "65279d08c6882b49246cc0255dbeb3699a3af30f554744d38f62ef21846934ae",
+    "after/index.json": "7799f43cddb2afbfc6ce4224437272288ec0a4488a90afae649f4cfd55e09cd5",
+    "viewer-model-after.log": "a5fa4490cfcee58ed32e9045991fb0c76dfb60e9441641f1cf07966a9277947d",
+    "viewer-browser-after.log": "a54aa6d5c9a45734225045666f72da78a9563749ca2df5143c12cdbeb9c4a1c2",
+    "compare.py": "e523faf1c38ec3a41d10ea090877e4c0fa60154d6ab8be0e90269861b216d39c"
+  }
+}

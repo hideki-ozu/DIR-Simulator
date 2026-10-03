@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "source",
+      "kind": "can.periodic.v1",
+      "node": "Main.src",
+      "start": "0ps",
+      "period": "1ms",
+      "end": "10ms",
+      "frame": {
+        "format": "standard",
+        "id": 256,
+        "data": "0102030405060708"
+      }
+    },
+    {
+      "id": "bus_b_load",
+      "kind": "can.periodic.v1",
+      "node": "Main.sinkB",
+      "start": "300us",
+      "period": "500us",
+      "end": "10ms",
+      "frame": {
+        "format": "standard",
+        "id": 512,
+        "data": "0807060504030201"
+      }
+    }
+  ]
+}

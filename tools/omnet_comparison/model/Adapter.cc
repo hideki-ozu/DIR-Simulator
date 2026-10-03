@@ -9,6 +9,9 @@
 #include <cctype>
 #include <fstream>
 #include <limits>
+#include <deque>
+#include <map>
+#include <tuple>
 #include <set>
 #include <sstream>
 #include <string>
@@ -38,11 +41,14 @@ std::vector<Request> readRequests(const char *path) {
     std::ifstream in(path);
     if (!in) throw cRuntimeError("Cannot read source TSV: %s", path);
     std::string line;
-    if (!std::getline(in, line) || line != "generation_ps\trequest_id\tformat\tcan_id\tpayload_hex")
+    if (!std::getline(in, line)) throw cRuntimeError("Missing source TSV header: %s", path);
+    if (!line.empty() && line.back() == '\r') line.pop_back();
+    if (line != "generation_ps\trequest_id\tformat\tcan_id\tpayload_hex")
         throw cRuntimeError("Invalid source TSV header: %s", path);
     std::vector<Request> requests;
     std::set<std::string> ids;
     while (std::getline(in, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
         if (line.empty()) continue;
         std::vector<std::string> fields;
         std::istringstream row(line);
@@ -67,6 +73,9 @@ std::vector<Request> readRequests(const char *path) {
             r.bytes.push_back(static_cast<uint8_t>(std::stoul(r.hex.substr(i, 2), nullptr, 16)));
         requests.push_back(r);
     }
+    std::sort(requests.begin(), requests.end(), [](const Request& a, const Request& b) {
+        return std::tie(a.generation, a.id) < std::tie(b.generation, b.id);
+    });
     return requests;
 }
 
@@ -91,15 +100,177 @@ std::string payloadHex(const CanDataFrame& frame) {
 }
 }
 
+namespace {
+struct GatewayPort {
+    std::string gateway, ingress;
+    int64_t processing, capacity, hopLimit;
+};
+struct Route {
+    GatewayPort config;
+    std::string id, egress;
+    bool extended;
+    unsigned int minId, maxId;
+};
+struct RowContext {
+    std::string gateway, ingress, egress, route, buffer, reason, child;
+    int64_t rxUsed = -1;
+    int64_t hops = -1;
+};
+struct RxHold {
+    CanDataFrame *frame;
+    GatewayPort config;
+    size_t remaining;
+};
+struct ForwardTimer {
+    std::string buffer;
+    size_t route;
+};
+std::vector<std::string> columns(const std::string& line) {
+    std::vector<std::string> fields;
+    size_t from = 0;
+    for (;;) {
+        auto end = line.find('\t', from);
+        fields.push_back(line.substr(from, end == std::string::npos ? end : end - from));
+        if (end == std::string::npos) return fields;
+        from = end + 1;
+    }
+}
+std::string textPar(CanDataFrame *frame, const char *name) {
+    return frame->hasPar(name) ? std::string(frame->par(name).stringValue()) : "";
+}
+void stringPar(CanDataFrame *frame, const char *name, const std::string& value) {
+    if (frame->hasPar(name)) frame->par(name) = value.c_str();
+    else frame->addPar(name) = value.c_str();
+}
+int64_t hopCount(CanDataFrame *frame) {
+    return frame->hasPar("hops") ? frame->par("hops").longValue() : 0;
+}
+}
+
+class DirAdapterOutputBuffer;
 class DirAdapterRecorder : public cSimpleModule {
     std::ofstream out;
     cMessage *stop = nullptr;
+    uint64_t sequence = 0;
+    std::map<std::string, cModule *> nodes;
+    std::map<std::string, GatewayPort> ports;
+    std::vector<Route> routes;
+    std::map<std::string, int64_t> rxUsed;
+    std::map<std::string, RxHold> holds;
+    std::map<cMessage *, ForwardTimer> forwards;
+    std::set<CanDataFrame *> processing;
+    std::map<std::string, std::deque<CanDataFrame *>> txWaiting;
+    std::map<cMessage *, std::string> wakes;
+    std::set<std::string> wakeScheduled;
+    std::set<std::pair<std::string, std::string>> routed;
+    void readRouting(const char *path) {
+        if (!*path) return;
+        std::ifstream in(path);
+        if (!in) throw cRuntimeError("Cannot read routing TSV: %s", path);
+        std::string line;
+        if (!std::getline(in, line)) throw cRuntimeError("Missing routing TSV header: %s", path);
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        if (line != "kind\tgateway\tingress\troute_id\tegress\tformat\tid_min\tid_max\tprocessing_ps\trx_capacity\thop_limit")
+            throw cRuntimeError("Invalid routing TSV header: %s", path);
+        std::vector<std::vector<std::string>> rows;
+        while (std::getline(in, line)) {
+            if (!line.empty() && line.back() == '\r') line.pop_back();
+            if (line.empty()) continue;
+            auto fields = columns(line);
+            if (fields.size() != 11) throw cRuntimeError("Routing TSV requires exactly 11 columns");
+            rows.push_back(fields);
+        }
+        for (const auto& f : rows) {
+            if (f[0] != "port") continue;
+            GatewayPort config{f[1], f[2], integer(f[8], "processing_ps"), integer(f[9], "rx_capacity"), integer(f[10], "hop_limit")};
+            if (config.gateway.empty() || !nodes.count(config.ingress) || config.hopLimit == 0 ||
+                !ports.emplace(config.ingress, config).second)
+                throw cRuntimeError("Invalid or duplicate Gateway port");
+            for (size_t i = 3; i < 8; ++i)
+                if (!f[i].empty()) throw cRuntimeError("Gateway port row contains route fields");
+        }
+        std::set<std::tuple<std::string, std::string, std::string>> branches;
+        for (const auto& f : rows) {
+            if (f[0] == "port") continue;
+            if (f[0] != "route" || !ports.count(f[2]) || !ports.count(f[4]) || f[3].empty())
+                throw cRuntimeError("Invalid Gateway route ports or kind");
+            auto config = ports.at(f[2]);
+            if (config.gateway != f[1] || ports.at(f[4]).gateway != f[1] || f[2] == f[4] ||
+                config.processing != integer(f[8], "processing_ps") ||
+                config.capacity != integer(f[9], "rx_capacity") ||
+                config.hopLimit != integer(f[10], "hop_limit") ||
+                !branches.emplace(f[2], f[3], f[4]).second)
+                throw cRuntimeError("Inconsistent or duplicate Gateway route branch");
+            if (f[5] != "standard" && f[5] != "extended") throw cRuntimeError("Invalid route format");
+            auto lo = integer(f[6], "id_min"), hi = integer(f[7], "id_max");
+            if (lo > hi || hi > (f[5] == "standard" ? 0x7ff : 0x1fffffff))
+                throw cRuntimeError("Invalid route CAN ID interval");
+            routes.push_back({config, f[3], f[4], f[5] == "extended", static_cast<unsigned int>(lo), static_cast<unsigned int>(hi)});
+            // Copies retain a raw source's ID. Boundaries are also registered, without
+            // allocating hundreds of millions of entries for an extended route range.
+            canIds.insert(static_cast<unsigned int>(lo));
+            canIds.insert(static_cast<unsigned int>(hi));
+        }
+        std::sort(routes.begin(), routes.end(), [](const Route& a, const Route& b) {
+            return std::tie(a.config.gateway, a.config.ingress, a.extended, a.minId, a.id, a.egress) <
+                   std::tie(b.config.gateway, b.config.ingress, b.extended, b.minId, b.id, b.egress);
+        });
+        std::map<std::string, GatewayPort> configs;
+        for (const auto& entry : ports) {
+            const auto& c = entry.second;
+            auto prior = configs.emplace(c.gateway, c);
+            if (!prior.second && std::tie(c.processing, c.capacity, c.hopLimit) !=
+                std::tie(prior.first->second.processing, prior.first->second.capacity, prior.first->second.hopLimit))
+                throw cRuntimeError("Inconsistent Gateway configuration between ports");
+        }
+        for (size_t i = 0; i < routes.size(); ++i) {
+            for (size_t j = 0; j < i; ++j) {
+                const auto& a = routes[i]; const auto& b = routes[j];
+                if (a.config.ingress == b.config.ingress && a.extended == b.extended &&
+                    a.minId <= b.maxId && b.minId <= a.maxId &&
+                    (a.id != b.id || a.minId != b.minId || a.maxId != b.maxId))
+                    throw cRuntimeError("Overlapping or inconsistent route intervals");
+            }
+        }
+    }
+    RowContext context(const std::string& key, const Route *route = nullptr) {
+        const auto& hold = holds.at(key);
+        RowContext c;
+        c.gateway = hold.config.gateway; c.ingress = hold.config.ingress;
+        c.buffer = key; c.rxUsed = rxUsed[c.ingress];
+        if (route) { c.route = route->id; c.egress = route->egress; c.hops = hopCount(hold.frame) + 1; }
+        return c;
+    }
+    void finishBranch(const std::string& key) {
+        auto it = holds.find(key);
+        if (it == holds.end() || !it->second.remaining) throw cRuntimeError("Gateway branch completed twice");
+        --it->second.remaining;
+        if (!it->second.remaining) releaseRx(key);
+    }
+    void releaseRx(const std::string& key) {
+        auto it = holds.find(key);
+        if (it == holds.end() || it->second.remaining) throw cRuntimeError("Invalid Gateway RX release");
+        --rxUsed[it->second.config.ingress];
+        auto c = context(key);
+        record("rx_released", nodes.at(c.ingress), it->second.frame, -1, c);
+        delete it->second.frame;
+        holds.erase(it);
+    }
+    void childReady(CanDataFrame *frame);
+    void drain(const std::string& egress);
 public:
     int64_t horizon = 0;
     std::vector<std::vector<Request>> inputs;
     std::set<unsigned int> canIds;
-    ~DirAdapterRecorder() override { cancelAndDelete(stop); }
-    void record(const char *event, cModule *node, CanDataFrame *frame, int waiting = -1) {
+    ~DirAdapterRecorder() override {
+        cancelAndDelete(stop);
+        for (auto& f : forwards) cancelAndDelete(f.first);
+        for (auto& w : wakes) cancelAndDelete(w.first);
+        for (auto f : processing) cancelAndDelete(f);
+        for (auto& queue : txWaiting) for (auto f : queue.second) delete f;
+        for (auto& hold : holds) delete hold.second.frame;
+    }
+    void record(const char *event, cModule *node, CanDataFrame *frame, int waiting = -1, const RowContext& c = {}) {
         if (simTime() >= ps(horizon)) return;
         out << event << ',' << simTime().inUnit(SIMTIME_PS) << ','
             << csv(node->par("nodeLabel").stdstringValue()) << ','
@@ -108,9 +279,64 @@ public:
             << (frame->getExtendedId() ? "extended" : "standard") << ',' << frame->getCanID() << ','
             << csv(payloadHex(*frame)) << ',' << frame->getBitLength() << ',';
         if (waiting >= 0) out << waiting;
-        out << '\n';
+        const auto origin = textPar(frame, "origin_request_id");
+        out << ',' << sequence++ << ',' << csv(origin.empty() ? textPar(frame, "request_id") : origin) << ','
+            << csv(c.gateway.empty() ? textPar(frame, "parent_request_id") : textPar(frame, "request_id")) << ','
+            << (c.hops < 0 ? hopCount(frame) : c.hops) << ',' << csv(c.gateway) << ',' << csv(c.ingress) << ','
+            << csv(c.egress) << ',' << csv(c.route) << ',' << csv(c.buffer) << ',' << csv(c.reason) << ',';
+        if (c.rxUsed >= 0) out << c.rxUsed;
+        out << ',' << csv(c.child) << '\n';
         out.flush();
         if (!out) throw cRuntimeError("Writing adapter CSV failed");
+    }
+    bool gatewayReceive(cModule *node, CanDataFrame *frame) {
+        Enter_Method_Silent();
+        const auto ingress = node->par("nodeLabel").stdstringValue();
+        if (!ports.count(ingress)) return false;
+        const auto config = ports.at(ingress);
+        const auto parent = textPar(frame, "request_id");
+        if (!routed.emplace(parent, ingress).second) throw cRuntimeError("Duplicate Gateway reception");
+        const auto key = "rx:" + parent + "/" + config.gateway + "/" + ingress;
+        RowContext c; c.gateway = config.gateway; c.ingress = ingress; c.buffer = key; c.rxUsed = rxUsed[ingress];
+        if (rxUsed[ingress] >= config.capacity) {
+            c.reason = "rx_queue_full";
+            record("rx_dropped", node, frame, -1, c);
+            take(frame); delete frame;
+            return true;
+        }
+        take(frame);
+        std::vector<size_t> matching;
+        for (size_t i = 0; i < routes.size(); ++i) {
+            const auto& r = routes[i];
+            if (r.config.ingress == ingress && r.extended == frame->getExtendedId() &&
+                r.minId <= frame->getCanID() && frame->getCanID() <= r.maxId) matching.push_back(i);
+        }
+        holds.emplace(key, RxHold{frame, config, matching.size()});
+        ++rxUsed[ingress]; c.rxUsed = rxUsed[ingress];
+        record("rx_admitted", node, frame, -1, c);
+        if (matching.empty()) {
+            c.reason = "no_route";
+            record("route_filtered", node, frame, -1, c);
+            releaseRx(key);
+        }
+        else for (auto index : matching) {
+            const auto& route = routes[index];
+            record("forward_pending", nodes.at(route.egress), frame, -1, context(key, &route));
+            auto timer = new cMessage("gateway-processing");
+            forwards.emplace(timer, ForwardTimer{key, index});
+            scheduleAt(simTime() + ps(config.processing), timer);
+        }
+        return true;
+    }
+    void slotFreed(cModule *node) {
+        Enter_Method_Silent();
+        const auto label = node->par("nodeLabel").stdstringValue();
+        if (!txWaiting[label].empty() && wakeScheduled.insert(label).second) {
+            auto wake = new cMessage("gateway-tx-slot-freed");
+            wakes.emplace(wake, label);
+            // Enqueue only after the native bus finishes notifying every SOF participant.
+            scheduleAt(simTime(), wake);
+        }
     }
 protected:
     void initialize() override {
@@ -118,27 +344,67 @@ protected:
         cModule *network = getParentModule();
         horizon = network->par("horizonPs").intValue();
         int count = network->par("nodeCount").intValue();
-        if (horizon < 0 || count < 2 || network->par("bitrate").intValue() <= 0)
+        if (horizon < 0 || count < 2 || (network->hasPar("bitrate") && network->par("bitrate").intValue() <= 0))
             throw cRuntimeError("Invalid horizonPs, nodeCount or bitrate");
         out.open(network->par("outputFile").stringValue());
         if (!out) throw cRuntimeError("Cannot open adapter outputFile");
-        out << "event,time_ps,node,request_id,source,format,can_id,payload_hex,native_bits,queue_waiting\n";
+        out << "event,time_ps,node,request_id,source,format,can_id,payload_hex,native_bits,queue_waiting,sequence,origin_request_id,parent_request_id,hops,gateway,ingress,egress,route_id,buffer_id,reason,rx_used,child_request_id\n";
         out.flush();
-        std::set<std::string> labels;
         for (int i = 0; i < count; ++i) {
             cModule *node = network->getSubmodule("node", i);
-            if (!labels.insert(node->par("nodeLabel").stdstringValue()).second)
-                throw cRuntimeError("Duplicate nodeLabel");
+            if (!node || !nodes.emplace(node->par("nodeLabel").stdstringValue(), node).second)
+                throw cRuntimeError("Missing node or duplicate nodeLabel");
             for (const char *param : {"queueCapacity", "txProcessingPs", "rxProcessingPs", "txChannelPs", "rxChannelPs"})
                 if (node->par(param).intValue() < 0) throw cRuntimeError("Negative node parameter %s", param);
             inputs.push_back(readRequests(node->par("sourceFile").stringValue()));
             for (const auto& r : inputs.back()) canIds.insert(r.canId);
         }
+        if (network->hasPar("routingFile")) readRouting(network->par("routingFile").stringValue());
         stop = new cMessage("exclusive-horizon");
         stop->setSchedulingPriority(std::numeric_limits<short>::min());
         scheduleAt(ps(horizon), stop);
     }
-    void handleMessage(cMessage *msg) override { endSimulation(); }
+    void handleMessage(cMessage *msg) override {
+        if (msg == stop) { endSimulation(); return; }
+        auto w = wakes.find(msg);
+        if (w != wakes.end()) {
+            auto label = w->second; wakes.erase(w); wakeScheduled.erase(label);
+            delete msg; drain(label); return;
+        }
+        auto f = forwards.find(msg);
+        if (f != forwards.end()) {
+            auto timer = f->second; forwards.erase(f); delete msg;
+            auto& hold = holds.at(timer.buffer);
+            const auto& route = routes.at(timer.route);
+            auto c = context(timer.buffer, &route);
+            if (hopCount(hold.frame) + 1 > hold.config.hopLimit) {
+                c.reason = "dropped_hop_limit";
+                record("forward_dropped", nodes.at(route.egress), hold.frame, -1, c);
+                finishBranch(timer.buffer);
+            }
+            else {
+                auto child = hold.frame->dup();
+                const auto childId = "gw:" + textPar(hold.frame, "request_id") + "/" + hold.config.gateway + "/" + route.id + "/" + route.egress;
+                child->setName(childId.c_str()); child->par("request_id") = childId.c_str();
+                child->par("parent_request_id") = textPar(hold.frame, "request_id").c_str();
+                child->par("source") = route.egress.c_str(); child->par("hops") = hopCount(hold.frame) + 1;
+                child->par("tx_channel_ps") = nodes.at(route.egress)->par("txChannelPs").intValue();
+                stringPar(child, "rx_buffer_id", timer.buffer);
+                stringPar(child, "gateway", hold.config.gateway);
+                stringPar(child, "ingress", hold.config.ingress);
+                stringPar(child, "route_id", route.id);
+                c.child = childId;
+                record("forward_submitted", nodes.at(route.egress), hold.frame, -1, c);
+                record("generated", nodes.at(route.egress), child);
+                processing.insert(child);
+                scheduleAt(simTime() + ps(nodes.at(route.egress)->par("txProcessingPs").intValue()), child);
+            }
+            return;
+        }
+        auto child = check_and_cast<CanDataFrame *>(msg);
+        if (!processing.erase(child)) throw cRuntimeError("Unknown Gateway processing timer");
+        childReady(child);
+    }
 };
 Define_Module(DirAdapterRecorder);
 
@@ -152,11 +418,14 @@ class DirAdapterOutputBuffer : public FiCo4OMNeT::CanOutputBuffer {
 public:
     int queueWaiting() const { return frames.size() - (currentFrame ? 1 : 0); }
     void putFrame(cMessage *msg) override {
+        Enter_Method_Silent();
+        take(msg);
         auto frame = check_and_cast<CanDataFrame *>(msg);
         cModule *node = getParentModule();
         int waiting = queueWaiting();
         if (waiting >= node->par("queueCapacity").intValue()) {
-            recorder(node)->record("dropped", node, frame, waiting);
+            RowContext c; c.reason = "queue_full";
+            recorder(node)->record("dropped", node, frame, waiting, c);
             delete frame;
             return;
         }
@@ -166,6 +435,7 @@ public:
     void receiveSendingPermission(unsigned int id, bool extended, bool rtr) override {
         FiCo4OMNeT::CanOutputBuffer::receiveSendingPermission(id, extended, rtr);
         recorder(getParentModule())->record("sof", getParentModule(), currentFrame, frames.size() - 1);
+        recorder(getParentModule())->slotFreed(getParentModule());
     }
     void sendingCompleted() override {
         recorder(getParentModule())->record("native_complete", getParentModule(), currentFrame, frames.size() - 1);
@@ -173,6 +443,39 @@ public:
     }
 };
 Define_Module(DirAdapterOutputBuffer);
+
+void DirAdapterRecorder::childReady(CanDataFrame *frame) {
+    const auto egress = textPar(frame, "source");
+    const auto key = textPar(frame, "rx_buffer_id");
+    auto node = nodes.at(egress);
+    auto buffer = check_and_cast<DirAdapterOutputBuffer *>(node->getSubmodule("bufferOut"));
+    record("ready", node, frame, buffer->queueWaiting());
+    if (node->par("queueCapacity").intValue() == 0) {
+        RowContext c; c.reason = "queue_full";
+        record("dropped", node, frame, buffer->queueWaiting(), c);
+        delete frame; finishBranch(key);
+    }
+    else if (buffer->queueWaiting() >= node->par("queueCapacity").intValue() || !txWaiting[egress].empty()) {
+        txWaiting[egress].push_back(frame);
+        record("waiting_tx", node, frame, buffer->queueWaiting());
+    }
+    else {
+        buffer->putFrame(frame);
+        finishBranch(key);
+    }
+}
+
+void DirAdapterRecorder::drain(const std::string& egress) {
+    auto node = nodes.at(egress);
+    auto buffer = check_and_cast<DirAdapterOutputBuffer *>(node->getSubmodule("bufferOut"));
+    auto& queue = txWaiting[egress];
+    while (!queue.empty() && buffer->queueWaiting() < node->par("queueCapacity").intValue()) {
+        auto child = queue.front(); queue.pop_front();
+        auto key = textPar(child, "rx_buffer_id");
+        buffer->putFrame(child);
+        finishBranch(key);
+    }
+}
 
 class DirAdapterSource : public cSimpleModule {
     std::set<cMessage *> pending;
@@ -199,6 +502,9 @@ protected:
             frame->setBitLength(FiCo4OMNeT::CanFrameTiming::frameBitLength(*frame, 0));
             frame->addPar("request_id") = r.id.c_str();
             frame->addPar("source") = node->par("nodeLabel").stringValue();
+            frame->addPar("origin_request_id") = r.id.c_str();
+            frame->addPar("parent_request_id") = "";
+            frame->addPar("hops") = 0L;
             frame->addPar("tx_channel_ps") = node->par("txChannelPs").intValue();
             frame->setKind(0);
             pending.insert(frame);
@@ -290,7 +596,7 @@ protected:
         else {
             rec->record("received", node, frame);
             pending.erase(frame);
-            delete frame;
+            if (!rec->gatewayReceive(node, frame)) delete frame;
         }
     }
 };

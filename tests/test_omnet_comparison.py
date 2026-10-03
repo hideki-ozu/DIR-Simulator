@@ -3,6 +3,7 @@
 import csv
 import importlib.util
 import json
+import re
 import tempfile
 import unittest
 from collections import defaultdict
@@ -252,6 +253,67 @@ class OmnetComparisonTests(unittest.TestCase):
                         config["Channel Main::a.tx"]["extra"] = "unsupported"
                     with ini.open("w", encoding="utf-8") as stream:
                         config.write(stream)
+                    with self.assertRaises(ValueError):
+                        comparison.settings(ini)
+
+    def test_bus_gate_names_preserve_settings_and_channel_delays(self):
+        case = next(case for case in comparison.suite() if case["name"] == "delay-filter")
+        original = comparison.settings(case["config"])
+        source = Path(original["ned_path"]).read_text(encoding="utf-8")
+        inputs = re.findall(r"\binput\s+(\w+)\s*;", source.split("simple Bus {", 1)[1].split("}", 1)[0])
+        outputs = re.findall(r"\boutput\s+(\w+)\s*;", source.split("simple Bus {", 1)[1].split("}", 1)[0])
+        with tempfile.TemporaryDirectory() as temporary:
+            for label, new_inputs, new_outputs in (
+                ("old", [f"tx_{name}" for name in "abc"], [f"rx_{name}" for name in "abc"]),
+                ("new", [f"rx_{name}" for name in "abc"], [f"tx_{name}" for name in "abc"]),
+                ("arbitrary", ["inlet9", "receiveB", "toBus"], ["broadcastA", "outlet5", "fromBus"]),
+            ):
+                with self.subTest(names=label):
+                    ini = comparison.materialize(case, Path(temporary) / label)
+                    mapping = dict(zip(inputs + outputs, new_inputs + new_outputs))
+                    ned = ini.parent / "models/demo/Main.ned"
+                    ned.write_text(re.sub(r"\b\w+\b", lambda m: mapping.get(m[0], m[0]), source), encoding="utf-8")
+                    config = comparison.read_ini(ini)
+                    for section in list(config.sections()):
+                        prefix = "Channel Main::bus."
+                        if section.startswith(prefix):
+                            renamed = prefix + mapping[section[len(prefix):]]
+                            values = dict(config[section])
+                            config.remove_section(section)
+                            config[renamed] = values
+                    with ini.open("w", encoding="utf-8") as stream:
+                        config.write(stream)
+                    actual = comparison.settings(ini)
+                    for key in ("horizon_ps", "bitrate", "nodes", "workload"):
+                        self.assertEqual(actual[key], original[key])
+                    self.assertEqual(actual["nodes"][1]["rx_channel_ps"], 3_000_000)
+
+    def test_settings_reject_wrong_direction_and_invalid_bus_wiring(self):
+        case = next(case for case in comparison.suite() if case["name"] == "competition")
+        with tempfile.TemporaryDirectory() as temporary:
+            for label in ("direction", "controller-direction", "duplicate", "cross", "unconnected", "count", "wire-delay"):
+                with self.subTest(wiring=label):
+                    ini = comparison.materialize(case, Path(temporary) / label)
+                    ned = ini.parent / "models/demo/Main.ned"
+                    source = ned.read_text(encoding="utf-8")
+                    incoming = re.search(r"a\.tx --> demo\.Wire --> bus\.(\w+);", source)[1]
+                    outgoing = re.search(r"bus\.(\w+) --> demo\.Wire --> a\.rx;", source)[1]
+                    if label == "direction":
+                        source = source.replace(f"input {incoming};", f"output {incoming};")
+                        source = source.replace(f"output {outgoing};", f"input {outgoing};")
+                    elif label == "controller-direction":
+                        source = source.replace("output tx; input rx;", "input tx; output rx;")
+                    elif label == "duplicate":
+                        source = re.sub(r"(b\.tx --> demo\.Wire --> bus\.)\w+", rf"\g<1>{incoming}", source)
+                    elif label == "cross":
+                        source = source.replace(f"a.tx --> demo.Wire --> bus.{incoming};", "a.tx --> demo.Wire --> b.rx;")
+                    elif label == "unconnected":
+                        source = source.replace(f"a.tx --> demo.Wire --> bus.{incoming};", "")
+                    elif label == "count":
+                        source = source.replace(f"input {incoming};", f"input {incoming}; input extra;")
+                    else:
+                        source = source.replace("double delay @unit(s) = default(0ps);", "double delay @unit(s) = default(1ps);")
+                    ned.write_text(source, encoding="utf-8")
                     with self.assertRaises(ValueError):
                         comparison.settings(ini)
 

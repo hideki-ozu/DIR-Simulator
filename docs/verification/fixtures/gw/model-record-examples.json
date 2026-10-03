@@ -31,7 +31,8 @@
         "release_ps": "206000000",
         "origin_request_id": "source:0",
         "parent_request_id": "source:0",
-        "gw_hops": "1"
+        "gw_hops": "1",
+        "tx_enqueued_ps": "100000000"
       },
       "attempts": "1",
       "retries": "0",
@@ -77,6 +78,28 @@
       "child_request_id": "gw:source:0/Main.gw/ab/Main.gw.b",
       "status": "submitted",
       "reason": null
+    }
+  },
+  {
+    "schema_name": "gw.rx_buffer",
+    "schema_version": 1,
+    "record_id": "rx:source:0/Main.gw/Main.gw.a",
+    "subject": "Main.gw.a",
+    "request_id": "source:0",
+    "origin_request_id": "source:0",
+    "time_ps": "100000000",
+    "data": {
+      "buffer_id": "rx:source:0/Main.gw/Main.gw.a",
+      "parent_request_id": "source:0",
+      "origin_request_id": "source:0",
+      "gateway": "Main.gw",
+      "ingress": "Main.gw.a",
+      "capacity": "64",
+      "received_ps": "100000000",
+      "released_ps": "100000000",
+      "status": "released",
+      "reason": null,
+      "egress": ["Main.gw.b"]
     }
   }
 ]

@@ -13,7 +13,7 @@ simple Bus {
   @class("dir.can.MultibusBus");
   double bitrate @unit(bps) = default(500kbps);
   string profile = default("can.cc.multibus.v1");
- gates: input tx_a; output rx_a; input tx_b; output rx_b;
+ gates: input rx_a; output tx_a; input rx_b; output tx_b;
 }
 channel Wire {
  parameters:

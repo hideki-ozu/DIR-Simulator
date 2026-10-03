@@ -14,9 +14,9 @@ simple Bus {
   double bitrate @unit(bps);
   string profile = default("can.cc.ideal.v1");
  gates:
-  input tx_a; output rx_a;
-  input tx_b; output rx_b;
-  input tx_c; output rx_c;
+  input rx_a; output tx_a;
+  input rx_b; output tx_b;
+  input rx_c; output tx_c;
 }
 channel Wire {
  parameters:
@@ -30,10 +30,10 @@ network Main {
   c: demo.Controller;
   bus: demo.Bus;
  connections:
-  a.tx --> demo.Wire --> bus.tx_a;
-  bus.rx_a --> demo.Wire --> a.rx;
-  b.tx --> demo.Wire --> bus.tx_b;
-  bus.rx_b --> demo.Wire --> b.rx;
-  c.tx --> demo.Wire --> bus.tx_c;
-  bus.rx_c --> demo.Wire --> c.rx;
+  a.tx --> demo.Wire --> bus.rx_a;
+  bus.tx_a --> demo.Wire --> a.rx;
+  b.tx --> demo.Wire --> bus.rx_b;
+  bus.tx_b --> demo.Wire --> b.rx;
+  c.tx --> demo.Wire --> bus.rx_c;
+  bus.tx_c --> demo.Wire --> c.rx;
 }

@@ -1,0 +1,185 @@
+{
+  "report_schema_version": 1,
+  "observed_on": "2026-10-03",
+  "base_commit": "ea122c9420de89bddaeedac174c2686018bb0dec",
+  "worktree_changes_included": true,
+  "environment": {
+    "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "node": "v22.22.0",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "cargo": "offline locked",
+    "playwright": "1.62.1"
+  },
+  "source_sha256": {
+    "crates/dir-simulator/src/can.rs": "15977dcaf5ac6332f7d2951d088c2a1ba173df7a552b9e76f171848ca091c8bb",
+    "crates/dir-simulator/src/input/gateway.rs": "a4b69c04e34467aa4be4f5af0ea491554b2f2b7b83743e36506e7e1860c81188",
+    "crates/dir-simulator/src/input/ned.rs": "e42b5ce22371e723934feaf7bd4e6322bba6c391774cd8351f1b65ccf0654658",
+    "crates/dir-simulator/src/input.rs": "76fdd728f878339b4e8fedad3281982210936594c48220aec4ac83fca610bbbf",
+    "crates/dir-simulator/src/lib.rs": "57f2d61ad2dda9d5cf6a0f6526cfbd1d9370a19912d3f53d221445838da9ec2f",
+    "crates/dir-simulator/src/main.rs": "cc5ae7e5609d939df85dcd72ef0f3ad713b62e5cdbddb0e1b7cd054984e20531",
+    "crates/dir-simulator/src/output.rs": "2e0ede636007c002c5ec28aecc99f0cb9325bba2197cf5f08e17160edeea7f13",
+    "crates/dir-simulator/src/runtime.rs": "00c8ec58d152670b5b758b75f5e88c347f8e1f693e52b28a516a451d64605f42",
+    "crates/dir-simulator/src/snapshot.rs": "46ad0ce9a7c474309a8168367f297e3203236912ef964a5c06975d66e03e664b",
+    "crates/dir-simulator/src/types.rs": "58c07f26be9e512798f1dbbb9b547892f8bc9557de85e1c9d20d0e38ae14d1fb",
+    "crates/dir-simulator/src/viewer.rs": "8094cef9bd15a81840dd12cca440347d9f01ae4d9b7f64ddab3624ecafc8fc6d",
+    "crates/dir-simulator/viewer/app.js": "0e96afe34d586afb7abba00e3e20c0e84d6cb916381a3a801fcd51a0875968fb",
+    "crates/dir-simulator/viewer/index.html": "d8e8e2932cf7aad8e5ce0985c64c985e4008e0d5bfea5edaa0459300bb7042b5",
+    "crates/dir-simulator/viewer/model.js": "ba9e6fdb0cc64910b116b1b8e13100ae4c0aea0017979cd1b2b055c1e0e225be",
+    "crates/dir-simulator/viewer/style.css": "76f9e68dbae1a275e39176df4916ad0fe792fdd8e36f83a917c6ac7d0bd131b3",
+    "crates/dir-simulator/tests/can_scenarios.rs": "3b50f835af098e8293547e217bc5e906910da9ca5e4c144aa114754a37a80923",
+    "crates/dir-simulator/tests/cli.rs": "d6bea977860d783f2b5745ef12918d80820d7462c49c75e28abb1fc7fd75d1be",
+    "crates/dir-simulator/tests/gateway.rs": "73ae5eb62471e2fc65c04b1fbf35a7ac56df24c1d2bd937695061ac3e97aa002",
+    "crates/dir-simulator/tests/viewer_cli.rs": "a283be42361e94800ad1bdec5ee6bb5677e9c17a2d2455b26a5fbef2f82dbcfc",
+    "examples/gateway/fanout.ini": "5e77dac2157ff9eb70dddeec6d800f6883e38d46c0752ce56423e10f98372c31",
+    "examples/gateway/models/gateway/Main.ned": "f350bad61559d8d7e40912bd6c92f894aa7ff6676d28e1295177310c1058cf66",
+    "examples/gateway/models/gateway/Types.ned": "f29cc6b3e950e12c792135d5f9e0b3b4a06b16e45b91c25abe1a0eaaff9547d7",
+    "examples/gateway/routing.json": "e62f6947f00fd32c90bead54da826c695320754e1f841694cca5a057603b52f3",
+    "examples/gateway/workload.json": "f08d1d2cd99714ed63ed64d767e1efe92154cb9ced57b632daf8a0317ad4960e",
+    "tests/viewer_model.test.cjs": "b2563af919dd3b346d294a159f514023277938dbd4b3c6e500c01f9008c20341",
+    "tests/viewer_browser.cjs": "f5cc06ebbfc9f78b0dcb9569afcf2923d4e77ce813dd201adb7e5c7eae8bf1d2",
+    "Cargo.lock": "f6a341a962b81b736c8d5ee4fa1589a45973ba83e09f04df08400d30d70456a6",
+    "Cargo.toml": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc",
+    "rust-toolchain.toml": "dc8a9e7668c882190e58da244ac78e86d0d9875140a6249849f49b74d7382a76"
+  },
+  "checks": [
+    {
+      "command": "cargo test --offline --locked",
+      "status": "passed",
+      "log": "   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator/crates/dir-simulator)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.86s\n     Running unittests src/lib.rs (target/debug/deps/dir_simulator-0fbc5d18605a7910)\n\nrunning 26 tests\ntest can::tests::priority_uses_arbitration_bits ... ok\ntest can::tests::timing_rounds_from_sof_and_checks_overflow ... ok\ntest can::tests::independent_bit_vectors ... ok\ntest input::tests::exact_units_and_extreme_decimal_precision ... ok\ntest output::tests::rational_conversion_is_single_rounding_and_checked ... ok\ntest input::tests::defaults_overrides_empty_workload_and_limits ... ok\ntest input::tests::compound_boundary_channels_are_independent_and_sum ... ok\ntest viewer::tests::raw_text_assets_cannot_close_their_html_element ... ok\ntest input::tests::root_overlap_missing_files_and_symlinks_fail ... ok\ntest input::tests::all_can_fixtures_load_and_preserve_snapshots ... ok\ntest input::tests::json_duplicate_unknown_fields_and_inactive_owner_conflicts ... ok\ntest output::tests::windows_are_half_open_and_short_window_uses_actual_length ... ok\ntest output::tests::callback_order_is_not_reservation_order_and_effects_are_unique ... ok\ntest output::tests::abnormal_boundary_points_are_summary_only ... ok\ntest output::tests::analytic_summary_and_conservation ... ok\ntest output::tests::in_flight_and_intermission_are_clipped ... ok\ntest input::tests::workload_validates_schedule_and_frame_beyond_time_limit ... ok\ntest output::tests::zero_time_peak_and_overlapping_occupancy_are_preserved ... ok\ntest output::tests::zero_duration_and_capacity_have_null_ratios ... ok\ntest input::tests::ini_rejects_unknown_duplicate_and_malformed_inputs ... ok\ntest input::tests::invalid_ned_declarations_and_wiring_are_rejected ... ok\ntest input::tests::truncated_ned_returns_diagnostics_without_panicking ... ok\ntest output::tests::metadata_hashes_raw_input_and_canonical_configuration ... ok\ntest output::tests::publication_collision_keeps_existing_file_and_omits_manifest ... ok\ntest output::tests::diagnostic_time_is_failed_boundary_not_last_successful_event ... ok\ntest output::tests::publication_hashes_and_csv_match_json_and_existing_files_survive ... ok\n\ntest result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.94s\n\n     Running unittests src/main.rs (target/debug/deps/dir_simulator-04cabb6262ba547f)\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n     Running tests/can_scenarios.rs (target/debug/deps/can_scenarios-21b8696185dbafc9)\n\nrunning 5 tests\ntest zero_horizon_and_future_only_generation_do_not_generate_requests ... ok\ntest overflow_in_eof_delivery_keeps_request_in_flight_without_receivers ... ok\ntest mixed_identifier_formats_follow_wire_priority ... ok\ntest event_limit_keeps_committed_prefix_and_can_finish_normally_at_exact_count ... ok\ntest all_documented_can_scenarios_match_analytic_expectations ... ok\n\ntest result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n     Running tests/cli.rs (target/debug/deps/cli-ede0f2a49085caee)\n\nrunning 6 tests\ntest errors_do_not_destroy_inputs_or_existing_directories ... ok\ntest examples_show_contention_then_overload ... ok\ntest help_version_argument_errors_and_validate ... ok\ntest execution_limit_exports_consistent_partial_results ... ok\ntest run_publishes_results_and_refuses_to_overwrite ... ok\ntest prepared_inputs_are_not_reopened_during_run ... ok\n\ntest result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s\n\n     Running tests/gateway.rs (target/debug/deps/gateway-05ecf7512460d7fd)\n\nrunning 6 tests\ntest gateway_failures_keep_the_last_committed_prefix_without_partial_fanout ... ok\ntest same_priority_copies_follow_ready_commit_order_and_configuration_permutations ... ok\ntest all_gateway_fixtures_match_independent_expectations ... ok\ntest inactive_reservations_and_mutated_routing_are_validated_before_execution ... ok\ntest input_roles_and_gateway_initial_state_survive_arbitrary_extensions_and_bom ... ok\ntest schema2_publication_preserves_references_hashes_and_per_bus_metrics ... ok\n\ntest result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.00s\n\n     Running tests/viewer_cli.rs (target/debug/deps/viewer_cli-68df72ecce0c31ed)\n\nrunning 6 tests\ntest dangling_output_symlink_is_preserved ... ok\ntest relative_output_reports_an_absolute_path ... ok\ntest local_html_is_self_contained_and_hostile_json_is_inert ... ok\ntest output_collisions_equal_input_and_missing_parent_preserve_data ... ok\ntest help_and_argument_errors ... ok\ntest invalid_input_and_unknown_schema_do_not_create_output ... ok\n\ntest result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n   Doc-tests dir_simulator\n\nrunning 1 test\ntest crates/dir-simulator/src/lib.rs - (line 3) - compile ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s\n\n"
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "status": "passed",
+      "log": ""
+    },
+    {
+      "command": "cargo clippy --offline --locked --all-targets -- -D warnings",
+      "status": "passed",
+      "log": "    Checking dir-simulator v0.1.0 (/home/hideki/DIR-Simulator/crates/dir-simulator)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.95s\n"
+    },
+    {
+      "command": "cargo build --offline --locked -p dir-simulator",
+      "status": "passed",
+      "log": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s\n"
+    },
+    {
+      "command": "node --test tests/viewer_model.test.cjs",
+      "status": "passed",
+      "log": "TAP version 13\n# Subtest: actual schema2 results replay multiple buses, forwarding boundaries and origin path delay\nok 1 - actual schema2 results replay multiple buses, forwarding boundaries and origin path delay\n  ---\n  duration_ms: 1829.299623\n  type: 'test'\n  ...\n# Subtest: replay reflects reached milestones, queues, receiver delay and filters in both directions\nok 2 - replay reflects reached milestones, queues, receiver delay and filters in both directions\n  ---\n  duration_ms: 0.425999\n  type: 'test'\n  ...\n# Subtest: EOF cutoff and unreached planned release remain transmitting/intermission\nok 3 - EOF cutoff and unreached planned release remain transmitting/intermission\n  ---\n  duration_ms: 0.163683\n  type: 'test'\n  ...\n# Subtest: partial boundary keeps only committed milestones, including at H\nok 4 - partial boundary keeps only committed milestones, including at H\n  ---\n  duration_ms: 0.115929\n  type: 'test'\n  ...\n# Subtest: same-time queue measurements use record order, never reservation event_seq\nok 5 - same-time queue measurements use record order, never reservation event_seq\n  ---\n  duration_ms: 0.157547\n  type: 'test'\n  ...\n# Subtest: adjacent u64 times remain exact for cursor, formatting, order and state\nok 6 - adjacent u64 times remain exact for cursor, formatting, order and state\n  ---\n  duration_ms: 0.318897\n  type: 'test'\n  ...\n# Subtest: idle nodes survive empty or zero-duration simulation via metadata\nok 7 - idle nodes survive empty or zero-duration simulation via metadata\n  ---\n  duration_ms: 0.158864\n  type: 'test'\n  ...\n# Subtest: drop transition occurs at ready, not generated; never generates success\nok 8 - drop transition occurs at ready, not generated; never generates success\n  ---\n  duration_ms: 0.564008\n  type: 'test'\n  ...\n# Subtest: invalid schema, noncanonical time, statuses, references and chronology reject\nok 9 - invalid schema, noncanonical time, statuses, references and chronology reject\n  ---\n  duration_ms: 0.443469\n  type: 'test'\n  ...\n# Subtest: time conversion rejects fractional ps and malformed numbers\nok 10 - time conversion rejects fractional ps and malformed numbers\n  ---\n  duration_ms: 0.289839\n  type: 'test'\n  ...\n# Subtest: network progress is exact, reversible and keeps delayed RX after bus release\nok 11 - network progress is exact, reversible and keeps delayed RX after bus release\n  ---\n  duration_ms: 0.571985\n  type: 'test'\n  ...\n# Subtest: zero-delay broadcast completes simultaneously with deterministic visual trails\nok 12 - zero-delay broadcast completes simultaneously with deterministic visual trails\n  ---\n  duration_ms: 0.165842\n  type: 'test'\n  ...\n# Subtest: network EOF cutoff does not invent completion or receive records\nok 13 - network EOF cutoff does not invent completion or receive records\n  ---\n  duration_ms: 0.110411\n  type: 'test'\n  ...\n# Subtest: active network packets are independent of the 500 timeline interval limit\nok 14 - active network packets are independent of the 500 timeline interval limit\n  ---\n  duration_ms: 4.994304\n  type: 'test'\n  ...\n# Subtest: network progress preserves precision for adjacent large timestamps\nok 15 - network progress preserves precision for adjacent large timestamps\n  ---\n  duration_ms: 0.202814\n  type: 'test'\n  ...\n1..15\n# tests 15\n# suites 0\n# pass 15\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1874.611777\n"
+    },
+    {
+      "command": "NODE_PATH=\"$PWD/tmp/viewer-tests/node_modules\" node tests/viewer_browser.cjs",
+      "status": "passed",
+      "log": "PASS: viewer playback, seek, filters/details, responsive layout, validation, exact times, topology animation, schema2 independent buses/Gateway processing/copy/origin/boundary, zero horizon; no network or browser errors\n"
+    }
+  ],
+  "gateway_fixture_cases": {
+    "accepted": 13,
+    "rejected_before_execution": 3
+  },
+  "other_verified_checks": [
+    {
+      "command": "python3 -m unittest discover -s tests",
+      "status": "passed",
+      "tests": 51
+    },
+    {
+      "command": "python3 docs/verification/fixtures/gw/verify_expectations.py",
+      "status": "passed",
+      "static_cases": 16
+    },
+    {
+      "command": "python3 scripts/generate_traceability.py --check",
+      "status": "passed"
+    },
+    {
+      "command": "python3 scripts/check_traceability.py --strict",
+      "status": "passed",
+      "requirements": 193,
+      "structural_errors": 0,
+      "incomplete_requirements": 0
+    },
+    {
+      "command": "python3 scripts/render_diagrams.py --check",
+      "status": "passed",
+      "diagrams": 7
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed"
+    }
+  ],
+  "sample": {
+    "config": "examples/gateway/fanout.ini",
+    "schema_version": 2,
+    "end_ps": "10000000000",
+    "termination": "time_limit",
+    "native_requests": 30,
+    "copy_requests": 20,
+    "request_statuses": {
+      "success": 40,
+      "in_flight": 1,
+      "pending": 9
+    },
+    "forward_statuses": {
+      "filtered": 10,
+      "submitted": 20
+    },
+    "bus_metrics": [
+      {
+        "target": "Main.busA",
+        "metric": "bus_utilization",
+        "value": 0.244
+      },
+      {
+        "target": "Main.busA",
+        "metric": "received",
+        "value": "10"
+      },
+      {
+        "target": "Main.busA",
+        "metric": "transfer_mean_ps",
+        "value": 238000000.0
+      },
+      {
+        "target": "Main.busB",
+        "metric": "bus_utilization",
+        "value": 0.9752
+      },
+      {
+        "target": "Main.busB",
+        "metric": "received",
+        "value": "20"
+      },
+      {
+        "target": "Main.busB",
+        "metric": "transfer_mean_ps",
+        "value": 474000000.0
+      },
+      {
+        "target": "Main.busC",
+        "metric": "bus_utilization",
+        "value": 0.122
+      },
+      {
+        "target": "Main.busC",
+        "metric": "received",
+        "value": "10"
+      },
+      {
+        "target": "Main.busC",
+        "metric": "transfer_mean_ps",
+        "value": 119000000.0
+      }
+    ],
+    "manifest_hashes_verified": true,
+    "results_sha256": "8a1fad76fab847baf3f49144f94ea878f2ff64cb27dccde2b366c6dc0b71a335",
+    "binary_sha256": "3926632d1c1dffd2ffe414cccec9989d22d0ecfc95ad0273fd4e40cc837d2890"
+  },
+  "scope_limits": [
+    "Public Registry/Envelope event codec API is not implemented",
+    "Preparation failures emit CLI diagnostics without schema2 result artifacts",
+    "Full structured source positions, full conformance and million-request performance are not verified",
+    "OMNeT comparison evidence remains the original v0.1 single-CAN run; Gateway comparison was not run"
+  ]
+}

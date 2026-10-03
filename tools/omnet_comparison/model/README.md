@@ -1,12 +1,13 @@
 # OMNeT++ comparison adapter
 
-文書バージョン：`0.1.1`
-対象GitHubバージョン：`v0.1`
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.0` | `2026-10-03` | Gateway試験アダプター、有限RX・TX待機・停止境界の実行方法を追加。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | Classical CANのCLI・ライブラリ、結果ビューア、実行例、OMNeT++比較の利用方法を集約し、v0.1公開版を確定 |
 
 This is a test-only adapter authored for DIR-Simulator. It links the installed
@@ -74,14 +75,55 @@ self-reception and rejects equal-ID collisions between distinct transmitters.
 All adapter transitions use the OMNeT++ future event set, including zero-delay
 processing. A highest-priority stop event makes the horizon exclusive; events at
 `H` are not executed. `H=0` produces a header-only CSV. Pending source and sink
-events are canceled and deleted by their owning module on teardown.
+events are canceled and deleted by their owning module on teardown. Gateway
+processing timers and copies waiting outside the native TX queue are also
+released by their owning recorder on teardown.
+
+## Gateway inputs and queues
+
+`routingFile` defaults to an empty string for the original single-bus network.
+A caller may generate a network with multiple native `CanBus` instances, each
+with its own bandwidth, and set `routingFile` to a TSV with this exact header:
+
+```text
+kind	gateway	ingress	route_id	egress	format	id_min	id_max	processing_ps	rx_capacity	hop_limit
+```
+
+A `port` row declares every Gateway port, including ports with no routes. Its
+route fields (`route_id` through `id_max`) are empty; its integer configuration
+fields are populated. A `route` row describes one egress branch. Configuration
+must agree across all rows belonging to a Gateway. Ingress and egress values
+are exact `nodeLabel` strings. Routes match format and an inclusive CAN ID
+interval; branches are sorted independently of input row order. All ports
+register the raw source IDs and route boundaries with native FiCo input ports;
+copies retain the raw ID, so wide intervals need no expanded ID table.
+
+After an accepted `received` event, each Gateway ingress admits a parent into
+its finite RX queue, or rejects the newest arrival with `rx_queue_full`.
+Unmatched admitted parents record `no_route` and immediately release RX. Each
+matching egress gets one pending branch and one child at Gateway processing
+completion, unless the next hop exceeds `hop_limit`. Child identity is
+`gw:<parent>/<gateway>/<route_id>/<egress>`, and RX identity is
+`rx:<parent>/<gateway>/<ingress>`. Child source and TX channel delay come from
+the egress port; origin and parent lineage survive native duplication.
+
+RX remains occupied through Gateway processing, egress TX processing and any
+wait for a positive-capacity native TX queue. Ready copies wait outside native
+FiCo in FIFO order per egress, across ingress ports. The native SOF callback
+schedules a separate same-time event to admit copies after the bus finishes
+its grant callbacks. Capacity zero drops the submitted child with
+`queue_full`; a hop-limit terminal branch has no child. RX releases exactly
+once, after all egress branches are admitted or terminal. Ordinary raw-source
+TX arrivals still drop when their native pending queue is full. Native
+arbitration, frame length, inter-frame gap and initial one-bit wait remain
+unchanged.
 
 ## Output
 
 CSV header:
 
 ```text
-event,time_ps,node,request_id,source,format,can_id,payload_hex,native_bits,queue_waiting
+event,time_ps,node,request_id,source,format,can_id,payload_hex,native_bits,queue_waiting,sequence,origin_request_id,parent_request_id,hops,gateway,ingress,egress,route_id,buffer_id,reason,rx_used,child_request_id
 ```
 
 Events are `generated`, `ready`, `enqueued`, `dropped`, `sof`, `native_complete`,
@@ -95,3 +137,12 @@ buffer), `enqueued` (after admission), `dropped`, `sof` (after grant), and
 `native_complete` (before removal of the active frame). Each value excludes the
 active frame. Use `enqueued` and `sof` for queue-state integration; `ready` events
 at the same time may precede delivery to the native buffer.
+
+Gateway events are `rx_admitted`, `rx_dropped`, `rx_released`,
+`forward_pending`, `forward_submitted`, `forward_dropped` (hop limit),
+`route_filtered` and `waiting_tx`. Forwarding and RX rows retain the received
+parent's request ID and immediate source; `child_request_id` is populated at
+submission. Common child events and `waiting_tx` use the child request ID.
+`rx_used` is the ingress occupancy after the recorded Gateway event.
+`sequence` starts at zero and orders same-time observations. Native request
+lineage starts with its own origin ID, an empty parent and zero hops.

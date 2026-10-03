@@ -1,18 +1,19 @@
 # NED詳細機能仕様書
 
-文書バージョン：`0.1.1`
-対象GitHubバージョン：`v0.1`
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.0` | `2026-10-03` | 単一CAN・複数CANのBusゲート名自由化と接続経路による役割判定を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初期版の具体的な入力・正常・異常時契約を確定。字句・構文・値解決と登録照合の決定的契約を補完。GW・AXI・Ethernetの登録型・capabilityとprofile別構成検証へ接続。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
 
 文書ID：`spec-ned`
 
-文書状態：仕様確定。実装・実行試験は未実施。
+文書状態：仕様確定。v1.0.0のCAN Busゲート名自由化は内部入力処理に実装し、[回帰検証](../verification/results/can-gate-names-2026-10-03.json)を実施済み。公開Registryを含む本書全体への適合完了を示すものではない。
 
 ## 1. 収集・文法・型解決
 
@@ -21,6 +22,8 @@
 [構造定義の親要件](../要件定義書.md#dir-req-0005)は、ファイルの読込成功に加え、選択networkの各配置、型・実装対応、接続経路、型の基準値を設定解決へ渡せる状態までを求める。本書の子要件に対応する規則は、宣言の解釈から展開・登録照合・結線検証までを分担する。入力はNEDファイル集合、選択networkと固定Registryであり、出力は元位置を保持した型宣言・展開構造・接続識別である。確定パラメータの採用は[値解決](設定詳細機能仕様書.md#values)、実行オブジェクトの生成は[ライフサイクル](診断詳細機能仕様書.md#lifecycle)へ引き継ぐ。
 
 現行の適用例はClassical CANの`can.cc.ideal.v1`とする。後段の追加モデルへの適用は[将来profileの登録契約](拡張モデル共通詳細機能仕様書.md#selection)を示すもので、0.1.0の提供対象と実装完了を示すものではない。
+
+**v1.0.0での仕様変更：CAN Busゲート名の自由化。** 以下のBus schema・接続規則は単一CANとGW・複数CANに共通して適用する。Busのゲート名は通常のNED識別子IDとし、役割はinput/output、入出力の対応は同じControllerへ至る接続経路から決定する。v0.1の`tx_SUFFIX`入力／`rx_SUFFIX`出力という命名制約と接尾辞一致の制約を撤廃する。旧形式の有効な入力も引き続き受理する。Controllerの`output tx`／`input rx`、メッセージschema、CANの送信・仲裁動作は維持する。文書版・確定履歴の更新は[push時の運用](../ドキュメント作成・運用規約.md#document-version-at-push)に従う。
 
 <a id="syntax"></a>
 
@@ -103,7 +106,7 @@
 | 登録の二段階 | コンパイル時Rust実装レジストリに実装キー・種別・パラメータスキーマ・ポートスキーマ・生成処理を登録する。公開登録契約はmodule/channelの種別ごとに `register_module(implementation_key, factory, descriptor)` / `register_channel(implementation_key, factory, descriptor)` とし、同じ実装キーの二重登録を拒否する。NEDのsimple/channelは `parameters: @class("実装キー");` を一つ必須とし、読込時にNED完全修飾型名→登録実装への対応表を作る。未知キー・種別違い・宣言スキーマ不一致は拒否。同一実装キーを別NED型で再利用可。注：動的ライブラリ、スクリプト、ネットワークからの実装追加は採用範囲外 |
 | builtinとNED | `dir.can.Controller`、`dir.can.Bus`、`dir.link.FixedDelay` はRust実装キー。NED型は利用者が供給する明示宣言から登録する。標準配布のNED型にも同じ完全名を用いるが、例の `demo.Controller` 等も対応付け可能 |
 | Controller schema | パラメータは `int queueCapacity`、`double txProcessingDelay @unit(s)`、`double rxProcessingDelay @unit(s)`、`string rxFilter`。ポートは `output tx` と `input rx` の二つだけ。値域・フィルタ意味は[CAN仕様](models/CANモデル詳細機能仕様書.md#controller)を正とする |
-| Bus schema | `double bitrate @unit(bps)`、`string profile`。ポートは `input tx_SUFFIX` と `output rx_SUFFIX` の一対を接続ノードごとに明記。SUFFIXはASCII `[A-Za-z_][A-Za-z0-9_]*` に一致する非空文字列（全gate名はIDであり、suffixだけには予約語除外を適用しない）、両側で同一集合、最低二対。Rustの登録規則は名前パターンと対の制約を検証し、展開後は各scalarポートの情報を個別登録する。余分なパラメータ・ポートは拒否 |
+| Bus schema | `double bitrate @unit(bps)`、`string profile`。ポートは任意のIDを名前とするscalar input/outputで、入力数と出力数は同数かつ各二つ以上。名前の一意性・字句・予約語は通常のNED規則に従う。役割は宣言方向から決定し、接頭辞・接尾辞・宣言順には依存しない。展開後に同じControllerへつながる入力と出力を一対として個別登録し、全ポートを一回ずつ使用する。余分なパラメータ、対応先のないポートは拒否 |
 | FixedDelay schema | channelのみ。パラメータは `double delay @unit(s)` の一つだけ。0以上の整数psで表現できる値。送信容量、帯域、競合、損失、確率を持たない |
 | 属性の採用一覧 | `@class("...")` はsimple/channel型のparameters節、`@display("...")` と `@description("...")` は全型のparameters節、`@unit(s)`、`@unit(bps)`、`@unit(B)` は数値パラメータ宣言上のみ受理。unitは一つ、class/display/descriptionは型ごと各一つ。display/descriptionをパラメータ宣言に付すことも各一つ認める。その他の位置・未知属性・添字付き・複数引数・重複属性は拒否 |
 | 保持形式 | 属性は所有者ID、属性名、文字列値、元ファイル・開始行列を保持。class/display/descriptionの文字列はエスケープ解釈後のUnicodeを保存し、unitは単位トークンを保存。注：displayの描画とdescriptionの実行は採用範囲外。各型・パラメータに紐付け、インスタンスから型のメタデータを参照可能にする |
@@ -144,13 +147,13 @@
 
 | 項目 | 確定規則 | 正常／異常の期待結果 |
 | --- | --- | --- |
-| 接続文法 | `始点 --> 終点;` または `始点 --> 完全修飾channel型 --> 終点;`。端点は直下の `子名.gate名` または自身の境界 `gate名`。各文は一つの辺。注：channelの名前付け・インライン本体は採用範囲外 | `a.tx --> demo.Wire --> bus.tx_a;` は受理 |
+| 接続文法 | `始点 --> 終点;` または `始点 --> 完全修飾channel型 --> 終点;`。端点は直下の `子名.gate名` または自身の境界 `gate名`。各文は一つの辺。注：channelの名前付け・インライン本体は採用範囲外 | `a.tx --> demo.Wire --> bus.rx_a;` は受理 |
 | 方向 | 外から見て子のoutputが始点、inputが終点。自身のcompound inputは内側の始点、outputは内側の終点。任意祖先・孫への直接結線は拒否。自己境界同士の接続は方向が適合すれば受理する | 子input→子inputは方向エラー |
 | 必須と重複 | simple scalarは接続相手ちょうど一つ。非root compound各gateは内側一つ・外側一つ。両側を独立の接続側として検証する。root networkのgate宣言は不正入力として診断する。二回目の同一接続側使用、未接続、同一辺再記述を拒否する | compound inputの外と内に一つずつは受理、内側二つは拒否 |
-| 適合 | 任意の登録実装ではdescriptorのprotocol/messageキーの完全一致を適合条件とし、異なる型の接続は不適合として診断する。Controller.txとBus.tx_SUFFIXはprotocol `can.cc.ideal.v1`／message `CanTxRequest`（payload schema version 1）、Bus.rx_SUFFIXとController.rxは同protocol／message `CanNotification`（payload schema version 1）。protocolとmessageをピリオドで結合した正式schema名・schema版でEnvelopeを識別する。simpleの方向・名前はレジストリと完全一致必須。適合比較にはpayload schema versionも含める。境界の各有向経路をsimple始点・終点までたどりprotocol/messageの一致を検証する。型不一致、simpleへ達しない境界だけの循環、終端欠落は拒否 | — |
+| 適合 | 任意の登録実装ではdescriptorのprotocol/messageキーの完全一致を適合条件とし、異なる型の接続は不適合として診断する。Controller.txとBusのinputはprotocol `can.cc.ideal.v1`／message `CanTxRequest`（payload schema version 1）、BusのoutputとController.rxは同protocol／message `CanNotification`（payload schema version 1）。protocolとmessageをピリオドで結合した正式schema名・schema版でEnvelopeを識別する。simpleの宣言は登録schemaと照合し、CAN Busのdescriptorは任意の宣言名と方向から決定する。適合比較にはpayload schema versionも含める。境界の各有向経路をsimple始点・終点までたどりprotocol/messageの一致を検証する。型不一致、simpleへ達しない境界だけの循環、終端欠落は拒否 | — |
 | channel経路 | channelなしはdelay=0。各辺のchannelは別インスタンスで、同じchannel型でもINI上書きは独立。境界経路に複数channelがあればdelayを整数psで加算し、u64桁あふれを拒否。各辺の識別は `親インスタンスパス::始点表記`（例 `Main::a.tx`、内側始点は `Main.box::in`）。この識別は方向側も一意に定める | — |
 | channelの動作責任 | FixedDelayは経路遅延値をモデルへ提供する。CAN profileでは勝者の送信側経路delay＋受信者側経路delayをフレーム完了後の観測時刻へ一回だけ加算する。制御要求・仲裁開始は遅延加算の対象外とする（注：集中バスモデルの適用範囲）。フレーム占有時間はBusだけが一回計算する。核はモデルから指定された配送時刻をそのまま予約する | — |
-| 共有バス | 各Controllerのtx/rxが同じBusの同じSUFFIX対へ到達することを検査。異なるController間の混在対や別Busへの片側接続は拒否。CAN初期profileは一つのBusと二つ以上のControllerだけを持つネットワークを受理（compoundによる包装可）。複数Bus対応はモデルprofileの拡張として扱う | — |
+| 共有バス | 各Controller.txからBusのinputへの経路と、Busのoutputから同じController.rxへの経路をたどり、同じBusに属する入出力を一対として決定する。各Controllerは一対だけを持ち、全Busポートがいずれか一つのControllerに対応する。別Busへの片側接続、対応欠落・重複、Bus間の直接接続は拒否。Bus出力の接続先を同じBusのController間で交換した構成は、新しい接続経路に基づく対として受理する。`can.cc.ideal.v1`は一つのBusと二つ以上のControllerを持つネットワークを受理（compoundによる包装可）。複数Busは`can.cc.multibus.v1`で扱う | — |
 
 ## 4. 最小の完全入力と境界例
 
@@ -182,7 +185,7 @@
 
 | 配置・入力 | 内容または期待結果 |
 | --- | --- |
-| `models/demo/Main.ned` 全文 | `package demo;`<br>`simple Controller { parameters: @class("dir.can.Controller"); int queueCapacity = default(64); double txProcessingDelay @unit(s) = default(0ps); double rxProcessingDelay @unit(s) = default(0ps); string rxFilter = default("*"); gates: output tx; input rx; }`<br>`simple Bus { parameters: @class("dir.can.Bus"); double bitrate @unit(bps); string profile = default("can.cc.ideal.v1"); gates: input tx_a; output rx_a; input tx_b; output rx_b; }`<br>`channel Wire { parameters: @class("dir.link.FixedDelay"); double delay @unit(s) = default(0ps); }`<br>`network Main { submodules: a: demo.Controller; b: demo.Controller; bus: demo.Bus; connections: a.tx --> demo.Wire --> bus.tx_a; bus.rx_a --> demo.Wire --> a.rx; b.tx --> demo.Wire --> bus.tx_b; bus.rx_b --> demo.Wire --> b.rx; }` |
+| `models/demo/Main.ned` 全文 | `package demo;`<br>`simple Controller { parameters: @class("dir.can.Controller"); int queueCapacity = default(64); double txProcessingDelay @unit(s) = default(0ps); double rxProcessingDelay @unit(s) = default(0ps); string rxFilter = default("*"); gates: output tx; input rx; }`<br>`simple Bus { parameters: @class("dir.can.Bus"); double bitrate @unit(bps); string profile = default("can.cc.ideal.v1"); gates: input rx_a; output tx_a; input rx_b; output tx_b; }`<br>`channel Wire { parameters: @class("dir.link.FixedDelay"); double delay @unit(s) = default(0ps); }`<br>`network Main { submodules: a: demo.Controller; b: demo.Controller; bus: demo.Bus; connections: a.tx --> demo.Wire --> bus.rx_a; bus.tx_a --> demo.Wire --> a.rx; b.tx --> demo.Wire --> bus.rx_b; bus.tx_b --> demo.Wire --> b.rx; }` |
 | `scenario.ini` 全文 | `[General]`<br>`network = demo.Main`<br>`ned-path = "models"`<br>`sim-time-limit = 1ms`<br>`Main.bus.bitrate = 500kbps` |
 | 起動・結果 | `dir-simulator run --config scenario.ini --output results`。root一つ、simple三つ、channel四つ、全経路delay=0、bitrate=500000bps、queueCapacity各64。workload省略のためフレーム生成0。入力受理・初期化可能な空負荷例でありCANフレーム検証の実行証跡ではない |
 | compound受理例 | 上記Controllerと同じpackageに `module Box { gates: input in; output out; submodules: c: demo.Controller; connections: in --> c.rx; c.tx --> out; }` を宣言。Main.aの型をdemo.Boxに変えa.txをa.out、a.rxをa.inへ変えれば同一の端点に到達する |

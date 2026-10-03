@@ -66,6 +66,7 @@ network AdapterNetwork
         int bitrate = default(500000);
         int horizonPs;
         string outputFile;
+        string routingFile = default("");
     submodules:
         recorder: AdapterRecorder;
         bus: CanBus {

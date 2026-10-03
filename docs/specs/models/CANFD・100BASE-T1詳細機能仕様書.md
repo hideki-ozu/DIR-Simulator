@@ -1,12 +1,13 @@
 # CANFD・100BASE-T1詳細機能仕様書
 
-文書バージョン：`0.1.1`
-対象GitHubバージョン：`v0.1`
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.0` | `2026-10-03` | 実装層との境界と将来モデルの位置付けを整合。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版草案。CAN FD・100BASE-T1の実装契約と独立解析fixture |
 
@@ -55,7 +56,7 @@ FDの親要件はCCのCRC/stuff算定を流用したと見なさず、採用prof
 
 | 項目 | 契約 |
 | --- | --- |
-| 選択と構成 | INI `model-profile = "can.fd.precomputed.v1"`、`model-config = "fd.model.json"`。model-config全キー必須の厳密rootは`{schema_version:1,profile:"can.fd.precomputed.v1"}`のみ。モデル値はNED/INIを正本とし、このJSONはprofile版の照合用。相対パスはINI親。登録型`dir.canfd.ControllerV1/BusV1`と`dir.link.FixedDelay`。Controllerのtx/rxとBusのtx_suffix/rx_suffixをCC v1と同じpeer対で接続。Bus1個・Controller2個以上、全端常時active、ideal ACK成立。ControllerのqueueCapacity/txProcessingDelay/rxProcessingDelay/rxFilterとchannel delayはCC v1の型・範囲を使用する |
+| 選択と構成 | INI `model-profile = "can.fd.precomputed.v1"`、`model-config = "fd.model.json"`。model-config全キー必須の厳密rootは`{schema_version:1,profile:"can.fd.precomputed.v1"}`のみ。モデル値はNED/INIを正本とし、このJSONはprofile版の照合用。相対パスはINI親。登録型`dir.canfd.ControllerV1/BusV1`と`dir.link.FixedDelay`。Controllerのtx/rxとBusのinput/outputをCCと同じpeer対で接続。将来のBusV1もv1.0.0の[NED仕様](../NED詳細機能仕様書.md#implementation)を継承し、ゲート名は任意の識別子、対は同じControllerへの接続経路で決定する。Bus1個・Controller2個以上、全端常時active、ideal ACK成立。ControllerのqueueCapacity/txProcessingDelay/rxProcessingDelay/rxFilterとchannel delayはCC v1の型・範囲を使用する |
 | Bus | 必須`nominalBitrate`=1..1000000整数bps、`dataBitrate`=nominalBitrate..8000000整数bps。両値は本抽象profileの受理範囲。全端が同じBus値を参照する。注：実機対応最大速度を保証する値ではない |
 | workload | 共通schema_version=2、generators配列。各generator全キー必須`{id,kind,node,times_ps,frame}`。kind=`can.fd.explicit.v1`、idは共通識別子、nodeはController完全パス、times_psは非負u64正規十進文字列のps配列、非減少・重複可。生成順は(時刻,id UTF-8辞書順,配列ordinal)。周期負荷は時刻配列へ事前展開して使用する |
 | frame | 全キー必須`{format,id,data,brs,wire}`。format=standard/extended、id整数範囲=11/29bit、data偶数hex。byte長は0..8,12,16,20,24,32,48,64だけ、DLCは0..15対応表から導出。brsはJSON bool。全階層未知/欠落/重複キーを準備失敗とする。注：暗黙padding、remote frame、CCとの同一バス混在、エラー注入、ESI/error-passiveは本profileの対象外。ESIはerror-active固定 |

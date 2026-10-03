@@ -1,12 +1,13 @@
 # CANモデル詳細機能仕様書
 
-文書バージョン：`0.1.1`
-対象GitHubバージョン：`v0.1`
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.0` | `2026-10-03` | Busゲート名の自由化と旧形式入力の互換性を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版。採用する規則・境界・拡張契約を確定。payload・イベント遷移・初期状態を具体化し、詳細設計・検証入力へ接続 |
 
@@ -63,7 +64,7 @@
 | --- | --- |
 | プロファイル | `can.cc.ideal.v1`。CAN CCの11bit/29bitデータフレーム、仲裁、内容依存時間、同報、理想ACKを再現する |
 | 構造 | `dir.can.Controller`がキュー・負荷・受信を担当、`dir.can.Bus`が仲裁・転送を担当、`dir.link.FixedDelay`が接続ごとの観測遅延を担当。[NED仕様](../NED詳細機能仕様書.md)の型登録・ポート契約で結合する |
-| 接続 | Controllerの出力tx→Busの入力tx_suffix、Busの出力rx_suffix→同Controllerの入力rxを1組とする。Busは1個、Controllerは2個以上。全Controllerは常時active、同じbitrateで同期しているという前提を置く |
+| 接続 | Controllerの出力tx→Busのinput、同じBusのoutput→同Controllerの入力rxを1組とする。v1.0.0ではBusゲートを任意のNED識別子で宣言し、入出力の対は接続経路から決定する（[NED仕様](../NED詳細機能仕様書.md#connections)）。旧命名も受理する。Busは1個、Controllerは2個以上。全Controllerは常時active、同じbitrateで同期しているという前提を置く |
 | 注：現行対象外 | remote frame、CAN FD/XL、レジスタ、トランシーバ電気特性、ビット時刻の同期補正、動的接続、エラー状態遷移、故障注入、確率負荷。対応を装う既定値へ変換せず、指定時は未対応入力として準備失敗 |
 | 忠実度 | ビット列からビット数を算出するが、実行イベントはフレーム単位。注：電圧波形や各ビットイベントの生成、実機・規格全体への適合認証は対象外 |
 | 拡張登録 | profile、generator kind、message typeを名前空間+版で登録する。各登録は入力型、検証、候補比較、時間計算、状態通知の契約を持つ。未知名・同名二重登録・非互換版は準備失敗 |
@@ -355,6 +356,8 @@
 | CanNotification | `{schema_version:1,profile:"can.cc.ideal.v1",request_id:I,source_id:P,receiver_id:P,bus_id:P,frame:F,generated_ps:D,sof_ps:D,eof_ps:D,observed_ps:D}`。宛先receiverとEnvelope時刻observed_psを照合。frameは送信frameと同じ値。txとrx経路のdelay合計はobserved_psへ適用済み |
 | 初期状態 | [詳細設計の初期状態](../../design/CANモデル詳細設計書.md#state-machine)を結果metadata.initial_stateへ格納する。初期キュー・処理中集合・受信集合は空、バスidle、生成器cursorは先頭とする |
 | 終了集計 | generated=success+dropped+未完了processing+未完了pending+未完了in_flight。generatedは実際の発火要求のみを数える。受信状態の保存と各指標の出力は[結果仕様](../結果詳細機能仕様書.md)を正本とする |
+
+本節は既定ideal profileと通常Controllerの送信規則を定める。multibusのGW portは[GW転送仕様](GWモデル詳細機能仕様書.md#forwarding)のRX保持と正容量TX満杯時のwaiting_txを適用する。GWのRX容量は受信完了した親フレームの転送保持であり、通常ControllerのアプリケーションRXキュー・CPUサービスモデルは対象外（注）。
 
 <a id="examples"></a>
 

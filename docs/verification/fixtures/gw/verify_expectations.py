@@ -100,13 +100,16 @@ def main():
     records = read('model-record-examples.json')
     fields = {'schema_name','schema_version','record_id','subject','request_id','origin_request_id','time_ps','data'}
     assert all(set(row) == fields and row['schema_version'] == 1 for row in records)
-    assert [row['schema_name'] for row in records] == ['can.request','can.receiver','gw.forward']
-    request, receiver, forward = [row['data'] for row in records]
+    assert [row['schema_name'] for row in records] == ['can.request','can.receiver','gw.forward','gw.rx_buffer']
+    request, receiver, forward, rx_buffer = [row['data'] for row in records]
     assert forward['child_request_id'] == request['request_id'] == receiver['request_id']
     assert request['model_fields']['origin_request_id'] == forward['origin_request_id'] == 'source:0'
     assert int(request['eof_ps']) - int(request['sof_ps']) == duration(50,500000)
     assert int(records[0]['time_ps']) == int(request['model_fields']['release_ps'])
     assert int(receiver['received_ps']) == int(request['eof_ps'])
+    assert rx_buffer['parent_request_id'] == forward['parent_request_id']
+    assert rx_buffer['released_ps'] == request['model_fields']['tx_enqueued_ps'] == request['ready_ps']
+    assert rx_buffer['egress'] == [forward['egress']] and rx_buffer['status'] == 'released'
     assert wire_bits(0) == 50 and wire_bits(1) == 47
     eof_a = duration(wire_bits(0),500000)
     eof_1 = duration(wire_bits(1),500000)
@@ -132,16 +135,18 @@ def main():
     for key,value in [('ingress_observed_ps',observed),('ingress_received_ps',received),('copy_generated_ps',generated),('copy_ready_ps',ready),('sink_observed_ps',sink_observed),('sink_received_ps',sink_received),('path_delay_ps',sink_received)]:
         assert d[key] == value, key
     # Queue occupancy: first copy is in-flight, second fills the one waiting slot,
-    # third arrives before the first releases and is dropped newest.
+    # third stays in RX until the second starts and frees the TX waiting slot.
     q = expected['queue']
     first_release = eof_a + duration(53,125000)
     arrivals = [eof_a + t*micro for t in (0,110,220)]
     assert arrivals[1] < arrivals[2] < first_release
     assert q['source_eof_ps'] == arrivals
-    assert q['copy_sof_ps'] == [eof_a,first_release,None]
+    second_release = first_release + duration(53,125000)
+    assert q['copy_sof_ps'] == [eof_a,first_release,second_release]
     assert q['copy_eof_ps'] == [eof_a+duration(50,125000),first_release+duration(50,125000),None]
-    assert q['copy_status'] == ['success','success','dropped']
-    assert q['copy_drop_reason'] == [None,None,'queue_full']
+    assert second_release < 1000*micro < second_release + duration(50,125000)
+    assert q['copy_status'] == ['success','success','in_flight']
+    assert q['copy_drop_reason'] == [None,None,None]
     assert expected['capacity-zero'] == dict(copy_status='dropped',copy_drop_reason='queue_full',attempts=0)
     assert expected['forward-boundary'] == dict(forward_status='processing',planned_forward_ps=eof_a+20*micro,child_request_count=0)
     assert expected['eof-boundary'] == dict(copy_status='in_flight',copy_eof_ps=None,copy_planned_eof_ps=2*eof_a)

@@ -1,7 +1,5 @@
-use super::{
-    Result, decimal_parts, error, identifier, quantity, reserved, string_literal, validate_filter,
-};
-use crate::types::Controller;
+//! Common NED syntax, declarations, typed values, containment and connection paths.
+use super::{Result, decimal_parts, error, identifier, quantity, reserved, string_literal};
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
@@ -133,7 +131,7 @@ struct Connection {
 }
 #[derive(Clone, Debug)]
 pub(super) struct Declaration {
-    pub name: String,
+    pub(super) name: String,
     kind: String,
     implementation: Option<String>,
     parameters: BTreeMap<String, Parameter>,
@@ -143,7 +141,7 @@ pub(super) struct Declaration {
     source: String,
 }
 impl Declaration {
-    fn fail(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
+    pub(super) fn fail(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
         error(format!(
             "{}: {}: {}",
             self.source,
@@ -151,9 +149,31 @@ impl Declaration {
             message.as_ref()
         ))
     }
-    fn simple(&self) -> bool {
+    pub(super) fn simple(&self) -> bool {
         self.kind == "simple"
     }
+    pub(super) fn implementation(&self) -> Option<&str> {
+        self.implementation.as_deref()
+    }
+    pub(super) fn gates(&self) -> &BTreeMap<String, bool> {
+        &self.gates
+    }
+    pub(super) fn require_parameters(&self, schema: &[(&str, &str, Option<&str>)]) -> Result<()> {
+        if self.parameters.len() != schema.len() {
+            return Err(self.fail("parameter schema mismatch"));
+        }
+        for &(name, scalar, unit) in schema {
+            let parameter = self
+                .parameters
+                .get(name)
+                .ok_or_else(|| self.fail(format!("missing parameter declaration {name}")))?;
+            if parameter.scalar != scalar || parameter.unit.as_deref() != unit {
+                return Err(self.fail(format!("parameter schema mismatch: {name}")));
+            }
+        }
+        Ok(())
+    }
+
     fn compound(&self) -> bool {
         matches!(self.kind.as_str(), "network" | "module")
     }
@@ -450,7 +470,7 @@ pub(super) fn parse(
 }
 
 #[derive(Clone, Debug)]
-enum TypedValue {
+pub(super) enum TypedValue {
     Integer(i64),
     Quantity(u64),
     Double,
@@ -525,88 +545,37 @@ fn typed_value(parameter: &Parameter, value: &str) -> Result<TypedValue> {
         ))),
     }
 }
-fn model_value(declaration: &Declaration, name: &str, value: &TypedValue) -> Result<()> {
-    let invalid = match (declaration.implementation.as_deref(), name, value) {
-        (Some("dir.can.Controller"), "queueCapacity", TypedValue::Integer(n)) => {
-            !(0..=4_294_967_295).contains(n)
-        }
-        (Some("dir.can.Controller"), "rxFilter", TypedValue::String(s)) => {
-            validate_filter(s)?;
-            false
-        }
-        (Some("dir.can.Bus"), "bitrate", TypedValue::Quantity(n)) => *n == 0 || *n > 1_000_000,
-        (Some("dir.can.Bus"), "profile", TypedValue::String(s)) => s != "can.cc.ideal.v1",
-        _ => false,
-    };
-    if invalid {
-        Err(declaration.fail(format!(
-            "out of range or unsupported value for {name}: {value:?}"
-        )))
-    } else {
+pub(super) type Values = BTreeMap<String, TypedValue>;
+
+/// Model policy for simple declarations; syntax, channels and paths remain common.
+pub(super) trait ModelRules {
+    fn validate_schema(&self, declaration: &Declaration) -> Result<()>;
+    fn validate_value(
+        &self,
+        declaration: &Declaration,
+        name: &str,
+        value: &TypedValue,
+    ) -> Result<()>;
+    fn validate_instance(
+        &self,
+        _instance: &str,
+        _declaration: &Declaration,
+        _values: &Values,
+    ) -> Result<()> {
         Ok(())
     }
-}
-fn validate_schema(declaration: &Declaration) -> Result<()> {
-    let schema: &[(&str, &str, Option<&str>)] = match declaration.implementation.as_deref() {
-        Some("dir.can.Controller") if declaration.simple() => &[
-            ("queueCapacity", "int", None),
-            ("txProcessingDelay", "double", Some("s")),
-            ("rxProcessingDelay", "double", Some("s")),
-            ("rxFilter", "string", None),
-        ],
-        Some("dir.can.Bus") if declaration.simple() => &[
-            ("bitrate", "double", Some("bps")),
-            ("profile", "string", None),
-        ],
-        Some("dir.link.FixedDelay") if declaration.kind == "channel" => {
-            &[("delay", "double", Some("s"))]
-        }
-        None if declaration.compound() => &[],
-        _ => return Err(declaration.fail("missing, unknown, or wrong-kind @class implementation")),
-    };
-    if !declaration.compound() {
-        if declaration.parameters.len() != schema.len() {
-            return Err(declaration.fail("parameter schema mismatch"));
-        }
-        for &(name, scalar, unit) in schema {
-            let parameter = declaration
-                .parameters
-                .get(name)
-                .ok_or_else(|| declaration.fail(format!("missing parameter declaration {name}")))?;
-            if parameter.scalar != scalar || parameter.unit.as_deref() != unit {
-                return Err(declaration.fail(format!("parameter schema mismatch: {name}")));
-            }
-        }
+    fn payload(&self, declaration: &Declaration, gate: &str) -> Option<&'static str>;
+    fn incompatible_payload(&self, start: &str, end: &str) -> crate::types::Diagnostic {
+        error(format!("incompatible payload path: {start} --> {end}"))
     }
+}
+fn validate_schema(declaration: &Declaration, rules: &impl ModelRules) -> Result<()> {
     match declaration.implementation.as_deref() {
-        Some("dir.can.Controller") => {
-            if declaration.gates != BTreeMap::from([("tx".into(), true), ("rx".into(), false)]) {
-                return Err(declaration.fail("Controller requires output tx and input rx only"));
-            }
+        Some("dir.link.FixedDelay") if declaration.kind == "channel" => {
+            declaration.require_parameters(&[("delay", "double", Some("s"))])?
         }
-        Some("dir.can.Bus") => {
-            let mut tx = BTreeSet::new();
-            let mut rx = BTreeSet::new();
-            for (name, output) in &declaration.gates {
-                if let Some(suffix) = name.strip_prefix("tx_") {
-                    if *output || !identifier(suffix) {
-                        return Err(declaration.fail(format!("invalid Bus gate {name}")));
-                    }
-                    tx.insert(suffix);
-                } else if let Some(suffix) = name.strip_prefix("rx_") {
-                    if !*output || !identifier(suffix) {
-                        return Err(declaration.fail(format!("invalid Bus gate {name}")));
-                    }
-                    rx.insert(suffix);
-                } else {
-                    return Err(declaration.fail(format!("invalid Bus gate {name}")));
-                }
-            }
-            if tx != rx || tx.len() < 2 {
-                return Err(declaration.fail("Bus needs at least two matching tx_/rx_ gate pairs"));
-            }
-        }
-        _ => {}
+        None if declaration.compound() => {}
+        _ => rules.validate_schema(declaration)?,
     }
     if declaration.kind == "network" && !declaration.gates.is_empty() {
         return Err(declaration.fail("network root gates are unsupported"));
@@ -615,7 +584,9 @@ fn validate_schema(declaration: &Declaration) -> Result<()> {
         if let Some(value) = &parameter.default {
             let value = typed_value(parameter, value)
                 .map_err(|e| declaration.fail(format!("{name} default: {}", e.message)))?;
-            model_value(declaration, name, &value).map_err(|e| declaration.fail(e.message))?;
+            rules
+                .validate_value(declaration, name, &value)
+                .map_err(|e| declaration.fail(e.message))?;
         }
     }
     Ok(())
@@ -747,14 +718,10 @@ fn payload(
     endpoint: &str,
     expanded: &Expanded,
     types: &BTreeMap<String, Declaration>,
+    rules: &impl ModelRules,
 ) -> Option<&'static str> {
     let (instance, gate) = endpoint.rsplit_once('.')?;
-    let owner = &types[&expanded.instances[instance]];
-    match owner.implementation.as_deref() {
-        Some("dir.can.Controller") => Some(if gate == "tx" { "tx" } else { "rx" }),
-        Some("dir.can.Bus") => Some(if gate.starts_with("tx_") { "tx" } else { "rx" }),
-        _ => None,
-    }
+    rules.payload(&types[&expanded.instances[instance]], gate)
 }
 fn trace<'a>(start: &str, expanded: &'a Expanded) -> Result<(&'a str, Vec<&'a Edge>)> {
     let mut current = start;
@@ -772,7 +739,11 @@ fn trace<'a>(start: &str, expanded: &'a Expanded) -> Result<(&'a str, Vec<&'a Ed
         .ok_or_else(|| error(format!("unconnected output: {start}")))?;
     Ok((&last.end, edges))
 }
-fn validate_paths(expanded: &Expanded, types: &BTreeMap<String, Declaration>) -> Result<()> {
+fn validate_paths(
+    expanded: &Expanded,
+    types: &BTreeMap<String, Declaration>,
+    rules: &impl ModelRules,
+) -> Result<()> {
     // Trace every edge as well as simple outputs to reject isolated boundary cycles.
     for start in expanded.edges.keys() {
         let (end, _) = trace(start, expanded)?;
@@ -791,13 +762,11 @@ fn validate_paths(expanded: &Expanded, types: &BTreeMap<String, Declaration>) ->
             }
         }
         if let (Some(source), Some(sink)) = (
-            payload(start, expanded, types),
-            payload(end, expanded, types),
+            payload(start, expanded, types, rules),
+            payload(end, expanded, types, rules),
         ) {
             if source != sink {
-                return Err(error(format!(
-                    "incompatible CAN payload path: {start} --> {end}"
-                )));
+                return Err(rules.incompatible_payload(start, end));
             }
         }
     }
@@ -807,6 +776,7 @@ fn validate_paths(expanded: &Expanded, types: &BTreeMap<String, Declaration>) ->
 fn resolve_values(
     declaration: &Declaration,
     overrides: Option<&BTreeMap<String, String>>,
+    rules: &impl ModelRules,
 ) -> Result<BTreeMap<String, TypedValue>> {
     if let Some(overrides) = overrides {
         if let Some(key) = overrides
@@ -826,38 +796,92 @@ fn resolve_values(
                 .ok_or_else(|| declaration.fail(format!("missing required parameter: {name}")))?;
             let value = typed_value(parameter, value)
                 .map_err(|e| declaration.fail(format!("{name}: {}", e.message)))?;
-            model_value(declaration, name, &value)?;
+            rules.validate_value(declaration, name, &value)?;
             Ok((name.clone(), value))
         })
         .collect()
 }
-fn number(values: &BTreeMap<String, TypedValue>, name: &str) -> u64 {
-    match &values[name] {
-        TypedValue::Integer(n) => *n as u64,
-        TypedValue::Quantity(n) => *n,
-        _ => unreachable!(),
+/// Model-neutral instances and paths. Channel values are resolved separately so
+/// an adapter can validate its instance counts before reporting channel errors.
+pub(super) struct Resolved<'a> {
+    types: &'a BTreeMap<String, Declaration>,
+    expanded: Expanded,
+    values: BTreeMap<String, Values>,
+}
+pub(super) struct ResolvedChannels {
+    delays: BTreeMap<String, u64>,
+}
+impl ResolvedChannels {
+    pub(super) fn len(&self) -> usize {
+        self.delays.len()
     }
 }
-fn text(values: &BTreeMap<String, TypedValue>, name: &str) -> String {
-    match &values[name] {
-        TypedValue::String(s) => s.clone(),
-        _ => unreachable!(),
+pub(super) struct ResolvedPath<'a> {
+    pub end: &'a str,
+    edges: Vec<&'a Edge>,
+}
+impl ResolvedPath<'_> {
+    pub(super) fn delay(&self, channels: &ResolvedChannels) -> Result<u64> {
+        self.edges.iter().try_fold(0u64, |sum, edge| {
+            sum.checked_add(*channels.delays.get(&edge.id).unwrap_or(&0))
+                .ok_or_else(|| error(format!("channel path delay overflow at {}", edge.id)))
+        })
     }
 }
-pub(super) struct Resolved {
-    pub bus_id: String,
-    pub bitrate: u64,
-    pub controllers: Vec<Controller>,
-    pub channel_count: usize,
+impl Resolved<'_> {
+    pub(super) fn instances(&self) -> impl Iterator<Item = (&str, &Declaration)> {
+        self.expanded
+            .instances
+            .iter()
+            .map(|(id, name)| (id.as_str(), &self.types[name]))
+    }
+    pub(super) fn declaration(&self, instance: &str) -> &Declaration {
+        &self.types[&self.expanded.instances[instance]]
+    }
+    pub(super) fn values(&self, instance: &str) -> &Values {
+        &self.values[instance]
+    }
+    pub(super) fn module_paths(&self) -> Vec<String> {
+        self.instances()
+            .filter(|(_, d)| d.kind == "module")
+            .map(|(id, _)| id.to_string())
+            .collect()
+    }
+    pub(super) fn trace(&self, start: &str) -> Result<ResolvedPath<'_>> {
+        let (end, edges) = trace(start, &self.expanded)?;
+        Ok(ResolvedPath { end, edges })
+    }
+    pub(super) fn resolve_channels(
+        &self,
+        channels: &BTreeMap<String, BTreeMap<String, String>>,
+        rules: &impl ModelRules,
+    ) -> Result<ResolvedChannels> {
+        let mut delays = BTreeMap::new();
+        for edge in self.expanded.edges.values() {
+            if let Some(channel) = &edge.channel {
+                let values = resolve_values(&self.types[channel], channels.get(&edge.id), rules)?;
+                let TypedValue::Quantity(delay) = values["delay"] else {
+                    unreachable!()
+                };
+                delays.insert(edge.id.clone(), delay);
+            }
+        }
+        for id in channels.keys() {
+            if !delays.contains_key(id) {
+                return Err(error(format!("unknown or channel-less connection: {id}")));
+            }
+        }
+        Ok(ResolvedChannels { delays })
+    }
 }
-pub(super) fn resolve(
-    types: &BTreeMap<String, Declaration>,
+pub(super) fn resolve<'a>(
+    types: &'a BTreeMap<String, Declaration>,
     network: &str,
-    general: &BTreeMap<String, String>,
-    channels: &BTreeMap<String, BTreeMap<String, String>>,
-) -> Result<Resolved> {
+    assignments: &BTreeMap<String, String>,
+    rules: &impl ModelRules,
+) -> Result<Resolved<'a>> {
     for declaration in types.values() {
-        validate_schema(declaration)?;
+        validate_schema(declaration, rules)?;
         for (_, child_type) in &declaration.children {
             let child = types
                 .get(child_type)
@@ -883,7 +907,7 @@ pub(super) fn resolve(
     for declaration in types.values() {
         validate_connections(declaration, types)?;
         if declaration.compound() {
-            validate_paths(&expanded(&declaration.name, types), types)?;
+            validate_paths(&expanded(&declaration.name, types), types, rules)?;
         }
     }
     let declaration = types
@@ -894,21 +918,7 @@ pub(super) fn resolve(
     }
     let expanded = expanded(network, types);
     let mut overrides: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
-    for (key, value) in general {
-        if matches!(
-            key.as_str(),
-            "network"
-                | "ned-path"
-                | "sim-time-limit"
-                | "metrics-window"
-                | "max-events"
-                | "max-delta-cycles"
-                | "workload"
-                | "model-profile"
-                | "model-config"
-        ) {
-            continue;
-        }
+    for (key, value) in assignments {
         let (instance, parameter) = key
             .rsplit_once('.')
             .ok_or_else(|| error(format!("unknown General key {key}")))?;
@@ -921,82 +931,18 @@ pub(super) fn resolve(
             .insert(parameter.into(), value.into());
     }
     let mut values = BTreeMap::new();
-    let mut controller_paths = Vec::new();
-    let mut buses = Vec::new();
     for (instance, name) in &expanded.instances {
         let declaration = &types[name];
-        values.insert(
-            instance.clone(),
-            resolve_values(declaration, overrides.get(instance))?,
-        );
-        match declaration.implementation.as_deref() {
-            Some("dir.can.Controller") => controller_paths.push(instance.clone()),
-            Some("dir.can.Bus") => buses.push(instance.clone()),
-            _ => {}
-        }
-    }
-    if buses.len() != 1 || controller_paths.len() < 2 {
-        return Err(error(
-            "can.cc.ideal.v1 requires exactly one Bus and at least two Controllers",
-        ));
-    }
-    let bus_id = buses.pop().unwrap();
-    let mut channel_delays = BTreeMap::new();
-    for edge in expanded.edges.values() {
-        if let Some(channel) = &edge.channel {
-            let values = resolve_values(&types[channel], channels.get(&edge.id))?;
-            channel_delays.insert(edge.id.clone(), number(&values, "delay"));
-        }
-    }
-    for id in channels.keys() {
-        if !channel_delays.contains_key(id) {
-            return Err(error(format!("unknown or channel-less connection: {id}")));
-        }
-    }
-    let delay = |edges: &[&Edge]| -> Result<u64> {
-        edges.iter().try_fold(0u64, |sum, edge| {
-            sum.checked_add(*channel_delays.get(&edge.id).unwrap_or(&0))
-                .ok_or_else(|| error(format!("channel path delay overflow at {}", edge.id)))
-        })
-    };
-    let mut controllers = Vec::new();
-    let mut used_suffixes = BTreeSet::new();
-    for id in controller_paths {
-        let (tx_sink, tx_edges) = trace(&format!("{id}.tx"), &expanded)?;
-        let (bus, tx_gate) = tx_sink.rsplit_once('.').unwrap();
-        let suffix = tx_gate
-            .strip_prefix("tx_")
-            .ok_or_else(|| error(format!("Controller {id} tx path must end at Bus tx_SUFFIX")))?;
-        if bus != bus_id || !used_suffixes.insert(suffix.to_string()) {
-            return Err(error(format!(
-                "Controller {id} must connect to the unique Bus gate pair"
-            )));
-        }
-        let (rx_sink, rx_edges) = trace(&format!("{bus_id}.rx_{suffix}"), &expanded)?;
-        if rx_sink != format!("{id}.rx") {
-            return Err(error(format!(
-                "Controller {id} tx/rx must use the same Bus suffix"
-            )));
-        }
-        let values = &values[&id];
-        controllers.push(Controller {
-            id,
-            queue_capacity: number(values, "queueCapacity"),
-            tx_processing_ps: number(values, "txProcessingDelay"),
-            rx_processing_ps: number(values, "rxProcessingDelay"),
-            rx_filter: text(values, "rxFilter"),
-            tx_channel_ps: delay(&tx_edges)?,
-            rx_channel_ps: delay(&rx_edges)?,
-        });
-    }
-    let bus_type = &types[&expanded.instances[&bus_id]];
-    if used_suffixes.len() * 2 != bus_type.gates.len() {
-        return Err(error("Bus gate pairs must each connect to one Controller"));
+        let resolved = resolve_values(declaration, overrides.get(instance), rules)?;
+        rules.validate_instance(instance, declaration, &resolved)?;
+        values.insert(instance.clone(), resolved);
     }
     Ok(Resolved {
-        bitrate: number(&values[&bus_id], "bitrate"),
-        bus_id,
-        controllers,
-        channel_count: channel_delays.len(),
+        types,
+        expanded,
+        values,
     })
 }
+
+#[cfg(test)]
+mod tests;

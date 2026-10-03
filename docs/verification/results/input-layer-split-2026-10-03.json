@@ -1,0 +1,773 @@
+{
+  "date": "2026-10-03",
+  "change": "Separate common NED resolution from CAN schema, profile, topology and workload rules through a private model adapter.",
+  "base_commit": "ea122c9420de89bddaeedac174c2686018bb0dec",
+  "source_state": "Working tree preserving pre-existing CAN gate and Gateway changes; no commit or push performed for this refactor.",
+  "source_sha256": {
+    "Cargo.lock": "f6a341a962b81b736c8d5ee4fa1589a45973ba83e09f04df08400d30d70456a6",
+    "Cargo.toml": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc",
+    "rust-toolchain.toml": "dc8a9e7668c882190e58da244ac78e86d0d9875140a6249849f49b74d7382a76",
+    "crates/dir-simulator/Cargo.toml": "943ed9e9f7029f34eaa8d36a9b0917bf0934d86f4a33609037776a03647a3eae",
+    "crates/dir-simulator/src/can.rs": "15977dcaf5ac6332f7d2951d088c2a1ba173df7a552b9e76f171848ca091c8bb",
+    "crates/dir-simulator/src/input/can.rs": "1966913144d9739e5e4672915371bc9bf844776fa9a90e7fa4f28cf4f15a1a04",
+    "crates/dir-simulator/src/input/gateway.rs": "a4b69c04e34467aa4be4f5af0ea491554b2f2b7b83743e36506e7e1860c81188",
+    "crates/dir-simulator/src/input/ned.rs": "22956249ee80a366a6fbcad931dbc8bc6631812783a6c4fc053600c2af23e1c2",
+    "crates/dir-simulator/src/input.rs": "d95603119d38622aca31521813ff787a7e165f8e12f77855dcf6d99dc5a63581",
+    "crates/dir-simulator/src/lib.rs": "57f2d61ad2dda9d5cf6a0f6526cfbd1d9370a19912d3f53d221445838da9ec2f",
+    "crates/dir-simulator/src/main.rs": "cc5ae7e5609d939df85dcd72ef0f3ad713b62e5cdbddb0e1b7cd054984e20531",
+    "crates/dir-simulator/src/output.rs": "2e0ede636007c002c5ec28aecc99f0cb9325bba2197cf5f08e17160edeea7f13",
+    "crates/dir-simulator/src/runtime.rs": "00c8ec58d152670b5b758b75f5e88c347f8e1f693e52b28a516a451d64605f42",
+    "crates/dir-simulator/src/snapshot.rs": "46ad0ce9a7c474309a8168367f297e3203236912ef964a5c06975d66e03e664b",
+    "crates/dir-simulator/src/types.rs": "58c07f26be9e512798f1dbbb9b547892f8bc9557de85e1c9d20d0e38ae14d1fb",
+    "crates/dir-simulator/src/viewer.rs": "8094cef9bd15a81840dd12cca440347d9f01ae4d9b7f64ddab3624ecafc8fc6d",
+    "crates/dir-simulator/tests/can_scenarios.rs": "3b50f835af098e8293547e217bc5e906910da9ca5e4c144aa114754a37a80923",
+    "crates/dir-simulator/tests/cli.rs": "d6bea977860d783f2b5745ef12918d80820d7462c49c75e28abb1fc7fd75d1be",
+    "crates/dir-simulator/tests/gateway.rs": "f037e2d6f9d79331110336467e6639ed557e66f97518a34b8054e0db21634a42",
+    "crates/dir-simulator/tests/viewer_cli.rs": "a283be42361e94800ad1bdec5ee6bb5677e9c17a2d2455b26a5fbef2f82dbcfc"
+  },
+  "checks": [
+    {
+      "command": "cargo test --locked",
+      "result": "PASS",
+      "tests": 59,
+      "breakdown": {
+        "library": 33,
+        "can_scenarios": 5,
+        "cli": 6,
+        "gateway": 8,
+        "viewer_cli": 6,
+        "doctests": 1
+      }
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "result": "PASS"
+    },
+    {
+      "command": "cargo clippy --locked --all-targets -- -D warnings",
+      "result": "PASS"
+    },
+    {
+      "command": "cargo build --locked",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/check_traceability.py --strict",
+      "result": "PASS",
+      "requirements": 193,
+      "structural_errors": 0,
+      "incomplete_requirements": 0
+    },
+    {
+      "command": "python3 scripts/generate_traceability.py --check",
+      "result": "PASS"
+    }
+  ],
+  "added_regressions": [
+    "Non-CAN model rules resolve typed values and instance overrides through compound structure, with independent FixedDelay values, summed route delay and overflow rejection.",
+    "Non-CAN payload mismatch is rejected across a compound boundary.",
+    "Unused declarations and invalid defaults are validated before overrides; a valid override cannot hide an invalid default.",
+    "CAN profile mismatch in an earlier instance precedes a later instance value error.",
+    "CAN instance-count failure precedes invalid channel overrides."
+  ],
+  "execution_comparison": {
+    "schema_version": 1,
+    "baseline_binary_sha256": "ce7c7d767c0d54cf450e59c19e79446be4854fe96751d43f4e27c43e788d3ce0",
+    "after_binary_sha256": "6e2f8aec76a973dc5bcd0ec13933ed39e807e1541b9c31f801085d1d50d397c4",
+    "initial_difference_summary": "All 25 successful results.json files initially differed only at metadata.binary_sha256 after run_id/timestamp/output-path normalization; each value matched its phase index binary hash, and the dependent manifest.json results.json digest differed.",
+    "source_config_set_unchanged": true,
+    "config_set_mismatches": [],
+    "binary_provenance_validation": {
+      "field": "metadata.binary_sha256",
+      "baseline_phase_index_sha256": "ce7c7d767c0d54cf450e59c19e79446be4854fe96751d43f4e27c43e788d3ce0",
+      "after_phase_index_sha256": "6e2f8aec76a973dc5bcd0ec13933ed39e807e1541b9c31f801085d1d50d397c4",
+      "baseline_successful_results_checked": 25,
+      "after_successful_results_checked": 25,
+      "all_successful_results_match_their_phase_binary": true
+    },
+    "counts": {
+      "configs": 28,
+      "validate_equal": 28,
+      "run_equal": 28,
+      "normalized_artifacts_equal": 28,
+      "configs_with_any_difference": 0
+    },
+    "comparisons": [
+      {
+        "config": "docs/verification/fixtures/can/after-eof.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/capacity-zero.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/competition.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/delay-filter.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/eof-boundary.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/mixed-generators.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/queue-full.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/can/release-arrival.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/capacity-zero.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/delay.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/disjoint-cycle.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/eof-boundary.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/forward-boundary.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/hop.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/independent-only.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/independent.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/invalid-cycle.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          2,
+          2
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          null,
+          null
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/invalid-overlap.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          2,
+          2
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          null,
+          null
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/invalid-owner.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          2,
+          2
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          null,
+          null
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/multicast-drop.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/multicast.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/no-route.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/queue.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "docs/verification/fixtures/gw/rx-filter.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "examples/can/baseline.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "examples/can/contention.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "examples/can/overload.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      },
+      {
+        "config": "examples/gateway/fanout.ini",
+        "config_path_unchanged": true,
+        "config_content_unchanged": true,
+        "validate_equal": true,
+        "validate_exit_codes": [
+          0,
+          0
+        ],
+        "run_equal": true,
+        "run_exit_codes": [
+          0,
+          0
+        ],
+        "normalized_artifacts_equal": true,
+        "changed_artifacts": []
+      }
+    ],
+    "normalization": {
+      "json_keys": [
+        "binary_sha256",
+        "finished_at_utc",
+        "manifest_path",
+        "output_path",
+        "run_id",
+        "started_at_utc"
+      ],
+      "binary_sha256_rule": "normalized only after every successful results.json matched its phase index binary hash",
+      "csv_field": "run_id",
+      "manifest_hashes_and_sizes": "recomputed from normalized output artifacts",
+      "simulation timing, diagnostics, and all other fields": "preserved and compared"
+    }
+  },
+  "execution_scope": {
+    "commands": [
+      "dir-simulator validate --config <same absolute config path>",
+      "dir-simulator run --config <same absolute config path> --output <fresh directory>"
+    ],
+    "successful_simulations_per_build": 25,
+    "expected_validation_rejections_per_build": 3,
+    "artifact_files_per_successful_simulation": 5,
+    "configs": [
+      {
+        "path": "docs/verification/fixtures/can/after-eof.ini",
+        "sha256": "89170452e46165933bdeda40173539ebaa08b10a75213d560db5976089bc45c6",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/can/capacity-zero.ini",
+        "sha256": "23864feeefce407c35971063a1ff8a18ce917c1ccca3718b1341d4f48479071c",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/can/competition.ini",
+        "sha256": "ab85775ff4d54f7c0fcbe54f103e20f4a5752b0fdb897bde528b706b9fa7e108",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/can/delay-filter.ini",
+        "sha256": "bbbc7789c14f43cdc3454ff37ff9d543df7056040366e74fdfc4e7b027c8f828",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/can/eof-boundary.ini",
+        "sha256": "541eeb9dc4f6c96037044d0926f0c56189dbf7962d0430c86b30652b25dc2bea",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/can/mixed-generators.ini",
+        "sha256": "dabd3db7ecb5993f9414f9634c2669f0d2462f858bede50ad95c9b20d3884568",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/can/queue-full.ini",
+        "sha256": "764eba44576449b207cc69f5bbdccc823dbdec367977c6d71afcef0555c5c1cb",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/can/release-arrival.ini",
+        "sha256": "0042712d4a6a01207b1758a33130bc1f96bc564703e3efe559b91eb0bd4d4a11",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/capacity-zero.ini",
+        "sha256": "da777ea6be91a7983b9ed9cb90b915250c8bb8c2aa621947d75c26b06243c7ee",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/delay.ini",
+        "sha256": "93527639ed85bcb750ee66849bf111d4131130afd39792e230805b7125062390",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/disjoint-cycle.ini",
+        "sha256": "08743d221e9032a395407506e5a3212c7162f21398f4d36294bef8845eca6fd9",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/eof-boundary.ini",
+        "sha256": "eb617a3b6d317bd02a4fd0f68342518d5aa575b8a60b17ca0c91405aa6a119da",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/forward-boundary.ini",
+        "sha256": "8939cd48bee28b2e467da61d21a831a019e4c84064d35df030756e99db6bbddf",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/hop.ini",
+        "sha256": "25f086861e3892c1e55e4dd911bb0190056ab8e155affa97d466da9d4aca32cf",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/independent-only.ini",
+        "sha256": "3e4263d2023c52bcb8cd4f37e4ee6060efebdd2fa602a6e6bcb4d6663f12c694",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/independent.ini",
+        "sha256": "a3b35283037d5440b171ef5981b834c50bc15af26c2522c32efdc21026a874e1",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/invalid-cycle.ini",
+        "sha256": "eadaa16eda98ec05642dc12127c19fd530c134d87a1f757e97de639bbc4ac5cc",
+        "validate_exit_code": 2,
+        "run_exit_code": null
+      },
+      {
+        "path": "docs/verification/fixtures/gw/invalid-overlap.ini",
+        "sha256": "f3ff11b1c7a11ae2b11c09421089d086a0e61ab06d20e9548d9cc2fab6f81e1a",
+        "validate_exit_code": 2,
+        "run_exit_code": null
+      },
+      {
+        "path": "docs/verification/fixtures/gw/invalid-owner.ini",
+        "sha256": "55158634af9ee4bbd64c1b476829a1d2b70b21d9dd78ab21b7c93fc944116252",
+        "validate_exit_code": 2,
+        "run_exit_code": null
+      },
+      {
+        "path": "docs/verification/fixtures/gw/multicast-drop.ini",
+        "sha256": "ff432a6bbd0434e025f8c46a753778f8fed9de483946b1373f433f5a92fe5356",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/multicast.ini",
+        "sha256": "ee6c4eca32a2220062e0e8b754b6e97d4ce9ee57b5186883fd66783395d43e98",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/no-route.ini",
+        "sha256": "467045d05fbcfa2b9e0579cb01fe43767e4d734b8f9597cb0a522c6141fb80bd",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/queue.ini",
+        "sha256": "220f1f6238706ddadadef57483bd813feb7306b2f229e39a36b31e8cb0bf57be",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "docs/verification/fixtures/gw/rx-filter.ini",
+        "sha256": "59e12276902fad9f05bdc6792c198629f04cb5de723a26e563ec45d3a1645397",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "examples/can/baseline.ini",
+        "sha256": "7917b7f205f7d0858ab30d9674bb0fad54ec64892793f0d35a6d7bc28f083386",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "examples/can/contention.ini",
+        "sha256": "ebd029f97e6eb3f9c9381a540541e83205ccf7894b2bf8f69ca3a4dd1926e79c",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "examples/can/overload.ini",
+        "sha256": "96c2e76a003caece292fbf961288152739d05cc5ec777ac61ffe892cf91af760",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      },
+      {
+        "path": "examples/gateway/fanout.ini",
+        "sha256": "5e77dac2157ff9eb70dddeec6d800f6883e38d46c0752ce56423e10f98372c31",
+        "validate_exit_code": 0,
+        "run_exit_code": 0
+      }
+    ]
+  },
+  "review": "Astra source review against pre-refactor snapshot: no blocking findings; public prepare, validation order, CAN diagnostics and checked path delays preserved.",
+  "limits": [
+    "This verifies the input refactor and existing CAN/Gateway behavior; it does not establish full specification conformance, other protocol support, performance or physical CAN conformance.",
+    "ModelRules is an internal boundary; the public Registry/Envelope API remains unimplemented.",
+    "Detailed transient comparison logs and the initial provenance-only mismatch report were retained in the local execution workspace; this file retains their conclusions and hashes."
+  ]
+}

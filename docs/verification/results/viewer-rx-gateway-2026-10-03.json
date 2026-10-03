@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-03",
+  "change": "Animate frame reception during SOF to committed EOF and render each Gateway as a containing block with its declared Controllers. Regenerate root viewer.html from current assets while preserving its embedded results.",
+  "scope": [
+    "crates/dir-simulator/src/tool/viewer/assets/model.js",
+    "crates/dir-simulator/src/tool/viewer/assets/app.js",
+    "crates/dir-simulator/src/tool/viewer/assets/index.html",
+    "viewer.html",
+    "README.md",
+    "tests/viewer_model.test.cjs",
+    "tests/viewer_browser.cjs"
+  ],
+  "source_sha256": {
+    "viewer.html": "fa7a628057d6c754c7cb33aabf28d51b930e60d71cf39fda617138c8b1fd80ce",
+    "README.md": "8be22ef04527630b6a83004f7b7bf5dfe4974bbf6ecc04b379139bbfb82ccdf6",
+    "tests/viewer_model.test.cjs": "4d82d00be5ee80c9e7d80b6bcfda1304167bab8bee2bfb207c23a60ad3125384",
+    "tests/viewer_browser.cjs": "7f2bc326256be30921c7e8ffaaaf7b7af0fbda9c58b8cdf53062afe9d01114e4",
+    "crates/dir-simulator/src/tool/viewer/assets/app.js": "6b98a988c98c1f2eaab68cdc0b821e255303e981c66803394b0fecc865f5bfce",
+    "crates/dir-simulator/src/tool/viewer/assets/model.js": "4240781bee1df8c0b182f95d99b8dc8768eb3a284d23669b8ebd551ff4f64e18",
+    "crates/dir-simulator/src/tool/viewer/assets/index.html": "9a47458a968cce026a6de530163361d1ef7fe511e884c07c8c53670d64cd37d6",
+    "crates/dir-simulator/src/tool/viewer/assets/style.css": "76f9e68dbae1a275e39176df4916ad0fe792fdd8e36f83a917c6ac7d0bd131b3"
+  },
+  "contracts": {
+    "frame_rx": "Existing receiver rows only, SOF <= time < committed EOF. Counts/events/completion remain driven by recorded times.",
+    "partial_runs": "No recipient or receive completion invented from planned EOF alone.",
+    "gateway_membership": "Normalized schema2 metadata; idle Controllers retained, no naming-prefix inference. Metadata key/name and unique ownership validated.",
+    "responsive_layout": "Horizontal Controllers within Gateway on desktop, vertical inside the same block on mobile. Bus labels remain distinct.",
+    "embedded_results_preserved": true,
+    "embedded_schema_version": 1
+  },
+  "checks": [
+    {
+      "command": "cargo build --locked",
+      "result": "PASS"
+    },
+    {
+      "command": "cargo test --locked --test viewer_cli",
+      "result": "PASS",
+      "tests": 6
+    },
+    {
+      "command": "cargo test --locked --lib tool::viewer::tests",
+      "result": "PASS",
+      "tests": 1
+    },
+    {
+      "command": "node --test tests/viewer_model.test.cjs",
+      "result": "PASS",
+      "tests": 15
+    },
+    {
+      "command": "NODE_PATH=\"$PWD/tmp/viewer-tests/node_modules\" node tests/viewer_browser.cjs",
+      "result": "PASS",
+      "checks": [
+        "RX before EOF without premature received count",
+        "zero-delay completion trails",
+        "delayed observation and RX processing",
+        "filtered receivers and partial boundaries",
+        "rewind/playback",
+        "Gateway membership and idle Controller",
+        "desktop/mobile Controller containment and no overlap",
+        "distinct bus labels",
+        "no page overflow",
+        "no browser errors or external requests"
+      ]
+    },
+    {
+      "command": "node --check crates/dir-simulator/src/tool/viewer/assets/app.js; node --check crates/dir-simulator/src/tool/viewer/assets/model.js",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "check": "Open regenerated root viewer.html, load results-fanout/results.json and inspect desktop/mobile screenshots",
+      "result": "PASS",
+      "gateway_blocks": 1,
+      "controllers_inside_gateway": 3,
+      "page_overflow": false,
+      "browser_errors": []
+    }
+  ],
+  "review": "Independent Astra review of phase semantics, membership validation, source/embedded artifact, untrusted DOM insertion and desktop/mobile screenshots found no actionable defects.",
+  "validation_boundary": "Viewer assets, generated HTML and focused viewer tests only; simulator behavior was not modified.",
+  "local_evidence_root": "/tmp/dir-viewer-rx-tsmg8gjo",
+  "local_evidence_sha256": {
+    "model-focused.log": "2ce5a36de04636bb7a6b811552a957ddda8c139c886e2a655568aa268f07dc23",
+    "browser-focused.log": "a54aa6d5c9a45734225045666f72da78a9563749ca2df5143c12cdbeb9c4a1c2",
+    "gateway-desktop.png": "13dfd4ff6fadb2a2d2bddaa5cd49fcb3f9102285177cff3e3031e4484a232174",
+    "gateway-mobile.png": "7e703b1915932d9db9c4d13c5cd887e5a1b0bd34fc21e5b1ceba3d3c9d7b41be",
+    "viewer-before.html": "8f0dedf87fb82427389e5ea3d158d5e081c58eb792808ab69f4297b9ef462faf"
+  }
+}

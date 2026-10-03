@@ -63,10 +63,40 @@ def settings(path: Path) -> dict:
     names = re.findall(r"(?m)^\s*(\w+)\s*:\s*demo\.Controller\s*;", ned_text)
     if names != ["a", "b", "c"]:
         raise ValueError("comparison requires the three-controller CAN fixture topology")
+    controller = re.search(r"\bsimple\s+Controller\s*\{([^{}]*)\}", ned_text)
+    controller_gates = re.search(r"\bgates\s*:(.*)", controller[1], re.DOTALL) if controller else None
+    controller_declarations = re.findall(r"\b(input|output)\s+([A-Za-z_]\w*)\s*;", controller_gates[1]) if controller_gates else []
+    if (sorted(controller_declarations) != [("input", "rx"), ("output", "tx")]
+            or not controller_gates
+            or re.sub(r"\b(input|output)\s+[A-Za-z_]\w*\s*;", "", controller_gates[1]).strip()):
+        raise ValueError("comparison requires Controller tx output and rx input gates")
+    bus = re.search(r"\bsimple\s+Bus\s*\{([^{}]*)\}", ned_text)
+    gates = re.search(r"\bgates\s*:(.*)", bus[1], re.DOTALL) if bus else None
+    declarations = re.findall(r"\b(input|output)\s+([A-Za-z_]\w*)\s*;", gates[1]) if gates else []
+    inputs = {gate for direction, gate in declarations if direction == "input"}
+    outputs = {gate for direction, gate in declarations if direction == "output"}
+    if (len(declarations) != 6 or len(inputs) != 3 or len(outputs) != 3
+            or inputs & outputs or not gates
+            or re.sub(r"\b(input|output)\s+[A-Za-z_]\w*\s*;", "", gates[1]).strip()):
+        raise ValueError("comparison requires three declared input/output CAN bus gate pairs")
     connections = re.findall(r"(\w+\.\w+)\s*-->\s*demo\.Wire\s*-->\s*(\w+\.\w+)\s*;", ned_text)
-    expected_connections = [(f"{name}.tx", f"bus.tx_{name}") for name in names]
-    expected_connections += [(f"bus.rx_{name}", f"{name}.rx") for name in names]
-    if sorted(connections) != sorted(expected_connections) or ned_text.count("-->") != 12:
+    tx_destinations = {}
+    rx_sources = {}
+    for source, target in connections:
+        source_node, source_gate = source.split(".")
+        target_node, target_gate = target.split(".")
+        if (source_node in names and source_gate == "tx" and target_node == "bus"
+                and target_gate in inputs and source_node not in tx_destinations):
+            tx_destinations[source_node] = target
+        elif (source_node == "bus" and source_gate in outputs and target_node in names
+                and target_gate == "rx" and target_node not in rx_sources):
+            rx_sources[target_node] = source
+        else:
+            raise ValueError("comparison requires the fixture's direct, bidirectional CAN bus wiring")
+    if (len(connections) != 6 or ned_text.count("-->") != 12
+            or set(tx_destinations) != set(names) or set(rx_sources) != set(names)
+            or set(tx_destinations.values()) != {f"bus.{gate}" for gate in inputs}
+            or set(rx_sources.values()) != {f"bus.{gate}" for gate in outputs}):
         raise ValueError("comparison requires the fixture's direct, bidirectional CAN bus wiring")
     defaults = {}
     for field in ("queueCapacity", "txProcessingDelay", "rxProcessingDelay", "rxFilter"):
@@ -88,7 +118,7 @@ def settings(path: Path) -> dict:
             values[field] = general.get(key, default)
             remaining.discard(key)
         delays = []
-        for channel in (f"Channel Main::{name}.tx", f"Channel Main::bus.rx_{name}"):
+        for channel in (f"Channel Main::{name}.tx", f"Channel Main::{rx_sources[name]}"):
             delays.append(quantity(config[channel]["delay"], TIME_UNITS) if channel in config else 0)
             if channel in config:
                 if set(config[channel]) != {"delay"}:
@@ -510,8 +540,11 @@ def provenance(workspace: Path, binary: Path) -> dict:
     fico = workspace / "upstream/FiCo4OMNeT/src/fico4omnet"
     files += [fico / "linklayer/can/CanFrameTiming.h", fico / "bus/can/CanBusLogic.cc",
               fico / "buffer/can/CanOutputBuffer.cc", fico / "linklayer/can/CanPortInput.cc"]
+    library = workspace / "upstream/FiCo4OMNeT/src/libFiCo4OMNeT.so"
     return {"captured_utc": datetime.now(timezone.utc).isoformat(), "omnet_workspace": str(workspace), "dir_binary": str(binary),
             "files_sha256": {str(path): digest(path) for path in files if path.is_file()},
+            "loaded_library_note": {"library_sha256": digest(library), "source_binary_correspondence_verified": False,
+                                    "meaning": "The installed library was executed unchanged. Available source/header hashes identify files present during comparison; they do not certify the build provenance of the installed binary."},
             "dir_git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
             "dir_git_status": subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True),
             "fico_git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=workspace / "upstream/FiCo4OMNeT", text=True).strip()}
@@ -522,7 +555,8 @@ EXCLUSIONS = [
     {"scope": "u64::MAX overflow injection", "reason": "DIRはu64 ps、OMNeT++は符号付き64bit SimTime。入力範囲と失敗契約が異なる。"},
     {"scope": "CRC / stuffed bitstring conformance vectors", "reason": "同じ9フレームを3速度で実行するが、FiCoはCRC・内容依存stuff列を生成しないためcodec一致試験は成立しない。"},
     {"scope": "INI/NED parser, invalid-input, export/atomic-write, viewer, synthetic Snapshot aggregation tests", "reason": "DIRのAPI・ファイル・UI契約の試験であり、通信シミュレーションへの同一設定対応はない。"},
-    {"scope": "CAN FD / Ethernet / GW / AXI / SoC future specification fixtures", "reason": "現在のDIR製品実装はClassical CANのみ。未実装fixtureを実行済みと扱わない。"},
+    {"scope": "GW / multibus CAN runtime scenarios", "reason": "gateway_compare.pyで複数のFiCo CANバスと外部Gatewayアダプターを使って別途実行・比較する。"},
+    {"scope": "CAN FD / Ethernet / AXI / SoC / memory / IPC future specification fixtures", "reason": "現在のDIR製品実装はClassical CANとGW。未実装fixtureを実行済みと扱わない。"},
 ]
 
 

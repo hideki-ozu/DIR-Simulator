@@ -3,7 +3,7 @@ use serde_json::json;
 use std::path::Path;
 use std::process::ExitCode;
 
-const HELP: &str = "DIR Simulator 0.1 — ideal Classical CAN\n\nUsage:\n  dir-simulator validate --config PATH\n  dir-simulator run --config PATH --output DIR\n  dir-simulator view --input results.json --output viewer.html\n  dir-simulator --help\n  dir-simulator --version\n\nInput: NED topology, INI settings and JSON workload.\nOutput: manifest.json, results.json, events.csv, summary.csv, diagnostics.jsonl\nViewer: standalone local HTML; preserves existing files and opens no browser.\n";
+const HELP: &str = "DIR Simulator — Classical CAN, multiple buses and Gateway\n\nUsage:\n  dir-simulator validate --config PATH\n  dir-simulator run --config PATH --output DIR\n  dir-simulator view --input results.json --output viewer.html\n  dir-simulator --help\n  dir-simulator --version\n\nInput: NED topology, INI settings and JSON workload.\nOutput: manifest.json, results.json, events.csv, summary.csv, diagnostics.jsonl\nViewer: standalone local HTML; preserves existing files and opens no browser.\n";
 
 fn diagnostic(d: &Diagnostic) {
     eprintln!("{}", serde_json::to_string(d).expect("diagnostic JSON"));
@@ -67,7 +67,7 @@ fn execute(args: &[String]) -> Result<u8, Diagnostic> {
     if command == "validate" {
         println!(
             "{}",
-            json!({"schema_version":1,"status":"valid","network":prepared.network,"node_count":(prepared.controllers.len()+1).to_string(),"channel_count":prepared.channel_count.to_string()})
+            json!({"schema_version":1,"status":"valid","network":prepared.common.network,"node_count":(prepared.can.controllers.len()+prepared.can.buses.len()+prepared.common.module_paths.len()).to_string(),"channel_count":prepared.common.channel_count.to_string()})
         );
         return Ok(0);
     }

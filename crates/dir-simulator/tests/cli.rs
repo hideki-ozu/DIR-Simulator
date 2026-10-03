@@ -173,9 +173,15 @@ fn examples_show_contention_then_overload() {
     for name in ["baseline", "contention", "overload"] {
         let p = dir_simulator::prepare(&root().join(format!("examples/can/{name}.ini"))).unwrap();
         let s = dir_simulator::runtime::simulate(&p).unwrap();
-        assert!(!s.partial);
-        let dropped = s.requests.iter().filter(|r| r.status == "dropped").count();
+        assert!(!s.common.partial);
+        let dropped = s
+            .can
+            .requests
+            .iter()
+            .filter(|r| r.status == "dropped")
+            .count();
         let queue_max = s
+            .common
             .points
             .iter()
             .filter(|p| p.metric == "queue_length")
