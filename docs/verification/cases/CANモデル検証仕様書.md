@@ -1,12 +1,13 @@
 # CANモデル検証仕様書
 
-文書バージョン：`1.0.1`
+文書バージョン：`1.0.2`
 対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.2` | `2026-10-03` | Issue #4対応：外部比較結果への参照を削除し、独立した解析・製品試験の証跡を維持 |
 | `1.0.1` | `2026-10-03` | レビュー修正：実施済みCAN製品試験と静的検証、未確認の受け入れ範囲を区別 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
@@ -60,7 +61,7 @@
 | 手順 | `python3 docs/verification/fixtures/can/verify_vectors.py`を実行。製品serialize APIにも同じ入力を渡し全field/bit列を比較する。bitrate=500000,1000000,333333bpsの3値でSOF原点のEOF/releaseを計算する |
 | 期待 | v00はCRC0000/S6/frame50/占有53、v01はCRC2213/S3/frame47/占有50。全値は固定JSONに保存。v0000・333333bpsではEOF=150000151ps、release=159000160ps。CRC入力＋CRCの多項式余り=0、destuffで元bit列と一致 |
 | 独立性 | 固定vector作成の整数GF(2)長除算とverify側のレジスタを照合。verify側は別のfield列組立、stuff runカウンタと送信prefixを読むdestuffを照合。製品serializeを期待値の生成元に使う処理は対象外（注） |
-| 実行結果 | 解析fixture9件に加え、[製品bitvector試験](../../../crates/dir-simulator/src/runtime/can/tests.rs)で9件のCRC入力・CRC・stuff位置・stuff後の列・frame列を照合済み。時間計算の丸めとoverflowもunit testで確認。3速度の実行比較は[OMNeT比較記録](../OMNeT比較結果.md)へ分離し、規格全文への適合判定とはしない |
+| 実行結果 | 解析fixture9件に加え、[製品bitvector試験](../../../crates/dir-simulator/src/runtime/can/tests.rs)で9件のCRC入力・CRC・stuff位置・stuff後の列・frame列を照合済み。時間計算の丸めとoverflowもunit testで確認。これらは規格全文への適合判定とはしない |
 
 <a id="dir-test-0002"></a>
 

@@ -122,10 +122,8 @@
     "examples/gateway/routing.json": "e62f6947f00fd32c90bead54da826c695320754e1f841694cca5a057603b52f3",
     "examples/gateway/workload.json": "f08d1d2cd99714ed63ed64d767e1efe92154cb9ced57b632daf8a0317ad4960e",
     "rust-toolchain.toml": "dc8a9e7668c882190e58da244ac78e86d0d9875140a6249849f49b74d7382a76",
-    "tests/test_omnet_comparison.py": "9473071974a77550ec8ba2a925e56f903cebe4fd4310dedd1c3cf0712b2129c9",
     "tests/viewer_browser.cjs": "d28be177a477c9340effa896e642fb64a933b586739c8363c6d51641fef60b92",
-    "tests/viewer_model.test.cjs": "ad95fb91b74e2a8da046ce43a516acb577c9af790ba6218b77d3ef3744c16fee",
-    "tools/omnet_comparison/compare.py": "62eee50e3cd753dca7cda10f6f7458b5a9fd796f0f58bc7bf7aaeab8eecbc072"
+    "tests/viewer_model.test.cjs": "ad95fb91b74e2a8da046ce43a516acb577c9af790ba6218b77d3ef3744c16fee"
   },
   "binary_sha256": "fc8179f58e5b72a3ac53b828a818e540bf276ad2c91957f59fbb58874e05983d",
   "checks": [
@@ -175,12 +173,6 @@
       ],
       "network_requests": 0,
       "browser_errors": 0
-    },
-    {
-      "command": "python3 -m unittest discover -s tests",
-      "status": "passed",
-      "tests": 53,
-      "note": "Includes 14 OMNeT comparison adapter unit tests; the external OMNeT simulator was not executed."
     },
     {
       "command": "python3 scripts/check_traceability.py --strict",
@@ -260,8 +252,12 @@
   "validation_boundaries": [
     "No ordinary CAN application RX buffering or serial application service-capacity model.",
     "No external Registry/Envelope codec API conformance or journal API injection.",
-    "No million-request performance or hardware/standards conformance measurement.",
-    "No Gateway versus OMNeT simulation comparison; comparison adapter unit tests were executed."
+    "No million-request performance or hardware/standards conformance measurement."
   ],
-  "release_binary_sha256": "5721f3f492f752fea254381db2fe5db4ea3e853e356a8cf531f933f79944cf9e"
+  "release_binary_sha256": "5721f3f492f752fea254381db2fe5db4ea3e853e356a8cf531f933f79944cf9e",
+  "evidence_removal": {
+    "date": "2026-10-03",
+    "issue": "https://github.com/hideki-ozu/DIR-Simulator/issues/4",
+    "scope": "External comparison-adapter test summaries and source hashes were removed. Retained checks describe DIR-native or independent analytical validation."
+  }
 }

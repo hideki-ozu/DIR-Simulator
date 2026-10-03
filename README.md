@@ -1,19 +1,20 @@
 # DIR Simulator
 
-文書バージョン：`1.0.1`
+文書バージョン：`1.0.2`
 対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.2` | `2026-10-03` | Issue #4対応：OMNeT++を用いた比較結果・添付資料への案内を削除し、DIR単独の検証範囲を明確化 |
 | `1.0.1` | `2026-10-03` | レビュー修正：診断保持API、Viewer試験の前提、保存済みOMNeT比較手順を明確化 |
 | `1.0.0` | `2026-10-03` | GW・複数CAN、RX保持、Busゲート名自由化、ソース分割、ビューアの送受信と前後ステップ、比較証跡を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | Classical CANのCLI・ライブラリ、結果ビューア、実行例、OMNeT++比較の利用方法を集約し、v0.1公開版を確定 |
 
 文書ID：`readme`
 
-対象タグは`v1.0.0`、文書版は`1.0.1`です。Cargoパッケージ版は`0.1.0`です。
+対象タグは`v1.0.0`、文書版は`1.0.2`です。Cargoパッケージ版は`0.1.0`です。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
@@ -34,7 +35,7 @@ CANノードと共有バスの通信を仮想時刻上で実行し、負荷・�
 
 ## CANサンプルを実行する
 
-v1.0.0では、単一CAN・複数CAN共通でBusゲート名の制約撤廃を反映しています。Busの入力・出力の役割は`input`／`output`、ペアは同じControllerへの接続経路から決まります。サンプルは入力`rx_a`・出力`tx_a`などを使いますが、接頭辞や接尾辞の一致は必須ではありません。旧形式の有効な入力`tx_a`／出力`rx_a`も読み込めます。Controllerの`tx`／`rx`は維持します。以下は現在のソースをビルドして実行してください。公開済みv0.1の仕様・比較証跡はその時点のものです。
+v1.0.0では、単一CAN・複数CAN共通でBusゲート名の制約撤廃を反映しています。Busの入力・出力の役割は`input`／`output`、ペアは同じControllerへの接続経路から決まります。サンプルは入力`rx_a`・出力`tx_a`などを使いますが、接頭辞や接尾辞の一致は必須ではありません。旧形式の有効な入力`tx_a`／出力`rx_a`も読み込めます。Controllerの`tx`／`rx`は維持します。以下は現在のソースをビルドして実行してください。公開済みv0.1の仕様はその時点のものです。
 
 Linux / WSLでRust 1.85.0を使用します。`rust-toolchain.toml`でツールチェーン、`Cargo.lock`で依存版を固定しています。Rust導入済みのシェルで、リポジトリのルートから実行してください。
 
@@ -166,9 +167,9 @@ INIで`model-profile = "can.cc.multibus.v1"`と`model-config = "routing.json"`�
 
 結果JSONとmanifest・CSVはschema2になり、`simulation.model_records`へ`can.request`、`can.receiver`、`gw.forward`、`gw.rx_buffer`を格納します。CLI応答と診断は従来のschema1です。バス別の受信数・遅延・占有率、GWのコピー件数・RX保持長/最大・RX破棄・TX受理待ち時間を出力します。schema2のRequestでは`ready_ps`がTX処理完了、`model_fields.tx_enqueued_ps`が実際のTX受理時刻です。ビューアはRX保持とTX受理待ちを選択時刻から復元し、巻き戻しにも対応します。入力・転送・出力の契約は[GW仕様](docs/specs/models/GWモデル詳細機能仕様書.md)、試験範囲は[GW検証仕様](docs/verification/cases/GWモデル検証仕様書.md)を参照してください。
 
-既存OMNeT++ / FiCo4OMNeT環境との比較では、単一CAN43ケースとGateway/RX35ケース、計78ケースを同じ生入力から両エンジンへ投入しました。Gatewayの有限RX、TX空き待ち、分岐転送も対象です。外部試験アダプターで補う動作と、フレーム長・仲裁開始・完了時刻のモデル差を明示しています。比較ツールと専用試験は通常のソースツリーから意図的に除外しており、取得時のソース・手順は[保存アーカイブの閲覧方法](docs/verification/OMNeT比較結果.md#archived-comparison-source)を参照してください。アーカイブは取得時点の証跡であり、再実行には別途OMNeT++ / FiCo4OMNeT環境が必要です。上記のRust/Node試験はこの外部環境を使用しません。
+CAN/GWの動作はRust製品試験と独立した静的期待値の照合、ビューアはNode・ブラウザ試験で検証します。OMNeT++を使用した実行結果・比較記録とその添付成果物は掲載対象から除外しています。
 
-[比較結果と証跡](docs/verification/OMNeT比較結果.md)には、現在の実装での156実行と、v0.1の86実行を分けて記録しています。CAN過負荷の81件対90件の差の独立計算に加え、GWのRX破棄・保持・解放、停止境界、配置順序の比較を掲載しています。[過負荷例](examples/can/overload.ini)と[baseline例](examples/can/baseline.ini)の結果は、上記の`run --config`と`view --input`へ各INI・生成したresults.jsonを指定して再現できます。
+[過負荷例](examples/can/overload.ini)と[baseline例](examples/can/baseline.ini)の結果は、上記の`run --config`と`view --input`へ各INI・生成したresults.jsonを指定して再現できます。
 
 ## 3層アーキテクチャ
 
