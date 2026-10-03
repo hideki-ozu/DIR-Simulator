@@ -1,18 +1,19 @@
 # NED-editor仕様書
 
-文書バージョン：`1.0.1`
+文書バージョン：`1.0.2`
 対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.2` | `2026-10-04` | 完了／復元journalの耐久化台帳・引退と中断後に再開可能なbackup回収、保護診断・再試行、CRLFテンプレート挿入を補正。OMEN35LのRust／実ブラウザ検証を追記 |
 | `1.0.1` | `2026-10-04` | PRレビューに基づき、保存先登録のwriter契約・復旧投影・入力互換性・操作表示を補正。追加変更の検証状態を区別 |
 | `1.0.0` | `2026-10-04` | 初版。共通パーサーを使う7ブロック、内部テンプレート・全標準部品、UIでのmodule組立・Gateway／送信設定、原文・履歴・保存／復旧と実装試験を記載 |
 
 文書ID：`tool-ned-editor-spec`
 
-文書状態：実装とレビュー補正に対応。第1節は合意済み方針、第2節以降はその方針に基づく設計。ブロック別に型・API・状態遷移・処理手順・異常時の契約まで詳細化した。7ブロックを実装し、実装試験の証拠と適用範囲を第15節へ記録する。文書版は初回push準備時に確定した。
+文書状態：実装とレビュー補正に対応。第1節は合意済み方針、第2節以降はその方針に基づく設計。ブロック別に型・API・状態遷移・処理手順・異常時の契約まで詳細化した。7ブロックを実装し、実装試験の証拠と適用範囲を第15節へ記録する。
 
 文書版はレビュー補正を含む。対象タグは既存パーサーの参照基準であり、エディタの提供版ではない。
 
@@ -686,7 +687,7 @@ path許可はmanifest単独から作らず、独立した所有者管理のtarge
 
 公開順はNED、JSON、layout、INI、各群の出力path順。CreateNoReplaceは同filesystem上の完全書込tmp→targetのhard_linkで不在公開し、親sync→tmp unlink→親syncする。ReplaceConfirmedはtmp→targetのrename、親sync。公開の事実をmanifestへ耐久更新する。新規リンク直後のnlink=2はmanifestのtmpとtargetが同inode/hashである場合だけ自分の一時状態として扱い、tmp整理後の保存baselineはnlink=1とする。外部hardlinkは拒否する。
 
-全対象・NED集合・予定directoryを再確認し、完成baselineを含むcompleted manifestを耐久化する。この時点でのみSaveReport全体成功を返す。target registryのbaseline更新が途中なら次回起動時にcompleted manifestから同じgenerationを補完する。completed/restored記録は次の正常起動確認まで保持し、未完了記録を自動削除しない。
+全対象・NED集合・予定directoryを再確認し、完成baselineを含むcompleted manifestを耐久化する。target registryのbaseline更新が途中なら同一プロセスの再試行または次回起動時にcompleted manifestから同じgenerationを補完する。新しいgenerationのbaselineを古い記録で巻き戻さない。registryの耐久化と第8.9節のprivate journal回収まで完了した場合にSaveReport全体成功を返す。未完了記録を自動削除しない。
 
 ### 8.7. 部分保存・再起動の判定と復旧
 
@@ -726,6 +727,16 @@ LoadFailure/SaveReport/RecoveryReportは共通Diagnosticを改変せず、editor
 
 
 <a id="view-design"></a>
+
+### 8.9. 終端journalの引退とbackup回収
+
+registry schema 1へ省略時は空の`garbage`台帳を追加する。registry lease中に、検証済みcompleted/restored manifestとsave directory、before/after directory、manifest、各blobのdev/inoとfile hashを記録する。許可名はcanonicalなsave ID配下の固定名だけで、出力対象pathを回収に使用しない。manifestの再読bytesと検証済み終端内容、blobの期待hashを一致させてから、完成baselineと台帳を同じregistryへwrite・fsync・rename・親fsyncで永続化する。
+
+台帳が見えても前回の親fsyncが失敗した可能性があるため、各回収試行でregistryの耐久化を再確認する。残存entry全体の型・identity・hash・link数・未知名を事前検査し、`manifest.json`を同directoryの`retired.json`へNOREPLACE renameして親fsyncする。以後はmanifest loaderを通さず台帳から再開し、記録されたblob、空のbefore/after directory、引退manifest、空のsave directoryをdescriptor基準でunlink/rmdirし、各親をfsyncする。最後にrecovery親の耐久化を確認して台帳を除去・永続化する。既知entryの不在は前回の削除として扱い、親syncを再試行する。
+
+各変更直前にもidentityを照合する。未復旧journal、未知entry・identity、symlink、外部hardlink、改変bytesは削除せず診断する。台帳のない旧orphanは所有identityを推測して回収しない。出力先そのものには回収処理からunlink/rmdirしない。同期失敗等は`finalizing`として「保存を完了」で回収だけを再試行し、保護対象の異常は`invalid`で表示する。復元が終わったjournalの回収失敗も一覧に残す。回収完了後の旧recovery IDは記録がないため拒否する。
+
+registry永続化前後、引退rename前後と親sync後、各blob／directoryのunlink前後と親sync後、台帳除去前に失敗注入し、同一プロセス再試行と再起動を確認する。未知identity・内容改変・link・未知entry・復元済み異常・symlink根・未復旧journalの保持も確認する。非協調writerとの原子的CASや実機電源断の保証は追加しない。
 
 ## 9. B6 出力（画面）の詳細設計
 
@@ -1012,7 +1023,7 @@ crates/dir-simulator/src/tool/ned-editor/
 
 初版の2026-10-04作業ツリーで、7ブロックと起動CLIを実装した。内部の`FrozenProject`などは責務を示す設計名であり、実装では`ProjectSnapshot`の固定cloneと`EditorSession`を用いる。EditorCommandの型・受付はcontroller、図からのtransaction構築はcommands、ファイル入力はinput、出力と復旧はoutputに置く。HTTPは`tiny_http 0.12.0`、descriptor操作は`rustix 0.38.44`を固定し、Rust 1.85.0でビルドする。
 
-以下は初版の実行記録であり、レビュー補正後の再実行完了を意味しない。`1.0.1`ではwriter/epoch、保存完了後の耐久化失敗、不正復旧記録、BOM付きJSON、空白付き時刻、UI操作・診断の回帰試験を追加した。追加変更のRust・実ブラウザ試験は未実行で、マージ前に通常ゲートの再実行が必要である。
+以下の表は初版の経路記録である。`1.0.1`で追加したwriter/epoch、保存完了後の耐久化失敗、不正復旧記録、BOM付きJSON、空白付き時刻、UI操作・診断の回帰試験を、`1.0.2`の回収・CRLF補正と合わせてOMEN35LのWSL Ubuntu 24.04で再実行した。Rust 1.85.0でlocked build／test（153 unit・33 integration・1 doctest、計187件）／全target clippy警告禁止／fmt checkが成功。Node 24.13.0でUI・復旧・viewer modelの84件、Python 3で39件、strict traceability・生成整合性、PlantUML 11図が成功した。既存Playwright 1.62.1／Chromium 151.0.7922.34で実ブラウザ往復とUI構造組立の2件をskipせず実行し、保存後のCLI validate／runまで成功した。追加ソフトのインストール、OMNeT++比較、CodeRabbitの再試行は行っていない。
 
 | 初版の実行証拠 | 対象と確認範囲 |
 | --- | --- |
@@ -1023,7 +1034,7 @@ crates/dir-simulator/src/tool/ned-editor/
 | [UI試験](../../../tests/ned_editor_ui.test.cjs)・53試験 | BOM/混在改行/日本語/絵文字、送信後の追加入力、IME待ち、202と結果不明時の照会、未受領拒否、stale view、gate方向、実体階層と参照値、別タブ更新後のack hash照合、ブラウザfetchの呼出し。NE-C03・09・14・15・22・26・28に対応 |
 | [実ブラウザ往復](../../../tests/ned_editor_browser.test.cjs) | ChromiumでHTTPのHost/Origin/secret・duplicate JSON拒否、Controller追加、任意名Bus gateへのTX/RX結線、Undo/Redo、共通検証、2つ目のtab、実体別値、構文エラー修正、IME終了待ち、原入力削除後のSaveAs、出力INIのCLI validate、配置追加後の管理済み出力への上書きを実行。NE-C01・04・08・09・14〜16・19・20・22に対応 |
 
-上の対応は試験で実行した経路を示し、NE-C01〜28のすべての組合せを網羅したという意味ではない。保存試験の停止は一時fixture上の失敗注入と再起動であり、実機の電源断、あらゆるOS・ストレージ条件、非協調writerとの原子的CASは未検証である。NE-C02の読込途中で変更が続く状態の全タイミングは未検証。現行共通parserの受理条件は保持しており、`//`コメント行末のCRLFをbare carriage returnとして拒否していた既存の挙動は、行コメントとして受理するよう補正している。ブラウザ試験はChromium一種で、物理IMEや他ブラウザの全適合、大規模入力の性能は未検証。未知identityの一時ファイル・directoryと引退済みjournalのbackup blobは安全側に残し、自動削除しない。
+上の対応は試験で実行した経路を示し、NE-C01〜28のすべての組合せを網羅したという意味ではない。保存試験の停止は一時fixture上の失敗注入と再起動であり、実機の電源断、あらゆるOS・ストレージ条件、非協調writerとの原子的CASは未検証である。NE-C02の読込途中で変更が続く状態の全タイミングは未検証。現行共通parserの受理条件は保持しており、`//`コメント行末のCRLFをbare carriage returnとして拒否していた既存の挙動は、行コメントとして受理するよう補正している。ブラウザ試験はChromium一種で、物理IMEや他ブラウザの全適合、大規模入力の性能は未検証。未知identityの一時ファイル・directoryと所有台帳のない旧orphanは安全側に残す。検証済み終端journalの既知backupは第8.9節に従って回収する。
 
 通常のRustゲートは`cargo fmt --all -- --check`、`cargo clippy --locked --all-targets -- -D warnings`、`cargo test --locked`。UIは`node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs`で実行する。実ブラウザ試験は別途インストール済みPlaywrightを使い、次のように実行する。通常のNode試験ではPlaywrightがなければブラウザ試験だけをskipする。
 
@@ -1032,12 +1043,12 @@ cargo build --locked -p dir-simulator
 PLAYWRIGHT_MODULE=/path/to/playwright node tests/ned_editor_browser.test.cjs
 ```
 
-文書のstrict traceability／生成物／図の一致検査は文書構造の証拠であり、上記の実行試験を代替しない。commit・push・GitHub版の作成はこの実装作業には含めない。
+文書のstrict traceability／生成物／図の一致検査は文書構造の証拠であり、上記の実行試験を代替しない。
 
 
 ## 16. 内部テンプレート・新規作成・標準型カタログ
 
-`template.rs`と`templates/`にNED、INI、workload、routingの資産を置き、`include_str!`でバイナリへ埋め込む。テンプレート参照のための実ファイルを起動時に作成しない。既定Multibus、単一CAN、全Gateway設定を持つMultibus Gateway設定例、空のMultibusの4種を用意する。最初の2種はController 2個とBus 1個、設定例は2BusとGatewayの結線済み構成であり、全体検証とSaveAsが可能。初期workloadはexplicitの空timesとperiodicのcount=0で送信を止め、frame・start・phase・period・end・countの全項目を示す。INIは実行制限、全Controller/Bus値とchannel override、Gateway設定例はprocessing_delay・hop_limit・rx_queue_capacityと全route項目を持つ。空のMultibusは全標準型と実行制限、空のgenerators/gatewaysを持ち、旧実体名に依存するINI上書きやchannel設定を含めない。未完成状態は編集可能だが、共通prepareが成功するまで検証・保存は拒否する。
+`template.rs`と`templates/`にNED、INI、workload、routingの資産を置き、`include_str!`でバイナリへ埋め込む。テンプレート参照のための実ファイルを起動時に作成しない。埋込資産がCRLF checkoutでも、挿入する宣言をLFへ正規化してから入力の改行へ一度だけ変換し、CRCRLFを生成しない。既定Multibus、単一CAN、全Gateway設定を持つMultibus Gateway設定例、空のMultibusの4種を用意する。最初の2種はController 2個とBus 1個、設定例は2BusとGatewayの結線済み構成であり、全体検証とSaveAsが可能。初期workloadはexplicitの空timesとperiodicのcount=0で送信を止め、frame・start・phase・period・end・countの全項目を示す。INIは実行制限、全Controller/Bus値とchannel override、Gateway設定例はprocessing_delay・hop_limit・rx_queue_capacityと全route項目を持つ。空のMultibusは全標準型と実行制限、空のgenerators/gatewaysを持ち、旧実体名に依存するINI上書きやchannel設定を含めない。未完成状態は編集可能だが、共通prepareが成功するまで検証・保存は拒否する。
 
 新規作成は`NewProject(template, project_name, discard_ack?)`としてB7の同じwriter・revision・ledger・job経路を使う。既存モデルがある場合は破棄確認を必須にし、成功時だけ新しいsnapshotを採用する。revision/input_revision/context_epochは単調増加、編集履歴・確認値を初期化し、以前の保存済み印を引き継がない。B2は終端成功を確認してから原文buffer・選択scopeを切り替える。復旧保護中は新規作成を拒否する。
 

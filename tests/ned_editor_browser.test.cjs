@@ -135,7 +135,12 @@ async function main() {
     await page.waitForFunction(() => document.getElementById('status').textContent.includes('保存済み'));
     assert.ok(fs.existsSync(path.join(exported, 'ned/0001/demo/Main.ned.layout.json')));
     const saved = fs.readFileSync(path.join(exported, 'ned/0001/demo/Main.ned'), 'utf8');
-    assert.equal(saved, finalSource);
+    const savedView = await (await get('/api/session')).json();
+    // textarea uses LF for display; the server and saved file retain raw CRLF.
+    assert.equal(saved, savedView.source.text);
+    assert.equal(saved.replace(/\r\n/g, '\n'), finalSource);
+    if (ned.includes('\r\n')) assert.ok(saved.includes('\r\n'));
+    assert.ok(!saved.includes('\r\r\n'));
     // Standard modules are available even when baseline did not define them.
     assert.equal(await page.locator('#builtin-palette button').count(), 7);
     await page.locator('[data-catalog-id="@builtin:Gateway"]').click();

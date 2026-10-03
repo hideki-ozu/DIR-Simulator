@@ -348,6 +348,8 @@ struct RegistryData {
     export_root: PathBuf,
     targets: BTreeMap<String, Target>,
     input_regions: Vec<PathBuf>,
+    #[serde(default)]
+    garbage: BTreeMap<String, RetiredJournal>,
 }
 #[derive(Clone)]
 pub(crate) struct TargetRegistry {
@@ -357,6 +359,7 @@ pub(crate) struct TargetRegistry {
     // A durable completed journal can precede a failed registry checkpoint.
     // Keep that retry visible in the current process; startup reconciles it from disk.
     pending_finalizations: BTreeSet<String>,
+    collection_errors: BTreeMap<String, EditorError>,
 }
 impl TargetRegistry {
     pub fn open(export_root: &Path, state_root: &Path) -> Result<Self> {
@@ -384,6 +387,7 @@ impl TargetRegistry {
                 export_root: export_root.clone(),
                 targets: BTreeMap::new(),
                 input_regions: Vec::new(),
+                garbage: BTreeMap::new(),
             }
         };
         let mut registry = Self {
@@ -391,12 +395,16 @@ impl TargetRegistry {
             state_root,
             data,
             pending_finalizations: BTreeSet::new(),
+            collection_errors: BTreeMap::new(),
         };
         registry.validate_registry()?;
         registry.reconcile_completed()?;
         Ok(registry)
     }
     fn validate_registry(&self) -> Result<()> {
+        for (id, record) in &self.data.garbage {
+            record.validate(id)?;
+        }
         for (id, t) in &self.data.targets {
             if id != &t.id || !id.starts_with("target-") {
                 return Err(invalid("Invalid registered target ID"));
@@ -644,9 +652,17 @@ impl TargetRegistry {
     }
     pub fn pending_recoveries(&self) -> Result<Vec<Value>> {
         let mut result = Vec::new();
+        for (id, record) in &self.data.garbage {
+            result.push(json!({"id":id,"path":record.manifest.target.path,
+                "state":if self.collection_errors.get(id).is_some_and(|e| e.status < 500) { "invalid" } else { "finalizing" },
+                "message":self.collection_errors.get(id).map(ToString::to_string)}));
+        }
         for name in Directory::open(&self.state_root.join("recovery"))?.names()? {
             let id = name.to_string_lossy().to_string();
             if !safe_id(&id, "save-") {
+                continue;
+            }
+            if self.data.garbage.contains_key(&id) {
                 continue;
             }
             match stat_optional(&manifest_path(self, &id)) {
@@ -659,9 +675,13 @@ impl TargetRegistry {
             }
             match self.load_manifest(&id) {
                 Ok(manifest) => {
-                    if self.pending_finalizations.contains(&id) && manifest.state == "completed" {
+                    if self.pending_finalizations.contains(&id)
+                        && ["completed", "restored"].contains(&manifest.state.as_str())
+                    {
                         result.push(
-                            json!({"id":id,"path":manifest.target.path,"state":"finalizing"}),
+                            json!({"id":id,"path":manifest.target.path,
+                                "state":if self.collection_errors.get(&id).is_some_and(|e| e.status < 500) { "invalid" } else { "finalizing" },
+                                "message":self.collection_errors.get(&id).map(ToString::to_string)}),
                         );
                     } else if manifest.state != "completed" && manifest.state != "restored" {
                         result.push(
@@ -1165,6 +1185,55 @@ struct Manifest {
     directories: Vec<JournalDirectory>,
     completed_target: Option<Target>,
 }
+// Durable deletion authority contains only identities under a canonical private save ID.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RetiredNode {
+    identity: Identity,
+    hash: Option<String>,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RetiredJournal {
+    manifest: Manifest,
+    nodes: BTreeMap<String, RetiredNode>,
+}
+impl RetiredJournal {
+    fn validate(&self, id: &str) -> Result<()> {
+        if !safe_id(id, "save-")
+            || self.manifest.id != id
+            || !["completed", "restored"].contains(&self.manifest.state.as_str())
+        {
+            return Err(invalid("Invalid retirement record"));
+        }
+        let mut expected = BTreeSet::from([
+            String::new(),
+            "before".into(),
+            "after".into(),
+            "manifest.json".into(),
+        ]);
+        for (i, file) in self.manifest.files.iter().enumerate() {
+            if file.after_blob != format!("after/{i:04}.bin")
+                || file
+                    .before_blob
+                    .as_ref()
+                    .is_some_and(|n| n != &format!("before/{i:04}.bin"))
+            {
+                return Err(invalid("Invalid retired backup mapping"));
+            }
+            expected.insert(file.after_blob.clone());
+            expected.extend(file.before_blob.iter().cloned());
+        }
+        if self.nodes.keys().cloned().collect::<BTreeSet<_>>() != expected
+            || self.nodes.iter().any(|(name, node)| {
+                node.hash.is_none() != ["", "before", "after"].contains(&name.as_str())
+            })
+        {
+            return Err(invalid("Invalid retired node allowlist"));
+        }
+        Ok(())
+    }
+}
 fn manifest_path(registry: &TargetRegistry, id: &str) -> PathBuf {
     registry
         .state_root
@@ -1295,50 +1364,252 @@ impl TargetRegistry {
         .map(|(bytes, _, _)| bytes)
     }
     fn reconcile_completed(&mut self) -> Result<()> {
+        for id in self.data.garbage.keys().cloned().collect::<Vec<_>>() {
+            if let Err(error) = self.collect_retired(&id) {
+                self.collection_errors.insert(id, error);
+            }
+        }
         for name in Directory::open(&self.state_root.join("recovery"))?.names()? {
             let id = name.to_string_lossy();
-            if !safe_id(&id, "save-") {
+            if !safe_id(&id, "save-") || self.data.garbage.contains_key(&*id) {
                 continue;
             }
             let path = manifest_path(self, &id);
-            // A crash before durable initial manifest leaves an unpublished orphan directory.
+            // Unpublished or unknown orphan directories are never collected.
             if !matches!(stat_optional(&path), Ok(Some(_))) {
                 continue;
             }
             let m = match self.load_manifest(&id) {
-                Ok(manifest) => manifest,
-                // The controller will expose this record as a protected, invalid recovery.
-                // Leave its bytes untouched and continue checking independent journals.
+                Ok(m) => m,
                 Err(_) => continue,
             };
-            if m.state == "completed" {
-                let completed = m
-                    .completed_target
-                    .ok_or_else(|| invalid("Completed journal missing baseline"))?;
+            if m.state == "completed" || m.state == "restored" {
+                if let Err(error) = self.retire_terminal(&m) {
+                    self.pending_finalizations.insert(id.to_string());
+                    self.collection_errors.insert(id.to_string(), error);
+                }
+            }
+        }
+        Ok(())
+    }
+    fn retire_terminal(&mut self, m: &Manifest) -> Result<()> {
+        if !self.data.garbage.contains_key(&m.id) {
+            // Revalidate the durable terminal journal and all backups before authorizing GC.
+            let durable = self.load_manifest(&m.id)?;
+            if durable.state != "completed" && durable.state != "restored" {
+                return Err(invalid("Cannot retire a nonterminal journal"));
+            }
+            let root = self.state_root.join("recovery").join(&m.id);
+            let mut nodes = BTreeMap::new();
+            for name in ["", "before", "after"] {
+                nodes.insert(
+                    name.to_owned(),
+                    RetiredNode {
+                        identity: Directory::open(&root.join(name))?.identity(),
+                        hash: None,
+                    },
+                );
+            }
+            for name in std::iter::once("manifest.json".to_owned()).chain(
+                durable.files.iter().flat_map(|f| {
+                    f.before_blob
+                        .iter()
+                        .cloned()
+                        .chain(std::iter::once(f.after_blob.clone()))
+                }),
+            ) {
+                let (bytes, _, identity) = read_regular(&root.join(&name), false)?;
+                if name == "manifest.json" {
+                    let current: Manifest =
+                        serde_json::from_value(super::controller::strict_json(&bytes)?)
+                            .map_err(|e| invalid(e.to_string()))?;
+                    if serde_json::to_value(&current).map_err(|e| invalid(e.to_string()))?
+                        != serde_json::to_value(&durable).map_err(|e| invalid(e.to_string()))?
+                    {
+                        return Err(conflict("Terminal manifest changed during retirement"));
+                    }
+                } else {
+                    let expected = durable
+                        .files
+                        .iter()
+                        .find_map(|f| {
+                            if f.after_blob == name {
+                                Some(&f.after_hash)
+                            } else if f.before_blob.as_ref() == Some(&name) {
+                                match &f.before {
+                                    Before::Present { hash, .. } => Some(hash),
+                                    _ => None,
+                                }
+                            } else {
+                                None
+                            }
+                        })
+                        .ok_or_else(|| invalid("Unknown retirement backup"))?;
+                    if hash(&bytes) != *expected {
+                        return Err(conflict("Backup changed during retirement"));
+                    }
+                }
+                nodes.insert(
+                    name,
+                    RetiredNode {
+                        identity,
+                        hash: Some(hash(&bytes)),
+                    },
+                );
+            }
+            let record = RetiredJournal {
+                manifest: durable.clone(),
+                nodes,
+            };
+            record.validate(&m.id)?;
+            // Reject unexpected entries before recording ownership, too.
+            self.check_retired_shape(&m.id, &record)?;
+            if let Some(completed) = durable.completed_target {
                 if self.data.targets[&completed.id].generation < completed.generation {
                     self.data.targets.insert(completed.id.clone(), completed);
                 }
-                // Also retry the registry directory sync when a prior rename was visible
-                // but its durability acknowledgement failed before the process restarted.
-                self.persist()?;
-                // Retire the terminal manifest only after its baseline is durable.
-                // Old copied blobs remain private orphans; no target path is cleaned here.
-                let path = manifest_path(self, &id);
-                let directory = parent(&path)?;
-                directory.verify()?;
-                rfs::unlinkat(directory.fd(), path.file_name().unwrap(), AtFlags::empty())
-                    .map_err(|e| EditorError::io(&path, e))?;
-                directory.sync()?;
-                self.pending_finalizations.remove(&*id);
-            } else if m.state == "restored" {
-                let path = manifest_path(self, &id);
-                let directory = parent(&path)?;
-                directory.verify()?;
-                rfs::unlinkat(directory.fd(), path.file_name().unwrap(), AtFlags::empty())
-                    .map_err(|e| EditorError::io(&path, e))?;
-                directory.sync()?;
+            }
+            self.data.garbage.insert(m.id.clone(), record);
+        }
+        self.collect_retired(&m.id)
+    }
+    fn check_retired_shape(&self, id: &str, record: &RetiredJournal) -> Result<()> {
+        let root = self.state_root.join("recovery").join(id);
+        for name in ["", "before", "after"] {
+            let path = root.join(name);
+            if stat_optional(&path)?.is_none() {
+                continue;
+            }
+            self.check_retired_node(&path, &record.nodes[name])?;
+            let dir = Directory::open(&path)?;
+            if dir.identity() != record.nodes[name].identity {
+                return Err(conflict("Retired journal directory identity changed"));
+            }
+            for entry in dir.names()? {
+                let entry = entry
+                    .to_str()
+                    .ok_or_else(|| invalid("Unknown journal entry"))?;
+                let relative = if name.is_empty() {
+                    entry.to_owned()
+                } else {
+                    format!("{name}/{entry}")
+                };
+                if !record.nodes.contains_key(&relative) && relative != "retired.json" {
+                    return Err(conflict("Unknown entry in retired journal"));
+                }
+                let expected = if relative == "retired.json" {
+                    &record.nodes["manifest.json"]
+                } else {
+                    &record.nodes[&relative]
+                };
+                self.check_retired_node(&root.join(&relative), expected)?;
             }
         }
+        Ok(())
+    }
+    fn check_retired_node(&self, path: &Path, expected: &RetiredNode) -> Result<()> {
+        let stat = stat_optional(path)?.ok_or_else(|| invalid("Missing retired node"))?;
+        if Identity::stat(&stat) != expected.identity {
+            return Err(conflict("Retired journal identity changed"));
+        }
+        if let Some(expected_hash) = &expected.hash {
+            if FileType::from_raw_mode(stat.st_mode) != FileType::RegularFile || stat.st_nlink != 1
+            {
+                return Err(conflict("Retired journal file kind or link count changed"));
+            }
+            let (bytes, _, identity) = read_regular(path, false)?;
+            if identity != expected.identity || hash(&bytes) != *expected_hash {
+                return Err(conflict("Retired journal content changed"));
+            }
+        } else if FileType::from_raw_mode(stat.st_mode) != FileType::Directory {
+            return Err(conflict("Retired journal is not a directory"));
+        }
+        Ok(())
+    }
+    fn remove_retired_node(&self, path: &Path, expected: &RetiredNode) -> Result<()> {
+        let directory = parent(path)?;
+        directory.verify()?;
+        if stat_optional(path)?.is_some() {
+            self.check_retired_node(path, expected)?;
+            checkpoint("before_gc_unlink")?;
+            rfs::unlinkat(
+                directory.fd(),
+                path.file_name().unwrap(),
+                if expected.hash.is_none() {
+                    AtFlags::REMOVEDIR
+                } else {
+                    AtFlags::empty()
+                },
+            )
+            .map_err(|e| EditorError::io(path, e))?;
+            checkpoint("after_gc_unlink")?;
+        }
+        // A previous unlink can be visible without an acknowledged directory sync.
+        directory.sync()?;
+        checkpoint("after_gc_sync")
+    }
+    fn collect_retired(&mut self, id: &str) -> Result<()> {
+        let record = self
+            .data
+            .garbage
+            .get(id)
+            .cloned()
+            .ok_or_else(|| invalid("Missing retirement record"))?;
+        record.validate(id)?;
+        // Even a refreshed visible registry must be acknowledged durable before deletion.
+        checkpoint("before_gc_registry")?;
+        self.persist()?;
+        checkpoint("after_gc_registry")?;
+        let root = self.state_root.join("recovery").join(id);
+        if stat_optional(&root)?.is_some() {
+            self.check_retired_shape(id, &record)?;
+            let manifest = root.join("manifest.json");
+            let retired = root.join("retired.json");
+            let directory = Directory::open(&root)?;
+            if stat_optional(&manifest)?.is_some() {
+                if stat_optional(&retired)?.is_some() {
+                    return Err(conflict("Two retirement manifests"));
+                }
+                self.check_retired_node(&manifest, &record.nodes["manifest.json"])?;
+                directory.verify()?;
+                checkpoint("before_gc_retire")?;
+                rfs::renameat_with(
+                    directory.fd(),
+                    "manifest.json",
+                    directory.fd(),
+                    "retired.json",
+                    rfs::RenameFlags::NOREPLACE,
+                )
+                .map_err(|e| EditorError::io(&manifest, e))?;
+                checkpoint("after_gc_retire")?;
+            }
+            directory.sync()?;
+            checkpoint("after_gc_retire_sync")?;
+            for (name, node) in &record.nodes {
+                if name.starts_with("before/") || name.starts_with("after/") {
+                    let path = root.join(name);
+                    // A missing parent is allowed only after all its owned children vanished.
+                    if stat_optional(path.parent().unwrap())?.is_some() {
+                        self.remove_retired_node(&path, node)?;
+                    }
+                }
+            }
+            for name in ["before", "after"] {
+                self.remove_retired_node(&root.join(name), &record.nodes[name])?;
+            }
+            self.remove_retired_node(&retired, &record.nodes["manifest.json"])?;
+            self.remove_retired_node(&root, &record.nodes[""])?;
+        } else {
+            Directory::open(&self.state_root.join("recovery"))?.sync()?;
+        }
+        checkpoint("before_gc_forget")?;
+        self.data.garbage.remove(id);
+        if let Err(error) = self.persist() {
+            self.data.garbage.insert(id.to_owned(), record);
+            return Err(error);
+        }
+        self.pending_finalizations.remove(id);
+        self.collection_errors.remove(id);
         Ok(())
     }
 }
@@ -1876,6 +2147,9 @@ pub(crate) fn save_plan(
                 let _ = save_manifest(registry, &manifest);
             } else {
                 registry.pending_finalizations.insert(manifest.id.clone());
+                registry
+                    .collection_errors
+                    .insert(manifest.id.clone(), error.clone());
             }
             report_manifest(&manifest, SaveOutcome::RecoveryRequired, Some(error))
         }
@@ -2167,6 +2441,7 @@ fn complete(registry: &mut TargetRegistry, m: &mut Manifest) -> Result<()> {
         completed.kind = TargetKind::ManagedExport;
         completed.root_identity = Some(Directory::open(&completed.path)?.identity());
     }
+    checkpoint("before_completed_manifest")?;
     m.completed_target = Some(completed.clone());
     m.state = "completed".into();
     save_manifest(registry, m)?;
@@ -2176,7 +2451,8 @@ fn complete(registry: &mut TargetRegistry, m: &mut Manifest) -> Result<()> {
         .targets
         .insert(completed.id.clone(), completed);
     registry.persist()?;
-    checkpoint("after_registry")
+    checkpoint("after_registry")?;
+    registry.retire_terminal(m)
 }
 fn restore_before(registry: &mut TargetRegistry, m: &mut Manifest) -> Result<()> {
     check_recovery(registry, m)?;
@@ -2262,7 +2538,8 @@ fn restore_before(registry: &mut TargetRegistry, m: &mut Manifest) -> Result<()>
         }
     }
     m.state = "restored".into();
-    save_manifest(registry, m)
+    save_manifest(registry, m)?;
+    registry.retire_terminal(m)
 }
 pub(crate) fn recover(
     registry: &mut TargetRegistry,
@@ -2291,33 +2568,40 @@ pub(crate) fn recover(
     if let Err(error) = registry.refresh() {
         return empty(error);
     }
+    if let Some(record) = registry.data.garbage.get(recovery_id).cloned() {
+        let outcome = if record.manifest.state == "completed" {
+            SaveOutcome::Complete
+        } else {
+            SaveOutcome::Restored
+        };
+        return match registry.collect_retired(recovery_id) {
+            Ok(()) => report_manifest(&record.manifest, outcome, None),
+            Err(e) => {
+                registry
+                    .collection_errors
+                    .insert(recovery_id.into(), e.clone());
+                report_manifest(&record.manifest, SaveOutcome::RecoveryRequired, Some(e))
+            }
+        };
+    }
     let mut m = match registry.load_manifest(recovery_id) {
         Ok(m) => m,
         Err(e) => return empty(e),
     };
-    if m.state == "completed" {
-        if let Some(target) = m.completed_target.clone() {
-            if registry
-                .data
-                .targets
-                .get(&target.id)
-                .is_some_and(|registered| registered.generation < target.generation)
-            {
-                registry.data.targets.insert(target.id.clone(), target);
+    if m.state == "completed" || m.state == "restored" {
+        let outcome = if m.state == "completed" {
+            SaveOutcome::Complete
+        } else {
+            SaveOutcome::Restored
+        };
+        return match registry.retire_terminal(&m) {
+            Ok(()) => report_manifest(&m, outcome, None),
+            Err(e) => {
+                registry.pending_finalizations.insert(m.id.clone());
+                registry.collection_errors.insert(m.id.clone(), e.clone());
+                report_manifest(&m, SaveOutcome::RecoveryRequired, Some(e))
             }
-        }
-        // A preceding rename may have succeeded while its directory fsync failed.
-        // Retry the durable checkpoint even if refresh already sees this generation.
-        if let Err(e) = registry.persist() {
-            registry.pending_finalizations.insert(m.id.clone());
-            return report_manifest(&m, SaveOutcome::RecoveryRequired, Some(e));
-        }
-        registry.pending_finalizations.remove(&m.id);
-        return report_manifest(&m, SaveOutcome::Complete, None);
-    }
-    if m.state == "restored" {
-        registry.pending_finalizations.remove(&m.id);
-        return report_manifest(&m, SaveOutcome::Restored, None);
+        };
     }
     if m.action.as_deref().is_some_and(|chosen| chosen != action) {
         return report_manifest(
@@ -2366,12 +2650,13 @@ pub(crate) fn recover(
             )
         }
         Err(e) => {
-            if m.state != "completed" {
+            if m.state != "completed" && m.state != "restored" {
                 m.state = "recovery_required".into();
                 let _ = save_manifest(registry, &m);
             } else {
                 registry.pending_finalizations.insert(m.id.clone());
             }
+            registry.collection_errors.insert(m.id.clone(), e.clone());
             report_manifest(&m, SaveOutcome::RecoveryRequired, Some(e))
         }
     }
@@ -2403,3 +2688,8 @@ fn checkpoint(_name: &str) -> Result<()> {
 #[cfg(test)]
 #[path = "output_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+pub(super) fn inject_failure(name: &str) {
+    FAILURE.with(|f| *f.borrow_mut() = Some((name.into(), 0)));
+}

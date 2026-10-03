@@ -198,7 +198,10 @@ pub(crate) fn materialize(
         }
         _ => unreachable!("catalog ID checked above"),
     };
-    Ok((qualified(package, &name), declarations))
+    Ok((
+        qualified(package, &name),
+        declarations.replace("\r\n", "\n"),
+    ))
 }
 
 fn standard_declarations(package: &str, multibus: bool) -> String {
@@ -216,6 +219,7 @@ fn standard_declarations(package: &str, multibus: bool) -> String {
         FIXED_DELAY.replace("__NAME__", "FixedDelay"),
     ]
     .join("\n")
+    .replace("\r\n", "\n")
 }
 
 pub(crate) fn new_project(template: &str, name: &str, cwd: &Path) -> Result<ProjectSnapshot> {

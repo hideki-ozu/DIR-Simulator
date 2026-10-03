@@ -752,8 +752,9 @@ fn directory_identity_journal_gap_can_restart_without_unknown_directory_cleanup(
 fn replay_of_old_completed_save_does_not_roll_back_newer_baseline() {
     let mut f = Fixture::new();
     let id = f.destination("generations");
+    inject("after_gc_registry", 0);
     let first = save_plan(f.plan(&id), &mut f.registry, None, false);
-    assert_eq!(first.state, SaveOutcome::Complete);
+    assert_eq!(first.state, SaveOutcome::RecoveryRequired);
     f.edit();
     let second = f.plan(&id);
     let digest = second.digest.clone();
@@ -803,5 +804,279 @@ fn cached_registry_clients_preserve_each_others_registered_destinations() {
     let registry = f.restart();
     assert!(
         registry.data.targets.contains_key(&first) && registry.data.targets.contains_key(&second)
+    );
+}
+
+#[test]
+fn successful_saves_reclaim_all_private_backups_immediately() {
+    let mut f = Fixture::new();
+    let id = f.source_id();
+    for _ in 0..3 {
+        f.edit();
+        let plan = f.plan(&id);
+        let digest = plan.digest.clone();
+        let report = save_plan(plan, &mut f.registry, Some(&digest), false);
+        assert_eq!(report.state, SaveOutcome::Complete, "{:?}", report.error);
+        assert!(!f.root.join("state/recovery").join(&report.save_id).exists());
+        assert!(f.registry.data.garbage.is_empty());
+    }
+    assert!(
+        std::fs::read_dir(f.root.join("state/recovery"))
+            .unwrap()
+            .next()
+            .is_none()
+    );
+    crate::input::prepare(&f.root.join("input/project.ini")).unwrap();
+}
+
+#[test]
+fn retirement_and_each_reclamation_boundary_resume_after_restart_and_retry() {
+    for point in [
+        "before_gc_registry",
+        "after_gc_registry",
+        "before_gc_retire",
+        "after_gc_retire",
+        "after_gc_retire_sync",
+        "before_gc_unlink",
+        "after_gc_unlink",
+        "after_gc_sync",
+        "before_gc_forget",
+    ] {
+        for restart in [false, true] {
+            // Source saves have both before and after blobs, exercising every deletion.
+            let mut f = Fixture::new();
+            let target = f.source_id();
+            let plan = f.plan(&target);
+            let count = plan.files.len() * 2 + 4;
+            let iterations = if point.contains("unlink") || point == "after_gc_sync" {
+                count
+            } else {
+                1
+            };
+            for nth in 0..iterations {
+                let plan = f.plan(&target);
+                let digest = plan.digest.clone();
+                inject(point, nth);
+                let report = save_plan(plan, &mut f.registry, Some(&digest), false);
+                assert_eq!(
+                    report.state,
+                    SaveOutcome::RecoveryRequired,
+                    "{point}/{nth}/{restart}: {:?}",
+                    report.error
+                );
+                let id = report.recovery_id.unwrap();
+                // Repeat the interrupted boundary on startup or in the same process.
+                inject("before_gc_registry", 0);
+                if restart {
+                    f.registry = f.restart();
+                    assert_eq!(
+                        f.registry.pending_recoveries().unwrap()[0]["state"],
+                        "finalizing"
+                    );
+                } else {
+                    let retry = recover(&mut f.registry, &id, "complete");
+                    assert_eq!(
+                        retry.state,
+                        SaveOutcome::RecoveryRequired,
+                        "{point}/{nth}: {:?}",
+                        retry.error
+                    );
+                }
+                FAILURE.with(|v| *v.borrow_mut() = None);
+                if !f.registry.data.garbage.is_empty() || manifest_path(&f.registry, &id).exists() {
+                    let retry = recover(&mut f.registry, &id, "complete");
+                    assert_eq!(
+                        retry.state,
+                        SaveOutcome::Complete,
+                        "{point}/{nth}/{restart}: {:?}",
+                        retry.error
+                    );
+                }
+                assert!(!f.root.join("state/recovery").join(&id).exists());
+                assert!(f.registry.data.garbage.is_empty());
+                assert!(f.registry.pending_recoveries().unwrap().is_empty());
+                crate::input::prepare(&f.root.join("input/project.ini")).unwrap();
+                f.registry = f.restart();
+                assert!(f.registry.data.garbage.is_empty());
+            }
+        }
+    }
+}
+
+#[test]
+fn reclamation_preserves_unknown_identities_links_contents_and_unrecovered_journals() {
+    use std::os::unix::fs::symlink;
+    for change in [
+        "blob_identity",
+        "blob_content",
+        "manifest_content",
+        "symlink",
+        "hardlink",
+        "directory",
+        "unknown",
+        "retired_marker",
+    ] {
+        let mut f = Fixture::new();
+        let target = f.source_id();
+        let plan = f.plan(&target);
+        let digest = plan.digest.clone();
+        inject("after_gc_registry", 0);
+        let report = save_plan(plan, &mut f.registry, Some(&digest), false);
+        let id = report.recovery_id.unwrap();
+        let root = f.root.join("state/recovery").join(&id);
+        let record = f.registry.data.garbage[&id].clone();
+        let blob_name = record
+            .nodes
+            .keys()
+            .find(|n| n.starts_with("after/"))
+            .unwrap();
+        let blob = root.join(blob_name);
+        let original = std::fs::read(&blob).unwrap();
+        match change {
+            "blob_identity" => {
+                std::fs::rename(&blob, root.join("old-blob")).unwrap();
+                std::fs::write(&blob, &original).unwrap();
+            }
+            "blob_content" => std::fs::write(&blob, "modified").unwrap(),
+            "manifest_content" => {
+                let path = root.join("manifest.json");
+                let mut bytes = std::fs::read(&path).unwrap();
+                bytes.push(b' ');
+                std::fs::write(path, bytes).unwrap();
+            }
+            "symlink" => {
+                std::fs::remove_file(&blob).unwrap();
+                symlink(f.root.join("input/project.ini"), &blob).unwrap();
+            }
+            "hardlink" => std::fs::hard_link(&blob, f.root.join("linked-blob")).unwrap(),
+            "directory" => {
+                std::fs::rename(root.join("after"), root.join("old-after")).unwrap();
+                std::fs::create_dir(root.join("after")).unwrap();
+            }
+            "unknown" => std::fs::write(root.join("unknown"), "preserve").unwrap(),
+            "retired_marker" => std::fs::write(root.join("retired.json"), "preserve").unwrap(),
+            _ => unreachable!(),
+        }
+        let before = std::fs::read_dir(root.join("before")).unwrap().count();
+        let retry = recover(&mut f.registry, &id, "complete");
+        assert_eq!(
+            retry.state,
+            SaveOutcome::RecoveryRequired,
+            "{change}: {:?}",
+            retry.error
+        );
+        assert!(root.join("manifest.json").exists(), "{change}");
+        assert_eq!(
+            std::fs::read_dir(root.join("before")).unwrap().count(),
+            before
+        );
+        f.registry = f.restart();
+        assert!(root.exists());
+        assert_eq!(
+            f.registry.pending_recoveries().unwrap()[0]["state"],
+            "invalid",
+            "{change}: {:?}",
+            f.registry.collection_errors
+        );
+        assert!(f.root.join("input/project.ini").is_file());
+    }
+    let mut f = Fixture::new();
+    let target = f.destination("unfinished");
+    inject("after_publish", 0);
+    let report = save_plan(f.plan(&target), &mut f.registry, None, false);
+    let id = report.recovery_id.unwrap();
+    let root = f.root.join("state/recovery").join(id);
+    let bytes = std::fs::read(root.join("manifest.json")).unwrap();
+    f.registry = f.restart();
+    assert_eq!(std::fs::read(root.join("manifest.json")).unwrap(), bytes);
+    assert!(root.join("after").is_dir());
+    assert!(f.registry.data.garbage.is_empty());
+}
+
+#[test]
+fn malformed_retirement_allowlist_cannot_escape_private_journal() {
+    let mut f = Fixture::new();
+    let target = f.destination("gc-safe");
+    inject("after_gc_registry", 0);
+    let report = save_plan(f.plan(&target), &mut f.registry, None, false);
+    let id = report.recovery_id.unwrap();
+    let mut record = f.registry.data.garbage[&id].clone();
+    let node = record.nodes["manifest.json"].clone();
+    record.nodes.insert("../../input/project.ini".into(), node);
+    f.registry.data.garbage.insert(id.clone(), record);
+    assert!(f.registry.data.garbage[&id].validate(&id).is_err());
+    assert!(f.registry.collect_retired(&id).is_err());
+    assert!(manifest_path(&f.registry, &id).exists());
+    // Refresh restores the independently durable authority rather than trusting cache corruption.
+    assert_eq!(
+        recover(&mut f.registry, &id, "complete").state,
+        SaveOutcome::Complete
+    );
+    assert!(f.root.join("input/project.ini").is_file());
+}
+
+#[test]
+fn restored_journal_with_unknown_entry_remains_visible_and_protected() {
+    let mut f = Fixture::new();
+    let target = f.destination("restore-protected");
+    inject("after_publish", 0);
+    let report = save_plan(f.plan(&target), &mut f.registry, None, false);
+    let id = report.recovery_id.unwrap();
+    let root = f.root.join("state/recovery").join(&id);
+    std::fs::write(root.join("unknown"), "preserve").unwrap();
+    let report = recover(&mut f.registry, &id, "restore");
+    assert_eq!(report.state, SaveOutcome::RecoveryRequired);
+    assert_eq!(
+        f.registry.pending_recoveries().unwrap()[0]["state"],
+        "invalid"
+    );
+    assert!(root.join("manifest.json").is_file());
+    f.registry = f.restart();
+    assert_eq!(
+        f.registry.pending_recoveries().unwrap()[0]["state"],
+        "invalid"
+    );
+    assert_eq!(
+        std::fs::read_to_string(root.join("unknown")).unwrap(),
+        "preserve"
+    );
+    assert!(f.registry.data.garbage.is_empty());
+}
+
+#[test]
+fn unknown_orphan_and_symlinked_journal_roots_are_never_collected() {
+    use std::os::unix::fs::symlink;
+    let mut f = Fixture::new();
+    let unknown = f
+        .root
+        .join("state/recovery")
+        .join(format!("save-{}", "a".repeat(64)));
+    std::fs::create_dir(&unknown).unwrap();
+    std::fs::write(unknown.join("orphan"), "unknown").unwrap();
+    let target = f.destination("symlink-protected");
+    inject("after_gc_registry", 0);
+    let report = save_plan(f.plan(&target), &mut f.registry, None, false);
+    let id = report.recovery_id.unwrap();
+    let root = f.root.join("state/recovery").join(&id);
+    let preserved = f.root.join("saved-journal");
+    std::fs::rename(&root, &preserved).unwrap();
+    symlink(&preserved, &root).unwrap();
+    f.registry = f.restart();
+    assert!(
+        std::fs::symlink_metadata(&root)
+            .unwrap()
+            .file_type()
+            .is_symlink()
+    );
+    assert!(preserved.join("manifest.json").exists());
+    assert!(unknown.join("orphan").exists());
+    assert!(
+        f.root
+            .join("exports/symlink-protected/project.ini")
+            .is_file()
+    );
+    assert_eq!(
+        f.registry.pending_recoveries().unwrap()[0]["state"],
+        "invalid"
     );
 }

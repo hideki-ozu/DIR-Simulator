@@ -953,20 +953,27 @@ fn protected_layout_replacement_needs_bound_ack_and_preserves_input_revision() {
 fn startup_checks_recovery_before_missing_input_and_can_complete_without_model() {
     let f = Fixture::new();
     let destination = f.destination("recoverable");
-    let saved = f.execute("save_as_project", json!({"destination_id":destination}));
-    assert_eq!(saved["operation_status"], 200);
-    let save_id = saved["result"]["save_id"].as_str().unwrap();
-    // Recreate the persisted crash window after all files were published but before completion was recorded.
-    let path = f
-        .root
-        .join("state/recovery")
-        .join(save_id)
-        .join("manifest.json");
-    let mut manifest: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
-    manifest["state"] = "publishing".into();
-    manifest["action"] = Value::Null;
-    manifest["completed_target"] = Value::Null;
-    fs::write(&path, serde_json::to_vec_pretty(&manifest).unwrap()).unwrap();
+    // Publish every output but interrupt before the durable completion marker.
+    // Successful saves now retire and reclaim their journal immediately.
+    let saved = {
+        let mut c = f.shared.lock().unwrap();
+        let model = c.model.as_ref().unwrap();
+        let plan = super::super::output::build_plan(
+            &model.project,
+            model.revision,
+            model.input_revision,
+            &destination,
+            &c.registry,
+        )
+        .unwrap();
+        super::super::output::inject_failure("before_completed_manifest");
+        super::super::output::save_plan(plan, &mut c.registry, None, false)
+    };
+    assert_eq!(
+        saved.state,
+        super::super::output::SaveOutcome::RecoveryRequired
+    );
+    let save_id = saved.recovery_id.unwrap();
     fs::remove_dir_all(f.root.join("input")).unwrap();
     let registry = TargetRegistry::open(&f.root.join("exports"), &f.root.join("state")).unwrap();
     let shared = Arc::new(Mutex::new(
