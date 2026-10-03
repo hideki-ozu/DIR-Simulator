@@ -117,8 +117,14 @@ async function main() {
     assert.equal(JSON.parse(result.stdout).node_count, '5');
     const ini = fs.readFileSync(path.join(exported, 'project.ini'), 'utf8');
     assert.ok(!ini.includes(input));
+    const beforeAlign = (await (await get('/api/session')).json()).revision;
     await page.locator('#align').click();
-    await confirm('配置の変更');
+    const alignDeadline = Date.now() + 15000;
+    while ((await (await get('/api/session')).json()).revision === beforeAlign) {
+      assert.ok(Date.now() < alignDeadline, 'Layout change did not finish');
+      await new Promise(resolve => setTimeout(resolve, 25));
+    }
+    assert.equal(await page.locator('#editor-dialog').evaluate(el => el.open), false);
     await page.locator('#overwrite').click();
     const targets = await page.locator('#overwrite-target option').allTextContents();
     const managedIndex = targets.findIndex(text => text.includes('/edited'));

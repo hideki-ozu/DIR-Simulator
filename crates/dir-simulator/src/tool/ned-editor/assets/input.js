@@ -319,7 +319,7 @@
       if (!row.node) throw new Error('送信するControllerを選択してください。');
       const generator = { id: row.id, kind: row.kind, node: row.node, frame };
       if (row.kind === 'can.explicit.v1') {
-        generator.times = String(row.times || '').split(/[\s,]+/).filter(Boolean);
+        generator.times = String(row.times || '').split(/[,\r\n]+/).map(time => time.trim()).filter(Boolean);
       } else if (row.kind === 'can.periodic.v1') {
         if (!row.start || !row.period) throw new Error('周期送信の開始時刻と周期を指定してください。');
         Object.assign(generator, { start: row.start, phase: row.phase || '0ps', period: row.period });
@@ -479,8 +479,8 @@
         app.operation = V.commandLabel(kind); render();
         if (options.structural && (!app.view?.graph || app.view.graph.stale || V.instanceStructuralBlocked(app))) throw new Error('現在のソースに対応する構成図と、解決済みの階層を選択してください。');
         let impact;
-        if (options.structural || options.configuration || kind === 'set_default' || kind === 'set_layout') {
-          impact = await confirmCommand(kind, payload, options.configuration ? V.commandLabel(kind) : kind === 'set_layout' ? '配置の変更' : '型定義の変更', options.configuration || kind === 'set_layout' ? '' : '型定義を編集します。表示された利用箇所にも反映されます。');
+        if (options.structural || options.configuration || kind === 'set_default') {
+          impact = await confirmCommand(kind, payload, options.configuration ? V.commandLabel(kind) : '型定義の変更', options.configuration ? '' : '型定義を編集します。表示された利用箇所にも反映されます。');
           if (impact === null) return false;
         }
         if (kind === 'overwrite_project' || kind === 'reload') {
@@ -569,12 +569,19 @@
       if (result) await perform('new_project', { template: result['project-template'], project_name: result['project-name-input'] });
     }
     async function saveAs() {
+      const check = () => {
+        if (!client.writer) throw new Error('編集権限を取得してください。');
+        if (app.operation || client.inflight || client.uncertain) throw new Error('処理中または送信済みの操作の結果を確認してください。');
+        if (app.gesture || V.recoveryRequired?.(app.view)) throw new Error('ドラッグまたは保存の復旧を完了してから保存してください。');
+      };
+      check();
       const result = await V.dialog({ title: '別フォルダにプロジェクトを保存', submit: '検証して保存', text: 'INI・全NED・関連JSON・配置を一式保存します。許可された保存先の下に、新規または空のフォルダを指定してください。', fields: [
         { id: 'export-root', label: '保存先の親フォルダ', choices: (app.view.export_roots || []).map(r => ({ value: r.id, label: r.path })) },
         { id: 'destination-name', label: '相対フォルダ名', required: true, placeholder: 'edited-project' }
       ] });
       if (!result) return;
-      const target = await api.request('/api/destinations', { export_root_id: result['export-root'], relative_directory: result['destination-name'] });
+      check();
+      const target = await api.request('/api/destinations', { client_id: client.clientId, writer_epoch: client.writerEpoch, export_root_id: result['export-root'], relative_directory: result['destination-name'] });
       await perform('save_as_project', { destination_id: target.id });
     }
     async function overwrite() {

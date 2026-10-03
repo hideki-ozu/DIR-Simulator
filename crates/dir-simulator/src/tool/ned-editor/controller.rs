@@ -1355,8 +1355,18 @@ impl Controller {
     fn destination(shared: &Shared, body: &Value) -> (u16, Value) {
         let mut c = shared.lock().unwrap_or_else(|e| e.into_inner());
         let precondition = (|| {
-            fields(body, &["export_root_id", "relative_directory"], &[])?;
+            fields(
+                body,
+                &[
+                    "client_id",
+                    "writer_epoch",
+                    "export_root_id",
+                    "relative_directory",
+                ],
+                &[],
+            )?;
             text_fields(body, &["export_root_id", "relative_directory"])?;
+            c.writer_check(field(body, "client_id")?, decimal(body, "writer_epoch")?)?;
             c.idle()?;
             c.writable("destination")?;
             if !c
@@ -1681,6 +1691,17 @@ impl Controller {
     ) {
         let mut applied = false;
         let mut extra = None;
+        let origin = if command.kind == "reload" {
+            "load"
+        } else if matches!(
+            command.kind.as_str(),
+            "save_as_project" | "overwrite_project" | "recover"
+        ) {
+            "io"
+        } else {
+            "semantic"
+        };
+        self.diagnostics.retain(|d| d["origin"] != origin);
         let result = (|| {
             let work = match outcome {
                 Ok(v) => v?,
@@ -1898,22 +1919,20 @@ impl Controller {
             Ok(())
         })();
         if let Err(e) = &result {
-            let origin = if command.kind == "reload" {
-                "load"
-            } else if matches!(
-                command.kind.as_str(),
-                "save_as_project" | "overwrite_project" | "recover"
-            ) {
-                "io"
-            } else {
-                "semantic"
-            };
-            self.diagnostics.retain(|d| d["origin"] != origin);
-            self.diagnostics.push(diagnostic(
+            // Validation normally records the exact diagnostic on the model.
+            // Preserve failures that happened before that result was adopted.
+            let entry = diagnostic(
                 origin,
                 e,
                 self.model.as_ref().map_or(0, |m| m.input_revision),
-            ));
+            );
+            if !self
+                .model
+                .as_ref()
+                .is_some_and(|m| m.diagnostics.contains(&entry))
+            {
+                self.diagnostics.push(entry);
+            }
         }
         self.busy = None;
         self.finish(command, result, applied, extra);

@@ -354,6 +354,9 @@ pub(crate) struct TargetRegistry {
     export_root: PathBuf,
     state_root: PathBuf,
     data: RegistryData,
+    // A durable completed journal can precede a failed registry checkpoint.
+    // Keep that retry visible in the current process; startup reconciles it from disk.
+    pending_finalizations: BTreeSet<String>,
 }
 impl TargetRegistry {
     pub fn open(export_root: &Path, state_root: &Path) -> Result<Self> {
@@ -387,6 +390,7 @@ impl TargetRegistry {
             export_root,
             state_root,
             data,
+            pending_finalizations: BTreeSet::new(),
         };
         registry.validate_registry()?;
         registry.reconcile_completed()?;
@@ -645,12 +649,30 @@ impl TargetRegistry {
             if !safe_id(&id, "save-") {
                 continue;
             }
-            if stat_optional(&manifest_path(self, &id))?.is_none() {
-                continue;
+            match stat_optional(&manifest_path(self, &id)) {
+                Ok(None) => continue,
+                Ok(Some(_)) => {}
+                Err(error) => {
+                    result.push(json!({"id":id,"path":manifest_path(self, &id),"state":"invalid","message":error.to_string()}));
+                    continue;
+                }
             }
-            let manifest = self.load_manifest(&id)?;
-            if manifest.state != "completed" && manifest.state != "restored" {
-                result.push(json!({"id":id,"path":manifest.target.path,"state":manifest.state}));
+            match self.load_manifest(&id) {
+                Ok(manifest) => {
+                    if self.pending_finalizations.contains(&id) && manifest.state == "completed" {
+                        result.push(
+                            json!({"id":id,"path":manifest.target.path,"state":"finalizing"}),
+                        );
+                    } else if manifest.state != "completed" && manifest.state != "restored" {
+                        result.push(
+                            json!({"id":id,"path":manifest.target.path,"state":manifest.state}),
+                        );
+                    }
+                }
+                Err(error) => {
+                    // Do not trust paths from a malformed journal or let it hide other records.
+                    result.push(json!({"id":id,"path":manifest_path(self, &id),"state":"invalid","message":error.to_string()}));
+                }
             }
         }
         Ok(result)
@@ -1167,6 +1189,7 @@ impl TargetRegistry {
         let m: Manifest = serde_json::from_value(value).map_err(|e| invalid(e.to_string()))?;
         if m.schema_version != 1
             || m.id != id
+            || (m.state == "completed" && m.completed_target.is_none())
             || ![
                 "prepared",
                 "publishing",
@@ -1279,18 +1302,25 @@ impl TargetRegistry {
             }
             let path = manifest_path(self, &id);
             // A crash before durable initial manifest leaves an unpublished orphan directory.
-            if stat_optional(&path)?.is_none() {
+            if !matches!(stat_optional(&path), Ok(Some(_))) {
                 continue;
             }
-            let m = self.load_manifest(&id)?;
+            let m = match self.load_manifest(&id) {
+                Ok(manifest) => manifest,
+                // The controller will expose this record as a protected, invalid recovery.
+                // Leave its bytes untouched and continue checking independent journals.
+                Err(_) => continue,
+            };
             if m.state == "completed" {
                 let completed = m
                     .completed_target
                     .ok_or_else(|| invalid("Completed journal missing baseline"))?;
                 if self.data.targets[&completed.id].generation < completed.generation {
                     self.data.targets.insert(completed.id.clone(), completed);
-                    self.persist()?;
                 }
+                // Also retry the registry directory sync when a prior rename was visible
+                // but its durability acknowledgement failed before the process restarted.
+                self.persist()?;
                 // Retire the terminal manifest only after its baseline is durable.
                 // Old copied blobs remain private orphans; no target path is cleaned here.
                 let path = manifest_path(self, &id);
@@ -1299,6 +1329,7 @@ impl TargetRegistry {
                 rfs::unlinkat(directory.fd(), path.file_name().unwrap(), AtFlags::empty())
                     .map_err(|e| EditorError::io(&path, e))?;
                 directory.sync()?;
+                self.pending_finalizations.remove(&*id);
             } else if m.state == "restored" {
                 let path = manifest_path(self, &id);
                 let directory = parent(&path)?;
@@ -1843,6 +1874,8 @@ pub(crate) fn save_plan(
             if manifest.state != "completed" {
                 manifest.state = "recovery_required".into();
                 let _ = save_manifest(registry, &manifest);
+            } else {
+                registry.pending_finalizations.insert(manifest.id.clone());
             }
             report_manifest(&manifest, SaveOutcome::RecoveryRequired, Some(error))
         }
@@ -2271,14 +2304,19 @@ pub(crate) fn recover(
                 .is_some_and(|registered| registered.generation < target.generation)
             {
                 registry.data.targets.insert(target.id.clone(), target);
-                if let Err(e) = registry.persist() {
-                    return report_manifest(&m, SaveOutcome::RecoveryRequired, Some(e));
-                }
             }
         }
+        // A preceding rename may have succeeded while its directory fsync failed.
+        // Retry the durable checkpoint even if refresh already sees this generation.
+        if let Err(e) = registry.persist() {
+            registry.pending_finalizations.insert(m.id.clone());
+            return report_manifest(&m, SaveOutcome::RecoveryRequired, Some(e));
+        }
+        registry.pending_finalizations.remove(&m.id);
         return report_manifest(&m, SaveOutcome::Complete, None);
     }
     if m.state == "restored" {
+        registry.pending_finalizations.remove(&m.id);
         return report_manifest(&m, SaveOutcome::Restored, None);
     }
     if m.action.as_deref().is_some_and(|chosen| chosen != action) {
@@ -2315,19 +2353,24 @@ pub(crate) fn recover(
     })();
     drop(held);
     match result {
-        Ok(()) => report_manifest(
-            &m,
-            if action == "complete" {
-                SaveOutcome::Complete
-            } else {
-                SaveOutcome::Restored
-            },
-            None,
-        ),
+        Ok(()) => {
+            registry.pending_finalizations.remove(&m.id);
+            report_manifest(
+                &m,
+                if action == "complete" {
+                    SaveOutcome::Complete
+                } else {
+                    SaveOutcome::Restored
+                },
+                None,
+            )
+        }
         Err(e) => {
             if m.state != "completed" {
                 m.state = "recovery_required".into();
                 let _ = save_manifest(registry, &m);
+            } else {
+                registry.pending_finalizations.insert(m.id.clone());
             }
             report_manifest(&m, SaveOutcome::RecoveryRequired, Some(e))
         }

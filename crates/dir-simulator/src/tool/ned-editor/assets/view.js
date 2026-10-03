@@ -53,7 +53,7 @@
   }
   function displayState(app) {
     const view = app.view || {};
-    if ((view.recovery || []).some(r => !['completed', 'restored', 'complete', 'resolved'].includes(r.state))) return '保存の復旧待ち';
+    if (recoveryRequired(view)) return '保存の復旧待ち';
     if (app.operation) return app.operation + '…';
     if (view.busy) return commandLabel(view.busy) + '中';
     if ([...app.buffers.values()].some(b => b.pending || b.composing)) return '未検証の入力あり';
@@ -68,7 +68,7 @@
     if (typeof value === 'boolean') return { enabled: value };
     return value || { enabled: true };
   }
-  function recoveryRequired(view) { return (view?.recovery || []).some(r => !['completed', 'restored', 'complete', 'resolved'].includes(r.state)); }
+  function recoveryRequired(view) { return view?.recovery_only === true || (view?.recovery || []).some(r => !['completed', 'restored', 'complete', 'resolved'].includes(r.state)); }
   function selectedInstance(app) {
     if (!app.instancePath) return null;
     return (app.view?.instances || []).find(i => i.path === app.instancePath && i.type_key === app.typeKey && !i.unresolved) || null;
@@ -267,7 +267,7 @@
     $('new-project').disabled ||= !(view.templates || []).length;
     const compound = ['module', 'network'].includes(graph?.kind);
     $('create-module').disabled ||= !compound;
-    $('add-port').disabled ||= !compound;
+    $('add-port').disabled ||= graph?.kind !== 'module';
     $('add-gates').disabled ||= !graph?.gate_editable;
     $('delete-gate').disabled ||= !graph?.gate_editable || !(graph.own_gates || []).length;
     for (const id of ['project-settings', 'gateway-settings', 'workload-settings']) $(id).disabled ||= pending || app.scopeLoading;
@@ -406,8 +406,9 @@
     const records = view.recovery || [], container = $('recovery'); container.replaceChildren(); $('recovery-section').hidden = !records.length;
     for (const record of records) {
       const box = element('article', null, 'recovery-card'); box.append(element('strong', record.path), element('p', record.state));
-      const inactive = !client.writer || !!client.inflight || ['completed', 'restored', 'complete', 'resolved'].includes(record.state);
-      box.append(button('保存を完了', () => callbacks.recover(record, 'complete'), '', inactive || ['restoring', 'restore'].includes(record.state)), button('保存前へ戻す', () => callbacks.recover(record, 'restore'), '', inactive || ['completing', 'complete_started'].includes(record.state))); container.append(box);
+      if (record.message) box.append(element('p', record.message));
+      const inactive = !client.writer || !!client.inflight || ['completed', 'restored', 'complete', 'resolved', 'invalid'].includes(record.state);
+      box.append(button('保存を完了', () => callbacks.recover(record, 'complete'), '', inactive || ['restoring', 'restore'].includes(record.state)), button('保存前へ戻す', () => callbacks.recover(record, 'restore'), '', inactive || ['completing', 'complete_started', 'finalizing'].includes(record.state))); container.append(box);
     }
   }
   function effectiveGraph() {

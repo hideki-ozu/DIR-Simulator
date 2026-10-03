@@ -122,6 +122,7 @@ fn workload_forms_accept_explicit_and_periodic_and_reject_invalid_frames() {
 fn malformed_or_unknown_json_is_never_silently_replaced_by_forms() {
     for raw in [
         "{\"schema_version\":1,\"schema_version\":1,\"generators\":[]}",
+        "\u{feff}{\"schema_version\":1,\"schema_version\":1,\"generators\":[]}",
         "{\"schema_version\":1,\"generators\":[],\"unknown\":true}",
         "{\"schema_version\":1,\"generators\":null}",
     ] {
@@ -139,6 +140,67 @@ fn malformed_or_unknown_json_is_never_silently_replaced_by_forms() {
         file.hash = hash(raw.as_bytes());
         rejected(&mut model, "set_workload", json!({"generators":[]}));
         assert_eq!(model.project.files[&id].text.as_ref(), raw);
+    }
+}
+
+#[test]
+fn bom_json_forms_match_common_parsers_and_preserve_encoding_through_history() {
+    for newline in ["\n", "\r\n"] {
+        let mut model = model("multibus-gateway");
+        for role in [FileRole::Workload, FileRole::ModelConfig] {
+            let id = model
+                .project
+                .files
+                .values()
+                .find(|f| f.roles.contains(&role))
+                .unwrap()
+                .id
+                .clone();
+            let raw = format!(
+                "\u{feff}{}",
+                model.project.files[&id].text.replace('\n', newline)
+            );
+            let file = model.project.files.get_mut(&id).unwrap();
+            file.text = raw.into();
+            file.hash = hash(file.text.as_bytes());
+        }
+        analysis::prepare(&model.project).unwrap();
+        for role in [FileRole::Workload, FileRole::ModelConfig] {
+            let mut doc = document(&model, role.clone()).unwrap();
+            let id = model
+                .project
+                .files
+                .values()
+                .find(|f| f.roles.contains(&role))
+                .unwrap()
+                .id
+                .clone();
+            let original = model.project.files[&id].text.clone();
+            if role == FileRole::Workload {
+                doc["generators"][0]["frame"]["data"] = json!("0102");
+                model
+                    .settings_command("set_workload", &json!({"generators":doc["generators"]}))
+                    .unwrap();
+            } else {
+                doc["gateways"][0]["processing_delay"] = json!("25us");
+                model
+                    .settings_command("set_gateway", &doc["gateways"][0])
+                    .unwrap();
+            }
+            let edited = model.project.files[&id].text.clone();
+            assert!(edited.starts_with('\u{feff}'));
+            assert!(edited.ends_with(newline));
+            if newline == "\r\n" {
+                assert!(!edited.replace("\r\n", "").contains(['\r', '\n']));
+            }
+            assert_eq!(document(&model, role).unwrap(), doc);
+            analysis::prepare(&model.project).unwrap();
+            model.undo().unwrap();
+            assert_eq!(model.project.files[&id].text, original);
+            model.redo().unwrap();
+            assert_eq!(model.project.files[&id].text, edited);
+            analysis::prepare(&model.project).unwrap();
+        }
     }
 }
 

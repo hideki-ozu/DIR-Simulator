@@ -264,12 +264,16 @@ impl Fixture {
         assert_eq!(status, 200, "{result}");
         result
     }
+    fn destination_request(&self, relative: &str) -> Value {
+        let c = self.shared.lock().unwrap();
+        json!({"client_id":self.client,"writer_epoch":c.writer_epoch.to_string(),"export_root_id":"export-root","relative_directory":relative})
+    }
     fn destination(&self, relative: &str) -> String {
         let (status, result) = call(
             &self.shared,
             "POST",
             "/api/destinations",
-            Some(json!({"export_root_id":"export-root","relative_directory":relative})),
+            Some(self.destination_request(relative)),
         );
         assert_eq!(status, 200, "{result}");
         result["id"].as_str().unwrap().to_owned()
@@ -607,6 +611,59 @@ fn validation_is_async_and_semantic_failure_uses_common_diagnostic() {
     assert!(c.view_sequence > old_sequence);
     assert!(m.prepared.is_none());
     assert!(c.busy.is_none());
+    let view = super::super::view::project(&c, &BTreeMap::new());
+    assert_eq!(
+        view["diagnostics"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|d| d["origin"] == "semantic")
+            .count(),
+        1
+    );
+    assert!(c.diagnostics.iter().all(|d| d["origin"] != "semantic"));
+    drop(c);
+    f.edit(&source);
+    assert_eq!(f.execute("validate", json!({}))["operation_status"], 200);
+    let c = f.shared.lock().unwrap();
+    let view = super::super::view::project(&c, &BTreeMap::new());
+    assert!(
+        view["diagnostics"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|d| d["origin"] != "semantic")
+    );
+    assert!(c.model.as_ref().unwrap().prepared.is_some());
+}
+#[test]
+fn successful_operation_clears_controller_diagnostics_for_its_origin() {
+    let f = Fixture::new();
+    let target = f.destination("success-clears-io");
+    {
+        let mut c = f.shared.lock().unwrap();
+        c.diagnostics.push(diagnostic(
+            "io",
+            &EditorError::new("E-OLD-SAVE", "old save failure", 500),
+            1,
+        ));
+        c.diagnostics.push(diagnostic(
+            "semantic",
+            &EditorError::new("E-OLD-EDIT", "old edit failure", 422),
+            1,
+        ));
+    }
+    assert_eq!(
+        f.execute("save_as_project", json!({"destination_id":target}))["operation_status"],
+        200
+    );
+    {
+        let c = f.shared.lock().unwrap();
+        assert!(c.diagnostics.iter().all(|d| d["origin"] != "io"));
+        assert!(c.diagnostics.iter().any(|d| d["origin"] == "semantic"));
+    }
+    assert_eq!(f.execute("validate", json!({}))["operation_status"], 200);
+    assert!(f.shared.lock().unwrap().diagnostics.is_empty());
 }
 #[test]
 fn parse_debounce_adopts_latest_input_without_revision_increment() {
@@ -775,7 +832,7 @@ fn recovery_protection_blocks_commands_and_destination_registration() {
             &f.shared,
             "POST",
             "/api/destinations",
-            Some(json!({"export_root_id":"export-root","relative_directory":"blocked"}))
+            Some(f.destination_request("blocked"))
         )
         .0,
         409
@@ -939,4 +996,114 @@ fn startup_checks_recovery_before_missing_input_and_can_complete_without_model()
     assert!(c.model.is_none());
     assert!(!c.recovery_only);
     assert!(c.recovery.is_empty());
+}
+
+#[test]
+fn destinations_require_the_current_writer_before_registry_mutation() {
+    let f = Fixture::new();
+    let (_, reader) = call(
+        &f.shared,
+        "POST",
+        "/api/writer",
+        Some(json!({"action":"register"})),
+    );
+    let original = fs::read(f.root.join("state/targets.json")).unwrap();
+    let original_targets = f.shared.lock().unwrap().registry.targets();
+    let valid = f.destination_request("authorized");
+    let mut missing = valid.clone();
+    missing.as_object_mut().unwrap().remove("client_id");
+    assert_eq!(
+        call(&f.shared, "POST", "/api/destinations", Some(missing)).0,
+        400
+    );
+    for (client, epoch) in [
+        (reader["client_id"].as_str().unwrap(), "1"),
+        ("unknown", "1"),
+        (&f.client, "0"),
+    ] {
+        let mut request = valid.clone();
+        request["client_id"] = client.into();
+        request["writer_epoch"] = epoch.into();
+        let (status, response) = call(&f.shared, "POST", "/api/destinations", Some(request));
+        assert_eq!(status, 403);
+        assert_eq!(response["code"], "E-EDITOR-WRITER");
+        assert_eq!(
+            fs::read(f.root.join("state/targets.json")).unwrap(),
+            original
+        );
+        assert_eq!(
+            f.shared.lock().unwrap().registry.targets(),
+            original_targets
+        );
+    }
+    let (_, claimed) = call(
+        &f.shared,
+        "POST",
+        "/api/writer",
+        Some(json!({"action":"claim","client_id":reader["client_id"],"expected_writer_epoch":"1"})),
+    );
+    assert_eq!(
+        call(&f.shared, "POST", "/api/destinations", Some(valid.clone())).0,
+        403
+    );
+    assert_eq!(
+        fs::read(f.root.join("state/targets.json")).unwrap(),
+        original
+    );
+    let mut current = valid;
+    current["client_id"] = reader["client_id"].clone();
+    current["writer_epoch"] = claimed["writer_epoch"].clone();
+    assert_eq!(
+        call(&f.shared, "POST", "/api/destinations", Some(current)).0,
+        200
+    );
+    assert_ne!(
+        fs::read(f.root.join("state/targets.json")).unwrap(),
+        original
+    );
+}
+
+#[test]
+fn save_completion_retains_new_recovery_enumeration_error() {
+    let f = Fixture::new();
+    let command =
+        Command::parse(&f.command("save_as_project", json!({"destination_id":"target-test"})))
+            .unwrap();
+    let mut c = f.shared.lock().unwrap();
+    let stamp = Stamp::of(c.model.as_ref().unwrap());
+    c.diagnostics.push(diagnostic(
+        "io",
+        &EditorError::new("E-OLD-SAVE", "old save error", 500),
+        stamp.input_revision,
+    ));
+    let registry = c.registry.clone();
+    let report = SaveReport {
+        save_id: "save-test".into(),
+        revision: stamp.revision,
+        input_revision: stamp.input_revision,
+        snapshot_id: stamp.snapshot.clone(),
+        plan_digest: "digest".into(),
+        state: SaveOutcome::Complete,
+        error: None,
+        files: Vec::new(),
+        recovery_id: None,
+        output_path: f.root.join("exports/test"),
+    };
+    c.complete_operation(
+        &command,
+        Some(&stamp),
+        Ok(Ok(Work::Saved {
+            report,
+            registry,
+            pending: Err(EditorError::new(
+                "E-RECOVERY-ENUM",
+                "cannot enumerate recovery records",
+                500,
+            )),
+            expected: None,
+        })),
+    );
+    assert!(c.recovery_only);
+    assert_eq!(c.diagnostics.len(), 1);
+    assert_eq!(c.diagnostics[0]["code"], "E-RECOVERY-ENUM");
 }

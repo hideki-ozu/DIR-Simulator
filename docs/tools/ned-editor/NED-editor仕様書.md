@@ -1,19 +1,20 @@
 # NED-editor仕様書
 
-文書バージョン：`1.0.0`
+文書バージョン：`1.0.1`
 対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.1` | `2026-10-04` | PRレビューに基づき、保存先登録のwriter契約・復旧投影・入力互換性・操作表示を補正。追加変更の検証状態を区別 |
 | `1.0.0` | `2026-10-04` | 初版。共通パーサーを使う7ブロック、内部テンプレート・全標準部品、UIでのmodule組立・Gateway／送信設定、原文・履歴・保存／復旧と実装試験を記載 |
 
 文書ID：`tool-ned-editor-spec`
 
-文書状態：実装に対応した初版。第1節は合意済み方針、第2節以降はその方針に基づく設計。ブロック別に型・API・状態遷移・処理手順・異常時の契約まで詳細化した。7ブロックを実装し、実装試験の証拠と適用範囲を第15節へ記録する。文書版は初回push準備時に確定した。
+文書状態：実装とレビュー補正に対応。第1節は合意済み方針、第2節以降はその方針に基づく設計。ブロック別に型・API・状態遷移・処理手順・異常時の契約まで詳細化した。7ブロックを実装し、実装試験の証拠と適用範囲を第15節へ記録する。文書版は初回push準備時に確定した。
 
-文書版は初版。対象タグは既存パーサーの参照基準であり、エディタの提供版ではない。
+文書版はレビュー補正を含む。対象タグは既存パーサーの参照基準であり、エディタの提供版ではない。
 
 本書は機能仕様、内部設計、設計判断、受入条件を一冊で管理する。[取扱説明書](NED-editor取扱説明書.md)は提供状況と利用手順を管理する。
 
@@ -840,6 +841,8 @@ impl Controller { fn handle(&mut self, event: ControllerEvent) -> Vec<Effect>; }
 
 B7はjob／排他状態を先に確定してからworker起動Effectを返す。worker起動失敗も終端failureとして処理する。I/O待ちでevent loopを止めずview・job照会を継続する。workerには必ず取得済みsnapshotを渡し、B3を直接読ませない。
 
+完了manifestの記録後に保存先レジストリの耐久化が失敗した場合は、同じプロセス内でも`finalizing`を復旧一覧へ表示し、「保存を完了」で耐久化を再試行する。ここから復元へ切り替えない。不正・古い復旧記録は`invalid`の診断付き項目として保持し、自動実行・削除せず通常変更を止める。ひとつの不正記録で他の記録の列挙や診断画面の起動を止めない。
+
 起動はCLI引数の解決→既存復旧記録の検査→未完了なら復旧待ち、なければB1の初回読込の順とする。初回読込が失敗しても診断を表示するサービスは維持し、model=NoneでReloadと参照だけを許可する。起動時の読込jobはcommand IDを持たない。復旧調査はconfigの読込成功に依存させず、読込元がなくても出力を復旧できる。CLI引数不正・待受開始失敗は起動失敗としてstderrへ返す。
 
 | 操作 | ackの境界 | 排他と結果採用 |
@@ -881,7 +884,7 @@ B4の完全成功時だけ凍結版のcheckpointと当該target基準を更新�
 
 応答envelopeは`{schema_version, session_id, command_id?, job_id?, accepted, terminal, operation_status, code?, message?, applied_revision?, current_revision, sequence_consumed, next_sequence?, view_sequence}`。同期終端はHTTPの200/409/422/500等、job受領は202。job/commandのGET照会はenvelopeを取得したHTTP 200の中に元操作のoperation_statusを含める。202ではsequenceを予約し、終端まで次番号へ進まない。未受領の400/403/413はsequence_consumed=false、受領後の業務拒否はtrueとする。
 
-POST /api/destinationsは`{export_root_id, relative_directory}`を受け、登録済みOutputTargetを返す。元出力の選択は既存TargetIdで行う。保存・再読込の対象を登録することと、ファイルを書き換えることを分ける。jobは`queued/running/completed/failed/superseded`で表示し、処理中は250 ms、無変更なら段階的に最大2 sのpollとする。連絡不明時は同じjob/commandを照会し、一定時間で完了したと見なさない。
+POST /api/destinationsは`{client_id, writer_epoch, export_root_id, relative_directory}`を受け、現在のwriter leaseを検証してから登録済みOutputTargetを返す。読み取り専用タブと旧epochは登録前に拒否し、レジストリを変更しない。元出力の選択は既存TargetIdで行う。保存・再読込の対象を登録することと、ファイルを書き換えることを分ける。jobは`queued/running/completed/failed/superseded`で表示し、処理中は250 ms、無変更なら段階的に最大2 sのpollとする。連絡不明時は同じjob/commandを照会し、一定時間で完了したと見なさない。
 
 queueは256件、各clientのin-flightは一件、処理中graph/prepare/load/save/recoverは排他一件とする。自動parseは一workerと最新待機snapshot一件にまとめる。queue満杯は未受領503 `E-EDITOR-BUSY`で次sequenceを消費しない。終端jobはclientごと直近1,000件、commandに属さない自動parse jobはセッション全体の直近1,000件を保持し、ledgerからも外れたjobは410 expiredとする。未完了保存・復旧jobは件数整理で消さない。
 
@@ -1007,9 +1010,11 @@ crates/dir-simulator/src/tool/ned-editor/
 
 ## 15. 実装と検証証拠
 
-2026-10-04の作業ツリーで、7ブロックと起動CLIを実装した。内部の`FrozenProject`などは責務を示す設計名であり、実装では`ProjectSnapshot`の固定cloneと`EditorSession`を用いる。EditorCommandの型・受付はcontroller、図からのtransaction構築はcommands、ファイル入力はinput、出力と復旧はoutputに置く。HTTPは`tiny_http 0.12.0`、descriptor操作は`rustix 0.38.44`を固定し、Rust 1.85.0でビルドする。
+初版の2026-10-04作業ツリーで、7ブロックと起動CLIを実装した。内部の`FrozenProject`などは責務を示す設計名であり、実装では`ProjectSnapshot`の固定cloneと`EditorSession`を用いる。EditorCommandの型・受付はcontroller、図からのtransaction構築はcommands、ファイル入力はinput、出力と復旧はoutputに置く。HTTPは`tiny_http 0.12.0`、descriptor操作は`rustix 0.38.44`を固定し、Rust 1.85.0でビルドする。
 
-| 実行証拠 | 対象と確認範囲 |
+以下は初版の実行記録であり、レビュー補正後の再実行完了を意味しない。`1.0.1`ではwriter/epoch、保存完了後の耐久化失敗、不正復旧記録、BOM付きJSON、空白付き時刻、UI操作・診断の回帰試験を追加した。追加変更のRust・実ブラウザ試験は未実行で、マージ前に通常ゲートの再実行が必要である。
+
+| 初版の実行証拠 | 対象と確認範囲 |
 | --- | --- |
 | [共通API回帰](../../../crates/dir-simulator/src/input/editor_api_tests.rs)・7試験 | CAN/GWの正常・異常INI fixtureに対するFs/Snapshotの結果・診断・入力順の同値、構文と値検証の分離、列挙エラー順、snapshotのディスク補完禁止。NE-C01・06・18・24に対応 |
 | [モデル・索引・投影](../../../crates/dir-simulator/src/tool/ned-editor/tests.rs)・23試験 | 読込後の入力削除、不正UTF-8 NED・symlink・重複root拒否、構文NGと意味NG、UTF-8不正layout、コメントを残す子・接続削除、CAN二辺とUndo、default字句からの意図外変更拒否、誤型channel拒否、stale解析、layoutのinput版保持、201操作とforward/reverse合計32 MiB境界、依存gateのstale表示、実体別値。NE-C02〜04・07〜09・17〜19・23・25・26に対応 |
@@ -1018,9 +1023,9 @@ crates/dir-simulator/src/tool/ned-editor/
 | [UI試験](../../../tests/ned_editor_ui.test.cjs)・53試験 | BOM/混在改行/日本語/絵文字、送信後の追加入力、IME待ち、202と結果不明時の照会、未受領拒否、stale view、gate方向、実体階層と参照値、別タブ更新後のack hash照合、ブラウザfetchの呼出し。NE-C03・09・14・15・22・26・28に対応 |
 | [実ブラウザ往復](../../../tests/ned_editor_browser.test.cjs) | ChromiumでHTTPのHost/Origin/secret・duplicate JSON拒否、Controller追加、任意名Bus gateへのTX/RX結線、Undo/Redo、共通検証、2つ目のtab、実体別値、構文エラー修正、IME終了待ち、原入力削除後のSaveAs、出力INIのCLI validate、配置追加後の管理済み出力への上書きを実行。NE-C01・04・08・09・14〜16・19・20・22に対応 |
 
-上の対応は試験で実行した経路を示し、NE-C01〜28のすべての組合せを網羅したという意味ではない。保存試験の停止は一時fixture上の失敗注入と再起動であり、実機の電源断、あらゆるOS・ストレージ条件、非協調writerとの原子的CASは未検証である。NE-C02の読込途中で変更が続く状態の全タイミングは未検証。現行共通parserの受理条件は保持しており、`//`コメント行末のCRLFをbare carriage returnとして拒否する既存の挙動も変更していない。ブラウザ試験はChromium一種で、物理IMEや他ブラウザの全適合、大規模入力の性能は未検証。未知identityの一時ファイル・directoryと引退済みjournalのbackup blobは安全側に残し、自動削除しない。
+上の対応は試験で実行した経路を示し、NE-C01〜28のすべての組合せを網羅したという意味ではない。保存試験の停止は一時fixture上の失敗注入と再起動であり、実機の電源断、あらゆるOS・ストレージ条件、非協調writerとの原子的CASは未検証である。NE-C02の読込途中で変更が続く状態の全タイミングは未検証。現行共通parserの受理条件は保持しており、`//`コメント行末のCRLFをbare carriage returnとして拒否していた既存の挙動は、行コメントとして受理するよう補正している。ブラウザ試験はChromium一種で、物理IMEや他ブラウザの全適合、大規模入力の性能は未検証。未知identityの一時ファイル・directoryと引退済みjournalのbackup blobは安全側に残し、自動削除しない。
 
-通常のRustゲートは`cargo fmt --all -- --check`、`cargo clippy --locked --all-targets -- -D warnings`、`cargo test --locked`。UIは`node --test tests/ned_editor_ui.test.cjs`で実行する。実ブラウザ試験は別途インストール済みPlaywrightを使い、次のように実行する。通常のNode試験ではPlaywrightがなければブラウザ試験だけをskipする。
+通常のRustゲートは`cargo fmt --all -- --check`、`cargo clippy --locked --all-targets -- -D warnings`、`cargo test --locked`。UIは`node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs`で実行する。実ブラウザ試験は別途インストール済みPlaywrightを使い、次のように実行する。通常のNode試験ではPlaywrightがなければブラウザ試験だけをskipする。
 
 ```bash
 cargo build --locked -p dir-simulator

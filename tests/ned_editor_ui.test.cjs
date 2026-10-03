@@ -400,7 +400,8 @@ async function browserHarness(run, mode = 'success') {
     const body = options.body ? JSON.parse(options.body) : undefined;
     requests.push({ url, body });
     let data;
-    if (url === '/api/writer') data = { client_id: 'client', writer_epoch: '1', next_sequence: '1', writer: true };
+    if (url === '/api/writer') data = { client_id: 'client', writer_epoch: '1', next_sequence: '1', writer: mode !== 'readonly' };
+    else if (url === '/api/destinations') data = { id: 'target-fixture' };
     else if (url === '/api/confirmations') data = hooks.confirmation ? await hooks.confirmation(body) : { confirmation: 'discard-nonce', impacts: [] };
     else if (url === '/api/commands') {
       if (body.kind === 'new_project') {
@@ -830,4 +831,51 @@ test('repeatable route choices track checked Gateway ports and disabled conditio
   const result = await pending;
   assert.deepEqual(JSON.parse(JSON.stringify(result.ports)), ['Main.gw.a']);
   assert.deepEqual(JSON.parse(JSON.stringify(result.routes[0].egress)), []);
+});
+
+
+test('Save As requires writer before opening its dialog and sends the current lease', async () => {
+  await browserHarness(async h => {
+    await h.elements.get('save-as').onclick();
+    assert.equal(h.dialogs.length, 0);
+    assert.equal(h.requests.some(r => r.url === '/api/destinations'), false);
+  }, 'readonly');
+  await browserHarness(async h => {
+    h.answers.push({ 'export-root': 'export-root', 'destination-name': 'edited' });
+    await h.elements.get('save-as').onclick();
+    assert.deepEqual(h.requests.find(r => r.url === '/api/destinations').body, {
+      client_id: 'client', writer_epoch: '1', export_root_id: 'export-root', relative_directory: 'edited'
+    });
+    assert.equal(h.requests.find(r => r.body?.kind === 'save_as_project').body.payload.destination_id, 'target-fixture');
+  });
+});
+
+test('Save As rechecks writer after its dialog, so a takeover cannot register a destination', async () => {
+  await browserHarness(async h => {
+    h.answers.push(async () => {
+      h.projection.writer = { client_id: 'other', epoch: '2' };
+      await h.elements.get('refresh').onclick();
+      return { 'export-root': 'export-root', 'destination-name': 'stale' };
+    });
+    await h.elements.get('save-as').onclick();
+    assert.equal(h.requests.some(r => r.url === '/api/destinations'), false);
+    assert.equal(h.requests.some(r => r.body?.kind === 'save_as_project'), false);
+  });
+});
+
+test('layout-only drag and collapse send commands without type impact confirmations', async () => {
+  await browserHarness(async h => {
+    await h.callbacks.layout({ a: { x: 100, y: 200 } });
+    await h.callbacks.collapse({ name: 'a', x: 100, y: 200, collapsed: false });
+    assert.equal(h.requests.filter(r => r.body?.kind === 'set_layout').length, 2);
+    assert.equal(h.requests.some(r => r.url === '/api/confirmations'), false);
+    assert.equal(h.dialogs.length, 0);
+  });
+});
+
+test('explicit time form roundtrip preserves spaces between numbers and units', () => {
+  const row = { id: 'explicit', kind: 'can.explicit.v1', node: 'Main.a', format: 'standard', frame_id: '256', data: '' };
+  const times = ['1 ms', '2 ms', '3 us'];
+  assert.deepEqual(I.workloadPayload({ generators: [{ ...row, times: times.join(', ') }] }).generators[0].times, times);
+  assert.deepEqual(I.workloadPayload({ generators: [{ ...row, times: ' 1 ms, 2 ms\r\n 3 us ' }] }).generators[0].times, times);
 });

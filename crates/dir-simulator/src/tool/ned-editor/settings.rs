@@ -81,7 +81,8 @@ pub(crate) fn document(model: &EditorSession, role: FileRole) -> Result<Value> {
         .values()
         .find(|f| f.roles.contains(&role));
     let value = if let Some(file) = file {
-        strict_json(file.text.as_bytes())?
+        // Match the shared workload/routing parsers without weakening duplicate-key checks.
+        strict_json(file.text.trim_start_matches('\u{feff}').as_bytes())?
     } else if role == FileRole::ModelConfig {
         json!({"schema_version":1,"gateways":[]})
     } else {
@@ -253,7 +254,13 @@ fn json_edit(
         .values()
         .find(|f| f.roles.contains(&role))
     {
-        text.push((file.id.clone(), raw));
+        let bom_bytes = file.text.len() - file.text.trim_start_matches('\u{feff}').len();
+        let raw = if file.text.contains("\r\n") {
+            raw.replace('\n', "\r\n")
+        } else {
+            raw
+        };
+        text.push((file.id.clone(), format!("{}{raw}", &file.text[..bom_bytes])));
     } else {
         let key = if role == FileRole::ModelConfig {
             "model-config"

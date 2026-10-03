@@ -267,6 +267,122 @@ fn completed_manifest_repairs_registry_after_crash_gap() {
 }
 
 #[test]
+fn completed_checkpoint_failure_can_be_finalized_without_restarting() {
+    for point in ["after_completed_manifest", "after_registry"] {
+        let mut f = Fixture::new();
+        let id = f.destination("checkpoint");
+        inject(point, 0);
+        let report = save_plan(f.plan(&id), &mut f.registry, None, false);
+        assert_eq!(report.state, SaveOutcome::RecoveryRequired);
+        let recovery = report.recovery_id.unwrap();
+        let pending = f.registry.pending_recoveries().unwrap();
+        assert_eq!(pending.len(), 1, "{point}: {pending:?}");
+        assert_eq!(pending[0]["id"], recovery);
+        assert_eq!(pending[0]["state"], "finalizing");
+        let report = recover(&mut f.registry, &recovery, "complete");
+        assert_eq!(report.state, SaveOutcome::Complete, "{:?}", report.error);
+        assert!(f.registry.pending_recoveries().unwrap().is_empty());
+        assert_eq!(f.registry.data.targets[&id].kind, TargetKind::ManagedExport);
+        crate::input::prepare(&f.root.join("exports/checkpoint/project.ini")).unwrap();
+    }
+}
+
+#[test]
+fn recovery_checkpoint_failure_keeps_finalization_available_for_retry() {
+    let mut f = Fixture::new();
+    let target = f.destination("recovery-checkpoint");
+    inject("after_publish", 0);
+    let partial = save_plan(f.plan(&target), &mut f.registry, None, false);
+    let recovery = partial.recovery_id.unwrap();
+    inject("after_completed_manifest", 0);
+    let report = recover(&mut f.registry, &recovery, "complete");
+    assert_eq!(report.state, SaveOutcome::RecoveryRequired);
+    let pending = f.registry.pending_recoveries().unwrap();
+    assert_eq!(pending.len(), 1);
+    assert_eq!(pending[0]["state"], "finalizing");
+    assert_eq!(
+        recover(&mut f.registry, &recovery, "complete").state,
+        SaveOutcome::Complete
+    );
+    assert!(f.registry.pending_recoveries().unwrap().is_empty());
+}
+
+#[test]
+fn successful_recovery_clears_marker_when_completion_journal_was_not_persisted() {
+    let mut f = Fixture::new();
+    let target = f.destination("unpersisted-completion");
+    inject("after_publish", 0);
+    let partial = save_plan(f.plan(&target), &mut f.registry, None, false);
+    let recovery = partial.recovery_id.unwrap();
+    // A failed completed-manifest write can leave the previous journal on disk
+    // even though the in-memory operation registered a finalization retry.
+    f.registry.pending_finalizations.insert(recovery.clone());
+    assert_eq!(
+        recover(&mut f.registry, &recovery, "complete").state,
+        SaveOutcome::Complete
+    );
+    assert!(f.registry.pending_finalizations.is_empty());
+    assert!(f.registry.pending_recoveries().unwrap().is_empty());
+}
+
+#[test]
+fn invalid_journal_is_protected_without_hiding_other_recoveries_or_blocking_startup() {
+    for corruption in ["malformed_json", "missing_completion", "stale_registration"] {
+        let mut f = Fixture::new();
+        let bad_target = f.destination("bad");
+        inject("after_publish", 0);
+        let bad = save_plan(f.plan(&bad_target), &mut f.registry, None, false);
+        let bad_id = bad.recovery_id.unwrap();
+        let good_target = f.destination("good");
+        inject("after_publish", 0);
+        let good = save_plan(f.plan(&good_target), &mut f.registry, None, false);
+        let good_id = good.recovery_id.unwrap();
+        let path = manifest_path(&f.registry, &bad_id);
+        let original = std::fs::read(&path).unwrap();
+        let bytes = if corruption == "malformed_json" {
+            b"{invalid".to_vec()
+        } else if corruption == "stale_registration" {
+            f.registry.data.targets.remove(&bad_target);
+            f.registry.persist().unwrap();
+            original
+        } else {
+            let mut value: Value = serde_json::from_slice(&original).unwrap();
+            value["state"] = json!("completed");
+            value["completed_target"] = Value::Null;
+            serde_json::to_vec(&value).unwrap()
+        };
+        std::fs::write(&path, &bytes).unwrap();
+        let mut registry = f.restart();
+        let pending = registry.pending_recoveries().unwrap();
+        assert_eq!(pending.len(), 2, "{corruption}: {pending:?}");
+        let invalid = pending
+            .iter()
+            .find(|record| record["id"] == bad_id)
+            .unwrap();
+        assert_eq!(invalid["state"], "invalid");
+        assert!(
+            invalid["message"]
+                .as_str()
+                .is_some_and(|message| !message.is_empty())
+        );
+        assert_eq!(
+            recover(&mut registry, &bad_id, "restore").state,
+            SaveOutcome::Rejected
+        );
+        assert_eq!(std::fs::read(&path).unwrap(), bytes);
+        let recovered = recover(&mut registry, &good_id, "complete");
+        assert_eq!(
+            recovered.state,
+            SaveOutcome::Complete,
+            "{:?}",
+            recovered.error
+        );
+        assert_eq!(registry.pending_recoveries().unwrap().len(), 1);
+        crate::input::prepare(&f.root.join("exports/good/project.ini")).unwrap();
+    }
+}
+
+#[test]
 fn export_copies_workload_valid_layout_and_multiple_ordered_ned_roots() {
     let mut f = Fixture::new();
     std::fs::create_dir_all(f.root.join("vendor/libpkg/empty")).unwrap();
