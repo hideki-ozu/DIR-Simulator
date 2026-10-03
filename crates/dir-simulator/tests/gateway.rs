@@ -476,7 +476,7 @@ fn schema2_publication_preserves_references_hashes_and_per_bus_metrics() {
         .unwrap();
     assert!(output.status.success());
     let validation: Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(validation["node_count"], "7"); // four Controllers, two buses, one structural Gateway
+    assert_eq!(validation["node_count"], "6"); // four Controllers and two buses; exclude the structural Gateway
 }
 
 #[test]

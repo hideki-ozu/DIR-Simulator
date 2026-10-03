@@ -17,7 +17,7 @@ pub mod tool;
 pub mod types;
 
 pub use input::prepare;
-pub use run::{RunReport, run};
+pub use run::{RunFailure, RunReport, run, run_with_diagnostics};
 pub use runtime::can::protocol as can;
 pub use tool::viewer;
 pub use types::{Diagnostic, PreparedSimulation};

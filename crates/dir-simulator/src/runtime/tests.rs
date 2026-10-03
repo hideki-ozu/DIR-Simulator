@@ -90,6 +90,7 @@ fn lineage_tracks_only_committed_requests_across_gateway_boundaries() {
     let fixtures =
         Path::new(env!("CARGO_MANIFEST_DIR")).join("../../docs/verification/fixtures/gw");
     for name in [
+        "independent-only.ini",
         "multicast.ini",
         "multicast-drop.ini",
         "hop.ini",
@@ -122,4 +123,109 @@ fn failed_gateway_preflight_does_not_register_children() {
     assert!(snapshot.gateway.rx_buffers.is_empty());
     assert_eq!(snapshot.can.requests.len(), 1);
     assert_lineage(&snapshot);
+}
+
+#[test]
+fn simultaneous_buses_reserve_arbitration_as_one_batch() {
+    let config = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../docs/verification/fixtures/gw/independent-only.ini");
+    let prepared = crate::prepare(&config).unwrap();
+    let snapshot = simulate(&prepared).unwrap();
+    assert!(!snapshot.common.partial);
+    let arbitrations: Vec<_> = snapshot
+        .common
+        .points
+        .iter()
+        .filter(|p| p.time_ps == 0 && p.metric == "arbitration_wait_ps")
+        .map(|p| (p.target.as_str(), p.event_seq))
+        .collect();
+    // Dispatcher, two Generate and two Ready events precede the batch. Both
+    // buses must receive sequence IDs before either reserves EOF/release.
+    assert_eq!(
+        arbitrations,
+        vec![("Main.src", Some(5)), ("Main.sink", Some(6))]
+    );
+    let mut requests: Vec<_> = snapshot
+        .can
+        .requests
+        .iter()
+        .map(|r| {
+            (
+                r.request_id.as_str(),
+                r.status.as_str(),
+                r.sof_ps,
+                r.eof_ps,
+                r.release_ps,
+            )
+        })
+        .collect();
+    requests.sort_unstable();
+    assert_eq!(
+        requests,
+        vec![
+            (
+                "other:0",
+                "success",
+                Some(0),
+                Some(94_000_000),
+                Some(100_000_000)
+            ),
+            (
+                "source:0",
+                "success",
+                Some(0),
+                Some(100_000_000),
+                Some(106_000_000)
+            )
+        ]
+    );
+}
+
+#[test]
+fn failed_arbitration_batch_preserves_all_dirty_buses() {
+    use super::engine::Engine;
+    use std::collections::BinaryHeap;
+
+    let config = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../docs/verification/fixtures/gw/independent-only.ini");
+    let mut prepared = crate::prepare(&config).unwrap();
+    prepared.can.generators.clear();
+    let snapshot = simulate(&prepared).unwrap();
+    let initial_points = snapshot.common.points.len();
+    let engine = Engine {
+        prepared: &prepared,
+        wires: Vec::new(),
+        heap: BinaryHeap::new(),
+        // One reservation would fit; the complete two-bus batch must fail
+        // before consuming either dirty entry or committing a callback.
+        next_sequence: u64::MAX - 1,
+        now: (0, 0, 1, 0),
+        dirty: BTreeSet::from([(0, 0, 0), (0, 0, 1)]),
+        cursors: Vec::new(),
+        future_generation: false,
+        queues: vec![BTreeSet::new(); prepared.can.controllers.len()],
+        request_generators: Vec::new(),
+        active: vec![None; prepared.can.buses.len()],
+        request_sources: Vec::new(),
+        request_forwards: Vec::new(),
+        rx_used: vec![0; prepared.can.controllers.len()],
+        tx_waiting: vec![BTreeSet::new(); prepared.can.controllers.len()],
+        routed: BTreeSet::new(),
+        snapshot,
+    };
+    let failed = engine.finish();
+    assert!(failed.common.partial);
+    assert_eq!(failed.common.termination, "execution_failed");
+    assert_eq!(failed.common.committed_events, 0);
+    assert_eq!(failed.common.last_event_time_ps, None);
+    assert_eq!(failed.common.pending_events, 2);
+    assert_eq!(failed.common.points.len(), initial_points);
+    assert!(failed.can.requests.is_empty());
+    assert!(failed.can.bus_states.iter().all(|state| state == "idle"));
+    assert_eq!(failed.common.diagnostics.len(), 1);
+    assert_eq!(failed.common.diagnostics[0].code, "E-0004");
+    assert_eq!(
+        failed.common.diagnostics[0].message,
+        "event sequence overflow"
+    );
 }

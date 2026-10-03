@@ -1,12 +1,13 @@
 # GWモデル検証仕様書
 
-文書バージョン：`1.0.0`
+文書バージョン：`1.0.1`
 対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.1` | `2026-10-03` | Issue #4対応：外部比較結果・ログ依存の検証記述を削除し、DIR独立検証との境界を整理 |
 | `1.0.0` | `2026-10-03` | 有限RX・TX受理待ち、分岐、停止境界、Busゲート名自由化と比較証跡を追加。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版。独立CANバス・静的GWの契約と検証を具体化 |
@@ -23,13 +24,9 @@
 
 RX保持導入前の2026-10-03の製品確認は、[gateway.rs](../../../crates/dir-simulator/tests/gateway.rs)の当時の6テストで実施した。fixtureの時刻・ID・状態に加え、schema2の参照・sort・初期状態・当時42指標descriptor、GW計測点と保存則、バス別受信・遅延・占有率、manifestハッシュ、入力順変更、Ready順、非発火の所有予約、桁あふれ・イベント上限での確定prefix、任意拡張子/BOMの入力出典を検証した。同じbuildで従来CANを含むRust 50テスト、ビューアモデル15テストとPlaywright操作試験が合格した。ビューアではBUSの同時送信、GW処理中・コピー選択・終端遅延、T境界、最新500転送行を確認した。これらの件数・合否は当時のソースに対する記録であり、本改訂のRX/TX待ち契約の合格証拠へ転用しない。
 
-[導入前の実行結果記録](../results/gateway-2026-10-03.json)には基点commit、未コミット変更を含むソースhash、Rust/Node/Playwright/Linux環境、各コマンドの実行ログと合否、3バス分岐サンプルの実測を保存する。[先行する接続・受信ビューア記録](../results/viewer-rx-gateway-2026-10-03.json)も取得時のソースを示す。GWのOMNeT++比較はこれらの証跡に含まない。既存のv0.1単一CAN比較証跡は別の取得結果として保持する。
+[導入前の実行結果記録](../results/gateway-2026-10-03.json)には基点commit、未コミット変更を含むソースhash、Rust/Node/Playwright/Linux環境、各コマンドの実行ログと合否、3バス分岐サンプルの実測を保存する。[先行する接続・受信ビューア記録](../results/viewer-rx-gateway-2026-10-03.json)も取得時のソースを示す。
 
-[RX保持改訂後の実行記録](../results/gateway-rx-buffer-2026-10-03.json)は変更後のソース・入力hash、コマンドと合否を保存する。`cargo test --offline --locked`の74試験（lib40、CAN5、CLI6、GW16、viewer CLI6、doc1）、Nodeモデル20試験（実GW結果13組を含む）、Playwright操作試験（ブラウザエラー・外部通信0）、Python53試験（比較アダプター14試験を含む）が合格した。fmt/clippy、GW静的16 fixture、strictトレーサビリティ193要件/48機能/225ノード（構造エラー・未完了0）、生成文書の`--check`も合格した。改訂queue、SOF時点の打切り、RX0/満杯・既定64/65件目/u32max、GW/TX処理中保持、分岐の先行・複数ingressのready順と入力並べ替え、イベント上限ごとの保持保存則、RX/TX受理時刻の巻き戻しを確認した。Pythonの比較アダプター試験はOMNeT++本体の実行を含まない。
-
-[現行OMNeT++比較](../OMNeT比較結果.md#4-gatewayrx追加後の現行実装比較)では、上記の有効な通信条件を実際のOMNeT++ / FiCoにも投入した。GWの有効fixture13件、追加RX/TX・順序・gate名の入力変形15件、buffered-fanout例1件、native観測時刻による停止境界6件、計35ケースをDIRと対照した。GW処理は外部アダプター、CANは既存FiCoで実行し、origin/parent、route、RX保持／解放、TX待機、バス別占有・SOF順序と実payloadを検査した。件数ベクトル27件が一致したが、時間や停止状態を含む共通projectionの完全一致は送信なしの1件のみ。モデル差を補正せず、[生結果と判定](../results/omnet-current-2026-10-03.json)に保存した。
-
-本比較後の確認ではRust74試験、viewerモデル21試験、Python69試験が合格した。Pythonには既存CAN比較器14試験と、実FiCoログの改変・入力対応に対するGW比較器16試験を含む。遅延RX解放、予定時刻内の転送欠落、SOF後の再投入欠落、FIFO追い越し、送信重複、payload/lineage破損を検出する。これらの回帰試験自体は取得済みログの検査であり、上記のOMNeT++本体156実行とは別に数える。
+[RX保持改訂後の実行記録](../results/gateway-rx-buffer-2026-10-03.json)は変更後のソース・入力hash、コマンドと合否を保存する。`cargo test --offline --locked`の74試験（lib40、CAN5、CLI6、GW16、viewer CLI6、doc1）、Nodeモデル20試験（実GW結果13組を含む）、Playwright操作試験（ブラウザエラー・外部通信0）が合格した。fmt/clippy、GW静的16 fixture、strictトレーサビリティ193要件/48機能/225ノード（構造エラー・未完了0）、生成文書の`--check`も合格した。改訂queue、SOF時点の打切り、RX0/満杯・既定64/65件目/u32max、GW/TX処理中保持、分岐の先行・複数ingressのready順と入力並べ替え、イベント上限ごとの保持保存則、RX/TX受理時刻の巻き戻しを確認した。
 
 [buffered-fanout.ini](../../../examples/gateway/buffered-fanout.ini)の2ms実行はnative10件・コピー12件・Request計22件、RX released6件/dropped4件、RX最大2を確認した。450usのビューアではMain.gw.aのRX保持2/容量2とGW論理経路2本を確認できる。実行・表示コマンドは[README](../../../README.md#gatewayと複数can-busを実行する)を参照する。
 
@@ -236,4 +233,4 @@ v1.0.0のBusゲート名自由化について、旧名・任意名での実行�
 | schema追試 | unknown profile/schema/kind/route field、JSON重複、欠落、floatやbooleanのID/hop、GW portへのnative generatorを診断。新profileの正規NED+INI+JSONを全体読込でき、旧キーは旧descriptorのまま保持 |
 | v1.0.0 Bus命名自由化 | delay fixtureのBusゲートを任意名・旧名へそれぞれ変更し、各ControllerのBus所属・非ゼロ経路遅延と実行イベント・転送記録・計測値が元入力と一致することを確認。入出力の役割は名前や宣言順によらず方向で決定する。元入力snapshot/hashと名前を含む接続識別は改名に従う。Bus間で受信経路を交換した片側別Bus接続と、Bus間の直接接続は準備失敗とする |
 | コマンド | `python3 docs/verification/fixtures/can/verify_vectors.py`とGW checker、`python3 scripts/check_traceability.py --strict --requirement DIR-REQ-0123`。親子全体の追跡は0124～0132もstrict対象へ含める。実装後は両profileを同一buildで実行 |
-| 実行結果 | [改訂後記録](../results/gateway-rx-buffer-2026-10-03.json)で既定CANの既存Rust試験と改訂全GW fixture、schema1/2ビューア操作が同一buildで合格。比較アダプター14試験は旧名/新名/任意Busゲート名・経路遅延の正規化と不正方向/接続の拒否を確認。続く[現行比較記録](../results/omnet-current-2026-10-03.json)ではCAN43/GW35ケースを両エンジンで実行した。公開Registry/Envelopeのdescriptor・codec API適合は未実施 |
+| 実行結果 | [改訂後記録](../results/gateway-rx-buffer-2026-10-03.json)で既定CANの既存Rust試験と改訂全GW fixture、schema1/2ビューア操作が同一buildで合格。[GW製品試験](../../../crates/dir-simulator/tests/gateway.rs)には、旧名と任意Busゲート名での接続・経路遅延・実行結果の一致、片側別Bus接続とBus間の直接接続の拒否を確認する試験を含む。公開Registry/Envelopeのdescriptor・codec API適合は未実施 |

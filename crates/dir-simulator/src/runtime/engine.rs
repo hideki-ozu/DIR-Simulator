@@ -94,20 +94,31 @@ impl Engine<'_> {
     }
     pub(super) fn finish(mut self) -> Snapshot {
         loop {
-            // Assign arbitration sequence only after phase 0/1 has drained.
-            if let Some(&(time, delta, bus)) = self.dirty.first() {
+            // Seal the complete arbitration batch after phase 0/1 has drained,
+            // before any arbitration callback can reserve further events.
+            if let Some(&(time, delta, _)) = self.dirty.first() {
                 let before_next = self
                     .heap
                     .peek()
                     .is_none_or(|Reverse((key, _))| (time, delta, 2) <= (key.0, key.1, key.2));
                 if before_next {
-                    let events = vec![(time, Event::Arbitrate(bus))];
+                    let dirty: Vec<_> = self
+                        .dirty
+                        .range((time, delta, 0)..=(time, delta, usize::MAX))
+                        .copied()
+                        .collect();
+                    let events: Vec<_> = dirty
+                        .iter()
+                        .map(|&(time, _, bus)| (time, Event::Arbitrate(bus)))
+                        .collect();
                     if let Err(d) = self.preflight(&events) {
                         self.fail(d, time);
                         break;
                     }
                     self.publish(events);
-                    self.dirty.remove(&(time, delta, bus));
+                    for key in dirty {
+                        self.dirty.remove(&key);
+                    }
                 }
             }
             let Some(Reverse((key, event))) = self.heap.peek().cloned() else {
