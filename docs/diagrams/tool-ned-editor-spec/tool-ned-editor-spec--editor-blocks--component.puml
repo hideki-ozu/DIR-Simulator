@@ -1,0 +1,61 @@
+@startuml tool-ned-editor-spec--editor-blocks--component
+' Document: ../../tools/ned-editor/NED-editor仕様書.md
+' Section: ブロック構成とインタフェース
+' Purpose: ファイル入出力、UI、正本モデル、共通解析、操作統括の境界を示す
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam ArrowColor #475569
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #64748B
+skinparam packageBackgroundColor #F8FAFC
+skinparam packageBorderColor #94A3B8
+left to right direction
+
+title NEDエディタのブロック構成（設計案）
+
+package "ブラウザ" {
+  component "B2 入力（UI）\n操作 → コマンド" as UI
+  component "B6 出力（画面）\nEditorView → 描画" as VIEW
+}
+package "Rustローカルサービス" {
+  component "B7 操作統括\n版照合・直列化・job管理" as APP
+  component "B3 モデル\n原文・配置・履歴の正本" as MODEL
+  component "B1 入力（ファイル）\n取得後にclose・snapshot作成" as FIN
+  component "B4 出力（ファイル）\n出力構成・別フォルダ保存・復旧" as FOUT
+  component "B5 解析・検証\n位置索引・共通APIへのadapter" as ANALYSIS
+}
+component "既存の共通入力処理\nNED parse / prepare\n公開API・I/O境界のみ追加" as COMMON #F0FDF4
+database "読込元プロジェクト\nINI / NED / 関連JSON / layout" as SOURCE
+database "出力プロジェクト\nproject.ini / ned / data / layout" as DEST
+database "エディタ専用状態領域\n復旧記録・出力lock" as STATE
+
+UI --> APP : EditorCommand
+APP --> VIEW : EditorView / 処理結果
+APP <--> MODEL : transaction / snapshot
+APP <--> FIN : 読込要求 / 原文・解析結果
+APP <--> FOUT : SaveRequest / SaveReport
+APP <--> ANALYSIS : 不変snapshot・編集解析依頼 / 結果
+FIN --> SOURCE : 読込後にハンドルを閉じる
+FOUT --> DEST : 一式出力（標準）
+FOUT --> SOURCE : 明示した元への上書きのみ
+FOUT --> STATE : 保存時の復旧記録・出力lock
+FIN <--> ANALYSIS : 読込時の構文解析 / 結果
+FOUT <--> ANALYSIS : 出力snapshotの検証 / OK・NG
+ANALYSIS --> COMMON : 既存規則で解析・検証
+
+note bottom of MODEL
+  変更はB7経由のみ。
+  解析結果・図は原文から作る派生データ。
+  構文解析NGのファイル入力候補は登録しない。
+end note
+legend bottom
+  編集は内部モデル。入力ハンドル・入力lockは保持しない。
+  別フォルダへ一式出力し、出力INIの参照パスだけ調整する。
+  共通解析は同じsnapshotを検証する。
+  値の意味エラーは読込可能、保存時は拒否する。
+endlegend
+@enduml

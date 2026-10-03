@@ -1,0 +1,44 @@
+@startuml tool-ned-editor-spec--project-save--activity
+' Document: ../../tools/ned-editor/NED-editor仕様書.md
+' Section: NE-D04 B4の所有データと保存入口
+' Purpose: 出力planの検証、耐久化、公開と途中失敗の分岐を示す
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam ArrowColor #475569
+skinparam activityBackgroundColor #EFF6FF
+skinparam activityBorderColor #64748B
+
+title プロジェクト一式の保存（詳細設計）
+
+start
+:B7で原文flushのack・版・保存先を確認\n変更を停止しsnapshotを凍結;
+:B4で出力対応・INI参照patch・全bytesを計画;
+:B5でExportSnapshotを全体prepare;
+if (検証OK・plan digest一致?) then (はい)
+  :選択した出力先の基準を確認\n出力lock取得後に再確認;
+  if (許可・確認値・hash・集合が一致?) then (はい)
+    :before/after blobs・target登録・manifestを\n専用状態領域でsync;
+    :出力directory・一時ファイル作成\nmode確定・manifest更新をsync;
+    :NED → JSON → layout → INIの順に公開\n各公開前の照合・親directory sync・記録更新;
+    if (全対象の公開・完成記録の耐久化に成功?) then (はい)
+      :completed manifestと出力基準を確定\nB7がcheckpointとdirtyを更新;
+      :全体成功を表示;
+    else (いいえ)
+      :recovery_requiredを保持\n現bytesとbefore/afterを照合する復旧へ;
+    endif
+  else (いいえ)
+    :競合・許可エラー\n出力を書き換えず内部モデルを維持;
+  endif
+else (いいえ)
+  :検証診断を表示\n出力・復旧記録を書き込まない;
+endif
+stop
+note right
+  公開前のI/O失敗は元の出力を維持する。
+  未完了記録が残れば復旧調査を優先する。
+  保存後にB1で読込元を照合しない。
+end note
+@enduml

@@ -1,0 +1,95 @@
+@startuml tool-ned-editor-spec--edit-validate-save--sequence
+' Document: ../../tools/ned-editor/NED-editor仕様書.md
+' Section: 編集から保存までのシーケンス
+' Purpose: 原文patchの確定、版付き解析、保存と失敗時の復旧の流れを示す
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam ArrowColor #475569
+skinparam participantBackgroundColor #EFF6FF
+skinparam participantBorderColor #64748B
+skinparam noteBackgroundColor #FFFBEA
+
+title 編集・検証・保存の処理順（設計案）
+
+participant "B2 UI入力" as UI
+participant "B7 操作統括" as APP
+participant "B3 モデル" as MODEL
+participant "B5 解析・検証" as ANALYSIS
+participant "B1 ファイル入力" as FIN
+participant "B4 ファイル出力" as FOUT
+participant "B6 画面出力" as VIEW
+
+UI -> APP : Open / Reload
+APP -> FIN : 入力候補を取得
+FIN -> FIN : bytes・metadata取得後に全ハンドルをclose
+FIN -> ANALYSIS : 原文snapshotの構文解析
+ANALYSIS --> FIN : parse結果 / 診断
+alt 全入力の構文解析OK
+  FIN --> APP : 原文snapshot / 解析結果
+  APP -> MODEL : 一括登録・内部モデル化
+  APP -> VIEW : 構造・意味検証は未実施
+else 構文解析NG
+  FIN -> FIN : 入力候補を破棄
+  FIN --> APP : 読込失敗 / 診断
+  APP -> VIEW : 診断（既存モデルは維持）
+end
+
+UI -> APP : 図操作(command_id, base_revision)
+APP -> MODEL : 現在版・原文・索引を取得
+MODEL --> APP : 不変snapshot
+APP -> ANALYSIS : patch作成・候補原文を共通parse
+ANALYSIS --> APP : patch / 構文解析結果
+alt 対応が一意で構文が成立
+  APP -> MODEL : 原文・配置を一括commit
+  MODEL --> APP : 新revision / input_revision
+  APP -> VIEW : 編集後の図・未接続等の状態
+else 版・位置対応・構文候補が不正
+  APP -> VIEW : 診断（元モデルは変更しない）
+end
+
+UI -> APP : Validate（送信待ち原文をflush済み）
+APP -> MODEL : 全入力の不変snapshot取得
+MODEL --> APP : input_revision / snapshot ID
+APP -> ANALYSIS : prepare_with_source(config, cwd,\nSnapshotInputSource(snapshot))
+ANALYSIS --> APP : 正式判定 / 対象input_revision
+alt 現在の入力版と一致
+  APP -> MODEL : 検証結果を採用
+  APP -> VIEW : ready または prepare_failed
+else 版照合NG（旧job・対象snapshot不一致）
+  APP -> APP : 古い結果を破棄
+end
+
+UI -> APP : SaveAsProject（上書きは別操作・確認値付き）
+APP -> MODEL : 保存対象版を凍結・snapshot取得
+MODEL --> APP : revision / snapshot ID / 取得済み全入力
+APP -> FOUT : SaveRequest（固定snapshot・保存先ID・種別）
+FOUT -> FOUT : 出力パス対応・全bytes・INI参照patchを作成
+FOUT -> ANALYSIS : SavePlan / ExportSnapshotの全体検証依頼
+ANALYSIS -> ANALYSIS : 出力INI・cwd・予定集合で共通prepare
+ANALYSIS --> FOUT : 検証結果 / plan digest / snapshot ID
+alt 検証OK・SavePlanと同じ版
+  FOUT -> FOUT : 選択した出力先の空状態／基準集合・hash確認
+  alt 出力先競合なし
+    FOUT -> FOUT : 出力lock・専用状態領域の復旧記録作成
+    FOUT -> FOUT : 全NED・JSON・layoutを公開・sync
+    FOUT -> FOUT : INIを最後に公開・復旧記録更新・sync
+    FOUT --> APP : SaveReport（出力先・全体状態・ファイル別結果）
+    APP -> MODEL : SaveState反映（全体成功時だけ保存基準更新）
+    APP -> VIEW : 出力先・保存成功または部分失敗・復旧案内
+  else 保存先の外部変更・未知内容あり
+    FOUT --> APP : 出力先競合（書込なし）
+    APP -> VIEW : 競合通知（内部モデルを維持）
+  end
+else 検証NG・対象版不一致
+  FOUT --> APP : 保存拒否 / 診断（ファイル・復旧記録の書込なし）
+  APP -> VIEW : 出力検証結果
+end
+note over MODEL, FOUT
+  部分公開を全体成功にしない。
+  保存中はモデル変更を停止し、未完了なら復旧記録を保持する。
+  元の変更・削除後も取得済みsnapshotから別フォルダへ出力できる。
+end note
+@enduml

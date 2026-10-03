@@ -9,9 +9,111 @@ use serde::de::{self, MapAccess, SeqAccess, Visitor};
 use serde::{Deserialize, Deserializer};
 use serde_json::{Map, Value};
 use std::collections::BTreeMap;
+use std::ffi::OsString;
 use std::fmt;
 use std::fs;
+use std::io;
 use std::path::{Component, Path, PathBuf};
+
+/// Filesystem operations used by the shared input pipeline.
+/// Paths are normalized absolute logical paths. Directory names are immediate children.
+pub trait InputSource {
+    fn metadata(&self, path: &Path) -> io::Result<InputMetadata>;
+    fn read_dir(&self, path: &Path) -> io::Result<Vec<InputDirEntry>>;
+    fn read_utf8(&self, path: &Path) -> io::Result<String>;
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum InputKind {
+    File,
+    Directory,
+    Symlink,
+    Other,
+}
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct InputMetadata {
+    pub kind: InputKind,
+}
+#[derive(Debug)]
+pub struct InputDirEntry {
+    pub name: OsString,
+    pub kind: io::Result<InputKind>,
+}
+
+/// The current on-disk input implementation; metadata never follows a symlink.
+#[derive(Clone, Copy, Debug, Default)]
+pub struct FsInputSource;
+fn input_kind(kind: fs::FileType) -> InputKind {
+    if kind.is_symlink() {
+        InputKind::Symlink
+    } else if kind.is_dir() {
+        InputKind::Directory
+    } else if kind.is_file() {
+        InputKind::File
+    } else {
+        InputKind::Other
+    }
+}
+impl InputSource for FsInputSource {
+    fn metadata(&self, path: &Path) -> io::Result<InputMetadata> {
+        Ok(InputMetadata {
+            kind: input_kind(fs::symlink_metadata(path)?.file_type()),
+        })
+    }
+    fn read_dir(&self, path: &Path) -> io::Result<Vec<InputDirEntry>> {
+        // Keep per-entry type errors deferred until the shared sorted traversal.
+        fs::read_dir(path)?
+            .map(|entry| {
+                let entry = entry?;
+                Ok(InputDirEntry {
+                    name: entry.file_name(),
+                    kind: entry.file_type().map(input_kind),
+                })
+            })
+            .collect()
+    }
+    fn read_utf8(&self, path: &Path) -> io::Result<String> {
+        fs::read_to_string(path)
+    }
+}
+
+/// Structural INI inspection without execution/profile/quantity validation.
+#[derive(Clone, Debug)]
+pub struct ProjectHeader {
+    pub config: PathBuf,
+    pub cwd: PathBuf,
+    pub network: Option<String>,
+    pub profile: Option<String>,
+    pub roots: Vec<PathBuf>,
+    pub workload: Option<PathBuf>,
+    pub model_config: Option<PathBuf>,
+    pub general: BTreeMap<String, String>,
+    pub channels: BTreeMap<String, BTreeMap<String, String>>,
+}
+
+pub use ned::{Connection, Declaration, Parameter};
+
+/// Owned syntax result. Declaration data is available only through immutable getters.
+#[derive(Clone, Debug)]
+pub struct ParsedNed {
+    declarations: Vec<Declaration>,
+}
+impl ParsedNed {
+    pub fn declarations(&self) -> &[Declaration] {
+        &self.declarations
+    }
+}
+pub fn parse_ned(text: &str, path: &Path, expected_package: &str) -> Result<ParsedNed> {
+    ned::parse(text, path, expected_package).map(|declarations| ParsedNed { declarations })
+}
+pub(crate) fn validate_parameter_literal(
+    declaration: &Declaration,
+    name: &str,
+    value: &str,
+    profile: &str,
+) -> Result<()> {
+    can::validate_parameter_literal(declaration, name, value, profile)
+}
 
 type Result<T> = std::result::Result<T, Diagnostic>;
 fn error(message: impl Into<String>) -> Diagnostic {
@@ -264,13 +366,14 @@ fn absolute(path: &Path, base: &Path) -> PathBuf {
         base.join(path)
     })
 }
-fn no_symlinks(path: &Path) -> Result<()> {
+fn no_symlinks(path: &Path, source: &dyn InputSource) -> Result<()> {
     let mut current = PathBuf::new();
     for component in path.components() {
         current.push(component.as_os_str());
-        let metadata = fs::symlink_metadata(&current)
+        let metadata = source
+            .metadata(&current)
             .map_err(|e| error(format!("{}: {e}", current.display())))?;
-        if metadata.file_type().is_symlink() {
+        if metadata.kind == InputKind::Symlink {
             return Err(error(format!(
                 "symlink input is unsupported: {}",
                 current.display()
@@ -279,19 +382,26 @@ fn no_symlinks(path: &Path) -> Result<()> {
     }
     Ok(())
 }
-fn read_file(path: &Path, snapshots: &mut Vec<InputSnapshot>) -> Result<String> {
-    no_symlinks(path)?;
-    if !fs::metadata(path)
+fn read_file(
+    path: &Path,
+    snapshots: &mut Vec<InputSnapshot>,
+    source: &dyn InputSource,
+) -> Result<String> {
+    no_symlinks(path, source)?;
+    if source
+        .metadata(path)
         .map_err(|e| error(format!("{}: {e}", path.display())))?
-        .is_file()
+        .kind
+        != InputKind::File
     {
         return Err(error(format!(
             "input is not a regular file: {}",
             path.display()
         )));
     }
-    let content =
-        fs::read_to_string(path).map_err(|e| error(format!("{}: {e}", path.display())))?;
+    let content = source
+        .read_utf8(path)
+        .map_err(|e| error(format!("{}: {e}", path.display())))?;
     snapshots.push(InputSnapshot {
         path: path.to_path_buf(),
         content: content.clone(),
@@ -402,26 +512,71 @@ impl Ini {
     }
 }
 
-fn collect_ned(root: &Path, current: &Path, files: &mut Vec<PathBuf>) -> Result<()> {
-    let mut entries = fs::read_dir(current)
-        .map_err(|e| error(format!("{}: {e}", current.display())))?
-        .collect::<std::io::Result<Vec<_>>>()
+/// Inspect only INI structure and reference path literals. No disk is accessed.
+pub fn inspect_config(text: &str, path: &Path, cwd: &Path) -> Result<ProjectHeader> {
+    let config = absolute(path, cwd);
+    let base = config
+        .parent()
+        .ok_or_else(|| error("config has no parent"))?;
+    let ini = Ini::parse(text, &config)?;
+    let roots = quoted_paths(ini.required("ned-path")?)?
+        .into_iter()
+        .map(|path| absolute(Path::new(&path), base))
+        .collect();
+    let reference = |key: &str| -> Result<Option<PathBuf>> {
+        ini.general
+            .get(key)
+            .map(|value| {
+                let value = string_literal(value)?;
+                valid_file_path(&value)?;
+                Ok(absolute(Path::new(&value), base))
+            })
+            .transpose()
+    };
+    let workload = reference("workload")?;
+    let model_config = reference("model-config")?;
+    let profile = ini
+        .general
+        .get("model-profile")
+        .map(|value| string_literal(value))
+        .transpose()?;
+    Ok(ProjectHeader {
+        config,
+        cwd: normalize(cwd),
+        network: ini.general.get("network").cloned(),
+        profile,
+        roots,
+        workload,
+        model_config,
+        general: ini.general,
+        channels: ini.channels,
+    })
+}
+
+fn collect_ned(
+    root: &Path,
+    current: &Path,
+    files: &mut Vec<PathBuf>,
+    source: &dyn InputSource,
+) -> Result<()> {
+    let mut entries = source
+        .read_dir(current)
         .map_err(|e| error(format!("{}: {e}", current.display())))?;
-    entries.sort_by_key(|entry| entry.file_name());
+    entries.sort_by(|a, b| a.name.cmp(&b.name));
     for entry in entries {
-        let path = entry.path();
+        let path = current.join(entry.name);
         if path.to_str().is_none() {
             return Err(error(format!("non UTF-8 path under {}", root.display())));
         }
         let kind = entry
-            .file_type()
+            .kind
             .map_err(|e| error(format!("{}: {e}", path.display())))?;
-        if kind.is_symlink() {
+        if kind == InputKind::Symlink {
             return Err(error(format!("symlink in NED root: {}", path.display())));
         }
-        if kind.is_dir() {
-            collect_ned(root, &path, files)?;
-        } else if kind.is_file() && path.extension().is_some_and(|ext| ext == "ned") {
+        if kind == InputKind::Directory {
+            collect_ned(root, &path, files, source)?;
+        } else if kind == InputKind::File && path.extension().is_some_and(|ext| ext == "ned") {
             files.push(path);
         }
     }
@@ -430,12 +585,21 @@ fn collect_ned(root: &Path, current: &Path, files: &mut Vec<PathBuf>) -> Result<
 
 pub fn prepare(config_path: &Path) -> Result<PreparedSimulation> {
     let cwd = std::env::current_dir().map_err(|e| error(e.to_string()))?;
-    let config = absolute(config_path, &cwd);
+    prepare_with_source(config_path, &cwd, &FsInputSource)
+}
+
+/// Run the existing full preparation with all I/O supplied by the caller.
+pub fn prepare_with_source(
+    config_path: &Path,
+    cwd: &Path,
+    source: &dyn InputSource,
+) -> Result<PreparedSimulation> {
+    let config = absolute(config_path, cwd);
     let base = config
         .parent()
         .ok_or_else(|| error("config has no parent"))?;
     let mut snapshots = Vec::new();
-    let config_text = read_file(&config, &mut snapshots)?;
+    let config_text = read_file(&config, &mut snapshots, source)?;
     let result = (|| {
         let ini = Ini::parse(&config_text, &config)?;
         let network = ini.required("network")?;
@@ -472,8 +636,11 @@ pub fn prepare(config_path: &Path) -> Result<PreparedSimulation> {
             .map(|s| absolute(Path::new(&s), base))
             .collect();
         for (i, root) in roots.iter().enumerate() {
-            no_symlinks(root)?;
-            if !root.is_dir() {
+            no_symlinks(root, source)?;
+            if !source
+                .metadata(root)
+                .is_ok_and(|metadata| metadata.kind == InputKind::Directory)
+            {
                 return Err(error(format!(
                     "NED root is not a directory: {}",
                     root.display()
@@ -489,10 +656,10 @@ pub fn prepare(config_path: &Path) -> Result<PreparedSimulation> {
         let mut declarations = BTreeMap::new();
         for root in roots {
             let mut files = Vec::new();
-            collect_ned(&root, &root, &mut files)?;
+            collect_ned(&root, &root, &mut files, source)?;
             files.sort();
             for file in files {
-                let content = read_file(&file, &mut snapshots)?;
+                let content = read_file(&file, &mut snapshots, source)?;
                 let relative = file.strip_prefix(&root).unwrap();
                 let package_components = relative
                     .parent()
@@ -511,7 +678,7 @@ pub fn prepare(config_path: &Path) -> Result<PreparedSimulation> {
                 }
                 let package = package_components.join(".");
                 for declaration in ned::parse(&content, &file, &package)? {
-                    let name = declaration.name.clone();
+                    let name = declaration.name().to_string();
                     if declarations.insert(name.clone(), declaration).is_some() {
                         return Err(error(format!(
                             "{}: duplicate NED type: {name}",
@@ -546,7 +713,7 @@ pub fn prepare(config_path: &Path) -> Result<PreparedSimulation> {
             let path = string_literal(ini.required("model-config")?)?;
             valid_file_path(&path)?;
             let path = absolute(Path::new(&path), base);
-            let content = read_file(&path, &mut snapshots)?;
+            let content = read_file(&path, &mut snapshots, source)?;
             model_config_path = Some(path.clone());
             gateway::parse(
                 &content,
@@ -563,7 +730,7 @@ pub fn prepare(config_path: &Path) -> Result<PreparedSimulation> {
             let path = string_literal(path)?;
             valid_file_path(&path)?;
             let path = absolute(Path::new(&path), base);
-            let content = read_file(&path, &mut snapshots)?;
+            let content = read_file(&path, &mut snapshots, source)?;
             workload_path = Some(path.clone());
             can::workload(
                 &content,
@@ -697,3 +864,6 @@ fn json_time(object: &Map<String, Value>, key: &str) -> Result<u64> {
 }
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod editor_api_tests;
