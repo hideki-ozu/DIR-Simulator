@@ -1,4 +1,4 @@
-use dir_simulator::{Diagnostic, prepare, run, viewer};
+use dir_simulator::{Diagnostic, prepare, run_with_diagnostics, viewer};
 use serde_json::json;
 use std::path::Path;
 use std::process::ExitCode;
@@ -67,11 +67,19 @@ fn execute(args: &[String]) -> Result<u8, Diagnostic> {
     if command == "validate" {
         println!(
             "{}",
-            json!({"schema_version":1,"status":"valid","network":prepared.common.network,"node_count":(prepared.can.controllers.len()+prepared.can.buses.len()+prepared.common.module_paths.len()).to_string(),"channel_count":prepared.common.channel_count.to_string()})
+            json!({"schema_version":1,"status":"valid","network":prepared.common.network,"node_count":(prepared.can.controllers.len()+prepared.can.buses.len()).to_string(),"channel_count":prepared.common.channel_count.to_string()})
         );
         return Ok(0);
     }
-    let report = run(prepared, Path::new(output.unwrap()))?;
+    let report = match run_with_diagnostics(prepared, Path::new(output.unwrap())) {
+        Ok(report) => report,
+        Err(failure) => {
+            for d in &failure.prior_diagnostics {
+                diagnostic(d);
+            }
+            return Err(failure.diagnostic);
+        }
+    };
     for d in &report.diagnostics {
         diagnostic(d);
     }

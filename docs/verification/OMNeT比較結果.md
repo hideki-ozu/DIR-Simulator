@@ -1,12 +1,13 @@
 # OMNeT比較結果
 
-文書バージョン：`1.0.0`
+文書バージョン：`1.0.1`
 対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.1` | `2026-10-03` | レビュー修正：保存アーカイブ内の比較ツール手順と選択展開、再実行の依存条件を明確化 |
 | `1.0.0` | `2026-10-03` | Gateway・RX追加後の78ケース・156実行と差分、保存証跡、未実施範囲を追加。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | 43ケースの実行結果、モデル差の妥当性判断、再現用証跡を公開版へ集約 |
 
@@ -26,7 +27,7 @@
 | contention | 81 | 90 | 72 | 72 |
 | overload | 81 | 90 | 1112 | 1104 |
 
-DIRの完了はEOF、FiCoの完了は3bitのintermissionを含むnative完了であり、別の観測点として記録した。双方の集計窓は半開区間`[0,H)`。有限キュー、drop-tail、TX/RX処理遅延、配送遅延、受信フィルタは外部アダプターでそろえた。FiCoのバス・仲裁・フレーム時間計算は変更していない。詳細は[比較ツール](../../tools/omnet_comparison/README.md)を参照する。
+DIRの完了はEOF、FiCoの完了は3bitのintermissionを含むnative完了であり、別の観測点として記録した。双方の集計窓は半開区間`[0,H)`。有限キュー、drop-tail、TX/RX処理遅延、配送遅延、受信フィルタは外部アダプターでそろえた。FiCoのバス・仲裁・フレーム時間計算は変更していない。取得時の比較器・手順は[保存した比較ソース](#archived-comparison-source)を参照する。
 
 ## 2. 差分の妥当性
 
@@ -62,7 +63,7 @@ mkdir -p tmp/omnet-v0.1-evidence
 tar -xzf docs/verification/results/omnet-v0.1.tar.gz -C tmp/omnet-v0.1-evidence
 ```
 
-再実行は比較ツールの手順を使用する。CRC/bit列適合、DIR固有の入力拒否・内部イベント数・整数上限・出力・ビューア、未実装の将来モデルはOMNeT比較の対象外であり、アーカイブの報告書に理由を記録している。
+再実行時は[保存した比較ソースと依存環境の注意事項](#archived-comparison-source)を確認する。CRC/bit列適合、DIR固有の入力拒否・内部イベント数・整数上限・出力・ビューア、未実装の将来モデルはOMNeT比較の対象外であり、アーカイブの報告書に理由を記録している。
 
 ## 4. Gateway・RX追加後の現行実装比較
 
@@ -109,3 +110,30 @@ queueでは3件目の親RX受理がDIR320µs / FiCo316µs、子TX受理・親RX�
 インストール済みFiCo共有ライブラリのSHA-256は`2b346ae83efc811efe678f1f6edc5f5410bf2d7b8ee884977363dcbc066dbc49`。このバイナリを実際にロードした。現在のFiCo checkoutはupstreamとの差分を持ち、ソースとバイナリのビルド対応は証明していない。ソース・ヘッダーのハッシュは実行時に存在したファイルの識別用である。既存OMNeT++・FiCoのソース、ライブラリ、設定は変更していない。
 
 DIR独自の入力拒否、公開Registry/Envelope API、内部journal・イベント上限・コミット済みprefix、u64オーバーフロー、CRC/bit列、結果公開・viewer、性能・実機／規格適合に同一の通信試験を割り当ててはいない。CAN FD、Ethernet、AXI、SoC、memory、IPCのfixtureもDIR製品未実装のため今回の実行数に含めない。比較器のログ破損・入力対応に対する回帰試験は別に記録する。
+
+
+<a id="archived-comparison-source"></a>
+
+## 5. 保存した比較ソースの閲覧と再実行の境界
+
+比較ツールの`tools/`と専用のPython試験2ファイルは、通常のソースツリーから意図的に除外している。[現行比較アーカイブ](results/omnet-current-2026-10-03.tar.gz)の`comparison-source/`には、取得時の比較器・観測アダプター・README・専用試験を保存している。通常のcloneにあるRust試験、ビューア試験、トレーサビリティ試験とは別の保存証跡である。
+
+以下はリポジトリのルートから、アーカイブのハッシュを[サマリー](results/omnet-current-2026-10-03.json)と照合して手順を読む例。`tar -xO`は指定したREADMEを標準出力へ表示し、作業ツリーへ展開しない。
+
+```bash
+archive=docs/verification/results/omnet-current-2026-10-03.tar.gz
+printf '%s  %s\n' 586d99c49209058c159602c7e51a6c03166c15237dbbaedcfd7b39745a8247d7 "$archive" | sha256sum --check
+
+tar -xOzf "$archive" comparison-source/tools/omnet_comparison/README.md
+```
+
+関連ソースも読む場合は、新しい一時ディレクトリへ`comparison-source`だけを展開する。既存のファイルは上書きしない。
+
+```bash
+evidence_dir="$(mktemp -d)"
+tar -xzf "$archive" -C "$evidence_dir" \
+  --no-same-owner --no-same-permissions --keep-old-files comparison-source
+printf '保存ソース: %s/comparison-source\n' "$evidence_dir"
+```
+
+この展開だけで比較を実行できるわけではない。比較器は配置位置からDIRのリポジトリルートを相対参照するため、再実行には対応するDIRの作業用コピーと入力一式、OMNeT++開発ツール、FiCo4OMNeTのビルド済み共有ライブラリが必要である。保存READMEの`--omnet-workspace`の絶対パスは取得環境の例であり、自分の環境へ置き換える。アーカイブのREADMEヘッダー・ソース・入力は取得時点のものとして保持し、現在のcheckoutや変更後の実行結果と同一とはみなさない。対象ソース・入力・バイナリのhashと新しい比較結果を別に記録する。第4.3節のFiCoソースとバイナリの対応未証明という制限も引き継ぐ。
