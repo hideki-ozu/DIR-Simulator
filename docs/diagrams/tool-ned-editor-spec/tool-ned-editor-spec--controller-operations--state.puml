@@ -1,0 +1,53 @@
+@startuml tool-ned-editor-spec--controller-operations--state
+' Document: ../../tools/ned-editor/NED-editor仕様書.md
+' Section: NE-D07 event loop・job・権限の実装契約
+' Purpose: B7の排他操作と復旧待ち、参照可能性を示す
+
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam ArrowColor #475569
+skinparam stateBackgroundColor #EFF6FF
+skinparam stateBorderColor #64748B
+skinparam noteBackgroundColor #FFFBEA
+
+title B7の排他操作と復旧待ち（詳細設計）
+
+state "起動時の復旧調査" as START
+state "待機\n変更要求を受付" as IDLE
+state "読込・再読込\n候補snapshotを取得" as LOAD
+state "図操作\n候補解析・一括commit" as GRAPH
+state "全体検証\n不変入力のprepare" as VALIDATE
+state "保存\nplan検証・耐久化・公開" as SAVE
+state "復旧待ち\n通常の変更を停止" as BLOCKED #FFFBEA
+state "復旧処理\ncomplete / restore" as RECOVER
+
+[*] --> START
+START --> LOAD : 未完了記録なし
+START --> BLOCKED : 未完了または不正記録
+IDLE --> LOAD : Reload
+IDLE --> GRAPH : 図操作
+IDLE --> VALIDATE : Validate
+IDLE --> SAVE : SaveAsProject / OverwriteProject
+LOAD --> IDLE : 採用 / 読込失敗
+GRAPH --> IDLE : commit / 拒否
+VALIDATE --> IDLE : ready / prepare_failed
+SAVE --> IDLE : 全体成功 / 検証NG / 公開前失敗
+SAVE --> BLOCKED : 公開可能性あり・未完了記録あり
+BLOCKED --> RECOVER : 許可された復旧選択
+RECOVER --> IDLE : complete / restore完了
+RECOVER --> BLOCKED : 競合 / I/O失敗 / 不正記録
+
+note right of IDLE
+  ReplaceSource / SetLayout / Undo / Redoは
+  一つのevent内でcommitして終端ack。
+  自動parseは不変snapshotで別workerへ渡す。
+end note
+note bottom of BLOCKED
+  参照・job照会はすべての状態で継続する。
+  排他操作中は次の変更・writer切替を拒否。
+  復旧未完了ではReloadも停止する。
+  モデル未読込の待機ではReloadだけを許可する。
+end note
+@enduml
