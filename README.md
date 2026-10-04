@@ -1,19 +1,24 @@
 # DIR Simulator
 
-文書バージョン：`1.0.1`
+文書バージョン：`1.0.3`
 対象GitHubバージョン：`v1.0.0`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.3` | `2026-10-04` | PR6の診断・仲裁・提供状態とOMNeT由来成果物削除を保持し、mainのNEDエディタ・保存復旧を統合。分岐して公開した履歴を両方保持 |
+| `1.0.2` | `2026-10-03` | Issue #4対応：OMNeT++を用いた比較結果・添付資料への案内を削除し、DIR単独の検証範囲を明確化 |
+| `1.0.1` | `2026-10-03` | レビュー修正：診断保持API、Viewer試験の前提、保存済みOMNeT比較手順を明確化 |
 | `1.0.1` | `2026-10-04` | NEDエディタの新規作成、全標準部品、UIでのmodule組立・Gateway／送信設定、保存と操作文書への案内を追加 |
 | `1.0.0` | `2026-10-03` | GW・複数CAN、RX保持、Busゲート名自由化、ソース分割、ビューアの送受信と前後ステップ、比較証跡を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | Classical CANのCLI・ライブラリ、結果ビューア、実行例、OMNeT++比較の利用方法を集約し、v0.1公開版を確定 |
 
+分岐中にPR6とmainで同じ版番号を別々に公開したため、過去の更新履歴は両方保持している。
+
 文書ID：`readme`
 
-対象タグは`v1.0.0`、文書版は`1.0.1`です。Cargoパッケージ版は`0.1.0`です。
+対象タグは`v1.0.0`、文書版は`1.0.3`です。Cargoパッケージ版は`0.1.0`です。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
@@ -34,7 +39,7 @@ CANノードと共有バスの通信を仮想時刻上で実行し、負荷・�
 
 ## CANサンプルを実行する
 
-v1.0.0では、単一CAN・複数CAN共通でBusゲート名の制約撤廃を反映しています。Busの入力・出力の役割は`input`／`output`、ペアは同じControllerへの接続経路から決まります。サンプルは入力`rx_a`・出力`tx_a`などを使いますが、接頭辞や接尾辞の一致は必須ではありません。旧形式の有効な入力`tx_a`／出力`rx_a`も読み込めます。Controllerの`tx`／`rx`は維持します。以下は現在のソースをビルドして実行してください。公開済みv0.1の仕様・比較証跡はその時点のものです。
+v1.0.0では、単一CAN・複数CAN共通でBusゲート名の制約撤廃を反映しています。Busの入力・出力の役割は`input`／`output`、ペアは同じControllerへの接続経路から決まります。サンプルは入力`rx_a`・出力`tx_a`などを使いますが、接頭辞や接尾辞の一致は必須ではありません。旧形式の有効な入力`tx_a`／出力`rx_a`も読み込めます。Controllerの`tx`／`rx`は維持します。以下は現在のソースをビルドして実行してください。公開済みv0.1の仕様はその時点のものです。
 
 Linux / WSLでRust 1.85.0を使用します。`rust-toolchain.toml`でツールチェーン、`Cargo.lock`で依存版を固定しています。Rust導入済みのシェルで、リポジトリのルートから実行してください。
 
@@ -70,9 +75,9 @@ for row in result["simulation"]["summary"]:
 PYRESULT
 ```
 
-CLIの終了コードは正常0、入力・準備失敗2、実行失敗3、出力失敗4です。正常終了の`time_limit`でも未完了要求はあり得ます。`max-events`等による実行失敗時には、最後に確定した要求・受信状態を`partial=true`で出力します。準備失敗時は診断をstderrへ返し、結果ファイルは作成しません。
+CLIの終了コードは正常0、入力・準備失敗2、実行失敗3、出力失敗4です。正常終了の`time_limit`でも未完了要求はあり得ます。`max-events`等による実行失敗時には、最後に確定した要求・受信状態を`partial=true`で出力します。準備失敗時は診断をstderrへ返し、結果ファイルは作成しません。実行失敗後に結果の保存も失敗した場合は終了コード4となり、先の実行診断と最後の出力診断を順にstderrへ返します。
 
-ライブラリは`dir_simulator::prepare(&Path)`と`dir_simulator::run(prepared, &Path)`から同じ処理を利用できます。
+ライブラリは`dir_simulator::prepare(&Path)`と`dir_simulator::run(prepared, &Path)`から同じ処理を利用できます。`run`のエラー型は従来の`Diagnostic`を維持し、保存失敗前の診断もメッセージへ残します。診断を個別に扱う場合は追加APIの`run_with_diagnostics(prepared, &Path)`を使用してください。エラーの`RunFailure`は最後の`diagnostic`、先行する`prior_diagnostics`、結果公開前の`original_termination`を保持します。[公開APIと実装境界](docs/アーキテクチャ設計書.md#公開apiと互換性)を参照してください。
 
 ### 結果ビューア
 
@@ -111,9 +116,10 @@ explorer.exe "$(wslpath -w "$PWD/results-viewer.html")"
 
 タイムラインの描画は500区間、要求一覧は1ページ75行を上限とし、省略件数を明示します。Gateway転送は受信時刻順の最新500行を表示します。多い場合は検索・状態フィルタ・拡大を利用してください。構成図の送受信アニメーションと状態集計はこの描画上限や検索条件に依存せず、全要求を対象とします。対応入力はschema 1の`can.cc.ideal.v1`とschema 2の`can.cc.multibus.v1`です。元要求から終端までの経路遅延は、GW portを除く終端Controllerの確定received時刻と元要求generated時刻の差です。
 
-ビューアの時刻・状態復元テストはNode.jsで実行できます。ブラウザ本体にはNode.jsは不要です。
+ビューアの時刻・状態復元テストはNode.jsで実行できます。実GW結果を生成する試験が`target/debug/dir-simulator`を呼ぶため、先にデバッグ版をビルドしてください。ブラウザ本体にはNode.jsは不要です。
 
 ```bash
+cargo build --locked -p dir-simulator
 node --test tests/viewer_model.test.cjs
 ```
 
@@ -176,9 +182,9 @@ INIで`model-profile = "can.cc.multibus.v1"`と`model-config = "routing.json"`�
 
 結果JSONとmanifest・CSVはschema2になり、`simulation.model_records`へ`can.request`、`can.receiver`、`gw.forward`、`gw.rx_buffer`を格納します。CLI応答と診断は従来のschema1です。バス別の受信数・遅延・占有率、GWのコピー件数・RX保持長/最大・RX破棄・TX受理待ち時間を出力します。schema2のRequestでは`ready_ps`がTX処理完了、`model_fields.tx_enqueued_ps`が実際のTX受理時刻です。ビューアはRX保持とTX受理待ちを選択時刻から復元し、巻き戻しにも対応します。入力・転送・出力の契約は[GW仕様](docs/specs/models/GWモデル詳細機能仕様書.md)、試験範囲は[GW検証仕様](docs/verification/cases/GWモデル検証仕様書.md)を参照してください。
 
-既存OMNeT++ / FiCo4OMNeT環境との比較は[CAN・Gateway比較ツール](tools/omnet_comparison/README.md)で実行できます。単一CAN43ケースとGateway/RX35ケース、計78ケースを同じ生入力から両エンジンへ投入します。Gatewayの有限RX、TX空き待ち、分岐転送も対象です。外部試験アダプターで補う動作と、フレーム長・仲裁開始・完了時刻のモデル差を明示して比較します。
+CAN/GWの動作はRust製品試験と独立した静的期待値の照合、ビューアはNode・ブラウザ試験で検証します。OMNeT++を使用した実行結果・比較記録とその添付成果物は掲載対象から除外しています。
 
-[比較結果と証跡](docs/verification/OMNeT比較結果.md)には、現在の実装での156実行と、v0.1の86実行を分けて記録しています。CAN過負荷の81件対90件の差の独立計算に加え、GWのRX破棄・保持・解放、停止境界、配置順序の比較を掲載しています。[過負荷例](examples/can/overload.ini)と[baseline例](examples/can/baseline.ini)の結果は、上記の`run --config`と`view --input`へ各INI・生成したresults.jsonを指定して再現できます。
+[過負荷例](examples/can/overload.ini)と[baseline例](examples/can/baseline.ini)の結果は、上記の`run --config`と`view --input`へ各INI・生成したresults.jsonを指定して再現できます。
 
 ## 3層アーキテクチャ
 

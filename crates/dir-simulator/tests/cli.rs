@@ -77,6 +77,23 @@ fn help_version_argument_errors_and_validate() {
 }
 
 #[test]
+fn validate_counts_simple_instances_without_gateway_compounds() {
+    for (config, nodes, channels) in [
+        ("examples/can/baseline.ini", "4", "6"),
+        ("examples/gateway/fanout.ini", "9", "12"),
+    ] {
+        let out = cli(&["validate", "--config", text(&root().join(config))]);
+        assert!(
+            out.status.success(),
+            "{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+        assert_eq!(json(&out.stdout)["node_count"], nodes, "{config}");
+        assert_eq!(json(&out.stdout)["channel_count"], channels, "{config}");
+    }
+}
+
+#[test]
 fn run_publishes_results_and_refuses_to_overwrite() {
     let temp = Temp::new();
     let destination = temp.0.join("results");
@@ -135,6 +152,50 @@ fn execution_limit_exports_consistent_partial_results() {
     let diagnostics = json(&fs::read(destination.join("diagnostics.jsonl")).unwrap());
     assert_eq!(diagnostics["code"], "E-0004");
     assert_eq!(diagnostics["time_ps"], sim["end_ps"]);
+}
+
+#[cfg(target_os = "linux")]
+#[test]
+fn output_failure_keeps_the_preceding_execution_diagnostic() {
+    let temp = Temp::new();
+    let config = temp.0.join("limited.ini");
+    let fixtures = root().join("docs/verification/fixtures/can");
+    fs::write(&config, format!("[General]\nnetwork = demo.Main\nned-path = \"{}/models\"\nsim-time-limit = 1ms\nMain.bus.bitrate = 500kbps\nworkload = \"{}/competition.json\"\nmax-events = 1\n", fixtures.display(), fixtures.display())).unwrap();
+    let destination = temp.0.join("results");
+    // Limit only the CLI child, after fixture creation. Ignoring SIGXFSZ turns
+    // the first file write into a regular I/O error without a permissions race.
+    let out = Command::new("/bin/sh")
+        .args([
+            "-c",
+            "set -e; trap \"\" XFSZ; ulimit -f 0; exec \"$@\"",
+            "dir-limit",
+        ])
+        .arg(env!("CARGO_BIN_EXE_dir-simulator"))
+        .args([
+            "run",
+            "--config",
+            text(&config),
+            "--output",
+            text(&destination),
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(4));
+    let diagnostics: Vec<Value> = String::from_utf8(out.stderr)
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str(line).unwrap())
+        .collect();
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0]["code"], "E-0004");
+    assert_eq!(diagnostics[0]["message"], "max-events exceeded");
+    assert_eq!(diagnostics[1]["code"], "E-0003");
+    let report = json(&out.stdout);
+    assert_eq!(report["termination"], "output_failed");
+    assert_eq!(report["exit_code"], 4);
+    assert!(report["manifest_path"].is_null());
+    assert!(!destination.join("manifest.json").exists());
+    assert!(!destination.join(".dir-simulator.lock").exists());
 }
 
 #[test]
