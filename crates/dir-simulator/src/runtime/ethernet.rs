@@ -6,6 +6,8 @@ use crate::types::{Diagnostic, PreparedSimulation};
 use std::cmp::Reverse;
 use std::collections::{BTreeSet, BinaryHeap, VecDeque};
 
+mod media;
+
 type Result<T> = std::result::Result<T, Diagnostic>;
 fn failure(s: &str) -> Diagnostic {
     Diagnostic::execution(s)
@@ -162,6 +164,9 @@ enum Event {
     Arrival(usize),
     Processed(usize),
     Complete(usize),
+    PairStart(usize),
+    PairBoundary(usize, u64),
+    MediaArrival(usize, u64),
 }
 #[derive(Clone)]
 struct Queue {
@@ -193,6 +198,7 @@ struct Engine<'a> {
     frame_indices: Vec<usize>,
     direction_indices: Vec<usize>,
     snapshot: Snapshot,
+    media: Option<media::MediaRuntime>,
 }
 impl Engine<'_> {
     fn eth(&self) -> &EthernetSnapshot {
@@ -318,7 +324,11 @@ impl Engine<'_> {
         let priority = priority as usize;
         self.point(
             format!("{}.queue", self.model.directions[d].from_port),
-            "queue_length",
+            if self.media.is_some() {
+                "ethernet.media.queue_length"
+            } else {
+                "queue_length"
+            },
             self.waiting(d),
             Some(f),
             None,
@@ -399,6 +409,20 @@ impl Engine<'_> {
                 planned_arrival_ps: None,
                 status: if full { "dropped" } else { "queued" }.into(),
                 drop_reason: full.then(|| "queue_full".into()),
+                media: self
+                    .model
+                    .media
+                    .as_ref()
+                    .map(|config| EthernetMediaTransfer {
+                        physical_link: config
+                            .physical_links
+                            .iter()
+                            .find(|p| p.directions.contains(&d))
+                            .unwrap()
+                            .id
+                            .clone(),
+                        ..EthernetMediaTransfer::default()
+                    }),
             };
             let index = self.eth().transfers.len();
             self.eth_mut().transfers.push(row);
@@ -470,6 +494,25 @@ impl Engine<'_> {
     }
     fn handle(&mut self, event: Event) -> Result<()> {
         match event {
+            Event::PairStart(pair) => self.media_start(pair)?,
+            Event::PairBoundary(pair, generation) => self.media_boundary(pair, generation)?,
+            Event::MediaArrival(attempt, generation) => {
+                let row = &self.eth().attempts[attempt];
+                if row.generation != generation
+                    || row.status != "serialized"
+                    || row.arrival_ps.is_some()
+                    || row.planned_arrival_ps != self.now.0
+                {
+                    return Err(failure(
+                        "Ethernet media immutable arrival generation/state mismatch",
+                    ));
+                }
+                let transfer = row.transfer;
+                self.handle(Event::Arrival(transfer))?;
+                let now = self.now.0;
+                self.eth_mut().attempts[attempt].arrival_ps = Some(now);
+                self.eth_mut().attempts[attempt].time_ps = now;
+            }
             Event::Dispatch => {
                 let mut cursors = self.cursors.clone();
                 let g = self
@@ -506,7 +549,11 @@ impl Engine<'_> {
                 let f = self.eth().frames.len();
                 let ready = add(self.now.0, device.tx_processing_delay_ps)?;
                 let events = if ready > self.now.0 {
-                    self.reserve(&[(ready, 0, Event::SourceReady(f))])?
+                    self.reserve(&[(
+                        ready,
+                        if self.media.is_some() { 1 } else { 0 },
+                        Event::SourceReady(f),
+                    )])?
                 } else {
                     Vec::new()
                 };
@@ -937,7 +984,7 @@ impl Engine<'_> {
             "forwarded"
         };
         let ids = self.offer(f, Some(t), &outputs.candidates);
-        if status == "received" {
+        if status == "received" && self.media.is_none() {
             self.point(
                 device.id.clone(),
                 "ethernet.delivery_ps",
@@ -956,6 +1003,13 @@ impl Engine<'_> {
     }
     fn run(mut self) -> Snapshot {
         loop {
+            while self
+                .heap
+                .peek()
+                .is_some_and(|Reverse((_, event))| self.media_canceled(event))
+            {
+                self.heap.pop();
+            }
             if let Some(&(time, delta, _)) = self.dirty.first() {
                 if self
                     .heap
@@ -967,10 +1021,20 @@ impl Engine<'_> {
                         .range((time, delta, 0)..=(time, delta, usize::MAX))
                         .copied()
                         .collect();
-                    let events: Vec<_> = dirty
-                        .iter()
-                        .map(|&(_, _, d)| (time, 2, Event::Start(d)))
-                        .collect();
+                    let events: Vec<_> = if let Some(media) = &self.media {
+                        dirty
+                            .iter()
+                            .map(|&(_, _, d)| media.direction_pairs[d])
+                            .collect::<BTreeSet<_>>()
+                            .into_iter()
+                            .map(|p| (time, 2, Event::PairStart(p)))
+                            .collect()
+                    } else {
+                        dirty
+                            .iter()
+                            .map(|&(_, _, d)| (time, 2, Event::Start(d)))
+                            .collect()
+                    };
                     // Dirty batches retain their originating delta even after unrelated callbacks.
                     let previous = self.now;
                     self.now = (time, delta, 1, previous.3);
@@ -1005,6 +1069,7 @@ impl Engine<'_> {
                         code: "E-0004".into(),
                         stage: "run".into(),
                         message: "Ethernet execution limit exceeded".into(),
+                        details: None,
                     },
                     key.0,
                 );
@@ -1020,8 +1085,13 @@ impl Engine<'_> {
             self.snapshot.common.committed_events += 1;
             self.snapshot.common.last_event_time_ps = Some(key.0);
         }
-        self.snapshot.common.pending_events =
-            self.heap.len() as u64 + self.dirty.len() as u64 + u64::from(self.future_generation);
+        self.snapshot.common.pending_events = self
+            .heap
+            .iter()
+            .filter(|Reverse((_, event))| !self.media_canceled(event))
+            .count() as u64
+            + self.dirty.len() as u64
+            + u64::from(self.future_generation);
         if !self.snapshot.common.partial {
             self.snapshot.common.termination = if self.prepared.common.time_limit_ps == 0
                 || self.snapshot.common.pending_events > 0
@@ -1079,6 +1149,10 @@ fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
         ],
         frame_indices: Vec::new(),
         direction_indices: Vec::new(),
+        media: model
+            .media
+            .as_ref()
+            .map(|config| media::MediaRuntime::new(config, model.directions.len())),
         snapshot: Snapshot {
             common: CommonSnapshot {
                 termination: "events_exhausted".into(),
@@ -1097,6 +1171,7 @@ fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
                 receivers: Vec::new(),
             },
             gateway: GatewaySnapshot::default(),
+            canfd: None,
             ethernet: Some(EthernetSnapshot::default()),
         },
     };
@@ -1106,7 +1181,12 @@ fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
             effect_seq: None,
             time_ps: 0,
             target: format!("{}.queue", direction.from_port),
-            metric: "queue_length".into(),
+            metric: if model.media.is_some() {
+                "ethernet.media.queue_length"
+            } else {
+                "queue_length"
+            }
+            .into(),
             value: 0,
             request_id: None,
             receiver: None,

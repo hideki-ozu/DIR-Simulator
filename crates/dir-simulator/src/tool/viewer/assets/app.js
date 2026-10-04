@@ -155,7 +155,7 @@
     }
   }
   function loadObject(raw, filename) {
-    if (["ethernet.l2.store-forward.v1", "ethernet.l2.qos.v1", "ethernet.l2.vlan.v1"].includes(raw?.metadata?.model_profile)) {
+    if (["ethernet.l2.store-forward.v1", "ethernet.l2.qos.v1", "ethernet.l2.vlan.v1", "ethernet.l2.store-forward.v2", "ethernet.l2.100base-t1.v1"].includes(raw?.metadata?.model_profile)) {
       clearResult();
       window.DIREthernetApp.mount(raw, filename);
       $("empty-state").hidden = true;
@@ -688,8 +688,8 @@
     $("bus-states").replaceChildren(...buses);
   }
   function renderGateways() {
-    $("gateway-panel").hidden = model.raw.schema_version !== 2;
-    if (model.raw.schema_version !== 2) return;
+    $("gateway-panel").hidden = model.canfd || model.raw.schema_version !== 2;
+    if (model.canfd || model.raw.schema_version !== 2) return;
     const nodes = API.stateAt(model,current).nodes;
     const requests = new Map(model.requests.map(r=>[r.id,r]));
     const rxRows = nodes.filter(node=>node.rxBuffer).map(node=>{
@@ -798,7 +798,7 @@
     $("selected-status").className = `status ${state}`;
     $("selected-status").textContent = LABELS[state] || state;
     const identity = [["送信ノード", request.source], ["バス", request.bus], ["最終記録", LABELS[request.status] || request.status], ["受信先", `${request.receivers.length} ノード`]];
-    if (model.raw.schema_version === 2) {
+    if (model.raw.schema_version === 2 && !model.canfd) {
       identity.push(["元要求",request.origin],["親要求",request.parent || "—"],["GW hop",request.hops.toString()]);
       for (const buffer of model.rxBuffers.filter(b=>b.parent === request.id)) {
         const rxState=API.rxBufferStateAt(buffer,current);
@@ -810,6 +810,7 @@
         for (const delivery of origin.deliveries) identity.push([`経路遅延 ${delivery.receiver}`,time(delivery.pathDelay,true)]);
       }
     }
+    if(model.canfd){const f=request.fdFrame;identity.push(['形式',`CAN FD ${f.format} / ID ${f.id}`],['Payload',`${f.data.length/2} byte / DLC ${f.dlc}`],['BRS',String(f.brs)],['速度',`${f.nominal_rate} / ${f.data_rate} bps`],['位相bit数',`${f.nominal_bits} / ${f.data_bits}`],['Fidelity',f.fidelity],['Wire validation',f.wire_validation],['証跡',f.evidence],['Binding SHA-256',f.binding_sha256]);}
     fields($("detail-fields"),identity);
     const times = [["生成", request.generated], ["TX 処理完了", request.ready], ["TX キュー投入", request.txEnqueued], ["SOF", request.sof], ["EOF", request.eof], ["バス解放", request.release]].map(([label, value]) => [label, exact(value)]);
     if (request.plannedEof !== null) times.push(["予定 EOF", exact(request.plannedEof)]);

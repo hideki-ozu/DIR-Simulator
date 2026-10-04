@@ -166,6 +166,9 @@ pub(super) fn profile(general: &BTreeMap<String, String>) -> Result<String> {
             | "ethernet.l2.store-forward.v1"
             | "ethernet.l2.qos.v1"
             | "ethernet.l2.vlan.v1"
+            | "ethernet.l2.store-forward.v2"
+            | "ethernet.l2.100base-t1.v1"
+            | "can.fd.precomputed.v1"
     ) {
         return Err(error(format!("unsupported model-profile: {profile}")));
     }
@@ -460,7 +463,7 @@ pub(super) fn workload(
     Ok(out)
 }
 
-fn validate_filter(value: &str) -> Result<()> {
+pub(super) fn validate_filter(value: &str) -> Result<()> {
     if matches!(value, "*" | "none") {
         return Ok(());
     }

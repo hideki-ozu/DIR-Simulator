@@ -82,6 +82,9 @@ pub(super) fn build(prepared: &PreparedSimulation, timestamp: &str) -> Result<Va
     if prepared.ethernet.is_some() {
         return super::ethernet::metadata(prepared, timestamp, sources, source_hashes, config);
     }
+    if prepared.canfd.is_some() {
+        return super::canfd::metadata(prepared, timestamp, sources, source_hashes, config);
+    }
     config.insert(
         format!("{}.bitrate", prepared.can.bus_id),
         format!("{}bit/s", prepared.can.bitrate),

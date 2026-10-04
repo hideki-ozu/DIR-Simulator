@@ -1,13 +1,14 @@
 # DIR Simulator
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ 811360a`
-予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`main @ 7bb9bfc`
+予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-04` | Ethernet媒体v2・100BASE-T1・CAN FD、viewer・サンプル・製品検証記録を追加し、v1.1.2向けPRと文書版を更新 |
 | `1.1.1` | `2026-10-04` | VLAN・静的multicast、サンプル・Viewer・検証記録を追加し、v1.1.1向けPRの提供状態と文書版を更新 |
 | `1.1.0` | `2026-10-04` | Ethernet全二重L2・負荷・QoS・viewerとサンプル、検証範囲を追加し、v1.1.0向けPRの提供状態へ更新 |
 | `1.0.3` | `2026-10-04` | NED editor追加に伴うGitHub版v1.0.1を対象に更新。GitHubのPATCH変更のため文書版は維持 |
@@ -22,7 +23,7 @@
 
 文書ID：`readme`
 
-Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。本PRではVLAN・静的multicast制御を追加し、次の公開版を`v1.1.1`とします。公開タグとPRの提供状態を分けて記載します。
+Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`でmainへマージ済みです。本PRではEthernet媒体拡張・100BASE-T1・CAN FDを追加し、次の公開版を`v1.1.2`とします。公開タグとPRの提供状態を分けて記載します。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
@@ -151,7 +152,7 @@ mkdir -p /tmp/dir-editor-exports
 
 標準11bit／拡張29bitのClassical CANデータフレーム、CRC-15、内容依存ビットスタッフィング、優先度仲裁、理想ACK、同報、有限キュー、受信フィルタ、固定伝搬・処理遅延、明示列／周期負荷を実装しています。`can.cc.ideal.v1`は単一バス、`can.cc.multibus.v1`は1個以上の独立バスと任意のGWを扱い、各バスに2個以上のControllerが必要です。NEDは宣言・スカラーポート・接続・compound展開の対応サブセットを読み込みます。
 
-この版では、汎用Registry/Envelope拡張API、診断の完全な構造化位置情報、全宣言・値の採用元を含む再現メタデータは未実装です。準備失敗はCLIのE-0001診断で停止し、schema2の準備失敗結果は生成しません。メタデータの不足とGW拡張APIの境界は`metadata.implementation_coverage`にも記録します。台帳・観測行・出力はメモリに保持するため、100万要求の性能・メモリ目標は未検証です。CANエラー状態・再送、CAN FD、他プロトコルは将来対象です。
+この版では、汎用Registry/Envelope拡張API、診断の完全な構造化位置情報、全宣言・値の採用元を含む再現メタデータは未実装です。準備失敗はCLIのE-0001診断で停止し、schema2の準備失敗結果は生成しません。メタデータの不足とGW拡張APIの境界は`metadata.implementation_coverage`にも記録します。台帳・観測行・出力はメモリに保持するため、100万要求の性能・メモリ目標は未検証です。CANエラー状態・再送、内容依存CAN FD wire codec、未対応の他プロトコルは将来対象です。
 
 ```bash
 cargo test --locked
@@ -203,7 +204,7 @@ cargo build --locked -p dir-simulator
 
 [unicast.ini](examples/ethernet/unicast.ini)、[duplex.ini](examples/ethernet/duplex.ini)、[qos-priority.ini](examples/ethernet/qos-priority.ini)、[qos-periodic-burst.ini](examples/ethernet/qos-periodic-burst.ini)、[vlan-unicast.ini](examples/ethernet/vlan-unicast.ini)、[vlan-multicast.ini](examples/ethernet/vlan-multicast.ini)を同梱します。結果はschema2の`simulation.model_records`に元frame・方向別copy・受信を分けて保存します。viewerはEndpoint／Switch構成、方向別送信、copy親子関係、8classキュー、フロー指標を表示します。ステップ操作は移動先の直前区間を再表示し、連続再生は線を強調します。実績arrivalがないcopyから受信を作りません。
 
-詳細は[L2仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md)、[負荷・QoS仕様](docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[負荷・QoS設計](docs/design/Ethernet負荷・QoS詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)を参照してください。VLAN・静的multicast制御はv1.1.1向けPRへ実装しています。[詳細仕様](docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)・[設計と実装順](docs/design/EthernetVLAN・マルチキャスト詳細設計書.md#implementation-order)・[検証手順](docs/verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)へ入力・処理・schemaと実行記録を集約しています。VLAN画面ではVLAN表示filter、source/hop priority・タグ・FCS・MAC長、静かなPortのpolicy/group設定を確認できます。表示filterは集計の母数を変えません。CAN↔Ethernet変換、媒体別PHY・半二重、動的制御・TSNはその後の段階です。公開Registry/EnvelopeやIEEE認証、性能検証の完了を示すものではありません。
+詳細は[L2仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md)、[負荷・QoS仕様](docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[負荷・QoS設計](docs/design/Ethernet負荷・QoS詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)を参照してください。VLAN・静的multicast制御はv1.1.1でmainへマージ済みです。[詳細仕様](docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)・[設計と実装順](docs/design/EthernetVLAN・マルチキャスト詳細設計書.md#implementation-order)・[検証手順](docs/verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)へ入力・処理・schemaと実行記録を集約しています。VLAN画面ではVLAN表示filter、source/hop priority・タグ・FCS・MAC長、静かなPortのpolicy/group設定を確認できます。表示filterは集計の母数を変えません。媒体別PHY・半二重とCAN FDは開発中ソースに追加しています。CAN↔Ethernet変換、動的制御・TSNは後続段階です。公開Registry/EnvelopeやIEEE認証、性能検証の完了を示すものではありません。
 
 VLANの実行例：
 
@@ -275,7 +276,7 @@ DIRは、OMNeT++の実装コードを移植するのではなく、公開ドキ�
 | [品質・配布方針](docs/品質・配布方針.md) | 性能・精度・出自管理 |
 | [将来拡張計画](docs/将来拡張計画.md) | v1.0.0のGW・複数バスと他プロトコルへの境界 |
 
-16分野の詳細機能仕様、入力・結果処理を含む14詳細設計と利用フロー・品質を含む15検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。他モデルの製品実装・実行試験、および仕様全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
+16分野の詳細機能仕様、入力・結果処理を含む14詳細設計と利用フロー・品質を含む15検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。開発中ソースにはCAN FD・Ethernet媒体拡張・100BASE-T1も追加しています。他モデルの製品実装・実行試験、および仕様全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
 
 図の編集元（`.puml`）と表示用SVGは `docs/diagrams/<文書ID>/` に保存しています。ローカルのPlantUMLで全図を更新・確認できます。
 
@@ -347,4 +348,16 @@ python3 docs/verification/fixtures/can/verify_vectors.py
 | SoC・AHB・NoC | [詳細仕様](docs/specs/models/SoC・AHB・NoC詳細機能仕様書.md) | [詳細設計](docs/design/SoC・AHB・NoC詳細設計書.md) | [検証仕様](docs/verification/cases/SoC・AHB・NoC検証仕様書.md) |
 | DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC | [詳細仕様](docs/specs/models/メモリ・IPC詳細機能仕様書.md) | [詳細設計](docs/design/メモリ・IPC詳細設計書.md) | [検証仕様](docs/verification/cases/メモリ・IPC検証仕様書.md) |
 
-CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。GWとEthernet全二重L2・QoS・VLAN以外の追加モデルの製品実装・実行試験は未実施です。
+CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。CAN FD、Ethernet媒体v2・100BASE-T1も開発中ソースに追加しています。AXI、SoC/AHB/NoC、メモリ/IPCの製品実装・実行試験は未実施です。
+
+## Ethernet媒体拡張とCAN FD（開発中ソース）
+
+追加profileは`ethernet.l2.store-forward.v2`（10/100Mbps half/full、1000BASE-T1）、`ethernet.l2.100base-t1.v1`（専用100BASE-T1 full）、`can.fd.precomputed.v1`です。旧L2/QoS/VLANとは入力の型・schema・計測集合を分けて明示選択します。媒体の物理対とPHY値はmodel-config schema2、FDはNEDの二速度とschema2 workloadの証跡付き位相bit数を使います。
+
+```bash
+cargo run --locked -p dir-simulator -- run --config examples/ethernet/media/collision.ini --output /tmp/dir-media-demo
+cargo run --locked -p dir-simulator -- run --config examples/canfd/precomputed.ini --output /tmp/dir-fd-demo
+cargo run --locked -p dir-simulator -- view --input /tmp/dir-fd-demo/results.json --output /tmp/dir-fd-demo/viewer.html
+```
+
+媒体viewerは試行・衝突・jam・backoffとMAC/PHYの予定／実績を表示し、CAN FD viewerは生成・送信・受信の記録と位相bit数・証跡を表示します。FDは`wire_validation=structural-only`の時間評価モデルで、CRC/stuffingの自動計算や波形適合を表しません。製品実行の確認範囲は[媒体検証](docs/verification/cases/Ethernet媒体拡張検証仕様書.md)と[CAN FD・100BASE-T1検証](docs/verification/cases/CANFD・100BASE-T1検証仕様書.md)へ記録します。公開版をv1.1.2向けPRとして準備し、変更文書の版・履歴を1.1.2へ更新しました。

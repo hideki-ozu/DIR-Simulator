@@ -349,3 +349,105 @@ fn vlan_group_membership_is_static_and_old_profile_rejects_schema3() {
         );
     }
 }
+
+#[test]
+fn media_config_rejects_every_missing_physical_and_phy_field_without_panicking() {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../docs/verification/fixtures/ethernet-media/collision.ini");
+    let base = crate::input::prepare(&path).unwrap().ethernet.unwrap();
+    let original: Value = serde_json::from_str(include_str!(
+        "../../../../../docs/verification/fixtures/ethernet-media/collision.model.json"
+    ))
+    .unwrap();
+    for field in ["id", "a", "b", "phy_mode", "duplex", "a_phy", "b_phy"] {
+        let mut value = original.clone();
+        value["physical_links"][0]
+            .as_object_mut()
+            .unwrap()
+            .remove(field);
+        let error = configure(
+            &value.to_string(),
+            &mut base.clone(),
+            "ethernet.l2.store-forward.v2",
+        )
+        .unwrap_err();
+        assert_eq!(error.code, "E-0001", "{field}");
+        assert!(error.details.is_some());
+    }
+    for field in ["role", "tx_latency_ps", "rx_latency_ps"] {
+        let mut value = original.clone();
+        value["physical_links"][0]["a_phy"]
+            .as_object_mut()
+            .unwrap()
+            .remove(field);
+        assert!(
+            configure(
+                &value.to_string(),
+                &mut base.clone(),
+                "ethernet.l2.store-forward.v2"
+            )
+            .is_err(),
+            "{field}"
+        );
+    }
+    for field in [
+        "schema_version",
+        "endpoints",
+        "switches",
+        "seed",
+        "physical_links",
+    ] {
+        let mut value = original.clone();
+        value.as_object_mut().unwrap().remove(field);
+        assert!(
+            configure(
+                &value.to_string(),
+                &mut base.clone(),
+                "ethernet.l2.store-forward.v2"
+            )
+            .is_err(),
+            "{field}"
+        );
+    }
+}
+#[test]
+fn media_profiles_keep_phy_allowlists_disjoint() {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../docs/verification/fixtures/original-network/t1.ini");
+    let base = crate::input::prepare(&path).unwrap().ethernet.unwrap();
+    let mut value: Value = serde_json::from_str(include_str!(
+        "../../../../../docs/verification/fixtures/original-network/t1.model.json"
+    ))
+    .unwrap();
+    assert!(
+        configure(
+            &value.to_string(),
+            &mut base.clone(),
+            "ethernet.l2.100base-t1.v1"
+        )
+        .is_ok()
+    );
+    assert_eq!(
+        configure(
+            &value.to_string(),
+            &mut base.clone(),
+            "ethernet.l2.store-forward.v2"
+        )
+        .unwrap_err()
+        .details
+        .unwrap()["rule"],
+        "phy_mode"
+    );
+    value["physical_links"][0]["phy_mode"] = json!("100base-tx");
+    assert_eq!(
+        configure(
+            &value.to_string(),
+            &mut base.clone(),
+            "ethernet.l2.100base-t1.v1"
+        )
+        .unwrap_err()
+        .details
+        .unwrap()["rule"],
+        "phy_mode"
+    );
+}

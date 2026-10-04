@@ -1,19 +1,21 @@
 # CANFD・100BASE-T1詳細設計書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`main @ 7bb9bfc`
+予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-04` | 外部位相bit数CAN FDと専用100BASE-T1の内部実装、通知codecと公開拡張APIの境界を反映 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版草案。CAN FD・100BASE-T1の実装契約と独立解析fixture |
 
 文書ID：`design-original-network`
 
-状態：仕様・設計の決定事項を記述する草案。製品シミュレータは未実装であり、解析fixtureの合格を製品試験合格とみなさない。
+状態：採用した抽象profileの契約を確定。開発中ソースに製品実装を追加。製品試験の実施範囲は本書の検証記録又は対応する検証仕様を参照。規格全体適合・実機試験は未実施。文書版を1.1.2に統一し、公開版はv1.1.2向けPRとして準備する。独立解析fixtureと製品実行の証跡は区別する。
 
 [architecture#arch-original-network](../アーキテクチャ設計書.md#arch-original-network)の分担を具体化する。仕様正本は[追加通信仕様](../specs/models/CANFD・100BASE-T1詳細機能仕様書.md)。共通Core/dispatcher/Context/journalの契約を変更しない。
 
@@ -85,3 +87,9 @@
 | 登録と互換 | profile registryにethernet.l2.100base-t1.v1を追加する。既存Ethernet媒体実装の共通full pipelineへ、独立したProfilePolicy {allowed_phy_mode:100base-t1, bitrate:100000000, duplex:full, role_pair:master/slave}を渡す。既存v2 validatorの許可集合を拡張せず、両profileが同じ時間/queue/Frame/Attempt/Arrival部品を使用する。runtime coordinator IDには選択profileを含める。 |
 | 準備とpipeline | prepareはv2構造検査→専用Policy→全方向速度→role/遅延→frame cacheの順。全PHY値とpropagationをchecked u128加算する。PairStateの方向別MacStateが独立FIFO/current/releaseを所有し、共通fullのphase0 EOF/Arrival、phase1 offer、phase2方向別SOFを使用する。roleを優先度や送信許可へ使わない。AttemptMap行の不変generationでArrivalを照合し、次SOFのport現在世代とは比較しない。受信処理後のswitchcopyは通常v1/v2 FDB経路へ進む。 |
 | 結果と検証 | phy_link/profile metadata以外のレコードschemaはv2と共通。T境界でEOF/release/Arrivalが未commitなら予定値と実績を区別する。旧v1/v2入力を旧profileで実行した結果に追加profile由来の行を挿入しない。検証は[TEST0042/0043](../verification/cases/CANFD・100BASE-T1検証仕様書.md#dir-test-0042)。 |
+
+## 開発中実装の境界
+
+製品コードは共通INI/NED・結果公開層に専用input/runtime/outputを接続する。媒体対の論理timeline・予約世代・試行状態、CAN FDの不変frame cacheと受信状態をモデル内部で所有し、callbackの時刻・予約を事前検証してから結果へ反映する。公開ProfileRegistry、汎用Context/Envelope/TimerToken APIとモデル共通arenaは未実装であり、上記設計の公開拡張APIへの適合完了を示さない。
+
+CAN FDは外部位相bit数による時間評価で、結果に`externally-precomputed-phase-bits`と`structural-only`を保存する。媒体v2は連続idle96bitのdeferenceと固定SHA-256 BEB、T1は時刻0からlink-up済みの固定PHY遅延を採用する。内容依存FD CRC/stuffing、波形、training、規格全文適合はこの実装の範囲外。

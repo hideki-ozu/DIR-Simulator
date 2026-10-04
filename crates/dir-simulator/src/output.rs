@@ -5,6 +5,7 @@ use std::collections::BTreeMap;
 use std::path::Path;
 
 mod aggregate;
+mod canfd;
 mod csv;
 mod ethernet;
 mod json;

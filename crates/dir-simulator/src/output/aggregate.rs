@@ -9,6 +9,7 @@ fn overflow() -> Diagnostic {
         code: "E-0004".into(),
         stage: "output".into(),
         message: "Exact result aggregation overflow".into(),
+        details: None,
     }
 }
 fn add(a: u128, b: u128) -> Result<u128, Diagnostic> {
@@ -218,6 +219,9 @@ pub(super) fn records(
 ) -> Result<(Vec<Record>, Vec<Record>), Diagnostic> {
     if prepared.ethernet.is_some() {
         return super::ethernet::records(prepared, snapshot);
+    }
+    if prepared.canfd.is_some() {
+        return super::canfd::records(prepared, snapshot);
     }
     let h = snapshot.common.end_ps;
     let mut points = Vec::new();

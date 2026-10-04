@@ -107,6 +107,9 @@ pub fn write(input: &Path, output: &Path) -> Result<PathBuf, Diagnostic> {
                     | "ethernet.l2.store-forward.v1"
                     | "ethernet.l2.qos.v1"
                     | "ethernet.l2.vlan.v1"
+                    | "ethernet.l2.store-forward.v2"
+                    | "ethernet.l2.100base-t1.v1"
+                    | "can.fd.precomputed.v1"
             )
         ) || !result["simulation"]["model_records"].is_array())
     {

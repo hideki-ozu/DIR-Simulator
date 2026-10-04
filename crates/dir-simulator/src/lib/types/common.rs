@@ -53,6 +53,8 @@ pub struct Diagnostic {
     pub code: String,
     pub stage: String,
     pub message: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub details: Option<serde_json::Value>,
 }
 impl Diagnostic {
     pub fn prepare(message: impl Into<String>) -> Self {
@@ -61,6 +63,7 @@ impl Diagnostic {
             code: "E-0001".into(),
             stage: "prepare".into(),
             message: message.into(),
+            details: None,
         }
     }
     pub fn execution(message: impl Into<String>) -> Self {
@@ -69,6 +72,7 @@ impl Diagnostic {
             code: "E-0002".into(),
             stage: "run".into(),
             message: message.into(),
+            details: None,
         }
     }
     pub fn output(message: impl Into<String>) -> Self {
@@ -77,6 +81,7 @@ impl Diagnostic {
             code: "E-0003".into(),
             stage: "output".into(),
             message: message.into(),
+            details: None,
         }
     }
 }

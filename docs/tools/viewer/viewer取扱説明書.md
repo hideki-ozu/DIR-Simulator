@@ -1,13 +1,14 @@
 # viewer取扱説明書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ 811360a`
-予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`main @ 7bb9bfc`
+予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-04` | CAN FDとEthernet媒体の結果を開く手順、詳細表示とステップ再生を追加 |
 | `1.1.1` | `2026-10-04` | v1.1.1向けVLAN結果の画面切替と詳細資料への参照を追加 |
 | `1.1.0` | `2026-10-04` | 初版公開：単独HTMLの作成、CAN/GW画面の操作・エラー対処を集約。必要な資産一式とEthernet資料への参照を明示 |
 
@@ -74,3 +75,11 @@ schema 2では「Gateway転送」にRX入力Controllerごとの容量・保持�
 「結果ファイルを開く」から別の`results.json`を選ぶか、画面へ1ファイルをドロップして切り替える。本書で説明する結果はschema 1の`can.cc.ideal.v1`とschema 2の`can.cc.multibus.v1`である。schema 2の`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`と、v1.1.1向けPRの`ethernet.l2.vlan.v1`を開くとEthernet画面へ切り替わる。未対応のschema/profileや不正なレコードは読込エラーになる。
 
 CLIで「Viewer output already exists」と表示されたら、新しい出力ファイル名を指定する。親ディレクトリがない場合は先に作成する。入力JSONが読めない、構文が不正、schemaが対象外の場合は入力側を確認する。HTMLは作成できてもブラウザで読込エラーが出る場合は、結果の要求・受信・Gatewayレコードまたは時刻の整合性を確認する。結果を編集して直す前に、生成元の[結果仕様](../../specs/結果詳細機能仕様書.md)と[GW仕様](../../specs/models/GWモデル詳細機能仕様書.md)を参照する。
+
+## 開発中profileの表示
+
+`ethernet.l2.store-forward.v2`と`ethernet.l2.100base-t1.v1`はEthernet画面へ切り替える。物理linkのmode/duplex/role/PHY遅延、試行数・衝突数、試行ごとのSOF・collision・jam・backoff、MAC/MDIの予定時刻と成功実績を表示する。衝突試行から正常受信を作らず、停止時の未到達EOF・jam終了・arrivalを補完しない。前後ステップは移動先の直前区間を同じ向きで再表示する。
+
+`can.fd.precomputed.v1`はController→Bus→受信先の画面を使い、二速度・DLC・BRS・外部位相bit数・evidence・binding SHA-256を詳細へ表示する。`fidelity=externally-precomputed-phase-bits`、`wire_validation=structural-only`を明示する。静的frame行があっても生成時刻が停止境界以後なら送信要求を作らない。任意profileの汎用codecではなく、対応する3種のFDレコードを検証して共通の記録時刻再演へ接続する。
+
+この追加は開発中ソースの実装であり、公開版と文書版は次回push準備時に確定する。

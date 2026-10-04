@@ -73,6 +73,7 @@ pub struct PreparedEthernet {
     pub generators: Vec<EthernetGenerator>,
     pub outputs: Vec<EthernetOutputConfig>,
     pub port_policies: Vec<EthernetPortPolicy>,
+    pub media: Option<EthernetMediaConfig>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -145,4 +146,27 @@ impl EthernetGenerator {
             }
         }
     }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct EthernetPhyEnd {
+    pub role: String,
+    pub tx_latency_ps: u64,
+    pub rx_latency_ps: u64,
+}
+#[derive(Debug, Clone, Serialize)]
+pub struct EthernetPhysicalLink {
+    pub id: String,
+    pub a: String,
+    pub b: String,
+    pub phy_mode: String,
+    pub duplex: String,
+    pub a_phy: EthernetPhyEnd,
+    pub b_phy: EthernetPhyEnd,
+    pub directions: [usize; 2],
+}
+#[derive(Debug, Clone, Serialize)]
+pub struct EthernetMediaConfig {
+    pub seed: u64,
+    pub physical_links: Vec<EthernetPhysicalLink>,
 }

@@ -11,6 +11,7 @@ use crate::types::{Diagnostic, PreparedSimulation};
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
 mod flow;
+mod media;
 
 pub(super) const METRICS: &str = "queue_length queue_max queue_mean ethernet.generated ethernet.transfer_offered ethernet.queued ethernet.transmitting ethernet.serialized ethernet.dropped ethernet.received ethernet.filtered ethernet.forwarded ethernet.processing ethernet.link_utilization ethernet.payload_bits ethernet.mac_bits ethernet.wire_bits ethernet.occupied_bits ethernet.payload_throughput_bps ethernet.delivery_ps ethernet.delivery_mean_ps";
 const QOS_METRICS: &str = "queue_bytes queue_bytes_max queue_bytes_mean ethernet.queue_wait_ps ethernet.serialization_ps ethernet.propagation_ps ethernet.processing_ps ethernet.flow.generated ethernet.flow.received ethernet.flow.copy_dropped ethernet.flow.filtered ethernet.flow.processing ethernet.flow.source_processing ethernet.flow.unfinished_copies ethernet.flow.deadline_missed ethernet.flow.deadline_sample_count ethernet.flow.deadline_miss_ratio ethernet.flow.delivery_mean_ps ethernet.flow.delivery_max_ps ethernet.flow.delivery_p50_ps ethernet.flow.delivery_p95_ps ethernet.flow.delivery_p99_ps ethernet.flow.delivery_jitter_ps ethernet.flow.queue_wait_mean_ps ethernet.flow.serialization_mean_ps ethernet.flow.propagation_mean_ps ethernet.flow.processing_mean_ps";
@@ -57,6 +58,12 @@ fn vlan_device_json(device: &EthernetDevice) -> Value {
 
 pub(super) fn descriptor(metric: &str) -> (&'static str, &'static str, &'static str, &'static str) {
     match metric {
+        "ethernet.media.queue_length" | "ethernet.media.backoff_slots" => {
+            ("count", "integer", "point", "identity")
+        }
+        "ethernet.media.queue_mean" => ("count", "number", "summary", "time_mean"),
+        "ethernet.media.tx_utilization" => ("1", "number", "window_summary", "occupancy_ratio"),
+        "ethernet.media.jam_ps" => ("ps", "integer", "window_summary", "sum"),
         "ethernet.queue_wait_ps"
         | "ethernet.serialization_ps"
         | "ethernet.propagation_ps"
@@ -91,6 +98,13 @@ pub(super) fn records(
     prepared: &PreparedSimulation,
     snapshot: &Snapshot,
 ) -> Result<(Vec<Record>, Vec<Record>), Diagnostic> {
+    if prepared
+        .ethernet
+        .as_ref()
+        .is_some_and(|e| e.media.is_some())
+    {
+        return media::records(prepared, snapshot);
+    }
     let ethernet = prepared
         .ethernet
         .as_ref()
@@ -497,6 +511,13 @@ pub(super) fn model_records(prepared: &PreparedSimulation, state: &EthernetSnaps
             row["data"]["priority"] = json!(reception.priority.to_string());
         }
     }
+    if prepared
+        .ethernet
+        .as_ref()
+        .is_some_and(|e| e.media.is_some())
+    {
+        media::model_rows(prepared, state, &mut rows);
+    }
     rows.sort_by(|a, b| {
         (
             a["schema_name"].as_str(),
@@ -584,7 +605,13 @@ pub(super) fn metadata(
         .into_iter()
         .map(|(key, value)| json!({"key":key,"value":value}))
         .collect();
-    let mut metric_names: Vec<_> = METRICS.split_whitespace().collect();
+    let mut metric_names: Vec<_> = if ethernet.media.is_some() {
+        media::METRICS
+    } else {
+        METRICS
+    }
+    .split_whitespace()
+    .collect();
     if qos {
         metric_names.extend(QOS_METRICS.split_whitespace());
     }
@@ -739,6 +766,9 @@ pub(super) fn metadata(
             "waiting copy MAC-byte capacities",
             "fixed independent processing delays"
         ]);
+    }
+    if ethernet.media.is_some() {
+        media::metadata(prepared, &mut result);
     }
     for key in [
         "git_commit",

@@ -35,6 +35,7 @@ pub struct EthernetTransferRecord {
     pub planned_arrival_ps: Option<u64>,
     pub status: String,
     pub drop_reason: Option<String>,
+    pub media: Option<EthernetMediaTransfer>,
 }
 #[derive(Debug, Clone)]
 pub struct EthernetReceptionRecord {
@@ -58,4 +59,40 @@ pub struct EthernetSnapshot {
     pub frames: Vec<EthernetFrameRecord>,
     pub transfers: Vec<EthernetTransferRecord>,
     pub receptions: Vec<EthernetReceptionRecord>,
+    pub attempts: Vec<EthernetAttemptRecord>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct EthernetMediaTransfer {
+    pub physical_link: String,
+    pub attempt_count: u64,
+    pub collision_count: u64,
+    pub last_attempt_id: Option<String>,
+    pub backoff_until_ps: Option<u64>,
+}
+#[derive(Debug, Clone)]
+pub struct EthernetAttemptRecord {
+    pub attempt_id: String,
+    pub transfer: usize,
+    pub generation: u64,
+    pub time_ps: u64,
+    pub number: u64,
+    pub sof_ps: u64,
+    pub planned_eof_ps: u64,
+    pub planned_release_ps: u64,
+    pub planned_arrival_ps: u64,
+    pub collision_ps: Option<u64>,
+    pub planned_jam_start_ps: Option<u64>,
+    pub planned_jam_end_ps: Option<u64>,
+    pub jam_end_ps: Option<u64>,
+    pub eof_ps: Option<u64>,
+    pub release_ps: Option<u64>,
+    pub arrival_ps: Option<u64>,
+    pub backoff_slots: Option<u64>,
+    pub backoff_until_ps: Option<u64>,
+    pub status: String,
+    pub planned_mdi_sof_ps: u64,
+    pub planned_mdi_eof_ps: Option<u64>,
+    pub planned_peer_mdi_sof_ps: u64,
+    pub planned_peer_mdi_eof_ps: Option<u64>,
 }

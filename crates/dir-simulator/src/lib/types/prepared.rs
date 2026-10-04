@@ -7,4 +7,5 @@ pub struct PreparedSimulation {
     pub can: PreparedCan,
     pub gateway: PreparedGateway,
     pub ethernet: Option<PreparedEthernet>,
+    pub canfd: Option<super::PreparedCanFd>,
 }

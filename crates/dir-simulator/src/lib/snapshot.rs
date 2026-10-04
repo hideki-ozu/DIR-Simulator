@@ -12,6 +12,8 @@ pub use can::{CanSnapshot, Receiver, Request};
 pub use common::{CommonSnapshot, Point};
 pub use ethernet::EthernetSnapshot;
 pub use gateway::{ForwardRecord, GatewaySnapshot, RequestLineage, RxBufferRecord};
+#[path = "snapshot/canfd.rs"]
+pub mod canfd;
 
 #[derive(Debug)]
 pub struct Snapshot {
@@ -19,4 +21,5 @@ pub struct Snapshot {
     pub can: CanSnapshot,
     pub gateway: GatewaySnapshot,
     pub ethernet: Option<EthernetSnapshot>,
+    pub canfd: Option<canfd::CanFdSnapshot>,
 }
