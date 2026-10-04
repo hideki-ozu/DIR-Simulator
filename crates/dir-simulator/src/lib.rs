@@ -1,4 +1,4 @@
-//! DIR Simulator: deterministic Classical CAN, Gateway and Ethernet L2/QoS/VLAN simulation.
+//! DIR Simulator: deterministic Classical CAN, CAN FD, Gateway and Ethernet L2/QoS/VLAN/media simulation.
 //!
 //! ```no_run
 //! let prepared = dir_simulator::prepare(std::path::Path::new("scenario.ini"))?;

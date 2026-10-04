@@ -864,11 +864,13 @@ impl ResolvedPath<'_> {
     pub(super) fn ethernet_link(&self, channels: &ResolvedChannels) -> Result<(String, u64, u64)> {
         let linked: Vec<_> = self.edges.iter().filter(|e| e.channel.is_some()).collect();
         if linked.len() != 1
-            || channels
-                .implementations
-                .get(&linked[0].id)
-                .map(String::as_str)
-                != Some("dir.ethernet.Link")
+            || !matches!(
+                channels
+                    .implementations
+                    .get(&linked[0].id)
+                    .map(String::as_str),
+                Some("dir.ethernet.Link" | "dir.ethernet.LinkV2")
+            )
         {
             return Err(error(
                 "Ethernet direction requires exactly one Ethernet Link",

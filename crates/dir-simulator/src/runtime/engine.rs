@@ -192,6 +192,7 @@ pub fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot, Diagnostic> {
         routed: BTreeSet::new(),
         snapshot: Snapshot {
             ethernet: None,
+            canfd: None,
             common: crate::snapshot::CommonSnapshot {
                 termination: "events_exhausted".into(),
                 partial: false,

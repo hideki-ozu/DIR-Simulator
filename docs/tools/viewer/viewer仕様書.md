@@ -1,13 +1,14 @@
 # viewer仕様書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ 811360a`
-予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`main @ 7bb9bfc`
+予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-04` | CAN FDの証跡・位相時間と媒体の試行・jam・backoff・PHY表示、停止と巻き戻しの再現範囲を追加 |
 | `1.1.1` | `2026-10-04` | v1.1.1向けVLAN profileの読込対応と詳細仕様への参照を追加 |
 | `1.1.0` | `2026-10-04` | 初版公開：CAN/GW viewerの表示・再生・状態復元・検証条件を集約。説明範囲とEthernet資料への参照を明示 |
 
@@ -71,3 +72,11 @@ npm install --prefix tmp/viewer-tests playwright@1.62.1
 ./tmp/viewer-tests/node_modules/.bin/playwright install chromium
 NODE_PATH="$PWD/tmp/viewer-tests/node_modules" node tests/viewer_browser.cjs
 ```
+
+## 開発中profileの表示
+
+`ethernet.l2.store-forward.v2`と`ethernet.l2.100base-t1.v1`はEthernet画面へ切り替える。物理linkのmode/duplex/role/PHY遅延、試行数・衝突数、試行ごとのSOF・collision・jam・backoff、MAC/MDIの予定時刻と成功実績を表示する。衝突試行から正常受信を作らず、停止時の未到達EOF・jam終了・arrivalを補完しない。前後ステップは移動先の直前区間を同じ向きで再表示する。
+
+`can.fd.precomputed.v1`はController→Bus→受信先の画面を使い、二速度・DLC・BRS・外部位相bit数・evidence・binding SHA-256を詳細へ表示する。`fidelity=externally-precomputed-phase-bits`、`wire_validation=structural-only`を明示する。静的frame行があっても生成時刻が停止境界以後なら送信要求を作らない。任意profileの汎用codecではなく、対応する3種のFDレコードを検証して共通の記録時刻再演へ接続する。
+
+この追加は開発中ソースの実装であり、公開版と文書版は次回push準備時に確定する。

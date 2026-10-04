@@ -112,7 +112,7 @@ pub(super) fn result(
 pub(super) fn diagnostics(snapshot: &Snapshot) -> Vec<u8> {
     let mut diagnostics = String::new();
     for (i, diagnostic) in snapshot.common.diagnostics.iter().enumerate() {
-        let object = json!({"schema_version":1,"seq":i.to_string(),"severity":"error","primary":i==0,"code":diagnostic.code,"phase":diagnostic.stage,"reason":"runtime_error","message":diagnostic.message,"source":null,"line":null,"column":null,"end_line":null,"end_column":null,"target":null,"time_ps":snapshot.common.end_ps.to_string(),"event_seq":null,"details":{}});
+        let object = json!({"schema_version":1,"seq":i.to_string(),"severity":"error","primary":i==0,"code":diagnostic.code,"phase":diagnostic.stage,"reason":"runtime_error","message":diagnostic.message,"source":null,"line":null,"column":null,"end_line":null,"end_column":null,"target":null,"time_ps":snapshot.common.end_ps.to_string(),"event_seq":null,"details":diagnostic.details.as_ref().cloned().unwrap_or_else(|| json!({}))});
         diagnostics.push_str(&canonical(&object));
         diagnostics.push('\n');
     }

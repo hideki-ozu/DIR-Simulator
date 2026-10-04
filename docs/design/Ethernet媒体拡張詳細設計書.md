@@ -1,12 +1,14 @@
 # Ethernet媒体拡張詳細設計書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`main @ 7bb9bfc`
+予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-04` | 半二重CSMA/CD・固定BEB・T1 pipelineの内部実装と検証範囲を接続し、v1.1.2向け文書版を確定 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版。10/100半二重CSMA/CDと1000BASE-T1全二重媒体を定義 |
@@ -16,7 +18,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | 担当元 | [architecture#arch-ethernet-media](../アーキテクチャ設計書.md#arch-ethernet-media)を実現する。契約は[媒体仕様](../specs/models/Ethernet媒体拡張詳細機能仕様書.md)、既存frame/FDBは[v1設計](Ethernetモデル詳細設計書.md)を正本とする |
-| 状態 | 設計確定。製品実装・試験は未実施 |
+| 状態 | 設計確定。開発中ソースに製品実装を追加。製品試験の実施範囲は本書の検証記録又は対応する検証仕様を参照。規格全体適合・実機試験は未実施。文書版を1.1.2に統一し、公開版はv1.1.2向けPRとして準備する。 |
 
 <a id="half-state"></a>
 
@@ -130,3 +132,9 @@
 | 終了 | 未到達EOF/arrivalはnull、PHY予定欄は予定のまま保持。T以後のjamやretryは実績へ繰り上げない。finishはtoken/context/frame共有参照の解放のみで新規計測を出す対象外（注） |
 | schema互換 | serializer/FDB/旧codecの実装を共用できるが登録entryはv1/v2で独立する。v1のtransfer/1をv2の拡張field入りobjectで上書きしない。v2のdescriptor集合は出力metadataへ全件明示する |
 | 検証 | [媒体検証](../verification/cases/Ethernet媒体拡張検証仕様書.md)の0033～0039。carrier同時刻、preamble/jam、BEB固定vector、取消し、T、T1非対称遅延、混在treeとv1回帰を分担する |
+
+## 開発中実装の境界
+
+製品コードは共通INI/NED・結果公開層に専用input/runtime/outputを接続する。媒体対の論理timeline・予約世代・試行状態、CAN FDの不変frame cacheと受信状態をモデル内部で所有し、callbackの時刻・予約を事前検証してから結果へ反映する。公開ProfileRegistry、汎用Context/Envelope/TimerToken APIとモデル共通arenaは未実装であり、上記設計の公開拡張APIへの適合完了を示さない。
+
+CAN FDは外部位相bit数による時間評価で、結果に`externally-precomputed-phase-bits`と`structural-only`を保存する。媒体v2は連続idle96bitのdeferenceと固定SHA-256 BEB、T1は時刻0からlink-up済みの固定PHY遅延を採用する。内容依存FD CRC/stuffing、波形、training、規格全文適合はこの実装の範囲外。

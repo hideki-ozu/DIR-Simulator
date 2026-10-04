@@ -4,11 +4,17 @@ use super::{Result, StrictJson, error, identifier, object, required_string, unsi
 use crate::types::ethernet::*;
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
-struct EthernetRules;
+struct EthernetRules {
+    media: bool,
+}
 impl ModelRules for EthernetRules {
     fn validate_schema(&self, d: &Declaration) -> Result<()> {
-        match d.implementation() {
-            Some("dir.ethernet.Endpoint") if d.simple() => {
+        let implementation = d.implementation();
+        if implementation.is_some_and(|key| key.ends_with("V2")) != self.media {
+            return Err(d.fail("Ethernet implementation does not match selected profile"));
+        }
+        match implementation {
+            Some("dir.ethernet.Endpoint" | "dir.ethernet.EndpointV2") if d.simple() => {
                 d.require_parameters(&[
                     ("queueCapacity", "int", None),
                     ("txProcessingDelay", "double", Some("s")),
@@ -18,7 +24,7 @@ impl ModelRules for EthernetRules {
                     return Err(d.fail("Endpoint requires output tx/input rx"));
                 }
             }
-            Some("dir.ethernet.Switch") if d.simple() => {
+            Some("dir.ethernet.Switch" | "dir.ethernet.SwitchV2") if d.simple() => {
                 d.require_parameters(&[("queueCapacity", "int", None)])?;
                 let outputs: Vec<_> = d.gates().iter().filter(|(_, output)| **output).collect();
                 if outputs.len() < 2
@@ -33,17 +39,18 @@ impl ModelRules for EthernetRules {
                     return Err(d.fail("Switch requires at least two paired tx_/rx_ ports"));
                 }
             }
-            Some("dir.ethernet.Link") if d.kind() == "channel" => d.require_parameters(&[
-                ("bitrate", "double", Some("bps")),
-                ("delay", "double", Some("s")),
-            ])?,
+            Some("dir.ethernet.Link" | "dir.ethernet.LinkV2") if d.kind() == "channel" => d
+                .require_parameters(&[
+                    ("bitrate", "double", Some("bps")),
+                    ("delay", "double", Some("s")),
+                ])?,
             _ => return Err(d.fail("unknown or wrong-kind Ethernet implementation")),
         }
         Ok(())
     }
     fn validate_value(&self, d: &Declaration, name: &str, value: &TypedValue) -> Result<()> {
         if matches!((name,value),("queueCapacity",TypedValue::Integer(n)) if !(0..=4_294_967_295).contains(n))
-            || matches!((d.implementation(),name,value),(Some("dir.ethernet.Link"),"bitrate",TypedValue::Quantity(n)) if ![10_000_000,100_000_000,1_000_000_000,10_000_000_000].contains(n))
+            || matches!((d.implementation(),name,value),(Some("dir.ethernet.Link" | "dir.ethernet.LinkV2"),"bitrate",TypedValue::Quantity(n)) if ![10_000_000,100_000_000,1_000_000_000,10_000_000_000].contains(n))
         {
             return Err(d.fail(format!("unsupported range for {name}")));
         }
@@ -52,9 +59,18 @@ impl ModelRules for EthernetRules {
     fn payload(&self, d: &Declaration, _: &str) -> Option<&'static str> {
         matches!(
             d.implementation(),
-            Some("dir.ethernet.Endpoint" | "dir.ethernet.Switch")
+            Some(
+                "dir.ethernet.Endpoint"
+                    | "dir.ethernet.Switch"
+                    | "dir.ethernet.EndpointV2"
+                    | "dir.ethernet.SwitchV2"
+            )
         )
-        .then_some("ethernet.l2.frame.v1")
+        .then_some(if self.media {
+            "dir.ethernet.media"
+        } else {
+            "ethernet.l2.frame.v1"
+        })
     }
 }
 pub(super) fn validate_parameter_literal(d: &Declaration, name: &str, value: &str) -> Result<()> {
@@ -62,7 +78,10 @@ pub(super) fn validate_parameter_literal(d: &Declaration, name: &str, value: &st
         .parameters()
         .get(name)
         .ok_or_else(|| error("unknown parameter"))?;
-    EthernetRules.validate_value(d, name, &ned::typed_value(p, value)?)
+    EthernetRules {
+        media: d.implementation().is_some_and(|key| key.ends_with("V2")),
+    }
+    .validate_value(d, name, &ned::typed_value(p, value)?)
 }
 fn number(values: &Values, name: &str) -> u64 {
     match &values[name] {
@@ -86,20 +105,37 @@ fn paired(port: &str) -> String {
         }
     )
 }
-pub(super) fn resolve(
+pub(super) fn resolve_profile(
     types: &BTreeMap<String, Declaration>,
     network: &str,
     overrides: &BTreeMap<String, String>,
     channels: &BTreeMap<String, BTreeMap<String, String>>,
+    profile: &str,
 ) -> Result<(PreparedEthernet, Vec<String>, usize)> {
-    let rules = EthernetRules;
+    resolve_inner(types, network, overrides, channels, profile).map_err(|mut d| {
+        if is_media(profile) && d.details.is_none() {
+            d.details = Some(serde_json::json!({"rule":"media_topology","target":network}));
+        }
+        d
+    })
+}
+fn resolve_inner(
+    types: &BTreeMap<String, Declaration>,
+    network: &str,
+    overrides: &BTreeMap<String, String>,
+    channels: &BTreeMap<String, BTreeMap<String, String>>,
+    profile: &str,
+) -> Result<(PreparedEthernet, Vec<String>, usize)> {
+    let rules = EthernetRules {
+        media: is_media(profile),
+    };
     let r = ned::resolve(types, network, overrides, &rules)?;
     let c = r.resolve_channels(channels, &rules)?;
     let mut devices = Vec::new();
     for (id, d) in r.instances() {
         let kind = match d.implementation() {
-            Some("dir.ethernet.Endpoint") => "endpoint",
-            Some("dir.ethernet.Switch") => "switch",
+            Some("dir.ethernet.Endpoint" | "dir.ethernet.EndpointV2") => "endpoint",
+            Some("dir.ethernet.Switch" | "dir.ethernet.SwitchV2") => "switch",
             _ => continue,
         };
         let v = r.values(id);
@@ -203,6 +239,7 @@ pub(super) fn resolve(
             generators: Vec::new(),
             outputs: Vec::new(),
             port_policies: Vec::new(),
+            media: None,
         },
         r.module_paths(),
         c.len(),
@@ -239,12 +276,30 @@ fn array<'a>(o: &'a serde_json::Map<String, Value>, key: &str) -> Result<&'a Vec
         .ok_or_else(|| error(format!("missing array {key}")))
 }
 pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) -> Result<()> {
+    configure_inner(content, p, profile).map_err(|mut d| {
+        if is_media(profile) && d.details.is_none() {
+            d.details =
+                Some(serde_json::json!({"rule":"media_config_schema","target":"model-config"}));
+        }
+        d
+    })
+}
+fn configure_inner(content: &str, p: &mut PreparedEthernet, profile: &str) -> Result<()> {
+    let media = is_media(profile);
     let vlan = profile == "ethernet.l2.vlan.v1";
     let qos = vlan || profile == "ethernet.l2.qos.v1";
     let value = json(content)?;
     let root = object(
         &value,
-        if vlan {
+        if media {
+            &[
+                "schema_version",
+                "endpoints",
+                "switches",
+                "seed",
+                "physical_links",
+            ]
+        } else if vlan {
             &[
                 "schema_version",
                 "endpoints",
@@ -262,7 +317,7 @@ pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) 
     if root.get("schema_version").and_then(Value::as_u64)
         != Some(if vlan {
             3
-        } else if qos {
+        } else if qos || media {
             2
         } else {
             1
@@ -451,6 +506,9 @@ pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) 
             return Err(error("QoS config must enumerate all output ports"));
         }
         p.outputs.sort_by(|a, b| a.port.cmp(&b.port));
+    }
+    if media {
+        configure_media(root, p, profile)?;
     }
     if seen.len() != p.devices.len() {
         return Err(error("model-config must enumerate all Ethernet devices"));
@@ -806,3 +864,136 @@ pub(super) fn workload(content: &str, p: &mut PreparedEthernet, profile: &str) -
 
 #[cfg(test)]
 mod tests;
+
+fn is_media(profile: &str) -> bool {
+    matches!(
+        profile,
+        "ethernet.l2.store-forward.v2" | "ethernet.l2.100base-t1.v1"
+    )
+}
+fn media_error(rule: &str, target: &str) -> crate::types::Diagnostic {
+    let mut d = error(format!("Ethernet media {rule}: {target}"));
+    d.details = Some(serde_json::json!({"rule":rule,"target":target}));
+    d
+}
+fn phy_end(value: &Value) -> Result<EthernetPhyEnd> {
+    let o = object(
+        value,
+        &["role", "tx_latency_ps", "rx_latency_ps"],
+        "PHY end",
+    )?;
+    Ok(EthernetPhyEnd {
+        role: required_string(o, "role")?.into(),
+        tx_latency_ps: unsigned(required_string(o, "tx_latency_ps")?, false)?,
+        rx_latency_ps: unsigned(required_string(o, "rx_latency_ps")?, false)?,
+    })
+}
+fn configure_media(
+    root: &serde_json::Map<String, Value>,
+    p: &mut PreparedEthernet,
+    profile: &str,
+) -> Result<()> {
+    let seed = unsigned(required_string(root, "seed")?, false)?;
+    let mut ids = BTreeSet::new();
+    let mut ports = BTreeSet::new();
+    let mut physical_links = Vec::new();
+    for row in array(root, "physical_links")? {
+        let o = object(
+            row,
+            &["id", "a", "b", "phy_mode", "duplex", "a_phy", "b_phy"],
+            "physical link",
+        )?;
+        let id = required_string(o, "id")?;
+        if !identifier(id) || !ids.insert(id.to_string()) {
+            return Err(media_error("physical_link_id", id));
+        }
+        let a = required_string(o, "a")?;
+        let b = required_string(o, "b")?;
+        if a >= b || !ports.insert(a.to_string()) || !ports.insert(b.to_string()) {
+            return Err(media_error("physical_link_ports", id));
+        }
+        let ia = p
+            .directions
+            .iter()
+            .position(|d| d.from_port == a)
+            .ok_or_else(|| media_error("physical_link_peer", a))?;
+        let ib = p
+            .directions
+            .iter()
+            .position(|d| d.from_port == b)
+            .ok_or_else(|| media_error("physical_link_peer", b))?;
+        let da = &p.directions[ia];
+        let db = &p.directions[ib];
+        if da.to_port != paired(b)
+            || db.to_port != paired(a)
+            || da.bitrate_bps != db.bitrate_bps
+            || da.delay_ps != db.delay_ps
+        {
+            return Err(media_error("physical_link_peer", id));
+        }
+        let mode = required_string(o, "phy_mode")?;
+        let duplex = required_string(o, "duplex")?;
+        let expected_rate = if profile == "ethernet.l2.100base-t1.v1" {
+            if mode != "100base-t1" {
+                return Err(media_error("phy_mode", id));
+            }
+            100_000_000
+        } else {
+            match mode {
+                "10base-t" => 10_000_000,
+                "100base-tx" => 100_000_000,
+                "1000base-t1" => 1_000_000_000,
+                _ => return Err(media_error("phy_mode", id)),
+            }
+        };
+        let t1 = mode.ends_with("-t1");
+        if !matches!(duplex, "half" | "full") || t1 && duplex != "full" {
+            return Err(media_error("phy_duplex", id));
+        }
+        if da.bitrate_bps != expected_rate {
+            return Err(media_error("phy_bitrate", id));
+        }
+        let a_phy = phy_end(o.get("a_phy").ok_or_else(|| media_error("phy_end", id))?)?;
+        let b_phy = phy_end(o.get("b_phy").ok_or_else(|| media_error("phy_end", id))?)?;
+        if t1 {
+            if !matches!(
+                (a_phy.role.as_str(), b_phy.role.as_str()),
+                ("master", "slave") | ("slave", "master")
+            ) {
+                return Err(media_error("phy_roles", id));
+            }
+        } else if [&a_phy, &b_phy]
+            .iter()
+            .any(|e| e.role != "none" || e.tx_latency_ps != 0 || e.rx_latency_ps != 0)
+        {
+            return Err(media_error("phy_roles", id));
+        }
+        if duplex == "half" {
+            let bit = 1_000_000_000_000u128 / expected_rate as u128;
+            if 2 * da.delay_ps as u128 + 32 * bit >= 512 * bit
+                || (2 * da.delay_ps as u128).max(64 * bit) + 32 * bit >= 512 * bit
+            {
+                return Err(media_error("half_slot_bound", id));
+            }
+        }
+        physical_links.push(EthernetPhysicalLink {
+            id: id.into(),
+            a: a.into(),
+            b: b.into(),
+            phy_mode: mode.into(),
+            duplex: duplex.into(),
+            a_phy,
+            b_phy,
+            directions: [ia, ib],
+        });
+    }
+    if ports.len() != p.directions.len() {
+        return Err(media_error("physical_link_coverage", "physical_links"));
+    }
+    physical_links.sort_by(|a, b| a.id.cmp(&b.id));
+    p.media = Some(EthernetMediaConfig {
+        seed,
+        physical_links,
+    });
+    Ok(())
+}

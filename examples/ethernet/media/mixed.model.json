@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "endpoints": [
+    {
+      "instance": "Mix.a",
+      "mac": "02:00:00:00:00:01"
+    },
+    {
+      "instance": "Mix.b",
+      "mac": "02:00:00:00:00:02"
+    },
+    {
+      "instance": "Mix.c",
+      "mac": "02:00:00:00:00:03"
+    }
+  ],
+  "switches": [
+    {
+      "instance": "Mix.sw",
+      "forward_delay_ps": "0",
+      "fdb": []
+    }
+  ],
+  "seed": "1",
+  "physical_links": [
+    {
+      "id": "a",
+      "a": "Mix.a.tx",
+      "b": "Mix.sw.tx_a",
+      "phy_mode": "100base-tx",
+      "duplex": "half",
+      "a_phy": {
+        "role": "none",
+        "tx_latency_ps": "0",
+        "rx_latency_ps": "0"
+      },
+      "b_phy": {
+        "role": "none",
+        "tx_latency_ps": "0",
+        "rx_latency_ps": "0"
+      }
+    },
+    {
+      "id": "b",
+      "a": "Mix.b.tx",
+      "b": "Mix.sw.tx_b",
+      "phy_mode": "1000base-t1",
+      "duplex": "full",
+      "a_phy": {
+        "role": "master",
+        "tx_latency_ps": "0",
+        "rx_latency_ps": "0"
+      },
+      "b_phy": {
+        "role": "slave",
+        "tx_latency_ps": "0",
+        "rx_latency_ps": "0"
+      }
+    },
+    {
+      "id": "c",
+      "a": "Mix.c.tx",
+      "b": "Mix.sw.tx_c",
+      "phy_mode": "100base-tx",
+      "duplex": "full",
+      "a_phy": {
+        "role": "none",
+        "tx_latency_ps": "0",
+        "rx_latency_ps": "0"
+      },
+      "b_phy": {
+        "role": "none",
+        "tx_latency_ps": "0",
+        "rx_latency_ps": "0"
+      }
+    }
+  ]
+}

@@ -59,8 +59,60 @@
     const n = BigInt(Math.max(0, Math.min(denominator, Math.round(numerator))));
     return start + (end - start) * n / BigInt(denominator);
   }
+  // Validate FD records, then reuse the common recorded-milestone replay.
+  // This projection supplies only replay timing; no Classical CAN wire codec is used.
+  function parseCanFd(raw) {
+    const sim=object(raw.simulation,'simulation'),frames=new Map(),requests=new Map(),receivers=[];
+    const keys=(x,k,label)=>{object(x,label);if(Object.keys(x).length!==k.length||k.some(n=>!Object.hasOwn(x,n)))fail(`${label}: キー集合が不正です。`);};
+    const end=decimal(sim.end_ps,'end_ps');
+    const actual=x=>{if(x===null)return null;const n=decimal(x,'FD time');if(n>end||(!sim.partial&&n===end))fail('FD実績時刻が観測期間外です。');return n;};
+    const opt=x=>x===null?null:decimal(x,'FD planned time');
+    const unique=new Set(),requestRows=[],receiverRows=[];
+    const frameKeys=['format','id','data','dlc','brs','nominal_bits','data_bits','evidence','binding_sha256','nominal_rate','data_rate','fidelity','wire_validation'];
+    const requestKeys=['frame_id','source','bus','generated_ps','ready_ps','sof_ps','eof_ps','release_ps','planned_ready_ps','planned_eof_ps','planned_release_ps','state','drop_reason'];
+    const receptionKeys=['frame_id','receiver','planned_arrival_ps','planned_completed_ps','arrival_ps','completed_ps','state'];
+    for(const row of array(sim.model_records,'FD model_records')) {
+      keys(row,['schema_name','schema_version','record_id','subject','request_id','origin_request_id','time_ps','data'],'FD record');
+      const key=JSON.stringify([row.schema_name,name(row.record_id,'record_id')]);if(unique.has(key)||row.schema_version!==1||row.origin_request_id!==null)fail('FDレコードの版・一意性が不正です。');unique.add(key);
+      name(row.subject,'subject');const updated=decimal(row.time_ps,'FD updated');const d=row.data;
+      if(row.schema_name==='dir.canfd.frame') {
+        keys(d,frameKeys,'FD frame');
+        if(row.request_id!==null||updated!==0n||!['standard','extended'].includes(d.format)||!Number.isInteger(d.id)||d.id<0||d.id>(d.format==='standard'?2047:536870911)||typeof d.data!=='string'||!/^(?:[0-9a-f]{2})*$/.test(d.data)||typeof d.brs!=='boolean')fail('FD frameの型が不正です。');
+        const lengths=[0,1,2,3,4,5,6,7,8,12,16,20,24,32,48,64],bytes=d.data.length/2;
+        if(lengths.indexOf(bytes)!==d.dlc||!name(d.evidence,'evidence')||Array.from(d.evidence).length>512||! /^[0-9a-f]{64}$/.test(d.binding_sha256)||d.fidelity!=='externally-precomputed-phase-bits'||d.wire_validation!=='structural-only')fail('FD DLC・証跡が不正です。');
+        const n=decimal(d.nominal_bits,'N',1000000n),b=decimal(d.data_bits,'D',1000000n),rn=decimal(d.nominal_rate,'Rn',1000000n),rd=decimal(d.data_rate,'Rd',8000000n);
+        if(n<1n||rn<1n||rd<rn||(d.brs?(b<1n||b<BigInt(bytes*8)):(b!==0n||n<BigInt(bytes*8))))fail('FD bit数・速度が不正です。');
+        frames.set(row.record_id,{...d,source:row.subject,n,b,rn,rd});
+      } else if(row.schema_name==='dir.canfd.request') {keys(d,requestKeys,'FD request');requestRows.push(row);}
+      else if(row.schema_name==='dir.canfd.reception') {keys(d,receptionKeys,'FD reception');receiverRows.push(row);}
+      else fail('未対応のFD schemaです。');
+    }
+    const legacyRequests=[];
+    const states={pending:'processing',queued:'pending',transmitting:'in_flight',serialized:'success',dropped:'dropped'};
+    for(const row of requestRows) {
+      const d=row.data,f=frames.get(d.frame_id);name(row.request_id,'request_id');
+      if(!f||row.record_id!==row.request_id||row.subject!==d.source||f.source!==d.source||!Object.hasOwn(states,d.state)||! /^.+:(0|[1-9][0-9]*)$/.test(row.record_id)||!row.record_id.startsWith(d.frame_id+':'))fail('FD request参照が不正です。');
+      const generated=actual(d.generated_ps),ready=actual(d.ready_ps),sof=actual(d.sof_ps),eof=actual(d.eof_ps),release=actual(d.release_ps),plannedReady=decimal(d.planned_ready_ps,'planned ready'),plannedEof=opt(d.planned_eof_ps),plannedRelease=opt(d.planned_release_ps);
+      if(generated===null||plannedReady<generated||ready!==null&&ready!==plannedReady||BigInt(row.time_ps)!==(release??eof??sof??ready??generated))fail('FD確定時刻が不正です。');
+      if(d.state==='dropped'?d.drop_reason!=='queue_full':d.drop_reason!==null)fail('FD drop理由が不正です。');
+      if(sof!==null){const ceil=(a,b)=>a/b+(a%b?1n:0n),den=f.rn*f.rd;if(plannedEof!==sof+ceil(1000000000000n*(f.n*f.rd+f.b*f.rn),den)||plannedRelease!==sof+ceil(1000000000000n*((f.n+3n)*f.rd+f.b*f.rn),den))fail('FD時間と位相bit数が不一致です。');}
+      requests.set(row.record_id,{row,d,f});
+      legacyRequests.push({request_id:row.record_id,source:d.source,bus:d.bus,status:states[d.state],generated_ps:d.generated_ps,ready_ps:d.ready_ps,sof_ps:d.sof_ps,eof_ps:d.eof_ps,model_fields:{profile:'can.cc.ideal.v1',schema_version:1,planned_eof_ps:d.planned_eof_ps,planned_release_ps:d.planned_release_ps,release_ps:d.release_ps}});
+    }
+    for(const row of receiverRows) {
+      const d=row.data,q=requests.get(row.request_id),arrival=actual(d.arrival_ps),completed=actual(d.completed_ps),pa=decimal(d.planned_arrival_ps,'planned arrival'),pc=decimal(d.planned_completed_ps,'planned completed');
+      if(!q||q.d.eof_ps===null||d.frame_id!==q.d.frame_id||d.receiver===q.d.source||row.subject!==d.receiver||row.record_id!==`${row.request_id}:${d.receiver}`||pa<BigInt(q.d.eof_ps)||pc<pa||arrival!==null&&arrival!==pa||completed!==null&&completed!==pc||BigInt(row.time_ps)!==(completed??arrival??BigInt(q.d.eof_ps)))fail('FD reception参照・時刻が不正です。');
+      if(!['pending','processing','completed','filtered'].includes(d.state)||(d.state==='pending'?(arrival!==null||completed!==null):d.state==='completed'?(arrival===null||completed===null):(arrival===null||completed!==null)))fail('FD受信状態が不正です。');
+      receivers.push(row);
+    }
+    const projected={...raw,schema_version:1,metadata:{...raw.metadata,models:[{type:'can.cc.ideal.v1'}],initial_state:[]},simulation:{...sim,requests:legacyRequests,receivers:receivers.map(row=>({request_id:row.request_id,receiver:row.data.receiver,status:row.data.state==='completed'?'received':row.data.state==='filtered'?'filtered':'pending',observed_ps:row.data.arrival_ps,received_ps:row.data.completed_ps}))}};
+    const replay=parseResults(projected);replay.raw=raw;replay.canfd=true;replay.fdFrames=frames;
+    for(const r of replay.requests){r.raw=requests.get(r.id).d;r.fdFrame=requests.get(r.id).f;}
+    return replay;
+  }
   function parseResults(raw) {
     object(raw, 'results');
+    if(raw.schema_version===2&&raw.metadata?.model_profile==='can.fd.precomputed.v1')return parseCanFd(raw);
     if (![1, 2].includes(raw.schema_version)) fail('対応しているresults.jsonはschema_version = 1 / 2です。');
     const profile = raw.schema_version === 2 ? 'can.cc.multibus.v1' : 'can.cc.ideal.v1';
     if (raw.schema_version === 2 && raw.metadata?.model_profile !== profile) fail('schema 2はCAN複数バスの結果に対応しています。');

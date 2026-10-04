@@ -25,6 +25,9 @@ pub(super) fn records(
     if let Some(ethernet) = &snapshot.ethernet {
         return Ok(super::ethernet::model_records(prepared, ethernet));
     }
+    if let Some(canfd) = &snapshot.canfd {
+        return Ok(super::canfd::model_records(prepared, canfd));
+    }
     let lineage =
         |id: &str| {
             snapshot.gateway.request_lineage.get(id).ok_or_else(|| {

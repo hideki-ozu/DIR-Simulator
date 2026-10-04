@@ -15,3 +15,6 @@ pub use prepared::PreparedSimulation;
 #[path = "types/ethernet.rs"]
 pub mod ethernet;
 pub use ethernet::PreparedEthernet;
+#[path = "types/canfd.rs"]
+pub mod canfd;
+pub use canfd::PreparedCanFd;
