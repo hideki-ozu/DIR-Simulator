@@ -74,5 +74,19 @@
   function requestStateAt(request,t){if(t<request.generated)return 'not_generated';if(request.completed!==null&&t>=request.completed)return request.state;if(request.state==='dropped'&&t>=request.updated)return 'dropped';if(request.start!==null&&t>=request.start)return request.updated<=t?request.state==='completed'?'active':request.state:'active';return 'pending';}
   function stateAt(model,t){if(typeof t!=='bigint'||t<model.start||t>model.end)fail('cursor outside observation');const counts={generated:0,pending:0,active:0,completed:0,dropped:0};for(const r of model.requests.values()){const s=requestStateAt(r,t);if(s==='not_generated')continue;counts.generated++;if(['completed'].includes(s))counts.completed++;else if(['rejected','failed','dropped'].includes(s))counts.dropped++;else if(s==='pending'||s==='queued'||s==='awaiting_admission')counts.pending++;else counts.active++;}return counts;}
   function stepTransfers(model,t){let prior=model.start;for(const time of model.eventTimes){if(time>=t)break;prior=time;}return model.transfers.filter(x=>x.start<t&&x.end>prior||x.handshake&&x.end===t).map(x=>({id:x.id,request:x.request,from:x.from,to:x.to,start:x.start,end:x.end}));}
-  return {profiles,parseResults,requestStateAt,stateAt,stepTransfers};
+  function timelineSegments(request,end){
+    const terminal=['dropped','rejected','failed'].includes(request.state);
+    const finished=request.completed??(request.state==='dropped'?request.updated:null);
+    const segments=[];
+    if(request.start===null){
+      const until=finished??end;
+      if(until>request.generated||!terminal)segments.push({start:request.generated,end:until,state:'pending',dashed:false});
+    }else{
+      if(request.start>request.generated)segments.push({start:request.generated,end:request.start,state:'pending',dashed:false});
+      segments.push({start:request.start,end:finished??end,state:'active',dashed:finished===null});
+    }
+    if(terminal)segments.push({start:finished,end:finished,state:request.state,dashed:false});
+    return segments;
+  }
+  return {profiles,parseResults,requestStateAt,stateAt,stepTransfers,timelineSegments};
 });

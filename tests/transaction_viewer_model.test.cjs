@@ -16,3 +16,21 @@ test('partial prefixes include a committed completion at H',()=>{const raw=fixtu
 test('unregistered schemas, duplicate IDs, unknown references and invalid times reject',()=>{for(const change of [r=>r.metadata.model_schemas.pop(),r=>r.simulation.model_records[1].schema_version=2,r=>r.simulation.model_records.push(structuredClone(r.simulation.model_records[0])),r=>r.simulation.model_records[1].request_id='missing',r=>r.simulation.model_records[0].data.completed_ps='9',r=>r.simulation.model_records[0].data.generated_ps='00',r=>r.simulation.model_records[0].data.status='pending']){const raw=fixture();change(raw);assert.throws(()=>M.parseResults(raw),/Transaction:/);}});
 test('unknown data fields and malformed byte strings reject',()=>{for(const change of [r=>r.simulation.model_records[0].data.extra=true,r=>r.simulation.model_records[2].data.data_hex='ABC']){const raw=fixture();change(raw);assert.throws(()=>M.parseResults(raw),/Transaction:/);}});
 module.exports={fixture};
+
+test('terminal timelines stop at actual completion, including rejection at zero',()=>{
+ const request={generated:0n,start:null,completed:0n,updated:0n,state:'rejected'};
+ assert.deepEqual(M.timelineSegments(request,10n),[{start:0n,end:0n,state:'rejected',dashed:false}]);
+ assert.equal(M.requestStateAt(request,0n),'rejected');
+ request.completed=3n;request.updated=3n;
+ assert.deepEqual(M.timelineSegments(request,10n),[{start:0n,end:3n,state:'pending',dashed:false},{start:3n,end:3n,state:'rejected',dashed:false}]);
+ assert.equal(M.requestStateAt(request,2n),'pending');
+});
+test('timeline preserves pending, active, completed, dropped and failed boundaries',()=>{
+ const r={generated:1n,start:null,completed:null,updated:1n,state:'pending'};
+ assert.deepEqual(M.timelineSegments(r,10n),[{start:1n,end:10n,state:'pending',dashed:false}]);
+ r.start=2n;r.state='active';
+ assert.deepEqual(M.timelineSegments(r,10n),[{start:1n,end:2n,state:'pending',dashed:false},{start:2n,end:10n,state:'active',dashed:true}]);
+ r.completed=5n;r.state='completed';assert.deepEqual(M.timelineSegments(r,10n).at(-1),{start:2n,end:5n,state:'active',dashed:false});
+ r.state='failed';assert.deepEqual(M.timelineSegments(r,10n).at(-1),{start:5n,end:5n,state:'failed',dashed:false});
+ r.start=null;r.completed=null;r.updated=1n;r.state='dropped';assert.deepEqual(M.timelineSegments(r,10n),[{start:1n,end:1n,state:'dropped',dashed:false}]);
+});
