@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "a",
+      "kind": "noc.explicit.v1",
+      "node": "Main.e00",
+      "times": [
+        "0ps",
+        "10ps",
+        "20ps",
+        "20ps"
+      ],
+      "transaction": {
+        "destination": "Main.e10",
+        "bytes": 4
+      }
+    },
+    {
+      "id": "b",
+      "kind": "noc.explicit.v1",
+      "node": "Main.e10",
+      "times": [
+        "0ps"
+      ],
+      "transaction": {
+        "destination": "Main.e10",
+        "bytes": 16
+      }
+    }
+  ]
+}

@@ -107,6 +107,7 @@
   }
   function clearResult() {
     window.DIREthernetApp?.unmount();
+    window.DIRTransactionApp?.unmount();
     pause();
     model = null;
     chronologicalRequests = [];
@@ -155,6 +156,14 @@
     }
   }
   function loadObject(raw, filename) {
+    if (window.DIRTransactionModel?.profiles.has(raw?.metadata?.model_profile)) {
+      clearResult();
+      window.DIRTransactionApp.mount(raw, filename);
+      $("empty-state").hidden = true;
+      $("loading").hidden = true;
+      $("error-banner").hidden = true;
+      return;
+    }
     if (["ethernet.l2.store-forward.v1", "ethernet.l2.qos.v1", "ethernet.l2.vlan.v1", "ethernet.l2.store-forward.v2", "ethernet.l2.100base-t1.v1"].includes(raw?.metadata?.model_profile)) {
       clearResult();
       window.DIREthernetApp.mount(raw, filename);

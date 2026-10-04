@@ -1,10 +1,13 @@
 //! Snapshot-based input orchestration, file loading and common INI/JSON/time utilities.
 //! NED resolution and model-specific validation are delegated to the input adapters.
+mod axi;
 mod can;
 mod canfd;
 mod ethernet;
 mod gateway;
+mod memory_ipc;
 mod ned;
+mod soc;
 
 use crate::types::{Diagnostic, InputSnapshot, PreparedSimulation};
 use serde::de::{self, MapAccess, SeqAccess, Visitor};
@@ -125,6 +128,15 @@ pub(crate) fn validate_parameter_literal(
         ethernet::validate_parameter_literal(declaration, name, value)
     } else if profile == "can.fd.precomputed.v1" {
         canfd::validate_parameter_literal(declaration, name, value)
+    } else if profile == "axi4.transaction.v1" {
+        axi::validate_parameter_literal(declaration, name, value)
+    } else if matches!(
+        profile,
+        "soc.shared.v1" | "ahb.transaction.v1" | "noc.xy.v1"
+    ) {
+        soc::validate_parameter_literal(declaration, name, value, profile)
+    } else if profile == "memory.ipc.transaction.v1" {
+        memory_ipc::validate_parameter_literal(declaration, name, value)
     } else {
         can::validate_parameter_literal(declaration, name, value, profile)
     }
@@ -722,6 +734,113 @@ pub fn prepare_with_source(
             })
             .map(|(key, value)| (key.clone(), value.clone()))
             .collect();
+        if matches!(
+            profile.as_str(),
+            "axi4.transaction.v1"
+                | "soc.shared.v1"
+                | "ahb.transaction.v1"
+                | "noc.xy.v1"
+                | "memory.ipc.transaction.v1"
+        ) {
+            let mut axi_model = None;
+            let mut soc_model = None;
+            let mut memory_model = None;
+            let (module_paths, channel_count) = match profile.as_str() {
+                "axi4.transaction.v1" => {
+                    let (model, paths, count) =
+                        axi::resolve(&declarations, network, &overrides, &ini.channels)?;
+                    axi_model = Some(model);
+                    (paths, count)
+                }
+                "memory.ipc.transaction.v1" => {
+                    let (model, paths, count) =
+                        memory_ipc::resolve(&declarations, network, &overrides, &ini.channels)?;
+                    memory_model = Some(model);
+                    (paths, count)
+                }
+                _ => {
+                    let (model, paths, count) =
+                        soc::resolve(&declarations, network, &overrides, &ini.channels, &profile)?;
+                    soc_model = Some(model);
+                    (paths, count)
+                }
+            };
+            let model_path = string_literal(ini.required("model-config")?)?;
+            valid_file_path(&model_path)?;
+            let model_path = absolute(Path::new(&model_path), base);
+            let content = read_file(&model_path, &mut snapshots, source)?;
+            let configured = if let Some(model) = &mut axi_model {
+                axi::configure(&content, model, &profile)
+            } else if let Some(model) = &mut soc_model {
+                soc::configure(&content, model, &profile)
+            } else {
+                memory_ipc::configure(
+                    &content,
+                    memory_model.as_mut().expect("selected memory model"),
+                    &profile,
+                )
+            };
+            configured.map_err(|mut diagnostic| {
+                diagnostic.message = format!("{}: {}", model_path.display(), diagnostic.message);
+                diagnostic
+            })?;
+            let mut workload_path = None;
+            if let Some(path) = ini.general.get("workload") {
+                let path = string_literal(path)?;
+                valid_file_path(&path)?;
+                let path = absolute(Path::new(&path), base);
+                let content = read_file(&path, &mut snapshots, source)?;
+                let loaded = if let Some(model) = &mut axi_model {
+                    axi::workload(&content, model, &profile)
+                } else if let Some(model) = &mut soc_model {
+                    soc::workload(&content, model, &profile)
+                } else {
+                    memory_ipc::workload(
+                        &content,
+                        memory_model.as_mut().expect("selected memory model"),
+                        &profile,
+                    )
+                };
+                loaded.map_err(|mut diagnostic| {
+                    diagnostic.message = format!("{}: {}", path.display(), diagnostic.message);
+                    diagnostic
+                })?;
+                workload_path = Some(path);
+            }
+            return Ok(PreparedSimulation {
+                common: crate::types::PreparedCommon {
+                    profile,
+                    module_paths,
+                    network: network.into(),
+                    time_limit_ps,
+                    metrics_window_ps,
+                    max_events,
+                    max_delta_cycles,
+                    channel_count,
+                    config_path: config.clone(),
+                    model_config_path: Some(model_path),
+                    workload_path,
+                    inputs: snapshots,
+                },
+                can: crate::types::PreparedCan {
+                    buses: Vec::new(),
+                    controller_buses: Vec::new(),
+                    bus_id: String::new(),
+                    bitrate: 0,
+                    controllers: Vec::new(),
+                    generators: Vec::new(),
+                },
+                gateway: crate::types::PreparedGateway {
+                    gateways: Vec::new(),
+                    controller_gateways: Vec::new(),
+                },
+                ethernet: None,
+                canfd: None,
+                axi: axi_model,
+                soc: soc_model,
+                memory_ipc: memory_model,
+            });
+        }
         if profile == "can.fd.precomputed.v1" {
             let (mut canfd, module_paths, channel_count) =
                 canfd::resolve(&declarations, network, &overrides, &ini.channels)?;
@@ -774,6 +893,9 @@ pub fn prepare_with_source(
                 },
                 ethernet: None,
                 canfd: Some(canfd),
+                axi: None,
+                soc: None,
+                memory_ipc: None,
             });
         }
         if matches!(
@@ -840,6 +962,9 @@ pub fn prepare_with_source(
                 },
                 ethernet: Some(ethernet),
                 canfd: None,
+                axi: None,
+                soc: None,
+                memory_ipc: None,
             });
         }
         let resolved = can::resolve(&declarations, network, &overrides, &ini.channels, &profile)?;
@@ -887,6 +1012,9 @@ pub fn prepare_with_source(
         Ok(PreparedSimulation {
             ethernet: None,
             canfd: None,
+            axi: None,
+            soc: None,
+            memory_ipc: None,
             common: crate::types::PreparedCommon {
                 profile,
                 module_paths: resolved.module_paths,

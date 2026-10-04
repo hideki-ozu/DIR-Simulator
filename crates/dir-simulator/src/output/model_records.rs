@@ -28,6 +28,15 @@ pub(super) fn records(
     if let Some(canfd) = &snapshot.canfd {
         return Ok(super::canfd::model_records(prepared, canfd));
     }
+    if let Some(axi) = &snapshot.axi {
+        return Ok(super::axi::model_records(prepared, axi));
+    }
+    if let Some(soc) = &snapshot.soc {
+        return Ok(super::soc::model_records(prepared, soc));
+    }
+    if let Some(memory_ipc) = &snapshot.memory_ipc {
+        return Ok(super::memory_ipc::model_records(prepared, memory_ipc));
+    }
     let lineage =
         |id: &str| {
             snapshot.gateway.request_lineage.get(id).ok_or_else(|| {

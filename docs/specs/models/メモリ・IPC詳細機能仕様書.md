@@ -1,12 +1,14 @@
 # メモリ・IPC詳細機能仕様書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-05` | 本書の初期抽象profileの組込み実装・製品照合とv1.1.3向け提供範囲を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版。メモリ・IPCの仕様・設計・解析fixtureを定義 |
@@ -15,7 +17,7 @@
 
 | 項目 | 契約 |
 | --- | --- |
-| 状態 | 仕様・設計・解析fixtureを規定。製品実装・製品実行試験は未実施。全時間・仲裁・公開規則は本プロジェクトが選択する抽象policyであり、特定DDR世代・JEDEC・CPU命令セットへの適合を表明するものではない（注） |
+| 状態 | 仕様・設計・解析fixtureを規定。開発中ソースへ組込み実装を追加し、独立fixtureとの製品実行照合を実施。全時間・仲裁・公開規則は本プロジェクトが選択する抽象policyであり、特定DDR世代・JEDEC・CPU命令セットへの適合を表明するものではない（注） |
 | profile | `memory.ipc.transaction.v1`。INIのmodel-profileとmodel-configを必須とし、[共通仕様](../拡張モデル共通詳細機能仕様書.md)のschema2 workload/results、入力snapshot、u64 psとjournalを共用する |
 | 型記法 | D=先頭0なし非負十進文字列（0可、u64範囲）、P=正のD、N=非負JSON整数token（boolean/指数/小数不可）、S=文字列、?=null可。hexは小文字・偶数桁。全階層で明記したキーを必須とし未知・重複・型違反を準備失敗とする |
 | root | `{schema_version:1,profile:"memory.ipc.transaction.v1",ddr:Ddr[],sram:Sram[],shared:Shared[],dma:Dma[],mailboxes:Mailbox[]}`。各配列は空可、合計一件以上。nodeはNED完全パスで全体一意。配置された本profile資源を全件ちょうど一度含む |
@@ -26,9 +28,11 @@
 | 結果エラー | 未知node/op・schema・入力長違反・未配置参照はprepare E-0001。実行時address_error、queue_full、access_denied、empty、full、memory_faultは通常responseで実行継続。message型違反はE-0002 invalid_event、owner/世代不整合はmodel_failed |
 | 組合せ | 本profile内で複数DDR/SRAM、共有slot、mailbox、DMAを配置可能。DMAだけがDDR/SRAMの同一サービスを参照する。shared/mailbox内容はそれぞれの所有領域内で完結する。注：AXI接続、cache coherence、CPU命令実行、共有slotをDMAが直接更新する経路、他profileとの混成は本版の対象外。将来の複合profileは新しい版付きadapterで追加する |
 
+組込み実装の入口は`input`／`runtime`／`output`のモデル別アダプターである。実施した製品試験と内部codec・停止境界の範囲は[検証記録](../../verification/cases/メモリ・IPC検証仕様書.md#product-execution)を参照する。公開Registry/Envelope拡張APIへの適合と規格全体の適合は、この製品実行照合の主張に含めない。
+
 ## 構成・動作・結果をつなぐ確認単位
 
-本profileの五つの親要件は1.0.0以後の将来対象である。それぞれの構成子要件が容量・初期内容・時間定数を確定し、動作子要件がadmission・dispatch・内容公開を定め、結果子要件がbyte内容・応答・停止prefixの対応を確認する。以下は各節の契約をつなぐ読み方である。
+本profileの五つの親要件に対応する組込み初期モデルをv1.1.3向けPRで提供する。それぞれの構成子要件が容量・初期内容・時間定数を確定し、動作子要件がadmission・dispatch・内容公開を定め、結果子要件がbyte内容・応答・停止prefixの対応を確認する。以下は各節の契約をつなぐ読み方である。
 
 | 親要件 | 準備から資源利用まで | 内容・終了結果の確認 |
 | --- | --- | --- |

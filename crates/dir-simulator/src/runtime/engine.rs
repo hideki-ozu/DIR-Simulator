@@ -193,6 +193,9 @@ pub fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot, Diagnostic> {
         snapshot: Snapshot {
             ethernet: None,
             canfd: None,
+            axi: None,
+            soc: None,
+            memory_ipc: None,
             common: crate::snapshot::CommonSnapshot {
                 termination: "events_exhausted".into(),
                 partial: false,

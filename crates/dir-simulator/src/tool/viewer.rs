@@ -12,6 +12,8 @@ const MODEL: &str = include_str!("viewer/assets/model.js");
 const APP: &str = include_str!("viewer/assets/app.js");
 const ETHERNET_MODEL: &str = include_str!("viewer/assets/ethernet-model.js");
 const ETHERNET_APP: &str = include_str!("viewer/assets/ethernet-app.js");
+const TRANSACTION_MODEL: &str = include_str!("viewer/assets/transaction-model.js");
+const TRANSACTION_APP: &str = include_str!("viewer/assets/transaction-app.js");
 
 fn asset_tag(template: String, tag: &str, replacement: &str) -> Result<String, Diagnostic> {
     if template.matches(tag).count() != 1 {
@@ -75,6 +77,22 @@ fn render(result: &Value) -> Result<String, Diagnostic> {
             escape_closing_tag(ETHERNET_APP, "script")
         ),
     )?;
+    let html = asset_tag(
+        html,
+        "<script src=\"transaction-model.js\"></script>",
+        &format!(
+            "<script>{}</script>",
+            escape_closing_tag(TRANSACTION_MODEL, "script")
+        ),
+    )?;
+    let html = asset_tag(
+        html,
+        "<script src=\"transaction-app.js\"></script>",
+        &format!(
+            "<script>{}</script>",
+            escape_closing_tag(TRANSACTION_APP, "script")
+        ),
+    )?;
     asset_tag(
         html,
         "<script src=\"app.js\"></script>",
@@ -110,11 +128,16 @@ pub fn write(input: &Path, output: &Path) -> Result<PathBuf, Diagnostic> {
                     | "ethernet.l2.store-forward.v2"
                     | "ethernet.l2.100base-t1.v1"
                     | "can.fd.precomputed.v1"
+                    | "axi4.transaction.v1"
+                    | "soc.shared.v1"
+                    | "ahb.transaction.v1"
+                    | "noc.xy.v1"
+                    | "memory.ipc.transaction.v1"
             )
         ) || !result["simulation"]["model_records"].is_array())
     {
         return Err(Diagnostic::prepare(
-            "Schema 2 viewer requires supported CAN or Ethernet model records",
+            "Schema 2 viewer requires supported model records",
         ));
     }
     let html = render(&result)?;

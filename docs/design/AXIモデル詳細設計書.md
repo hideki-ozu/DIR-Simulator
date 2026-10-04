@@ -1,12 +1,14 @@
 # AXIモデル詳細設計書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-05` | 本書の初期抽象profileの組込み実装・製品照合とv1.1.3向け提供範囲を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：AXI状態・仲裁・転送・RAM・結果の内部責務を確定 |
@@ -15,7 +17,7 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 文書状態 | 契約確定。製品実装・製品実行試験は未実施 |
+| 文書状態 | 契約確定。開発中ソースへ組込み実装を追加し、独立fixtureとの製品実行照合を実施 |
 
 | 項目 | 確定契約 |
 | --- | --- |
@@ -145,3 +147,9 @@
 | 失敗prefix | 局所の失敗可能な値・整合検査後にstate適用する。共通effect commitが失敗したらglobal stopし、最後の確定journalからモデル結果を作成する。任意モデルrollbackと再開は対象外（注） |
 | finish | snapshotを保持しtimer/context/cache/RAM実メモリを解放する。finishから追加転送やmemory書換えを観測へ発行する処理は対象外（注） |
 | 検証割当 | [AXI検証仕様](../verification/cases/AXIモデル検証仕様書.md)のDIR-TEST-0017～0022でprepare、state、RAM、backpressure、停止を確認。将来profileは既存fixturesを回帰に使用する |
+
+## 現行の組込み実装
+
+`crates/dir-simulator/src/input/axi.rs`が構成・負荷を検証し、`lib/types/axi.rs`へ不変入力を保存する。`runtime/axi.rs`が資源と予約を所有し、`lib/snapshot/axi.rs`と共通観測列へ確定した状態を残す。`output/axi.rs`がschema2・指標・初期状態を公開する。既存の`prepare`／`run`とCLIの`validate`／`run`を共有する。
+
+製品実行の範囲は[検証記録](../verification/cases/AXIモデル検証仕様書.md#product-execution)を参照する。内部の版付きevent codecと状態所有の検査を実装したが、公開Registry/Context/Envelope APIを追加したという主張ではない。

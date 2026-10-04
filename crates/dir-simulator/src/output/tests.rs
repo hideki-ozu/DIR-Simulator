@@ -43,6 +43,9 @@ fn fixture() -> (PreparedSimulation, Snapshot) {
     let prepared = PreparedSimulation {
         ethernet: None,
         canfd: None,
+        axi: None,
+        soc: None,
+        memory_ipc: None,
         common: crate::types::PreparedCommon {
             profile: PROFILE.into(),
             module_paths: vec![],
@@ -134,6 +137,9 @@ fn fixture() -> (PreparedSimulation, Snapshot) {
     let snapshot = Snapshot {
         ethernet: None,
         canfd: None,
+        axi: None,
+        soc: None,
+        memory_ipc: None,
         common: crate::snapshot::CommonSnapshot {
             termination: "events_exhausted".into(),
             partial: false,

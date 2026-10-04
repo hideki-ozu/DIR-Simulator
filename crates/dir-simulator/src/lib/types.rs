@@ -18,3 +18,9 @@ pub use ethernet::PreparedEthernet;
 #[path = "types/canfd.rs"]
 pub mod canfd;
 pub use canfd::PreparedCanFd;
+#[path = "types/axi.rs"]
+pub mod axi;
+#[path = "types/memory_ipc.rs"]
+pub mod memory_ipc;
+#[path = "types/soc.rs"]
+pub mod soc;

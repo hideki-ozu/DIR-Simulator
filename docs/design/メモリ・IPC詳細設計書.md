@@ -1,12 +1,14 @@
 # メモリ・IPC詳細設計書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-05` | 本書の初期抽象profileの組込み実装・製品照合とv1.1.3向け提供範囲を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版。メモリ・IPCの仕様・設計・解析fixtureを定義 |
@@ -15,7 +17,7 @@
 
 | 項目 | 契約 |
 | --- | --- |
-| 構造 | `MemoryIpcProfile`はprepareでNodeHandle、immutable request、geometry、actor集合とFIFO容量を確定する。`Coordinator`はDDR/SRAM stateとIPC/DMA stateを所有し共通Context/journalへ差分を提出する。製品実装は未実施 |
+| 構造 | `MemoryIpcProfile`はprepareでNodeHandle、immutable request、geometry、actor集合とFIFO容量を確定する。`Coordinator`はDDR/SRAM stateとIPC/DMA stateを所有し共通Context/journalへ差分を提出する。開発中ソースで組込み実装を提供 |
 | 準備 | 配置を正規path順に解決し型とconfig集合を一対一照合。全workloadをT以後も検証。node/op、geometry、初期範囲、actor、DMA参照の診断をsource順で確定し、成功後だけ初期memory/slot/mailbox/engine行を一括commitする |
 | dispatch | 共通runtimeのphase0/1/2を使う。同資源の同時刻completionを一つのbatchとしてordinal順に処理。phase1 Offerはawaiting_admission行とintentをcommitする。phase2 dirty coordinatorは全intentを仕様の(root generator,ordinal,source rank,chunk,operation)で全順序化してadmissionし、その後に資源path順でdispatchする。callbackが予約するphase1はphase0/1起点なら同delta、phase2起点なら次deltaであり、共通Context規則をそのまま使う。注：他資源の関数を再帰実行する方式は対象外 |
 | 安全な効果 | callback内でchecked時刻とcodecを検証→state差分/次timer/metric/ModelRecordを構築→journal commit。失敗時はbatch以前の公開snapshotを使用し停止。予約とowner変更の片方だけを公開する処理は対象外（注） |
@@ -189,4 +191,10 @@
 | schema | [結果とcodec](../specs/models/メモリ・IPC詳細機能仕様書.md#records)の全fieldを型付きserializerで保存。入力配列は正規化し資源path順、slot index順、message/FIFOは意味順を保つ |
 | 停止 | 正常Tでは観測区間をH=Tでclipし状態を保持、finishは参照解放だけ。失敗では成功prefixのHを共通runtime規則で決定し予定完了・通知を実績へ変換しない |
 | 拡張 | resource service境界はOfferと一つのResponse、内容はbyte列、所有者はNodeHandle。新profileでAXI adapterやcache policyを追加するとき既存profile/codec/順序を保持する |
-| 検証 | [検証仕様](../verification/cases/メモリ・IPC検証仕様書.md)は製品未実装を明示し、独立整数解析・固定期待byte列と将来のjournal注入試験を区別する |
+| 検証 | [検証仕様](../verification/cases/メモリ・IPC検証仕様書.md)は独立整数解析・固定期待byte列と、実施した製品試験・内部codec／失敗prefix試験の範囲を区別する |
+
+## 現行の組込み実装
+
+`crates/dir-simulator/src/input/memory_ipc.rs`が構成・負荷を検証し、`lib/types/memory_ipc.rs`へ不変入力を保存する。`runtime/memory_ipc.rs`が資源と予約を所有し、`lib/snapshot/memory_ipc.rs`と共通観測列へ確定した状態を残す。`output/memory_ipc.rs`がschema2・指標・初期状態を公開する。既存の`prepare`／`run`とCLIの`validate`／`run`を共有する。
+
+製品実行の範囲は[検証記録](../verification/cases/メモリ・IPC検証仕様書.md#product-execution)を参照する。内部の版付きevent codecと状態所有の検査を実装したが、公開Registry/Context/Envelope APIを追加したという主張ではない。

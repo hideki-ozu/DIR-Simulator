@@ -1,13 +1,14 @@
 # DIR Simulator
 
-文書バージョン：`1.1.2`
-対象GitHubバージョン：`main @ 7bb9bfc`
-予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.3`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.3` | `2026-10-05` | AXI・SoC/AHB/NoC・DDR/SRAM・IPC/DMA、Viewer・サンプル・製品検証記録を追加し、v1.1.3向けPRを準備 |
 | `1.1.2` | `2026-10-04` | Ethernet媒体v2・100BASE-T1・CAN FD、viewer・サンプル・製品検証記録を追加し、v1.1.2向けPRと文書版を更新 |
 | `1.1.1` | `2026-10-04` | VLAN・静的multicast、サンプル・Viewer・検証記録を追加し、v1.1.1向けPRの提供状態と文書版を更新 |
 | `1.1.0` | `2026-10-04` | Ethernet全二重L2・負荷・QoS・viewerとサンプル、検証範囲を追加し、v1.1.0向けPRの提供状態へ更新 |
@@ -23,7 +24,7 @@
 
 文書ID：`readme`
 
-Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`でmainへマージ済みです。本PRではEthernet媒体拡張・100BASE-T1・CAN FDを追加し、次の公開版を`v1.1.2`とします。公開タグとPRの提供状態を分けて記載します。
+Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。本PRではAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加し、次の公開版を`v1.1.3`とします。公開タグとPRの提供状態を分けて記載します。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
@@ -39,7 +40,7 @@ DIR Simulatorは、CAN／CAN FD・Ethernet・SoC通信・メモリ・IPCと接�
 CANノードと共有バスの通信を仮想時刻上で実行し、負荷・ビットレート・容量の違いによる遅延、競合、バッファ使用量と性能を比較します。
 構造をNED、実験条件をINI、振る舞いをRustで記述し、時系列・集計値をCSVとJSONで取得できます。
 
-基準モデルはClassical CANです。v0.1は単一CANを提供し、v1.0.0ではGW・複数CANバスの実装と製品試験を追加しています。現行の開発ソースではEthernetのEndpoint・Link・Switch、全二重L2とQoSを追加しています。AXIは詳細設計・検証仕様までの追加計画です。各profileの初期機能を固定し、追加機能は版付き登録契約で拡張します。
+基準モデルはClassical CANです。v0.1は単一CANを提供し、v1.0.0ではGW・複数CANバスの実装と製品試験を追加しています。現行の開発ソースではEthernetのEndpoint・Link・Switch、全二重L2とQoSを追加しています。開発中ソースにはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象profileも追加しています。各profileの初期機能を固定し、追加機能は版付き登録契約で拡張します。
 初期モデルは標準11bit・拡張29bitのClassical CANデータフレームを扱う`can.cc.ideal.v1`です。内容からCRC・stuff bitを求め、理想ACKを扱います。詳細は[CANモデル仕様](docs/specs/models/CANモデル詳細機能仕様書.md)、判断履歴は[解決済みTBD台帳](docs/要件定義書.md#6-未確定事項不足の管理)に記載しています。
 
 ## CANサンプルを実行する
@@ -119,7 +120,7 @@ explorer.exe "$(wslpath -w "$PWD/results-viewer.html")"
 
 前後のイベント時刻ボタンと左右キーでは、移動先の直前の記録時刻から移動先までを再表示します。同じ時刻への移動は、進む場合も戻る場合も同じ動きになります。最初の記録時刻には再表示する区間がありません。その区間の送信をControllerからBusへ約0.7秒で移動させ、その完了後に受信をBusからControllerへ約0.7秒で移動させます。CANの送受信のみを示す場合は合計約1.4秒です。受信だけの区間は受信の移動から始まります。Gateway内も入口Controller→内部転送点を青の送信、内部転送点→出口Controllerを橙の受信で表示します。内部転送点は論理経路の中央です。メッセージと矢印は同じ折れ線上に置き、分岐先ごとに経路を分けます。ステップは親CANの受信、Gateway内の送信・受信、出口CANの送信・受信の順に再表示し、出口TX受理が確定していない枝には内部受信を追加しません。TX容量待機は入口に表示します。前の時刻へ戻る場合も通信方向は同じです。遅延ゼロの同報受信も各受信先へ表示します。アニメーション中の選択時刻・件数は移動先の確定状態で、物理的な伝搬時間の再現ではありません。連続再生ではメッセージを動かさず、CAN接続とGateway内の経路について、送信線を青、受信線を橙、通常の接続を灰で表示し、強調線に通信方向の矢印を付けます。短い通信を確認できるよう、直近の完了も観測期間の1/40だけ線を強調します。時刻指定・スライダーで停止位置を選んだ場合は、その時刻の論理進捗と直近の完了印を表示します。受信完了の件数・時刻は確定記録だけで更新します。構成図の接続はmetadata.topology.controllersのBus所属とTX/RX経路遅延を使い、通信記録のないControllerも正確に表示します。古い結果でtopologyがない場合は要求・受信記録から復元し、記録のないノードの接続を推定として区別します。Gatewayの所属はschema2の正規化設定から取得し、通信していないControllerもブロック内に表示します。狭い画面では内部のControllerを縦に並べます。
 
-タイムラインの描画は500区間、要求一覧は1ページ75行を上限とし、省略件数を明示します。Gateway転送は受信時刻順の最新500行を表示します。多い場合は検索・状態フィルタ・拡大を利用してください。構成図の送受信アニメーションと状態集計はこの描画上限や検索条件に依存せず、全要求を対象とします。対応入力はschema 1の`can.cc.ideal.v1`、schema 2の`can.cc.multibus.v1`・`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`です。Ethernet画面は下記の実行例を参照してください。元要求から終端までの経路遅延は、GW portを除く終端Controllerの確定received時刻と元要求generated時刻の差です。
+タイムラインの描画は500区間、要求一覧は1ページ75行を上限とし、省略件数を明示します。Gateway転送は受信時刻順の最新500行を表示します。多い場合は検索・状態フィルタ・拡大を利用してください。構成図の送受信アニメーションと状態集計はこの描画上限や検索条件に依存せず、全要求を対象とします。対応入力はschema 1の`can.cc.ideal.v1`、schema 2の`can.cc.multibus.v1`・`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`です。媒体／FDとAXI・SoC・メモリ各profileにも対応し、後者は専用の要求タイムラインと資源snapshot画面を表示します。Ethernet画面は下記の実行例を参照してください。元要求から終端までの経路遅延は、GW portを除く終端Controllerの確定received時刻と元要求generated時刻の差です。
 
 ビューアの時刻・状態復元テストはNode.jsで実行できます。実GW結果を生成する試験が`target/debug/dir-simulator`を呼ぶため、先にデバッグ版をビルドしてください。ブラウザ本体にはNode.jsは不要です。
 
@@ -276,7 +277,7 @@ DIRは、OMNeT++の実装コードを移植するのではなく、公開ドキ�
 | [品質・配布方針](docs/品質・配布方針.md) | 性能・精度・出自管理 |
 | [将来拡張計画](docs/将来拡張計画.md) | v1.0.0のGW・複数バスと他プロトコルへの境界 |
 
-16分野の詳細機能仕様、入力・結果処理を含む14詳細設計と利用フロー・品質を含む15検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。開発中ソースにはCAN FD・Ethernet媒体拡張・100BASE-T1も追加しています。他モデルの製品実装・実行試験、および仕様全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
+16分野の詳細機能仕様、入力・結果処理を含む14詳細設計と利用フロー・品質を含む15検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。開発中ソースにはCAN FD・Ethernet媒体拡張・100BASE-T1、AXI・SoC/AHB/NoC・メモリ/IPCも追加しています。残るモデルの製品実装・実行試験、および各規格全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
 
 図の編集元（`.puml`）と表示用SVGは `docs/diagrams/<文書ID>/` に保存しています。ローカルのPlantUMLで全図を更新・確認できます。
 
@@ -285,7 +286,7 @@ python3 scripts/render_diagrams.py
 python3 scripts/render_diagrams.py --check
 ```
 
-要件から検証までの対応は次で点検できます。通常検査は未完了を報告し、`--strict` は経路に不足があれば失敗します。全199要件を検証仕様まで接続し、構造エラー・未完了項目は0件です。これは文書の追跡経路の検査であり、全要件の製品実装・試験合格を意味しません。
+要件から検証までの対応は次で点検できます。通常検査は未完了を報告し、`--strict` は経路に不足があれば失敗します。全205要件を検証仕様まで接続し、構造エラー・未完了項目は0件です。これは文書の追跡経路の検査であり、全要件の製品実装・試験合格を意味しません。
 
 ```bash
 python3 scripts/check_traceability.py
@@ -348,9 +349,9 @@ python3 docs/verification/fixtures/can/verify_vectors.py
 | SoC・AHB・NoC | [詳細仕様](docs/specs/models/SoC・AHB・NoC詳細機能仕様書.md) | [詳細設計](docs/design/SoC・AHB・NoC詳細設計書.md) | [検証仕様](docs/verification/cases/SoC・AHB・NoC検証仕様書.md) |
 | DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC | [詳細仕様](docs/specs/models/メモリ・IPC詳細機能仕様書.md) | [詳細設計](docs/design/メモリ・IPC詳細設計書.md) | [検証仕様](docs/verification/cases/メモリ・IPC検証仕様書.md) |
 
-CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。CAN FD、Ethernet媒体v2・100BASE-T1も開発中ソースに追加しています。AXI、SoC/AHB/NoC、メモリ/IPCの製品実装・実行試験は未実施です。
+CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。CAN FD、Ethernet媒体v2・100BASE-T1も開発中ソースに追加しています。AXI、SoC/AHB/NoC、DDR/SRAM、共有メモリIPC/DMA/メールボックスIPCは組込み実装と独立fixtureによる製品実行照合を追加しました。[製品検証記録](docs/verification/results/soc-memory-product-2026-10-05.json)に実施範囲を保存します。
 
-## Ethernet媒体拡張とCAN FD（開発中ソース）
+## Ethernet媒体拡張とCAN FD（v1.1.2）
 
 追加profileは`ethernet.l2.store-forward.v2`（10/100Mbps half/full、1000BASE-T1）、`ethernet.l2.100base-t1.v1`（専用100BASE-T1 full）、`can.fd.precomputed.v1`です。旧L2/QoS/VLANとは入力の型・schema・計測集合を分けて明示選択します。媒体の物理対とPHY値はmodel-config schema2、FDはNEDの二速度とschema2 workloadの証跡付き位相bit数を使います。
 
@@ -360,4 +361,30 @@ cargo run --locked -p dir-simulator -- run --config examples/canfd/precomputed.i
 cargo run --locked -p dir-simulator -- view --input /tmp/dir-fd-demo/results.json --output /tmp/dir-fd-demo/viewer.html
 ```
 
-媒体viewerは試行・衝突・jam・backoffとMAC/PHYの予定／実績を表示し、CAN FD viewerは生成・送信・受信の記録と位相bit数・証跡を表示します。FDは`wire_validation=structural-only`の時間評価モデルで、CRC/stuffingの自動計算や波形適合を表しません。製品実行の確認範囲は[媒体検証](docs/verification/cases/Ethernet媒体拡張検証仕様書.md)と[CAN FD・100BASE-T1検証](docs/verification/cases/CANFD・100BASE-T1検証仕様書.md)へ記録します。公開版をv1.1.2向けPRとして準備し、変更文書の版・履歴を1.1.2へ更新しました。
+媒体viewerは試行・衝突・jam・backoffとMAC/PHYの予定／実績を表示し、CAN FD viewerは生成・送信・受信の記録と位相bit数・証跡を表示します。FDは`wire_validation=structural-only`の時間評価モデルで、CRC/stuffingの自動計算や波形適合を表しません。製品実行の確認範囲は[媒体検証](docs/verification/cases/Ethernet媒体拡張検証仕様書.md)と[CAN FD・100BASE-T1検証](docs/verification/cases/CANFD・100BASE-T1検証仕様書.md)へ記録します。v1.1.2のPRはmainへマージ済みです。
+
+## AXI・SoC・AHB・NoC・メモリ／IPCを実行する
+
+v1.1.3向けの本PRで、設計済みの次の抽象モデルを共通CLIへ追加しています。全profileがschema2のモデル別レコード、指標、初期状態と入力snapshotを保存します。
+
+| profile | 実装内容 | 実行例 |
+| --- | --- | --- |
+| `axi4.transaction.v1` | 五チャネルREADY/VALID、round-robin、outstanding上限、WSTRB、RAM読書き、SLVERR/DECERR | [read-write.ini](examples/axi/read-write.ini) |
+| `soc.shared.v1` | 共有Bus、FIFO、RR／固定優先度、アドレスdecode、service cycle | [soc-round-robin.ini](examples/soc/soc-round-robin.ini) |
+| `ahb.transaction.v1` | address/data/wait/error段階、単一／複数Manager | [ahb-wait-error.ini](examples/soc/ahb-wait-error.ini) |
+| `noc.xy.v1` | XY mesh、有限入力FIFO、下流slot予約、backpressure、並行出力 | [noc-xy.ini](examples/soc/noc-xy.ini)、[noc-backpressure.ini](examples/soc/noc-backpressure.ini) |
+| `memory.ipc.transaction.v1` | DDR行状態・refresh、複数port SRAM、共有slot IPC、DMAのbyte連携、mailbox通知 | [copy.ini](examples/memory-ipc/copy.ini) |
+
+```bash
+cargo build --locked -p dir-simulator
+mkdir -p tmp
+./target/debug/dir-simulator validate --config examples/axi/read-write.ini
+./target/debug/dir-simulator run --config examples/axi/read-write.ini --output tmp/axi-run
+./target/debug/dir-simulator view --input tmp/axi-run/results.json --output tmp/axi-viewer.html
+```
+
+別のINIと未使用の出力名に置き換えて各モデルを実行できます。時刻上限Tは半開区間で、Tに予定された完了や通知を実績へ変えません。途中停止したRAM書込みとDMAのcommitted byteは、停止前に完了した処理だけを残します。ビューアは要求の待機／処理／完了、AXI handshakeとSoC/NoC転送、実行終了時のメモリ・所有者・通知状態を表示します。資源の最終snapshotは時刻カーソルから独立して明記しています。
+
+AXI 8ケース、SoC/AHB/NoC 6ケース、メモリ/IPC 13ケースの独立期待値を実シミュレータと照合しています。追加の入力拒否・停止・codec・失敗prefix試験は各モデルのRust試験、表示の試験は`tests/transaction_viewer_model.test.cjs`と`tests/transaction_viewer_browser.cjs`に保存します。公開拡張APIと信号／RTL・JEDEC・CPU実行などの規格全体への適合は既存の抽象profileの対象境界に従います。
+
+v1.1.3向けPRの最新main取り込み、製品ソースの一致、文書版と追加のNode/Python検証は[PR準備記録](docs/verification/results/soc-memory-v1.1.3-pr-2026-10-05.json)に保存します。製品実行時点の記録は取得したsnapshotのまま保持します。

@@ -1,0 +1,3714 @@
+{
+  "report_schema_version": 1,
+  "created_at_utc": "2026-10-04T15:45:07.465113+00:00",
+  "profiles": [
+    "ahb.transaction.v1",
+    "axi4.transaction.v1",
+    "memory.ipc.transaction.v1",
+    "noc.xy.v1",
+    "soc.shared.v1"
+  ],
+  "base_commit": "d5d227767f7fd7bed9b937c6489a2d600ec69834",
+  "worktree": {
+    "dirty": true,
+    "source_changes_included": true,
+    "publication_version": "not assigned",
+    "snapshot_phase": "Current development source before commit/push or release preparation"
+  },
+  "binary": {
+    "path": "/home/hideki/DIR-Simulator/target/debug/dir-simulator",
+    "sha256": "dc3f8368e9186fda614036d803d8f011cdf490d882dfb521687ff22e5eb0cf9d",
+    "version": "dir-simulator 0.1.0",
+    "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "toolchain": "1.85.0-x86_64-unknown-linux-gnu (overridden by '/home/hideki/DIR-Simulator/rust-toolchain.toml')"
+  },
+  "source_snapshot": {
+    "scope": "Git-tracked and nonignored new crate/test/script/build/example/fixture files, excluding ignored developer-local comparison files and this report",
+    "source_snapshot_sha256": "e86fa7af712ca7e502f02b880ca40bca3cb8b5831cdb0666cf953259f9038cf1",
+    "source_files": {
+      "Cargo.lock": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+      "Cargo.toml": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc",
+      "crates/dir-simulator/Cargo.toml": "04cbe8394f885b93c2fc9f917b4b931b92d5a099ec80c4613f8b0d6da94e48e1",
+      "crates/dir-simulator/src/input.rs": "c2b4a5529f8e638fcc4fd2b0b986a9f3c386ad4fa44a8e65117e88c696069efb",
+      "crates/dir-simulator/src/input/axi.rs": "5c46854843f60fb9d23d4da3cc7e2b36e07e8b7c4d25d4b1d678648ab248b066",
+      "crates/dir-simulator/src/input/can.rs": "c2e9fd9833cfd8c2a51ab60158b62238da9b450a7419fef3061207eae4166869",
+      "crates/dir-simulator/src/input/can/tests.rs": "e9c52637371cd8de5060a2034690e762783075c97f97345f47bd49a7105cb5c5",
+      "crates/dir-simulator/src/input/canfd.rs": "d5838ae27a99873a55f55308442655e103e4e5c7b575d5cfb8fe88874702c961",
+      "crates/dir-simulator/src/input/editor_api_tests.rs": "f6387fb620542e9b3804edb51122f9c529700aea36f80423078753f97a289a1a",
+      "crates/dir-simulator/src/input/ethernet.rs": "6e9d209bab597e49e80dd5dd5fe486938ccf77bfcea99c74f152981389fcb3da",
+      "crates/dir-simulator/src/input/ethernet/tests.rs": "b5fcd2af750e56a2afe5f4faedb0f3ed9df13bb4fd58ad9ffa44b500cbe7777e",
+      "crates/dir-simulator/src/input/gateway.rs": "2071e808384fbe947b69e83ec95c7089b3e5250cb913fa2e9f2e68925d03c492",
+      "crates/dir-simulator/src/input/memory_ipc.rs": "4ba89c5271fcdcf84649cf81db715fa96e414d7e0ab82cc5051f5eadf622181b",
+      "crates/dir-simulator/src/input/ned.rs": "d1d1ba63482df78a7d69819bcbcb5c6e95d78412eed1f3dd6ffe787be5499e75",
+      "crates/dir-simulator/src/input/ned/tests.rs": "c72c66c33cc775afa8771af20ef586230a1e773ade4601fb802ba5d206a62219",
+      "crates/dir-simulator/src/input/soc.rs": "197c91050e393359646b12da9b328c9a6aa054b2658c5da592109f916ad71c33",
+      "crates/dir-simulator/src/input/tests.rs": "62f958dfbd4f5c81254bfa2570aee12ac74e0775b0a24d89cf3418a03d38d7c8",
+      "crates/dir-simulator/src/lib.rs": "de26faa18196e266c7d9209c54abb42e839bf33bfeedbc548eb461973b5cc639",
+      "crates/dir-simulator/src/lib/snapshot.rs": "d500ad0a99f0d3d8957a9e48e24f836b12206098b44866f233141ac2833814a8",
+      "crates/dir-simulator/src/lib/snapshot/axi.rs": "8dd682727f513c68f6d4e3e2b14d4ba8db9981c7704245ef93d5adcae2dc5e5b",
+      "crates/dir-simulator/src/lib/snapshot/can.rs": "590f08d01e705543457e2a7cf89c62625bed56cddd217f7c74e1f18aef61fb40",
+      "crates/dir-simulator/src/lib/snapshot/canfd.rs": "6e4eed941a8fe29f59ab45c918ef8b62ca9f5316e930993e7248f103caac6674",
+      "crates/dir-simulator/src/lib/snapshot/common.rs": "22e728a9b8d90ca7bf55d4d6f1a33c455448703be5a0a6e35efd28fb7d7cb5dd",
+      "crates/dir-simulator/src/lib/snapshot/ethernet.rs": "94a956223a03ffaddb206233161278e55842d9dddb6acb4f370258bed89197d5",
+      "crates/dir-simulator/src/lib/snapshot/gateway.rs": "d58402cbe298ad3b2c229b74dfc8026c5a7c094ce6e2fe2df40b917acf315121",
+      "crates/dir-simulator/src/lib/snapshot/memory_ipc.rs": "3425346b7bd29242393a844e7c43e2af8115879ae7c8daee4ea89684e38b183b",
+      "crates/dir-simulator/src/lib/snapshot/soc.rs": "609a59d49825eb9c4e8a01c8c413cfc470b61466624647f137b9da55da93421f",
+      "crates/dir-simulator/src/lib/types.rs": "b126e6a1c6112e6b553543f46ce1f7b7e3986261202c3431ae5295a61c02889d",
+      "crates/dir-simulator/src/lib/types/axi.rs": "6ee551e711a442fc45b0ed1051e6d4d23808b9bd0004c6d5eadc1a21d4c3d169",
+      "crates/dir-simulator/src/lib/types/can.rs": "92b0fe28035fe52bc740e683d496acfa5b28e4b79786436c91662997c682c0f3",
+      "crates/dir-simulator/src/lib/types/canfd.rs": "3eca46a8e66cedb3cc2038098119b801bc4ad8b20d9e2ba0d4f6237275942787",
+      "crates/dir-simulator/src/lib/types/common.rs": "9fcbdd1e83af7d5d5bb078f001dfc671e1b76680135e4c5e7c424480abf2cad4",
+      "crates/dir-simulator/src/lib/types/ethernet.rs": "4a004677a91e4a627cf4352ee43c42c2a6cf073b281582eee28303b304b91f6e",
+      "crates/dir-simulator/src/lib/types/gateway.rs": "748ff29f2c7d8df33d1018236b4bd98c8168f408c3a63a3b1e9d95af9eaa6bc5",
+      "crates/dir-simulator/src/lib/types/memory_ipc.rs": "ceb8f595c37a245ec4ce506afe278f0368064211288c050dc21452eef6e8314e",
+      "crates/dir-simulator/src/lib/types/prepared.rs": "90645e510371c6dd3fee02efdfbfad4fc8c61f10c8d6dd11e377c209593423d9",
+      "crates/dir-simulator/src/lib/types/soc.rs": "d26b723b22e4a066e5c2bbc92e1087468cb1226b0167ed60d1bb0c0fe7dfb30f",
+      "crates/dir-simulator/src/main.rs": "adec9f6606b7b7957436acc64bbf2d4bd76a1d367ebd5e93d86267897f2e4ad1",
+      "crates/dir-simulator/src/output.rs": "86cce5f76fa6a1b0a9122ed2ab8d6abcabb66964fd17e9ffd3523fdbd9c96697",
+      "crates/dir-simulator/src/output/aggregate.rs": "9316cced023e0d8553333e4fc5d1f39e8e9e606d8c552423f6b7b96a9038395a",
+      "crates/dir-simulator/src/output/axi.rs": "5457279ccd766d696b1963513d6733ea1624c8c31ad4275cc8408cba145e1dc5",
+      "crates/dir-simulator/src/output/canfd.rs": "932b4a39bef5977cef0934b181b1ebebb933796a17fef55603c7153ac2155db8",
+      "crates/dir-simulator/src/output/csv.rs": "3e7b0356e89b284782e75a4b30fb7f9c09a62827eecb60a0ac0d764941987adc",
+      "crates/dir-simulator/src/output/ethernet.rs": "243c0ec4a697ef5bcf8aac99208914c96540af7df1c4cbe417d5d481580c0d60",
+      "crates/dir-simulator/src/output/ethernet/flow.rs": "03d05ff764bcd6b92bd0468f83dc71021965f8b58663710d407ae73c51577976",
+      "crates/dir-simulator/src/output/ethernet/media.rs": "7cd27e5d3e272d5a1be2317730c1415620d986cd643f2d42e0448ae379a09b67",
+      "crates/dir-simulator/src/output/json.rs": "18e34308ff0be0a3e7d03dbf153be99607604c7df1529d65a5a128dceabe1b5c",
+      "crates/dir-simulator/src/output/memory_ipc.rs": "cf125c065ca7776f8ba1d9c73fbab944f2574db47126dae4d358b67a0e1cc8b3",
+      "crates/dir-simulator/src/output/metadata.rs": "1c6b53cb628800dc7312782b3b1da02562e3ae0949e57c5c21a0ce2609a4bd3f",
+      "crates/dir-simulator/src/output/model_records.rs": "1274d91e73ade60fed78b25eefd749a621287590057a0a82fd057f403bfb56a5",
+      "crates/dir-simulator/src/output/publish.rs": "f9ec2e3c8678dcccfde01d4e587dde5ef4568fa49e22452781ede04e4337dfff",
+      "crates/dir-simulator/src/output/reservation.rs": "c4e3b270ea20d1457882a661ee08b6d174bb97d4a608546b10dc946edb724ec9",
+      "crates/dir-simulator/src/output/soc.rs": "ff846c17cfc6972da9700e0b55d02ee185f8d1c5551b7d71497b7b0083499877",
+      "crates/dir-simulator/src/output/tests.rs": "d9d04d3c377f6ab48ca956fe5638aa576e562c63c0ee81a9f845eb115f903d38",
+      "crates/dir-simulator/src/run.rs": "5ca8e125487ddc115ef274d9f6a69b943a176578c8700618d34dc16c1e5cbe86",
+      "crates/dir-simulator/src/runtime.rs": "ebdc5cedc058173c0cc00edb9677cb66f58aafc6233ca71c67b80efb0501a9d4",
+      "crates/dir-simulator/src/runtime/axi.rs": "9012c7808aa65744d2e2db6970a814210828fcc413fe7c3fb0b89fd6aa68013a",
+      "crates/dir-simulator/src/runtime/axi/protocol.rs": "ba9d27db6b706c46c337096a4f51d6596422d46f9e4d0856c2afe65ee3efd8a7",
+      "crates/dir-simulator/src/runtime/can.rs": "c721d829d9f0ba9e99069607b870c0c0d8362075806f3af6c9285eb31bef8120",
+      "crates/dir-simulator/src/runtime/can/protocol.rs": "2992807158651b2e6f2e08cbf954c1dacb9745e090e8cddfa1f182c357d5b565",
+      "crates/dir-simulator/src/runtime/can/tests.rs": "3b840c924b526b87b079f3f67f9e2c21095ab62f96793ae7ef87f53ea38e9b69",
+      "crates/dir-simulator/src/runtime/canfd.rs": "aaa4eb275c9ff35eaef4addde7e3c46331eb1248bf1d5e15ca7cc6ce5fb3e685",
+      "crates/dir-simulator/src/runtime/canfd/protocol.rs": "2dab96bc489ad9cef60eedbeece468588ed03a3ea9de521ebd57b0042a57204c",
+      "crates/dir-simulator/src/runtime/engine.rs": "39e8f3084a48ee32565e8b447190608c51c0fc4469f61fe64a4e3eee332126c9",
+      "crates/dir-simulator/src/runtime/ethernet.rs": "5e61604b11dada7077420121eb4bfca1bbe01d9e1af641b6732abd191ea15232",
+      "crates/dir-simulator/src/runtime/ethernet/media.rs": "c3bd6e988b12c8ae9ff6b36a8d07b68957d76731ac85d9b5eec9618e3a085f13",
+      "crates/dir-simulator/src/runtime/ethernet/tests.rs": "d45e5218e6d4c5a2c5e99f81a76e5432f18ece6002d52c5ace217d3e78c49c42",
+      "crates/dir-simulator/src/runtime/gateway.rs": "a4e38b8c1445f4e08c45f97a886c49d9c823b1701396cfcb50729312b67ce2d3",
+      "crates/dir-simulator/src/runtime/memory_ipc.rs": "e54d2f6f6dcbeed590b9604e7eb737380ecffe964534acd135a7ce88aa1e4aed",
+      "crates/dir-simulator/src/runtime/memory_ipc/protocol.rs": "b83a503ab53c3256813612afa4b2e9172e8bacc9dfc40f588dc9cca9f2b50ae3",
+      "crates/dir-simulator/src/runtime/scheduler.rs": "8bf75d34a741a83daf8b7a68cf90e4cda9dd1dafbc42d7d188fba12d3f2b14b2",
+      "crates/dir-simulator/src/runtime/soc.rs": "ba45cc43bb9b0c7b9a6db78424754badf96d74387ae0ae6cab69fa88d1053296",
+      "crates/dir-simulator/src/runtime/soc/protocol.rs": "2f445e95fc55ebc059344cc9e612a156e7d0b36c69e114cd1a72d001cbe179fe",
+      "crates/dir-simulator/src/runtime/tests.rs": "10220d7f9ea19383816646711d359c212fefe401c5d8e8ad62525e86d5de3696",
+      "crates/dir-simulator/src/tool.rs": "8210ae0f0a164a39f3c65c49757cd2e05e98155c0ac264c0de7800e1c22c3669",
+      "crates/dir-simulator/src/tool/ned-editor/analysis.rs": "52614b68de2672491b41ac44843e9be5ef7cec61afcba3aa2f4a9d4ac19f98e1",
+      "crates/dir-simulator/src/tool/ned-editor/assets/index.html": "e8042b5daaca2c400c6c19ca09fe3055c7ee967882e1da8e57c4973670f7d930",
+      "crates/dir-simulator/src/tool/ned-editor/assets/input.js": "f80a82a696951435452f14abbe136a61ce24c4ab70be0bac1d197d52f4462e5e",
+      "crates/dir-simulator/src/tool/ned-editor/assets/style.css": "bc356f34998be4dac89654383ae008eb0f7997238140899161252231df8364b5",
+      "crates/dir-simulator/src/tool/ned-editor/assets/view.js": "8e8bdea27a7666cba2e82e2b7f525748dc8130c1e9489c5ed9d5e3cd8061b259",
+      "crates/dir-simulator/src/tool/ned-editor/builtin.rs": "574e85b2cde4d8d2f24bb941f7ef3ae3d6acf0601c39e9241d059e351553335b",
+      "crates/dir-simulator/src/tool/ned-editor/commands.rs": "131f41b1482f2e0ae87fba14da156e141c0246fa3038d1c5bebb07e488a1c0da",
+      "crates/dir-simulator/src/tool/ned-editor/composition.rs": "56fd7f530bb69e203ae4fb55be2ad25832e7af2d63d2819bbd12cd36da9a1d8a",
+      "crates/dir-simulator/src/tool/ned-editor/composition_tests.rs": "9ed9a1fc2fc6eb0298592b61a3d3b4c3404efc5d7f1f2fe4c8fcd446e5de58b2",
+      "crates/dir-simulator/src/tool/ned-editor/controller.rs": "3169d4fda3261ea0c4dd55a5ee2dd68502c5b1131874820d795ed9f64adf768f",
+      "crates/dir-simulator/src/tool/ned-editor/controller_tests.rs": "826d993cd39999358c0c398d4543894a6207c435e37e3fc04e05eead57415e7f",
+      "crates/dir-simulator/src/tool/ned-editor/input.rs": "fffb92a930a848f2140f8afd143a4d2e7fb07a45ab6b4258478c445c1f500f54",
+      "crates/dir-simulator/src/tool/ned-editor/layout.rs": "0c4dcc168cc61a28d6591c70b241cffdf4bf363d5cb7e82c49fd1eefe44b11c4",
+      "crates/dir-simulator/src/tool/ned-editor/mod.rs": "544f6e5cc64f4972744b063ec4bb0b10fc06f68b1a16b817564de9fb2b1a6d30",
+      "crates/dir-simulator/src/tool/ned-editor/model.rs": "96097d4b1f8c51370bd81b635e17647ad65a7cfd2ead03160e3e10c26c23c913",
+      "crates/dir-simulator/src/tool/ned-editor/output.rs": "3b4994cd74f7fd712dfcc432ebb0dfeb72a5466d1750bcfd908804b8d78e06c9",
+      "crates/dir-simulator/src/tool/ned-editor/output_tests.rs": "ac78954da8f7d776b34ac7f5b5cf46163dd58dece96014ad91e0c806b6dbee06",
+      "crates/dir-simulator/src/tool/ned-editor/server.rs": "efb4350e5563334b906e33449f0303eb9e896c52e4280c68cbb0900ca9349bc1",
+      "crates/dir-simulator/src/tool/ned-editor/settings.rs": "e2d3c9d1a76807e7eebc9de978db633f563e25519504452d4509544f5aaca129",
+      "crates/dir-simulator/src/tool/ned-editor/settings_tests.rs": "ca9d9becc75612c134d4241efa475320fbcab3cfcbd1182afba093a5cf74f11c",
+      "crates/dir-simulator/src/tool/ned-editor/source_index.rs": "3d760bf616b6abc2951cef1e6b24e22fac14044301d4154b95ffa0b00fa63c44",
+      "crates/dir-simulator/src/tool/ned-editor/template.rs": "eeebb45da0423a74b639e38b71011f25a39f6b4e921710f180e1cb06e3cd49fc",
+      "crates/dir-simulator/src/tool/ned-editor/template_tests.rs": "23aeeb18cf19fafba00c6d729dc256357acd5735b2bcb54f1afa9aefd1f7717a",
+      "crates/dir-simulator/src/tool/ned-editor/templates/bus.ned": "211d561c0bf23875ce31cac6fac7c3b1a70a2b824eaab62d085cef57a8808058",
+      "crates/dir-simulator/src/tool/ned-editor/templates/controller.ned": "940edee484fa7e3b948cc3eed29df268526e5caed141e05586da73044ec933ef",
+      "crates/dir-simulator/src/tool/ned-editor/templates/fanout.ned": "8fd69b2ecd4d220333ef76556d6ff3b6e6ed4cae567fa4b0f86cbf6a65a44ab7",
+      "crates/dir-simulator/src/tool/ned-editor/templates/fixed-delay.ned": "66268de622b64156cb8950345fa714c3b203c25f6f0e4aab30961cfe1f6a2253",
+      "crates/dir-simulator/src/tool/ned-editor/templates/gateway-starter.ini": "74376aa16fefa5e2dbee829434b5edb69aef8a7dbbb39a11759c242ef49134b4",
+      "crates/dir-simulator/src/tool/ned-editor/templates/gateway-starter.ned": "2779fbe73cc161017567fc9f0f0a1bd02c424caa1a1121b28f882efb99a77ede",
+      "crates/dir-simulator/src/tool/ned-editor/templates/gateway.ned": "27add37056005716e060679ab0d443233af7eaa2e1430c251fd3dc5baf08365b",
+      "crates/dir-simulator/src/tool/ned-editor/templates/routing-empty.json": "88ff5bc13c99ae6092adb3d627b34f04d0535cf31d48a96d4b8ba0e2529c2404",
+      "crates/dir-simulator/src/tool/ned-editor/templates/routing-gateway.json": "d276270b024cbbb839ca32f4b03ff0bba66302121b93c2b8d4c9f89302770d6d",
+      "crates/dir-simulator/src/tool/ned-editor/templates/starter.ini": "0613c4e7d544b5d935138c48bfb12df66f4572f0372b508e8fdc1b05af52f598",
+      "crates/dir-simulator/src/tool/ned-editor/templates/starter.ned": "4e8bf59e4455f52d34689b8d3e1f605dc8680e68dc693845ddc86d4cc9e7b7cf",
+      "crates/dir-simulator/src/tool/ned-editor/templates/workload.json": "c9edc0cd27b0d9692090623e2c7e88d889c11f92cf98c7307ad2b3055f855255",
+      "crates/dir-simulator/src/tool/ned-editor/tests.rs": "22b0b68675d77e37b74f7a72b676c37e16386e6a1c65029741806985eca2eee1",
+      "crates/dir-simulator/src/tool/ned-editor/view.rs": "8c7995b720b19a19e1bad215c2689c82d3cb876f092ab075edd2053a28a5d0f8",
+      "crates/dir-simulator/src/tool/viewer.rs": "4ad5c7ebb657b7faf0b0ed6477e15e3c68698880bc9fa3d7f4f686ea04b1ea75",
+      "crates/dir-simulator/src/tool/viewer/assets/app.js": "d91733fe4c030d1877d2fa37f8d16bcd7f137d9a22eb218bb6c2e5b0dd1214f9",
+      "crates/dir-simulator/src/tool/viewer/assets/ethernet-app.js": "d485b4422b0751ef1fd76f166ec67edcaed8f5d2737dd9cd8d1b871cb26a406a",
+      "crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js": "1f1527e420918c33f038ab32d1f6bf78ee7ba4c7a196a882b21b57b7d7a620d2",
+      "crates/dir-simulator/src/tool/viewer/assets/index.html": "438bbbdae3334b0c3e0866e9498faf79a368bca67ec45278d91168d4fbb49cfe",
+      "crates/dir-simulator/src/tool/viewer/assets/model.js": "f0b43ef7aa0a8c1fce97237afcd2a22abfc1652ddad923d809dee0ab1aa9f7dc",
+      "crates/dir-simulator/src/tool/viewer/assets/style.css": "fe65ee0aad1e198f6524f78fd66a13e08e7c0bfbeddeaf5cff80c58d866ba171",
+      "crates/dir-simulator/src/tool/viewer/assets/transaction-app.js": "435a81901ac244b1049de609ccd785851330ce7714b35f6223c2fd86de6a7150",
+      "crates/dir-simulator/src/tool/viewer/assets/transaction-model.js": "0ace7a251a6edb9cf0d0496d5126a078a1534be2e04562566a74359c416383c2",
+      "crates/dir-simulator/src/tool/viewer/tests.rs": "c282c1c92763b20697569d4fc5cd60ecec8afd62823cc75d67cae22d9bcbc822",
+      "crates/dir-simulator/tests/axi.rs": "f23f91c5947b0a79a39114ee8b7fb2459ad7d52e4693b16ff4c36ba5a99c017e",
+      "crates/dir-simulator/tests/can_scenarios.rs": "26d5d0c632461954b14bd1517580664eb3c96af5a0f4d9fbb82a2a4aec76c465",
+      "crates/dir-simulator/tests/canfd.rs": "f7ecdb0f5770a0d0c47c0d2885af986fb6913981982fe302339cd3449df4b44c",
+      "crates/dir-simulator/tests/cli.rs": "2c4e56f78a0cd1a754c71390e8c504fd12a5a279155142b30cad2a3ef5e59b7e",
+      "crates/dir-simulator/tests/ethernet.rs": "7dcc8a53462653ef57cf58db507512f173b1246b080ea48b3104cfc219ad28b3",
+      "crates/dir-simulator/tests/ethernet_media.rs": "c50e2bfc1bb633111c67aa8c45113f350ec0cc0bb095af63756d5d8c2a03a5d4",
+      "crates/dir-simulator/tests/ethernet_qos.rs": "2c3208a3f52cd146efcc78da8abd1e8f9d65988f6235e058fa14e508408ee2f3",
+      "crates/dir-simulator/tests/ethernet_vlan.rs": "4b3b7b48f9ce55495fc1037c83862bb5a4c5cb9ad1fb79c80cedb0299e0b540a",
+      "crates/dir-simulator/tests/gateway.rs": "ed8e73bc02b0ff1b2c813486741d7446205d17d5de1ede6a878dd60e1a5568c1",
+      "crates/dir-simulator/tests/memory_ipc.rs": "a4cb80a0d8c50eada08f98f2d24ef1d5a356a194bcae05cb78c58a909e7d2463",
+      "crates/dir-simulator/tests/soc.rs": "7d25ebdbc5edaf2e7396d12e8f2f224e78b09ef769fee7f54a58458edfca5067",
+      "crates/dir-simulator/tests/viewer_cli.rs": "a283be42361e94800ad1bdec5ee6bb5677e9c17a2d2455b26a5fbef2f82dbcfc",
+      "docs/verification/fixtures/axi/backpressure.ini": "10d8ee05a8aa9d417f15a687ae3dcf8cbfde89bf23b8c03e017f9790b93e690e",
+      "docs/verification/fixtures/axi/backpressure.model.json": "709cfcf68567c9a71211dab9c171fa53ac98491fab0b5e4e65975e67a3546992",
+      "docs/verification/fixtures/axi/backpressure.workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+      "docs/verification/fixtures/axi/capacity.ini": "4c125e1a26c4b19d187c3beeb4df674e461f8ffdc4123630a0f93df3c06aba85",
+      "docs/verification/fixtures/axi/capacity.model.json": "e456272e35b87506966b3417383beecbfa3abcc4978e0c619b2c8b4608349a04",
+      "docs/verification/fixtures/axi/capacity.workload.json": "46c0048eb0f258c377ca53db007a056432c82e01b56b887f0c0b696c49f29444",
+      "docs/verification/fixtures/axi/invalid-transactions.json": "bf463fa2c5879f022e41c549b425737e9c05c25aeda75e966b401d4ef36227f1",
+      "docs/verification/fixtures/axi/metrics.json": "4a97e393153aac832bc63b82977955a1b8abfebbc2982c3ec1d1531353374b6a",
+      "docs/verification/fixtures/axi/models/demo/Main.ned": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd",
+      "docs/verification/fixtures/axi/read-write.ini": "0adcc609328586d740bffe89455bf6b372138053adbe8b024fc1316aa74ab8ad",
+      "docs/verification/fixtures/axi/read-write.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+      "docs/verification/fixtures/axi/read-write.workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+      "docs/verification/fixtures/axi/responses.ini": "53ce9beee40854675fe1306fb93b200cc5a70858a2383f3c372a5d7aa5de28ac",
+      "docs/verification/fixtures/axi/responses.model.json": "329a7602e4e7d7b896886b173cab13964fed7d0a6d55a541e0e7f68fab37e646",
+      "docs/verification/fixtures/axi/responses.workload.json": "8e136d3a7d55ae4bfcd1172a028d5d92d55bbf74d35dc920c1a55a0f8131a83f",
+      "docs/verification/fixtures/axi/round-robin.ini": "1c0c652e5586e73520c7a14e21980b9774637baf05f359b51c0a8d2125d6c474",
+      "docs/verification/fixtures/axi/round-robin.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+      "docs/verification/fixtures/axi/round-robin.workload.json": "40762545409cbe3a7cf641b770c4d401d9d7fd707540be5b3a299cbdbe535fa8",
+      "docs/verification/fixtures/axi/scenarios.json": "11ac095af5ba6c8724fb8207b48c2d1c7b4f50feec4a4863b9350f386978df48",
+      "docs/verification/fixtures/axi/stop-mid-write.ini": "cecfe1fb5c5cd77f4dc29971962117aa17fb69d8d8b8da9fb462d08bb2e475a3",
+      "docs/verification/fixtures/axi/stop-mid-write.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+      "docs/verification/fixtures/axi/stop-mid-write.workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+      "docs/verification/fixtures/axi/stop-response.ini": "dbe31941902312851a24f93f70411f4c20071ace7edf0fc1b0182cc16c0bb04b",
+      "docs/verification/fixtures/axi/stop-response.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+      "docs/verification/fixtures/axi/stop-response.workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+      "docs/verification/fixtures/axi/verify_fixtures.py": "2a0832db6e6638be9d814b45996a9187de5e27c4ade865676f1831354ab8f4be",
+      "docs/verification/fixtures/axi/zero-strobe.ini": "a7d9164ac2aa5e2a58442ef4dd51c1b82b2eee539be9269c3357042b9f84c51a",
+      "docs/verification/fixtures/axi/zero-strobe.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+      "docs/verification/fixtures/axi/zero-strobe.workload.json": "ffcd079933cdf1dc6a826e22bcdcc11092fee9a41f98a6a2944e18bb1af3c034",
+      "docs/verification/fixtures/can/after-eof.ini": "89170452e46165933bdeda40173539ebaa08b10a75213d560db5976089bc45c6",
+      "docs/verification/fixtures/can/after-eof.json": "94b93d3686e639c4b10d461817dae5a65ecdc6763049b442739c385dc13a90bb",
+      "docs/verification/fixtures/can/capacity-zero.ini": "23864feeefce407c35971063a1ff8a18ce917c1ccca3718b1341d4f48479071c",
+      "docs/verification/fixtures/can/capacity-zero.json": "94b93d3686e639c4b10d461817dae5a65ecdc6763049b442739c385dc13a90bb",
+      "docs/verification/fixtures/can/competition.ini": "ab85775ff4d54f7c0fcbe54f103e20f4a5752b0fdb897bde528b706b9fa7e108",
+      "docs/verification/fixtures/can/competition.json": "f78d0c702f6e972b66636bc598de94809b1e629fcfdc81759f17f2838e769f4c",
+      "docs/verification/fixtures/can/delay-filter.ini": "bbbc7789c14f43cdc3454ff37ff9d543df7056040366e74fdfc4e7b027c8f828",
+      "docs/verification/fixtures/can/delay-filter.json": "94b93d3686e639c4b10d461817dae5a65ecdc6763049b442739c385dc13a90bb",
+      "docs/verification/fixtures/can/eof-boundary.ini": "541eeb9dc4f6c96037044d0926f0c56189dbf7962d0430c86b30652b25dc2bea",
+      "docs/verification/fixtures/can/eof-boundary.json": "94b93d3686e639c4b10d461817dae5a65ecdc6763049b442739c385dc13a90bb",
+      "docs/verification/fixtures/can/mixed-generators.ini": "dabd3db7ecb5993f9414f9634c2669f0d2462f858bede50ad95c9b20d3884568",
+      "docs/verification/fixtures/can/mixed-generators.json": "2033203be5c4ebd8e38378f30985817fbd21062afa876bb2e4dd2177818705ea",
+      "docs/verification/fixtures/can/models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251",
+      "docs/verification/fixtures/can/queue-full.ini": "764eba44576449b207cc69f5bbdccc823dbdec367977c6d71afcef0555c5c1cb",
+      "docs/verification/fixtures/can/queue-full.json": "76342ff7aff15bb8fa163ba759c3f91549e69eecc2c6629904194f0390477b02",
+      "docs/verification/fixtures/can/release-arrival.ini": "0042712d4a6a01207b1758a33130bc1f96bc564703e3efe559b91eb0bd4d4a11",
+      "docs/verification/fixtures/can/release-arrival.json": "720822a3ed5f665c3cb36b78529af991fae3234abbec5be9be99369d150259a4",
+      "docs/verification/fixtures/can/scenarios.json": "2e298dcbb35975c0ec8f1c5920f54179cad69f616943e5c475aa410f69c6494a",
+      "docs/verification/fixtures/can/vectors.json": "135d0c77f49984746d1aa6b9342eafab0065902d5d3216c02e8ee58e433adf9e",
+      "docs/verification/fixtures/can/verify_vectors.py": "6923043770caf8c42e5e306305a0863195505297884ca18b718454973c62365c",
+      "docs/verification/fixtures/ethernet-media/arrival-tie.ini": "aaae065a03f3938731d6797661e8def8c1712662b451c384cf0a3d6b3265870e",
+      "docs/verification/fixtures/ethernet-media/arrival-tie.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/arrival-tie.workload.json": "500063b5129aaf3a63f812a2b88763f99c9569f585894f787bfdb473240425c7",
+      "docs/verification/fixtures/ethernet-media/attempt-limit-unit.json": "c4ea6129863745b5e056e017d8a5cdde17e4f7f3a950c7e6e689ca2e85e37b9d",
+      "docs/verification/fixtures/ethernet-media/backoff-vectors.json": "df50a97e3a1a960786ab6f72c0ef6a201ea0bd2901e5d524c8619a5386a5c15e",
+      "docs/verification/fixtures/ethernet-media/carrier.ini": "792e749f4dc7e70723e33120b6de719830c18c72b5bc89e62bb4ac2c39aa15b0",
+      "docs/verification/fixtures/ethernet-media/carrier.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/carrier.workload.json": "f5714915341c29f7c7bf44941829638805defba094354b14bdb8fe3e95455abb",
+      "docs/verification/fixtures/ethernet-media/collision-repeat.ini": "1f73b938271f4c07dfaf313cfc0a9939c9d8a0ceda046ac6f618bfccee712a09",
+      "docs/verification/fixtures/ethernet-media/collision-repeat.model.json": "a96a9de5d5320bf21deb1314d0df219b3ec60bbc687627f40897cbdfb3cb363d",
+      "docs/verification/fixtures/ethernet-media/collision-repeat.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/collision.ini": "5ff15dd5ad71a384f38849a6fb07c64df9ffac3b4459333b914dae317ebf1a1d",
+      "docs/verification/fixtures/ethernet-media/collision.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/collision.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/half-10.ini": "7015b7ba305e76e86f13dc0239ede6d71ceb7147e9ad62efdedfa234820d194e",
+      "docs/verification/fixtures/ethernet-media/half-10.model.json": "ef6e35332003912f8eb9ddf358ae60d0132df6af49ffd76535395bd6971b8305",
+      "docs/verification/fixtures/ethernet-media/half-10.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/invalid-slot.ini": "0ec7fc45b3f92ce3e8d5630c85bad8ca2bd6be23293f21eec289ec86d6087eb0",
+      "docs/verification/fixtures/ethernet-media/invalid-slot.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/invalid-slot.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/invalid-t1-half.ini": "1d09d89030b351f805449e6d6fbbb1c037e84279a04732b2121cae75094b9808",
+      "docs/verification/fixtures/ethernet-media/invalid-t1-half.model.json": "d4cd7e51b362e91c07a75b08a8b6c32994d8098ea4d4545abf664ba763391412",
+      "docs/verification/fixtures/ethernet-media/invalid-t1-half.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/invalid-t1-roles.ini": "40682ae83b30e8bb3e96adfbb9e89ba94acb9f72610bddf661374dc414511f70",
+      "docs/verification/fixtures/ethernet-media/invalid-t1-roles.model.json": "ccc9575911631e6582312f3d16655c727a7631c5baa5fe898ef43e4c5692574e",
+      "docs/verification/fixtures/ethernet-media/invalid-t1-roles.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/late-start.ini": "1ba5a6d29295dfa1bf2caff97e0602b89c63221364374c73c407a022453b878d",
+      "docs/verification/fixtures/ethernet-media/late-start.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/late-start.workload.json": "f75bb94031413cf25c6330b86b5eb52a095e09daf245b81a2d2551c41c5be989",
+      "docs/verification/fixtures/ethernet-media/metrics.json": "9602238aecb080aab23d629bb92215d221a6d467eecd315ed277db4a5bd725e8",
+      "docs/verification/fixtures/ethernet-media/mixed.ini": "2649d3d5b5f9f56973ac257661a8eb36c7f14f1f97194dde835131c99144363c",
+      "docs/verification/fixtures/ethernet-media/mixed.model.json": "5c5153dc364cc1e1b6b295e2de8692c812ecd9621004533f4eab0ebfa1d7cfb3",
+      "docs/verification/fixtures/ethernet-media/mixed.workload.json": "a4deaa72130fb36897cfdb4202ef8adee1858469d537dca9c4ba4672265124d0",
+      "docs/verification/fixtures/ethernet-media/models/media/Main.ned": "9051be3e4df98b8304bc0dd844c7990502ba172be92bbb561171e3b8c309fd92",
+      "docs/verification/fixtures/ethernet-media/models/media/Mix.ned": "c849fa8f15cb7c4a17f89a4173e0cb197d1b315da9b13195ccbe327bfb3c0cd0",
+      "docs/verification/fixtures/ethernet-media/models/media/Types.ned": "bca7c42e10e09734007d4fdfc94dfa6d41ae358017549df33d3f66f7aa710df0",
+      "docs/verification/fixtures/ethernet-media/queue-retry.ini": "50402c7f423706afdc0734d9a44ba5ad065604726172dd1365aa1060d93d99b2",
+      "docs/verification/fixtures/ethernet-media/queue-retry.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/queue-retry.workload.json": "cac95e13e74f2bae70ac74d1309aebc811151325d85aac51b1328684de5243a7",
+      "docs/verification/fixtures/ethernet-media/record-examples.json": "80a495582a6c9298b8480a8da8155e715d5f295b4f3a2c942dc8fd166a8807ac",
+      "docs/verification/fixtures/ethernet-media/scenarios.json": "f8931058550d991de63c7b8096e6b0cdbb4cbcd8e92421227f271a5ce073f0b7",
+      "docs/verification/fixtures/ethernet-media/slot-upper.ini": "fd0b301df279080a48794e6cfe911dd555e40470e722fa60af25010fab30d55c",
+      "docs/verification/fixtures/ethernet-media/slot-upper.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/slot-upper.workload.json": "3975574974097d5b7e136bfbf342a7939690eeace5abb22a77880f463dd0937c",
+      "docs/verification/fixtures/ethernet-media/stop-backoff.ini": "5242630bcbf0d030f6c476165b877fb8de3babb5b3236ee8d9fea95f01f31861",
+      "docs/verification/fixtures/ethernet-media/stop-backoff.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/stop-backoff.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/stop-jam.ini": "910e6690dfeb540f97cffef154f70235cd17ddd5e99b40ac99bb766bc6be3a0c",
+      "docs/verification/fixtures/ethernet-media/stop-jam.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/stop-jam.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/t1-after-boundary.ini": "5e4699d72898d9cb440f09f19113102b9c1c6e760f906c8734a200cb3f9c9f8b",
+      "docs/verification/fixtures/ethernet-media/t1-after-boundary.model.json": "f9667df7a72280d20da655829cee9dfa26008680252435037ae9e6be26ec4ad1",
+      "docs/verification/fixtures/ethernet-media/t1-after-boundary.workload.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "docs/verification/fixtures/ethernet-media/t1-boundary.ini": "6098298c70e9f59988c6647c4e79857d4b5d26536ebe361f46ae0e456865f615",
+      "docs/verification/fixtures/ethernet-media/t1-boundary.model.json": "f9667df7a72280d20da655829cee9dfa26008680252435037ae9e6be26ec4ad1",
+      "docs/verification/fixtures/ethernet-media/t1-boundary.workload.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "docs/verification/fixtures/ethernet-media/t1-duplex.ini": "9c42645b51be626b81bc247a48a9f94bca10dc9819e441d871bd74ff9b6bc1fc",
+      "docs/verification/fixtures/ethernet-media/t1-duplex.model.json": "f9667df7a72280d20da655829cee9dfa26008680252435037ae9e6be26ec4ad1",
+      "docs/verification/fixtures/ethernet-media/t1-duplex.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-media/t1-max-frame.ini": "b43ebd665513bb172ea12b5a95b01b561ca9165cb0d7ab4431db69894001fc0c",
+      "docs/verification/fixtures/ethernet-media/t1-max-frame.model.json": "f9667df7a72280d20da655829cee9dfa26008680252435037ae9e6be26ec4ad1",
+      "docs/verification/fixtures/ethernet-media/t1-max-frame.workload.json": "5d2ec7cc822644ac04806e6e1b3815f7bd7fdc6cf4ef6e8b1f6e159f6c6a0c98",
+      "docs/verification/fixtures/ethernet-media/t1-pipeline.ini": "77bb99c34bbbf8d68d4e99fd77eb3471e9c86545b977655063f0ca93b4a98b83",
+      "docs/verification/fixtures/ethernet-media/t1-pipeline.model.json": "418dd648ba31417cff711f9dc689130890054708b35a2201325a330ec279fa8b",
+      "docs/verification/fixtures/ethernet-media/t1-pipeline.workload.json": "e5d328aa7dbe827aa6d6cf210d743dd7855244b108776054c54c77136bd16c96",
+      "docs/verification/fixtures/ethernet-media/verify_expectations.py": "57710b836b9e0964269da3fee70ecbfe81a08d07223aac67ad22862474b113d1",
+      "docs/verification/fixtures/ethernet-media/verify_results.py": "b558384e76356a334ee94df81baf88553a686a596ea9f4750ff7f7f7b67d1f3c",
+      "docs/verification/fixtures/ethernet-media/zero-propagation.ini": "0ac53dd62f2847ce9d4217bd0904f49343dc849f4016d0cece02cc161ab95f0e",
+      "docs/verification/fixtures/ethernet-media/zero-propagation.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "docs/verification/fixtures/ethernet-media/zero-propagation.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/ethernet-qos/byte-capacity.ini": "d557daa35d556dc50abcb4b9309722caaa766ff39ab6cfa9beab2ecfd92d70fb",
+      "docs/verification/fixtures/ethernet-qos/byte-capacity.json": "cb98d4bd7d08792702c48096b5ae0f276a540a447d14e8001c359e77a23fc6bc",
+      "docs/verification/fixtures/ethernet-qos/device-capacity.ini": "811b76447f97c71112f4c3d2e440e876a6216a98adeae8ca072d3a37141510c3",
+      "docs/verification/fixtures/ethernet-qos/device-capacity.json": "12953c02698a947b45564d7b8ffea89ef2960217b6980e9806e32d5f949102ac",
+      "docs/verification/fixtures/ethernet-qos/fanout-copy-drop.ini": "7a981f146578d5f2f3234d147d99ad9cd2e4d007be2efb085cc77d389fc806ce",
+      "docs/verification/fixtures/ethernet-qos/fanout-copy-drop.json": "a7822d133faa2d2e9ffbe9436453d3b0ea45a869bad2ff07c7023e514ec0bd3f",
+      "docs/verification/fixtures/ethernet-qos/flow-filtered.ini": "6612eded353c026ff6c55af8bc80a33273125fa3b1e8155d4660b546f6707d16",
+      "docs/verification/fixtures/ethernet-qos/flow-filtered.json": "f164aefb9d7ff458bd0cc7b9d4a44548ca7885a8f3f70f2217858f5ccceaf917",
+      "docs/verification/fixtures/ethernet-qos/flow-single.ini": "6989b051a88d8e44a1c50265b8e53d6e0ef0537fe51ac11b9e9c4493e42b7150",
+      "docs/verification/fixtures/ethernet-qos/flow-single.json": "c1a1345997558bba242c5d19cb0c7a85177ca7c84deb869cc11b12b6fc62ec45",
+      "docs/verification/fixtures/ethernet-qos/flow-statistics.ini": "481692c9d98eb024c38339d49f49571cc38ff1ebc6c0efa1104d32580eff4cb2",
+      "docs/verification/fixtures/ethernet-qos/flow-statistics.json": "f2a5b6db4e60e45871c01235df1f0c4d7376011dce87a6f85d4a2e657feb4842",
+      "docs/verification/fixtures/ethernet-qos/model-byte-capacity.json": "faf1d549eb767dfe37e9474da57d6098880bd33342b8b8a083f386524c7ee271",
+      "docs/verification/fixtures/ethernet-qos/model-fanout-drop.json": "28c9111cac03d2c2b082edbe3bcd9e2c08bb9151f31444b2e257bfab168ee6c8",
+      "docs/verification/fixtures/ethernet-qos/model-fifo.json": "7b1f753279ed1aeb79f08f9fe4868f2be4e374e2e95e6366a66f359960d93f99",
+      "docs/verification/fixtures/ethernet-qos/model.json": "41f922006ec07c841f0f1fc0a24b1532b31c8dc837d7a90dc938c8b079cf2a74",
+      "docs/verification/fixtures/ethernet-qos/models/ethdemo/Main.ned": "65d54c137fb5015d59ba15dc68144d0c004ac0b26d6767fc61efa0faf58ee47e",
+      "docs/verification/fixtures/ethernet-qos/nonpreemptive.ini": "0d93578baf3fdbae08cdd5753b0c03aa0cde15dcf1425459b1f9d5756552b15c",
+      "docs/verification/fixtures/ethernet-qos/nonpreemptive.json": "80e04055816daff88a417f237fa4cdbc6f80b3016b25ffae952aef913879966b",
+      "docs/verification/fixtures/ethernet-qos/periodic-burst.ini": "dc673f2d09e5ce115941d6bdd22d93fc0d4cb11663b136efdf165410249dce1e",
+      "docs/verification/fixtures/ethernet-qos/periodic-burst.json": "c59589b125d8be0ab208e67f20c07412031a418070612c1377ff02407ae44d53",
+      "docs/verification/fixtures/ethernet-qos/priority-fifo.ini": "7670e5992fba2d062ab6fa5b3303838e6409f673ef898f43eca00e49a6cb777e",
+      "docs/verification/fixtures/ethernet-qos/priority-strict.ini": "361cabd2b220d008ed2791b08c85d5549486c7bab15a469c4537532c8179d8de",
+      "docs/verification/fixtures/ethernet-qos/priority.json": "78e44d90ab5e8d23787547e784814a6fa62c0078e45f8336b64f172aae174587",
+      "docs/verification/fixtures/ethernet-qos/scenarios.json": "456633543f7dab5ed9bb915650ca4480b419b204e9102fd8883acf1b590c08ea",
+      "docs/verification/fixtures/ethernet-qos/unfinished.ini": "339d01f38f2dd91ea77fe95c983e82455cb1d1a7e41495f4499550c69e73cd9d",
+      "docs/verification/fixtures/ethernet-qos/unfinished.json": "e850eea426f245604ff1f014bbe6900abf88855dd7391f4e309997c408c2cb80",
+      "docs/verification/fixtures/ethernet-vlan/verify_results.py": "50b1cf3bcb5ecf23c190264f11f3c524567c74ea40c069bf3d61372180c73973",
+      "docs/verification/fixtures/ethernet-vlan/verify_wire_vectors.py": "56505c58e7516077d6ed569a9ac43794e3faf2b8e85d943c4ec7984ede1764bb",
+      "docs/verification/fixtures/ethernet-vlan/wire-vectors.json": "e7c953b10b4cfbf4b62bd886d8f2fd407571255ccfea50382a012b5d513b0bab",
+      "docs/verification/fixtures/ethernet/arrival-boundary.ini": "014b2754b67f6fabfbcc1bee5e1e21afcb66fe5bf56a79dbeda0e703f36a4262",
+      "docs/verification/fixtures/ethernet/arrival-boundary.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "docs/verification/fixtures/ethernet/bad-fdb-model.json": "e739eb482b93bacf2534c0eaf495e352dfd46925e8f38234897abebb2472a1a6",
+      "docs/verification/fixtures/ethernet/bad-fdb.ini": "fb92f9ffd1f5014cf710217e7f854e6d5930bdf4380fc6f9d0a10b395fe1677c",
+      "docs/verification/fixtures/ethernet/bad-fdb.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "docs/verification/fixtures/ethernet/bad-payload.ini": "b50df33041d67f4eb2c693ebbfa601ae409d9fb6796a014839c3af4d51463efa",
+      "docs/verification/fixtures/ethernet/bad-payload.json": "9b009910e2eee547817caff9d1aa7f5e73cdd268ca8fe756a996d26bf4d6f743",
+      "docs/verification/fixtures/ethernet/broadcast.ini": "d77ad990fc0dfa0a57a746215744ccde54bef2c4dade0c0103f88cd3195b0b94",
+      "docs/verification/fixtures/ethernet/broadcast.json": "aabcc85754815567d96ce133cb8c9183f7823e93e09aa405720a8514b8b4a653",
+      "docs/verification/fixtures/ethernet/duplex.ini": "f340da68116dfb2b6527ce3f2e71ffb58d2c4bb5daa339dc6986aa3571e4179e",
+      "docs/verification/fixtures/ethernet/duplex.json": "f17229bfbd3c3237be45073af922b4956b48bf322a4545c6e909fcb4f88e06d3",
+      "docs/verification/fixtures/ethernet/egress-full.ini": "bf894a37297f024fdd07a00666ca751527faa8e205fc55f6594fbf2295e8ce8d",
+      "docs/verification/fixtures/ethernet/egress-full.json": "21c2fce9fa8e688dc5739c3839c461b3105660a5bd3e4fe1c8ee8354ba904df6",
+      "docs/verification/fixtures/ethernet/eof-boundary.ini": "f5eb1a04e557f4d8b1742d701121498283d0b15919214ac13151e741c75b4960",
+      "docs/verification/fixtures/ethernet/eof-boundary.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "docs/verification/fixtures/ethernet/model.json": "55ec03491be4dc0485fed13705810eff7f055158fa7585d1fed9c0cea2b1353c",
+      "docs/verification/fixtures/ethernet/models/ethdemo/Main.ned": "65d54c137fb5015d59ba15dc68144d0c004ac0b26d6767fc61efa0faf58ee47e",
+      "docs/verification/fixtures/ethernet/scenarios.json": "c52fa73407d2bf606e962f32e808e1e11d870dedc0eabaae6e2863ea7230916a",
+      "docs/verification/fixtures/ethernet/source-full.ini": "9e89b679cc2c121ca4dec1fe7aa0664a7479f6ac319ed435431626c06a7491db",
+      "docs/verification/fixtures/ethernet/source-full.json": "e5d328aa7dbe827aa6d6cf210d743dd7855244b108776054c54c77136bd16c96",
+      "docs/verification/fixtures/ethernet/switch-processing.ini": "d60caa582905393b2f00ec6ece84bd2076827f480563ec08a1b7df283897953c",
+      "docs/verification/fixtures/ethernet/switch-processing.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "docs/verification/fixtures/ethernet/unicast.ini": "343a3bf7045e055b8375a859ec0c8258b51d9ae39f1a8cb96c7687fab9c52dea",
+      "docs/verification/fixtures/ethernet/unicast.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "docs/verification/fixtures/ethernet/unknown-unicast.ini": "bfcca1604c9f57549868a2ebb44d020b67a75df31501506b69a9a9bdfb039568",
+      "docs/verification/fixtures/ethernet/unknown-unicast.json": "181ef678c0a8affda1d3ad73ec9ef27f638325c118bd5bed002c70d71c2b3a0a",
+      "docs/verification/fixtures/ethernet/vectors.json": "1c37064e87e08827638ea386ddffcc556a8162f9e19f654bf9efecb63f7d7c3b",
+      "docs/verification/fixtures/ethernet/verify_fixtures.py": "c02a57426ac2850c3d35188de007155675ac50d7f9e60dd9107f77806103961c",
+      "docs/verification/fixtures/ethernet/zero-capacity.ini": "290d899f7052b9f43833b584bb817b5d81a175dc6afa015494f38eea0cb5ea76",
+      "docs/verification/fixtures/ethernet/zero-capacity.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "docs/verification/fixtures/gw/capacity-zero-routing.json": "49c5a3b64348806a01d98dc636b7e285c705aa8264a0918e68280ffa1173cd44",
+      "docs/verification/fixtures/gw/capacity-zero-workload.json": "0892767cfe4167a44a7941439994c22bdd18d74963c63ed75444479819948beb",
+      "docs/verification/fixtures/gw/capacity-zero.ini": "da777ea6be91a7983b9ed9cb90b915250c8bb8c2aa621947d75c26b06243c7ee",
+      "docs/verification/fixtures/gw/delay-routing.json": "171eb44700b529b5718b7f82a6a052b0baafa11a2f123a4fa5557ac3637ccf37",
+      "docs/verification/fixtures/gw/delay-workload.json": "357f38b0a6a0d07dae4654a9ff635ba6cd7f7b45cee88ed15485db63ee7ea547",
+      "docs/verification/fixtures/gw/delay.ini": "93527639ed85bcb750ee66849bf111d4131130afd39792e230805b7125062390",
+      "docs/verification/fixtures/gw/disjoint-cycle-routing.json": "ed9dcb4ea19b989b92416e45b2aca4443cde8b9c06459bc4e495cf15f44834f7",
+      "docs/verification/fixtures/gw/disjoint-cycle-workload.json": "3975574974097d5b7e136bfbf342a7939690eeace5abb22a77880f463dd0937c",
+      "docs/verification/fixtures/gw/disjoint-cycle.ini": "08743d221e9032a395407506e5a3212c7162f21398f4d36294bef8845eca6fd9",
+      "docs/verification/fixtures/gw/eof-boundary-routing.json": "49c5a3b64348806a01d98dc636b7e285c705aa8264a0918e68280ffa1173cd44",
+      "docs/verification/fixtures/gw/eof-boundary-workload.json": "0892767cfe4167a44a7941439994c22bdd18d74963c63ed75444479819948beb",
+      "docs/verification/fixtures/gw/eof-boundary.ini": "eb617a3b6d317bd02a4fd0f68342518d5aa575b8a60b17ca0c91405aa6a119da",
+      "docs/verification/fixtures/gw/forward-boundary-routing.json": "8eea6772eef8ecb53e6187ece2cd79076f4f9a827e92f57925c3eaed45e18875",
+      "docs/verification/fixtures/gw/forward-boundary-workload.json": "0892767cfe4167a44a7941439994c22bdd18d74963c63ed75444479819948beb",
+      "docs/verification/fixtures/gw/forward-boundary.ini": "8939cd48bee28b2e467da61d21a831a019e4c84064d35df030756e99db6bbddf",
+      "docs/verification/fixtures/gw/hop-routing.json": "7804aefebffe33b7af4586ad8a7124a682ff41989ff86642c6d9fc5703c48845",
+      "docs/verification/fixtures/gw/hop-workload.json": "6fbeb4bf179801ef17a94eca2307a5eca5f31a1b7c1f19c59f52506a17791231",
+      "docs/verification/fixtures/gw/hop.ini": "25f086861e3892c1e55e4dd911bb0190056ab8e155affa97d466da9d4aca32cf",
+      "docs/verification/fixtures/gw/independent-only-routing.json": "88ff5bc13c99ae6092adb3d627b34f04d0535cf31d48a96d4b8ba0e2529c2404",
+      "docs/verification/fixtures/gw/independent-only-workload.json": "357f38b0a6a0d07dae4654a9ff635ba6cd7f7b45cee88ed15485db63ee7ea547",
+      "docs/verification/fixtures/gw/independent-only.ini": "3e4263d2023c52bcb8cd4f37e4ee6060efebdd2fa602a6e6bcb4d6663f12c694",
+      "docs/verification/fixtures/gw/independent-routing.json": "49c5a3b64348806a01d98dc636b7e285c705aa8264a0918e68280ffa1173cd44",
+      "docs/verification/fixtures/gw/independent-workload.json": "357f38b0a6a0d07dae4654a9ff635ba6cd7f7b45cee88ed15485db63ee7ea547",
+      "docs/verification/fixtures/gw/independent.ini": "a3b35283037d5440b171ef5981b834c50bc15af26c2522c32efdc21026a874e1",
+      "docs/verification/fixtures/gw/invalid-cycle-routing.json": "24970d63e4d1b7ead9b08427f33c4634f26df86fdf6c65f1438b646013523cc8",
+      "docs/verification/fixtures/gw/invalid-cycle-workload.json": "3975574974097d5b7e136bfbf342a7939690eeace5abb22a77880f463dd0937c",
+      "docs/verification/fixtures/gw/invalid-cycle.ini": "eadaa16eda98ec05642dc12127c19fd530c134d87a1f757e97de639bbc4ac5cc",
+      "docs/verification/fixtures/gw/invalid-overlap-routing.json": "157a81f199cd759ce4cae91232cca73bb15015ee0ac6eb18e6810a9818f598e3",
+      "docs/verification/fixtures/gw/invalid-overlap-workload.json": "0892767cfe4167a44a7941439994c22bdd18d74963c63ed75444479819948beb",
+      "docs/verification/fixtures/gw/invalid-overlap.ini": "f3ff11b1c7a11ae2b11c09421089d086a0e61ab06d20e9548d9cc2fab6f81e1a",
+      "docs/verification/fixtures/gw/invalid-owner-routing.json": "49c5a3b64348806a01d98dc636b7e285c705aa8264a0918e68280ffa1173cd44",
+      "docs/verification/fixtures/gw/invalid-owner-workload.json": "022f20676e6fbbf00d07f546c3c4cb8ead97a6cb2bbe21f8a86ecdc9e413b481",
+      "docs/verification/fixtures/gw/invalid-owner.ini": "55158634af9ee4bbd64c1b476829a1d2b70b21d9dd78ab21b7c93fc944116252",
+      "docs/verification/fixtures/gw/model-record-examples.json": "a18453615fa834dee6fc10aed6878218978b212339b973b56a62c34f2f2b1c54",
+      "docs/verification/fixtures/gw/models/gw/Chain.ned": "5399351fc421353de6767367cae5fbdf546eae8dab1e71de80bfbbe839f4b768",
+      "docs/verification/fixtures/gw/models/gw/Main.ned": "4c2657b8cc5274891b9728b777a0d6d765501358e1f7b218ab658f0850909a82",
+      "docs/verification/fixtures/gw/models/gw/Multi.ned": "97e26b17b725fb3a1f441af1d8b6ae76ac5c1d45d09fe4c44d3d121733e2d881",
+      "docs/verification/fixtures/gw/models/gw/Types.ned": "60fbb2c335a02b3ab2a6a469e64709896bffe012d5aa22d82c3a52504ee030a7",
+      "docs/verification/fixtures/gw/multicast-drop-routing.json": "afb845b5a6cdb349de82710286bf23bf50795fd49a6cbb5f5bca1fd98812c844",
+      "docs/verification/fixtures/gw/multicast-drop-workload.json": "1bb63075272e426786bf6a6759fe082f0b4b3ad53fa816e823bbfae0a3df600c",
+      "docs/verification/fixtures/gw/multicast-drop.ini": "ff432a6bbd0434e025f8c46a753778f8fed9de483946b1373f433f5a92fe5356",
+      "docs/verification/fixtures/gw/multicast-routing.json": "afb845b5a6cdb349de82710286bf23bf50795fd49a6cbb5f5bca1fd98812c844",
+      "docs/verification/fixtures/gw/multicast-workload.json": "1bb63075272e426786bf6a6759fe082f0b4b3ad53fa816e823bbfae0a3df600c",
+      "docs/verification/fixtures/gw/multicast.ini": "ee6c4eca32a2220062e0e8b754b6e97d4ce9ee57b5186883fd66783395d43e98",
+      "docs/verification/fixtures/gw/no-route-routing.json": "49c5a3b64348806a01d98dc636b7e285c705aa8264a0918e68280ffa1173cd44",
+      "docs/verification/fixtures/gw/no-route-workload.json": "3d8642c43266340aa646e952ed5d53cd56e767d472392d6dab62b16416ea8960",
+      "docs/verification/fixtures/gw/no-route.ini": "467045d05fbcfa2b9e0579cb01fe43767e4d734b8f9597cb0a522c6141fb80bd",
+      "docs/verification/fixtures/gw/queue-routing.json": "49c5a3b64348806a01d98dc636b7e285c705aa8264a0918e68280ffa1173cd44",
+      "docs/verification/fixtures/gw/queue-workload.json": "04d242bf6397c33eef8bb4c6d074366a6635f078705fd846040115c238267a03",
+      "docs/verification/fixtures/gw/queue.ini": "220f1f6238706ddadadef57483bd813feb7306b2f229e39a36b31e8cb0bf57be",
+      "docs/verification/fixtures/gw/rx-filter-routing.json": "49c5a3b64348806a01d98dc636b7e285c705aa8264a0918e68280ffa1173cd44",
+      "docs/verification/fixtures/gw/rx-filter-workload.json": "0892767cfe4167a44a7941439994c22bdd18d74963c63ed75444479819948beb",
+      "docs/verification/fixtures/gw/rx-filter.ini": "59e12276902fad9f05bdc6792c198629f04cb5de723a26e563ec45d3a1645397",
+      "docs/verification/fixtures/gw/scenarios.json": "5ad8b85e6de86a81c4b6ab800431d917b6367aff13ca260aaee69acb04dc6d3a",
+      "docs/verification/fixtures/gw/verify_expectations.py": "e32f354bf0f9a830f08020f4deead12a8d067a355a372d41e976a8672dc34ee1",
+      "docs/verification/fixtures/memory-ipc/ddr-errors.ini": "e381ac228cb2a3b955e410a8cbc84c0d80add0ffdd27842a1eef606f07d033a3",
+      "docs/verification/fixtures/memory-ipc/ddr-errors.model.json": "5b50ffd57b176eaf6a7a3a31b235453ebb24d5a7b6208dcdea689c92d0f1124d",
+      "docs/verification/fixtures/memory-ipc/ddr-errors.workload.json": "8cb6afa3140bcb33fa752de214d1e6958da4c51be7b9d74fdc52f4001026a841",
+      "docs/verification/fixtures/memory-ipc/ddr-row-refresh.ini": "86f1175ac5f403124c937760a623f88bfc9518caf590ebf46dbe96b5be2df613",
+      "docs/verification/fixtures/memory-ipc/ddr-row-refresh.model.json": "21f364b6ac199404895b3c88c93daacfcc2373b73f599535fc2c785fb2c223a2",
+      "docs/verification/fixtures/memory-ipc/ddr-row-refresh.workload.json": "38a14001977196974f9a2823690170dd81e12300a011ed7e219ee495addc8f3d",
+      "docs/verification/fixtures/memory-ipc/ddr-stop.ini": "1264c93d7df3d55aee0c833b0b4cf8ed3aab99d5e73c8df3d0f387ff0ca4b54d",
+      "docs/verification/fixtures/memory-ipc/ddr-stop.model.json": "21f364b6ac199404895b3c88c93daacfcc2373b73f599535fc2c785fb2c223a2",
+      "docs/verification/fixtures/memory-ipc/ddr-stop.workload.json": "38a14001977196974f9a2823690170dd81e12300a011ed7e219ee495addc8f3d",
+      "docs/verification/fixtures/memory-ipc/dma-fault-prefix.ini": "421c7c640ff0da5d90833edb33761edfcef23bfec828fe36e51932d60095f658",
+      "docs/verification/fixtures/memory-ipc/dma-fault-prefix.model.json": "f3275150066cc801aa55b90f255015f13b72e116bfd36e2341e3ad1d3347dbc5",
+      "docs/verification/fixtures/memory-ipc/dma-fault-prefix.workload.json": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175",
+      "docs/verification/fixtures/memory-ipc/dma-memory-content.ini": "e75ddf78fd40024b149a669e155e252a0b58fe4418c923207647f632753b9c06",
+      "docs/verification/fixtures/memory-ipc/dma-memory-content.model.json": "2565a28c5f2d1bfc0c5e7f174a11df6f08e9326fd03e685f13ddd07f6c410c74",
+      "docs/verification/fixtures/memory-ipc/dma-memory-content.workload.json": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175",
+      "docs/verification/fixtures/memory-ipc/dma-offer-order.ini": "00edc52bae64f91ea42b73cb02cccdf96cee4f7e35551d9c8fc4ed714e431835",
+      "docs/verification/fixtures/memory-ipc/dma-offer-order.model.json": "f49485b0ec3fa3d81893c52d0259ef3d016e32a0495b6dcf6170c1623be7f822",
+      "docs/verification/fixtures/memory-ipc/dma-offer-order.workload.json": "86e3fecc7850e909a94752ac05b28a92405d7b354c80ab54c4c442690e94aa2a",
+      "docs/verification/fixtures/memory-ipc/dma-stop.ini": "44616f891e3b69acda6c101be585c4b17479ede3275cfe8a3c51b6a4b70ecaf4",
+      "docs/verification/fixtures/memory-ipc/dma-stop.model.json": "2565a28c5f2d1bfc0c5e7f174a11df6f08e9326fd03e685f13ddd07f6c410c74",
+      "docs/verification/fixtures/memory-ipc/dma-stop.workload.json": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175",
+      "docs/verification/fixtures/memory-ipc/invalid-configs.json": "84fb673bb44097a873a770618f571a5834f23ac7b39c936a2779c401c77eda76",
+      "docs/verification/fixtures/memory-ipc/mailbox-fifo.ini": "b9352eb7692171fb1dc71993ebd1e43857a84bb15dfddbf92aa90390ccd97225",
+      "docs/verification/fixtures/memory-ipc/mailbox-fifo.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+      "docs/verification/fixtures/memory-ipc/mailbox-fifo.workload.json": "84539ce4f4fd8507086736822ac7ebe45fbdde6abbb006f4727b086381f85d5a",
+      "docs/verification/fixtures/memory-ipc/mailbox-stop.ini": "b6d25f62c2acd5a1cbe3823267d4c4915e43c9da9163556f853327f7c1840e6d",
+      "docs/verification/fixtures/memory-ipc/mailbox-stop.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+      "docs/verification/fixtures/memory-ipc/mailbox-stop.workload.json": "84539ce4f4fd8507086736822ac7ebe45fbdde6abbb006f4727b086381f85d5a",
+      "docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d",
+      "docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c",
+      "docs/verification/fixtures/memory-ipc/scenarios.json": "046f07c6df337b2309c280cb0eb3ce65acd0fda3dd3b99b0682ae5449ce03ce3",
+      "docs/verification/fixtures/memory-ipc/shared-ownership.ini": "b4511e9191373f328d139118141aa457180303e30f700170b3715c564ef212ca",
+      "docs/verification/fixtures/memory-ipc/shared-ownership.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+      "docs/verification/fixtures/memory-ipc/shared-ownership.workload.json": "83644d176e5aa0206232cffd86953d68f18f64c4810e2e95a078f472f7c7d9d2",
+      "docs/verification/fixtures/memory-ipc/shared-stop.ini": "6e0c4e6b75b54a8dea2a1d303b9c0485f9b886bb0de45d842e643c4d3d8be735",
+      "docs/verification/fixtures/memory-ipc/shared-stop.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+      "docs/verification/fixtures/memory-ipc/shared-stop.workload.json": "83644d176e5aa0206232cffd86953d68f18f64c4810e2e95a078f472f7c7d9d2",
+      "docs/verification/fixtures/memory-ipc/sram-ports.ini": "dc963663eeb17c297cfeb89463ee624b72e0446e0f9c34fd99d0b65cd7cea3ea",
+      "docs/verification/fixtures/memory-ipc/sram-ports.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+      "docs/verification/fixtures/memory-ipc/sram-ports.workload.json": "8921580d356f51e2d84d53f883c76e18668230454dd14d6bda4b861c7cf1e10c",
+      "docs/verification/fixtures/memory-ipc/sram-stop.ini": "255fd5203bcfde9308c53b50fdccf46a2040254fe448d803b124e56695f8e175",
+      "docs/verification/fixtures/memory-ipc/sram-stop.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+      "docs/verification/fixtures/memory-ipc/sram-stop.workload.json": "8921580d356f51e2d84d53f883c76e18668230454dd14d6bda4b861c7cf1e10c",
+      "docs/verification/fixtures/memory-ipc/verify_expectations.py": "d38a8b92719f351d1298d36bc73efdb0235850d8536707206483837cbc4d87f1",
+      "docs/verification/fixtures/original-network/fd.ini": "76d16c5ada1a09b6baaf0b289dc68b5f329362662a80fc33acfe7132fd1192f1",
+      "docs/verification/fixtures/original-network/fd.model.json": "6b09aa23a8446b006a456b7a7c2e920342036da67a47a0938a8fa48b72de5bfb",
+      "docs/verification/fixtures/original-network/fd.workload.json": "7d894428241dd3fdbab14a1cc53688f2ac102d8316de5370a9d42be4105f34db",
+      "docs/verification/fixtures/original-network/models/fd/Main.ned": "17668beb9e6f793429390cc091152769ebe147caa68dbf43a11f5d3fa1173709",
+      "docs/verification/fixtures/original-network/t1.ini": "be84df9dfe93a95bd9a663cbfed5a31bdcc6653beb280ba8ecfd0e41236a530b",
+      "docs/verification/fixtures/original-network/t1.model.json": "72619658bbe17b7df5a55b141d03c2ecb68cd122fa71ae691d6d72eed5988529",
+      "docs/verification/fixtures/original-network/t1.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "docs/verification/fixtures/original-network/vectors.json": "598746f430a76b13e792e2e4c9f218ab35a858d2899c1788e3bc94a819b5573c",
+      "docs/verification/fixtures/original-network/verify_expectations.py": "607164b8cba45d8d4e0098d9a6a95535b205c080745e00a451328ab5ae8f37d9",
+      "docs/verification/fixtures/original-network/verify_results.py": "62a4cd3444f7700bb0babb820f9590551dc874d95481e6d5ffb2b50cea58e420",
+      "docs/verification/fixtures/soc/ahb-boundary.ini": "da0b4cda9c23e28df5065b8a2135ea742e4e59ebf66829ebf27403c2e5ed419e",
+      "docs/verification/fixtures/soc/ahb-boundary.model.json": "7df309267ab902e7f1e7df2dfc660dd768ae014191cf7cadff92e854550f124d",
+      "docs/verification/fixtures/soc/ahb-boundary.workload.json": "89bb2453a1463520663c452849c334a237f634a7cc7c8a5e141601b66f207947",
+      "docs/verification/fixtures/soc/ahb-wait-error.ini": "8a48efb749597bd5b15dde9a6e9d37aa9b7db747f20e5ea8bdeaee753eb295d9",
+      "docs/verification/fixtures/soc/ahb-wait-error.model.json": "a90fc88e67e830503fbe1e6656c1df14288f7ee7c9f59d3eaac71d8b24e3c954",
+      "docs/verification/fixtures/soc/ahb-wait-error.workload.json": "5d6b506d8ec0315bbf9591d3d92b6a872923f953add414b43cb9bcf90d1ef4b2",
+      "docs/verification/fixtures/soc/models/ahb-boundary/demo/Main.ned": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92",
+      "docs/verification/fixtures/soc/models/ahb-wait-error/demo/Main.ned": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92",
+      "docs/verification/fixtures/soc/models/noc-backpressure/demo/Main.ned": "9f42eb9bae35946ad71b7fe6554756ecbc50dda9fddb063bf0a9135e7a43046d",
+      "docs/verification/fixtures/soc/models/noc-xy/demo/Main.ned": "eaa619c50f0bff5d97eadf50bc730a9b6927bb3f024d3e3daf58240d4f915aa6",
+      "docs/verification/fixtures/soc/models/soc-capacity-stop/demo/Main.ned": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f",
+      "docs/verification/fixtures/soc/models/soc-round-robin/demo/Main.ned": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f",
+      "docs/verification/fixtures/soc/noc-backpressure.ini": "3690ddcaa89f74933eb48c833b7b631891bc5f626823f03c275e333617f01bbb",
+      "docs/verification/fixtures/soc/noc-backpressure.model.json": "ec7fc22d77c0d8a6aafdf8231bf51457986e41fd1d9b3e411a6e25c048d2ed6e",
+      "docs/verification/fixtures/soc/noc-backpressure.workload.json": "e09202677e6f951aec41ba6005a174472d0163849cf2f70076596ca9b6dd7f27",
+      "docs/verification/fixtures/soc/noc-xy.ini": "3440abd663112423302cce73e6670cca037c3a55dbe43d1dfdec3d8127050009",
+      "docs/verification/fixtures/soc/noc-xy.model.json": "ea20ec4f2db617b8fd4a0d4af1f66a64d0111bc23406740347bd574d783e55e0",
+      "docs/verification/fixtures/soc/noc-xy.workload.json": "9d7332efe46823ad1ec95b35a7547085628665132477ff76f7b5beac33fedee3",
+      "docs/verification/fixtures/soc/scenarios.json": "077f258212c3bb25488b1b79c2e5202de32ec0712cad7329df2b097ba5db2d08",
+      "docs/verification/fixtures/soc/soc-capacity-stop.ini": "2847688a7594bcc48ae4d564f458216b1bae26477760587c552e1804966378a0",
+      "docs/verification/fixtures/soc/soc-capacity-stop.model.json": "0d71e5e2de478fa63bd2b220959f4eaaf16959dcec7150fe002ca450448aa912",
+      "docs/verification/fixtures/soc/soc-capacity-stop.workload.json": "f9c3cbda0532cb2b09cf457618bca94ddaac7dbffe45b7a8fbb0f6b174b061ba",
+      "docs/verification/fixtures/soc/soc-round-robin.ini": "a0ed4974c99530310a39df2488e973baeb23f4ca4fb088c77abf7b6f53cbf3f4",
+      "docs/verification/fixtures/soc/soc-round-robin.model.json": "93f425772c9d5ee6ba0d5166a3a76989ec1f168c88cbe016ae12a8158915266c",
+      "docs/verification/fixtures/soc/soc-round-robin.workload.json": "dbd75b4b2906b3d29651a3bfb7b6ed8b968a60256c0a2b1e73f4e9764914a603",
+      "docs/verification/fixtures/soc/verify_fixtures.py": "00e69c28a309051d7e2dbf4af83723f5243a4c4ba1d3ca86d02492712708d2fc",
+      "examples/axi/model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+      "examples/axi/models/demo/Main.ned": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd",
+      "examples/axi/read-write.ini": "ee09c0940650d20bbe4b94079d042e5202b25ded0a93f30b5f5fe82e19df7695",
+      "examples/axi/workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+      "examples/can/baseline.ini": "7917b7f205f7d0858ab30d9674bb0fad54ec64892793f0d35a6d7bc28f083386",
+      "examples/can/baseline.json": "48e3bd572d8c17cbbdbaca25a08c83cf8f3a9a17fb3f7f9832d87ba2df7dee37",
+      "examples/can/contention.ini": "ebd029f97e6eb3f9c9381a540541e83205ccf7894b2bf8f69ca3a4dd1926e79c",
+      "examples/can/contention.json": "7cf5e7c203a892d5125686cf0d783058e056bf385f7cf09020fa42a995726a61",
+      "examples/can/models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251",
+      "examples/can/overload.ini": "96c2e76a003caece292fbf961288152739d05cc5ec777ac61ffe892cf91af760",
+      "examples/can/overload.json": "ad23e002fd2030d706b10abdc6356edf112954ccdeaad2667cab65db94748498",
+      "examples/canfd/model.json": "6b09aa23a8446b006a456b7a7c2e920342036da67a47a0938a8fa48b72de5bfb",
+      "examples/canfd/models/fd/Main.ned": "17668beb9e6f793429390cc091152769ebe147caa68dbf43a11f5d3fa1173709",
+      "examples/canfd/precomputed.ini": "aea76ec9ea3cb31f6f5c44d54d6f9037f8d2dec3d204b991695a562fa9c1aa29",
+      "examples/canfd/workload.json": "e3379b1824a712cd1f7e0d98e1088eba5a4c4bdf07d2abe84c372af1663faee1",
+      "examples/ethernet/duplex.ini": "7944682cd9f4bf5eb014937964d60ebb630d6f392baacea2086860dd10fd1b59",
+      "examples/ethernet/duplex.json": "f17229bfbd3c3237be45073af922b4956b48bf322a4545c6e909fcb4f88e06d3",
+      "examples/ethernet/media/100base-t1.ini": "12fa40cf03f50b5e363bde2d8070479b5fb87f5ff26e458d95d2acc569b912b5",
+      "examples/ethernet/media/100base-t1.model.json": "72619658bbe17b7df5a55b141d03c2ecb68cd122fa71ae691d6d72eed5988529",
+      "examples/ethernet/media/100base-t1.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "examples/ethernet/media/collision.ini": "5ff15dd5ad71a384f38849a6fb07c64df9ffac3b4459333b914dae317ebf1a1d",
+      "examples/ethernet/media/collision.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+      "examples/ethernet/media/collision.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "examples/ethernet/media/mixed.ini": "2649d3d5b5f9f56973ac257661a8eb36c7f14f1f97194dde835131c99144363c",
+      "examples/ethernet/media/mixed.model.json": "5c5153dc364cc1e1b6b295e2de8692c812ecd9621004533f4eab0ebfa1d7cfb3",
+      "examples/ethernet/media/mixed.workload.json": "a4deaa72130fb36897cfdb4202ef8adee1858469d537dca9c4ba4672265124d0",
+      "examples/ethernet/media/models/media/Main.ned": "9051be3e4df98b8304bc0dd844c7990502ba172be92bbb561171e3b8c309fd92",
+      "examples/ethernet/media/models/media/Mix.ned": "c849fa8f15cb7c4a17f89a4173e0cb197d1b315da9b13195ccbe327bfb3c0cd0",
+      "examples/ethernet/media/models/media/Types.ned": "bca7c42e10e09734007d4fdfc94dfa6d41ae358017549df33d3f66f7aa710df0",
+      "examples/ethernet/media/t1-duplex.ini": "9c42645b51be626b81bc247a48a9f94bca10dc9819e441d871bd74ff9b6bc1fc",
+      "examples/ethernet/media/t1-duplex.model.json": "f9667df7a72280d20da655829cee9dfa26008680252435037ae9e6be26ec4ad1",
+      "examples/ethernet/media/t1-duplex.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+      "examples/ethernet/media/t1-pipeline.ini": "77bb99c34bbbf8d68d4e99fd77eb3471e9c86545b977655063f0ca93b4a98b83",
+      "examples/ethernet/media/t1-pipeline.model.json": "418dd648ba31417cff711f9dc689130890054708b35a2201325a330ec279fa8b",
+      "examples/ethernet/media/t1-pipeline.workload.json": "e5d328aa7dbe827aa6d6cf210d743dd7855244b108776054c54c77136bd16c96",
+      "examples/ethernet/model-qos.json": "41f922006ec07c841f0f1fc0a24b1532b31c8dc837d7a90dc938c8b079cf2a74",
+      "examples/ethernet/model-v1.json": "55ec03491be4dc0485fed13705810eff7f055158fa7585d1fed9c0cea2b1353c",
+      "examples/ethernet/model-vlan.json": "eb4bfef2a94849716cf5ce2616c3b5fc7e4666933e6555f3f15baa6c349b0921",
+      "examples/ethernet/models/ethdemo/Main.ned": "65d54c137fb5015d59ba15dc68144d0c004ac0b26d6767fc61efa0faf58ee47e",
+      "examples/ethernet/models/ethdemo/VlanDemo.ned": "7afff44ab481a7c813a43d1b02abcbb0ecb73d432e1c9cc31a48a69af13a2309",
+      "examples/ethernet/qos-periodic-burst.ini": "6761328f4e4a16c0bc444781fe6b30797993b708652221c883824d58b6d57506",
+      "examples/ethernet/qos-periodic-burst.json": "c59589b125d8be0ab208e67f20c07412031a418070612c1377ff02407ae44d53",
+      "examples/ethernet/qos-priority.ini": "ac4a14c68f409b2c68dc9183a6caea3427bdc57c3c6bd469a098d472ef45ca80",
+      "examples/ethernet/qos-priority.json": "78e44d90ab5e8d23787547e784814a6fa62c0078e45f8336b64f172aae174587",
+      "examples/ethernet/unicast.ini": "967918f0c71cc839f52357aae0f3bdea3835e6adfac7cbaacd3edd95af0ad48e",
+      "examples/ethernet/unicast.json": "d10c507bafd4156da4aeba740c251d2ec10aa2ce5b59b5299cfa7f5096573a39",
+      "examples/ethernet/vlan-multicast.ini": "a26a96566bf0cf6e3d3219c8302e3113f881a4480257d166a10b219701154df2",
+      "examples/ethernet/vlan-multicast.json": "e766a87de0f5fb763775d87e34552869482cc7872ea0ff9eb200a39e1a4fcc5f",
+      "examples/ethernet/vlan-unicast.ini": "634af8a630511dfc81ef3170ec0adbd36183bc409b1df931ea7235196afae3af",
+      "examples/ethernet/vlan-unicast.json": "61ee51380cd8325ff171ea397da75d6b020ccfd794de42fb865eed2a3459eecb",
+      "examples/gateway/buffered-fanout.ini": "d5e8a354f9368b68efc7987927c4a444837da02b271cfb4f7e35a9b22dca573d",
+      "examples/gateway/buffered-routing.json": "303d99f9ba025be753b6d31b70faf4a9b7a45fd6a5443126276d06376c8afc40",
+      "examples/gateway/buffered-workload.json": "1e78941cb16ab1bf402c6bfd1ca394e55e891317d680067510c8bd5ffd2f6f66",
+      "examples/gateway/fanout.ini": "5e77dac2157ff9eb70dddeec6d800f6883e38d46c0752ce56423e10f98372c31",
+      "examples/gateway/models/gateway/Main.ned": "4dbe127bb949bf3c42af1142a99391ab3a74b8dcdfeded003db5c4992fd94d2f",
+      "examples/gateway/models/gateway/Types.ned": "1f926ca6c631e08ff7bb2529668ea01ee4ec943ee9e356e38e9594dd24a94114",
+      "examples/gateway/routing.json": "e62f6947f00fd32c90bead54da826c695320754e1f841694cca5a057603b52f3",
+      "examples/gateway/workload.json": "f08d1d2cd99714ed63ed64d767e1efe92154cb9ced57b632daf8a0317ad4960e",
+      "examples/memory-ipc/copy.ini": "d4992166286e465c8a95378a89b8c42c086980577d651c429d6fdf0cb0b62e83",
+      "examples/memory-ipc/model.json": "2565a28c5f2d1bfc0c5e7f174a11df6f08e9326fd03e685f13ddd07f6c410c74",
+      "examples/memory-ipc/models/memoryipc/Main.ned": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d",
+      "examples/memory-ipc/models/memoryipc/Types.ned": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c",
+      "examples/memory-ipc/workload.json": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175",
+      "examples/soc/ahb-boundary.ini": "da0b4cda9c23e28df5065b8a2135ea742e4e59ebf66829ebf27403c2e5ed419e",
+      "examples/soc/ahb-boundary.model.json": "7df309267ab902e7f1e7df2dfc660dd768ae014191cf7cadff92e854550f124d",
+      "examples/soc/ahb-boundary.workload.json": "89bb2453a1463520663c452849c334a237f634a7cc7c8a5e141601b66f207947",
+      "examples/soc/ahb-wait-error.ini": "8a48efb749597bd5b15dde9a6e9d37aa9b7db747f20e5ea8bdeaee753eb295d9",
+      "examples/soc/ahb-wait-error.model.json": "a90fc88e67e830503fbe1e6656c1df14288f7ee7c9f59d3eaac71d8b24e3c954",
+      "examples/soc/ahb-wait-error.workload.json": "5d6b506d8ec0315bbf9591d3d92b6a872923f953add414b43cb9bcf90d1ef4b2",
+      "examples/soc/models/ahb-boundary/demo/Main.ned": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92",
+      "examples/soc/models/ahb-wait-error/demo/Main.ned": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92",
+      "examples/soc/models/noc-backpressure/demo/Main.ned": "9f42eb9bae35946ad71b7fe6554756ecbc50dda9fddb063bf0a9135e7a43046d",
+      "examples/soc/models/noc-xy/demo/Main.ned": "eaa619c50f0bff5d97eadf50bc730a9b6927bb3f024d3e3daf58240d4f915aa6",
+      "examples/soc/models/soc-capacity-stop/demo/Main.ned": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f",
+      "examples/soc/models/soc-round-robin/demo/Main.ned": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f",
+      "examples/soc/noc-backpressure.ini": "3690ddcaa89f74933eb48c833b7b631891bc5f626823f03c275e333617f01bbb",
+      "examples/soc/noc-backpressure.model.json": "ec7fc22d77c0d8a6aafdf8231bf51457986e41fd1d9b3e411a6e25c048d2ed6e",
+      "examples/soc/noc-backpressure.workload.json": "e09202677e6f951aec41ba6005a174472d0163849cf2f70076596ca9b6dd7f27",
+      "examples/soc/noc-xy.ini": "3440abd663112423302cce73e6670cca037c3a55dbe43d1dfdec3d8127050009",
+      "examples/soc/noc-xy.model.json": "ea20ec4f2db617b8fd4a0d4af1f66a64d0111bc23406740347bd574d783e55e0",
+      "examples/soc/noc-xy.workload.json": "9d7332efe46823ad1ec95b35a7547085628665132477ff76f7b5beac33fedee3",
+      "examples/soc/soc-capacity-stop.ini": "2847688a7594bcc48ae4d564f458216b1bae26477760587c552e1804966378a0",
+      "examples/soc/soc-capacity-stop.model.json": "0d71e5e2de478fa63bd2b220959f4eaaf16959dcec7150fe002ca450448aa912",
+      "examples/soc/soc-capacity-stop.workload.json": "f9c3cbda0532cb2b09cf457618bca94ddaac7dbffe45b7a8fbb0f6b174b061ba",
+      "examples/soc/soc-round-robin.ini": "a0ed4974c99530310a39df2488e973baeb23f4ca4fb088c77abf7b6f53cbf3f4",
+      "examples/soc/soc-round-robin.model.json": "93f425772c9d5ee6ba0d5166a3a76989ec1f168c88cbe016ae12a8158915266c",
+      "examples/soc/soc-round-robin.workload.json": "dbd75b4b2906b3d29651a3bfb7b6ed8b968a60256c0a2b1e73f4e9764914a603",
+      "rust-toolchain.toml": "dc8a9e7668c882190e58da244ac78e86d0d9875140a6249849f49b74d7382a76",
+      "scripts/check_traceability.py": "0caa9e280f05af82788a8a7f420050ac3a3b83641864bbc21baa30a582407462",
+      "scripts/generate_traceability.py": "97196e7fb5de7b3990e4629dfdc7d6ad4229a684200aabc96061fb3ceb8d2f7e",
+      "scripts/render_diagrams.py": "0ee4f0d2443f2afba7b2d4a920b441bf789e60f997138b5172f72d983c986315",
+      "scripts/requirement_hierarchy.py": "0c8a7144e2054f102caa93349f1f0e9962c5584f4638bba23dcd03a22a71cba4",
+      "tests/ethernet_viewer_browser.cjs": "ef3b0ab2afa2804b193f0edc3e7fa5e55facba0dd0c6dac23c8134c041d16c78",
+      "tests/ethernet_viewer_model.test.cjs": "deab06304687a34a0211d897ed6621f489b3f06705f2027362482aad8746ed53",
+      "tests/media_fd_viewer_browser.cjs": "4415ace2b130a264ab69901e291df87e5e872ecf411cb2711caaf7a9f04e4ada",
+      "tests/media_fd_viewer_model.test.cjs": "e185ed45e2a999e26f9739aa563ced41ba10b8c9dbc7860a95d66f8780652aec",
+      "tests/ned_editor_browser.test.cjs": "aac85c05cf9d8f9e514614c75fcb6bc07df7bc8a9aadddcc33163fe0e472ed7d",
+      "tests/ned_editor_composition_browser.test.cjs": "e3eff02cedc70065af84e7e51211a3a4cd6963042baba401bdc56887acde7419",
+      "tests/ned_editor_recovery.test.cjs": "5e39cd0c80322b50325aef800d3d167fd37c7c79feef6e64577c40d6209d26cc",
+      "tests/ned_editor_ui.test.cjs": "eba0a5509a35af575b2d4179f4f132dd940121d899af897046a029908291fbb2",
+      "tests/test_check_traceability.py": "f08928f89a9075d28fbdb0f79e143fc4c757578377513fe67ed24c4eb8ff8706",
+      "tests/test_generate_traceability.py": "d35e62ec101123ad16e349f0ce23fbe49621e33acd4bf284e5fa3c11246cb4ad",
+      "tests/test_traceability_hook.py": "09e8622f55eb6c3220b93212fc4a1e2a18be93d1acb089d5a166a877faa2d0f7",
+      "tests/transaction_viewer_browser.cjs": "d646702ae858569a8cdfeb36d651ac8913c1a96dbf4106c128a18d2905ee2cea",
+      "tests/transaction_viewer_model.test.cjs": "0d2181c73127119f0f2a6457d4733fc1fa1270736b297b7e6e9d4f284e479b14",
+      "tests/viewer_browser.cjs": "69c433f88a9ab3f34c41e54900eabc8c716e12ebcf8b58ade49095b8f98e1a3b",
+      "tests/viewer_model.test.cjs": "b4dffddababc0ae4c4d4fea125649dbc44ae24e9223a1f0d8906b10ce2e08d5b"
+    }
+  },
+  "checks": [
+    {
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "command": "cargo test --locked --workspace",
+      "exit_code": 0,
+      "status": "passed",
+      "passed": 325,
+      "failed": 0,
+      "ignored": 0,
+      "log_path": "tmp/transaction-cargo-test.log",
+      "log_sha256": "7f12fb434a8c6bb885e7fe23ef6106155b6207e4116504a5df64ffde6b2803aa",
+      "new_profile_integration_tests": {
+        "axi": 11,
+        "soc": 20,
+        "memory_ipc": 11
+      },
+      "new_profile_internal_tests": {
+        "axi": 2,
+        "soc": 4,
+        "memory_ipc": 2
+      }
+    },
+    {
+      "command": "cargo build --locked -p dir-simulator",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "command": "NODE_PATH=/tmp/dir-vlan-playwright/node_modules node --test tests/*.test.cjs",
+      "exit_code": 0,
+      "status": "passed",
+      "passed": 114,
+      "failed": 0
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_check_traceability.py",
+      "exit_code": 0,
+      "status": "passed",
+      "passed": 23
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_generate_traceability.py",
+      "exit_code": 0,
+      "status": "passed",
+      "passed": 11
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_traceability_hook.py",
+      "exit_code": 0,
+      "status": "passed",
+      "passed": 5
+    },
+    {
+      "command": "python3 docs/verification/fixtures/axi/verify_fixtures.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "python3 docs/verification/fixtures/can/verify_vectors.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "python3 docs/verification/fixtures/ethernet-media/verify_expectations.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "python3 docs/verification/fixtures/ethernet-vlan/verify_wire_vectors.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "python3 docs/verification/fixtures/gw/verify_expectations.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "python3 docs/verification/fixtures/memory-ipc/verify_expectations.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "python3 docs/verification/fixtures/original-network/verify_expectations.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "python3 docs/verification/fixtures/soc/verify_fixtures.py",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Independent static/analytic expectation check, separate from product execution"
+    },
+    {
+      "command": "NODE_PATH=/tmp/dir-vlan-playwright/node_modules node tests/viewer_browser.cjs",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "CAN, Gateway, multi-bus, step direction and rewind"
+    },
+    {
+      "command": "NODE_PATH=/tmp/dir-vlan-playwright/node_modules node tests/ethernet_viewer_browser.cjs /tmp/dir-final-browser-8igru8ef/ethernet-qos/results.json",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Ethernet QoS"
+    },
+    {
+      "command": "NODE_PATH=/tmp/dir-vlan-playwright/node_modules node tests/ethernet_viewer_browser.cjs /tmp/dir-final-browser-8igru8ef/ethernet-vlan/results.json",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "Ethernet VLAN"
+    },
+    {
+      "command": "NODE_PATH=/tmp/dir-vlan-playwright/node_modules node tests/media_fd_viewer_browser.cjs /tmp/dir-final-browser-8igru8ef/canfd/results.json /tmp/dir-final-browser-8igru8ef/ethernet-media/results.json",
+      "exit_code": 0,
+      "status": "passed",
+      "scope": "CAN FD and Ethernet collision/media"
+    },
+    {
+      "command": "NODE_PATH=/tmp/dir-vlan-playwright/node_modules node tests/transaction_viewer_browser.cjs tmp/soc-memory-final/example-axi-read-write/results.json tmp/soc-memory-final/example-soc-soc-round-robin/results.json tmp/soc-memory-final/example-soc-ahb-wait-error/results.json tmp/soc-memory-final/example-soc-noc-backpressure/results.json tmp/soc-memory-final/example-memory-ipc-copy/results.json",
+      "exit_code": 0,
+      "status": "passed",
+      "profiles": 5,
+      "scope": "Actual results, request selection, time jump, forward/backward steps, line-only playback, narrow viewport"
+    },
+    {
+      "command": "python3 tmp/verify_transaction_cli.py",
+      "exit_code": 0,
+      "status": "passed",
+      "fixtures": 27,
+      "examples": 8,
+      "scope": "Validate/run/view plus hashes, manifest bytes, schema/metric registration and IDs; viewer parses all 35 outputs"
+    },
+    {
+      "command": "python3 scripts/generate_traceability.py --check",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "command": "python3 scripts/check_traceability.py --strict",
+      "exit_code": 0,
+      "status": "passed",
+      "requirements": 205,
+      "functions": 54,
+      "nodes": 245,
+      "structural_errors": 0,
+      "incomplete_requirements": 0,
+      "incomplete_items": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "status": "passed"
+    }
+  ],
+  "product_execution": {
+    "cases": [
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/axi/backpressure.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "200000",
+        "committed_events": "12",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 7,
+          "axi.memory": 1,
+          "axi.transaction": 2
+        },
+        "input_sha256": "abeb62ef6f6e0496c67a52ad3bb6a764376b19b9ec478ca06375635a15941b9d",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/backpressure.ini",
+            "logical_path": "config",
+            "sha256": "10d8ee05a8aa9d417f15a687ae3dcf8cbfde89bf23b8c03e017f9790b93e690e"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/backpressure.model.json",
+            "logical_path": "model-config",
+            "sha256": "709cfcf68567c9a71211dab9c171fa53ac98491fab0b5e4e65975e67a3546992"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/backpressure.workload.json",
+            "logical_path": "workload",
+            "sha256": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-axi-backpressure/results.json",
+        "result_sha256": "37da027f457de418ed5795f8e33bb77cb99cf1f17d13ff3c56fecc7f368083b3",
+        "manifest_sha256": "4a3678a4666c623b129c2d4303274facb53db1180f6285bb60f89c6746cb9798",
+        "viewer_path": "tmp/soc-memory-final/fixture-axi-backpressure.html",
+        "viewer_sha256": "c3861b4a3967a9d31216fbc460c5b531c5f883d9a3f55c2cc187c02f73b846aa",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/axi/capacity.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "50000",
+        "committed_events": "6",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 2,
+          "axi.memory": 1,
+          "axi.transaction": 2
+        },
+        "input_sha256": "e292553f92ac6ce65858b67786ba5051d2ed23ebf5e4894557d0fbae054d3d9b",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/capacity.ini",
+            "logical_path": "config",
+            "sha256": "4c125e1a26c4b19d187c3beeb4df674e461f8ffdc4123630a0f93df3c06aba85"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/capacity.model.json",
+            "logical_path": "model-config",
+            "sha256": "e456272e35b87506966b3417383beecbfa3abcc4978e0c619b2c8b4608349a04"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/capacity.workload.json",
+            "logical_path": "workload",
+            "sha256": "46c0048eb0f258c377ca53db007a056432c82e01b56b887f0c0b696c49f29444"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-axi-capacity/results.json",
+        "result_sha256": "a2be65a368aba8dee2003b18ffd34aa99db9e1af44bed3f40de7bb271cf26f74",
+        "manifest_sha256": "9fb6a53cb3cc2519f1d5280e5d40b859df85be7f54ec3c4e7da5664caa752665",
+        "viewer_path": "tmp/soc-memory-final/fixture-axi-capacity.html",
+        "viewer_sha256": "5184941fe3ccd038f28f7709421cfd2ba0d52e90f8c65efd229af030cec17131",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/axi/read-write.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "100000",
+        "committed_events": "12",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 7,
+          "axi.memory": 1,
+          "axi.transaction": 2
+        },
+        "input_sha256": "f9c2a0df7dd4a68788fc764e14ef1ad57ff3c396e930eb6ca365f7a95e0d4a05",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/read-write.ini",
+            "logical_path": "config",
+            "sha256": "0adcc609328586d740bffe89455bf6b372138053adbe8b024fc1316aa74ab8ad"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/read-write.model.json",
+            "logical_path": "model-config",
+            "sha256": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/read-write.workload.json",
+            "logical_path": "workload",
+            "sha256": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-axi-read-write/results.json",
+        "result_sha256": "c5b1fae8b91794b0c4009301e787d2968b79befdaf0774fbb51d1e1536494b92",
+        "manifest_sha256": "c7c45df5bce64c835067cb2d603dbe77292f48d4b791a725c2624d458c82b08a",
+        "viewer_path": "tmp/soc-memory-final/fixture-axi-read-write.html",
+        "viewer_sha256": "252ad37051a1af9a9d62dc0ba36628df72069dfd91bc2f72d1a181834e9345e3",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/axi/responses.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "150000",
+        "committed_events": "16",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 9,
+          "axi.memory": 1,
+          "axi.transaction": 3
+        },
+        "input_sha256": "cce2f180b6b868f164a8d39cfe783589dfebf619ca7ac918d102544b7c03f95d",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/responses.ini",
+            "logical_path": "config",
+            "sha256": "53ce9beee40854675fe1306fb93b200cc5a70858a2383f3c372a5d7aa5de28ac"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/responses.model.json",
+            "logical_path": "model-config",
+            "sha256": "329a7602e4e7d7b896886b173cab13964fed7d0a6d55a541e0e7f68fab37e646"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/responses.workload.json",
+            "logical_path": "workload",
+            "sha256": "8e136d3a7d55ae4bfcd1172a028d5d92d55bbf74d35dc920c1a55a0f8131a83f"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-axi-responses/results.json",
+        "result_sha256": "58b7ca70ad24e28fa7c17671d91d124d9852d03dd349e870fc2824aa91a4dfda",
+        "manifest_sha256": "f6a3796db11f7bb738197bbd701ba802e2966e6aa291a3e57c1b9521fff0277c",
+        "viewer_path": "tmp/soc-memory-final/fixture-axi-responses.html",
+        "viewer_sha256": "26fce44f145f1a8e0b653048a1859156eea560072614576d137bb78e1400fde1",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/axi/round-robin.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "100000",
+        "committed_events": "13",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 6,
+          "axi.memory": 1,
+          "axi.transaction": 3
+        },
+        "input_sha256": "6aac0454bbcc7de870da19c1f84822ac647b7c1ebdf9ff51a733f530868a12ec",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/round-robin.ini",
+            "logical_path": "config",
+            "sha256": "1c0c652e5586e73520c7a14e21980b9774637baf05f359b51c0a8d2125d6c474"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/round-robin.model.json",
+            "logical_path": "model-config",
+            "sha256": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/round-robin.workload.json",
+            "logical_path": "workload",
+            "sha256": "40762545409cbe3a7cf641b770c4d401d9d7fd707540be5b3a299cbdbe535fa8"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-axi-round-robin/results.json",
+        "result_sha256": "5e9b6f5657a060f6e98743181344fd51068fa3143e664e8f07f3435ea667a758",
+        "manifest_sha256": "cc9902dc4094e819d7ef6d584f5b05856cb5e350bcf294bf1599ecd47bf6f8cb",
+        "viewer_path": "tmp/soc-memory-final/fixture-axi-round-robin.html",
+        "viewer_sha256": "eae4d106bbc294eff1246c6fbb766d77e4afaab019cc098c3b9aed6728d200f7",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/axi/stop-mid-write.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "30000",
+        "committed_events": "5",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 2,
+          "axi.memory": 1,
+          "axi.transaction": 2
+        },
+        "input_sha256": "28bf31e2dcfccf61d1de5e816d33c53849c755dba209e1f0ba05eead39230a3a",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/stop-mid-write.ini",
+            "logical_path": "config",
+            "sha256": "cecfe1fb5c5cd77f4dc29971962117aa17fb69d8d8b8da9fb462d08bb2e475a3"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/stop-mid-write.model.json",
+            "logical_path": "model-config",
+            "sha256": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/stop-mid-write.workload.json",
+            "logical_path": "workload",
+            "sha256": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-axi-stop-mid-write/results.json",
+        "result_sha256": "2bd20497744a15d532557c2b60edfca2435d425838dac80bc53e8cb12a032a7e",
+        "manifest_sha256": "cc2226930dedd715d09ae61169f96b728f24d230622a06ef23260a8989a63363",
+        "viewer_path": "tmp/soc-memory-final/fixture-axi-stop-mid-write.html",
+        "viewer_sha256": "8e3d4c4361646b9c89c9ab98789cf12fd8dad57be2cd6bc22583f68c8cc607cc",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/axi/stop-response.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "40000",
+        "committed_events": "6",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 3,
+          "axi.memory": 1,
+          "axi.transaction": 2
+        },
+        "input_sha256": "89f0f9c7dd2b620eb27a1a82ff2aa7af30a1f57c35d0940f3b9f0526c0f4358a",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/stop-response.ini",
+            "logical_path": "config",
+            "sha256": "dbe31941902312851a24f93f70411f4c20071ace7edf0fc1b0182cc16c0bb04b"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/stop-response.model.json",
+            "logical_path": "model-config",
+            "sha256": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/stop-response.workload.json",
+            "logical_path": "workload",
+            "sha256": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-axi-stop-response/results.json",
+        "result_sha256": "a8a5b0bb31443dd700a449e19805a12802cc8d18d145e35c7dc61a7327dd5497",
+        "manifest_sha256": "66a4dcf55181406c8eca6b364f482f1dc3cd2f3839cefdc99ee9fd98ee354634",
+        "viewer_path": "tmp/soc-memory-final/fixture-axi-stop-response.html",
+        "viewer_sha256": "b37a9248f87566d9305d9faabafd8ee6086d5b53103496485bedf0a2a5bd1a93",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/axi/zero-strobe.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "50000",
+        "committed_events": "6",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 3,
+          "axi.memory": 1,
+          "axi.transaction": 1
+        },
+        "input_sha256": "85309b28ffd350393f4c9833228478bd1de4af296084a5a90aa49d03e92a401c",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/zero-strobe.ini",
+            "logical_path": "config",
+            "sha256": "a7d9164ac2aa5e2a58442ef4dd51c1b82b2eee539be9269c3357042b9f84c51a"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/zero-strobe.model.json",
+            "logical_path": "model-config",
+            "sha256": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/axi/zero-strobe.workload.json",
+            "logical_path": "workload",
+            "sha256": "ffcd079933cdf1dc6a826e22bcdcc11092fee9a41f98a6a2944e18bb1af3c034"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-axi-zero-strobe/results.json",
+        "result_sha256": "0c999c91976201af46afe175d1ba3cf4b204b9f4311bf50df3ed4beac0a7cd1a",
+        "manifest_sha256": "98f2ae95f0d42059763de1b62e798a64f7e59959c7f8471301388cf7e361e19f",
+        "viewer_path": "tmp/soc-memory-final/fixture-axi-zero-strobe.html",
+        "viewer_sha256": "40e944fe245c336448599c772f332074b60db286aa505399b1029fd75bc50c3f",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/soc/ahb-boundary.ini",
+        "profile": "ahb.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "30",
+        "committed_events": "3",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "ahb.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "ahb.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "ahb.active",
+          "ahb.completed",
+          "ahb.delivered_bits",
+          "ahb.dropped",
+          "ahb.errors",
+          "ahb.generated",
+          "ahb.latency_mean_ps",
+          "ahb.pending",
+          "ahb.queue_max",
+          "ahb.queue_mean",
+          "ahb.throughput_bps",
+          "ahb.utilization",
+          "ahb.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "ahb.transaction": 2
+        },
+        "input_sha256": "07f0901a5780babf59e32b9d2bd3372735ad9331d72e7c3e150fdeec3cf3c6bf",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/ahb-boundary.ini",
+            "logical_path": "config",
+            "sha256": "da0b4cda9c23e28df5065b8a2135ea742e4e59ebf66829ebf27403c2e5ed419e"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/ahb-boundary.model.json",
+            "logical_path": "model-config",
+            "sha256": "7df309267ab902e7f1e7df2dfc660dd768ae014191cf7cadff92e854550f124d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/models/ahb-boundary/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/ahb-boundary.workload.json",
+            "logical_path": "workload",
+            "sha256": "89bb2453a1463520663c452849c334a237f634a7cc7c8a5e141601b66f207947"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-soc-ahb-boundary/results.json",
+        "result_sha256": "97649d2f67eab94a190554f77ff7210527c3a8694c4d00a515205f217668fe5a",
+        "manifest_sha256": "d2d2220cfc7be88801e5d94baaba919394f89dd72d755169c72b5e8d845ed9c9",
+        "viewer_path": "tmp/soc-memory-final/fixture-soc-ahb-boundary.html",
+        "viewer_sha256": "15f82fefac358884b25b1805bb1ce07ad49b41d0c4c5293aaa2fd868018b31b1",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/soc/ahb-wait-error.ini",
+        "profile": "ahb.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "100",
+        "committed_events": "7",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "ahb.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "ahb.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "ahb.active",
+          "ahb.completed",
+          "ahb.delivered_bits",
+          "ahb.dropped",
+          "ahb.errors",
+          "ahb.generated",
+          "ahb.latency_mean_ps",
+          "ahb.pending",
+          "ahb.queue_max",
+          "ahb.queue_mean",
+          "ahb.throughput_bps",
+          "ahb.utilization",
+          "ahb.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "ahb.transaction": 2,
+          "ahb.transfer": 2
+        },
+        "input_sha256": "75d27305b11cc0bd2a9fb3f934b8c96b3d01974aa07d1b90fc8de9060d1fa5a8",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/ahb-wait-error.ini",
+            "logical_path": "config",
+            "sha256": "8a48efb749597bd5b15dde9a6e9d37aa9b7db747f20e5ea8bdeaee753eb295d9"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/ahb-wait-error.model.json",
+            "logical_path": "model-config",
+            "sha256": "a90fc88e67e830503fbe1e6656c1df14288f7ee7c9f59d3eaac71d8b24e3c954"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/models/ahb-wait-error/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/ahb-wait-error.workload.json",
+            "logical_path": "workload",
+            "sha256": "5d6b506d8ec0315bbf9591d3d92b6a872923f953add414b43cb9bcf90d1ef4b2"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-soc-ahb-wait-error/results.json",
+        "result_sha256": "1182e7501f0f2befd01858ec5e4e78a9cfec9ce0822fdd6cb4398b54d1dd6fb7",
+        "manifest_sha256": "edfbd5a8618aca7a5a6b17fc049e69abc95816883b0075d3387653b3548a0bb0",
+        "viewer_path": "tmp/soc-memory-final/fixture-soc-ahb-wait-error.html",
+        "viewer_sha256": "3e12beaf64dfb24c7744670d20992e4c46265740e624a8806c570724daefbdea",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/soc/noc-backpressure.ini",
+        "profile": "noc.xy.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "65",
+        "committed_events": "15",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "noc.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "noc.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "noc.active",
+          "noc.completed",
+          "noc.delivered_bits",
+          "noc.dropped",
+          "noc.errors",
+          "noc.generated",
+          "noc.latency_mean_ps",
+          "noc.pending",
+          "noc.queue_max",
+          "noc.queue_mean",
+          "noc.throughput_bps",
+          "noc.utilization",
+          "noc.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "noc.transaction": 5,
+          "noc.transfer": 6
+        },
+        "input_sha256": "27b349618233e56f607f3485ded4eb9d8d33640889e5d7feed5287f2c38b225a",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/noc-backpressure.ini",
+            "logical_path": "config",
+            "sha256": "3690ddcaa89f74933eb48c833b7b631891bc5f626823f03c275e333617f01bbb"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/noc-backpressure.model.json",
+            "logical_path": "model-config",
+            "sha256": "ec7fc22d77c0d8a6aafdf8231bf51457986e41fd1d9b3e411a6e25c048d2ed6e"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/models/noc-backpressure/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "9f42eb9bae35946ad71b7fe6554756ecbc50dda9fddb063bf0a9135e7a43046d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/noc-backpressure.workload.json",
+            "logical_path": "workload",
+            "sha256": "e09202677e6f951aec41ba6005a174472d0163849cf2f70076596ca9b6dd7f27"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-soc-noc-backpressure/results.json",
+        "result_sha256": "e11332b3562f499ffcf1c58ca3e44d62abce82b114322e7c9795782661cf72b5",
+        "manifest_sha256": "59d86f917a5497565d25c99c162b9ccea3e1ad3e099112f0088a32d54096b571",
+        "viewer_path": "tmp/soc-memory-final/fixture-soc-noc-backpressure.html",
+        "viewer_sha256": "31b4993287eae7fd281964c7da5359b225d4b1f99def83364d745a22cb01e92d",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/soc/noc-xy.ini",
+        "profile": "noc.xy.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "70",
+        "committed_events": "8",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "noc.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "noc.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "noc.active",
+          "noc.completed",
+          "noc.delivered_bits",
+          "noc.dropped",
+          "noc.errors",
+          "noc.generated",
+          "noc.latency_mean_ps",
+          "noc.pending",
+          "noc.queue_max",
+          "noc.queue_mean",
+          "noc.throughput_bps",
+          "noc.utilization",
+          "noc.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "noc.transaction": 1,
+          "noc.transfer": 3
+        },
+        "input_sha256": "2aa8f795bc3376efe0724dede378cba30e2d83b075b92ea6676e2fc4ec62dcd0",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/noc-xy.ini",
+            "logical_path": "config",
+            "sha256": "3440abd663112423302cce73e6670cca037c3a55dbe43d1dfdec3d8127050009"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/noc-xy.model.json",
+            "logical_path": "model-config",
+            "sha256": "ea20ec4f2db617b8fd4a0d4af1f66a64d0111bc23406740347bd574d783e55e0"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/models/noc-xy/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "eaa619c50f0bff5d97eadf50bc730a9b6927bb3f024d3e3daf58240d4f915aa6"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/noc-xy.workload.json",
+            "logical_path": "workload",
+            "sha256": "9d7332efe46823ad1ec95b35a7547085628665132477ff76f7b5beac33fedee3"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-soc-noc-xy/results.json",
+        "result_sha256": "f949dfa7b2afba8b3328f92fd854e232cb2eb669cf95a66733ba2f65176a99f5",
+        "manifest_sha256": "4812ff718fd7235e98491d1d6fdb4707609368a0c2986d8d05449b21cc87c0b2",
+        "viewer_path": "tmp/soc-memory-final/fixture-soc-noc-xy.html",
+        "viewer_sha256": "5b593905df8f045d5367928bc9ad6067626b17283e6ba015b49aa50a1aae429d",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/soc/soc-capacity-stop.ini",
+        "profile": "soc.shared.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "40",
+        "committed_events": "6",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "soc.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "soc.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "soc.active",
+          "soc.completed",
+          "soc.delivered_bits",
+          "soc.dropped",
+          "soc.errors",
+          "soc.generated",
+          "soc.latency_mean_ps",
+          "soc.pending",
+          "soc.queue_max",
+          "soc.queue_mean",
+          "soc.throughput_bps",
+          "soc.utilization",
+          "soc.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "soc.transaction": 3,
+          "soc.transfer": 1
+        },
+        "input_sha256": "0b342c65c597554ab6961fb85f76c4263cd7d454d2103e5ac58deb7847c8ce0b",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/soc-capacity-stop.ini",
+            "logical_path": "config",
+            "sha256": "2847688a7594bcc48ae4d564f458216b1bae26477760587c552e1804966378a0"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/soc-capacity-stop.model.json",
+            "logical_path": "model-config",
+            "sha256": "0d71e5e2de478fa63bd2b220959f4eaaf16959dcec7150fe002ca450448aa912"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/models/soc-capacity-stop/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/soc-capacity-stop.workload.json",
+            "logical_path": "workload",
+            "sha256": "f9c3cbda0532cb2b09cf457618bca94ddaac7dbffe45b7a8fbb0f6b174b061ba"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-soc-soc-capacity-stop/results.json",
+        "result_sha256": "06902d90f19a3bfcd0925714003a30689a90d5a839cbe99745009102bcd55a0b",
+        "manifest_sha256": "ad744cbe8c4e3a6eaf043063297b331a67be0f7a934aa887f9585000ddbc56ab",
+        "viewer_path": "tmp/soc-memory-final/fixture-soc-soc-capacity-stop.html",
+        "viewer_sha256": "89cb2036c8f32e0b35519cfa7c3fcae78d0d657ce3f3cfac84d1d701736b31c4",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/soc/soc-round-robin.ini",
+        "profile": "soc.shared.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "100",
+        "committed_events": "10",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "soc.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "soc.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "soc.active",
+          "soc.completed",
+          "soc.delivered_bits",
+          "soc.dropped",
+          "soc.errors",
+          "soc.generated",
+          "soc.latency_mean_ps",
+          "soc.pending",
+          "soc.queue_max",
+          "soc.queue_mean",
+          "soc.throughput_bps",
+          "soc.utilization",
+          "soc.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "soc.transaction": 3,
+          "soc.transfer": 3
+        },
+        "input_sha256": "97f033144c95171f202fd215396e83ce9923a33d2b7ec7560e954a6fbcb36eef",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/soc-round-robin.ini",
+            "logical_path": "config",
+            "sha256": "a0ed4974c99530310a39df2488e973baeb23f4ca4fb088c77abf7b6f53cbf3f4"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/soc-round-robin.model.json",
+            "logical_path": "model-config",
+            "sha256": "93f425772c9d5ee6ba0d5166a3a76989ec1f168c88cbe016ae12a8158915266c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/models/soc-round-robin/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/soc/soc-round-robin.workload.json",
+            "logical_path": "workload",
+            "sha256": "dbd75b4b2906b3d29651a3bfb7b6ed8b968a60256c0a2b1e73f4e9764914a603"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-soc-soc-round-robin/results.json",
+        "result_sha256": "c6c747e623a4bf5dc436f053c82c9b979b55b9b536d1ba9c6f3c9de52e0cd4e0",
+        "manifest_sha256": "a0faf08fe156e5233b79cc4b61c1ad4df97364ff8ecc3eedfef2a6c844ee65cd",
+        "viewer_path": "tmp/soc-memory-final/fixture-soc-soc-round-robin.html",
+        "viewer_sha256": "28051a97f23b0f4fa8b574d5d702a1202ec674056bf74a6a363c6bc27975461b",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/ddr-errors.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "10",
+        "committed_events": "13",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 5,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "7cf146c66b84a00f384ea017648d2ce082600c0118c176e840961c78ddf612be",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-errors.ini",
+            "logical_path": "config",
+            "sha256": "e381ac228cb2a3b955e410a8cbc84c0d80add0ffdd27842a1eef606f07d033a3"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-errors.model.json",
+            "logical_path": "model-config",
+            "sha256": "5b50ffd57b176eaf6a7a3a31b235453ebb24d5a7b6208dcdea689c92d0f1124d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-errors.workload.json",
+            "logical_path": "workload",
+            "sha256": "8cb6afa3140bcb33fa752de214d1e6958da4c51be7b9d74fdc52f4001026a841"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-ddr-errors/results.json",
+        "result_sha256": "5a9aba6d03b8309aed8b29e8bccdf010fd469283ccc3ec27ef0ac6287bd65920",
+        "manifest_sha256": "ddb9439ba65f794051b7f00db5224cfa6037a163eca77e25bb46b02bd8183b6d",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-ddr-errors.html",
+        "viewer_sha256": "48c6c2e81dfcf524ef7f4f00f0c647f3cd4ef0262763d678df26d605ad23affc",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/ddr-row-refresh.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "33",
+        "committed_events": "26",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 4,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "b7e68156f91f284579d921bbbafea436c2a8903cc5c143bc38c20fa5f7503209",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-row-refresh.ini",
+            "logical_path": "config",
+            "sha256": "86f1175ac5f403124c937760a623f88bfc9518caf590ebf46dbe96b5be2df613"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-row-refresh.model.json",
+            "logical_path": "model-config",
+            "sha256": "21f364b6ac199404895b3c88c93daacfcc2373b73f599535fc2c785fb2c223a2"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-row-refresh.workload.json",
+            "logical_path": "workload",
+            "sha256": "38a14001977196974f9a2823690170dd81e12300a011ed7e219ee495addc8f3d"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-ddr-row-refresh/results.json",
+        "result_sha256": "da0cd78e1b5c178147af49e7de3fb49899125ab0fe050db47d1577d40b312a39",
+        "manifest_sha256": "b7982acf2602d338f0d765edc643c1d32f934cb9cf585a00af895f99d6875ef5",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-ddr-row-refresh.html",
+        "viewer_sha256": "5d05c78d8157b6fccb8e771825eebdf90b03fe9364e24a3e1b60c2dc44cca5d1",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/ddr-stop.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "7",
+        "committed_events": "4",
+        "pending_events": "5",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 1,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "645718c299a0e568d32537adab93e0bf634afdb657052857b336abf6545a8a2e",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-stop.ini",
+            "logical_path": "config",
+            "sha256": "1264c93d7df3d55aee0c833b0b4cf8ed3aab99d5e73c8df3d0f387ff0ca4b54d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-stop.model.json",
+            "logical_path": "model-config",
+            "sha256": "21f364b6ac199404895b3c88c93daacfcc2373b73f599535fc2c785fb2c223a2"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/ddr-stop.workload.json",
+            "logical_path": "workload",
+            "sha256": "38a14001977196974f9a2823690170dd81e12300a011ed7e219ee495addc8f3d"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-ddr-stop/results.json",
+        "result_sha256": "72035df2b4ff72463b8b326e7a06ed1dd93dadbb1572a66c49b34a020a0d8fc1",
+        "manifest_sha256": "034c123a0874c8593dabd45c9107c82f48b9ec23167f0e9a3526e860798320f3",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-ddr-stop.html",
+        "viewer_sha256": "b8b91e31ce2fbcf130a56525ff77c69da0b44571cc1659d2531464749db34b32",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/dma-fault-prefix.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "20",
+        "committed_events": "38",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 6,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "b64d94ba5c12bc2fa13da631b4e4d0b2c5595afba3f4d63da1b165ab10838d0c",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-fault-prefix.ini",
+            "logical_path": "config",
+            "sha256": "421c7c640ff0da5d90833edb33761edfcef23bfec828fe36e51932d60095f658"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-fault-prefix.model.json",
+            "logical_path": "model-config",
+            "sha256": "f3275150066cc801aa55b90f255015f13b72e116bfd36e2341e3ad1d3347dbc5"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-fault-prefix.workload.json",
+            "logical_path": "workload",
+            "sha256": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-dma-fault-prefix/results.json",
+        "result_sha256": "28e3be542a8599e179fe51288e6544a762c581ca7d26d39a40c0d4729f548526",
+        "manifest_sha256": "772a18bf10314708c7d24bb3e15fdf2dbfaadb8acb2a8554a4122519d16aabbd",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-dma-fault-prefix.html",
+        "viewer_sha256": "85f871de2bcc8edcd7175dd7d534fe8c0b66870ac2721451cfadcb25711142dd",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/dma-memory-content.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "25",
+        "committed_events": "41",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 6,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "ebfaa7960e30afa9ec423558c22f92fcafe553edb1e7a847d179539671cb8153",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-memory-content.ini",
+            "logical_path": "config",
+            "sha256": "e75ddf78fd40024b149a669e155e252a0b58fe4418c923207647f632753b9c06"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-memory-content.model.json",
+            "logical_path": "model-config",
+            "sha256": "2565a28c5f2d1bfc0c5e7f174a11df6f08e9326fd03e685f13ddd07f6c410c74"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-memory-content.workload.json",
+            "logical_path": "workload",
+            "sha256": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-dma-memory-content/results.json",
+        "result_sha256": "d9688f3e9d050a2c7cfe62fff3a5df25b3240550d12617106d8c2b83243ed87b",
+        "manifest_sha256": "ae96fb3c190353d943faa44f46fbeb5a68dea89e40e44a7f07293eda03814727",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-dma-memory-content.html",
+        "viewer_sha256": "8d4a21c5bb0fde903c16e1d53818eaaed90033090e28e877d678f2c072525769",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/dma-offer-order.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "6",
+        "committed_events": "14",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 3,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "bbd9e8bd0d26c07daaeb9daee9d28e2e39512115154ab13bcc9c99b30c86cbd3",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-offer-order.ini",
+            "logical_path": "config",
+            "sha256": "00edc52bae64f91ea42b73cb02cccdf96cee4f7e35551d9c8fc4ed714e431835"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-offer-order.model.json",
+            "logical_path": "model-config",
+            "sha256": "f49485b0ec3fa3d81893c52d0259ef3d016e32a0495b6dcf6170c1623be7f822"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-offer-order.workload.json",
+            "logical_path": "workload",
+            "sha256": "86e3fecc7850e909a94752ac05b28a92405d7b354c80ab54c4c442690e94aa2a"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-dma-offer-order/results.json",
+        "result_sha256": "a61f42d4ed899fc252f078f7a72530123ee939034455c33def63ad5068462c8e",
+        "manifest_sha256": "85ac6dab4fc219fbbff6200ed8d5274f650fa49c9e14de426821dce61a279d23",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-dma-offer-order.html",
+        "viewer_sha256": "2c9b2b21a2fb612064c5fccd238aa74f0a55d346f63262c9f82d6ef7638ee0eb",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/dma-stop.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "22",
+        "committed_events": "36",
+        "pending_events": "2",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 6,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "3f5944f857153c1d50e84ea6265577e45c76957e463b7700acb926b6b9ff96c2",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-stop.ini",
+            "logical_path": "config",
+            "sha256": "44616f891e3b69acda6c101be585c4b17479ede3275cfe8a3c51b6a4b70ecaf4"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-stop.model.json",
+            "logical_path": "model-config",
+            "sha256": "2565a28c5f2d1bfc0c5e7f174a11df6f08e9326fd03e685f13ddd07f6c410c74"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/dma-stop.workload.json",
+            "logical_path": "workload",
+            "sha256": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-dma-stop/results.json",
+        "result_sha256": "5f09f360d6b056662dcc7f76877a79dc9ed0c176243351378bf28862b9a886d1",
+        "manifest_sha256": "9fa42e12058682a19fd8f929cd2fadfe5b1e3371a9f56a86f994c2aefd582244",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-dma-stop.html",
+        "viewer_sha256": "3b743c4b5cf10d8700a9d96b431e3cfaf3f3a9e3b2e85fdf5cc2dd2eed61aab2",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/mailbox-fifo.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "10",
+        "committed_events": "23",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.notification": 1,
+          "memory-ipc.request": 4,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "8b864fc71a0cf9888e5b516f9fa3a866545cb208ce5d0829b4d72347321e4745",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/mailbox-fifo.ini",
+            "logical_path": "config",
+            "sha256": "b9352eb7692171fb1dc71993ebd1e43857a84bb15dfddbf92aa90390ccd97225"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/mailbox-fifo.model.json",
+            "logical_path": "model-config",
+            "sha256": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/mailbox-fifo.workload.json",
+            "logical_path": "workload",
+            "sha256": "84539ce4f4fd8507086736822ac7ebe45fbdde6abbb006f4727b086381f85d5a"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-mailbox-fifo/results.json",
+        "result_sha256": "85234464402281aed0c3d91cf4370a9efd90f288d4bf0b66fe1c479e4c7df952",
+        "manifest_sha256": "d489adb92d4d6cb6c542d1aa4d3887384ae9ccfe00b10d57604ebab92c08dc58",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-mailbox-fifo.html",
+        "viewer_sha256": "e40cba70904b768258b458563aa305a69bbdb3465edaac546e463c5ec0e510ce",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/mailbox-stop.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "7",
+        "committed_events": "16",
+        "pending_events": "3",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.notification": 1,
+          "memory-ipc.request": 3,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "f609959b51b5bdfc384ba28c04275dff6279898fed89caf574f77679805353db",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/mailbox-stop.ini",
+            "logical_path": "config",
+            "sha256": "b6d25f62c2acd5a1cbe3823267d4c4915e43c9da9163556f853327f7c1840e6d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/mailbox-stop.model.json",
+            "logical_path": "model-config",
+            "sha256": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/mailbox-stop.workload.json",
+            "logical_path": "workload",
+            "sha256": "84539ce4f4fd8507086736822ac7ebe45fbdde6abbb006f4727b086381f85d5a"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-mailbox-stop/results.json",
+        "result_sha256": "ca7a0fd1a6e6d9a6eb8f03763d99c99c5035ebed694ad8fdec32e1ab18f92e43",
+        "manifest_sha256": "376876cd3f9625a595d70b4a1eadc15c653122e5b647302eaf490dfd14ae1679",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-mailbox-stop.html",
+        "viewer_sha256": "325c5bfcacd0635d8e6608b6abdbc27c56be51abeed3810dda99cb13e2e81b33",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/shared-ownership.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "12",
+        "committed_events": "23",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 5,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "538a70303f92b5675b1e6c98b9e23a739d3d4dc9a66ddf27fc77d026d98fa0e3",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/shared-ownership.ini",
+            "logical_path": "config",
+            "sha256": "b4511e9191373f328d139118141aa457180303e30f700170b3715c564ef212ca"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/shared-ownership.model.json",
+            "logical_path": "model-config",
+            "sha256": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/shared-ownership.workload.json",
+            "logical_path": "workload",
+            "sha256": "83644d176e5aa0206232cffd86953d68f18f64c4810e2e95a078f472f7c7d9d2"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-shared-ownership/results.json",
+        "result_sha256": "9800c4ef1fd9e1662296b3e32227f65e5c24c984b988e999efecdacd9205f97d",
+        "manifest_sha256": "2bec5eee19e6497340b9fdff0a8f17d4c96cb819f6ea218d59ccdb14db441b1d",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-shared-ownership.html",
+        "viewer_sha256": "be21c1a3757b69abe3de856552ed6ba728a6f96d38074e4a088eb84e74286cfc",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/shared-stop.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "3",
+        "committed_events": "4",
+        "pending_events": "6",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 1,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "b2c0be0e8082044e333cca03d8a13fdb5ceb37965a0149a5b98207b045fb2b60",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/shared-stop.ini",
+            "logical_path": "config",
+            "sha256": "6e0c4e6b75b54a8dea2a1d303b9c0485f9b886bb0de45d842e643c4d3d8be735"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/shared-stop.model.json",
+            "logical_path": "model-config",
+            "sha256": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/shared-stop.workload.json",
+            "logical_path": "workload",
+            "sha256": "83644d176e5aa0206232cffd86953d68f18f64c4810e2e95a078f472f7c7d9d2"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-shared-stop/results.json",
+        "result_sha256": "63fdedefb3c21566dc91c776bd1b0bcb0d7430bf56f8cb112bf93ca563ec1b73",
+        "manifest_sha256": "cf4fca4cc3fcb4e42fdf5ed75a4d8f01c521e26eb888969f1fe894eb47a9e606",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-shared-stop.html",
+        "viewer_sha256": "d36f8017cdabf08d1d1fe6ba8dc00f27f9c919060b9b5773d881ac3c7ca070ca",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/sram-ports.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "9",
+        "committed_events": "14",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 3,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "5bd1fcbc58efe0c509378e609e64e53b040434d7dbe3566c00223f700ef2bb69",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/sram-ports.ini",
+            "logical_path": "config",
+            "sha256": "dc963663eeb17c297cfeb89463ee624b72e0446e0f9c34fd99d0b65cd7cea3ea"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/sram-ports.model.json",
+            "logical_path": "model-config",
+            "sha256": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/sram-ports.workload.json",
+            "logical_path": "workload",
+            "sha256": "8921580d356f51e2d84d53f883c76e18668230454dd14d6bda4b861c7cf1e10c"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-sram-ports/results.json",
+        "result_sha256": "12899728c3249df09e6b7d1e1be574fa45c2155145fd45ff80fd4431e653dbcf",
+        "manifest_sha256": "a5f1b245ba100e266ab7a0418b0837b943266c51926a0d07bb3d7f9c86480f36",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-sram-ports.html",
+        "viewer_sha256": "f74ae51f9bf73a2de66fc1f14d6ae1562a3345519d06b68ea4e925a4c54ea597",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "fixture",
+        "config": "docs/verification/fixtures/memory-ipc/sram-stop.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "8",
+        "committed_events": "12",
+        "pending_events": "2",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 3,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "828303dd6d0606956c463620b79994f5dba4b08b72c1b0fa4589f3f0df7f926a",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/sram-stop.ini",
+            "logical_path": "config",
+            "sha256": "255fd5203bcfde9308c53b50fdccf46a2040254fe448d803b124e56695f8e175"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/sram-stop.model.json",
+            "logical_path": "model-config",
+            "sha256": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/memory-ipc/sram-stop.workload.json",
+            "logical_path": "workload",
+            "sha256": "8921580d356f51e2d84d53f883c76e18668230454dd14d6bda4b861c7cf1e10c"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/fixture-memory-ipc-sram-stop/results.json",
+        "result_sha256": "39c0e0945c483bd45dfbf9411a5de5150d458e26d0a7bb8b504cde7f98d88cb8",
+        "manifest_sha256": "0f91a744092a289f7e89ec5ee74629b8e38b412797e1a47b223201747bb3cdd6",
+        "viewer_path": "tmp/soc-memory-final/fixture-memory-ipc-sram-stop.html",
+        "viewer_sha256": "82789bb53baa453a5ffe7236e7120e10f80dcfddbcd37bd424f2e135035cf153",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "example",
+        "config": "examples/axi/read-write.ini",
+        "profile": "axi4.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "100000",
+        "committed_events": "12",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "axi.handshake",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "axi.transaction",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "axi.active",
+          "axi.bus_utilization",
+          "axi.channel_stall_cycles",
+          "axi.completed",
+          "axi.decerr",
+          "axi.dropped",
+          "axi.generated",
+          "axi.latency_mean_ps",
+          "axi.latency_ps",
+          "axi.okay",
+          "axi.outstanding",
+          "axi.outstanding_max",
+          "axi.outstanding_mean",
+          "axi.pending",
+          "axi.queue_length",
+          "axi.queue_max",
+          "axi.queue_mean",
+          "axi.read_bits",
+          "axi.read_throughput_bps",
+          "axi.slverr",
+          "axi.wait_mean_ps",
+          "axi.wait_ps",
+          "axi.written_bits",
+          "axi.written_throughput_bps"
+        ],
+        "model_record_counts": {
+          "axi.handshake": 7,
+          "axi.memory": 1,
+          "axi.transaction": 2
+        },
+        "input_sha256": "9540ecd1e70e0148a0fd0e7ac9ea52de932de677d858f97c47b63aaaf6463a45",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/axi/read-write.ini",
+            "logical_path": "config",
+            "sha256": "ee09c0940650d20bbe4b94079d042e5202b25ded0a93f30b5f5fe82e19df7695"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/axi/model.json",
+            "logical_path": "model-config",
+            "sha256": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/axi/models/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/axi/workload.json",
+            "logical_path": "workload",
+            "sha256": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/example-axi-read-write/results.json",
+        "result_sha256": "f99b15f144653705b280ac37213f8b73e04fb86fa0d431a1268f242681548c31",
+        "manifest_sha256": "5c46f9af4fd820bda1d620964d777e3d4eeb2a7371a7fe3c63aa8e27ecda61c5",
+        "viewer_path": "tmp/soc-memory-final/example-axi-read-write.html",
+        "viewer_sha256": "ef027f126832d918a989e4ff511d636c465a86c5b297ca7c4451bd203de9474c",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "example",
+        "config": "examples/soc/ahb-boundary.ini",
+        "profile": "ahb.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "30",
+        "committed_events": "3",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "ahb.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "ahb.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "ahb.active",
+          "ahb.completed",
+          "ahb.delivered_bits",
+          "ahb.dropped",
+          "ahb.errors",
+          "ahb.generated",
+          "ahb.latency_mean_ps",
+          "ahb.pending",
+          "ahb.queue_max",
+          "ahb.queue_mean",
+          "ahb.throughput_bps",
+          "ahb.utilization",
+          "ahb.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "ahb.transaction": 2
+        },
+        "input_sha256": "07f0901a5780babf59e32b9d2bd3372735ad9331d72e7c3e150fdeec3cf3c6bf",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/ahb-boundary.ini",
+            "logical_path": "config",
+            "sha256": "da0b4cda9c23e28df5065b8a2135ea742e4e59ebf66829ebf27403c2e5ed419e"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/ahb-boundary.model.json",
+            "logical_path": "model-config",
+            "sha256": "7df309267ab902e7f1e7df2dfc660dd768ae014191cf7cadff92e854550f124d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/models/ahb-boundary/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/ahb-boundary.workload.json",
+            "logical_path": "workload",
+            "sha256": "89bb2453a1463520663c452849c334a237f634a7cc7c8a5e141601b66f207947"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/example-soc-ahb-boundary/results.json",
+        "result_sha256": "1fe127292bdbe862feecb5d600a821239f630aaac21577a49d5c5f1dd259b87d",
+        "manifest_sha256": "5ba0255190d3e2416285ebe755ce1105bbe9724c61297f245cd11f4b36fcd346",
+        "viewer_path": "tmp/soc-memory-final/example-soc-ahb-boundary.html",
+        "viewer_sha256": "38d50593f83f0f80f2843fba9073e3a131577256cc254ce18f9aa89adca2b298",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "example",
+        "config": "examples/soc/ahb-wait-error.ini",
+        "profile": "ahb.transaction.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "100",
+        "committed_events": "7",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "ahb.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "ahb.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "ahb.active",
+          "ahb.completed",
+          "ahb.delivered_bits",
+          "ahb.dropped",
+          "ahb.errors",
+          "ahb.generated",
+          "ahb.latency_mean_ps",
+          "ahb.pending",
+          "ahb.queue_max",
+          "ahb.queue_mean",
+          "ahb.throughput_bps",
+          "ahb.utilization",
+          "ahb.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "ahb.transaction": 2,
+          "ahb.transfer": 2
+        },
+        "input_sha256": "75d27305b11cc0bd2a9fb3f934b8c96b3d01974aa07d1b90fc8de9060d1fa5a8",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/ahb-wait-error.ini",
+            "logical_path": "config",
+            "sha256": "8a48efb749597bd5b15dde9a6e9d37aa9b7db747f20e5ea8bdeaee753eb295d9"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/ahb-wait-error.model.json",
+            "logical_path": "model-config",
+            "sha256": "a90fc88e67e830503fbe1e6656c1df14288f7ee7c9f59d3eaac71d8b24e3c954"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/models/ahb-wait-error/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/ahb-wait-error.workload.json",
+            "logical_path": "workload",
+            "sha256": "5d6b506d8ec0315bbf9591d3d92b6a872923f953add414b43cb9bcf90d1ef4b2"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/example-soc-ahb-wait-error/results.json",
+        "result_sha256": "3497cb587daaf280e113b9c5d92cecda37e379c6681af483f67e4ff5fa52b8b4",
+        "manifest_sha256": "9ae9db12e632616f25c3fe5f49eebf59d9253109625adeac8550aa0a53f3cb38",
+        "viewer_path": "tmp/soc-memory-final/example-soc-ahb-wait-error.html",
+        "viewer_sha256": "d4bc80c5b46bec5e1cd157c2588a704cefc4a997ef36d08039c35abfe3812e90",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "example",
+        "config": "examples/soc/noc-backpressure.ini",
+        "profile": "noc.xy.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "65",
+        "committed_events": "15",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "noc.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "noc.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "noc.active",
+          "noc.completed",
+          "noc.delivered_bits",
+          "noc.dropped",
+          "noc.errors",
+          "noc.generated",
+          "noc.latency_mean_ps",
+          "noc.pending",
+          "noc.queue_max",
+          "noc.queue_mean",
+          "noc.throughput_bps",
+          "noc.utilization",
+          "noc.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "noc.transaction": 5,
+          "noc.transfer": 6
+        },
+        "input_sha256": "27b349618233e56f607f3485ded4eb9d8d33640889e5d7feed5287f2c38b225a",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/noc-backpressure.ini",
+            "logical_path": "config",
+            "sha256": "3690ddcaa89f74933eb48c833b7b631891bc5f626823f03c275e333617f01bbb"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/noc-backpressure.model.json",
+            "logical_path": "model-config",
+            "sha256": "ec7fc22d77c0d8a6aafdf8231bf51457986e41fd1d9b3e411a6e25c048d2ed6e"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/models/noc-backpressure/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "9f42eb9bae35946ad71b7fe6554756ecbc50dda9fddb063bf0a9135e7a43046d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/noc-backpressure.workload.json",
+            "logical_path": "workload",
+            "sha256": "e09202677e6f951aec41ba6005a174472d0163849cf2f70076596ca9b6dd7f27"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/example-soc-noc-backpressure/results.json",
+        "result_sha256": "8e658dd1ed850d75961f12cb12f659c39ed300f39619830e7bef608e4f1f8881",
+        "manifest_sha256": "dae684e2cd11b2e2fa1a458cdea636678dc4e1bfdc4a21651cb8938a2a6c083a",
+        "viewer_path": "tmp/soc-memory-final/example-soc-noc-backpressure.html",
+        "viewer_sha256": "95af53fa641dbb59c08faac0f90f33860f904a27d631d30eb4921e950c611adc",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "example",
+        "config": "examples/soc/noc-xy.ini",
+        "profile": "noc.xy.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "70",
+        "committed_events": "8",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "noc.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "noc.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "noc.active",
+          "noc.completed",
+          "noc.delivered_bits",
+          "noc.dropped",
+          "noc.errors",
+          "noc.generated",
+          "noc.latency_mean_ps",
+          "noc.pending",
+          "noc.queue_max",
+          "noc.queue_mean",
+          "noc.throughput_bps",
+          "noc.utilization",
+          "noc.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "noc.transaction": 1,
+          "noc.transfer": 3
+        },
+        "input_sha256": "2aa8f795bc3376efe0724dede378cba30e2d83b075b92ea6676e2fc4ec62dcd0",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/noc-xy.ini",
+            "logical_path": "config",
+            "sha256": "3440abd663112423302cce73e6670cca037c3a55dbe43d1dfdec3d8127050009"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/noc-xy.model.json",
+            "logical_path": "model-config",
+            "sha256": "ea20ec4f2db617b8fd4a0d4af1f66a64d0111bc23406740347bd574d783e55e0"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/models/noc-xy/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "eaa619c50f0bff5d97eadf50bc730a9b6927bb3f024d3e3daf58240d4f915aa6"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/noc-xy.workload.json",
+            "logical_path": "workload",
+            "sha256": "9d7332efe46823ad1ec95b35a7547085628665132477ff76f7b5beac33fedee3"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/example-soc-noc-xy/results.json",
+        "result_sha256": "62682cd8dfad2c195abd3b684c98307548c0d4d33bd80b0ed7b4b834e8f2fe34",
+        "manifest_sha256": "486dc0d6ebcedb47426520ba24b93215bc700f0e4ac8f5fdf0ae0037e9d09f02",
+        "viewer_path": "tmp/soc-memory-final/example-soc-noc-xy.html",
+        "viewer_sha256": "d484b26118ba42bb2ad3e4a443b90b4c019928996dd6cdceef1bf7d4091b1300",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "example",
+        "config": "examples/soc/soc-capacity-stop.ini",
+        "profile": "soc.shared.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "40",
+        "committed_events": "6",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "soc.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "soc.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "soc.active",
+          "soc.completed",
+          "soc.delivered_bits",
+          "soc.dropped",
+          "soc.errors",
+          "soc.generated",
+          "soc.latency_mean_ps",
+          "soc.pending",
+          "soc.queue_max",
+          "soc.queue_mean",
+          "soc.throughput_bps",
+          "soc.utilization",
+          "soc.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "soc.transaction": 3,
+          "soc.transfer": 1
+        },
+        "input_sha256": "0b342c65c597554ab6961fb85f76c4263cd7d454d2103e5ac58deb7847c8ce0b",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/soc-capacity-stop.ini",
+            "logical_path": "config",
+            "sha256": "2847688a7594bcc48ae4d564f458216b1bae26477760587c552e1804966378a0"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/soc-capacity-stop.model.json",
+            "logical_path": "model-config",
+            "sha256": "0d71e5e2de478fa63bd2b220959f4eaaf16959dcec7150fe002ca450448aa912"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/models/soc-capacity-stop/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/soc-capacity-stop.workload.json",
+            "logical_path": "workload",
+            "sha256": "f9c3cbda0532cb2b09cf457618bca94ddaac7dbffe45b7a8fbb0f6b174b061ba"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/example-soc-soc-capacity-stop/results.json",
+        "result_sha256": "12d7e56aa9e727844aafe9e7fcaed9d53bfff8cf723256177d211075eaf3e8e9",
+        "manifest_sha256": "433aadfd79beeb81fbdaddd16e339a4a4c05645232bfa82fc3df3f0be300229c",
+        "viewer_path": "tmp/soc-memory-final/example-soc-soc-capacity-stop.html",
+        "viewer_sha256": "7769696edc39be2efa7600f96567b541c3d844ace990b0961c79d3bc6b31a4c5",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "example",
+        "config": "examples/soc/soc-round-robin.ini",
+        "profile": "soc.shared.v1",
+        "exit_code": 0,
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "100",
+        "committed_events": "10",
+        "pending_events": "0",
+        "schemas": [
+          {
+            "schema_name": "soc.transaction",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "soc.transfer",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "soc.active",
+          "soc.completed",
+          "soc.delivered_bits",
+          "soc.dropped",
+          "soc.errors",
+          "soc.generated",
+          "soc.latency_mean_ps",
+          "soc.pending",
+          "soc.queue_max",
+          "soc.queue_mean",
+          "soc.throughput_bps",
+          "soc.utilization",
+          "soc.wait_mean_ps"
+        ],
+        "model_record_counts": {
+          "soc.transaction": 3,
+          "soc.transfer": 3
+        },
+        "input_sha256": "97f033144c95171f202fd215396e83ce9923a33d2b7ec7560e954a6fbcb36eef",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/soc-round-robin.ini",
+            "logical_path": "config",
+            "sha256": "a0ed4974c99530310a39df2488e973baeb23f4ca4fb088c77abf7b6f53cbf3f4"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/soc-round-robin.model.json",
+            "logical_path": "model-config",
+            "sha256": "93f425772c9d5ee6ba0d5166a3a76989ec1f168c88cbe016ae12a8158915266c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/models/soc-round-robin/demo/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/soc/soc-round-robin.workload.json",
+            "logical_path": "workload",
+            "sha256": "dbd75b4b2906b3d29651a3bfb7b6ed8b968a60256c0a2b1e73f4e9764914a603"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/example-soc-soc-round-robin/results.json",
+        "result_sha256": "7c339b495c821061e3bbfae95bedac31621af4051a2d1b0ea0f192b40690eb1f",
+        "manifest_sha256": "f0a80648f9935a59572d5ef2ab5a206674a6a49e28f45b5f26890fdaad1ac1c1",
+        "viewer_path": "tmp/soc-memory-final/example-soc-soc-round-robin.html",
+        "viewer_sha256": "2a9ad90c677f1eadc9cd265e7fef5f2d2edf24f3159852f7c23697abf40f2ca1",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      },
+      {
+        "kind": "example",
+        "config": "examples/memory-ipc/copy.ini",
+        "profile": "memory.ipc.transaction.v1",
+        "exit_code": 0,
+        "termination": "time_limit",
+        "partial": false,
+        "end_ps": "25",
+        "committed_events": "41",
+        "pending_events": "1",
+        "schemas": [
+          {
+            "schema_name": "memory-ipc.dma",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.mailbox",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.memory",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.notification",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.request",
+            "schema_version": 1
+          },
+          {
+            "schema_name": "memory-ipc.shared",
+            "schema_version": 1
+          }
+        ],
+        "metric_ids": [
+          "memory_ipc.busy_ratio",
+          "memory_ipc.committed_bytes",
+          "memory_ipc.completed",
+          "memory_ipc.ddr_refreshes",
+          "memory_ipc.latency_ps",
+          "memory_ipc.notifications",
+          "memory_ipc.offered",
+          "memory_ipc.queue_length",
+          "memory_ipc.queue_mean",
+          "memory_ipc.rejected"
+        ],
+        "model_record_counts": {
+          "memory-ipc.dma": 1,
+          "memory-ipc.mailbox": 1,
+          "memory-ipc.memory": 2,
+          "memory-ipc.request": 6,
+          "memory-ipc.shared": 1
+        },
+        "input_sha256": "4d991abe9389705044f5dbecd8e06d4580f4cfaedad537348ff63d9749b04109",
+        "input_files": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/memory-ipc/copy.ini",
+            "logical_path": "config",
+            "sha256": "d4992166286e465c8a95378a89b8c42c086980577d651c429d6fdf0cb0b62e83"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/memory-ipc/model.json",
+            "logical_path": "model-config",
+            "sha256": "2565a28c5f2d1bfc0c5e7f174a11df6f08e9326fd03e685f13ddd07f6c410c74"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/memory-ipc/models/memoryipc/Main.ned",
+            "logical_path": "root0/Main.ned",
+            "sha256": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/memory-ipc/models/memoryipc/Types.ned",
+            "logical_path": "root0/Types.ned",
+            "sha256": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator/examples/memory-ipc/workload.json",
+            "logical_path": "workload",
+            "sha256": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175"
+          }
+        ],
+        "result_path": "tmp/soc-memory-final/example-memory-ipc-copy/results.json",
+        "result_sha256": "96572b0e58fab2abc256c6f2963a0aae091fa68b0b01a046ff0655398bf25758",
+        "manifest_sha256": "e0172a530aacd96a5231afdb52b18a3b14bfe88120c97ee17c32ccdb1bb5e047",
+        "viewer_path": "tmp/soc-memory-final/example-memory-ipc-copy.html",
+        "viewer_sha256": "4228ca6a27eb25044eef2f625205ae69b1bb350e699e1b75f058d895849fa7e6",
+        "validate_run_view": "passed",
+        "manifest_and_source_hashes": "passed",
+        "registered_schemas_metrics_and_unique_ids": "passed"
+      }
+    ],
+    "viewer_model_parse_all": "passed",
+    "equality_reference": "cargo test --locked --workspace: tests/axi.rs, tests/soc.rs, tests/memory_ipc.rs execute all 27 independent analytic fixtures",
+    "command_patterns": [
+      "target/debug/dir-simulator validate --config <config>",
+      "target/debug/dir-simulator run --config <config> --output <fresh-output>",
+      "target/debug/dir-simulator view --input <fresh-output>/results.json --output <viewer.html>"
+    ]
+  },
+  "review": {
+    "status": "No remaining blocking findings after fixes and targeted re-review",
+    "scope": [
+      "Clock and stop boundaries",
+      "Committed-prefix rollback",
+      "Lazy SoC scheduling and bounded live-state checkpoints",
+      "Memory completion owner and generator order",
+      "Metric reservation and callback effect provenance",
+      "Sorted registration metadata"
+    ]
+  },
+  "evidence_boundaries": [
+    "The Rust integration tests execute all 27 independent analytic fixtures and compare their documented projections; CLI checks capture actual artifacts separately.",
+    "Built-in transaction profiles retain the existing prepare/run/validate/view interfaces. The public Registry/Context/Envelope extension API is not part of this implementation.",
+    "Transaction-level abstraction does not establish full AXI/AHB/RTL, JEDEC/physical DDR, cache coherence, CPU execution or hardware conformance.",
+    "10,000-request sequential SoC/NoC regression cases passed; no million-request performance acceptance is claimed.",
+    "Traceability success establishes document links, not unexecuted product or standards-conformance acceptance."
+  ]
+}

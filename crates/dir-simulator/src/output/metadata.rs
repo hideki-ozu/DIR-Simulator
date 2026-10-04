@@ -85,6 +85,15 @@ pub(super) fn build(prepared: &PreparedSimulation, timestamp: &str) -> Result<Va
     if prepared.canfd.is_some() {
         return super::canfd::metadata(prepared, timestamp, sources, source_hashes, config);
     }
+    if prepared.axi.is_some() {
+        return super::axi::metadata(prepared, timestamp, sources, source_hashes, config);
+    }
+    if prepared.soc.is_some() {
+        return super::soc::metadata(prepared, timestamp, sources, source_hashes, config);
+    }
+    if prepared.memory_ipc.is_some() {
+        return super::memory_ipc::metadata(prepared, timestamp, sources, source_hashes, config);
+    }
     config.insert(
         format!("{}.bitrate", prepared.can.bus_id),
         format!("{}bit/s", prepared.can.bitrate),
