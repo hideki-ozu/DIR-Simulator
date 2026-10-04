@@ -3,7 +3,7 @@ use serde_json::json;
 use std::path::Path;
 use std::process::ExitCode;
 
-const HELP: &str = "DIR Simulator — Classical CAN, Gateway and Ethernet L2/QoS\n\nUsage:\n  dir-simulator validate --config PATH\n  dir-simulator run --config PATH --output DIR\n  dir-simulator view --input results.json --output viewer.html\n  dir-simulator ned-editor [--config PATH] [--export-root DIR] [--state-root DIR]\n  dir-simulator --help\n  dir-simulator --version\n\nInput: NED topology, INI settings and JSON workload.\nOutput: manifest.json, results.json, events.csv, summary.csv, diagnostics.jsonl\nViewer: standalone local HTML; preserves existing files and opens no browser.\n";
+const HELP: &str = "DIR Simulator — Classical CAN, Gateway and Ethernet L2/QoS/VLAN\n\nUsage:\n  dir-simulator validate --config PATH\n  dir-simulator run --config PATH --output DIR\n  dir-simulator view --input results.json --output viewer.html\n  dir-simulator ned-editor [--config PATH] [--export-root DIR] [--state-root DIR]\n  dir-simulator --help\n  dir-simulator --version\n\nInput: NED topology, INI settings and JSON workload.\nOutput: manifest.json, results.json, events.csv, summary.csv, diagnostics.jsonl\nViewer: standalone local HTML; preserves existing files and opens no browser.\n";
 
 fn diagnostic(d: &Diagnostic) {
     eprintln!("{}", serde_json::to_string(d).expect("diagnostic JSON"));

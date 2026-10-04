@@ -1,6 +1,6 @@
 //! Validated Ethernet L2 configuration and immutable serialized frame bytes.
 use serde::Serialize;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 #[derive(Debug, Clone, Serialize)]
 pub struct EthernetDevice {
     pub id: String,
@@ -11,6 +11,10 @@ pub struct EthernetDevice {
     pub rx_processing_delay_ps: u64,
     pub forward_delay_ps: u64,
     pub fdb: BTreeMap<String, String>,
+    pub vlan_fdb: BTreeMap<(u16, String), String>,
+    pub multicast: BTreeMap<(u16, String), Vec<String>>,
+    pub subscriptions: BTreeSet<(u16, String)>,
+    pub unknown_multicast: String,
 }
 #[derive(Debug, Clone, Serialize)]
 pub struct EthernetDirection {
@@ -22,12 +26,29 @@ pub struct EthernetDirection {
     pub bitrate_bps: u64,
     pub delay_ps: u64,
 }
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct EthernetVlanTag {
+    pub vid: u16,
+    pub pcp: u8,
+    pub dei: u8,
+}
+#[derive(Debug, Clone, Serialize)]
+pub struct EthernetPortPolicy {
+    pub port: String,
+    pub ingress: String,
+    pub device: usize,
+    pub pvid: u16,
+    pub admit: String,
+    pub default_priority: u8,
+    pub vlans: BTreeMap<u16, bool>,
+}
 #[derive(Debug, Clone, Serialize)]
 pub struct EthernetWireFrame {
     pub src_mac: String,
     pub dst_mac: String,
     pub ether_type: u16,
     pub data_hex: String,
+    pub tag: Option<EthernetVlanTag>,
     pub pad_bytes: u64,
     pub mac_bytes: u64,
     pub fcs_hex: String,
@@ -37,6 +58,7 @@ pub struct EthernetWireFrame {
 pub struct EthernetGenerator {
     pub id: String,
     pub source: usize,
+    pub source_vlan_id: Option<u16>,
     pub times_ps: Vec<u64>,
     pub frame: EthernetWireFrame,
     pub schedule: Option<EthernetSchedule>,
@@ -50,6 +72,7 @@ pub struct PreparedEthernet {
     pub directions: Vec<EthernetDirection>,
     pub generators: Vec<EthernetGenerator>,
     pub outputs: Vec<EthernetOutputConfig>,
+    pub port_policies: Vec<EthernetPortPolicy>,
 }
 
 #[derive(Debug, Clone, Serialize)]

@@ -194,3 +194,158 @@ fn qos_config_duplicate_json_key_is_rejected_before_overwrite() {
     let mut p = model();
     assert!(configure("{\"schema_version\":2,\"schema_version\":2,\"endpoints\":[],\"switches\":[],\"outputs\":[]}",&mut p,"ethernet.l2.qos.v1").unwrap_err().message.contains("duplicate"));
 }
+
+fn vlan_config(p: &PreparedEthernet) -> Value {
+    let mut v = config(p);
+    v["schema_version"] = json!(3);
+    for endpoint in v["endpoints"].as_array_mut().unwrap() {
+        endpoint["multicast"] = json!([]);
+    }
+    for switch in v["switches"].as_array_mut().unwrap() {
+        for entry in switch["fdb"].as_array_mut().unwrap() {
+            entry["vid"] = json!(10);
+        }
+        switch["multicast"] = json!([]);
+        switch["unknown_multicast"] = json!("flood");
+    }
+    v["ports"] = Value::Array(p.directions.iter().map(|d| json!({"port":d.from_port,"pvid":10,"admit":"all","default_priority":2,"vlans":[{"vid":10,"tagged":false},{"vid":20,"tagged":true}]})).collect());
+    v
+}
+fn vlan_model() -> PreparedEthernet {
+    let mut p = model();
+    p.outputs.clear();
+    p.generators.clear();
+    configure(&vlan_config(&p).to_string(), &mut p, "ethernet.l2.vlan.v1").unwrap();
+    p
+}
+fn vlan_generator() -> Value {
+    let mut g = generator();
+    g["frame"]["tag"] = Value::Null;
+    g
+}
+#[test]
+fn vlan_config_rejects_invalid_memberships_tables_and_strict_fields() {
+    for mutation in 0..18 {
+        let mut p = model();
+        let mut v = vlan_config(&p);
+        match mutation {
+            0 => v["schema_version"] = json!(2),
+            1 => {
+                v["ports"].as_array_mut().unwrap().pop();
+            }
+            2 => v["ports"][1] = v["ports"][0].clone(),
+            3 => v["ports"][0]["pvid"] = json!(true),
+            4 => v["ports"][0]["pvid"] = json!(0),
+            5 => v["ports"][0]["pvid"] = json!(4095),
+            6 => v["ports"][0]["pvid"] = json!(11),
+            7 => v["ports"][0]["vlans"][1]["tagged"] = json!(false),
+            8 => v["ports"][0]["vlans"][1]["vid"] = json!(10),
+            9 => v["ports"][0]["admit"] = json!("auto"),
+            10 => v["ports"][0]["default_priority"] = json!(8),
+            11 => v["switches"][0]["fdb"][0]["vid"] = json!(30),
+            12 => v["switches"][0]["fdb"][0]["egress"] = json!("Main.a.tx"),
+            13 => v["switches"][0]["unknown_multicast"] = json!("learn"),
+            14 => {
+                v["switches"][0]["multicast"] =
+                    json!([{"vid":10,"dst_mac":"ff:ff:ff:ff:ff:ff","egresses":[]}])
+            }
+            15 => {
+                v["switches"][0]["multicast"] =
+                    json!([{"vid":10,"dst_mac":"01:80:c2:00:00:0f","egresses":[]}])
+            }
+            16 => {
+                v["endpoints"][0]["multicast"] = json!([{"vid":30,"dst_mac":"01:00:5e:00:00:01"}])
+            }
+            17 => {
+                v["ports"][0].as_object_mut().unwrap().remove("admit");
+            }
+            _ => unreachable!(),
+        }
+        assert!(
+            configure(&v.to_string(), &mut p, "ethernet.l2.vlan.v1").is_err(),
+            "mutation {mutation}"
+        );
+    }
+}
+#[test]
+fn vlan_empty_future_workloads_still_validate_tag_and_source_contract() {
+    for mutation in 0..12 {
+        let mut p = vlan_model();
+        let mut g = vlan_generator();
+        g["count"] = json!("0");
+        match mutation {
+            0 => {
+                g["frame"].as_object_mut().unwrap().remove("tag");
+            }
+            1 => g["frame"]["tag"] = json!({"vid":true,"pcp":3,"dei":0}),
+            2 => g["frame"]["tag"] = json!({"vid":0,"pcp":3,"dei":0}),
+            3 => g["frame"]["tag"] = json!({"vid":20,"pcp":8,"dei":0}),
+            4 => g["frame"]["tag"] = json!({"vid":20,"pcp":3,"dei":2}),
+            5 => g["frame"]["tag"] = json!({"vid":20,"pcp":true,"dei":0}),
+            6 => g["frame"]["tag"] = json!({"vid":10,"pcp":3,"dei":0}),
+            7 => g["frame"]["tag"] = json!({"vid":30,"pcp":3,"dei":0}),
+            8 => g["frame"]["tag"] = json!({"vid":20,"pcp":2,"dei":0}),
+            9 => g["frame"]["dst_mac"] = json!("01:80:c2:00:00:00"),
+            10 => g["frame"]["ether_type"] = json!(0x8100),
+            11 => g["frame"]["data"] = json!("ff".repeat(1501)),
+            _ => unreachable!(),
+        }
+        assert!(
+            workload(
+                &json!({"schema_version":3,"generators":[g]}).to_string(),
+                &mut p,
+                "ethernet.l2.vlan.v1"
+            )
+            .is_err(),
+            "mutation {mutation}"
+        );
+    }
+    let mut p = vlan_model();
+    let mut g = vlan_generator();
+    g["frame"]["dst_mac"] = json!("01:00:5e:00:00:01");
+    g["frame"]["tag"] = json!({"vid":20,"pcp":3,"dei":1});
+    workload(
+        &json!({"schema_version":3,"generators":[g.clone()]}).to_string(),
+        &mut p,
+        "ethernet.l2.vlan.v1",
+    )
+    .unwrap();
+    assert_eq!(p.generators[0].source_vlan_id, Some(20));
+    assert_eq!(p.generators[0].frame.tag.unwrap().dei, 1);
+    let mut other = g.clone();
+    other["id"] = json!("other");
+    other["count"] = json!("0");
+    other["frame"]["tag"]["dei"] = json!(0);
+    assert!(
+        workload(
+            &json!({"schema_version":3,"generators":[g,other]}).to_string(),
+            &mut vlan_model(),
+            "ethernet.l2.vlan.v1"
+        )
+        .is_err()
+    );
+}
+#[test]
+fn vlan_group_membership_is_static_and_old_profile_rejects_schema3() {
+    let mut p = model();
+    let mut v = vlan_config(&p);
+    v["switches"][0]["multicast"] = json!([{"vid":10,"dst_mac":"01:00:5E:00:00:01","egresses":["Main.sw.tx_c","Main.sw.tx_b"]}]);
+    v["endpoints"][0]["multicast"] = json!([{"vid":10,"dst_mac":"01:00:5E:00:00:01"}]);
+    configure(&v.to_string(), &mut p, "ethernet.l2.vlan.v1").unwrap();
+    let sw = p.devices.iter().find(|d| d.kind == "switch").unwrap();
+    assert_eq!(
+        sw.multicast[&(10, "01:00:5e:00:00:01".into())],
+        vec!["Main.sw.tx_b", "Main.sw.tx_c"]
+    );
+    for profile in ["ethernet.l2.store-forward.v1", "ethernet.l2.qos.v1"] {
+        assert!(configure(&v.to_string(), &mut model(), profile).is_err());
+        assert!(
+            workload(
+                &json!({"schema_version":3,"generators":[]}).to_string(),
+                &mut model(),
+                profile
+            )
+            .is_err()
+        );
+    }
+}

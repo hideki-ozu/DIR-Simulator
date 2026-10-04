@@ -155,7 +155,7 @@
     }
   }
   function loadObject(raw, filename) {
-    if (["ethernet.l2.store-forward.v1", "ethernet.l2.qos.v1"].includes(raw?.metadata?.model_profile)) {
+    if (["ethernet.l2.store-forward.v1", "ethernet.l2.qos.v1", "ethernet.l2.vlan.v1"].includes(raw?.metadata?.model_profile)) {
       clearResult();
       window.DIREthernetApp.mount(raw, filename);
       $("empty-state").hidden = true;

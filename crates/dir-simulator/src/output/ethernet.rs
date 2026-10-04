@@ -4,6 +4,9 @@ use super::json::{canonical, opt_d};
 use super::publish::digest;
 use crate::snapshot::Snapshot;
 use crate::snapshot::ethernet::EthernetSnapshot;
+use crate::types::ethernet::{
+    EthernetDevice, EthernetPortPolicy, EthernetVlanTag, EthernetWireFrame,
+};
 use crate::types::{Diagnostic, PreparedSimulation};
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
@@ -11,6 +14,46 @@ mod flow;
 
 pub(super) const METRICS: &str = "queue_length queue_max queue_mean ethernet.generated ethernet.transfer_offered ethernet.queued ethernet.transmitting ethernet.serialized ethernet.dropped ethernet.received ethernet.filtered ethernet.forwarded ethernet.processing ethernet.link_utilization ethernet.payload_bits ethernet.mac_bits ethernet.wire_bits ethernet.occupied_bits ethernet.payload_throughput_bps ethernet.delivery_ps ethernet.delivery_mean_ps";
 const QOS_METRICS: &str = "queue_bytes queue_bytes_max queue_bytes_mean ethernet.queue_wait_ps ethernet.serialization_ps ethernet.propagation_ps ethernet.processing_ps ethernet.flow.generated ethernet.flow.received ethernet.flow.copy_dropped ethernet.flow.filtered ethernet.flow.processing ethernet.flow.source_processing ethernet.flow.unfinished_copies ethernet.flow.deadline_missed ethernet.flow.deadline_sample_count ethernet.flow.deadline_miss_ratio ethernet.flow.delivery_mean_ps ethernet.flow.delivery_max_ps ethernet.flow.delivery_p50_ps ethernet.flow.delivery_p95_ps ethernet.flow.delivery_p99_ps ethernet.flow.delivery_jitter_ps ethernet.flow.queue_wait_mean_ps ethernet.flow.serialization_mean_ps ethernet.flow.propagation_mean_ps ethernet.flow.processing_mean_ps";
+
+const FILTER_REASONS: [&str; 8] = [
+    "ingress_frame_type",
+    "ingress_vlan_membership",
+    "destination_mismatch",
+    "multicast_not_subscribed",
+    "same_ingress",
+    "no_vlan_egress",
+    "multicast_no_egress",
+    "unknown_multicast",
+];
+
+fn is_qos(prepared: &PreparedSimulation) -> bool {
+    matches!(
+        prepared.common.profile.as_str(),
+        "ethernet.l2.qos.v1" | "ethernet.l2.vlan.v1"
+    )
+}
+fn tag_json(tag: Option<&EthernetVlanTag>) -> Value {
+    tag.map_or(Value::Null, |tag| json!({"vid":tag.vid.to_string(),"pcp":tag.pcp.to_string(),"dei":tag.dei.to_string()}))
+}
+fn wire_json(wire: &EthernetWireFrame) -> Value {
+    json!({"src_mac":wire.src_mac,"dst_mac":wire.dst_mac,"ether_type":wire.ether_type.to_string(),
+        "data_hex":wire.data_hex,"pad_bytes":wire.pad_bytes.to_string(),"mac_bytes":wire.mac_bytes.to_string(),
+        "tag":tag_json(wire.tag.as_ref()),"fcs_hex":wire.fcs_hex,"mac_hex":wire.mac_hex})
+}
+fn port_json(port: &EthernetPortPolicy) -> Value {
+    json!({"port":port.port,"ingress":port.ingress,"pvid":port.pvid.to_string(),
+        "admit":port.admit,"default_priority":port.default_priority.to_string(),
+        "vlans":port.vlans.iter().map(|(vid,tagged)|json!({"vid":vid.to_string(),"tagged":tagged})).collect::<Vec<_>>()})
+}
+fn vlan_device_json(device: &EthernetDevice) -> Value {
+    if device.kind == "endpoint" {
+        json!({"multicast":device.subscriptions.iter().map(|(vid,mac)|json!({"vid":vid.to_string(),"dst_mac":mac})).collect::<Vec<_>>()})
+    } else {
+        json!({"vlan_fdb":device.vlan_fdb.iter().map(|((vid,mac),egress)|json!({"vid":vid.to_string(),"dst_mac":mac,"egress":egress})).collect::<Vec<_>>(),
+            "multicast":device.multicast.iter().map(|((vid,mac),egresses)|json!({"vid":vid.to_string(),"dst_mac":mac,"egresses":egresses})).collect::<Vec<_>>(),
+            "unknown_multicast":device.unknown_multicast})
+    }
+}
 
 pub(super) fn descriptor(metric: &str) -> (&'static str, &'static str, &'static str, &'static str) {
     match metric {
@@ -106,6 +149,35 @@ pub(super) fn records(
                 h,
             ));
         }
+        if prepared.common.profile == "ethernet.l2.vlan.v1" {
+            let filtered = state
+                .receptions
+                .iter()
+                .filter(|r| (target == "$all" || r.device == target) && r.status == "filtered")
+                .collect::<Vec<_>>();
+            if filtered.iter().any(|r| {
+                !r.reason
+                    .as_deref()
+                    .is_some_and(|reason| FILTER_REASONS.contains(&reason))
+            }) {
+                return Err(Diagnostic::output(
+                    "Unknown VLAN reception filtering reason",
+                ));
+            }
+            for reason in FILTER_REASONS {
+                let count = filtered
+                    .iter()
+                    .filter(|r| r.reason.as_deref() == Some(reason))
+                    .count();
+                summary.push(Record::aggregate(
+                    target,
+                    &format!("ethernet.filtered.{reason}"),
+                    MetricValue::Integer(count as u128),
+                    0,
+                    h,
+                ));
+            }
+        }
         let samples: Vec<_> = snapshot
             .common
             .points
@@ -176,7 +248,7 @@ pub(super) fn records(
             )
         })
         .collect();
-    if prepared.common.profile == "ethernet.l2.qos.v1" {
+    if is_qos(prepared) {
         for output in &ethernet.outputs {
             for class in &output.queues {
                 let id = format!("{}.queue.{}", output.port, class.priority);
@@ -280,6 +352,11 @@ fn window_records(
             let frame = frames
                 .get(transfer.frame_id.as_str())
                 .ok_or_else(|| Diagnostic::output("Unknown Ethernet frame reference"))?;
+            let copy_wire = if prepared.common.profile == "ethernet.l2.vlan.v1" {
+                &transfer.wire
+            } else {
+                &frame.wire
+            };
             if let Some(sof) = transfer.sof_ps {
                 let release = transfer.release_ps.unwrap_or(snapshot.common.end_ps);
                 busy = checked_add(
@@ -290,14 +367,14 @@ fn window_records(
             if transfer.eof_ps.is_some_and(|time| {
                 start <= time && (time < end || include_boundary && time == end)
             }) {
-                payload = checked_add(payload, frame.wire.data_hex.len() as u128 * 4)?;
-                mac = checked_add(mac, frame.wire.mac_bytes as u128 * 8)?;
-                wire = checked_add(wire, (frame.wire.mac_bytes as u128 + 8) * 8)?;
+                payload = checked_add(payload, copy_wire.data_hex.len() as u128 * 4)?;
+                mac = checked_add(mac, copy_wire.mac_bytes as u128 * 8)?;
+                wire = checked_add(wire, (copy_wire.mac_bytes as u128 + 8) * 8)?;
             }
             if transfer.release_ps.is_some_and(|time| {
                 start <= time && (time < end || include_boundary && time == end)
             }) {
-                occupied = checked_add(occupied, (frame.wire.mac_bytes as u128 + 20) * 8)?;
+                occupied = checked_add(occupied, (copy_wire.mac_bytes as u128 + 20) * 8)?;
             }
         }
         let target = &direction.from_port;
@@ -337,7 +414,8 @@ fn window_records(
 }
 
 pub(super) fn model_records(prepared: &PreparedSimulation, state: &EthernetSnapshot) -> Vec<Value> {
-    let qos = prepared.common.profile == "ethernet.l2.qos.v1";
+    let qos = is_qos(prepared);
+    let vlan = prepared.common.profile == "ethernet.l2.vlan.v1";
     let envelope = |schema: &str,
                     id: &str,
                     subject: &str,
@@ -378,6 +456,47 @@ pub(super) fn model_records(prepared: &PreparedSimulation, state: &EthernetSnaps
             row["data"]["priority"] = json!(transfer.priority.to_string());
         }
     }
+    if vlan {
+        for (row, frame) in rows.iter_mut().take(state.frames.len()).zip(&state.frames) {
+            row["schema_version"] = json!(3);
+            row["data"]["tag"] = tag_json(frame.wire.tag.as_ref());
+            row["data"]["source_vlan_id"] = json!(
+                frame
+                    .source_vlan_id
+                    .expect("VLAN source classification")
+                    .to_string()
+            );
+        }
+        for (row, transfer) in rows
+            .iter_mut()
+            .skip(state.frames.len())
+            .take(state.transfers.len())
+            .zip(&state.transfers)
+        {
+            row["schema_version"] = json!(3);
+            row["data"]["vlan_id"] = json!(
+                transfer
+                    .vlan_id
+                    .expect("VLAN transfer classification")
+                    .to_string()
+            );
+            row["data"]["wire"] = wire_json(&transfer.wire);
+        }
+        for (row, reception) in rows
+            .iter_mut()
+            .skip(state.frames.len() + state.transfers.len())
+            .zip(&state.receptions)
+        {
+            row["schema_version"] = json!(2);
+            row["data"]["vlan_id"] = json!(
+                reception
+                    .vlan_id
+                    .expect("VLAN ingress classification")
+                    .to_string()
+            );
+            row["data"]["priority"] = json!(reception.priority.to_string());
+        }
+    }
     rows.sort_by(|a, b| {
         (
             a["schema_name"].as_str(),
@@ -401,7 +520,8 @@ pub(super) fn metadata(
     mut config: BTreeMap<String, String>,
 ) -> Result<Value, Diagnostic> {
     let ethernet = prepared.ethernet.as_ref().expect("Ethernet input");
-    let qos = prepared.common.profile == "ethernet.l2.qos.v1";
+    let qos = is_qos(prepared);
+    let vlan = prepared.common.profile == "ethernet.l2.vlan.v1";
     let outputs: Vec<_> = ethernet.outputs.iter().map(|output| json!({"port":output.port,"scheduler":output.scheduler,
         "queues":output.queues.iter().map(|queue|json!({"priority":queue.priority.to_string(),"capacity_frames":queue.capacity_frames.to_string(),"capacity_bytes":opt_d(queue.capacity_bytes)})).collect::<Vec<_>>()})).collect();
     if qos {
@@ -409,6 +529,21 @@ pub(super) fn metadata(
             config.insert(
                 format!("@output:{}", output["port"].as_str().unwrap()),
                 canonical(output),
+            );
+        }
+    }
+    let ports: Vec<_> = ethernet.port_policies.iter().map(port_json).collect();
+    if vlan {
+        for port in &ports {
+            config.insert(
+                format!("@port:{}", port["port"].as_str().unwrap()),
+                canonical(port),
+            );
+        }
+        for device in &ethernet.devices {
+            config.insert(
+                format!("@vlan:{}", device.id),
+                canonical(&vlan_device_json(device)),
             );
         }
     }
@@ -453,6 +588,13 @@ pub(super) fn metadata(
     if qos {
         metric_names.extend(QOS_METRICS.split_whitespace());
     }
+    let filter_metrics: Vec<_> = FILTER_REASONS
+        .iter()
+        .map(|reason| format!("ethernet.filtered.{reason}"))
+        .collect();
+    if vlan {
+        metric_names.extend(filter_metrics.iter().map(String::as_str));
+    }
     metric_names.sort_unstable();
     let metrics: Vec<_> = metric_names.into_iter().map(|metric| {
         let (unit,kind,sampling,aggregation) = super::aggregate::descriptor(metric);
@@ -496,7 +638,7 @@ pub(super) fn metadata(
                 )
             })
             .collect();
-        let state = if device.kind == "endpoint" {
+        let mut state = if device.kind == "endpoint" {
             let generators: Vec<_> = ethernet.generators.iter().filter(|generator|generator.source==index)
                 .map(|generator| {
                     let next = generator.time(0);
@@ -515,6 +657,20 @@ pub(super) fn metadata(
                 .collect();
             json!({"fdb":fdb,"queues":queues,"links":links})
         };
+        if vlan {
+            state
+                .as_object_mut()
+                .unwrap()
+                .extend(vlan_device_json(device).as_object().unwrap().clone());
+            state["ports"] = json!(
+                ethernet
+                    .port_policies
+                    .iter()
+                    .filter(|port| port.device == index)
+                    .map(port_json)
+                    .collect::<Vec<_>>()
+            );
+        }
         initial_state.push(json!({"instance":device.id,"state":canonical(&state)}));
     }
     initial_state.extend(ethernet.directions.iter().map(|direction|json!({"instance":direction.channel_id,"state":canonical(&json!({"bitrate_bps":direction.bitrate_bps.to_string(),"delay_ps":direction.delay_ps.to_string()}))})));
@@ -523,6 +679,19 @@ pub(super) fn metadata(
         "directions":ethernet.directions.iter().map(|direction|json!({"from_port":direction.from_port,"to_port":direction.to_port,"bitrate_bps":direction.bitrate_bps.to_string(),"delay_ps":direction.delay_ps.to_string()})).collect::<Vec<_>>()});
     if qos {
         topology["outputs"] = json!(outputs);
+    }
+    if vlan {
+        topology["ports"] = json!(ports);
+        for (row, device) in topology["devices"]
+            .as_array_mut()
+            .unwrap()
+            .iter_mut()
+            .zip(&ethernet.devices)
+        {
+            row.as_object_mut()
+                .unwrap()
+                .extend(vlan_device_json(device).as_object().unwrap().clone());
+        }
     }
     let mut result = json!({"started_at_utc":timestamp,"finished_at_utc":super::metadata::utc_now(),"sources":sources,"input_sha256":digest(canonical(&json!(source_hashes)).as_bytes()),"config_sha256":digest(canonical(&json!(config)).as_bytes()),"config":config,
         "runtime_version":env!("CARGO_PKG_VERSION"),"model_registry_version":"1","model_profile":prepared.common.profile,
@@ -543,8 +712,33 @@ pub(super) fn metadata(
             "waiting MAC-byte capacities",
             "fixed independent processing delays"
         ]);
-        let flows: BTreeMap<_,_> = ethernet.generators.iter().filter_map(|generator|generator.flow_id.as_ref().map(|id|(id.clone(),json!({"flow_id":id,"priority":generator.priority.to_string(),"deadline_ps":opt_d(generator.deadline_ps),"dst_mac":generator.frame.dst_mac})))).collect();
+        let flows: BTreeMap<_,_> = ethernet.generators.iter().filter_map(|generator|generator.flow_id.as_ref().map(|id| {
+            let mut flow = json!({"flow_id":id,"priority":generator.priority.to_string(),"deadline_ps":opt_d(generator.deadline_ps),"dst_mac":generator.frame.dst_mac});
+            if vlan {
+                flow["tag"] = tag_json(generator.frame.tag.as_ref());
+                flow["source_vlan_id"] = json!(generator.source_vlan_id.expect("VLAN source classification").to_string());
+            }
+            (id.clone(),flow)
+        })).collect();
         result["flows"] = json!(flows.into_values().collect::<Vec<_>>());
+    }
+    if vlan {
+        result["model_schemas"] = json!([{"schema_name":"ethernet.frame","schema_version":3},{"schema_name":"ethernet.reception","schema_version":2},{"schema_name":"ethernet.transfer","schema_version":3}]);
+        result["models"][0]["assumptions"] = json!([
+            "Ethernet II with optional single 0x8100 VLAN tag",
+            "full duplex",
+            "connected tree",
+            "static VLAN-scoped FDB and multicast forwarding",
+            "explicit endpoint group subscriptions",
+            "per-port VLAN admission and ingress priority classification",
+            "store and forward",
+            "source padding retained across tag changes",
+            "error-free fixed-delay links",
+            "eight priority FIFO classes per output",
+            "FIFO or nonpreemptive strict priority",
+            "waiting copy MAC-byte capacities",
+            "fixed independent processing delays"
+        ]);
     }
     for key in [
         "git_commit",

@@ -165,6 +165,7 @@ pub(super) fn profile(general: &BTreeMap<String, String>) -> Result<String> {
             | "can.cc.multibus.v1"
             | "ethernet.l2.store-forward.v1"
             | "ethernet.l2.qos.v1"
+            | "ethernet.l2.vlan.v1"
     ) {
         return Err(error(format!("unsupported model-profile: {profile}")));
     }

@@ -102,7 +102,12 @@ pub fn write(input: &Path, output: &Path) -> Result<PathBuf, Diagnostic> {
     if result["schema_version"] == 2
         && (!matches!(
             result["metadata"]["model_profile"].as_str(),
-            Some("can.cc.multibus.v1" | "ethernet.l2.store-forward.v1" | "ethernet.l2.qos.v1")
+            Some(
+                "can.cc.multibus.v1"
+                    | "ethernet.l2.store-forward.v1"
+                    | "ethernet.l2.qos.v1"
+                    | "ethernet.l2.vlan.v1"
+            )
         ) || !result["simulation"]["model_records"].is_array())
     {
         return Err(Diagnostic::prepare(

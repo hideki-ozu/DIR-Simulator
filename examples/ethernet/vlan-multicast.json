@@ -1,0 +1,26 @@
+{
+  "schema_version": 3,
+  "generators": [
+    {
+      "id": "vlan_multicast",
+      "node": "VlanDemo.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "0"
+      ],
+      "frame": {
+        "dst_mac": "01:00:5e:00:00:01",
+        "ether_type": 2048,
+        "data": "010203",
+        "tag": {
+          "vid": 20,
+          "pcp": 4,
+          "dei": 1
+        }
+      },
+      "flow_id": "flow_vlan_multicast",
+      "priority": 4,
+      "deadline_ps": null
+    }
+  ]
+}

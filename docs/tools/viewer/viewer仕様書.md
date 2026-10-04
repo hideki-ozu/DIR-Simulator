@@ -1,19 +1,21 @@
 # viewer仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`v1.1.0`
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`main @ 811360a`
+予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-04` | v1.1.1向けVLAN profileの読込対応と詳細仕様への参照を追加 |
 | `1.1.0` | `2026-10-04` | 初版公開：CAN/GW viewerの表示・再生・状態復元・検証条件を集約。説明範囲とEthernet資料への参照を明示 |
 
 文書ID：`tool-viewer-spec`
 
 文書状態：公開草案（CAN/GW画面の初版）
 
-本書はCAN/GW画面の説明を対象とする。v1.1.0で追加したEthernet画面は[Ethernet負荷・QoS詳細機能仕様書](../../specs/models/Ethernet負荷・QoS詳細機能仕様書.md)と[READMEのEthernet実行例](../../../README.md#ethernetサンプルを実行する)を参照する。
+本書はCAN/GW画面の説明を対象とする。v1.1.0で追加したEthernet画面は[Ethernet負荷・QoS詳細機能仕様書](../../specs/models/Ethernet負荷・QoS詳細機能仕様書.md)と[READMEのEthernet実行例](../../../README.md#ethernetサンプルを実行する)を参照する。v1.1.1向けPRのVLAN・静的multicast画面は[EthernetVLAN・マルチキャスト詳細機能仕様書](../../specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)を参照する。
 
 本書はCAN/GWの結果ビューアについて、外部から見える振る舞い、実装上の復元方法、受け入れ確認をまとめる。操作手順は[viewer取扱説明書](viewer取扱説明書.md)に記す。結果JSONの項目定義、Gatewayの転送・容量・時刻の規則は、それぞれ[結果詳細機能仕様書](../../specs/結果詳細機能仕様書.md)、[GWモデル詳細機能仕様書](../../specs/models/GWモデル詳細機能仕様書.md)、[GWモデル詳細設計書](../../design/GWモデル詳細設計書.md)を正本とする。
 
@@ -21,7 +23,7 @@
 
 `dir-simulator view --input results.json --output viewer.html` は既存の結果JSONを読み、CSS、JavaScript、入力JSONを埋め込んだ単独HTMLを作る。コマンドはブラウザを起動しない。入力結果・manifestを変更せず、既存の出力ファイルと同名のシンボリックリンクを上書きしない。出力先の親ディレクトリは存在する必要がある。生成したHTMLはローカルブラウザで開け、外部通信を行わない。[CLI実装](../../../crates/dir-simulator/src/main.rs)と[HTML生成](../../../crates/dir-simulator/src/tool/viewer.rs)がこの境界を担う。
 
-本書で説明する入力はschema 1の`can.cc.ideal.v1`とschema 2の`can.cc.multibus.v1`の結果である。viewerはschema 2の`ethernet.l2.store-forward.v1`と`ethernet.l2.qos.v1`にも対応し、別のEthernet画面へ切り替える。CLIはJSON構文、schema版、simulationの形、schema 2のprofileとmodel_recordsの存在を検査する。ブラウザ側の[復元モデル](../../../crates/dir-simulator/src/tool/viewer/assets/model.js)が要求・受信・Gateway行の項目、時刻、参照関係など表示に必要な整合性を検査する。したがってCLIがHTMLを作成できても、レコードが不正ならブラウザで読込エラーになる。任意のschema 2モデルを汎用表示する機能ではない。
+本書で説明する入力はschema 1の`can.cc.ideal.v1`とschema 2の`can.cc.multibus.v1`の結果である。viewerはschema 2の`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`と、v1.1.1向けPRの`ethernet.l2.vlan.v1`にも対応し、別のEthernet画面へ切り替える。CLIはJSON構文、schema版、simulationの形、schema 2のprofileとmodel_recordsの存在を検査する。ブラウザ側の[復元モデル](../../../crates/dir-simulator/src/tool/viewer/assets/model.js)が要求・受信・Gateway行の項目、時刻、参照関係など表示に必要な整合性を検査する。したがってCLIがHTMLを作成できても、レコードが不正ならブラウザで読込エラーになる。任意のschema 2モデルを汎用表示する機能ではない。
 
 ## 2. 時刻と状態の仕様
 

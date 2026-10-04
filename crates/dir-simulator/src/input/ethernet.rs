@@ -120,6 +120,10 @@ pub(super) fn resolve(
             },
             forward_delay_ps: 0,
             fdb: BTreeMap::new(),
+            vlan_fdb: BTreeMap::new(),
+            multicast: BTreeMap::new(),
+            subscriptions: BTreeSet::new(),
+            unknown_multicast: "flood".into(),
         });
     }
     if devices.iter().filter(|d| d.kind == "endpoint").count() < 2 {
@@ -198,6 +202,7 @@ pub(super) fn resolve(
             directions,
             generators: Vec::new(),
             outputs: Vec::new(),
+            port_policies: Vec::new(),
         },
         r.module_paths(),
         c.len(),
@@ -234,21 +239,41 @@ fn array<'a>(o: &'a serde_json::Map<String, Value>, key: &str) -> Result<&'a Vec
         .ok_or_else(|| error(format!("missing array {key}")))
 }
 pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) -> Result<()> {
-    let qos = profile == "ethernet.l2.qos.v1";
+    let vlan = profile == "ethernet.l2.vlan.v1";
+    let qos = vlan || profile == "ethernet.l2.qos.v1";
     let value = json(content)?;
     let root = object(
         &value,
-        if qos {
+        if vlan {
+            &[
+                "schema_version",
+                "endpoints",
+                "switches",
+                "ports",
+                "outputs",
+            ]
+        } else if qos {
             &["schema_version", "endpoints", "switches", "outputs"]
         } else {
             &["schema_version", "endpoints", "switches"]
         },
         "model-config",
     )?;
-    if root.get("schema_version").and_then(Value::as_u64) != Some(if qos { 2 } else { 1 }) {
+    if root.get("schema_version").and_then(Value::as_u64)
+        != Some(if vlan {
+            3
+        } else if qos {
+            2
+        } else {
+            1
+        })
+    {
         return Err(error(
             "model-config schema_version does not match Ethernet profile",
         ));
+    }
+    if vlan {
+        configure_ports(root, p)?;
     }
     let mut seen = BTreeSet::new();
     let mut macs = BTreeSet::new();
@@ -256,7 +281,17 @@ pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) 
         for row in array(root, key)? {
             let o = object(
                 row,
-                if kind == "endpoint" {
+                if vlan && kind == "endpoint" {
+                    &["instance", "mac", "multicast"]
+                } else if vlan {
+                    &[
+                        "instance",
+                        "forward_delay_ps",
+                        "fdb",
+                        "multicast",
+                        "unknown_multicast",
+                    ]
+                } else if kind == "endpoint" {
                     &["instance", "mac"]
                 } else {
                     &["instance", "forward_delay_ps", "fdb"]
@@ -278,11 +313,38 @@ pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) 
                     return Err(error("duplicate endpoint MAC"));
                 }
                 p.devices[index].mac = Some(m);
+                if vlan {
+                    for row in array(o, "multicast")? {
+                        let e = object(row, &["vid", "dst_mac"], "subscription")?;
+                        let vid = vid(e, "vid")?;
+                        let group = group_mac(required_string(e, "dst_mac")?)?;
+                        if !p
+                            .port_policies
+                            .iter()
+                            .any(|policy| policy.device == index && policy.vlans.contains_key(&vid))
+                        {
+                            return Err(error(
+                                "subscription VLAN is not a member of Endpoint port",
+                            ));
+                        }
+                        if !p.devices[index].subscriptions.insert((vid, group)) {
+                            return Err(error("duplicate VLAN multicast subscription"));
+                        }
+                    }
+                }
             } else {
                 p.devices[index].forward_delay_ps =
                     unsigned(required_string(o, "forward_delay_ps")?, false)?;
                 for row in array(o, "fdb")? {
-                    let e = object(row, &["dst_mac", "egress"], "fdb")?;
+                    let e = object(
+                        row,
+                        if vlan {
+                            &["vid", "dst_mac", "egress"]
+                        } else {
+                            &["dst_mac", "egress"]
+                        },
+                        "fdb",
+                    )?;
                     let m = mac(required_string(e, "dst_mac")?, false)?;
                     let output = required_string(e, "egress")?;
                     if !p
@@ -292,8 +354,47 @@ pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) 
                     {
                         return Err(error(format!("invalid FDB egress connection: {output}")));
                     }
-                    if p.devices[index].fdb.insert(m, output.into()).is_some() {
+                    if vlan {
+                        let vid = vid(e, "vid")?;
+                        require_member(p, index, output, vid)?;
+                        if p.devices[index]
+                            .vlan_fdb
+                            .insert((vid, m), output.into())
+                            .is_some()
+                        {
+                            return Err(error("duplicate VLAN FDB MAC"));
+                        }
+                    } else if p.devices[index].fdb.insert(m, output.into()).is_some() {
                         return Err(error("duplicate FDB MAC"));
+                    }
+                }
+                if vlan {
+                    let unknown = required_string(o, "unknown_multicast")?;
+                    if !matches!(unknown, "flood" | "drop") {
+                        return Err(error("unknown_multicast must be flood or drop"));
+                    }
+                    p.devices[index].unknown_multicast = unknown.into();
+                    for row in array(o, "multicast")? {
+                        let e = object(row, &["vid", "dst_mac", "egresses"], "multicast")?;
+                        let vid = vid(e, "vid")?;
+                        let group = group_mac(required_string(e, "dst_mac")?)?;
+                        let mut ports = BTreeSet::new();
+                        for value in array(e, "egresses")? {
+                            let port = value
+                                .as_str()
+                                .ok_or_else(|| error("multicast egress must be string"))?;
+                            require_member(p, index, port, vid)?;
+                            if !ports.insert(port.to_string()) {
+                                return Err(error("duplicate multicast egress"));
+                            }
+                        }
+                        if p.devices[index]
+                            .multicast
+                            .insert((vid, group), ports.into_iter().collect())
+                            .is_some()
+                        {
+                            return Err(error("duplicate VLAN multicast group"));
+                        }
                     }
                 }
             }
@@ -356,6 +457,118 @@ pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) 
     }
     Ok(())
 }
+fn bounded_integer(
+    o: &serde_json::Map<String, Value>,
+    key: &str,
+    low: u64,
+    high: u64,
+) -> Result<u64> {
+    o.get(key)
+        .and_then(Value::as_u64)
+        .filter(|n| (low..=high).contains(n))
+        .ok_or_else(|| error(format!("{key} must be integer {low} through {high}")))
+}
+fn vid(o: &serde_json::Map<String, Value>, key: &str) -> Result<u16> {
+    bounded_integer(o, key, 1, 4094).map(|n| n as u16)
+}
+fn destination_mac(s: &str) -> Result<String> {
+    let parts: Vec<_> = s.split(':').collect();
+    if parts.len() != 6
+        || parts
+            .iter()
+            .any(|p| p.len() != 2 || !p.bytes().all(|c| c.is_ascii_hexdigit()))
+    {
+        return Err(error("invalid MAC address"));
+    }
+    let normalized = s.to_ascii_lowercase();
+    if normalized == "00:00:00:00:00:00"
+        || (normalized.starts_with("01:80:c2:00:00:")
+            && u8::from_str_radix(parts[5], 16).unwrap() <= 15)
+    {
+        return Err(error("reserved or invalid VLAN destination MAC"));
+    }
+    Ok(normalized)
+}
+fn group_mac(s: &str) -> Result<String> {
+    let m = destination_mac(s)?;
+    if m == "ff:ff:ff:ff:ff:ff" || u8::from_str_radix(&m[..2], 16).unwrap() & 1 == 0 {
+        return Err(error("multicast requires ordinary group MAC"));
+    }
+    Ok(m)
+}
+fn require_member(p: &PreparedEthernet, device: usize, port: &str, vid: u16) -> Result<()> {
+    if !p.port_policies.iter().any(|policy| {
+        policy.device == device && policy.port == port && policy.vlans.contains_key(&vid)
+    }) {
+        return Err(error(
+            "table egress must be owned connected output and VLAN member",
+        ));
+    }
+    Ok(())
+}
+fn configure_ports(root: &serde_json::Map<String, Value>, p: &mut PreparedEthernet) -> Result<()> {
+    let mut seen = BTreeSet::new();
+    for row in array(root, "ports")? {
+        let o = object(
+            row,
+            &["port", "pvid", "admit", "default_priority", "vlans"],
+            "port",
+        )?;
+        let port = required_string(o, "port")?;
+        let direction = p
+            .directions
+            .iter()
+            .find(|d| d.from_port == port)
+            .ok_or_else(|| error("unknown VLAN output port"))?;
+        if !seen.insert(port.to_string()) {
+            return Err(error("duplicate VLAN port"));
+        }
+        // The reverse resolved connection supplies the paired local ingress, not a string suffix guess.
+        let reverse = p
+            .directions
+            .iter()
+            .find(|d| d.source == direction.destination && d.destination == direction.source)
+            .ok_or_else(|| error("missing resolved reverse VLAN connection"))?;
+        let pvid = vid(o, "pvid")?;
+        let admit = required_string(o, "admit")?;
+        if !matches!(admit, "all" | "tagged_only" | "untagged_only") {
+            return Err(error("invalid VLAN admit"));
+        }
+        let default_priority = bounded_integer(o, "default_priority", 0, 7)? as u8;
+        let mut vlans = BTreeMap::new();
+        for row in array(o, "vlans")? {
+            let e = object(row, &["vid", "tagged"], "VLAN membership")?;
+            let member = vid(e, "vid")?;
+            let tagged = e
+                .get("tagged")
+                .and_then(Value::as_bool)
+                .ok_or_else(|| error("tagged must be bool"))?;
+            if !tagged && member != pvid {
+                return Err(error("untagged membership must equal PVID"));
+            }
+            if vlans.insert(member, tagged).is_some() {
+                return Err(error("duplicate VLAN membership"));
+            }
+        }
+        if !vlans.contains_key(&pvid) {
+            return Err(error("PVID must be a member"));
+        }
+        p.port_policies.push(EthernetPortPolicy {
+            port: port.into(),
+            ingress: reverse.to_port.clone(),
+            device: direction.source,
+            pvid,
+            admit: admit.into(),
+            default_priority,
+            vlans,
+        });
+    }
+    if seen.len() != p.directions.len() {
+        return Err(error("VLAN config must enumerate all connected ports"));
+    }
+    p.port_policies.sort_by(|a, b| a.port.cmp(&b.port));
+    Ok(())
+}
 fn optional_decimal(o: &serde_json::Map<String, Value>, key: &str) -> Result<Option<u64>> {
     let value = o
         .get(key)
@@ -381,11 +594,14 @@ fn decimal(o: &serde_json::Map<String, Value>, key: &str) -> Result<u64> {
     unsigned(required_string(o, key)?, false)
 }
 pub(super) fn workload(content: &str, p: &mut PreparedEthernet, profile: &str) -> Result<()> {
-    let qos = profile == "ethernet.l2.qos.v1";
+    let vlan = profile == "ethernet.l2.vlan.v1";
+    let qos = vlan || profile == "ethernet.l2.qos.v1";
     let value = json(content)?;
     let root = object(&value, &["schema_version", "generators"], "workload")?;
-    if root.get("schema_version").and_then(Value::as_u64) != Some(2) {
-        return Err(error("Ethernet workload schema_version must be 2"));
+    if root.get("schema_version").and_then(Value::as_u64) != Some(if vlan { 3 } else { 2 }) {
+        return Err(error(
+            "Ethernet workload schema_version does not match profile",
+        ));
     }
     let mut ids = BTreeSet::new();
     let mut flows = BTreeMap::new();
@@ -426,7 +642,11 @@ pub(super) fn workload(content: &str, p: &mut PreparedEthernet, profile: &str) -
             .ok_or_else(|| error("unknown Endpoint node"))?;
         let f = object(
             o.get("frame").ok_or_else(|| error("missing frame"))?,
-            &["dst_mac", "ether_type", "data"],
+            if vlan {
+                &["dst_mac", "ether_type", "data", "tag"]
+            } else {
+                &["dst_mac", "ether_type", "data"]
+            },
             "frame",
         )?;
         let ether_type = f
@@ -434,12 +654,55 @@ pub(super) fn workload(content: &str, p: &mut PreparedEthernet, profile: &str) -
             .and_then(Value::as_u64)
             .filter(|n| (1536..=65535).contains(n) && *n != 0x8100 && *n != 0x88a8)
             .ok_or_else(|| error("invalid EtherType range"))?;
-        let frame = crate::runtime::ethernet::serialize_frame(
-            p.devices[source].mac.as_ref().unwrap(),
-            required_string(f, "dst_mac")?,
-            ether_type as u16,
-            required_string(f, "data")?,
-        )?;
+        let tag = if vlan {
+            let value = f.get("tag").ok_or_else(|| error("missing tag"))?;
+            if value.is_null() {
+                None
+            } else {
+                let t = object(value, &["vid", "pcp", "dei"], "tag")?;
+                Some(EthernetVlanTag {
+                    vid: vid(t, "vid")?,
+                    pcp: bounded_integer(t, "pcp", 0, 7)? as u8,
+                    dei: bounded_integer(t, "dei", 0, 1)? as u8,
+                })
+            }
+        } else {
+            None
+        };
+        let destination = required_string(f, "dst_mac")?;
+        let source_vlan_id = if vlan {
+            destination_mac(destination)?;
+            let policy = p
+                .port_policies
+                .iter()
+                .find(|policy| policy.device == source)
+                .unwrap();
+            let vid = tag.map_or(policy.pvid, |t| t.vid);
+            if policy.vlans.get(&vid) != Some(&tag.is_some()) {
+                return Err(error(
+                    "source tag form or VLAN membership does not match port",
+                ));
+            }
+            Some(vid)
+        } else {
+            None
+        };
+        let frame = if vlan {
+            crate::runtime::ethernet::serialize_vlan_frame(
+                p.devices[source].mac.as_ref().unwrap(),
+                destination,
+                ether_type as u16,
+                required_string(f, "data")?,
+                tag,
+            )?
+        } else {
+            crate::runtime::ethernet::serialize_frame(
+                p.devices[source].mac.as_ref().unwrap(),
+                destination,
+                ether_type as u16,
+                required_string(f, "data")?,
+            )?
+        };
         let (flow_id, priority, deadline_ps) = if qos {
             let flow_id = required_string(o, "flow_id")?;
             if !identifier(flow_id) {
@@ -447,7 +710,16 @@ pub(super) fn workload(content: &str, p: &mut PreparedEthernet, profile: &str) -
             }
             let priority = priority(o)?;
             let deadline_ps = optional_decimal(o, "deadline_ps")?;
-            let contract = (priority, deadline_ps, frame.dst_mac.clone());
+            if tag.is_some_and(|tag| tag.pcp != priority) {
+                return Err(error("source priority must equal tag PCP"));
+            }
+            let contract = (
+                priority,
+                deadline_ps,
+                frame.dst_mac.clone(),
+                tag,
+                source_vlan_id,
+            );
             if flows
                 .insert(flow_id.to_string(), contract.clone())
                 .is_some_and(|prior| prior != contract)
@@ -519,6 +791,7 @@ pub(super) fn workload(content: &str, p: &mut PreparedEthernet, profile: &str) -
         p.generators.push(EthernetGenerator {
             id: id.into(),
             source,
+            source_vlan_id,
             times_ps,
             frame,
             schedule,

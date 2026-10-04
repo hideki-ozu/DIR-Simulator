@@ -1,13 +1,14 @@
 # DIR Simulator
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`main @ 45ce163`
-予定公開版：`v1.1.0`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`main @ 811360a`
+予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-04` | VLAN・静的multicast、サンプル・Viewer・検証記録を追加し、v1.1.1向けPRの提供状態と文書版を更新 |
 | `1.1.0` | `2026-10-04` | Ethernet全二重L2・負荷・QoS・viewerとサンプル、検証範囲を追加し、v1.1.0向けPRの提供状態へ更新 |
 | `1.0.3` | `2026-10-04` | NED editor追加に伴うGitHub版v1.0.1を対象に更新。GitHubのPATCH変更のため文書版は維持 |
 | `1.0.3` | `2026-10-04` | PR6の診断・仲裁・提供状態とOMNeT由来成果物削除を保持し、mainのNEDエディタ・保存復旧を統合。分岐して公開した履歴を両方保持 |
@@ -21,7 +22,7 @@
 
 文書ID：`readme`
 
-次のGitHub版`v1.1.0`に向け、Ethernet L2・負荷・QoS・viewerを追加するPRの文書版を`1.1.0`とします。公開済みの基準は`v1.0.1`です。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。`v1.1.0`タグはmainへのマージ後に対象コミットを確定して発行する段階です。
+Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。本PRではVLAN・静的multicast制御を追加し、次の公開版を`v1.1.1`とします。公開タグとPRの提供状態を分けて記載します。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
@@ -191,7 +192,7 @@ CAN/GWの動作はRust製品試験と独立した静的期待値の照合、ビ�
 
 ## Ethernetサンプルを実行する
 
-開発ソースは`ethernet.l2.store-forward.v1`と`ethernet.l2.qos.v1`に対応します。全二重の方向別送信、Ethernet IIのpadding/FCS、静的FDB、broadcast・未知unicastのflood、有限キューを扱います。QoS profileは明示時刻・周期・バースト負荷、8優先度のFIFO／strict priority、待機frame数・MAC byte容量、フロー別遅延・期限超過・経路内訳を追加します。
+開発ソースは`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`・`ethernet.l2.vlan.v1`に対応します。全二重の方向別送信、Ethernet IIのpadding/FCS、静的FDB、broadcast・未知unicastのflood、有限キューを扱います。QoS profileは明示時刻・周期・バースト負荷、8優先度のFIFO／strict priority、待機frame数・MAC byte容量、フロー別遅延・期限超過・経路内訳を追加します。VLAN profileは単一0x8100タグ、PVID/admit/member設定、VLAN別FDB・静的group経路・Endpoint購読、hopごとのwire長・PCP分類を追加します。
 
 ```bash
 cargo build --locked -p dir-simulator
@@ -200,9 +201,19 @@ cargo build --locked -p dir-simulator
 ./target/debug/dir-simulator view --input ethernet-results/results.json --output ethernet-viewer.html
 ```
 
-[unicast.ini](examples/ethernet/unicast.ini)、[duplex.ini](examples/ethernet/duplex.ini)、[qos-priority.ini](examples/ethernet/qos-priority.ini)、[qos-periodic-burst.ini](examples/ethernet/qos-periodic-burst.ini)を同梱します。結果はschema2の`simulation.model_records`に元frame・方向別copy・受信を分けて保存します。viewerはEndpoint／Switch構成、方向別送信、copy親子関係、8classキュー、フロー指標を表示します。ステップ操作は移動先の直前区間を再表示し、連続再生は線を強調します。実績arrivalがないcopyから受信を作りません。
+[unicast.ini](examples/ethernet/unicast.ini)、[duplex.ini](examples/ethernet/duplex.ini)、[qos-priority.ini](examples/ethernet/qos-priority.ini)、[qos-periodic-burst.ini](examples/ethernet/qos-periodic-burst.ini)、[vlan-unicast.ini](examples/ethernet/vlan-unicast.ini)、[vlan-multicast.ini](examples/ethernet/vlan-multicast.ini)を同梱します。結果はschema2の`simulation.model_records`に元frame・方向別copy・受信を分けて保存します。viewerはEndpoint／Switch構成、方向別送信、copy親子関係、8classキュー、フロー指標を表示します。ステップ操作は移動先の直前区間を再表示し、連続再生は線を強調します。実績arrivalがないcopyから受信を作りません。
 
-詳細は[L2仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md)、[負荷・QoS仕様](docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[負荷・QoS設計](docs/design/Ethernet負荷・QoS詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)を参照してください。媒体別PHY・半二重、VLAN・multicast制御、CAN↔Ethernet変換、TSNは後続段階です。公開Registry/EnvelopeやIEEE認証、性能検証の完了を示すものではありません。
+詳細は[L2仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md)、[負荷・QoS仕様](docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[負荷・QoS設計](docs/design/Ethernet負荷・QoS詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)を参照してください。VLAN・静的multicast制御はv1.1.1向けPRへ実装しています。[詳細仕様](docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)・[設計と実装順](docs/design/EthernetVLAN・マルチキャスト詳細設計書.md#implementation-order)・[検証手順](docs/verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)へ入力・処理・schemaと実行記録を集約しています。VLAN画面ではVLAN表示filter、source/hop priority・タグ・FCS・MAC長、静かなPortのpolicy/group設定を確認できます。表示filterは集計の母数を変えません。CAN↔Ethernet変換、媒体別PHY・半二重、動的制御・TSNはその後の段階です。公開Registry/EnvelopeやIEEE認証、性能検証の完了を示すものではありません。
+
+VLANの実行例：
+
+```bash
+./target/debug/dir-simulator validate --config examples/ethernet/vlan-unicast.ini
+./target/debug/dir-simulator run --config examples/ethernet/vlan-multicast.ini --output vlan-results
+./target/debug/dir-simulator view --input vlan-results/results.json --output vlan-viewer.html
+```
+
+VLANはmodel-configとworkloadのschema3を明示選択します。VIDは1～4094、untaggedは`tag:null`、タグ付きは`{vid,pcp,dei}`です。sourceのtag形式はPort設定と一致させ、PCPはsource priorityと一致させます。受信側のuntagged classはそのPortのdefault_priorityで再分類します。VID0/QinQ、動的snooping/登録・STP・TSNは対象外です。
 
 ## 3層アーキテクチャ
 
@@ -264,7 +275,7 @@ DIRは、OMNeT++の実装コードを移植するのではなく、公開ドキ�
 | [品質・配布方針](docs/品質・配布方針.md) | 性能・精度・出自管理 |
 | [将来拡張計画](docs/将来拡張計画.md) | v1.0.0のGW・複数バスと他プロトコルへの境界 |
 
-16分野の詳細機能仕様、入力・結果処理を含む12詳細設計と利用フロー・品質を含む13検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoSの実装と自動試験を追加しました。他モデルの製品実装・実行試験、および仕様全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
+16分野の詳細機能仕様、入力・結果処理を含む14詳細設計と利用フロー・品質を含む15検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。他モデルの製品実装・実行試験、および仕様全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
 
 図の編集元（`.puml`）と表示用SVGは `docs/diagrams/<文書ID>/` に保存しています。ローカルのPlantUMLで全図を更新・確認できます。
 
@@ -336,4 +347,4 @@ python3 docs/verification/fixtures/can/verify_vectors.py
 | SoC・AHB・NoC | [詳細仕様](docs/specs/models/SoC・AHB・NoC詳細機能仕様書.md) | [詳細設計](docs/design/SoC・AHB・NoC詳細設計書.md) | [検証仕様](docs/verification/cases/SoC・AHB・NoC検証仕様書.md) |
 | DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC | [詳細仕様](docs/specs/models/メモリ・IPC詳細機能仕様書.md) | [詳細設計](docs/design/メモリ・IPC詳細設計書.md) | [検証仕様](docs/verification/cases/メモリ・IPC検証仕様書.md) |
 
-CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。GWとEthernet全二重L2・QoS以外の追加モデルの製品実装・実行試験は未実施です。
+CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。GWとEthernet全二重L2・QoS・VLAN以外の追加モデルの製品実装・実行試験は未実施です。

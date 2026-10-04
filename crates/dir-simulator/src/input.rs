@@ -115,7 +115,7 @@ pub(crate) fn validate_parameter_literal(
 ) -> Result<()> {
     if matches!(
         profile,
-        "ethernet.l2.store-forward.v1" | "ethernet.l2.qos.v1"
+        "ethernet.l2.store-forward.v1" | "ethernet.l2.qos.v1" | "ethernet.l2.vlan.v1"
     ) {
         ethernet::validate_parameter_literal(declaration, name, value)
     } else {
@@ -717,7 +717,7 @@ pub fn prepare_with_source(
             .collect();
         if matches!(
             profile.as_str(),
-            "ethernet.l2.store-forward.v1" | "ethernet.l2.qos.v1"
+            "ethernet.l2.store-forward.v1" | "ethernet.l2.qos.v1" | "ethernet.l2.vlan.v1"
         ) {
             let (mut ethernet, module_paths, channel_count) =
                 ethernet::resolve(&declarations, network, &overrides, &ini.channels)?;
