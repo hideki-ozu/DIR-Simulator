@@ -19,3 +19,19 @@
 .network-legend .swatch.in-flight { background: #2563eb; }
 .network-legend .swatch.received { background: #c2410c; }
 .network-idle-swatch { width: 17px; border-top: 2px solid #94a3b8; }
+
+/* Ethernet has independent controls and replay state. */
+.eth-controls { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:20px; margin-bottom:20px }
+.eth-controls .time-slider, .eth-controls small { flex-basis:100% }
+.eth-controls input:not([type=range]) { max-width:210px; padding:8px; border:1px solid #c8d2df; border-radius:6px }
+.eth-queue { padding:14px; min-width:220px; border:1px solid #dbe3ed; border-radius:8px; overflow-wrap:anywhere }
+.eth-details { padding:18px; overflow-wrap:anywhere }
+.eth-details pre { white-space:pre-wrap; font-size:11px; max-height:320px; overflow:auto }
+#ethernet-dashboard .panel { margin-bottom:20px }
+#eth-network, #eth-timeline { width:100%; display:block }
+#eth-rows tr { cursor:pointer }
+#eth-rows tr.selected { background:#e5f0fb }
+#eth-rows tr:focus, #eth-network [role=button]:focus, #eth-timeline [role=button]:focus { outline:2px solid #2563eb }
+#eth-network { max-height:420px }
+#eth-flow-rows tr { cursor:pointer }
+#eth-flow-rows tr:focus { outline:2px solid #2563eb }

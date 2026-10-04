@@ -1,0 +1,623 @@
+{
+  "report_schema_version": 1,
+  "created_at_utc": "2026-10-04T07:38:15+00:00",
+  "base_commit": "45ce16356388668ce762386db167a24b2ba6fc49",
+  "worktree": {
+    "dirty": true,
+    "status_entries_before_this_report": 92,
+    "tracked_changed": 33,
+    "untracked": 59
+  },
+  "binary": {
+    "path": "/home/hideki/DIR-Simulator/target/debug/dir-simulator",
+    "version": "dir-simulator 0.1.0",
+    "sha256": "7e897af2ad6913266e94ca87b6e88de19733f6dd71d988500357a761dfd1c4d4"
+  },
+  "cli_commands": [
+    "dir-simulator validate --config <config>",
+    "dir-simulator run --config <config> --output <unique-dir>",
+    "dir-simulator view --input <output>/results.json --output <unique-viewer.html>"
+  ],
+  "execution_root": "/tmp/dir-ethernet-qos-final-l5iq70m8",
+  "summary": {
+    "qos_fixtures": 11,
+    "examples": 4,
+    "cases": 15,
+    "validate_run_view_invocations": 45,
+    "exit_zero": 45,
+    "manifest_files_checked": 60,
+    "manifest_files_verified": 60,
+    "failures": 0,
+    "qos_schema": "ethernet.frame/2, ethernet.transfer/2, ethernet.reception/1",
+    "baseline_schema": "ethernet.frame/1, ethernet.transfer/1, ethernet.reception/1",
+    "final_rust_suite": "231 passed; includes latest 5 ethernet_qos integration tests (parent-confirmed)"
+  },
+  "cases": [
+    {
+      "group": "qos_fixture",
+      "name": "strict-priority",
+      "config": "docs/verification/fixtures/ethernet-qos/priority-strict.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-strict-priority",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-strict-priority.html",
+      "result_sha256": "5e078a3a5897aeb2e47e6bedef70d12320712cf413a2e6c85df5474dad5a801e",
+      "result_bytes": 239104,
+      "manifest_sha256": "813a142c4d569841aa509e21580323672b22e03fbccbdf905f4866b68819f5a2",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 3,
+        "ethernet.reception": 6,
+        "ethernet.transfer": 6
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "fifo",
+      "config": "docs/verification/fixtures/ethernet-qos/priority-fifo.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-fifo",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-fifo.html",
+      "result_sha256": "6feec9375fe3800e5e37d0615b1cebdd3fed0b767d0ed67d16d1672270f43ab8",
+      "result_bytes": 238853,
+      "manifest_sha256": "6fb65b785bbaf9b0e87469cbfee84016ffcee39a7706953c361a55a65bc078d1",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 3,
+        "ethernet.reception": 6,
+        "ethernet.transfer": 6
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "byte-capacity",
+      "config": "docs/verification/fixtures/ethernet-qos/byte-capacity.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-byte-capacity",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-byte-capacity.html",
+      "result_sha256": "8b140d0aec933493f01415c43d2921c1a683eef013e0235bc98ba282daff6d7e",
+      "result_bytes": 188029,
+      "manifest_sha256": "75bd9d0797637d6a1d9801f1af0905159848c7b4f63b5aac85e9b3783a4647f2",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 3,
+        "ethernet.reception": 2,
+        "ethernet.transfer": 4
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "device-capacity",
+      "config": "docs/verification/fixtures/ethernet-qos/device-capacity.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-device-capacity",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-device-capacity.html",
+      "result_sha256": "5489a96a5883e92b9febfd515c5b0c29416e862e99e451cfc79bcd9c48f6b8e2",
+      "result_bytes": 193493,
+      "manifest_sha256": "78f7ab5fb87dfb3aa3a632b2f43b494991bbafb4504740ee3af9e9c4fd6adfb9",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 3,
+        "ethernet.reception": 4,
+        "ethernet.transfer": 5
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "nonpreemptive",
+      "config": "docs/verification/fixtures/ethernet-qos/nonpreemptive.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-nonpreemptive",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-nonpreemptive.html",
+      "result_sha256": "ceb6090516257c79eebf0bbddf4424d3536dc4863003f0a14bc6ac4672e893ac",
+      "result_bytes": 216051,
+      "manifest_sha256": "30a4d72f6e21c852ddd176d24892a4acb73a9e7077c64ee8cc6b89bac031f711",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 2,
+        "ethernet.reception": 2,
+        "ethernet.transfer": 4
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "periodic-burst",
+      "config": "docs/verification/fixtures/ethernet-qos/periodic-burst.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-periodic-burst",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-periodic-burst.html",
+      "result_sha256": "5d6ee3a8f3da96c819ed3248e0951adce315c00cf5b55c2c15764e0b255963dd",
+      "result_bytes": 249525,
+      "manifest_sha256": "afeed8aba01305f06a86f9684c97a41273cd6fa9c7b84a84b0882327461bf598",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 7,
+        "ethernet.reception": 14,
+        "ethernet.transfer": 14
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "flow-statistics",
+      "config": "docs/verification/fixtures/ethernet-qos/flow-statistics.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-flow-statistics",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-flow-statistics.html",
+      "result_sha256": "0c5f3f276e61143e0c682b4fd9c1088e9ba047ec72db51af9046c3a2e365a368",
+      "result_bytes": 198693,
+      "manifest_sha256": "206ddf93ff76aba6ea23ce09b932443d91fe3204279342202c373b7f4cc751c3",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 3,
+        "ethernet.reception": 6,
+        "ethernet.transfer": 6
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "flow-filtered",
+      "config": "docs/verification/fixtures/ethernet-qos/flow-filtered.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-flow-filtered",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-flow-filtered.html",
+      "result_sha256": "00e9912ac25ce62c0ff9d379635539644cb8132c8466417b6e962ee2d89c9c8f",
+      "result_bytes": 185582,
+      "manifest_sha256": "46fb5b5150ffaa6ac06155795263ec4e9a89f84be14fbd9d0cbf3181c0f16ed5",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 1,
+        "ethernet.reception": 3,
+        "ethernet.transfer": 3
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "unfinished",
+      "config": "docs/verification/fixtures/ethernet-qos/unfinished.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-unfinished",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-unfinished.html",
+      "result_sha256": "555566157ef6ad70ed482185d09cfbe2774986455a27beff3eec15a6985b5f76",
+      "result_bytes": 182178,
+      "manifest_sha256": "43a292415f48ea6fee105c255a1c35b8f9ca401e54961d75e3f884cc482f64e9",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 1,
+        "ethernet.reception": 1,
+        "ethernet.transfer": 2
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "flow-single",
+      "config": "docs/verification/fixtures/ethernet-qos/flow-single.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-flow-single",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-flow-single.html",
+      "result_sha256": "168639ef55696d961cf6e42fa1660ef8dec8131f9c31f5c8c8ca12b1258e7fed",
+      "result_bytes": 184275,
+      "manifest_sha256": "08b59968f30494b6cf0e83cfd4374dd0c57588d73ce4a0f0059f042d0614db1c",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 1,
+        "ethernet.reception": 2,
+        "ethernet.transfer": 2
+      }
+    },
+    {
+      "group": "qos_fixture",
+      "name": "fanout-copy-drop",
+      "config": "docs/verification/fixtures/ethernet-qos/fanout-copy-drop.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-fanout-copy-drop",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/fixture-fanout-copy-drop.html",
+      "result_sha256": "4c9254f774cedd902e10cd30fb5247dc4ee45632039dfde42766201b4303ac36",
+      "result_bytes": 185862,
+      "manifest_sha256": "e54460d98463de533f8a84d1f9f3c24f9babdb25678487ef7860f3fae81d6ea2",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 1,
+        "ethernet.reception": 2,
+        "ethernet.transfer": 3
+      }
+    },
+    {
+      "group": "example",
+      "name": "unicast",
+      "config": "examples/ethernet/unicast.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/example-unicast",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/example-unicast.html",
+      "result_sha256": "e42f6dc4fe8cd80a92a289d3ecd9dd367ec89023ee8b46bce6d73be63330f4ed",
+      "result_bytes": 59023,
+      "manifest_sha256": "ba45da0b10673c2904628a8e933fb3deb4ef3f80dd88724a973b505d983dd8a9",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.store-forward.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 1
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 1,
+        "ethernet.reception": 2,
+        "ethernet.transfer": 2
+      }
+    },
+    {
+      "group": "example",
+      "name": "duplex",
+      "config": "examples/ethernet/duplex.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/example-duplex",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/example-duplex.html",
+      "result_sha256": "23ab62f194bb1a2eb1cc65537d86e8b6c067d95c0a2edd145d18e86294738a00",
+      "result_bytes": 72230,
+      "manifest_sha256": "af8272d155c97020148e033a6d582d5072bf0b672c167d736a5d7545c7a8e6ee",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.store-forward.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 1
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 2,
+        "ethernet.reception": 4,
+        "ethernet.transfer": 4
+      }
+    },
+    {
+      "group": "example",
+      "name": "qos-priority",
+      "config": "examples/ethernet/qos-priority.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/example-qos-priority",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/example-qos-priority.html",
+      "result_sha256": "e7195459c11de1eda2f9cba37c6fd2a6180850e0addbf0d872617e7615ff12ce",
+      "result_bytes": 239011,
+      "manifest_sha256": "95d1619ff2b6b83b4cece890a82fbc0bb60d7a215b64383a61946b57a73fccf4",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 3,
+        "ethernet.reception": 6,
+        "ethernet.transfer": 6
+      }
+    },
+    {
+      "group": "example",
+      "name": "qos-periodic-burst",
+      "config": "examples/ethernet/qos-periodic-burst.ini",
+      "cli_status": {
+        "validate": 0,
+        "run": 0,
+        "view": 0
+      },
+      "output": "/tmp/dir-ethernet-qos-final-l5iq70m8/example-qos-periodic-burst",
+      "viewer": "/tmp/dir-ethernet-qos-final-l5iq70m8/example-qos-periodic-burst.html",
+      "result_sha256": "e008e2df93414a6445d94b73f8877b2fcb23f4cb615788cd78d5c31e5b3461a3",
+      "result_bytes": 249439,
+      "manifest_sha256": "c246999f8f6a4be2ac7d96c91d9ed45278533a0446a2a6f361ee3c3cdbc7aeb8",
+      "manifest_files_verified": 4,
+      "schema_version": 2,
+      "profile": "ethernet.l2.qos.v1",
+      "model_schemas": [
+        {
+          "schema_name": "ethernet.frame",
+          "schema_version": 2
+        },
+        {
+          "schema_name": "ethernet.reception",
+          "schema_version": 1
+        },
+        {
+          "schema_name": "ethernet.transfer",
+          "schema_version": 2
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false,
+      "model_record_counts": {
+        "ethernet.frame": 7,
+        "ethernet.reception": 14,
+        "ethernet.transfer": 14
+      }
+    }
+  ],
+  "scope_boundary": "Fixture and example execution evidence only; no IEEE conformance or performance claim."
+}

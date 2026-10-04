@@ -79,6 +79,9 @@ pub(super) fn build(prepared: &PreparedSimulation, timestamp: &str) -> Result<Va
         "max-delta-cycles".into(),
         prepared.common.max_delta_cycles.to_string(),
     );
+    if prepared.ethernet.is_some() {
+        return super::ethernet::metadata(prepared, timestamp, sources, source_hashes, config);
+    }
     config.insert(
         format!("{}.bitrate", prepared.can.bus_id),
         format!("{}bit/s", prepared.can.bitrate),

@@ -10,6 +10,8 @@ const HTML: &str = include_str!("viewer/assets/index.html");
 const STYLE: &str = include_str!("viewer/assets/style.css");
 const MODEL: &str = include_str!("viewer/assets/model.js");
 const APP: &str = include_str!("viewer/assets/app.js");
+const ETHERNET_MODEL: &str = include_str!("viewer/assets/ethernet-model.js");
+const ETHERNET_APP: &str = include_str!("viewer/assets/ethernet-app.js");
 
 fn asset_tag(template: String, tag: &str, replacement: &str) -> Result<String, Diagnostic> {
     if template.matches(tag).count() != 1 {
@@ -57,6 +59,22 @@ fn render(result: &Value) -> Result<String, Diagnostic> {
             escape_closing_tag(MODEL, "script")
         ),
     )?;
+    let html = asset_tag(
+        html,
+        "<script src=\"ethernet-model.js\"></script>",
+        &format!(
+            "<script>{}</script>",
+            escape_closing_tag(ETHERNET_MODEL, "script")
+        ),
+    )?;
+    let html = asset_tag(
+        html,
+        "<script src=\"ethernet-app.js\"></script>",
+        &format!(
+            "<script>{}</script>",
+            escape_closing_tag(ETHERNET_APP, "script")
+        ),
+    )?;
     asset_tag(
         html,
         "<script src=\"app.js\"></script>",
@@ -64,7 +82,7 @@ fn render(result: &Value) -> Result<String, Diagnostic> {
     )
 }
 
-/// Read a schema-1 result and atomically publish a new standalone HTML file.
+/// Read a schema-1/schema-2 result and atomically publish a new standalone HTML file.
 /// The browser's DIRViewerModel validates records and ledgers needed for replay.
 pub fn write(input: &Path, output: &Path) -> Result<PathBuf, Diagnostic> {
     let bytes = fs::read(input).map_err(|e| {
@@ -82,11 +100,13 @@ pub fn write(input: &Path, output: &Path) -> Result<PathBuf, Diagnostic> {
         return Err(Diagnostic::prepare("Result simulation must be an object"));
     }
     if result["schema_version"] == 2
-        && (result["metadata"]["model_profile"] != "can.cc.multibus.v1"
-            || !result["simulation"]["model_records"].is_array())
+        && (!matches!(
+            result["metadata"]["model_profile"].as_str(),
+            Some("can.cc.multibus.v1" | "ethernet.l2.store-forward.v1" | "ethernet.l2.qos.v1")
+        ) || !result["simulation"]["model_records"].is_array())
     {
         return Err(Diagnostic::prepare(
-            "Schema 2 viewer requires CAN multibus model records",
+            "Schema 2 viewer requires supported CAN or Ethernet model records",
         ));
     }
     let html = render(&result)?;

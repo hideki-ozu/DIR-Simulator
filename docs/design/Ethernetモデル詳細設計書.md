@@ -1,12 +1,14 @@
 # Ethernetモデル詳細設計書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 45ce163`
+予定公開版：`v1.1.0`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-04` | L2実装・検証状態、0ps処理のcallback境界、EOF確定後のArrival予約を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：EthernetFabricContext・CRC・phase遷移・journalの内部契約を確定。親要件の交換責務を追跡し、共通profile・codec登録境界と照合。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
@@ -16,7 +18,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | 適用 | 本書の基準契約はethernet.l2.store-forward.v1。半二重と1000BASE-T1はv2の[媒体設計](Ethernet媒体拡張詳細設計書.md)を併用 |
-| 状態 | 仕様・設計・検証入力を具体化。製品実装・製品試験は未実施 |
+| 状態 | 全二重L2の開発実装・製品試験を実施。媒体拡張v2は未実装。実施範囲は検証仕様の実行記録で管理 |
 
 <a id="prepare"></a>
 
@@ -170,3 +172,7 @@
 | 分子 | 結果側のbusy積分はdirection状態とSOF/release実績で作り、Hでclip。伝搬時間はbusyへ加えない。EOF量とrelease量の点は独立に加算し、元frameとhop複製の二重/過少計数を区別する |
 | 終端照合 | offeredの4状態保存則、arrived=reception数、source ready数=parent null copy数、各forwarded子ID集合=parent一致copy集合。bytes/FCSは全hopでFrameMapと同じ |
 | 検証割当 | [DIR-TEST-0023～0028](../verification/cases/Ethernetモデル検証仕様書.md)へserialization、duplex、switch/fanout、queue、prepare、stopを分担。共通runtime/outputの検証は既存ケースを組み合わせる |
+
+### 開発実装のcallback境界
+
+0psのsource TX処理はGenerate callback内でreadyとsource offerを同時commitし、0psの受信処理はArrival callback内でfilter／受信又はfanoutをcommitする。正遅延のSourceReady／Processedはphase0の通知からphase1へ別callbackを予約する。全候補の事前検証後にcommitするため、max-eventsはこの実装callbackを単位として確定prefixを停止する。SOFはEOF／Releaseだけを予約し、ArrivalはEOF callbackの予約成功と一緒に確定する。

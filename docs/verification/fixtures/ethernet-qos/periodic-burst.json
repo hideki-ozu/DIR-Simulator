@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "periodic",
+      "node": "Main.a",
+      "kind": "ethernet.periodic.v1",
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": ""
+      },
+      "flow_id": "flow_periodic",
+      "priority": 4,
+      "deadline_ps": null,
+      "start_ps": "0",
+      "phase_ps": "10",
+      "period_ps": "2000000",
+      "end_ps": "5000000",
+      "count": "3"
+    },
+    {
+      "id": "burst",
+      "node": "Main.a",
+      "kind": "ethernet.burst.v1",
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": ""
+      },
+      "flow_id": "flow_burst",
+      "priority": 5,
+      "deadline_ps": null,
+      "start_ps": "10000000",
+      "period_ps": "2000000",
+      "burst_count": "2",
+      "frames_per_burst": "2",
+      "spacing_ps": "100",
+      "end_ps": "14000000"
+    }
+  ]
+}

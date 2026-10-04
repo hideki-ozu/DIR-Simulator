@@ -1,12 +1,14 @@
 # Ethernetモデル検証仕様書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 45ce163`
+予定公開版：`v1.1.0`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-04` | 10正常scenario・2準備拒否・4CRC vectorの製品照合、停止・失敗prefixと証跡を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：4frame vector・12入力集合・解析期待値と製品検証手順を追加。親要件の交換責務を追跡し、共通profile・codec登録境界と照合。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
@@ -16,15 +18,15 @@
 | 項目 | 内容 |
 | --- | --- |
 | 適用 | 本書の基準契約はethernet.l2.store-forward.v1。半二重と1000BASE-T1はv2の[媒体検証](Ethernet媒体拡張検証仕様書.md)を併用 |
-| 状態 | 仕様・設計・検証入力を具体化。製品実装・製品試験は未実施 |
+| 状態 | 全二重L2の開発実装・製品試験を実施。媒体拡張v2は未実装。実施範囲は検証仕様の実行記録で管理 |
 
 | 項目 | 内容 |
 | --- | --- |
 | fixture | [Main.ned](../fixtures/ethernet/models/ethdemo/Main.ned)、[model.json](../fixtures/ethernet/model.json)、[scenarios.json](../fixtures/ethernet/scenarios.json)、[vectors.json](../fixtures/ethernet/vectors.json)。全12組のINI/workloadを格納 |
 | static検証 | `python3 docs/verification/fixtures/ethernet/verify_fixtures.py`。CRC/frame4件、JSON/INI参照12組、閉形式の経路時間、copy保存則を検査する。NEDは入力文書のレビュー対象で、製品NED parserを実行した証拠とは区別 |
-| 製品実行 | 実装後に`dir-simulator run --config docs/verification/fixtures/ethernet/unicast.ini --output /tmp/dir-ethernet-unicast`。caseごと別の未作成outputを使い、`python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario unicast --results /tmp/dir-ethernet-unicast/results.json`で指定projectionを照合 |
+| 製品実行 | 現行ビルドで`dir-simulator run --config docs/verification/fixtures/ethernet/unicast.ini --output /tmp/dir-ethernet-unicast`。caseごと別の未作成outputを使い、`python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario unicast --results /tmp/dir-ethernet-unicast/results.json`で指定projectionを照合 |
 | 判定 | CRC/bytes/件数/ps/状態は完全一致、共通浮動指標は結果仕様のbinary64値で照合。projectionにないevent sequence絶対値の推測は期待値生成の対象外（注）。診断caseはCLI exitとstderrも別途確認 |
-| 証拠境界 | 下記は解析fixtureと試験仕様。製品実行・故障注入・IEEE規格認証を合格扱いにする記録は未取得 |
+| 証拠境界 | 解析fixtureに加え、10正常scenarioの製品出力projectionと2準備拒否を確認。内部失敗注入はRust試験で確認。性能・IEEE規格認証は未実施 |
 
 <a id="dir-test-0023"></a>
 
@@ -206,11 +208,12 @@
 | 追加時間 | receiver ready時刻1156000psで打切りならreceiver到達/完了イベントを未処理、1156001psでreceived。T0ならframe/transfer/reception行0、queue最大0、率null |
 | 失敗注入 | Switch fanoutの最後の予約又はjournal検証をテストContextで失敗させる。execution_failed/partial true、子copyとqueue増分は全0、親は直前commitのprocessingのまま、失敗候補はpending。既に成功した別frameの結果を保持 |
 | 内部/出力判定 | offersの4状態保存則、arrival=reception数、親子ID一意、各実績時刻が予定と一致、finish後snapshot不変。共通manifest hashとCSV/JSONの整合を既存結果試験へ接続 |
-| 実行結果 | 本書作成時はstatic verifierのみ実行。製品の終了・失敗注入・資源解放は未実行 |
+| 実行結果 | 製品の時間境界・停止prefixと内部予約失敗の原子性をRust試験で確認。全資源解放・公開拡張APIの適合確認は未完了 |
 
 ## 7. 実行記録
 
 | 日付・対象 | 状態と証拠 |
 | --- | --- |
 | 2026-09-29・解析fixture | Python 3標準ライブラリのverify_fixtures.pyを実行。4 CRC/frame vector・12入力集合・経路の閉形式時間がPASS。製品ソースを期待値算出に用いる処理は対象外（注） |
-| 未実行 | DIR-Simulator製品による12scenario実行、追加mutation、失敗注入、性能、IEEE適合認証。実装後は対象commit・実行環境・入力hash・期待値・実測値・判定・成果パスを本表へ追記 |
+| 2026-10-04・開発実装 | 10正常scenarioのJSON/CSV/manifest projection、2入力拒否、4 serializer vectorを確認。[実行証跡](../results/ethernet-v1-2026-10-04.json)。Rust製品試験で追加入力mutation、停止境界、内部予約失敗の原子性を確認。対象は記録された開発ソースであり公開タグと区別する |
+| 未実行 | 性能、IEEE適合認証、媒体v2、公開Registry/Envelopeの適合。準備失敗の結果artifactは現行CLIで未提供（stderr・exit2、callback0） |

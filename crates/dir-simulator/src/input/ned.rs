@@ -848,6 +848,8 @@ pub(super) struct Resolved<'a> {
 }
 pub(super) struct ResolvedChannels {
     delays: BTreeMap<String, u64>,
+    values: BTreeMap<String, Values>,
+    implementations: BTreeMap<String, String>,
 }
 impl ResolvedChannels {
     pub(super) fn len(&self) -> usize {
@@ -859,6 +861,28 @@ pub(super) struct ResolvedPath<'a> {
     edges: Vec<&'a Edge>,
 }
 impl ResolvedPath<'_> {
+    pub(super) fn ethernet_link(&self, channels: &ResolvedChannels) -> Result<(String, u64, u64)> {
+        let linked: Vec<_> = self.edges.iter().filter(|e| e.channel.is_some()).collect();
+        if linked.len() != 1
+            || channels
+                .implementations
+                .get(&linked[0].id)
+                .map(String::as_str)
+                != Some("dir.ethernet.Link")
+        {
+            return Err(error(
+                "Ethernet direction requires exactly one Ethernet Link",
+            ));
+        }
+        let values = &channels.values[&linked[0].id];
+        let (TypedValue::Quantity(bitrate), TypedValue::Quantity(delay)) =
+            (&values["bitrate"], &values["delay"])
+        else {
+            unreachable!()
+        };
+        Ok((linked[0].id.clone(), *bitrate, *delay))
+    }
+
     pub(super) fn delay(&self, channels: &ResolvedChannels) -> Result<u64> {
         self.edges.iter().try_fold(0u64, |sum, edge| {
             sum.checked_add(*channels.delays.get(&edge.id).unwrap_or(&0))
@@ -895,6 +919,8 @@ impl Resolved<'_> {
         rules: &impl ModelRules,
     ) -> Result<ResolvedChannels> {
         let mut delays = BTreeMap::new();
+        let mut channel_values = BTreeMap::new();
+        let mut implementations = BTreeMap::new();
         for edge in self.expanded.edges.values() {
             if let Some(channel) = &edge.channel {
                 let values = resolve_values(&self.types[channel], channels.get(&edge.id), rules)?;
@@ -902,6 +928,11 @@ impl Resolved<'_> {
                     unreachable!()
                 };
                 delays.insert(edge.id.clone(), delay);
+                channel_values.insert(edge.id.clone(), values);
+                implementations.insert(
+                    edge.id.clone(),
+                    self.types[channel].implementation().unwrap_or("").into(),
+                );
             }
         }
         for id in channels.keys() {
@@ -909,7 +940,11 @@ impl Resolved<'_> {
                 return Err(error(format!("unknown or channel-less connection: {id}")));
             }
         }
-        Ok(ResolvedChannels { delays })
+        Ok(ResolvedChannels {
+            delays,
+            values: channel_values,
+            implementations,
+        })
     }
 }
 pub(super) fn resolve<'a>(

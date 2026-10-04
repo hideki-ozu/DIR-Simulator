@@ -41,6 +41,7 @@ fn fixture() -> (PreparedSimulation, Snapshot) {
         rx_channel_ps: 0,
     };
     let prepared = PreparedSimulation {
+        ethernet: None,
         common: crate::types::PreparedCommon {
             profile: PROFILE.into(),
             module_paths: vec![],
@@ -130,6 +131,7 @@ fn fixture() -> (PreparedSimulation, Snapshot) {
         bitrate_bps: 500_000,
     };
     let snapshot = Snapshot {
+        ethernet: None,
         common: crate::snapshot::CommonSnapshot {
             termination: "events_exhausted".into(),
             partial: false,
