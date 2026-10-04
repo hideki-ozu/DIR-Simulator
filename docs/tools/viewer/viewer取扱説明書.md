@@ -1,19 +1,21 @@
 # viewer取扱説明書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`v1.1.0`
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`main @ 811360a`
+予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-04` | v1.1.1向けVLAN結果の画面切替と詳細資料への参照を追加 |
 | `1.1.0` | `2026-10-04` | 初版公開：単独HTMLの作成、CAN/GW画面の操作・エラー対処を集約。必要な資産一式とEthernet資料への参照を明示 |
 
 文書ID：`tool-viewer-manual`
 
 文書状態：公開草案（CAN/GW画面の初版）
 
-本書はCAN/GW画面の説明を対象とする。v1.1.0で追加したEthernet画面は[Ethernet負荷・QoS詳細機能仕様書](../../specs/models/Ethernet負荷・QoS詳細機能仕様書.md)と[READMEのEthernet実行例](../../../README.md#ethernetサンプルを実行する)を参照する。
+本書はCAN/GW画面の説明を対象とする。v1.1.0で追加したEthernet画面は[Ethernet負荷・QoS詳細機能仕様書](../../specs/models/Ethernet負荷・QoS詳細機能仕様書.md)と[READMEのEthernet実行例](../../../README.md#ethernetサンプルを実行する)を参照する。v1.1.1向けPRのVLAN・静的multicast画面は[EthernetVLAN・マルチキャスト詳細機能仕様書](../../specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)を参照する。
 
 本書は結果ビューアの作成と操作を説明する。表示の契約、内部の復元方法、受け入れ確認は[viewer仕様書](viewer仕様書.md)を参照する。以下のコマンドはリポジトリのルートから実行する。
 
@@ -69,6 +71,6 @@ schema 2では「Gateway転送」にRX入力Controllerごとの容量・保持�
 
 ## 4. 別の結果とエラー
 
-「結果ファイルを開く」から別の`results.json`を選ぶか、画面へ1ファイルをドロップして切り替える。本書で説明する結果はschema 1の`can.cc.ideal.v1`とschema 2の`can.cc.multibus.v1`である。schema 2の`ethernet.l2.store-forward.v1`と`ethernet.l2.qos.v1`を開くとEthernet画面へ切り替わる。未対応のschema/profileや不正なレコードは読込エラーになる。
+「結果ファイルを開く」から別の`results.json`を選ぶか、画面へ1ファイルをドロップして切り替える。本書で説明する結果はschema 1の`can.cc.ideal.v1`とschema 2の`can.cc.multibus.v1`である。schema 2の`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`と、v1.1.1向けPRの`ethernet.l2.vlan.v1`を開くとEthernet画面へ切り替わる。未対応のschema/profileや不正なレコードは読込エラーになる。
 
 CLIで「Viewer output already exists」と表示されたら、新しい出力ファイル名を指定する。親ディレクトリがない場合は先に作成する。入力JSONが読めない、構文が不正、schemaが対象外の場合は入力側を確認する。HTMLは作成できてもブラウザで読込エラーが出る場合は、結果の要求・受信・Gatewayレコードまたは時刻の整合性を確認する。結果を編集して直す前に、生成元の[結果仕様](../../specs/結果詳細機能仕様書.md)と[GW仕様](../../specs/models/GWモデル詳細機能仕様書.md)を参照する。

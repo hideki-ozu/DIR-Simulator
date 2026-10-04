@@ -1,0 +1,146 @@
+{
+  "status": "design_only",
+  "profile": "ethernet.l2.vlan.v1",
+  "source_base": "main@811360a",
+  "design_contract": {
+    "tpid_hex": "8100",
+    "vid_range": [
+      1,
+      4094
+    ],
+    "pcp_range": [
+      0,
+      7
+    ],
+    "dei_range": [
+      0,
+      1
+    ],
+    "tci_byte_order": "network",
+    "tci_formula": "(pcp << 13) | (dei << 12) | vid",
+    "source_padding": "max(0, 46 - payload_bytes), for tagged and untagged",
+    "tag_change": "retain payload and source padding; recompute FCS after each tag change",
+    "fcs_algorithm": "reflected IEEE CRC-32 polynomial 0xEDB88320, initial and final XOR 0xFFFFFFFF",
+    "fcs_byte_order": "little-endian",
+    "mac_bytes_definition": "destination MAC through FCS inclusive",
+    "sha256_mac_bytes_definition": "SHA-256 over exact destination-MAC-through-FCS bytes",
+    "wire_bits_definition": "(mac_bytes + 8) * 8 at 1 Gbit/s, including 8 preamble/SFD octets",
+    "occupied_bits_definition": "wire_bits + 96 inter-frame-gap bits",
+    "bitrate_bps": 1000000000,
+    "evidence_limit": "Arithmetic design expectations only; not IEEE conformance or product evidence."
+  },
+  "vectors": [
+    {
+      "name": "empty-untagged",
+      "input": {
+        "src_mac": "02:00:00:00:00:01",
+        "dst_mac": "01:00:5e:00:00:01",
+        "inner_ethertype_hex": "0800",
+        "payload": {
+          "unit_hex": "ab",
+          "repeat": 0,
+          "bytes": 0
+        },
+        "vlan": null
+      },
+      "expected": {
+        "header_hex": "01005e0000010200000000010800",
+        "mac_bytes": 64,
+        "pad_bytes": 46,
+        "tci_hex": null,
+        "fcs_hex": "16a11b79",
+        "wire_bits": 576,
+        "occupied_bits": 672,
+        "serialization_ps": 576000,
+        "occupied_ps": 672000,
+        "sha256_mac_bytes": "5ad7fd5ed5afc38dc250236c4a447f0cfb86f726523baaf70fecc7381c9dca2a"
+      }
+    },
+    {
+      "name": "empty-tagged-vid10-pcp7-dei1",
+      "input": {
+        "src_mac": "02:00:00:00:00:01",
+        "dst_mac": "01:00:5e:00:00:01",
+        "inner_ethertype_hex": "0800",
+        "payload": {
+          "unit_hex": "ab",
+          "repeat": 0,
+          "bytes": 0
+        },
+        "vlan": {
+          "vid": 10,
+          "pcp": 7,
+          "dei": 1
+        }
+      },
+      "expected": {
+        "header_hex": "01005e0000010200000000018100f00a0800",
+        "mac_bytes": 68,
+        "pad_bytes": 46,
+        "tci_hex": "f00a",
+        "fcs_hex": "e6d68627",
+        "wire_bits": 608,
+        "occupied_bits": 704,
+        "serialization_ps": 608000,
+        "occupied_ps": 704000,
+        "sha256_mac_bytes": "fc6ca460a07b1291681f70e85b9a514016cb614c576be1ff749bab16bf3e43e7"
+      }
+    },
+    {
+      "name": "payload1500-untagged",
+      "input": {
+        "src_mac": "02:00:00:00:00:01",
+        "dst_mac": "01:00:5e:00:00:01",
+        "inner_ethertype_hex": "0800",
+        "payload": {
+          "unit_hex": "ab",
+          "repeat": 1500,
+          "bytes": 1500
+        },
+        "vlan": null
+      },
+      "expected": {
+        "header_hex": "01005e0000010200000000010800",
+        "mac_bytes": 1518,
+        "pad_bytes": 0,
+        "tci_hex": null,
+        "fcs_hex": "65c48a6c",
+        "wire_bits": 12208,
+        "occupied_bits": 12304,
+        "serialization_ps": 12208000,
+        "occupied_ps": 12304000,
+        "sha256_mac_bytes": "bbeae75243ce720e6aad0d055e3145d44b7481f6be05db93cd566133652e8224"
+      }
+    },
+    {
+      "name": "payload1500-tagged-vid10-pcp7-dei1",
+      "input": {
+        "src_mac": "02:00:00:00:00:01",
+        "dst_mac": "01:00:5e:00:00:01",
+        "inner_ethertype_hex": "0800",
+        "payload": {
+          "unit_hex": "ab",
+          "repeat": 1500,
+          "bytes": 1500
+        },
+        "vlan": {
+          "vid": 10,
+          "pcp": 7,
+          "dei": 1
+        }
+      },
+      "expected": {
+        "header_hex": "01005e0000010200000000018100f00a0800",
+        "mac_bytes": 1522,
+        "pad_bytes": 0,
+        "tci_hex": "f00a",
+        "fcs_hex": "25912423",
+        "wire_bits": 12240,
+        "occupied_bits": 12336,
+        "serialization_ps": 12240000,
+        "occupied_ps": 12336000,
+        "sha256_mac_bytes": "331a9db589c9ac0a73be66b69d176685c2b6905eb95021da8e11503414107471"
+      }
+    }
+  ]
+}

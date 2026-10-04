@@ -71,15 +71,57 @@ pub fn serialize_frame(
     ether_type: u16,
     data: &str,
 ) -> Result<EthernetWireFrame> {
-    if ether_type < 1536 || [0x8100, 0x88a8].contains(&ether_type) || data.len() > 3000 {
+    serialize_wire(src_mac, dst_mac, ether_type, data, None, false)
+}
+/// Serialize a single C-tag frame, retaining the 46-byte payload padding policy.
+pub fn serialize_vlan_frame(
+    src_mac: &str,
+    dst_mac: &str,
+    ether_type: u16,
+    data: &str,
+    tag: Option<EthernetVlanTag>,
+) -> Result<EthernetWireFrame> {
+    serialize_wire(src_mac, dst_mac, ether_type, data, tag, true)
+}
+fn serialize_wire(
+    src_mac: &str,
+    dst_mac: &str,
+    ether_type: u16,
+    data: &str,
+    tag: Option<EthernetVlanTag>,
+    groups: bool,
+) -> Result<EthernetWireFrame> {
+    if ether_type < 1536
+        || [0x8100, 0x88a8].contains(&ether_type)
+        || data.len() > 3000
+        || tag.is_some_and(|t| !(1..=4094).contains(&t.vid) || t.pcp > 7 || t.dei > 1)
+    {
         return Err(Diagnostic::prepare("invalid Ethernet frame range"));
     }
     let source = mac(src_mac, false)?;
-    let destination = mac(dst_mac, true)?;
+    let destination = if groups {
+        let parts: Vec<_> = dst_mac.split(':').collect();
+        if parts.len() != 6 || parts.iter().any(|p| p.len() != 2) {
+            return Err(Diagnostic::prepare("invalid MAC"));
+        }
+        let b = decode(&parts.concat())?;
+        if b.iter().all(|b| *b == 0) || (b[..5] == [1, 128, 194, 0, 0] && b[5] <= 15) {
+            return Err(Diagnostic::prepare(
+                "reserved or invalid VLAN destination MAC",
+            ));
+        }
+        b
+    } else {
+        mac(dst_mac, true)?
+    };
     let payload = decode(data)?;
     let pad_bytes = 46usize.saturating_sub(payload.len());
     let mut bytes = destination;
     bytes.extend(source);
+    if let Some(t) = tag {
+        bytes.extend(0x8100u16.to_be_bytes());
+        bytes.extend(((u16::from(t.pcp) << 13) | (u16::from(t.dei) << 12) | t.vid).to_be_bytes());
+    }
     bytes.extend(ether_type.to_be_bytes());
     bytes.extend(payload);
     bytes.resize(bytes.len() + pad_bytes, 0);
@@ -90,12 +132,14 @@ pub fn serialize_frame(
         dst_mac: dst_mac.to_ascii_lowercase(),
         ether_type,
         data_hex: data.to_ascii_lowercase(),
+        tag,
         pad_bytes: pad_bytes as u64,
         mac_bytes: bytes.len() as u64,
         fcs_hex: hex(&fcs),
         mac_hex: hex(&bytes),
     })
 }
+
 fn duration(bits: u64, rate: u64) -> Result<u64> {
     let n = bits
         .checked_mul(1_000_000_000_000)
@@ -124,6 +168,17 @@ struct Queue {
     waiting: Vec<VecDeque<usize>>,
     bytes: Vec<u64>,
     active: Option<usize>,
+}
+#[derive(Clone)]
+struct Candidate {
+    direction: usize,
+    wire: EthernetWireFrame,
+    vlan_id: Option<u16>,
+    priority: u8,
+}
+struct Forwarding {
+    candidates: Vec<Candidate>,
+    reason: Option<&'static str>,
 }
 struct Engine<'a> {
     prepared: &'a PreparedSimulation,
@@ -220,7 +275,13 @@ impl Engine<'_> {
         });
     }
     fn qos(&self) -> bool {
-        self.prepared.common.profile == "ethernet.l2.qos.v1"
+        matches!(
+            self.prepared.common.profile.as_str(),
+            "ethernet.l2.qos.v1" | "ethernet.l2.vlan.v1"
+        )
+    }
+    fn vlan(&self) -> bool {
+        self.prepared.common.profile == "ethernet.l2.vlan.v1"
     }
     fn output_config(&self, d: usize) -> Option<&EthernetOutputConfig> {
         self.model
@@ -253,8 +314,8 @@ impl Engine<'_> {
         }
         Ok(true)
     }
-    fn queue_point(&mut self, d: usize, f: usize) {
-        let priority = self.eth().frames[f].priority as usize;
+    fn queue_point(&mut self, d: usize, f: usize, priority: u8) {
+        let priority = priority as usize;
         self.point(
             format!("{}.queue", self.model.directions[d].from_port),
             "queue_length",
@@ -300,13 +361,15 @@ impl Engine<'_> {
                 .min_by_key(|(_, t)| *t)
         }
     }
-    fn offer(&mut self, f: usize, parent: Option<usize>, directions: &[usize]) -> Vec<String> {
+    fn offer(&mut self, f: usize, parent: Option<usize>, candidates: &[Candidate]) -> Vec<String> {
         let frame_id = self.eth().frames[f].frame_id.clone();
-        let priority = self.eth().frames[f].priority;
-        let mac_bytes = self.eth().frames[f].wire.mac_bytes;
+
         let parent_transfer_id = parent.map(|p| self.eth().transfers[p].transfer_id.clone());
         let mut ids = Vec::new();
-        for &d in directions {
+        for candidate in candidates {
+            let d = candidate.direction;
+            let priority = candidate.priority;
+            let mac_bytes = candidate.wire.mac_bytes;
             let direction = &self.model.directions[d];
             let transfer_id = format!("{frame_id}@{}", direction.from_port);
             ids.push(transfer_id.clone());
@@ -322,6 +385,8 @@ impl Engine<'_> {
                     .qos()
                     .then(|| format!("{}.queue.{priority}", direction.from_port)),
                 priority,
+                wire: candidate.wire.clone(),
+                vlan_id: candidate.vlan_id,
                 from_port: direction.from_port.clone(),
                 to_port: direction.to_port.clone(),
                 queued_ps: self.now.0,
@@ -344,7 +409,7 @@ impl Engine<'_> {
                 self.queues[d].bytes[priority as usize] += mac_bytes;
                 self.dirty.insert((self.now.0, self.now.1, d));
             }
-            self.queue_point(d, f);
+            self.queue_point(d, f, priority);
         }
         ids
     }
@@ -356,26 +421,25 @@ impl Engine<'_> {
             .filter_map(|(g, generator)| generator.time(cursors[g]))
             .min()
     }
-    fn preflight_offer(
-        &self,
-        frame_id: &str,
-        priority: u8,
-        mac_bytes: u64,
-        directions: &[usize],
-    ) -> Result<()> {
+    fn preflight_offer(&self, frame_id: &str, candidates: &[Candidate]) -> Result<()> {
         let mut dirty = self.dirty.clone();
-        for &d in directions {
-            let direction = &self.model.directions[d];
-            let transfer_id = format!("{frame_id}@{}", direction.from_port);
-            if self
-                .eth()
-                .transfers
-                .iter()
-                .any(|t| t.transfer_id == transfer_id)
+        let mut ids = BTreeSet::new();
+        for candidate in candidates {
+            let d = candidate.direction;
+            let transfer_id = format!("{frame_id}@{}", self.model.directions[d].from_port);
+            if !ids.insert(transfer_id.clone())
+                || self
+                    .eth()
+                    .transfers
+                    .iter()
+                    .any(|t| t.transfer_id == transfer_id)
             {
                 return Err(failure("duplicate Ethernet transfer ID"));
             }
-            if self.admit(d, priority, mac_bytes)? {
+            if self.admit(d, candidate.priority, candidate.wire.mac_bytes)? {
+                self.queues[d].bytes[candidate.priority as usize]
+                    .checked_add(candidate.wire.mac_bytes)
+                    .ok_or_else(|| overflow("Ethernet queue byte overflow"))?;
                 dirty.insert((self.now.0, self.now.1, d));
             }
         }
@@ -383,6 +447,26 @@ impl Engine<'_> {
             .checked_add(dirty.len() as u64)
             .ok_or_else(|| overflow("Ethernet sequence overflow"))?;
         Ok(())
+    }
+    fn source_candidates(
+        &self,
+        source: usize,
+        wire: &EthernetWireFrame,
+        vlan_id: Option<u16>,
+        priority: u8,
+    ) -> Vec<Candidate> {
+        self.model
+            .directions
+            .iter()
+            .enumerate()
+            .filter(|(_, d)| d.source == source)
+            .map(|(direction, _)| Candidate {
+                direction,
+                wire: wire.clone(),
+                vlan_id,
+                priority,
+            })
+            .collect()
     }
     fn handle(&mut self, event: Event) -> Result<()> {
         match event {
@@ -427,26 +511,20 @@ impl Engine<'_> {
                     Vec::new()
                 };
                 if ready == self.now.0 {
-                    let directions: Vec<_> = self
-                        .model
-                        .directions
-                        .iter()
-                        .enumerate()
-                        .filter(|(_, d)| d.source == generator.source)
-                        .map(|(i, _)| i)
-                        .collect();
-                    self.preflight_offer(
-                        &format!("{}:{ordinal}", generator.id),
+                    let candidates = self.source_candidates(
+                        generator.source,
+                        &generator.frame,
+                        generator.source_vlan_id,
                         generator.priority,
-                        generator.frame.mac_bytes,
-                        &directions,
-                    )?;
+                    );
+                    self.preflight_offer(&format!("{}:{ordinal}", generator.id), &candidates)?;
                 }
                 let now = self.now.0;
                 self.eth_mut().frames.push(EthernetFrameRecord {
                     frame_id: format!("{}:{ordinal}", generator.id),
                     time_ps: now,
                     source: device.id.clone(),
+                    source_vlan_id: generator.source_vlan_id,
                     wire: generator.frame.clone(),
                     flow_id: generator.flow_id.clone(),
                     priority: generator.priority,
@@ -464,21 +542,20 @@ impl Engine<'_> {
                 self.publish(events);
             }
             Event::Offer(f) => {
-                let source = &self.eth().frames[f].source;
-                let directions: Vec<_> = self
+                let frame = &self.eth().frames[f];
+                let source = self
                     .model
-                    .directions
+                    .devices
                     .iter()
-                    .enumerate()
-                    .filter(|(_, d)| &self.model.devices[d.source].id == source)
-                    .map(|(i, _)| i)
-                    .collect();
-                self.preflight_offer(
-                    &self.eth().frames[f].frame_id,
-                    self.eth().frames[f].priority,
-                    self.eth().frames[f].wire.mac_bytes,
-                    &directions,
-                )?;
+                    .position(|d| d.id == frame.source)
+                    .unwrap();
+                let candidates = self.source_candidates(
+                    source,
+                    &frame.wire,
+                    frame.source_vlan_id,
+                    frame.priority,
+                );
+                self.preflight_offer(&frame.frame_id, &candidates)?;
                 self.source_offer(f);
             }
             Event::Start(d) => {
@@ -487,7 +564,7 @@ impl Engine<'_> {
                 }
                 let (priority, t) = self.next_waiting(d).unwrap();
                 let f = self.frame_indices[t];
-                let wire = &self.eth().frames[f].wire;
+                let wire = &self.eth().transfers[t].wire;
                 let link = &self.model.directions[d];
                 let wire_bits = wire
                     .mac_bytes
@@ -510,7 +587,7 @@ impl Engine<'_> {
                 self.queues[d].waiting[priority].pop_front();
                 self.queues[d].bytes[priority] = remaining_bytes;
                 self.queues[d].active = Some(t);
-                self.queue_point(d, f);
+                self.queue_point(d, f, priority as u8);
                 let now = self.now.0;
                 let row = &mut self.eth_mut().transfers[t];
                 row.time_ps = now;
@@ -547,17 +624,39 @@ impl Engine<'_> {
                 let direction = &self.model.directions[self.direction_indices[t]];
                 let device = &self.model.devices[direction.destination];
                 let frame = &self.eth().frames[f];
-                let bytes = decode(&frame.wire.mac_hex)
-                    .map_err(|_| failure("Ethernet corrupted frame bytes"))?;
-                if bytes.len() < 4
-                    || crc32(&bytes[..bytes.len() - 4]).to_le_bytes() != bytes[bytes.len() - 4..]
-                {
-                    return Err(failure("Ethernet FCS invariant failed"));
-                }
-                let mismatch = device.kind == "endpoint"
-                    && device.mac.as_deref() != Some(&frame.wire.dst_mac)
-                    && frame.wire.dst_mac != "ff:ff:ff:ff:ff:ff";
-                let ready = if mismatch {
+                let wire = &self.eth().transfers[t].wire;
+                self.validate_wire(t)?;
+                let (vlan_id, priority, _) = self.classification(t)?;
+                let reason = if self.vlan() {
+                    let policy = self.ingress_policy(t)?;
+                    if (policy.admit == "tagged_only" && wire.tag.is_none())
+                        || (policy.admit == "untagged_only" && wire.tag.is_some())
+                    {
+                        Some("ingress_frame_type")
+                    } else if !policy.vlans.contains_key(&vlan_id.unwrap()) {
+                        Some("ingress_vlan_membership")
+                    } else if device.kind == "endpoint"
+                        && device.mac.as_deref() != Some(&wire.dst_mac)
+                        && wire.dst_mac != "ff:ff:ff:ff:ff:ff"
+                    {
+                        if is_group(&wire.dst_mac) {
+                            (!device
+                                .subscriptions
+                                .contains(&(vlan_id.unwrap(), wire.dst_mac.clone())))
+                            .then_some("multicast_not_subscribed")
+                        } else {
+                            Some("destination_mismatch")
+                        }
+                    } else {
+                        None
+                    }
+                } else {
+                    (device.kind == "endpoint"
+                        && device.mac.as_deref() != Some(&wire.dst_mac)
+                        && wire.dst_mac != "ff:ff:ff:ff:ff:ff")
+                        .then_some("destination_mismatch")
+                };
+                let ready = if reason.is_some() {
                     None
                 } else {
                     Some(add(
@@ -582,26 +681,28 @@ impl Engine<'_> {
                     transfer_id: self.eth().transfers[t].transfer_id.clone(),
                     device: device.id.clone(),
                     ingress: direction.to_port.clone(),
+                    vlan_id,
+                    priority,
                     observed_ps: self.now.0,
-                    ready_ps: mismatch.then_some(self.now.0),
+                    ready_ps: reason.is_some().then_some(self.now.0),
                     planned_ready_ps: ready,
-                    status: if mismatch { "filtered" } else { "processing" }.into(),
-                    reason: mismatch.then(|| "destination_mismatch".into()),
+                    status: if reason.is_some() {
+                        "filtered"
+                    } else {
+                        "processing"
+                    }
+                    .into(),
+                    reason: reason.map(str::to_string),
                     egress_transfer_ids: Vec::new(),
                 };
                 // Zero-delay processing is checked before committing the arrival callback.
                 let outputs = if ready == Some(self.now.0) {
-                    Some(self.outputs(t))
+                    Some(self.outputs(t)?)
                 } else {
                     None
                 };
                 if let Some(outputs) = &outputs {
-                    self.preflight_offer(
-                        &frame.frame_id,
-                        frame.priority,
-                        frame.wire.mac_bytes,
-                        outputs,
-                    )?;
+                    self.preflight_offer(&frame.frame_id, &outputs.candidates)?;
                 }
                 let now = self.now.0;
                 let transfer = &mut self.eth_mut().transfers[t];
@@ -624,70 +725,218 @@ impl Engine<'_> {
                     .iter()
                     .position(|t| t.transfer_id == self.eth().receptions[r].transfer_id)
                     .ok_or_else(|| failure("Ethernet reception reference invariant"))?;
-                let outputs = self.outputs(t);
-                self.preflight_offer(
-                    &self.eth().receptions[r].frame_id,
-                    self.eth().frames[self.frame_indices[t]].priority,
-                    self.eth().frames[self.frame_indices[t]].wire.mac_bytes,
-                    &outputs,
-                )?;
+                let outputs = self.outputs(t)?;
+                self.preflight_offer(&self.eth().receptions[r].frame_id, &outputs.candidates)?;
                 self.complete(r, t, outputs);
             }
         }
         Ok(())
     }
     fn source_offer(&mut self, f: usize) {
-        let source = &self.eth().frames[f].source;
-        let directions: Vec<_> = self
+        let frame = &self.eth().frames[f];
+        let source = self
             .model
-            .directions
+            .devices
             .iter()
-            .enumerate()
-            .filter(|(_, d)| &self.model.devices[d.source].id == source)
-            .map(|(i, _)| i)
-            .collect();
+            .position(|d| d.id == frame.source)
+            .unwrap();
+        let candidates =
+            self.source_candidates(source, &frame.wire, frame.source_vlan_id, frame.priority);
         let now = self.now.0;
         self.eth_mut().frames[f].ready_ps = Some(now);
         self.eth_mut().frames[f].time_ps = now;
-        self.offer(f, None, &directions);
+        self.offer(f, None, &candidates);
     }
-    fn outputs(&self, t: usize) -> Vec<usize> {
+    fn ingress_policy(&self, t: usize) -> Result<&EthernetPortPolicy> {
+        let ingress = &self.model.directions[self.direction_indices[t]].to_port;
+        self.model
+            .port_policies
+            .iter()
+            .find(|policy| &policy.ingress == ingress)
+            .ok_or_else(|| failure("Ethernet missing ingress policy"))
+    }
+    fn classification(&self, t: usize) -> Result<(Option<u16>, u8, u8)> {
+        if !self.vlan() {
+            return Ok((None, self.eth().transfers[t].priority, 0));
+        }
+        let wire = &self.eth().transfers[t].wire;
+        if let Some(tag) = wire.tag {
+            Ok((Some(tag.vid), tag.pcp, tag.dei))
+        } else {
+            let policy = self.ingress_policy(t)?;
+            Ok((Some(policy.pvid), policy.default_priority, 0))
+        }
+    }
+    fn validate_wire(&self, t: usize) -> Result<()> {
+        let wire = &self.eth().transfers[t].wire;
+        let source = &self.eth().frames[self.frame_indices[t]].wire;
+        let bytes = decode(&wire.mac_hex).map_err(|_| failure("Ethernet corrupted frame bytes"))?;
+        if bytes.len() < 4
+            || crc32(&bytes[..bytes.len() - 4]).to_le_bytes() != bytes[bytes.len() - 4..]
+        {
+            return Err(failure("Ethernet FCS invariant failed"));
+        }
+        let expected = serialize_wire(
+            &wire.src_mac,
+            &wire.dst_mac,
+            wire.ether_type,
+            &wire.data_hex,
+            wire.tag,
+            self.vlan(),
+        )
+        .map_err(|_| failure("Ethernet wire fields invariant failed"))?;
+        if expected.mac_hex != wire.mac_hex
+            || expected.mac_bytes != wire.mac_bytes
+            || expected.fcs_hex != wire.fcs_hex
+            || expected.pad_bytes != wire.pad_bytes
+            || source.src_mac != wire.src_mac
+            || source.dst_mac != wire.dst_mac
+            || source.ether_type != wire.ether_type
+            || source.data_hex != wire.data_hex
+            || source.pad_bytes != wire.pad_bytes
+        {
+            return Err(failure("Ethernet wire fields invariant failed"));
+        }
+        Ok(())
+    }
+    fn outputs(&self, t: usize) -> Result<Forwarding> {
         let d = &self.model.directions[self.direction_indices[t]];
         let device = &self.model.devices[d.destination];
         if device.kind == "endpoint" {
-            return Vec::new();
+            return Ok(Forwarding {
+                candidates: Vec::new(),
+                reason: None,
+            });
         }
-        let frame = &self.eth().frames[self.frame_indices[t]].wire;
-        if let Some(output) = device.fdb.get(&frame.dst_mac) {
-            return self
-                .model
+        let wire = &self.eth().transfers[t].wire;
+        let (vlan_id, priority, dei) = self.classification(t)?;
+        let ingress_tx = if self.vlan() {
+            self.ingress_policy(t)?.port.clone()
+        } else {
+            String::new()
+        };
+        let eligible: Vec<_> =
+            self.model
                 .directions
                 .iter()
                 .enumerate()
-                .filter(|(_, e)| &e.from_port == output && e.to_port != crate_pair(&d.from_port))
+                .filter(|(_, e)| {
+                    e.source == d.destination
+                        && if self.vlan() {
+                            e.from_port != ingress_tx
+                        } else {
+                            e.to_port != crate_pair(&d.from_port)
+                        }
+                })
+                .filter(|(_, e)| {
+                    !self.vlan()
+                        || self.model.port_policies.iter().any(|p| {
+                            p.port == e.from_port && p.vlans.contains_key(&vlan_id.unwrap())
+                        })
+                })
                 .map(|(i, _)| i)
                 .collect();
+        let mut reason = None;
+        let selected = if self.vlan() {
+            let vid = vlan_id.unwrap();
+            if wire.dst_mac != "ff:ff:ff:ff:ff:ff" && is_group(&wire.dst_mac) {
+                if let Some(ports) = device.multicast.get(&(vid, wire.dst_mac.clone())) {
+                    let outputs: Vec<_> = eligible
+                        .iter()
+                        .copied()
+                        .filter(|i| ports.contains(&self.model.directions[*i].from_port))
+                        .collect();
+                    if outputs.is_empty() {
+                        reason = Some("multicast_no_egress");
+                    }
+                    outputs
+                } else if device.unknown_multicast == "drop" {
+                    reason = Some("unknown_multicast");
+                    Vec::new()
+                } else {
+                    if eligible.is_empty() {
+                        reason = Some("no_vlan_egress");
+                    }
+                    eligible
+                }
+            } else if let Some(port) = device.vlan_fdb.get(&(vid, wire.dst_mac.clone())) {
+                let outputs: Vec<_> = eligible
+                    .iter()
+                    .copied()
+                    .filter(|i| &self.model.directions[*i].from_port == port)
+                    .collect();
+                if outputs.is_empty() {
+                    reason = Some("same_ingress");
+                }
+                outputs
+            } else {
+                if eligible.is_empty() {
+                    reason = Some("no_vlan_egress");
+                }
+                eligible
+            }
+        } else if let Some(port) = device.fdb.get(&wire.dst_mac) {
+            let outputs: Vec<_> = eligible
+                .iter()
+                .copied()
+                .filter(|i| &self.model.directions[*i].from_port == port)
+                .collect();
+            if outputs.is_empty() {
+                reason = Some("same_ingress");
+            }
+            outputs
+        } else {
+            if eligible.is_empty() {
+                reason = Some("same_ingress");
+            }
+            eligible
+        };
+        let mut candidates = Vec::new();
+        for direction in selected {
+            let outgoing = if self.vlan() {
+                let policy = self
+                    .model
+                    .port_policies
+                    .iter()
+                    .find(|p| p.port == self.model.directions[direction].from_port)
+                    .ok_or_else(|| failure("Ethernet missing egress policy"))?;
+                let tag = policy.vlans[&vlan_id.unwrap()].then_some(EthernetVlanTag {
+                    vid: vlan_id.unwrap(),
+                    pcp: priority,
+                    dei,
+                });
+                serialize_vlan_frame(
+                    &wire.src_mac,
+                    &wire.dst_mac,
+                    wire.ether_type,
+                    &wire.data_hex,
+                    tag,
+                )
+                .map_err(|_| failure("Ethernet egress rewrite failed"))?
+            } else {
+                wire.clone()
+            };
+            candidates.push(Candidate {
+                direction,
+                wire: outgoing,
+                vlan_id,
+                priority,
+            });
         }
-        self.model
-            .directions
-            .iter()
-            .enumerate()
-            .filter(|(_, e)| e.source == d.destination && e.to_port != crate_pair(&d.from_port))
-            .map(|(i, _)| i)
-            .collect()
+        Ok(Forwarding { candidates, reason })
     }
-    fn complete(&mut self, r: usize, t: usize, outputs: Vec<usize>) {
+    fn complete(&mut self, r: usize, t: usize, outputs: Forwarding) {
         let f = self.frame_indices[t];
         let device =
             &self.model.devices[self.model.directions[self.direction_indices[t]].destination];
         let status = if device.kind == "endpoint" {
             "received"
-        } else if outputs.is_empty() {
+        } else if outputs.reason.is_some() {
             "filtered"
         } else {
             "forwarded"
         };
-        let ids = self.offer(f, Some(t), &outputs);
+        let ids = self.offer(f, Some(t), &outputs.candidates);
         if status == "received" {
             self.point(
                 device.id.clone(),
@@ -702,7 +951,7 @@ impl Engine<'_> {
         row.time_ps = now;
         row.ready_ps = Some(now);
         row.status = status.into();
-        row.reason = (status == "filtered").then(|| "same_ingress".into());
+        row.reason = outputs.reason.map(str::to_string);
         row.egress_transfer_ids = ids;
     }
     fn run(mut self) -> Snapshot {
@@ -791,6 +1040,9 @@ impl Engine<'_> {
         self.snapshot.common.end_ps = time;
         self.snapshot.common.diagnostics.push(error);
     }
+}
+fn is_group(mac: &str) -> bool {
+    u8::from_str_radix(&mac[..2], 16).is_ok_and(|b| b & 1 != 0)
 }
 fn crate_pair(port: &str) -> String {
     let (owner, gate) = port.rsplit_once('.').unwrap();
