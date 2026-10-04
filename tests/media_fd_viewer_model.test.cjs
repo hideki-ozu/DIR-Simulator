@@ -1,11 +1,13 @@
 'use strict';
+// Run from the repository: node --test tests/media_fd_viewer_model.test.cjs
+// Cargo is resolved through PATH; CARGO may name another Cargo executable.
+// DIR_SIMULATOR_BIN uses an existing executable and skips the Cargo build.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
 const {execFileSync}=require('node:child_process');
 const E=require('../crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js');
 const M=require('../crates/dir-simulator/src/tool/viewer/assets/model.js');
 const repository=path.resolve(__dirname,'..'),temporary=fs.mkdtempSync(path.join(os.tmpdir(),'dir-media-fd-viewer-'));
-execFileSync('/home/hideki/.cargo/bin/cargo',['build','--locked','-p','dir-simulator'],{cwd:repository,stdio:'pipe'});
-const binary=path.join(repository,'target/debug/dir-simulator');
+const binary=require('./helpers/simulator_binary.cjs').simulatorBinary(repository);
 function result(group,name){const root=path.join(temporary,`${group}-${name}`);if(!fs.existsSync(root))execFileSync(binary,['run','--config',path.join(repository,'docs/verification/fixtures',group,`${name}.ini`),'--output',root]);return JSON.parse(fs.readFileSync(path.join(root,'results.json')));}
 test.after(()=>fs.rmSync(temporary,{recursive:true,force:true}));
 test('media replay preserves collision, jam, backoff and retry at each destination',()=>{

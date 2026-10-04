@@ -4253,7 +4253,7 @@
     "document_version": "1.1.2",
     "document_sha256": {
       "README.md": "f94b5c101119268c1f0e08419612fe2a10f6d8479f1f6de7c2569d863ac8269b",
-      "docs/要件定義書.md": "52c71ef86cb8303d78c886aaafcac99d84918160a1a7bc1033c3fbac0ef1227b",
+      "docs/要件定義書.md": "af16cb68d1c54b7383b8906288247d7383eed2ea23eea169a29f7e66db0434d7",
       "docs/機能仕様書.md": "db62f144beadfa1b302842e3c2301a91b1ba8f28eb5f0d88bd2f9fb5b5994b40",
       "docs/アーキテクチャ設計書.md": "b3d14080a53b2823584345a73c8a19268dc48f534c038b8781c5b81215139618",
       "docs/将来拡張計画.md": "d9da48b004bc3b6d955d3a3edf3cd297ecd640fcd6be522659979fbb3c29682e",
@@ -4332,8 +4332,8 @@
     ],
     "staged_product_source_hashes_match": true,
     "generated_document_sha256": {
-      "docs/要件トレーサビリティ一覧.md": "ba1c6a8b85aeaa3fdf183c7dd1c3a8a0af54a6efa3e0301838008c07f81e9d1b",
-      "docs/要件トレーサビリティ一覧.html": "32cfd461fb0f6d9aecb0278315073c2a6dfa00115f582455e5d4b3ff1fd219bf",
+      "docs/要件トレーサビリティ一覧.md": "996134d6db08679713573a27c89e7dfbeb55a26bc1ec3251b15ea28e5f7791b8",
+      "docs/要件トレーサビリティ一覧.html": "a9c09977538e1dd2a79618be89271a6565d06dbc6e73fc84515379057b47ceb9",
       "docs/要件階層.html": "020c522e28a06483ad06f7de4c9095c75bd3f7e4e799a71e60511ad02bf914b8"
     },
     "publication_document_review": {
@@ -4348,6 +4348,93 @@
       "reason": "Removed stale claims of no media/CAN FD/T1 implementation or product tests; implementation evidence remains scoped to recorded tests and does not assert all acceptance criteria or standards conformance.",
       "correction_links_checked": 28,
       "correction_link_errors": 0
+    }
+  },
+  "review_followup": {
+    "baseline_commit": "d5d227767f7fd7bed9b937c6489a2d600ec69834",
+    "issues": [
+      "https://github.com/hideki-ozu/DIR-Simulator/issues/17",
+      "https://github.com/hideki-ozu/DIR-Simulator/issues/18"
+    ],
+    "changes": [
+      "Portable viewer test Cargo/binary launcher and regression coverage",
+      "Requirements document revision 1.1.3; GitHub planned release remains v1.1.2"
+    ],
+    "original_product_verification": "Retained unchanged. The original source_snapshot hashes and release_preparation product-source flags describe their original tested/prepared snapshot; changed test files are identified separately below. No product crate source changed.",
+    "source_sha256": {
+      "tests/media_fd_viewer_model.test.cjs": "cd04766e97eb37c5a47b2a646f1b0c8ada83875cc976e7d317562e875f51a433",
+      "tests/helpers/simulator_binary.cjs": "7da478a528875112e9ed14f9c2bfd80d9e487fcbee8b59b47ef71bdbd5699f0e",
+      "tests/simulator_binary.test.cjs": "3516298d52576e7222be93b247d2b4aee29b8bbd6318b0ac9bfd6cefa5747fec"
+    },
+    "document_revision": {
+      "docs/要件定義書.md": "1.1.3"
+    },
+    "verification": {
+      "path_cargo": {
+        "log": "fix-path-cargo.log",
+        "sha256": "ff3acdd11c8374175aafb3aa8acabf765c12ab9adcb80548477df378a789d778",
+        "result": "passed"
+      },
+      "cargo_override": {
+        "log": "fix-cargo-override.log",
+        "sha256": "952644d818d0802040db27f2da269b5123ee2c08ff3e7e561c5847d5ded50fbb",
+        "result": "passed"
+      },
+      "binary_override": {
+        "log": "fix-bin-override.log",
+        "sha256": "eef047c7f0e316371db38e090cad2f84297c0bcdcba451ed846748b43ea2db1c",
+        "result": "passed"
+      },
+      "javascript": {
+        "log": "fix-js.log",
+        "sha256": "ce12b72bc4baf01477c378bf90805dd99f89375b2a5af84861fe34cd09a0ccff",
+        "result": "passed"
+      },
+      "rust": {
+        "log": "fix-rust.log",
+        "sha256": "ddcbb405c0dd24359ef9cd0a8f9e2fa57125afa314e07700db567260ba7d9bbf",
+        "result": "passed"
+      },
+      "python": {
+        "log": "fix-python.log",
+        "sha256": "b010b24665b98a9b24f6579f635ef4a32fc0aae233f6c5c547a0555f2cdf1736",
+        "result": "passed"
+      },
+      "format": {
+        "log": "fix-fmt.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "result": "passed"
+      },
+      "clippy": {
+        "log": "fix-clippy.log",
+        "sha256": "1aa6bef404dd8ffaa73d761d688d7a65439e3e099d3856b19d60cc894141c32c",
+        "result": "passed"
+      },
+      "browser_media": {
+        "log": "fix-browser-media.log",
+        "sha256": "5f3bdb56cc6d1b25f8389dbd48e3d2e105458ab400d02b82f4e889c76b7d8670",
+        "result": "passed"
+      },
+      "browser_ethernet": {
+        "log": "fix-browser-ethernet.log",
+        "sha256": "8f77ccda3322815b9309fd7791ea7cd0e62e964f90aae57d01bd487486d44a22",
+        "result": "passed"
+      },
+      "browser_can": {
+        "log": "fix-browser-can.log",
+        "sha256": "f5185b1bfcbccf3d75d583d6fbe38decb8a3835babb577825785d6e9a8c16588",
+        "result": "passed"
+      },
+      "traceability": {
+        "log": "fix-trace.log",
+        "sha256": "8ba11f5486c9e7fef4aa7e4b65fa60ce4098350d44b7f147e136c6459e019c4d",
+        "result": "passed"
+      },
+      "generated": {
+        "log": "fix-generated-check.log",
+        "sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3",
+        "result": "passed"
+      }
     }
   }
 }
