@@ -106,6 +106,7 @@
     if (model && changedMode) renderNetwork(API.networkAt(model, current));
   }
   function clearResult() {
+    window.DIREthernetApp?.unmount();
     pause();
     model = null;
     chronologicalRequests = [];
@@ -154,6 +155,15 @@
     }
   }
   function loadObject(raw, filename) {
+    if (["ethernet.l2.store-forward.v1", "ethernet.l2.qos.v1"].includes(raw?.metadata?.model_profile)) {
+      clearResult();
+      window.DIREthernetApp.mount(raw, filename);
+      $("empty-state").hidden = true;
+      $("loading").hidden = true;
+      $("error-banner").hidden = true;
+      return;
+    }
+    window.DIREthernetApp?.unmount();
     if (!API) throw new Error("model.js を読み込めません。ビューアーのファイル一式を同じフォルダーに置いてください。");
     model = API.parseResults(raw);
     chronologicalRequests = [...model.requests].sort((a, b) => {

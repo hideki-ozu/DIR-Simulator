@@ -22,6 +22,9 @@ pub(super) fn records(
     prepared: &PreparedSimulation,
     snapshot: &Snapshot,
 ) -> Result<Vec<Value>, Diagnostic> {
+    if let Some(ethernet) = &snapshot.ethernet {
+        return Ok(super::ethernet::model_records(prepared, ethernet));
+    }
     let lineage =
         |id: &str| {
             snapshot.gateway.request_lineage.get(id).ok_or_else(|| {

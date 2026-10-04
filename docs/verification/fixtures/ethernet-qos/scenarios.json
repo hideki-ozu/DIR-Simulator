@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "profile": "ethernet.l2.qos.v1",
+  "scenarios": [
+    {
+      "name": "strict-priority",
+      "config": "priority-strict.ini",
+      "expected": {
+        "source_order": [
+          "b_high:0",
+          "c_mid:0",
+          "a_low:0"
+        ],
+        "sof_ps": [
+          "0",
+          "672000",
+          "1344000"
+        ]
+      }
+    },
+    {
+      "name": "fifo",
+      "config": "priority-fifo.ini",
+      "expected": {
+        "source_order": [
+          "a_low:0",
+          "b_high:0",
+          "c_mid:0"
+        ],
+        "sof_ps": [
+          "0",
+          "672000",
+          "1344000"
+        ]
+      }
+    },
+    {
+      "name": "byte-capacity",
+      "config": "byte-capacity.ini",
+      "expected": {
+        "source_statuses": [
+          "serialized",
+          "dropped",
+          "dropped"
+        ],
+        "mac_bytes": "64"
+      }
+    },
+    {
+      "name": "device-capacity",
+      "config": "device-capacity.ini",
+      "expected": {
+        "source_statuses": [
+          "serialized",
+          "serialized",
+          "dropped"
+        ],
+        "drop_id": "device:2@Main.a.tx"
+      }
+    },
+    {
+      "name": "nonpreemptive",
+      "config": "nonpreemptive.ini",
+      "expected": {
+        "low_eof_ps": "12208000",
+        "low_release_ps": "12304000",
+        "high_sof_ps": "12304000"
+      }
+    },
+    {
+      "name": "periodic-burst",
+      "config": "periodic-burst.ini",
+      "expected": {
+        "generated": {
+          "periodic:0": "10",
+          "periodic:1": "2000010",
+          "periodic:2": "4000010",
+          "burst:0": "10000000",
+          "burst:1": "10000100",
+          "burst:2": "12000000",
+          "burst:3": "12000100"
+        }
+      }
+    },
+    {
+      "name": "flow-statistics",
+      "config": "flow-statistics.ini",
+      "expected": {
+        "generated": "3",
+        "received": "3",
+        "deadline_samples": "3",
+        "deadline_missed": "1",
+        "deadline_miss_ratio": 0.3333333333333333,
+        "delivery_p50_ps": "1828000",
+        "delivery_p95_ps": "2500000",
+        "delivery_p99_ps": "2500000",
+        "delivery_jitter_ps": "1344000"
+      }
+    },
+    {
+      "name": "flow-filtered",
+      "config": "flow-filtered.ini",
+      "expected": {
+        "received": "0",
+        "filtered": "2",
+        "delivery_mean_ps": null,
+        "delivery_p50_ps": null,
+        "delivery_jitter_ps": null,
+        "deadline_samples": "0",
+        "deadline_miss_ratio": null
+      }
+    },
+    {
+      "name": "unfinished",
+      "config": "unfinished.ini",
+      "expected": {
+        "unfinished_copies": "1",
+        "deadline_samples": "0",
+        "received": "0"
+      }
+    },
+    {
+      "name": "flow-single",
+      "config": "flow-single.ini",
+      "expected": {
+        "delivery_mean_ps": "1156000",
+        "delivery_jitter_ps": "0",
+        "deadline_samples": "0",
+        "deadline_miss_ratio": null
+      }
+    },
+    {
+      "name": "fanout-copy-drop",
+      "config": "fanout-copy-drop.ini",
+      "expected": {
+        "generated": "1",
+        "copy_dropped": "1",
+        "received": "1",
+        "filtered": "1"
+      }
+    }
+  ]
+}

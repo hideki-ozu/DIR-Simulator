@@ -1,0 +1,340 @@
+{
+  "report_schema_version": 1,
+  "observed_on": "2026-10-04",
+  "status": "passed",
+  "scope": "Ethernet L2 v1 fixture projection only; no standards-conformance claim",
+  "worktree_changes_included": true,
+  "output_root": "/tmp/dir-ethernet-20261004-srxxj55t",
+  "build_context": {
+    "binary_ready_signal": "Parent confirmed cargo build --locked -p dir-simulator completed after integration fixes.",
+    "binary_path": "target/debug/dir-simulator",
+    "binary_sha256": "7e897af2ad6913266e94ca87b6e88de19733f6dd71d988500357a761dfd1c4d4",
+    "checker_sha256": "c02a57426ac2850c3d35188de007155675ac50d7f9e60dd9107f77806103961c"
+  },
+  "static_fixture_check": {
+    "command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py",
+    "exit_code": 0,
+    "output": "PASS static fixtures: 4 CRC/frame vectors, 12 input sets, analytical path times"
+  },
+  "product_projection_checks": [
+    "schema2 Simulation and ModelRecord field sets and types",
+    "independent MAC padding, CRC/FCS, and serialized bytes",
+    "frame/transfer/reception references and topology directions",
+    "planned/actual event timing bounds and transfer conservation",
+    "registered metric descriptors and units",
+    "events.csv and summary.csv exact 17-column projection",
+    "manifest file set, byte lengths, and SHA256 hashes"
+  ],
+  "valid_fixture_runs": [
+    {
+      "scenario": "unicast",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/unicast.ini --output /tmp/dir-ethernet-20261004-srxxj55t/unicast",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario unicast --results /tmp/dir-ethernet-20261004-srxxj55t/unicast/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/unicast/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/unicast/manifest.json",
+      "schema_version": 2,
+      "termination": "events_exhausted",
+      "partial": false,
+      "end_ps": "3000000",
+      "model_record_counts": {
+        "frames": 1,
+        "transfers": 2,
+        "transfer_statuses": {
+          "serialized": 2
+        },
+        "receptions": 2,
+        "reception_statuses": {
+          "forwarded": 1,
+          "received": 1
+        }
+      },
+      "results_sha256": "63c4154fc4f6eadce36a4bfd8f7fc93c7e5f4d8a008b460fede9798192656fe9",
+      "manifest_sha256": "b2bfd7f09c84af29a6b946c67ab49dfd5f893043c1210fe1f7acf6d371c77e51",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "duplex",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/duplex.ini --output /tmp/dir-ethernet-20261004-srxxj55t/duplex",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario duplex --results /tmp/dir-ethernet-20261004-srxxj55t/duplex/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/duplex/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/duplex/manifest.json",
+      "schema_version": 2,
+      "termination": "events_exhausted",
+      "partial": false,
+      "end_ps": "30000000",
+      "model_record_counts": {
+        "frames": 2,
+        "transfers": 4,
+        "transfer_statuses": {
+          "serialized": 4
+        },
+        "receptions": 4,
+        "reception_statuses": {
+          "forwarded": 2,
+          "received": 2
+        }
+      },
+      "results_sha256": "9c962484a00677e04165de7a4ee98af01786005f5235b30162515aeaef510fe0",
+      "manifest_sha256": "428f1595a5fbe7fc17ef12294dcc358305b73371101f8c0285bba197e4c44964",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "broadcast",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/broadcast.ini --output /tmp/dir-ethernet-20261004-srxxj55t/broadcast",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario broadcast --results /tmp/dir-ethernet-20261004-srxxj55t/broadcast/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/broadcast/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/broadcast/manifest.json",
+      "schema_version": 2,
+      "termination": "events_exhausted",
+      "partial": false,
+      "end_ps": "3000000",
+      "model_record_counts": {
+        "frames": 1,
+        "transfers": 3,
+        "transfer_statuses": {
+          "serialized": 3
+        },
+        "receptions": 3,
+        "reception_statuses": {
+          "forwarded": 1,
+          "received": 2
+        }
+      },
+      "results_sha256": "aaa6a0beae6e950d40b1663fca98feb124211f7890f07ffc31a19b738f9167d4",
+      "manifest_sha256": "d6421a0e151ac6e03936bd215924e50ae4f5001bb736ff072ae4ad7579819a24",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "unknown-unicast",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/unknown-unicast.ini --output /tmp/dir-ethernet-20261004-srxxj55t/unknown-unicast",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario unknown-unicast --results /tmp/dir-ethernet-20261004-srxxj55t/unknown-unicast/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/unknown-unicast/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/unknown-unicast/manifest.json",
+      "schema_version": 2,
+      "termination": "events_exhausted",
+      "partial": false,
+      "end_ps": "3000000",
+      "model_record_counts": {
+        "frames": 1,
+        "transfers": 3,
+        "transfer_statuses": {
+          "serialized": 3
+        },
+        "receptions": 3,
+        "reception_statuses": {
+          "filtered": 2,
+          "forwarded": 1
+        }
+      },
+      "results_sha256": "e85da9e5552c9e6f4a39391b1b4e879abf71c7452b3e4b40dd228b9939d90519",
+      "manifest_sha256": "7d4b4aabe3c42af146ed0ce1881c256d5a03123bf87b53ee01d2d9eb4c94acda",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "source-full",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/source-full.ini --output /tmp/dir-ethernet-20261004-srxxj55t/source-full",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario source-full --results /tmp/dir-ethernet-20261004-srxxj55t/source-full/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/source-full/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/source-full/manifest.json",
+      "schema_version": 2,
+      "termination": "events_exhausted",
+      "partial": false,
+      "end_ps": "3000000",
+      "model_record_counts": {
+        "frames": 2,
+        "transfers": 3,
+        "transfer_statuses": {
+          "dropped": 1,
+          "serialized": 2
+        },
+        "receptions": 2,
+        "reception_statuses": {
+          "forwarded": 1,
+          "received": 1
+        }
+      },
+      "results_sha256": "906668ae4a32ce52bf179bad8c566791774a87608a89293113d8f121781f87b4",
+      "manifest_sha256": "8f076295b1fbaeff694673f879ac8ab57b37b26e308c7edc53d2ce6a0b9a18a8",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "egress-full",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/egress-full.ini --output /tmp/dir-ethernet-20261004-srxxj55t/egress-full",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario egress-full --results /tmp/dir-ethernet-20261004-srxxj55t/egress-full/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/egress-full/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/egress-full/manifest.json",
+      "schema_version": 2,
+      "termination": "events_exhausted",
+      "partial": false,
+      "end_ps": "3000000",
+      "model_record_counts": {
+        "frames": 2,
+        "transfers": 4,
+        "transfer_statuses": {
+          "dropped": 1,
+          "serialized": 3
+        },
+        "receptions": 3,
+        "reception_statuses": {
+          "forwarded": 2,
+          "received": 1
+        }
+      },
+      "results_sha256": "c9341f5ecdb88840c3b14c4b7b351668ae0e01542f9183ca16e3b5e676bb8d07",
+      "manifest_sha256": "a3277bdca83d07fa0f55c8b82834519d33be5ece786733f2ce79c59057d56560",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "zero-capacity",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/zero-capacity.ini --output /tmp/dir-ethernet-20261004-srxxj55t/zero-capacity",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario zero-capacity --results /tmp/dir-ethernet-20261004-srxxj55t/zero-capacity/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/zero-capacity/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/zero-capacity/manifest.json",
+      "schema_version": 2,
+      "termination": "events_exhausted",
+      "partial": false,
+      "end_ps": "3000000",
+      "model_record_counts": {
+        "frames": 1,
+        "transfers": 1,
+        "transfer_statuses": {
+          "dropped": 1
+        },
+        "receptions": 0,
+        "reception_statuses": {}
+      },
+      "results_sha256": "0aa30a34d68b1f2a33a290a3abc5137b3bc53b0160645619d6c5d112a94321c6",
+      "manifest_sha256": "54c7cd61bc396d2616cd00ff421b09632983463824ed052fa24589ac297e937b",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "eof-boundary",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/eof-boundary.ini --output /tmp/dir-ethernet-20261004-srxxj55t/eof-boundary",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario eof-boundary --results /tmp/dir-ethernet-20261004-srxxj55t/eof-boundary/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/eof-boundary/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/eof-boundary/manifest.json",
+      "schema_version": 2,
+      "termination": "time_limit",
+      "partial": false,
+      "end_ps": "576000",
+      "model_record_counts": {
+        "frames": 1,
+        "transfers": 1,
+        "transfer_statuses": {
+          "transmitting": 1
+        },
+        "receptions": 0,
+        "reception_statuses": {}
+      },
+      "results_sha256": "965c54714cf9240edfb76dc1e79374cfcf3185d5c37d322222e9f635bdfe3b2f",
+      "manifest_sha256": "2fce3557de4497c452124ddb230b07f1af71139b8f6a09af3c07396fdb3ef4f8",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "arrival-boundary",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/arrival-boundary.ini --output /tmp/dir-ethernet-20261004-srxxj55t/arrival-boundary",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario arrival-boundary --results /tmp/dir-ethernet-20261004-srxxj55t/arrival-boundary/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/arrival-boundary/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/arrival-boundary/manifest.json",
+      "schema_version": 2,
+      "termination": "time_limit",
+      "partial": false,
+      "end_ps": "577000",
+      "model_record_counts": {
+        "frames": 1,
+        "transfers": 1,
+        "transfer_statuses": {
+          "serialized": 1
+        },
+        "receptions": 0,
+        "reception_statuses": {}
+      },
+      "results_sha256": "944c4e6d57e5a758f84ae857782fac757d9ba355f9d2210e448eccc98cab8fb3",
+      "manifest_sha256": "898561de46e679973ca44cc340396e62bd4826ad40b7d20cf6cff1cf1c416e63",
+      "manifest_hashes_verified": true
+    },
+    {
+      "scenario": "switch-processing",
+      "run_command": "target/debug/dir-simulator run --config docs/verification/fixtures/ethernet/switch-processing.ini --output /tmp/dir-ethernet-20261004-srxxj55t/switch-processing",
+      "run_exit_code": 0,
+      "projection_command": "python3 docs/verification/fixtures/ethernet/verify_fixtures.py --scenario switch-processing --results /tmp/dir-ethernet-20261004-srxxj55t/switch-processing/results.json",
+      "projection_exit_code": 0,
+      "result_path": "/tmp/dir-ethernet-20261004-srxxj55t/switch-processing/results.json",
+      "manifest_path": "/tmp/dir-ethernet-20261004-srxxj55t/switch-processing/manifest.json",
+      "schema_version": 2,
+      "termination": "time_limit",
+      "partial": false,
+      "end_ps": "577001",
+      "model_record_counts": {
+        "frames": 1,
+        "transfers": 1,
+        "transfer_statuses": {
+          "serialized": 1
+        },
+        "receptions": 1,
+        "reception_statuses": {
+          "processing": 1
+        }
+      },
+      "results_sha256": "c0f75eece9145aae7922ad4da81d3476c1feebb8cf23eb260d7caab93593c7d8",
+      "manifest_sha256": "d88a0c1aeea68ad8bf9c82b6f38e48bebfa75f0eb71e77824138ddc8645f524a",
+      "manifest_hashes_verified": true
+    }
+  ],
+  "invalid_validate_cases": [
+    {
+      "scenario": "bad-fdb",
+      "command": "target/debug/dir-simulator validate --config docs/verification/fixtures/ethernet/bad-fdb.ini",
+      "exit_code": 2,
+      "diagnostic": {
+        "schema_version": 1,
+        "code": "E-0001",
+        "stage": "prepare",
+        "message": "/home/hideki/DIR-Simulator/docs/verification/fixtures/ethernet/bad-fdb.ini: /home/hideki/DIR-Simulator/docs/verification/fixtures/ethernet/bad-fdb-model.json: invalid FDB egress connection: Main.sw.tx_missing"
+      },
+      "result_artifacts_required": false
+    },
+    {
+      "scenario": "bad-payload",
+      "command": "target/debug/dir-simulator validate --config docs/verification/fixtures/ethernet/bad-payload.ini",
+      "exit_code": 2,
+      "diagnostic": {
+        "schema_version": 1,
+        "code": "E-0001",
+        "stage": "prepare",
+        "message": "/home/hideki/DIR-Simulator/docs/verification/fixtures/ethernet/bad-payload.ini: /home/hideki/DIR-Simulator/docs/verification/fixtures/ethernet/bad-payload.json: invalid Ethernet payload range"
+      },
+      "result_artifacts_required": false
+    }
+  ],
+  "summary": {
+    "valid_runs": 10,
+    "valid_run_exit_zero": 10,
+    "valid_projection_passes": 10,
+    "invalid_validate_cases": 2,
+    "invalid_exit_two": 2
+  },
+  "scope_limits": [
+    "Results are fixture projections, not IEEE conformance evidence.",
+    "No media v2, injected runtime failure, performance, or broader mutation matrix was run.",
+    "The invalid inputs were checked through CLI validate; no result artifact is required for them."
+  ]
+}

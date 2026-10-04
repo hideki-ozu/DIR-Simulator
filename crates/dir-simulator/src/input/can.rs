@@ -159,7 +159,13 @@ pub(super) fn profile(general: &BTreeMap<String, String>) -> Result<String> {
         .map(|s| string_literal(s))
         .transpose()?
         .unwrap_or_else(|| "can.cc.ideal.v1".into());
-    if !matches!(profile.as_str(), "can.cc.ideal.v1" | "can.cc.multibus.v1") {
+    if !matches!(
+        profile.as_str(),
+        "can.cc.ideal.v1"
+            | "can.cc.multibus.v1"
+            | "ethernet.l2.store-forward.v1"
+            | "ethernet.l2.qos.v1"
+    ) {
         return Err(error(format!("unsupported model-profile: {profile}")));
     }
     if profile == "can.cc.ideal.v1" && general.contains_key("model-config") {

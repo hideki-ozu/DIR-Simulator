@@ -12,3 +12,6 @@ pub use can::{Bus, Controller, Frame, Generator, PreparedCan};
 pub use common::{Diagnostic, InputSnapshot, PreparedCommon, Schedule};
 pub use gateway::{Gateway, PreparedGateway, Route};
 pub use prepared::PreparedSimulation;
+#[path = "types/ethernet.rs"]
+pub mod ethernet;
+pub use ethernet::PreparedEthernet;

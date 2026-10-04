@@ -6,6 +6,7 @@ use std::path::Path;
 
 mod aggregate;
 mod csv;
+mod ethernet;
 mod json;
 mod metadata;
 mod model_records;

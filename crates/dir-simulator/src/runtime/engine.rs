@@ -191,6 +191,7 @@ pub fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot, Diagnostic> {
         tx_waiting: vec![BTreeSet::new(); prepared.can.controllers.len()],
         routed: BTreeSet::new(),
         snapshot: Snapshot {
+            ethernet: None,
             common: crate::snapshot::CommonSnapshot {
                 termination: "events_exhausted".into(),
                 partial: false,

@@ -1,6 +1,7 @@
 //! Snapshot-based input orchestration, file loading and common INI/JSON/time utilities.
 //! NED resolution and model-specific validation are delegated to the input adapters.
 mod can;
+mod ethernet;
 mod gateway;
 mod ned;
 
@@ -112,7 +113,14 @@ pub(crate) fn validate_parameter_literal(
     value: &str,
     profile: &str,
 ) -> Result<()> {
-    can::validate_parameter_literal(declaration, name, value, profile)
+    if matches!(
+        profile,
+        "ethernet.l2.store-forward.v1" | "ethernet.l2.qos.v1"
+    ) {
+        ethernet::validate_parameter_literal(declaration, name, value)
+    } else {
+        can::validate_parameter_literal(declaration, name, value, profile)
+    }
 }
 
 type Result<T> = std::result::Result<T, Diagnostic>;
@@ -707,6 +715,58 @@ pub fn prepare_with_source(
             })
             .map(|(key, value)| (key.clone(), value.clone()))
             .collect();
+        if matches!(
+            profile.as_str(),
+            "ethernet.l2.store-forward.v1" | "ethernet.l2.qos.v1"
+        ) {
+            let (mut ethernet, module_paths, channel_count) =
+                ethernet::resolve(&declarations, network, &overrides, &ini.channels)?;
+            let model_path = string_literal(ini.required("model-config")?)?;
+            valid_file_path(&model_path)?;
+            let model_path = absolute(Path::new(&model_path), base);
+            let content = read_file(&model_path, &mut snapshots, source)?;
+            ethernet::configure(&content, &mut ethernet, &profile)
+                .map_err(|e| error(format!("{}: {}", model_path.display(), e.message)))?;
+            let mut workload_path = None;
+            if let Some(path) = ini.general.get("workload") {
+                let path = string_literal(path)?;
+                valid_file_path(&path)?;
+                let path = absolute(Path::new(&path), base);
+                let content = read_file(&path, &mut snapshots, source)?;
+                ethernet::workload(&content, &mut ethernet, &profile)
+                    .map_err(|e| error(format!("{}: {}", path.display(), e.message)))?;
+                workload_path = Some(path);
+            }
+            return Ok(PreparedSimulation {
+                common: crate::types::PreparedCommon {
+                    profile,
+                    module_paths,
+                    network: network.into(),
+                    time_limit_ps,
+                    metrics_window_ps,
+                    max_events,
+                    max_delta_cycles,
+                    channel_count,
+                    config_path: config.clone(),
+                    model_config_path: Some(model_path),
+                    workload_path,
+                    inputs: snapshots,
+                },
+                can: crate::types::PreparedCan {
+                    buses: Vec::new(),
+                    controller_buses: Vec::new(),
+                    bus_id: String::new(),
+                    bitrate: 0,
+                    controllers: Vec::new(),
+                    generators: Vec::new(),
+                },
+                gateway: crate::types::PreparedGateway {
+                    gateways: Vec::new(),
+                    controller_gateways: Vec::new(),
+                },
+                ethernet: Some(ethernet),
+            });
+        }
         let resolved = can::resolve(&declarations, network, &overrides, &ini.channels, &profile)?;
         let mut model_config_path = None;
         let gateways = if profile == "can.cc.multibus.v1" {
@@ -750,6 +810,7 @@ pub fn prepare_with_source(
             &resolved.buses,
         )?;
         Ok(PreparedSimulation {
+            ethernet: None,
             common: crate::types::PreparedCommon {
                 profile,
                 module_paths: resolved.module_paths,

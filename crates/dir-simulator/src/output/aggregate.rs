@@ -141,7 +141,7 @@ impl Record {
             kind: 0,
         }
     }
-    fn point(point: &Point, metric: &str, value: MetricValue, order: usize) -> Self {
+    pub(super) fn point(point: &Point, metric: &str, value: MetricValue, order: usize) -> Self {
         let mut record = Self::aggregate(&point.target, metric, value, 0, 0);
         record.time_ps = Some(point.time_ps);
         record.start_ps = None;
@@ -175,10 +175,16 @@ impl Record {
 }
 
 pub(super) fn descriptor(metric: &str) -> (&'static str, &'static str, &'static str, &'static str) {
+    if metric.starts_with("ethernet.") {
+        return super::ethernet::descriptor(metric);
+    }
     match metric {
         "gw_copy_created" | "gw_copy_submitted" | "gw_hop_dropped" | "gw_route_filtered"
         | "gw_rx_dropped" => ("count", "integer", "point", "identity"),
         "queue_length" | "gw_rx_queue_length" => ("count", "integer", "point", "identity"),
+        "queue_bytes" => ("B", "integer", "point", "identity"),
+        "queue_bytes_max" => ("B", "integer", "summary", "max"),
+        "queue_bytes_mean" => ("B", "number", "summary", "time_mean"),
         "queue_max" | "gw_rx_queue_max" => ("count", "integer", "summary", "max"),
         "tx_wait_ps"
         | "arbitration_wait_ps"
@@ -210,6 +216,9 @@ pub(super) fn records(
     prepared: &PreparedSimulation,
     snapshot: &Snapshot,
 ) -> Result<(Vec<Record>, Vec<Record>), Diagnostic> {
+    if prepared.ethernet.is_some() {
+        return super::ethernet::records(prepared, snapshot);
+    }
     let h = snapshot.common.end_ps;
     let mut points = Vec::new();
     for (i, point) in snapshot.common.points.iter().enumerate() {
@@ -486,6 +495,13 @@ pub(super) fn records(
         start = end;
     }
     summary.extend(interval_metrics(prepared, snapshot, 0, h, true)?);
+    Ok(finalize(points, summary))
+}
+
+pub(super) fn finalize(
+    mut points: Vec<Record>,
+    mut summary: Vec<Record>,
+) -> (Vec<Record>, Vec<Record>) {
     points.sort_by(|a, b| {
         a.time()
             .cmp(&b.time())
@@ -512,7 +528,7 @@ pub(super) fn records(
             })
             .collect()
     };
-    Ok((numbered(points), numbered(summary)))
+    (numbered(points), numbered(summary))
 }
 
 fn queue_integral(points: &[&Point], start: u64, end: u64) -> Result<u128, Diagnostic> {
