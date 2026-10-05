@@ -12,8 +12,14 @@ pub use can::{CanSnapshot, Receiver, Request};
 pub use common::{CommonSnapshot, Point};
 pub use ethernet::EthernetSnapshot;
 pub use gateway::{ForwardRecord, GatewaySnapshot, RequestLineage, RxBufferRecord};
+#[path = "snapshot/axi.rs"]
+pub mod axi;
 #[path = "snapshot/canfd.rs"]
 pub mod canfd;
+#[path = "snapshot/memory_ipc.rs"]
+pub mod memory_ipc;
+#[path = "snapshot/soc.rs"]
+pub mod soc;
 
 #[derive(Debug)]
 pub struct Snapshot {
@@ -22,4 +28,41 @@ pub struct Snapshot {
     pub gateway: GatewaySnapshot,
     pub ethernet: Option<EthernetSnapshot>,
     pub canfd: Option<canfd::CanFdSnapshot>,
+    pub axi: Option<axi::AxiSnapshot>,
+    pub soc: Option<soc::SocSnapshot>,
+    pub memory_ipc: Option<memory_ipc::MemoryIpcSnapshot>,
+}
+
+impl Snapshot {
+    /// Empty committed journal for a model that owns its own transaction state.
+    pub(crate) fn empty(prepared: &crate::types::PreparedSimulation) -> Self {
+        Self {
+            common: CommonSnapshot {
+                termination: "events_exhausted".into(),
+                partial: false,
+                end_ps: prepared.common.time_limit_ps,
+                last_event_time_ps: None,
+                committed_events: 0,
+                pending_events: 0,
+                points: Vec::new(),
+                diagnostics: Vec::new(),
+            },
+            can: CanSnapshot {
+                bus_state: "idle".into(),
+                bus_states: Vec::new(),
+                requests: Vec::new(),
+                receivers: Vec::new(),
+            },
+            gateway: GatewaySnapshot {
+                forwards: Vec::new(),
+                rx_buffers: Vec::new(),
+                request_lineage: Default::default(),
+            },
+            ethernet: None,
+            canfd: None,
+            axi: None,
+            soc: None,
+            memory_ipc: None,
+        }
+    }
 }

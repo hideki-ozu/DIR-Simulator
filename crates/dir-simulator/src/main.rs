@@ -100,7 +100,7 @@ fn execute(args: &[String]) -> Result<u8, Diagnostic> {
     if command == "validate" {
         println!(
             "{}",
-            json!({"schema_version":1,"status":"valid","network":prepared.common.network,"node_count":prepared.ethernet.as_ref().map_or(prepared.canfd.as_ref().map_or(prepared.can.controllers.len()+prepared.can.buses.len(), |fd| fd.controllers.len()+1), |ethernet| ethernet.devices.len()).to_string(),"channel_count":prepared.common.channel_count.to_string()})
+            json!({"schema_version":1,"status":"valid","network":prepared.common.network,"node_count":prepared.node_count().to_string(),"channel_count":prepared.common.channel_count.to_string()})
         );
         return Ok(0);
     }

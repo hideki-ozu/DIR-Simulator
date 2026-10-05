@@ -176,6 +176,15 @@ impl Record {
 }
 
 pub(super) fn descriptor(metric: &str) -> (&'static str, &'static str, &'static str, &'static str) {
+    if metric.starts_with("axi.") {
+        return super::axi::descriptor(metric);
+    }
+    if metric.starts_with("soc.") || metric.starts_with("ahb.") || metric.starts_with("noc.") {
+        return super::soc::descriptor(metric);
+    }
+    if metric.starts_with("memory_ipc.") {
+        return super::memory_ipc::descriptor(metric);
+    }
     if metric.starts_with("ethernet.") {
         return super::ethernet::descriptor(metric);
     }
@@ -222,6 +231,15 @@ pub(super) fn records(
     }
     if prepared.canfd.is_some() {
         return super::canfd::records(prepared, snapshot);
+    }
+    if prepared.axi.is_some() {
+        return super::axi::records(prepared, snapshot);
+    }
+    if prepared.soc.is_some() {
+        return super::soc::records(prepared, snapshot);
+    }
+    if prepared.memory_ipc.is_some() {
+        return super::memory_ipc::records(prepared, snapshot);
     }
     let h = snapshot.common.end_ps;
     let mut points = Vec::new();

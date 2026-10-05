@@ -1,19 +1,21 @@
 # SoC・AHB・NoC詳細設計書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-05` | 本書の初期抽象profileの組込み実装・製品照合とv1.1.3向け提供範囲を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版作成。SoC共有バス・AHB相当・NoCの抽象評価契約を追加 |
 
 文書ID：`design-soc-models`
 
-文書状態：契約確定。製品実装・製品実行試験は未実施。
+文書状態：契約確定。開発中ソースへ組込み実装を追加し、独立fixtureとの製品実行照合を実施。
 
 担当元：[architecture#arch-soc-models](../アーキテクチャ設計書.md#arch-soc-models)。外部契約は[モデル仕様](../specs/models/SoC・AHB・NoC詳細機能仕様書.md)を正本とする。
 
@@ -141,3 +143,9 @@ queueはpending FIFOの増減だけを整数積分器へ渡し、SoC/AHB active�
 | 拡張 | policyをprofileに静的登録し、共有バス仲裁・AHB段階・NoC経路の責務をcontext内に保持する。共有DESの不透明payload、effect batch、結果wrapperを使用し、別profile追加時は既存fixtureを回帰基準にする |
 
 [検証仕様](../verification/cases/SoC・AHB・NoC検証仕様書.md)のDIR-TEST-0044～0049及び0090～0096を使用する。追加入力は検証仕様の差分recipeに従い一時ディレクトリで構成し、既存fixtureは保持する。fixture checkerは解析値・資料整合の検査であり、製品のevent実行を検証した主張は対象外（注）。
+
+## 現行の組込み実装
+
+`crates/dir-simulator/src/input/soc.rs`が構成・負荷を検証し、`lib/types/soc.rs`へ不変入力を保存する。`runtime/soc.rs`が資源と予約を所有し、`lib/snapshot/soc.rs`と共通観測列へ確定した状態を残す。`output/soc.rs`がschema2・指標・初期状態を公開する。既存の`prepare`／`run`とCLIの`validate`／`run`を共有する。
+
+製品実行の範囲は[検証記録](../verification/cases/SoC・AHB・NoC検証仕様書.md#product-execution)を参照する。内部の版付きevent codecと状態所有の検査を実装したが、公開Registry/Context/Envelope APIを追加したという主張ではない。

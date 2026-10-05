@@ -1,0 +1,7 @@
+package demo;
+simple Endpoint { parameters: @class("dir.noc.Endpoint"); gates: output packet; input delivery; }
+simple Router00 { parameters: @class("dir.noc.Router"); gates: input local_in; output local_out; input in_east; output out_east; input in_north; output out_north; }
+simple Router01 { parameters: @class("dir.noc.Router"); gates: input local_in; output local_out; input in_east; output out_east; input in_south; output out_south; }
+simple Router10 { parameters: @class("dir.noc.Router"); gates: input local_in; output local_out; input in_west; output out_west; input in_north; output out_north; }
+simple Router11 { parameters: @class("dir.noc.Router"); gates: input local_in; output local_out; input in_west; output out_west; input in_south; output out_south; }
+network Main { submodules: r00: demo.Router00; e00: demo.Endpoint; r01: demo.Router01; e01: demo.Endpoint; r10: demo.Router10; e10: demo.Endpoint; r11: demo.Router11; e11: demo.Endpoint; connections: r00.out_east --> r10.in_west; r00.out_north --> r01.in_south; e00.packet --> r00.local_in; r00.local_out --> e00.delivery; r01.out_east --> r11.in_west; r01.out_south --> r00.in_north; e01.packet --> r01.local_in; r01.local_out --> e01.delivery; r10.out_west --> r00.in_east; r10.out_north --> r11.in_south; e10.packet --> r10.local_in; r10.local_out --> e10.delivery; r11.out_west --> r01.in_east; r11.out_south --> r10.in_north; e11.packet --> r11.local_in; r11.local_out --> e11.delivery; }

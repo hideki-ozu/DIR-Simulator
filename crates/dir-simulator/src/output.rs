@@ -5,14 +5,17 @@ use std::collections::BTreeMap;
 use std::path::Path;
 
 mod aggregate;
+mod axi;
 mod canfd;
 mod csv;
 mod ethernet;
 mod json;
+mod memory_ipc;
 mod metadata;
 mod model_records;
 mod publish;
 pub(crate) mod reservation;
+mod soc;
 
 const PROFILE: &str = "can.cc.ideal.v1";
 

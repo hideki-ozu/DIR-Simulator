@@ -1,26 +1,28 @@
 # SoC・AHB・NoC検証仕様書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-05` | 本書の独立fixtureと製品出力の照合、入力・codec・停止prefix・Viewer試験と実行記録を追加 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版作成。完全入力と解析期待値6ケースを追加 |
 
 文書ID：`verification-soc-models`
 
-文書状態：契約確定。解析fixture照合済み。製品実行試験は未実施。
+文書状態：契約確定。解析fixtureと開発中ソースの製品実行結果を照合済み。内部試験・追加境界の実施範囲は末尾の検証記録を参照する。
 
 | 項目 | 確定契約 |
 | --- | --- |
 | 対象 | [機能仕様](../../specs/models/SoC・AHB・NoC詳細機能仕様書.md)、[詳細設計](../../design/SoC・AHB・NoC詳細設計書.md)の3profileと各共有資源 |
-| 完全入力 | [scenarios.json](../fixtures/soc/scenarios.json)の6ケースごとにINI、model/workload JSON、models/ケース名/Main.nedを保存する。時刻の単位はps。相対パスは各INIのあるfixtureディレクトリを基準に解決する |
+| 完全入力 | [scenarios.json](../fixtures/soc/scenarios.json)の6ケースごとにINI、model/workload JSON、models/ケース名/demo/Main.nedを保存する。時刻の単位はps。相対パスは各INIのあるfixtureディレクトリを基準に解決する |
 | 解析確認 | rootから`python3 docs/verification/fixtures/soc/verify_fixtures.py`。参照存在、profile整合、要求ID、生成件数保存、時刻式、byte量、XY経路、出力占有の非重複とbackpressure解析時刻を固定期待値と照合する |
-| 製品実行計画 | `dir-simulator run --config docs/verification/fixtures/soc/soc-round-robin.ini --output /tmp/dir-soc-round-robin`。他ケースも対応INIと未使用出力先へ置換する。製品CLI/イベントループの実行は未実施 |
+| 製品実行計画 | `dir-simulator run --config docs/verification/fixtures/soc/soc-round-robin.ini --output /tmp/dir-soc-round-robin`。他ケースも対応INIと未使用出力先へ置換する。製品CLI/イベントループを実行済み（末尾参照） |
 | 製品照合 | ModelRecordのtransactionからrequest_id,start_ps,completed_ps,status,response,active_planを取り出し、Dを整数に変換してexpected.transactionsへ投影する。transferはrequest_id,subject,start_ps,end_psをexpected.hopsと比較する。transaction行順はID順、hop行は(request_id,hop)順へ正規化して比較する |
 | metrics照合 | $all delivered_bitsはexpected.delivered_bitsへ完全一致。busのutilizationはbusy_ps/Tを共通規則でbinary64へ一度丸める。窓も半開区間へbusyをclipして照合する。NoCは各outputのtransferと未完了予定から同様に占有を算出する |
 | 境界・不正追加計画 | schema未知/重複キー、bool整数、負容量、範囲重複、未配置path、AHB非整列、mesh欠落/重複座標、不正隣接、時刻overflowを個別に与え、prepare不正E-0001と実行overflow E-0004を確認する。製品不正入力試験は未実施 |
@@ -54,7 +56,7 @@
 | 入力 | [soc-round-robin.ini](../fixtures/soc/soc-round-robin.ini)。同時刻0にm0の8byte二件とm1の8byte一件。幅4byte/cycle、service1cycle、P10ps、capacity2。 |
 | 解析期待 | grant順a:0,b:0,a:1、開始0/30/60ps、完了30/60/90ps。T100ps、busy90ps、delivered192bit。 |
 | 判定 | transaction状態・開始/完了時刻・応答・転送量を整数で完全一致させる。停止時のactiveと破棄を分離し、容量・占有の不変条件を各commitで確認する |
-| 実施状態 | fixture checkerの解析値照合済み。製品実行・commitごとの内部不変条件試験は未実施 |
+| 実施状態 | fixture checkerの解析値と製品出力を照合済み。commit・rollbackの内部検査の実施範囲は末尾の製品検証記録を参照 |
 
 <a id="dir-test-0045"></a>
 
@@ -84,7 +86,7 @@
 | 入力 | [soc-capacity-stop.ini](../fixtures/soc/soc-capacity-stop.ini)。m0 capacity1、error範囲16～20、4byte要求を0/0/20psに生成。T40ps。 |
 | 解析期待 | a:0は20ps ERROR完了、a:1はsource_full、20psの完了解放後にa:2を受理・開始。40psの完了は未処理でactive、active_plan={resource:Main.bus,hop:0,start_ps:20,planned_end_ps:40}、busy40ps、delivered0。 |
 | 判定 | transaction状態・開始/完了時刻・応答・転送量を整数で完全一致させる。停止時のactiveと破棄を分離し、容量・占有の不変条件を各commitで確認する |
-| 実施状態 | fixture checkerの解析値照合済み。製品実行・commitごとの内部不変条件試験は未実施 |
+| 実施状態 | fixture checkerの解析値と製品出力を照合済み。commit・rollbackの内部検査の実施範囲は末尾の製品検証記録を参照 |
 
 <a id="dir-test-0046"></a>
 
@@ -114,7 +116,7 @@
 | 入力 | [ahb-wait-error.ini](../fixtures/soc/ahb-wait-error.ini)。m0正常・m1 error-rangeへ4byte、wait2、P10ps、同時刻0生成。 |
 | 解析期待 | a:0開始0・完了40ps、b:0開始40・ERROR完了90ps。busy90/100、delivered32bit。 |
 | 判定 | transaction状態・開始/完了時刻・応答・転送量を整数で完全一致させる。停止時のactiveと破棄を分離し、容量・占有の不変条件を各commitで確認する |
-| 実施状態 | fixture checkerの解析値照合済み。製品実行・commitごとの内部不変条件試験は未実施 |
+| 実施状態 | fixture checkerの解析値と製品出力を照合済み。commit・rollbackの内部検査の実施範囲は末尾の製品検証記録を参照 |
 
 <a id="dir-test-0047"></a>
 
@@ -144,7 +146,7 @@
 | 入力 | [ahb-boundary.ini](../fixtures/soc/ahb-boundary.ini)。m0 capacity1、target0～32へaddress64の要求二件を同時刻0。T30ps。 |
 | 解析期待 | a:0はdecodeERRORの予定30psを持つactive、active_plan={resource:Main.bus,hop:0,start_ps:0,planned_end_ps:30}。a:1はdropped。transfer完了0件、busy30ps、delivered0。 |
 | 判定 | transaction状態・開始/完了時刻・応答・転送量を整数で完全一致させる。停止時のactiveと破棄を分離し、容量・占有の不変条件を各commitで確認する |
-| 実施状態 | fixture checkerの解析値照合済み。製品実行・commitごとの内部不変条件試験は未実施 |
+| 実施状態 | fixture checkerの解析値と製品出力を照合済み。commit・rollbackの内部検査の実施範囲は末尾の製品検証記録を参照 |
 
 <a id="dir-test-0048"></a>
 
@@ -174,7 +176,7 @@
 | 入力 | [noc-xy.ini](../fixtures/soc/noc-xy.ini)。2×2 mesh、e00→e11の8byte、幅4、link0、P10ps。 |
 | 解析期待 | r00 east0～20、r10 north20～40、r11 local40～60ps。Xの後にY、3hop、T70psでcompleted、delivered64bit。 |
 | 判定 | transaction状態・開始/完了時刻・応答・転送量を整数で完全一致させる。停止時のactiveと破棄を分離し、容量・占有の不変条件を各commitで確認する |
-| 実施状態 | fixture checkerの解析値照合済み。製品実行・commitごとの内部不変条件試験は未実施 |
+| 実施状態 | fixture checkerの解析値と製品出力を照合済み。commit・rollbackの内部検査の実施範囲は末尾の製品検証記録を参照 |
 
 <a id="dir-test-0049"></a>
 
@@ -204,7 +206,7 @@
 | 入力 | [noc-backpressure.ini](../fixtures/soc/noc-backpressure.ini)。2×1、input/source capacity1。e10自身へ16byteを0ps、e00→e10の4byteを0/10/20/20ps。T65ps。 |
 | 解析期待 | b:0がlocalを0～40占有。a:0はwest入力で10～40待ち完了50、a:1は下流満杯で10～40待ち開始40・完了60。a:2開始50・local60～70の途中でactive、active_plan={resource:Main.r10:local_out,hop:1,start_ps:60,planned_end_ps:70}、a:3はsource_full。generated5=completed3+active1+dropped1、delivered192bit。 |
 | 判定 | transaction状態・開始/完了時刻・応答・転送量を整数で完全一致させる。停止時のactiveと破棄を分離し、容量・占有の不変条件を各commitで確認する |
-| 実施状態 | fixture checkerの解析値照合済み。製品実行・commitごとの内部不変条件試験は未実施 |
+| 実施状態 | fixture checkerの解析値と製品出力を照合済み。commit・rollbackの内部検査の実施範囲は末尾の製品検証記録を参照 |
 
 ## 追加ケースの再現と実施境界
 
@@ -441,3 +443,22 @@
 | H正・空負荷 | 各workload.generators=[]、T100。全count/queue_max/delivered0、queue_mean/utilization/throughput0、wait/latency=null,n0。各登録source/queue/outputに0又はnullを明示し、存在しない受信対象を作らない |
 | 半開窓 | SoC0044をW30へ変更。busy=[30,30,30,0]、bits=[0,64,64,64]、窓長=[30,30,30,10]。完了30/60/90は次窓へ帰属。summary bits192、throughput192*10^12/100であり窓率の単純平均でない |
 | 内部判定・状態 | 整数queue積分、busy区間、標本分子/数、台帳状態、descriptor/target集合を採取してjournal prefixから再集計。独立期待値算定済み、製品集計・export試験未実施。DIR-AC-0045/0046/0047 |
+
+<a id="product-execution"></a>
+
+## 組込みモデルの製品検証記録
+
+[実行記録](../results/soc-memory-product-2026-10-05.json)は開発中ソースのbinary/source hash、実行した構成、終了状態、model schema・metric集合、検証コマンドを保持する。公開タグの証跡ではなく、通常の文書版・履歴はpush準備時に確定する。
+
+| 対象 | 製品確認 |
+| --- | --- |
+| 独立期待値 | `crates/dir-simulator/tests/soc.rs`が6ケースの実シミュレータ出力を時刻・状態・byte又は転送量へ対応付ける。資料だけを計算するfixture checkerとは別に実行する |
+| 境界・不正 | 同ファイルと`runtime/soc/protocol.rs`の試験で容量・停止・型・未知キー・codec・時間あふれと確定prefixを検査する。具体的な実施数と対象は実行記録へ保存する |
+| 結果表示 | `view`で単独HTMLを生成し、`tests/transaction_viewer_model.test.cjs`で整数時刻・未完了・前後ステップ、`tests/transaction_viewer_browser.cjs`で実結果の読込と操作を確認する |
+| 証拠の境界 | 規定した抽象profileの製品試験であり、公開Registry/Envelope API全体、規格全体への適合、実機動作、100万要求の性能を合格とするものではない |
+
+```bash
+cargo test --locked -p dir-simulator --test soc
+```
+
+現在の試験範囲は本節と実行記録で判定し、個別に実施していない内部注入・追加入力の手順まで合格へ読み替えない。

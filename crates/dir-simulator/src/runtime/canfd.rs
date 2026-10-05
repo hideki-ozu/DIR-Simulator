@@ -474,6 +474,9 @@ pub(super) fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot> {
         starts: BTreeSet::new(),
         queues: vec![Vec::new(); model.controllers.len()],
         snapshot: Snapshot {
+            axi: None,
+            soc: None,
+            memory_ipc: None,
             common: CommonSnapshot {
                 termination: "events_exhausted".into(),
                 partial: false,

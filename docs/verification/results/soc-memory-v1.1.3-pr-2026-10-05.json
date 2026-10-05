@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-04T15:58:29Z",
+  "base_commit": "9ad16c4c8f8a41878d0108971e5ec5bf2f7e46c7",
+  "branch": "codex/transaction-models-v1.1.3",
+  "checks": [
+    {
+      "command": "NODE_PATH=/tmp/dir-vlan-playwright/node_modules DIR_SIMULATOR_BIN=/home/hideki/DIR-Simulator/target/debug/dir-simulator CARGO=/home/hideki/.cargo/bin/cargo node --test tests/*.test.cjs",
+      "exit_code": 0,
+      "passed": 116,
+      "failed": 0,
+      "scope": "Tracked Node test files, including portable binary helper and browser tests"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_check_traceability.py",
+      "exit_code": 0,
+      "passed": 23,
+      "failed": 0,
+      "scope": "Traceability checker unit tests"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_generate_traceability.py",
+      "exit_code": 0,
+      "passed": 11,
+      "failed": 0,
+      "scope": "Traceability generator unit tests"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_traceability_hook.py",
+      "exit_code": 0,
+      "passed": 5,
+      "failed": 0,
+      "scope": "Traceability hook unit tests"
+    },
+    {
+      "command": "Compare SHA-256 for every current crates/dir-simulator file with source_snapshot.source_files in docs/verification/results/soc-memory-product-2026-10-05.json",
+      "exit_code": 0,
+      "passed": 132,
+      "failed": 0,
+      "scope": "Crate source identity check required before reusing prior 325 locked Rust test results"
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "scope": "Current unchanged Rust product source"
+    },
+    {
+      "command": "python3 scripts/generate_traceability.py --check",
+      "exit_code": 0,
+      "scope": "Reports regenerated from the v1.1.3 document preparation"
+    },
+    {
+      "command": "python3 scripts/check_traceability.py --strict",
+      "exit_code": 0,
+      "requirements": 205,
+      "functions": 54,
+      "nodes": 245,
+      "structural_errors": 0,
+      "incomplete_requirements": 0,
+      "incomplete_items": 0
+    },
+    {
+      "command": "python3 scripts/render_diagrams.py --check",
+      "exit_code": 0,
+      "diagrams": 11
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "Audit document revisions against origin/main",
+      "exit_code": 0,
+      "documents": 18,
+      "published_history_rows_preserved": true
+    }
+  ],
+  "frozen_product_snapshot": {
+    "path": "docs/verification/results/soc-memory-product-2026-10-05.json",
+    "sha256": "fb1613d10c3724371f9158060c2ed3875122d12e04eb3c37250bfbf9b51ed520",
+    "source_snapshot_sha256": "e86fa7af712ca7e502f02b880ca40bca3cb8b5831cdb0666cf953259f9038cf1",
+    "crate_file_count": 132,
+    "current_crate_file_count": 132,
+    "matching_crate_files": 132,
+    "hash_mismatches": [],
+    "missing_current_files": [],
+    "current_files_absent_from_snapshot": [],
+    "cargo_metadata_hashes": [
+      {
+        "path": "Cargo.toml",
+        "matches": true,
+        "sha256": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc"
+      },
+      {
+        "path": "Cargo.lock",
+        "matches": true,
+        "sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca"
+      },
+      {
+        "path": "crates/dir-simulator/Cargo.toml",
+        "matches": true,
+        "sha256": "04cbe8394f885b93c2fc9f917b4b931b92d5a099ec80c4613f8b0d6da94e48e1"
+      }
+    ]
+  },
+  "rust_result_reuse": {
+    "prior_locked_workspace_tests": 325,
+    "reusable": true,
+    "basis": "All 132 current files under crates/dir-simulator exactly match the frozen source_snapshot SHA-256 values; Cargo.toml, Cargo.lock, and the crate Cargo.toml also match.",
+    "cargo_rerun": false
+  },
+  "evidence_boundary": "This record covers Node and traceability unit tests plus Rust crate source identity. It does not rerun Cargo or establish broader product conformance.",
+  "release_target": "v1.1.3",
+  "github_operation": "pull_request",
+  "base_branch": "main",
+  "publication_state": "Prepared before commit, push and PR creation; no tag/release publication is recorded",
+  "prepared_at_utc": "2026-10-04T16:04:24.701742+00:00",
+  "document_versions": [
+    {
+      "path": "README.md",
+      "published_baseline_version": "1.1.2",
+      "prepared_version": "1.1.3"
+    },
+    {
+      "path": "docs/design/AXIモデル詳細設計書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/design/SoC・AHB・NoC詳細設計書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/design/メモリ・IPC詳細設計書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/design/入力・設定詳細設計書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/design/複数モデル統合詳細設計書.md",
+      "published_baseline_version": "1.1.2",
+      "prepared_version": "1.1.3"
+    },
+    {
+      "path": "docs/specs/models/AXIモデル詳細機能仕様書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/specs/models/SoC・AHB・NoC詳細機能仕様書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/specs/models/メモリ・IPC詳細機能仕様書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/specs/拡張モデル共通詳細機能仕様書.md",
+      "published_baseline_version": "1.1.0",
+      "prepared_version": "1.1.1"
+    },
+    {
+      "path": "docs/tools/viewer/viewer仕様書.md",
+      "published_baseline_version": "1.1.2",
+      "prepared_version": "1.1.3"
+    },
+    {
+      "path": "docs/verification/cases/AXIモデル検証仕様書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/verification/cases/SoC・AHB・NoC検証仕様書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/verification/cases/メモリ・IPC検証仕様書.md",
+      "published_baseline_version": "1.0.0",
+      "prepared_version": "1.1.0"
+    },
+    {
+      "path": "docs/アーキテクチャ設計書.md",
+      "published_baseline_version": "1.1.2",
+      "prepared_version": "1.1.3"
+    },
+    {
+      "path": "docs/将来拡張計画.md",
+      "published_baseline_version": "1.1.2",
+      "prepared_version": "1.1.3"
+    },
+    {
+      "path": "docs/機能仕様書.md",
+      "published_baseline_version": "1.1.2",
+      "prepared_version": "1.1.3"
+    },
+    {
+      "path": "docs/要件定義書.md",
+      "published_baseline_version": "1.1.3",
+      "prepared_version": "1.1.4"
+    }
+  ],
+  "version_policy": "Each changed document is one revision after its published origin/main baseline; a MAJOR.MINOR change starts at PATCH 0. GitHub v1.1.3 and document revision numbers are distinct."
+}

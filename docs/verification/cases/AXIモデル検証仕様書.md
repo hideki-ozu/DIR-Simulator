@@ -1,12 +1,14 @@
 # AXIモデル検証仕様書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-05` | 本書の独立fixtureと製品出力の照合、入力・codec・停止prefix・Viewer試験と実行記録を追加 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：完全入力と独立解析値を用いるAXI検証6ケースを追加 |
@@ -15,13 +17,13 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 文書状態 | 契約確定。製品実装・製品実行試験は未実施 |
+| 文書状態 | 契約確定。開発中ソースへ組込み実装を追加し、独立fixtureとの製品実行照合を実施 |
 
 | 項目 | 確定契約 |
 | --- | --- |
 | 対象 | [AXI仕様](../../specs/models/AXIモデル詳細機能仕様書.md)、[AXI設計](../../design/AXIモデル詳細設計書.md)。単一clock、Manager2、Interconnect1、RAM1のprofile範囲を確認する |
 | 入力 | [Main.ned](../fixtures/axi/models/demo/Main.ned)と[scenarios.json](../fixtures/axi/scenarios.json)が指す8組のINI/model-config/workload。全ファイルをfixture配下へ保存し、パス変更なしで指定できる |
-| 実行 | rootから`dir-simulator run --config docs/verification/fixtures/axi/read-write.ini --output /tmp/dir-axi-read-write`。各caseのINIへ置き換え、一回ごとに存在しない出力名を選ぶ。製品CLI実行は未実施 |
+| 実行 | rootから`dir-simulator run --config docs/verification/fixtures/axi/read-write.ini --output /tmp/dir-axi-read-write`。各caseのINIへ置き換え、一回ごとに存在しない出力名を選ぶ。製品CLI実行済み（末尾の検証記録参照） |
 | 照合 | results.json schema2 model_recordsからaxi.transaction/axi.handshake/axi.memoryを抽出しexpected projectionと比較。外側request_id/time_psとdataを合成して照合する。数値Dは整数へ変換する。status/response/byte/順序/psは完全一致。expected.metricsの平均・率は独立の有理数{numerator,denominator}で保存し、共通丸め規則でbinary64へ一度変換して比較する |
 | 解析資料の確認 | `python3 docs/verification/fixtures/axi/verify_fixtures.py`はREADYの剰余計算、チャネル段階の算術、整数maskによるRAM変化を固定期待値と照合する。注：製品イベントループやRTLの実行結果の生成は対象外 |
 
@@ -53,7 +55,7 @@
 | 期待時刻 | P10ns、m0 grant0、AW10ns、W20/30ns、B40ns。m1 grant40ns、AR50ns、R60/70ns。両transaction completed/OKAY。WLAST/RLASTはbeat1だけtrue |
 | zero strobe | zero-strobe.iniはW20nsを一件handshakeしB30ns completed、RAM初期値を保持、memory time_ps=0 |
 | 判定 | 全ModelRecordを解析値と照合し、data_hexをlittle-endian wordとして読む値とbyte順を確認する。WSTRB無効byteの保持、空write副作用でも応答が一件あることを確認 |
-| 実行状態 | 解析fixture照合済み。製品read/write実行は未実施 |
+| 実行状態 | 解析fixtureと製品read/write出力の照合済み。RAM byte・handshake・指標の実測値をRust製品試験で検査する |
 
 <a id="dir-test-0018"></a>
 
@@ -83,7 +85,7 @@
 | 期待 | round-robin grant順a:0,b:0,a:1、grant0/20/40ns、完了20/40/60ns。cursorはm0選出後m1、m1選出後m0。capacityはa:0 completed、a:1 dropped/outstanding_full、a:1 handshake0件 |
 | 境界追加 | capacityのa.timesを[0ps,20ns]へ変更するとresponse完了phase0で容量が空き、同時刻phase1のa:1が受理される。a:1 grant20ns、AR30ns、R40ns。[0ps,19999ps]なら二件目は破棄 |
 | 不変条件 | 各commitでsource別outstanding=pending+active、FIFO=そのsourceのpendingだけ。global active<=1。同managerのa:0完了前にa:1を開始する処理は対象外（注） |
-| 実行状態 | 固定fixtureの順序・容量期待値を静的照合済み。製品調停と境界追加実行は未実施 |
+| 実行状態 | 固定fixtureの順序・容量期待値と製品調停出力を照合済み。追加境界の実施範囲は末尾の製品検証記録を参照 |
 
 <a id="dir-test-0019"></a>
 
@@ -113,7 +115,7 @@
 | 保持確認 | AWとW0のVALIDがgrant+1から独立に有効であること、WREADYがAW handshakeの次edgeまで0であることを確認。各stageで最早edge直前のpayloadを捕捉しREADY0区間とhandshake時の値が一致することをunit testで確認。R/Wのbeat番号とLASTを照合し、READY0で計測byte数が増加する処理は対象外（注） |
 | 非整列生成 | read-writeの全timesを1psへ変更するとeligible10ns、最初のgrant10ns、AW20nsになる。generated_psは1のまま保持する |
 | 判定 | 期待edgeから求めたpsと出力を完全一致させる。イベントを省略したREADY0区間でもvalid_sinceとhandshake差を保持する |
-| 実行状態 | 剰余式と段階依存から解析値一致。製品clock/codec/保持試験は未実施 |
+| 実行状態 | 剰余式と段階依存の解析値に製品clock/handshake出力が一致。内部codecの不正field・位相試験も実施 |
 
 <a id="dir-test-0020"></a>
 
@@ -141,7 +143,7 @@
 | 期待 | a:0はSLVERRでB40nsまで全Wを消費、RAM初期値を保持。b:0はSLVERR、R2件とも00000000、70ns完了。c:0はDECERR、R1件00000000、90ns完了。termination events_exhausted、exit0 |
 | 追加境界 | writeストローブ全0でもA4096/2beatはSLVERR。error範囲access=readなら同writeはOKAY、readはSLVERR。RAM末尾を越えるvalid burstはDECERRを優先、4KiBを越えるburstはprepare失敗として別扱い |
 | 判定 | response code、R beat数/LAST、B一件、全error writeのmemory差分0byteを比較。protocol errorと実行失敗を別の出力として保持する |
-| 実行状態 | 区間交差と応答・副作用の解析値確認済み。製品error処理は未実施 |
+| 実行状態 | 区間交差・error応答・RAM副作用の解析値と製品出力を照合済み |
 
 <a id="dir-test-0021"></a>
 
@@ -172,7 +174,7 @@
 | 異常入力 | [invalid-transactions.json](../fixtures/axi/invalid-transactions.json)の9個のmutationをread-writeのgenerator a.transactionへ一つずつ適用。unaligned、4KiB跨ぎ、beats0/257、strobe16、data個数不足、奇数hex、burst上書き、boolean addressを拒否 |
 | 設定・構造異常 | モデルJSONのREADYを000、clockを0ps、latency0、RAM initial重複、error_range重複へ個別変更。NEDのm1.rをm0.rへ接続変更、W方向反転、channel delay1ps、suffixの混在、未接続を個別注入してprepare失敗を確認 |
 | 判定 | prep_failed/exit2/E-0001、該当sourceとfield又はpath、callback0件。受理データと将来拡張の未対応入力を区別する。profile/実装版/全入力snapshotが結果から参照できることを確認 |
-| 実行状態 | 9mutationの解析validatorと2受理境界は確認済み。DIR parser/registry/prepare実装は未実施 |
+| 実行状態 | 解析validatorと製品prepareの不正入力拒否を確認済み。公開Registry拡張APIの検証は対象外 |
 
 <a id="dir-test-0022"></a>
 
@@ -207,12 +209,31 @@
 | 件数 | 各scenarioでgenerated=completed+dropped+pending+active。B又はRLASTがTちょうどならactiveを保持。handshake.time_ps<Tを全件確認。partial=falseの通常打切りとexecution_failedのpartial=trueを区別 |
 | 失敗注入 | W0 callbackの次event予約検証を失敗させ、直前AWまでのjournalを出力する。handshake W0行0件、RAM初期値、transaction activeの確定prefix、primary errorとpending eventを確認。finishは一回で内部資源を解放しsnapshotを保持する |
 | 再現性・拡張 | 各8fixtureの2回結果からrun_id/実時刻情報を除いたmodel_recordsを完全一致させる。CAN fixtureのschema1を回帰実行し既存値・順序が維持されることを確認。別AxiContextのmemory更新が他contextへ伝播しないことをunit testで確認 |
-| 実行状態 | T境界での解析handshakeとメモリ差分は照合済み。製品停止・失敗注入・CAN回帰・拡張実行は未実施 |
+| 実行状態 | T境界の解析handshake・メモリ差分と製品停止出力を照合済み。時間あふれ時の確定prefixとCAN回帰も製品試験で確認。拡張API全体の検証は対象外 |
 
 ## 7. 検証記録
 
 | 項目 | 確定契約 |
 | --- | --- |
 | 2026-09-29解析 | verify_fixtures.pyで8scenario、9異常mutation、2受理境界、24metric descriptor、424summary projection、11窓を照合しPASS。標準ライブラリだけを使用する。固定edge列は実装から生成した値ではなくプロジェクトの解析fixture |
-| 製品証跡 | 製品実装・RTL・外部AXI conformance testは未実行。実装後にcommit/環境/入力hash/期待値/実測値/合否/出力所在を追加する |
+| 製品証跡 | 組込み抽象モデルの製品実行記録を末尾に追加。RTL・外部AXI conformance testは未実行 |
 | 資料 | 一次資料と確認した版・範囲は[AXI仕様の根拠](../../specs/models/AXIモデル詳細機能仕様書.md)を正本とする |
+
+<a id="product-execution"></a>
+
+## 組込みモデルの製品検証記録
+
+[実行記録](../results/soc-memory-product-2026-10-05.json)は開発中ソースのbinary/source hash、実行した構成、終了状態、model schema・metric集合、検証コマンドを保持する。公開タグの証跡ではなく、通常の文書版・履歴はpush準備時に確定する。
+
+| 対象 | 製品確認 |
+| --- | --- |
+| 独立期待値 | `crates/dir-simulator/tests/axi.rs`が8ケースの実シミュレータ出力を時刻・状態・byte又は転送量へ対応付ける。資料だけを計算するfixture checkerとは別に実行する |
+| 境界・不正 | 同ファイルと`runtime/axi/protocol.rs`の試験で容量・停止・型・未知キー・codec・時間あふれと確定prefixを検査する。具体的な実施数と対象は実行記録へ保存する |
+| 結果表示 | `view`で単独HTMLを生成し、`tests/transaction_viewer_model.test.cjs`で整数時刻・未完了・前後ステップ、`tests/transaction_viewer_browser.cjs`で実結果の読込と操作を確認する |
+| 証拠の境界 | 規定した抽象profileの製品試験であり、公開Registry/Envelope API全体、規格全体への適合、実機動作、100万要求の性能を合格とするものではない |
+
+```bash
+cargo test --locked -p dir-simulator --test axi
+```
+
+現在の試験範囲は本節と実行記録で判定し、個別に実施していない内部注入・追加入力の手順まで合格へ読み替えない。

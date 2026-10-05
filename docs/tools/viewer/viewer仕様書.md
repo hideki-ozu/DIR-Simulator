@@ -1,13 +1,15 @@
 # viewer仕様書
 
-文書バージョン：`1.1.2`
-対象GitHubバージョン：`main @ 7bb9bfc`
-予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.4`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.4` | `2026-10-05` | Issue #20の開始前拒否を実績完了時刻で終端化し、終端マーカーと回帰検証を追加 |
+| `1.1.3` | `2026-10-05` | 五つのtransaction profileの専用画面、実績時刻再演・最終資源表示と自動試験を追加 |
 | `1.1.2` | `2026-10-04` | CAN FDの証跡・位相時間と媒体の試行・jam・backoff・PHY表示、停止と巻き戻しの再現範囲を追加 |
 | `1.1.1` | `2026-10-04` | v1.1.1向けVLAN profileの読込対応と詳細仕様への参照を追加 |
 | `1.1.0` | `2026-10-04` | 初版公開：CAN/GW viewerの表示・再生・状態復元・検証条件を集約。説明範囲とEthernet資料への参照を明示 |
@@ -80,3 +82,13 @@ NODE_PATH="$PWD/tmp/viewer-tests/node_modules" node tests/viewer_browser.cjs
 `can.fd.precomputed.v1`はController→Bus→受信先の画面を使い、二速度・DLC・BRS・外部位相bit数・evidence・binding SHA-256を詳細へ表示する。`fidelity=externally-precomputed-phase-bits`、`wire_validation=structural-only`を明示する。静的frame行があっても生成時刻が停止境界以後なら送信要求を作らない。任意profileの汎用codecではなく、対応する3種のFDレコードを検証して共通の記録時刻再演へ接続する。
 
 この追加は開発中ソースの実装であり、公開版と文書版は次回push準備時に確定する。
+
+## AXI・SoC・メモリ／IPCの結果
+
+schema2の`axi4.transaction.v1`、`soc.shared.v1`、`ahb.transaction.v1`、`noc.xy.v1`、`memory.ipc.transaction.v1`を専用transaction画面で読む。版付きschema集合と要求参照・実績時刻・状態を検証し、BigIntでpsを保持する。要求一覧・タイムライン・現在の件数と、AXI handshake／SoC・NoC転送の記録経路を表示する。前後ステップは移動先の直前区間を同じ方向で再表示し、連続再生では経路の線を強調する。
+
+メモリbyte、slot所有者、DMA進捗、mailbox通知の完全像は「実行終了時の資源」と明示し、過去の時刻へ移動して最終snapshotを当時の内容として表示する処理は行わない。未完了要求は確定した開始から観測終端まで表示し、予定完了・通知を実績へ補完しない。
+
+実装は`assets/transaction-model.js`と`assets/transaction-app.js`。`tests/transaction_viewer_model.test.cjs`で整数時刻・停止・部分prefix・参照／schema拒否・前後ステップを検証し、`tests/transaction_viewer_browser.cjs RESULTS...`で実結果の表示、詳細選択、再生、時刻指定、狭い画面を確認する。
+
+開始前に拒否されたtransaction要求の待機帯は、記録された`completed_ps`で止める。拒否・失敗・破棄の終端は赤いマーカーで表示し、生成と拒否が同時刻でも最小幅を設ける。完了していない待機要求だけを観測終了まで表示する。開始後の失敗は実際の処理区間と終端を表示し、結果schemaや実行結果を変更しない。`tests/transaction_viewer_model.test.cjs`と`tests/transaction_viewer_browser.cjs`で実績終端、色・位置、開始なし・0psの拒否を検証する。

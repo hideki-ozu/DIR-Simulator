@@ -18,7 +18,7 @@ def main():
         cfg = {k:v.strip(chr(34)) for k,v in ini['General'].items()}
         model = read(cfg['model-config'])
         workload = read(cfg['workload'])
-        assert (ROOT / cfg['ned-path'] / 'Main.ned').is_file()
+        assert (ROOT / cfg['ned-path'] / 'demo' / 'Main.ned').is_file()
         assert model['profile'] == cfg['model-profile']
         assert cfg['sim-time-limit'] == f"{c['T']}ps"
         assert model['clock_period'] == '10ps'

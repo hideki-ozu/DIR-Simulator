@@ -169,6 +169,11 @@ pub(super) fn profile(general: &BTreeMap<String, String>) -> Result<String> {
             | "ethernet.l2.store-forward.v2"
             | "ethernet.l2.100base-t1.v1"
             | "can.fd.precomputed.v1"
+            | "axi4.transaction.v1"
+            | "soc.shared.v1"
+            | "ahb.transaction.v1"
+            | "noc.xy.v1"
+            | "memory.ipc.transaction.v1"
     ) {
         return Err(error(format!("unsupported model-profile: {profile}")));
     }

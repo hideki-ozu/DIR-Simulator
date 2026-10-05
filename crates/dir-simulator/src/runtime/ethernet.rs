@@ -1172,6 +1172,9 @@ fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
             },
             gateway: GatewaySnapshot::default(),
             canfd: None,
+            axi: None,
+            soc: None,
+            memory_ipc: None,
             ethernet: Some(EthernetSnapshot::default()),
         },
     };
