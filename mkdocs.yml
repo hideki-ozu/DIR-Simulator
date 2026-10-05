@@ -1,0 +1,32 @@
+site_name: DIR Simulator ガイド
+site_description: CANを実行し、結果を読み、条件を変えて理解するガイド
+site_url: https://hideki-ozu.github.io/DIR-Simulator/
+docs_dir: docs/guide
+site_dir: build/guide
+use_directory_urls: false
+theme:
+  name: mkdocs
+  locale: ja
+  highlightjs: false
+nav:
+  - ガイドの入口: index.md
+  - 入門:
+      - 初めてのCAN実行: 初めてのCAN実行.md
+  - 画面操作:
+      - Viewerで結果を読む: Viewerで結果を読む.md
+  - 機能辞典と実験:
+      - CANの調停: CANの調停.md
+  - 設定・用語・FAQ: 設定・用語・FAQ.md
+  - Qiita移植メモ: Qiita移植メモ.md
+plugins:
+  - search:
+      lang: [ja]
+      min_search_length: 2
+extra_css:
+  - assets/guide.css
+markdown_extensions:
+  - tables
+  - fenced_code
+  - toc:
+      permalink: true
+      slugify: !!python/name:markdown.extensions.toc.slugify_unicode

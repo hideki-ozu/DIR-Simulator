@@ -1,0 +1,566 @@
+{
+  "source_commit": "dd6199503913db24729f04bcca7e9e4f856fd71c",
+  "commands": [
+    {
+      "argv": [
+        "validate",
+        "--config",
+        "examples/guide/can/minimal.ini"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "run",
+        "--config",
+        "examples/guide/can/minimal.ini",
+        "--output",
+        "guide-evidence/recheck/minimal"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"guide-evidence/recheck/minimal\",\"manifest_path\":\"guide-evidence/recheck/minimal/manifest.json\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "view",
+        "--input",
+        "guide-evidence/recheck/minimal/results.json",
+        "--output",
+        "guide-evidence/recheck/minimal-viewer.html"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"guide-evidence/recheck/minimal-viewer.html\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "validate",
+        "--config",
+        "examples/guide/can/fast.ini"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "run",
+        "--config",
+        "examples/guide/can/fast.ini",
+        "--output",
+        "guide-evidence/recheck/fast"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"guide-evidence/recheck/fast\",\"manifest_path\":\"guide-evidence/recheck/fast/manifest.json\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "view",
+        "--input",
+        "guide-evidence/recheck/fast/results.json",
+        "--output",
+        "guide-evidence/recheck/fast-viewer.html"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"guide-evidence/recheck/fast-viewer.html\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "validate",
+        "--config",
+        "examples/guide/can/id-swap.ini"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "run",
+        "--config",
+        "examples/guide/can/id-swap.ini",
+        "--output",
+        "guide-evidence/recheck/id-swap"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"guide-evidence/recheck/id-swap\",\"manifest_path\":\"guide-evidence/recheck/id-swap/manifest.json\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "view",
+        "--input",
+        "guide-evidence/recheck/id-swap/results.json",
+        "--output",
+        "guide-evidence/recheck/id-swap-viewer.html"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"guide-evidence/recheck/id-swap-viewer.html\"}",
+      "stderr": ""
+    }
+  ],
+  "scenarios": {
+    "minimal": {
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "success": 3,
+      "received": 6,
+      "manifest_files_verified": 4
+    },
+    "fast": {
+      "timings_ps": {
+        "a:0": [
+          0,
+          119000000,
+          122000000
+        ],
+        "b:0": [
+          122000000,
+          200000000,
+          203000000
+        ],
+        "c:0": [
+          203000000,
+          265000000,
+          268000000
+        ]
+      },
+      "success": 3,
+      "received": 6,
+      "manifest_files_verified": 4
+    },
+    "id-swap": {
+      "timings_ps": {
+        "a:0": [
+          130000000,
+          368000000,
+          374000000
+        ],
+        "b:0": [
+          374000000,
+          530000000,
+          536000000
+        ],
+        "c:0": [
+          0,
+          124000000,
+          130000000
+        ]
+      },
+      "success": 3,
+      "received": 6,
+      "manifest_files_verified": 4
+    }
+  },
+  "status": "passed",
+  "browser": {
+    "status": "passed",
+    "pages": [
+      "CANの調停.html",
+      "Qiita移植メモ.html",
+      "Viewerで結果を読む.html",
+      "index.html",
+      "初めてのCAN実行.html",
+      "設定・用語・FAQ.html"
+    ],
+    "searches": {
+      "CAN": [
+        "CANの調停",
+        "CANの調停",
+        "初めてのCAN実行",
+        "初めてのCAN実行",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "制約と関連機能",
+        "現在使える範囲",
+        "制約と関連機能",
+        "ここから始める",
+        "制約と関連機能",
+        "ガイドの入口",
+        "最小実行例と設定",
+        "構成と責務",
+        "目的",
+        "結果と実画面",
+        "移植する手順",
+        "最小実行例と設定",
+        "Viewerで結果を読む",
+        "用語",
+        "更新履歴",
+        "最小実行例と設定",
+        "構成と責務",
+        "Qiita移植メモ",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "結果と実画面：238µsを読む",
+        "結果と実画面",
+        "設定・用語・FAQ"
+      ],
+      "調停": [
+        "CANの調停",
+        "接続と処理フロー",
+        "構成と責務",
+        "結果と実画面",
+        "接続と処理フロー",
+        "実装とREADMEの予定表記が違う",
+        "制約と関連機能",
+        "用語",
+        "CANの調停",
+        "移植する手順",
+        "制約と関連機能",
+        "ここから始める",
+        "Qiita移植メモ",
+        "設定・用語・FAQ",
+        "初めてのCAN実行",
+        "ガイドの入口",
+        "Viewerで結果を読む"
+      ],
+      "Viewer": [
+        "Viewerで結果を読む",
+        "Viewerで結果を読む",
+        "最小実行例と設定",
+        "Windowsで同じコマンドを使えるか",
+        "runやviewが既存出力を拒否する",
+        "実装とREADMEの予定表記が違う",
+        "制約と関連機能",
+        "設定・用語・FAQ",
+        "構成と責務",
+        "現在使える範囲",
+        "ページを増やすときの整理",
+        "制約と関連機能",
+        "最小実行例と設定",
+        "ガイドの入口",
+        "実験：1設定を変える — 表示単位をµsからnsへ",
+        "最小実行例と設定",
+        "ここから始める",
+        "ライセンスと出典",
+        "移植する手順",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "初めてのCAN実行",
+        "Qiita移植メモ",
+        "結果と実画面",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "CANの調停",
+        "Viewerの検索・省略で結果件数が変わるか"
+      ],
+      "ビットレート": [
+        "目的",
+        "実験：1設定を変える — 表示単位をµsからnsへ",
+        "ここから始める",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "ガイドの入口",
+        "Viewerで結果を読む",
+        "CANの調停",
+        "初めてのCAN実行"
+      ]
+    },
+    "viewport_mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow": false,
+    "page_errors": [],
+    "http_failures": [],
+    "external_requests": [],
+    "viewer_unit_conversion": "238us = 238000ns = 238000000ps",
+    "viewer_step": "238us -> 244us -> 238us"
+  },
+  "links": {
+    "status": "passed",
+    "html_files": 7,
+    "local_links_and_assets": 275,
+    "site_prefix": "/DIR-Simulator/",
+    "public_assets_checked": 54
+  },
+  "existing_tests": {
+    "rust_runtime_can": {
+      "passed": 4,
+      "failed": 0
+    },
+    "rust_can_scenarios": {
+      "passed": 5,
+      "failed": 0
+    },
+    "node_viewer_model": {
+      "passed": 23,
+      "failed": 0
+    }
+  },
+  "build": {
+    "mkdocs": "1.6.1",
+    "strict": true,
+    "search_language": [
+      "ja"
+    ],
+    "minimum_search_length": 2,
+    "site_prefix": "/DIR-Simulator/"
+  },
+  "release_reference": "https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3",
+  "scope": {
+    "remote_writes": false,
+    "qiita_posting": false,
+    "deployment": false,
+    "deleted_comparison_artifacts_used": false,
+    "windows_native_rust_tested": false
+  },
+  "screenshots": {
+    "docs/guide/assets/guide-fast-viewer.png": "e2f2c23146ff304eb2c6dbebade607fc72ad966ba684e3638df74999200b3b56",
+    "docs/guide/assets/guide-id-swap-viewer.png": "6a1cfbb59470aee8df09ad3ca0871dca23da775dbbfbe187ba6aaf8715f46292",
+    "docs/guide/assets/guide-minimal-viewer.png": "5a33943a2fd74a7cce08940522058a4786a7413752bb00cfc85724e59b46c753",
+    "docs/guide/assets/guide-viewer-at-238us.png": "92f5f7e6ee73607ef2c307fc4328bb143fb99627a6cbd73ac2492b75a3d5e2b9"
+  },
+  "generated_by": "scripts/record_guide_verification.py",
+  "post_site_integration_qa": {
+    "status": "passed",
+    "source_diff_files": [
+      "docs\\ガイド作成・統合手順.md",
+      "docs\\guide\\CANの調停.md",
+      "docs\\guide\\index.md",
+      "docs\\guide\\Qiita移植メモ.md",
+      "docs\\guide\\Viewerで結果を読む.md",
+      "docs\\guide\\初めてのCAN実行.md",
+      "docs\\guide\\設定・用語・FAQ.md",
+      "docs\\guide\\downloads\\can-guide-inputs.zip"
+    ],
+    "source_merge": "local files confirmed equal to original v0 before replacement; before-v1 copies retained",
+    "static_comparison": {
+      "matched_files": 54,
+      "differences": [],
+      "ignored_only": "index.html final Build Date UTC comment"
+    },
+    "download": {
+      "method": "Chromium clicked 実習入力ZIP link from entry page and saved browser download",
+      "file": "can-guide-inputs.zip",
+      "bytes": 2089,
+      "sha256": "77aeaca7646444a858bf99ffd86bfe0ba7303e0e70f8a7629c4225d388a68736",
+      "contents_match_repository_examples": true
+    },
+    "learner_reproduction": {
+      "base_tag": "v1.1.3",
+      "binary_reuse": "freshly built main dd6199503913db24729f04bcca7e9e4f856fd71c; no fresh learner build",
+      "scenarios": {
+        "minimal": {
+          "commands": [
+            [
+              "validate",
+              "--config",
+              "examples/guide/can/minimal.ini"
+            ],
+            [
+              "run",
+              "--config",
+              "examples/guide/can/minimal.ini",
+              "--output",
+              "results-guide-minimal"
+            ],
+            [
+              "view",
+              "--input",
+              "results-guide-minimal/results.json",
+              "--output",
+              "guide-minimal-viewer.html"
+            ]
+          ],
+          "exit_codes": [
+            0,
+            0,
+            0
+          ],
+          "timings_us": [
+            [
+              0,
+              238,
+              244
+            ],
+            [
+              244,
+              400,
+              406
+            ],
+            [
+              406,
+              530,
+              536
+            ]
+          ],
+          "success": 3,
+          "received": 6
+        },
+        "fast": {
+          "commands": [
+            [
+              "validate",
+              "--config",
+              "examples/guide/can/fast.ini"
+            ],
+            [
+              "run",
+              "--config",
+              "examples/guide/can/fast.ini",
+              "--output",
+              "results-guide-fast"
+            ],
+            [
+              "view",
+              "--input",
+              "results-guide-fast/results.json",
+              "--output",
+              "guide-fast-viewer.html"
+            ]
+          ],
+          "exit_codes": [
+            0,
+            0,
+            0
+          ],
+          "timings_us": [
+            [
+              0,
+              119,
+              122
+            ],
+            [
+              122,
+              200,
+              203
+            ],
+            [
+              203,
+              265,
+              268
+            ]
+          ],
+          "success": 3,
+          "received": 6
+        },
+        "id-swap": {
+          "commands": [
+            [
+              "validate",
+              "--config",
+              "examples/guide/can/id-swap.ini"
+            ],
+            [
+              "run",
+              "--config",
+              "examples/guide/can/id-swap.ini",
+              "--output",
+              "results-guide-id-swap"
+            ],
+            [
+              "view",
+              "--input",
+              "results-guide-id-swap/results.json",
+              "--output",
+              "guide-id-swap-viewer.html"
+            ]
+          ],
+          "exit_codes": [
+            0,
+            0,
+            0
+          ],
+          "timings_us": [
+            [
+              130,
+              368,
+              374
+            ],
+            [
+              374,
+              530,
+              536
+            ],
+            [
+              0,
+              124,
+              130
+            ]
+          ],
+          "success": 3,
+          "received": 6
+        }
+      },
+      "status": "passed"
+    },
+    "qiita_access_note_checked": "owner-only Site images must be uploaded to Qiita; page links require publicly accessible destinations",
+    "site_published_by_this_task": false,
+    "generated_by": "local v1 browser QA, downloaded sample reproduction, and source/static byte comparison",
+    "learner_viewer_browser": {
+      "status": "passed",
+      "scenarios": {
+        "minimal": {
+          "status": "passed",
+          "selected_request": "a:0",
+          "checkpoint_us": 238,
+          "final_success_count": 3
+        },
+        "fast": {
+          "status": "passed",
+          "selected_request": "a:0",
+          "checkpoint_us": 119,
+          "final_success_count": 3
+        },
+        "id-swap": {
+          "status": "passed",
+          "selected_request": "c:0",
+          "checkpoint_us": 124,
+          "final_success_count": 3
+        }
+      },
+      "page_errors": []
+    },
+    "input_artifact_versions": {
+      "source": {
+        "version": 1,
+        "sha256": "011d162684d30b5ab33788b641b3aa26dd1834bc8aa958ead4af8f8c94752d1b"
+      },
+      "static": {
+        "version": 1,
+        "sha256": "aab7dcd8647904d3f5e3d90a63ae41105503fb42f075cc5ad2e63da44cd618e1"
+      }
+    }
+  },
+  "github_pages_workflow": {
+    "public_url": "https://hideki-ozu.github.io/DIR-Simulator/",
+    "events": [
+      "pull_request targeting main",
+      "push to main"
+    ],
+    "deployment_condition": "push to refs/heads/main after successful build",
+    "automatic_merge": false,
+    "deploy_secrets": "none; built-in GITHUB_TOKEN and OIDC",
+    "site_artifact_path": "build/guide",
+    "local_validation": {
+      "strict_build": "passed",
+      "links_and_public_assets": "passed",
+      "workflow_event_permissions_and_SHA_pins": "passed",
+      "browser_search_terms": [
+        "CAN",
+        "調停",
+        "Viewer",
+        "ビットレート"
+      ],
+      "mobile_width": 390,
+      "download_verified": true,
+      "sample_zip_sha256": "31656d758a8d4acfe4a0676d4534d2818854839c37eaf0077923075d07327668"
+    }
+  }
+}
