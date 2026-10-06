@@ -1,0 +1,420 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "source_commit": "c152840df77e5ce29c678ca8165c7c00935756fb",
+  "product_version": "v1.1.3",
+  "profile": "can.cc.ideal.v1",
+  "expected_basis": "observed=EOF for zero channel delay; received=observed+receiver rxProcessingDelay within [0,1000us)",
+  "runtime": "fresh cargo build --locked of main c152840 on WSL; Chromium on Windows",
+  "binary_sha256": "ec897605e70fa23fbd9cb1f1a431edc0660c54c454855c57d0dc855f3a10ae97",
+  "commands": [
+    {
+      "argv": [
+        "validate",
+        "--config",
+        "examples/guide/can/rx-delay0.ini"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "run",
+        "--config",
+        "examples/guide/can/rx-delay0.ini",
+        "--output",
+        "guide-evidence/rx-delay/rx-delay0"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "view",
+        "--input",
+        "guide-evidence/rx-delay/rx-delay0/results.json",
+        "--output",
+        "guide-evidence/rx-delay/rx-delay0-viewer.html"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "validate",
+        "--config",
+        "examples/guide/can/rx-delay200.ini"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "run",
+        "--config",
+        "examples/guide/can/rx-delay200.ini",
+        "--output",
+        "guide-evidence/rx-delay/rx-delay200"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "view",
+        "--input",
+        "guide-evidence/rx-delay/rx-delay200/results.json",
+        "--output",
+        "guide-evidence/rx-delay/rx-delay200-viewer.html"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "validate",
+        "--config",
+        "examples/guide/can/rx-delay900.ini"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "run",
+        "--config",
+        "examples/guide/can/rx-delay900.ini",
+        "--output",
+        "guide-evidence/rx-delay/rx-delay900"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "view",
+        "--input",
+        "guide-evidence/rx-delay/rx-delay900/results.json",
+        "--output",
+        "guide-evidence/rx-delay/rx-delay900-viewer.html"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "input_sha256": {
+    "examples/guide/can/minimal.json": "52930d8148468d2b74a7cc9d3d50d18b222b1ae1cb52d01394bf0ded7817176e",
+    "examples/guide/can/models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251",
+    "examples/guide/can/rx-delay0.ini": "811973e6fabd79a6edba57d4418ba89abd5ad4154943a442c52f8027cdffa1c4",
+    "examples/guide/can/rx-delay200.ini": "d86e1ea652262ac6f9d34b1475db55cfd686e2e77aa45c590e060ea10dcc13d8",
+    "examples/guide/can/rx-delay900.ini": "205009b6ebb0efdd1d06a57e38e7789557143350bb83631cf2419a7379c7f8a4"
+  },
+  "scenarios": {
+    "rx-delay0": {
+      "delay_us": 0,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "send_success": 3,
+      "received": 6,
+      "pending": 0,
+      "filtered": 0,
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "end_ps": "1000000000",
+      "partial": false,
+      "termination": "events_exhausted",
+      "manifest_files_verified": 4
+    },
+    "rx-delay200": {
+      "delay_us": 200,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "send_success": 3,
+      "received": 6,
+      "pending": 0,
+      "filtered": 0,
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": "438000000",
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "600000000",
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "end_ps": "1000000000",
+      "partial": false,
+      "termination": "events_exhausted",
+      "manifest_files_verified": 4
+    },
+    "rx-delay900": {
+      "delay_us": 900,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "send_success": 3,
+      "received": 4,
+      "pending": 2,
+      "filtered": 0,
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": null,
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "pending"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": null,
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "pending"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "end_ps": "1000000000",
+      "partial": false,
+      "termination": "time_limit",
+      "manifest_files_verified": 4
+    }
+  },
+  "scope": "documentation and samples only; no Rust change, merge, deployment or settings mutation",
+  "viewer": {
+    "status": "passed",
+    "shots": [
+      {
+        "delay_us": 200,
+        "current_us": 400,
+        "selected": "a:0",
+        "receiver": "Main.c",
+        "image": "guide-rx-delay200-at400us.png"
+      },
+      {
+        "delay_us": 900,
+        "current_us": 1000,
+        "selected": "a:0",
+        "receiver": "Main.c",
+        "image": "guide-rx-delay900-at1000us.png"
+      }
+    ],
+    "page_errors": []
+  },
+  "browser": {
+    "status": "passed",
+    "pages": [
+      "CANの調停.html",
+      "CAN受信処理遅延の比較.html",
+      "index.html",
+      "Viewerで結果を読む.html",
+      "初めてのCAN実行.html",
+      "設定・用語・FAQ.html"
+    ],
+    "searches": {
+      "受信": [
+        "接続と受信までの流れ",
+        "CAN受信処理遅延の比較",
+        "フレームは3つなのに受信が6件ある",
+        "実測：cの受信完了だけが変わる",
+        "目的：送信成功と受信完了を分けて読む",
+        "構成と責務",
+        "接続と処理フロー",
+        "1変数だけを変える設定",
+        "この実習で分かることと制約",
+        "終了時のpendingを欠落や破棄と混同しない",
+        "ここから始める",
+        "実Viewerで観測と完了を見分ける",
+        "更新履歴",
+        "構成と責務",
+        "目的",
+        "設定・用語・FAQ",
+        "ガイドの入口",
+        "制約と関連機能",
+        "初めてのCAN実行",
+        "構成と責務",
+        "用語",
+        "結果と実画面",
+        "制約と関連機能",
+        "Viewerで結果を読む",
+        "制約と関連機能",
+        "実験：1設定を変える — 表示単位をµsからnsへ",
+        "CAN受信処理遅延の比較",
+        "結果と実画面：238µsを読む",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "CANの調停"
+      ],
+      "遅延": [
+        "CAN受信処理遅延の比較",
+        "この実習で分かることと制約",
+        "構成と責務",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "更新履歴",
+        "接続と受信までの流れ",
+        "制約と関連機能",
+        "最小実行例と設定",
+        "結果と実画面",
+        "ここから始める",
+        "構成と責務",
+        "初めてのCAN実行",
+        "CAN受信処理遅延の比較",
+        "CANの調停",
+        "実測：cの受信完了だけが変わる",
+        "ガイドの入口"
+      ]
+    },
+    "viewport_mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow": false,
+    "page_errors": [],
+    "http_failures": [],
+    "external_requests": []
+  },
+  "links": {
+    "status": "passed",
+    "html_files": 7,
+    "local_links_and_assets": 293,
+    "site_prefix": "/DIR-Simulator/",
+    "public_assets_checked": 56
+  }
+}
