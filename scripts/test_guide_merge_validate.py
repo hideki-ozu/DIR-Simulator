@@ -45,6 +45,8 @@ class ValidationTests(unittest.TestCase):
         root=Path(__file__).resolve().parents[1]
         policy=json.loads((root/'.github/guide-merge-policy.json').read_text())
         self.assertIs(policy['enabled'],False);self.assertIsNone(policy['activation_record'])
+        self.assertNotIn('Guide scoped validation',policy['branch_required_checks'])
+        self.assertIn('Guide scoped validation',policy['required_checks'])
         for name in ['guide-scoped-merge.yml','guide-scoped-validation.yml']:
             text=(root/'.github/workflows'/name).read_text()
             self.assertIn('if: ${{ false }}',text);self.assertIn('persist-credentials: false',text)
@@ -52,6 +54,9 @@ class ValidationTests(unittest.TestCase):
             self.assertNotIn('pull_request.head.sha',text)
         writer=(root/'.github/workflows/guide-scoped-merge.yml').read_text()
         self.assertIn('ref: ${{ github.sha }}',writer)
+        self.assertIn('workflows: [Guide scoped validation, Guide checks and GitHub Pages]',writer)
+        self.assertIn('group: guide-scoped-writer',writer)
+        self.assertIn('cancel-in-progress: false',writer)
         pages=(root/'.github/workflows/guide-pages.yml').read_text()
         self.assertIn("vars.GUIDE_SCOPED_MERGE_ENABLED == 'enabled'",pages)
         self.assertIn('inputs.expected_sha == github.sha',pages)

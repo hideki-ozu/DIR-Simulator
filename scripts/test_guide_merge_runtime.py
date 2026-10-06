@@ -56,7 +56,7 @@ def fixture(enabled=False):
           'mergeable':True,'mergeable_state':'clean','changed_files':1,'created_at':'2026-10-07T00:00:00Z'}
     api.add('/pulls/' + str(NUMBER), pr)
     api.add('/compare/' + BASE + '...' + HEAD, {'merge_base_commit':{'sha':BASE},'status':'ahead'})
-    checks = [{'context':name,'integration_id':policy['github_actions_app_id']} for name in policy['required_checks']]
+    checks = [{'context':name,'integration_id':policy['github_actions_app_id']} for name in policy['branch_required_checks']]
     rules = [{'type':t,'ruleset_source_type':'Repository','ruleset_source':policy['repository'],'ruleset_id':1}
              for t in ['deletion','non_fast_forward','required_status_checks']]
     rules[-1]['parameters'] = {'strict_required_status_checks_policy':True,'required_status_checks':checks}
@@ -104,6 +104,86 @@ def publication_routes(api):
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_collector_fetches_all_pr_file_pages_and_rejects_incomplete_page(self):
+        api,c,e=fixture()
+        path='docs/guide/index.md'; data=b'# Second page\n'; sha=blob_digest(data)
+        api.add('/git/blobs/'+sha,{'sha':sha,'encoding':'base64','size':len(data),'content':base64.b64encode(data).decode()})
+        api.routes[('GET',api.prefix+'/git/trees/'+'e'*40+'?recursive=1')][0]['tree'].append(
+            {'path':path,'mode':'100644','type':'blob','sha':sha})
+        api.routes[('GET',api.prefix+'/pulls/'+str(NUMBER))][0]['changed_files']=2
+        route='/pulls/'+str(NUMBER)+'/files?per_page=100'
+        rows=api.routes[('GET',api.prefix+route)][0]
+        api.add(route,rows,'<https://api.github.com'+api.prefix+route+'&page=2>; rel="next"')
+        api.add(route+'&page=2',[{'filename':path,'sha':sha,'status':'added'}])
+        self.assertIn(path,c.collect(NUMBER)['files'])
+        api.add(route+'&page=2',[])
+        with self.assertRaises(Stop): c.collect(NUMBER)
+        self.assertEqual(api.writes,[])
+
+    def test_general_pr_protection_independent_of_scoped_eligibility(self):
+        for mutation in ['code', 'author', 'preapproval']:
+            api,c,e=fixture(True)
+            pr=api.routes[('GET',api.prefix+'/pulls/'+str(NUMBER))][0]
+            if mutation=='author': pr['user']['id']=0
+            if mutation=='preapproval': pr['created_at']='2026-10-01T00:00:00Z'
+            if mutation=='code':
+                api.routes[('GET',api.prefix+'/pulls/'+str(NUMBER)+'/files?per_page=100')][0][0]['filename']='scripts/code.py'
+            with self.subTest(mutation=mutation):
+                # General branch gates do not depend on scoped eligibility.
+                self.assertTrue(c.rules())
+                with self.assertRaises(Stop): c.collect(NUMBER,require_checks=False)
+                self.assertEqual(api.writes,[])
+
+    def test_scoped_global_required_and_extra_protection_fail_closed(self):
+        for name in ['Guide scoped validation', 'Existing security check']:
+            api,c,e=fixture(True)
+            rules=api.routes[('GET',api.prefix+'/rules/branches/main?per_page=100')][0]
+            rules[-1]['parameters']['required_status_checks'].append({'context':name,'integration_id':15368})
+            with self.subTest(name=name),self.assertRaises(Stop): c.rules()
+            self.assertEqual(api.writes,[])
+            self.assertEqual(len(rules[-1]['parameters']['required_status_checks']),2)
+
+    def test_each_workflow_completion_rechecks_all_latest_checks(self):
+        for trigger_id, other_id in [(11,21),(21,11)]:
+            api,c,e=fixture(True);publication_routes(api)
+            runs=api.routes[('GET',api.prefix+'/actions/workflows/'+str(other_id//10)+'/runs?head_sha='+HEAD+'&event=pull_request&per_page=100')][0]
+            runs['workflow_runs'][0]['status']='in_progress';runs['workflow_runs'][0]['conclusion']=None
+            with self.subTest(trigger_id=trigger_id):
+                with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=trigger_id)
+                self.assertEqual(api.writes,[])
+                # Second workflow's completion supplies the missing reevaluation.
+                runs['workflow_runs'][0]['status']='completed';runs['workflow_runs'][0]['conclusion']='success'
+                self.assertEqual(Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=other_id,poll=lambda:None)['publication'],'success')
+                self.assertEqual(len(api.writes),2)
+
+    def test_duplicate_completed_event_cannot_merge_twice(self):
+        api,c,e=fixture(True);publication_routes(api)
+        Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=11,poll=lambda:None)
+        for trigger_id in [11,21]:
+            with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=trigger_id)
+        self.assertEqual(len([w for w in api.writes if w[0]=='PUT']),1)
+
+    def test_rerun_attempt_or_new_run_during_prewrite_no_merge(self):
+        for mutation in ['attempt','new_run','interrupted']:
+            api,c,e=fixture(True)
+            original=c.collect; calls=[]
+            def collect(number):
+                calls.append(number)
+                result=original(number)
+                if len(calls)==2:
+                    if mutation=='interrupted': raise Stop('api_unavailable_or_ambiguous_write')
+                    result['checks'][0]['run_attempt' if mutation=='attempt' else 'run_id']+=1
+                return result
+            c.collect=collect
+            with self.subTest(mutation=mutation),self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=11)
+            self.assertEqual(api.writes,[])
+
+    def test_old_attempt_trigger_even_after_new_attempt_success_stops(self):
+        api,c,e=fixture(True)
+        api.routes[('GET',api.prefix+'/actions/runs/11')][0]['run_attempt']=1
+        with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=11)
+        self.assertEqual(api.writes,[])
+
     def test_complete_collector_and_default_dry_run(self):
         api,c,e=fixture(); result=Writer(c,e).execute(NUMBER)
         self.assertTrue(result['dry_run']); self.assertFalse(result['merge_authorized']); self.assertEqual(api.writes,[])

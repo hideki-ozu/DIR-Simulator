@@ -139,7 +139,12 @@ class Collector:
         types = {r['type'] for r in rules}
         need({'deletion', 'non_fast_forward', 'required_status_checks'} <= types and
              types <= {'deletion', 'non_fast_forward', 'required_status_checks', 'pull_request'}, 'rules_missing_or_unknown')
-        required = self.policy['required_checks']
+        # Branch protection governs all PRs; scoped eligibility is checked by
+        # the writer directly and must never block ordinary human merges.
+        required = set(self.policy['branch_required_checks'])
+        known = self.policy['required_checks']
+        scoped = {name for name, path in known.items() if path == self.policy['validation_workflow']}
+        need(required and required <= set(known) and not required & scoped, 'branch_check_policy_invalid')
         found = set()
         for rule in rules:
             need(rule['ruleset_source_type'] == 'Repository' and rule['ruleset_source'] == self.policy['repository'],
@@ -148,9 +153,16 @@ class Collector:
                 params = rule['parameters']
                 need(params['strict_required_status_checks_policy'] is True, 'strict_checks_disabled')
                 pairs = {(c['context'], c['integration_id']) for c in params['required_status_checks']}
-                need(pairs == {(name, self.policy['github_actions_app_id']) for name in required}, 'required_checks_or_provider_mismatch')
+                need(not {name for name, _ in pairs} & scoped, 'scoped_check_blocks_general_prs')
+                need({(name, self.policy['github_actions_app_id']) for name in required} <= pairs,
+                     'required_checks_or_provider_mismatch')
+                # Additional protections are never removed to fit this policy.
+                # Stop until their check provenance is explicitly reviewed and
+                # included in the trusted workflow mapping.
+                need(pairs <= {(name, self.policy['github_actions_app_id']) for name in known},
+                     'additional_required_checks_need_review')
                 found |= {c[0] for c in pairs}
-        need(found == set(required), 'required_checks_missing')
+        need(required <= found, 'required_checks_missing')
         for ident in {r['ruleset_id'] for r in rules}:
             ruleset = self.api.get('/rulesets/' + str(ident) + '?includes_parents=true')
             need(ruleset['enforcement'] == 'active' and ruleset['target'] == 'branch', 'ruleset_inactive')
@@ -283,11 +295,14 @@ class Writer:
             return {'dry_run': True, 'merge_authorized': False, 'head_sha': first['head_sha'], 'files': sorted(first['files'])}
         need(type(trigger_run) is int and trigger_run > 0, 'trigger_run_missing')
         trigger = self.api.get('/actions/runs/' + str(trigger_run))
-        need(trigger['path'] == p['validation_workflow'] and trigger['event'] == 'pull_request' and
+        trigger_names = {name for name, path in p['required_checks'].items()
+                         if path == trigger['path'] and path in {p['validation_workflow'], p['pages_workflow']}}
+        need(trigger_names and trigger['event'] == 'pull_request' and
              trigger['head_sha'] == first['head_sha'] and trigger['status'] == 'completed' and
              trigger['conclusion'] == 'success' and len(trigger['pull_requests']) == 1 and
              trigger['pull_requests'][0]['number'] == number and
-             any(c['name'] == 'Guide scoped validation' and c['run_id'] == trigger_run for c in first['checks']),
+             any(c['name'] in trigger_names and c['run_id'] == trigger_run and
+                 c['run_attempt'] == trigger['run_attempt'] for c in first['checks']),
              'trigger_run_ambiguous_or_stale')
         # Repeat every read and every rule/file/check before the atomic SHA guard.
         last = self.collector.collect(number)
