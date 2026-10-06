@@ -1,13 +1,13 @@
 # DIR Simulator
 
-文書バージョン：`1.1.3`
-対象GitHubバージョン：`main @ 9ad16c4`
-予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.4`
+対象GitHubバージョン：`v1.1.3`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.4` | `2026-10-05` | 入門ガイド・Qiita移植・GitHub Pages自動公開を追加し、基準公開版v1.1.3の案内を更新 |
 | `1.1.3` | `2026-10-05` | AXI・SoC/AHB/NoC・DDR/SRAM・IPC/DMA、Viewer・サンプル・製品検証記録を追加し、v1.1.3向けPRを準備 |
 | `1.1.2` | `2026-10-04` | Ethernet媒体v2・100BASE-T1・CAN FD、viewer・サンプル・製品検証記録を追加し、v1.1.2向けPRと文書版を更新 |
 | `1.1.1` | `2026-10-04` | VLAN・静的multicast、サンプル・Viewer・検証記録を追加し、v1.1.1向けPRの提供状態と文書版を更新 |
@@ -24,7 +24,9 @@
 
 文書ID：`readme`
 
-Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。本PRではAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加し、次の公開版を`v1.1.3`とします。公開タグとPRの提供状態を分けて記載します。
+Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。公開版`v1.1.3`にはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加しています。公開タグと開発中の変更を分けて記載します。
+
+初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。初回公開はこの構成をmainへ反映した後です。Markdown原稿は[Qiitaにも再利用](docs/guide/Qiita移植メモ.md)できます。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
