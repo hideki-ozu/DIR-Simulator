@@ -66,6 +66,6 @@ const site=path.join(root,'build/guide'),evidence=path.join(root,'guide-evidence
  await page.locator('#prev-time').click();assert.equal((await page.locator('#current-time').innerText()).replaceAll(',',''),'238000');
  assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);assert.deepEqual(external,[]);
  fs.writeFileSync(path.join(evidence,'browser-verification.json'),JSON.stringify({status:'passed',pages,searches,viewport_mobile:[390,844],horizontal_overflow:overflow,page_errors:errors,http_failures:failed,external_requests:external,viewer_unit_conversion:'238us = 238000ns = 238000000ps',viewer_step:'238us -> 244us -> 238us'},null,2));
- console.log('PASS: 6 pages, 4 search terms including 調停, images, mobile layout, no external requests, Viewer units and forward/back steps.');
+ console.log('PASS: 5 pages, 4 search terms including 調停, images, mobile layout, no external requests, Viewer units and forward/back steps.');
  await browser.close();await new Promise(r=>server.close(r));
 })().catch(e=>{console.error(e);process.exit(1)});

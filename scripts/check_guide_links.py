@@ -76,3 +76,10 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# Authoring notes must stay outside the published docs directory and search.
+assert not (SITE / "Qiita移植メモ.html").exists(), "Authoring memo was published"
+for page in SITE.rglob("*.html"):
+    assert "Qiita移植メモ" not in page.read_text(encoding="utf-8"), f"Authoring memo linked from {page.name}"
+assert "Qiita移植メモ" not in (SITE / "search/search_index.json").read_text(encoding="utf-8"), "Authoring memo is searchable"
+print("PASS: authoring memo absent from generated HTML, navigation, links and search index.")

@@ -1,14 +1,15 @@
 # Qiita移植メモ
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.3`  
 文書ID：`guide-portability`  
-文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
+文書状態：執筆者向け管理資料。GitHubで保存し、MkDocs公開対象には含めない
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-06` | 執筆者向け文書として公開ガイドの対象外へ移動し、参照先を更新 |
 | `1.1.0` | `2026-10-05` | 初版：公開サンプルの実行・実画面・条件変更実験、GitHub Pages公開とMarkdown再利用を整備 |
 
 ## GitHubの説明をQiitaでも再利用できるか
@@ -52,7 +53,7 @@ DIRの`LICENSE`は、別個の通知のないプロジェクト作成文書・�
 
 転載時は元リポジトリの[LICENSE](https://github.com/hideki-ozu/DIR-Simulator/blob/v1.1.3/LICENSE)、[MIT全文](https://github.com/hideki-ozu/DIR-Simulator/blob/v1.1.3/LICENSE-MIT)、[Apache-2.0全文](https://github.com/hideki-ozu/DIR-Simulator/blob/v1.1.3/LICENSE-APACHE)を参照できるようにし、選択した条件に沿って必要な通知を保ちます。
 
-静的ガイドの検索・テーマ付属資産の通知は[ライセンス出典一覧](assets/licenses/sources.txt)へ保持しています。
+静的ガイドの検索・テーマ付属資産の通知は[ライセンス出典一覧](guide/assets/licenses/sources.txt)へ保持しています。
 
 第三者素材はこの許諾に含まれません。出典を書くことだけで転載の許可になるとは限らないため、個別の利用条件を確認します。[Qiitaの無断転載に関する公式説明](https://help.qiita.com/ja/articles/about-unauthorized-reproduction)も参照してください。OMNeT++比較の削除済み成果物は今回の原稿・画像・結果に使っていません。
 
