@@ -25,13 +25,16 @@ const site=path.join(root,'build/guide'),evidence=path.join(root,'guide-evidence
   await page.goto(base+encodeURIComponent(name));await page.waitForLoadState('networkidle');
   assert.equal(await page.locator('h1').count(),1);
   assert.equal(await page.locator('img').evaluateAll(imgs=>imgs.filter(x=>!x.complete||x.naturalWidth===0).length),0);
+  await page.setViewportSize({width:390,height:844});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1),false);
+  await page.setViewportSize({width:1440,height:1000});
   pages.push(name);
  }
  await page.goto(base);
  await page.waitForFunction(()=>typeof min_search_length==='number');
  await page.locator('[data-bs-target="#mkdocs_search_modal"]').click();
  const searches={};
- for(const term of ['CAN','調停','Viewer','ビットレート']){
+ for(const term of ['CAN','調停','Viewer','ビットレート','受信フィルタ']){
   console.log('search',term);
   await page.locator('#mkdocs-search-query').fill('');await page.locator('#mkdocs-search-query').press('End');
   await page.waitForFunction(()=>document.querySelectorAll('#mkdocs-search-results article').length===0);
@@ -66,6 +69,6 @@ const site=path.join(root,'build/guide'),evidence=path.join(root,'guide-evidence
  await page.locator('#prev-time').click();assert.equal((await page.locator('#current-time').innerText()).replaceAll(',',''),'238000');
  assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);assert.deepEqual(external,[]);
  fs.writeFileSync(path.join(evidence,'browser-verification.json'),JSON.stringify({status:'passed',pages,searches,viewport_mobile:[390,844],horizontal_overflow:overflow,page_errors:errors,http_failures:failed,external_requests:external,viewer_unit_conversion:'238us = 238000ns = 238000000ps',viewer_step:'238us -> 244us -> 238us'},null,2));
- console.log('PASS: 5 pages, 4 search terms including 調停, images, mobile layout, no external requests, Viewer units and forward/back steps.');
+ console.log('PASS: 6 pages, 5 search terms including 受信フィルタ, images, all-page mobile layout, no external requests, Viewer units and forward/back steps.');
  await browser.close();await new Promise(r=>server.close(r));
 })().catch(e=>{console.error(e);process.exit(1)});

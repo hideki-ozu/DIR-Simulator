@@ -1,0 +1,393 @@
+{
+  "scenarios": {
+    "minimal": {
+      "success": 3,
+      "received": 6,
+      "filtered": 0,
+      "c_received": 2,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "manifest_files_verified": 4
+    },
+    "filter-id": {
+      "success": 3,
+      "received": 5,
+      "filtered": 1,
+      "c_received": 1,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": null,
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "filtered"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "manifest_files_verified": 4
+    },
+    "filter-none": {
+      "success": 3,
+      "received": 4,
+      "filtered": 2,
+      "c_received": 0,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": null,
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "filtered"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": null,
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "filtered"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "manifest_files_verified": 4
+    }
+  },
+  "commands": [
+    {
+      "operation": "validate",
+      "scenario": "minimal",
+      "exit_code": 0
+    },
+    {
+      "operation": "run",
+      "scenario": "minimal",
+      "exit_code": 0
+    },
+    {
+      "operation": "view",
+      "scenario": "minimal",
+      "exit_code": 0
+    },
+    {
+      "operation": "validate",
+      "scenario": "filter-id",
+      "exit_code": 0
+    },
+    {
+      "operation": "run",
+      "scenario": "filter-id",
+      "exit_code": 0
+    },
+    {
+      "operation": "view",
+      "scenario": "filter-id",
+      "exit_code": 0
+    },
+    {
+      "operation": "validate",
+      "scenario": "filter-none",
+      "exit_code": 0
+    },
+    {
+      "operation": "run",
+      "scenario": "filter-none",
+      "exit_code": 0
+    },
+    {
+      "operation": "view",
+      "scenario": "filter-none",
+      "exit_code": 0
+    }
+  ],
+  "status": "passed",
+  "one_changed_setting": "Main.c.rxFilter",
+  "source_commit": "07c50425a7488a37984be1fadcfe6be9fa86127a",
+  "target_release": "v1.1.3",
+  "binary": "v1.1.3 Rust implementation; current main has documentation-only changes",
+  "scope": {
+    "remote_writes": false,
+    "qiita_posting": false,
+    "deployment": false,
+    "windows_native_rust_tested": false
+  },
+  "screenshot": {
+    "path": "docs/guide/assets/guide-filter-id-viewer.png",
+    "sha256": "677f5fbc83a8a925cbd499b8e3979a0c3045d79e38dda916c99b353682df2a24",
+    "viewer_selected_request": "b:0",
+    "viewer_status": "送信成功",
+    "viewer_c_receiver": "フィルタ拒否"
+  },
+  "browser": {
+    "status": "passed",
+    "pages": [
+      "CANの調停.html",
+      "Viewerで結果を読む.html",
+      "index.html",
+      "初めてのCAN実行.html",
+      "設定・用語・FAQ.html"
+    ],
+    "searches": {
+      "CAN": [
+        "CANの調停",
+        "CANの調停",
+        "初めてのCAN実行",
+        "初めてのCAN実行",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "制約と関連機能",
+        "現在使える範囲",
+        "制約と関連機能",
+        "ここから始める",
+        "ガイドの入口",
+        "制約と関連機能",
+        "最小実行例と設定",
+        "構成と責務",
+        "目的",
+        "結果と実画面",
+        "最小実行例と設定",
+        "Viewerで結果を読む",
+        "用語",
+        "最小実行例と設定",
+        "更新履歴",
+        "構成と責務",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "結果と実画面：238µsを読む",
+        "結果と実画面",
+        "設定・用語・FAQ"
+      ],
+      "調停": [
+        "CANの調停",
+        "接続と処理フロー",
+        "構成と責務",
+        "結果と実画面",
+        "接続と処理フロー",
+        "実装とREADMEの予定表記が違う",
+        "制約と関連機能",
+        "CANの調停",
+        "用語",
+        "ここから始める",
+        "制約と関連機能",
+        "設定・用語・FAQ",
+        "ガイドの入口",
+        "初めてのCAN実行",
+        "Viewerで結果を読む"
+      ],
+      "Viewer": [
+        "Viewerで結果を読む",
+        "Viewerで結果を読む",
+        "最小実行例と設定",
+        "Windowsで同じコマンドを使えるか",
+        "runやviewが既存出力を拒否する",
+        "実装とREADMEの予定表記が違う",
+        "制約と関連機能",
+        "構成と責務",
+        "設定・用語・FAQ",
+        "現在使える範囲",
+        "制約と関連機能",
+        "ここから始める",
+        "最小実行例と設定",
+        "実験：1設定を変える — 表示単位をµsからnsへ",
+        "最小実行例と設定",
+        "ガイドの入口",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "初めてのCAN実行",
+        "結果と実画面",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "CANの調停",
+        "Viewerの検索・省略で結果件数が変わるか"
+      ],
+      "ビットレート": [
+        "目的",
+        "ここから始める",
+        "実験：1設定を変える — 表示単位をµsからnsへ",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "ガイドの入口",
+        "Viewerで結果を読む",
+        "CANの調停",
+        "初めてのCAN実行"
+      ]
+    },
+    "viewport_mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow": false,
+    "page_errors": [],
+    "http_failures": [],
+    "external_requests": [],
+    "viewer_unit_conversion": "238us = 238000ns = 238000000ps",
+    "viewer_step": "238us -> 244us -> 238us",
+    "mobile_checked_pages": [
+      "CANの調停.html",
+      "Viewerで結果を読む.html",
+      "index.html",
+      "初めてのCAN実行.html",
+      "設定・用語・FAQ.html"
+    ]
+  },
+  "links": {
+    "status": "passed",
+    "html_files": 7,
+    "local_links_and_assets": 284,
+    "site_prefix": "/DIR-Simulator/",
+    "public_assets_checked": 55
+  },
+  "build": {
+    "mkdocs": "1.6.1",
+    "strict": true,
+    "download_matches_public_input_files": 8,
+    "authoring_memo_excluded": true
+  }
+}
