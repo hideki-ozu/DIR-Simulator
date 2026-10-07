@@ -1,0 +1,557 @@
+{
+  "status": "passed",
+  "variable": "Main.bus.dataBitrate",
+  "derived_changes": [
+    "workload path",
+    "wire.binding_sha256"
+  ],
+  "fidelity": "synthetic precomputed phase bits; structural-only validation",
+  "commands": [
+    {
+      "scenario": "data1",
+      "operation": "validate",
+      "exit_code": 0
+    },
+    {
+      "scenario": "data1",
+      "operation": "run",
+      "exit_code": 0
+    },
+    {
+      "scenario": "data1",
+      "operation": "view",
+      "exit_code": 0
+    },
+    {
+      "scenario": "data2",
+      "operation": "validate",
+      "exit_code": 0
+    },
+    {
+      "scenario": "data2",
+      "operation": "run",
+      "exit_code": 0
+    },
+    {
+      "scenario": "data2",
+      "operation": "view",
+      "exit_code": 0
+    },
+    {
+      "scenario": "data4",
+      "operation": "validate",
+      "exit_code": 0
+    },
+    {
+      "scenario": "data4",
+      "operation": "run",
+      "exit_code": 0
+    },
+    {
+      "scenario": "data4",
+      "operation": "view",
+      "exit_code": 0
+    }
+  ],
+  "scenarios": {
+    "data1": {
+      "data_rate_bps": 1000000,
+      "duration_ps": 140000000,
+      "requests": [
+        {
+          "bus": "Main.bus",
+          "drop_reason": null,
+          "eof_ps": "140000000",
+          "frame_id": "source",
+          "generated_ps": "0",
+          "planned_eof_ps": "140000000",
+          "planned_ready_ps": "0",
+          "planned_release_ps": "146000000",
+          "ready_ps": "0",
+          "release_ps": "146000000",
+          "sof_ps": "0",
+          "source": "Main.a",
+          "state": "serialized"
+        },
+        {
+          "bus": "Main.bus",
+          "drop_reason": null,
+          "eof_ps": "286000000",
+          "frame_id": "source",
+          "generated_ps": "120000000",
+          "planned_eof_ps": "286000000",
+          "planned_ready_ps": "120000000",
+          "planned_release_ps": "292000000",
+          "ready_ps": "120000000",
+          "release_ps": "292000000",
+          "sof_ps": "146000000",
+          "source": "Main.a",
+          "state": "serialized"
+        }
+      ],
+      "receptions": [
+        {
+          "arrival_ps": "140000000",
+          "completed_ps": "140000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "140000000",
+          "planned_completed_ps": "140000000",
+          "receiver": "Main.b",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "286000000",
+          "completed_ps": "286000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "286000000",
+          "planned_completed_ps": "286000000",
+          "receiver": "Main.b",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "140000000",
+          "completed_ps": "140000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "140000000",
+          "planned_completed_ps": "140000000",
+          "receiver": "Main.c",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "286000000",
+          "completed_ps": "286000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "286000000",
+          "planned_completed_ps": "286000000",
+          "receiver": "Main.c",
+          "state": "completed"
+        }
+      ],
+      "frame": {
+        "binding_sha256": "898b9d26b76bc9a19cbceaaa2dd0a6b592adcff6ae5e47cb409198215873b40a",
+        "brs": true,
+        "data": "01020304",
+        "data_bits": "80",
+        "data_rate": "1000000",
+        "dlc": 4,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "fidelity": "externally-precomputed-phase-bits",
+        "format": "standard",
+        "id": 0,
+        "nominal_bits": "30",
+        "nominal_rate": "500000",
+        "wire_validation": "structural-only"
+      },
+      "manifest_hashes_verified": 4
+    },
+    "data2": {
+      "data_rate_bps": 2000000,
+      "duration_ps": 100000000,
+      "requests": [
+        {
+          "bus": "Main.bus",
+          "drop_reason": null,
+          "eof_ps": "100000000",
+          "frame_id": "source",
+          "generated_ps": "0",
+          "planned_eof_ps": "100000000",
+          "planned_ready_ps": "0",
+          "planned_release_ps": "106000000",
+          "ready_ps": "0",
+          "release_ps": "106000000",
+          "sof_ps": "0",
+          "source": "Main.a",
+          "state": "serialized"
+        },
+        {
+          "bus": "Main.bus",
+          "drop_reason": null,
+          "eof_ps": "220000000",
+          "frame_id": "source",
+          "generated_ps": "120000000",
+          "planned_eof_ps": "220000000",
+          "planned_ready_ps": "120000000",
+          "planned_release_ps": "226000000",
+          "ready_ps": "120000000",
+          "release_ps": "226000000",
+          "sof_ps": "120000000",
+          "source": "Main.a",
+          "state": "serialized"
+        }
+      ],
+      "receptions": [
+        {
+          "arrival_ps": "100000000",
+          "completed_ps": "100000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "100000000",
+          "planned_completed_ps": "100000000",
+          "receiver": "Main.b",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "220000000",
+          "completed_ps": "220000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "220000000",
+          "planned_completed_ps": "220000000",
+          "receiver": "Main.b",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "100000000",
+          "completed_ps": "100000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "100000000",
+          "planned_completed_ps": "100000000",
+          "receiver": "Main.c",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "220000000",
+          "completed_ps": "220000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "220000000",
+          "planned_completed_ps": "220000000",
+          "receiver": "Main.c",
+          "state": "completed"
+        }
+      ],
+      "frame": {
+        "binding_sha256": "2ca7e6ff8e69a467d1223c3e3d4a08055122bf85b9f65d51475dd5fb798411e4",
+        "brs": true,
+        "data": "01020304",
+        "data_bits": "80",
+        "data_rate": "2000000",
+        "dlc": 4,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "fidelity": "externally-precomputed-phase-bits",
+        "format": "standard",
+        "id": 0,
+        "nominal_bits": "30",
+        "nominal_rate": "500000",
+        "wire_validation": "structural-only"
+      },
+      "manifest_hashes_verified": 4
+    },
+    "data4": {
+      "data_rate_bps": 4000000,
+      "duration_ps": 80000000,
+      "requests": [
+        {
+          "bus": "Main.bus",
+          "drop_reason": null,
+          "eof_ps": "80000000",
+          "frame_id": "source",
+          "generated_ps": "0",
+          "planned_eof_ps": "80000000",
+          "planned_ready_ps": "0",
+          "planned_release_ps": "86000000",
+          "ready_ps": "0",
+          "release_ps": "86000000",
+          "sof_ps": "0",
+          "source": "Main.a",
+          "state": "serialized"
+        },
+        {
+          "bus": "Main.bus",
+          "drop_reason": null,
+          "eof_ps": "200000000",
+          "frame_id": "source",
+          "generated_ps": "120000000",
+          "planned_eof_ps": "200000000",
+          "planned_ready_ps": "120000000",
+          "planned_release_ps": "206000000",
+          "ready_ps": "120000000",
+          "release_ps": "206000000",
+          "sof_ps": "120000000",
+          "source": "Main.a",
+          "state": "serialized"
+        }
+      ],
+      "receptions": [
+        {
+          "arrival_ps": "80000000",
+          "completed_ps": "80000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "80000000",
+          "planned_completed_ps": "80000000",
+          "receiver": "Main.b",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "200000000",
+          "completed_ps": "200000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "200000000",
+          "planned_completed_ps": "200000000",
+          "receiver": "Main.b",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "80000000",
+          "completed_ps": "80000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "80000000",
+          "planned_completed_ps": "80000000",
+          "receiver": "Main.c",
+          "state": "completed"
+        },
+        {
+          "arrival_ps": "200000000",
+          "completed_ps": "200000000",
+          "frame_id": "source",
+          "planned_arrival_ps": "200000000",
+          "planned_completed_ps": "200000000",
+          "receiver": "Main.c",
+          "state": "completed"
+        }
+      ],
+      "frame": {
+        "binding_sha256": "0e2c357a4d746920302d65e3366acd7bbb433940f0a467f1a2578a343ec2bf62",
+        "brs": true,
+        "data": "01020304",
+        "data_bits": "80",
+        "data_rate": "4000000",
+        "dlc": 4,
+        "evidence": "synthetic-analytic-vector.v1; integer phase assumption, not ISO waveform evidence",
+        "fidelity": "externally-precomputed-phase-bits",
+        "format": "standard",
+        "id": 0,
+        "nominal_bits": "30",
+        "nominal_rate": "500000",
+        "wire_validation": "structural-only"
+      },
+      "manifest_hashes_verified": 4
+    }
+  },
+  "stale_binding_rejected": true,
+  "source_commit": "a636d5d34749a11af0e1eae06956bee71467ec48",
+  "target_release": "v1.1.3",
+  "runtime": "WSL CLI; binary built from c152840, Rust/Cargo source identical through base main; Chromium on Windows",
+  "binary_sha256": "ec897605e70fa23fbd9cb1f1a431edc0660c54c454855c57d0dc855f3a10ae97",
+  "input_sha256": {
+    "examples/guide/canfd/data1.ini": "6b767ed83ef06c4080d7e385dc673e34facf735186f4ba2d17d3f6b74a3cdec5",
+    "examples/guide/canfd/data2.ini": "f81605f0423157e534289c8c4002a96abbc97c7f65d2a7fefc377a0e198841b5",
+    "examples/guide/canfd/data4.ini": "ba9ecad86da3b90da9e3c1ed00f6a05b8b11c40bf8275a3e6bd9197b1cf9d67e",
+    "examples/guide/canfd/model.json": "6b09aa23a8446b006a456b7a7c2e920342036da67a47a0938a8fa48b72de5bfb",
+    "examples/guide/canfd/workload-1.json": "2b42dee26061fa49470ba5ee887381688cd689bf72282459d9b014e835c2281f",
+    "examples/guide/canfd/workload-2.json": "e3379b1824a712cd1f7e0d98e1088eba5a4c4bdf07d2abe84c372af1663faee1",
+    "examples/guide/canfd/workload-4.json": "e30ceebac3eafbc195e8f1c04e5574508ae41917d084335fce3ce43b01368feb",
+    "examples/guide/canfd/models/fd/Main.ned": "17668beb9e6f793429390cc091152769ebe147caa68dbf43a11f5d3fa1173709"
+  },
+  "screenshots": {
+    "docs/guide/assets/guide-canfd-data1.png": {
+      "sha256": "55a5a5c81ccd27ac257b092183bb900542a38d64e424423b2f67d74254b7fd78",
+      "cursor_us": 130,
+      "selected_request": "source:1",
+      "current_state": "queued",
+      "sof_ps": 146000000
+    },
+    "docs/guide/assets/guide-canfd-data2.png": {
+      "sha256": "4b4f0a09da48e90aec0fbeaf7840cd103e7e233e75f9b2d91fdebc8574b57826",
+      "cursor_us": 130,
+      "selected_request": "source:1",
+      "current_state": "transmitting",
+      "sof_ps": 120000000
+    }
+  },
+  "browser": {
+    "status": "passed",
+    "pages": [
+      "CANFDのデータ速度比較.html",
+      "CANの受信フィルタ.html",
+      "CANの調停.html",
+      "CAN受信処理遅延の比較.html",
+      "index.html",
+      "Viewerで結果を読む.html",
+      "初めてのCAN実行.html",
+      "設定・用語・FAQ.html"
+    ],
+    "searches": {
+      "CAN": [
+        "CANの調停",
+        "CANの調停",
+        "初めてのCAN実行",
+        "初めてのCAN実行",
+        "CANの受信フィルタ",
+        "CANの受信フィルタ",
+        "CAN FDのデータ速度比較",
+        "CAN受信処理遅延の比較",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "CAN受信処理遅延の比較",
+        "ここから始める",
+        "制約と関連機能",
+        "ガイドの入口",
+        "現在使える範囲",
+        "制約と関連機能",
+        "制約と関連機能",
+        "制約と関連機能",
+        "更新履歴",
+        "最小実行例と設定",
+        "実画面：同じ130 µsで比較する",
+        "制約と関連する実験",
+        "構成と責務",
+        "目的：データ速度を上げると待ち時間はどう変わるか",
+        "結果と実画面",
+        "目的",
+        "更新履歴",
+        "目的：送信成功と受信完了を分けて読む",
+        "Viewerで結果を読む",
+        "最小実行手順",
+        "最小実行例と設定",
+        "実験：1設定を変える — 全受入・ID指定・全拒否",
+        "実測：Busの送信は3条件とも同じ",
+        "用語",
+        "目的：必要なセンサデータだけを受け取る",
+        "最小実行例と設定",
+        "手順：同じフレームで3条件を実行する",
+        "最小実行例と設定",
+        "構成と責務",
+        "構成と責務",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "構成と責務：何が固定で何を変えるか",
+        "結果と実画面：238µsを読む",
+        "CAN FDのデータ速度比較",
+        "結果と実画面",
+        "設定・用語・FAQ"
+      ],
+      "フィルタ": [
+        "CANの受信フィルタ",
+        "この実習で分かることと制約",
+        "フレームは3つなのに受信が6件ある",
+        "接続と受信までの流れ",
+        "結果と実画面：bの送信成功とcの選別",
+        "更新履歴",
+        "用語",
+        "接続と処理フロー",
+        "目的：必要なセンサデータだけを受け取る",
+        "終了時のpendingを欠落や破棄と混同しない",
+        "ガイドの入口",
+        "制約と関連機能",
+        "構成と責務",
+        "CANの受信フィルタ",
+        "接続と処理フロー",
+        "CAN受信処理遅延の比較",
+        "目的：送信成功と受信完了を分けて読む",
+        "構成と責務",
+        "ここから始める",
+        "制約と関連する実験",
+        "実験：1設定を変える — 全受入・ID指定・全拒否",
+        "設定・用語・FAQ",
+        "実測：cの受信完了だけが変わる",
+        "最小実行例と設定",
+        "初めてのCAN実行",
+        "CAN FDのデータ速度比較"
+      ],
+      "遅延": [
+        "CAN受信処理遅延の比較",
+        "この実習で分かることと制約",
+        "構成と責務",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "接続と処理フロー",
+        "構成と責務：何が固定で何を変えるか",
+        "構成と責務",
+        "接続と受信までの流れ",
+        "更新履歴",
+        "更新履歴",
+        "制約と関連機能",
+        "最小実行例と設定",
+        "結果と実画面",
+        "ガイドの入口",
+        "構成と責務",
+        "ここから始める",
+        "制約と関連する実験",
+        "初めてのCAN実行",
+        "CAN FDのデータ速度比較",
+        "実測：フレーム時間と次要求の待ちを分けて読む",
+        "CAN受信処理遅延の比較",
+        "CANの受信フィルタ",
+        "CANの調停",
+        "実測：cの受信完了だけが変わる"
+      ],
+      "データ": [
+        "CAN FDのデータ速度比較",
+        "目的：データ速度を上げると待ち時間はどう変わるか",
+        "構成と責務",
+        "更新履歴",
+        "runやviewが既存出力を拒否する",
+        "ここから始める",
+        "接続と処理フロー",
+        "実測：フレーム時間と次要求の待ちを分けて読む",
+        "ガイドの入口",
+        "構成と責務",
+        "制約と関連する実験",
+        "更新履歴",
+        "CAN FDのデータ速度比較",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "設定・用語・FAQ",
+        "CANの受信フィルタ",
+        "Viewerで結果を読む",
+        "CANの調停",
+        "CAN受信処理遅延の比較"
+      ],
+      "速度": [
+        "CAN FDのデータ速度比較",
+        "目的：データ速度を上げると待ち時間はどう変わるか",
+        "制約と関連する実験",
+        "ここから始める",
+        "更新履歴",
+        "構成と責務：何が固定で何を変えるか",
+        "実測：フレーム時間と次要求の待ちを分けて読む",
+        "ガイドの入口",
+        "最小例で使う設定",
+        "1変数だけを変える設定",
+        "手順：同じフレームで3条件を実行する",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "更新履歴",
+        "結果と実画面：238µsを読む",
+        "CAN FDのデータ速度比較",
+        "設定・用語・FAQ",
+        "Viewerで結果を読む",
+        "初めてのCAN実行",
+        "CAN受信処理遅延の比較"
+      ]
+    },
+    "viewport_mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow": false,
+    "page_errors": [],
+    "http_failures": [],
+    "external_requests": []
+  },
+  "links": {
+    "status": "passed",
+    "html_files": 9,
+    "local_links_and_assets": 407,
+    "site_prefix": "/DIR-Simulator/",
+    "public_assets_checked": 62
+  },
+  "downloads": {
+    "can": {
+      "files": 11,
+      "byte_match": true
+    },
+    "canfd": {
+      "files": 8,
+      "byte_match": true
+    }
+  },
+  "traceability": {
+    "requirements": 205,
+    "functions": 54,
+    "nodes": 245,
+    "structural_errors": 0,
+    "incomplete_items": 0
+  },
+  "scope": {
+    "rust_changed": false,
+    "merge": false,
+    "deploy": false,
+    "permissions_changed": false,
+    "windows_native_rust_tested": false,
+    "iso_wire_validation": false
+  }
+}
