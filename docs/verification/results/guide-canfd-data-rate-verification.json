@@ -376,8 +376,8 @@
         "初めてのCAN実行",
         "CANの受信フィルタ",
         "CANの受信フィルタ",
-        "CAN FDのデータ速度比較",
         "CAN受信処理遅延の比較",
+        "CAN FDのデータ速度比較",
         "実験：1設定を変える — cのCAN IDだけを128へ",
         "CAN受信処理遅延の比較",
         "ここから始める",
@@ -393,19 +393,19 @@
         "制約と関連する実験",
         "構成と責務",
         "目的：データ速度を上げると待ち時間はどう変わるか",
+        "手順：同じフレームで3条件を実行する",
         "結果と実画面",
         "目的",
-        "更新履歴",
         "目的：送信成功と受信完了を分けて読む",
         "Viewerで結果を読む",
         "最小実行手順",
+        "更新履歴",
         "最小実行例と設定",
         "実験：1設定を変える — 全受入・ID指定・全拒否",
         "実測：Busの送信は3条件とも同じ",
         "用語",
         "目的：必要なセンサデータだけを受け取る",
         "最小実行例と設定",
-        "手順：同じフレームで3条件を実行する",
         "最小実行例と設定",
         "構成と責務",
         "構成と責務",
@@ -414,6 +414,7 @@
         "結果と実画面：238µsを読む",
         "CAN FDのデータ速度比較",
         "結果と実画面",
+        "ZIPを別フォルダへ展開して実行する",
         "設定・用語・FAQ"
       ],
       "フィルタ": [
@@ -463,9 +464,9 @@
         "ここから始める",
         "制約と関連する実験",
         "初めてのCAN実行",
-        "CAN FDのデータ速度比較",
         "実測：フレーム時間と次要求の待ちを分けて読む",
         "CAN受信処理遅延の比較",
+        "CAN FDのデータ速度比較",
         "CANの受信フィルタ",
         "CANの調停",
         "実測：cの受信完了だけが変わる"
@@ -474,10 +475,10 @@
         "CAN FDのデータ速度比較",
         "目的：データ速度を上げると待ち時間はどう変わるか",
         "構成と責務",
-        "更新履歴",
         "runやviewが既存出力を拒否する",
         "ここから始める",
         "接続と処理フロー",
+        "更新履歴",
         "実測：フレーム時間と次要求の待ちを分けて読む",
         "ガイドの入口",
         "構成と責務",
@@ -496,13 +497,13 @@
         "目的：データ速度を上げると待ち時間はどう変わるか",
         "制約と関連する実験",
         "ここから始める",
-        "更新履歴",
         "構成と責務：何が固定で何を変えるか",
+        "更新履歴",
         "実測：フレーム時間と次要求の待ちを分けて読む",
         "ガイドの入口",
         "最小例で使う設定",
         "1変数だけを変える設定",
-        "手順：同じフレームで3条件を実行する",
+        "ZIPを別フォルダへ展開して実行する",
         "実験：1設定を変える — 500kbpsから1Mbpsへ",
         "更新履歴",
         "結果と実画面：238µsを読む",
@@ -525,7 +526,7 @@
   "links": {
     "status": "passed",
     "html_files": 9,
-    "local_links_and_assets": 407,
+    "local_links_and_assets": 409,
     "site_prefix": "/DIR-Simulator/",
     "public_assets_checked": 62
   },
@@ -553,5 +554,30 @@
     "permissions_changed": false,
     "windows_native_rust_tested": false,
     "iso_wire_validation": false
+  },
+  "command_reproduction_followup": {
+    "status": "passed",
+    "document_version": "1.1.1",
+    "modes": {
+      "repository": {
+        "scenarios": 3,
+        "cli_commands": 9,
+        "document_code_executed": true,
+        "model_records_and_metrics_match": true
+      },
+      "zip_only": {
+        "scenarios": 3,
+        "cli_commands": 9,
+        "document_code_executed": true,
+        "model_records_and_metrics_match": true
+      }
+    },
+    "binary_location": "target/debug/dir-simulator",
+    "build": {
+      "command": "cargo build --locked --offline -p dir-simulator",
+      "status": "passed",
+      "offline_dependency_cache": true,
+      "binary_sha256": "1f8afa73ff72e6fe5b0b35908000265c61b19ed9aa2e405d4d9a1b985a780a7c"
+    }
   }
 }

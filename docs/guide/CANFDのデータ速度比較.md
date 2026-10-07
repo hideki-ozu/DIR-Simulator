@@ -1,6 +1,6 @@
 # CAN FDのデータ速度比較
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.3`  
 文書ID：`guide-canfd-data-rate`  
 文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-07` | 入門と同じビルド先からの実行、出力親フォルダ作成、ZIP単独展開時の絶対バイナリパス・作業フォルダを明記 |
 | `1.1.0` | `2026-10-07` | 初版：CAN FDの事前計算位相bit数を固定し、データ速度3条件と送信待ち時間を比較 |
 
 ## 目的：データ速度を上げると待ち時間はどう変わるか
@@ -33,15 +34,36 @@
 
 ## 手順：同じフレームで3条件を実行する
 
-DIR CLIの導入は[初めてのCAN実行](初めてのCAN実行.md)を参照してください。[FD実習入力ZIP](downloads/canfd-guide-inputs.zip)を新しいフォルダに展開すると、`examples/guide/canfd`に8入力ができます。ZIPを展開した最上位で次を実行します。リポジトリをcloneした場合はリポジトリルートから実行できます。
+DIR CLIの導入は[初めてのCAN実行](初めてのCAN実行.md)を参照してください。以下はLinux/macOSまたはWindowsのWSLで使うBashコマンドです。PATHへの登録は不要です。
+
+### リポジトリから実行する
+
+入門で取得した`DIR-Simulator`のリポジトリルートへ移動します。[FD実習入力ZIP](downloads/canfd-guide-inputs.zip)をそのルートに展開すると、`examples/guide/canfd`に8入力ができます。このガイドを同梱したmainでは入力が既にあるため、展開は不要です。同名入力がある場所へZIPを重ねず、別の作業コピーを使ってください。
 
 ```bash
-dir-simulator validate --config examples/guide/canfd/data1.ini
-dir-simulator run --config examples/guide/canfd/data1.ini --output output/fd-data1
-dir-simulator view --input output/fd-data1/results.json --output output/fd-data1-viewer.html
+cargo build --locked -p dir-simulator
+mkdir -p output
+./target/debug/dir-simulator validate --config examples/guide/canfd/data1.ini
+./target/debug/dir-simulator run --config examples/guide/canfd/data1.ini --output output/fd-data1
+./target/debug/dir-simulator view --input output/fd-data1/results.json --output output/fd-data1-viewer.html
 ```
 
 続けて`data1`を`data2`、`data4`に置き換え、出力名もそれぞれ変えて実行します。既存出力への上書きは拒否されるので、再実行時は新しい出力名を使います。Viewer HTMLはブラウザで直接開けます。
+
+### ZIPを別フォルダへ展開して実行する
+
+ZIPにCLI本体は含まれません。まず上記のリポジトリでビルドを完了し、`target/debug/dir-simulator`の絶対パスを確認します。その後ZIPを空の実習フォルダへ展開します。次の2行は自分の絶対パスへ置き換えてください。`cd`先は`examples`フォルダが直下にある展開先の最上位です。WSLではWSLから見えるLinux形式のパスを使います。
+
+```bash
+DIR_CLI="/absolute/path/to/DIR-Simulator/target/debug/dir-simulator"
+cd "/absolute/path/to/fd-practice"
+mkdir -p output
+"$DIR_CLI" validate --config examples/guide/canfd/data1.ini
+"$DIR_CLI" run --config examples/guide/canfd/data1.ini --output output/fd-data1
+"$DIR_CLI" view --input output/fd-data1/results.json --output output/fd-data1-viewer.html
+```
+
+こちらも`data2`・`data4`へ置き換えて比較します。バイナリの位置は固定し、入力と出力は実習フォルダから指定します。NED/model/workloadの相対パスはINIの親フォルダを基準に解決されます。
 
 3条件の共通設定は次のとおりです。
 
