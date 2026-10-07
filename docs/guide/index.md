@@ -1,6 +1,6 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.4`  
+文書バージョン：`1.1.5`  
 対象GitHubバージョン：`v1.1.3`  
 文書ID：`guide-index`  
 文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.5` | `2026-10-07` | Classical CANとCAN FDの実習profile・配布入力を区別し、ガイド全体の対象範囲説明を修正 |
 | `1.1.4` | `2026-10-07` | CAN FDのデータ速度比較と独立配布入力を追加 |
 | `1.1.3` | `2026-10-06` | 公開済みmainを統合し、受信フィルタと受信処理遅延の両ガイド・配布入力への入口を維持 |
 | `1.1.2` | `2026-10-06` | CANの受信フィルタとECU別の受信選択実習を追加 |
@@ -20,7 +21,7 @@ DIRを初めて使う人が、サンプルのCAN通信を実行し、結果を�
 
 ## ここから始める
 
-[実習入力ZIP](downloads/can-guide-inputs.zip)の導入手順は「初めてのCAN実行」に記載しています。
+[Classical CAN実習入力ZIP](downloads/can-guide-inputs.zip)の導入手順は「初めてのCAN実行」に記載しています。CAN FDは別の[FD実習入力ZIP](downloads/canfd-guide-inputs.zip)を使い、「CAN FDのデータ速度比較」の手順で実行します。
 
 | 読みたいこと | 完成しているページ | 得られること |
 | --- | --- | --- |
@@ -36,6 +37,6 @@ DIRを初めて使う人が、サンプルのCAN通信を実行し、結果を�
 
 ## 現在使える範囲
 
-このガイドの実習はClassical CANの`can.cc.ideal.v1`です。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、外部計算位相bit数を使うCAN FD、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。READMEの古い「予定」表記だけでは実装有無を判定しません。[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)と対象タグの実装を基準にします。
+入門・Viewer・調停・受信フィルタ・受信処理遅延の実習はClassical CANの`can.cc.ideal.v1`です。「CAN FDのデータ速度比較」は、外部から与える位相bit数を使う`can.fd.precomputed.v1`の実習です。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。READMEの古い「予定」表記だけでは実装有無を判定しません。[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)と対象タグの実装を基準にします。
 
-規格全体への適合や100万要求の性能受入は、この実習が証明する範囲に含みません。CAN FDは任意フレームの完全wire codecではありません。
+規格全体への適合や100万要求の性能受入は、これらの実習が証明する範囲に含みません。CAN FDは任意フレームの完全wire codecではありません。
