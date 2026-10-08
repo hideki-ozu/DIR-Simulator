@@ -1,0 +1,70 @@
+   Compiling dir-simulator v0.1.0 (/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.49s
+     Running tests/network_extensions.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/network_extensions-bcdc7051ee85787e)
+
+running 11 tests
+test network_prepare_diagnostics_use_original_json_source_and_pointer ... ok
+test can_ethernet_product_preserves_r01_and_r02_processing_and_wire_times ... ok
+test psfp_product_arrivals_consume_once_and_stream_gate_drops_before_meter ... ok
+test identical_native_generator_ids_keep_media_qualified_origins_and_latencies ... ok
+test bridge_fanout_rx_limit_and_partial_denominators_preserve_native_contracts ... ok
+test time_limited_dynamic_run_keeps_planned_and_observed_receptions_separate ... ok
+test tsn_wire_scheduling_matches_independent_tas_and_cbs_boundaries ... ok
+test dynamic_triangle_matches_independent_three_hop_timing ... ok
+test dynamic_large_cost_tree_and_at_prefixed_control_id_remain_valid ... ok
+test registrable_source_and_fdb_use_effective_membership_and_drop_expired_queue_copy ... ok
+test empty_and_control_only_workloads_run_on_the_same_prepared_profile ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.01s
+
+     Running tests/provenance.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/provenance-cbf4ddabcd2d03a9)
+
+running 10 tests
+test separate_roots_lineage_and_deleted_sources_survive_export ... ok
+test execution_settings_adjusted_after_prepare_override_captured_source_values ... ok
+test relocation_preserves_canonical_configuration_and_input_hashes ... ok
+test composed_tsn_large_meter_capacity_is_hashed_without_truncation ... ok
+test composed_tsn_large_cbs_credit_is_hashed_without_truncation ... ok
+test composed_tsn_policy_changes_effective_configuration_hash ... ok
+test composed_bridge_rule_changes_effective_configuration_hash ... ok
+test composed_dynamic_policy_changes_effective_configuration_hash ... ok
+test composed_dynamic_control_changes_effective_configuration_hash ... ok
+test every_builtin_profile_shares_build_and_effective_reproduction_data ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.09s
+
+     Running tests/registry.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/registry-686ebde1ef88a2aa)
+
+running 29 tests
+test duplicate_registration_does_not_replace_original ... ok
+test callback_failure_discards_every_effect_and_preserves_pending_current ... ok
+test backwards_phase_runs_after_current_arbitration_and_hits_delta_guard_with_context ... ok
+test event_limit_and_half_open_time_boundary_are_enforced ... ok
+test cancellation_excludes_current_timer_and_removes_future_tombstones_from_pending ... ok
+test channel_capability_checks_descriptor_even_when_implementation_is_permissive ... ok
+test failed_callback_does_not_commit_cancellation_of_an_existing_timer ... ok
+test custom_profile_validates_owned_json_and_factory_receives_it ... ok
+test custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically ... ok
+test coordinator_borrows_frozen_output_preserves_lineage_and_finishes_before_simples ... ok
+test initialization_error_discards_effects_and_finishes_successful_initializations ... ok
+test custom_profile_cannot_publish_schema_two_layout_under_schema_one ... ok
+test profile_rejects_module_schemas_outside_its_allowlist ... ok
+test strategy_registrations_are_executable ... ok
+test unknown_schema_and_port_version_are_prepare_errors ... ok
+test panic_is_diagnostic_and_cleanup_receives_committed_prefix ... ok
+test zero_time_limit_without_initial_events_still_reports_time_limit ... ok
+test coordinator_rejects_noncompound_targets_and_unowned_or_incompatible_outputs ... ok
+test registered_builtin_adapter_preserves_builtin_result ... ok
+test acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix ... ok
+test acceptance_phase_fixed_point_resource_order_and_next_delta_repeat ... ok
+test custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog ... ok
+test custom_preparation_failure_uses_registered_implementation_versions ... ok
+test live_channel_settings_override_captured_initial_state_after_prepare ... ok
+test custom_run_publishes_registered_records_and_metrics ... ok
+test custom_tsn_builtin_name_uses_custom_registry ... ok
+test custom_dynamic_builtin_name_uses_custom_registry ... ok
+test custom_gateway_builtin_name_uses_custom_registry ... ok
+test finish_can_retain_frozen_spool_after_full_buffer_and_tail_are_committed ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.77s
+

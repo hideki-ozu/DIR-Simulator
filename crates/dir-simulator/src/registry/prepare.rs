@@ -55,10 +55,12 @@ pub fn prepare_with_registry_and_source(
             )
         }
     })?;
-    if matches!(
-        profile,
-        "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1" | "can.ethernet.gateway.v1"
-    ) {
+    if registry.builtin_profiles.contains(profile)
+        && matches!(
+            profile,
+            "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1" | "can.ethernet.gateway.v1"
+        )
+    {
         let mut prepared = input::prepare_with_source(&config, cwd, source)?;
         prepared
             .registered

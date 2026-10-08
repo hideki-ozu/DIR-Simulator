@@ -206,7 +206,7 @@ pub(crate) fn export_preparation_failure(
         .and_then(|h| h.profile.as_deref())
         .unwrap_or("can.cc.ideal.v1");
     let selected=header.as_ref().and_then(|_|registry.profile(profile)).map(|p|{
-        if registry.builtin_profiles.contains(profile) || matches!(profile,"ethernet.l2.dynamic.v1"|"ethernet.tsn.v1"|"can.ethernet.gateway.v1") { profile_catalog(profile).unwrap() } else {json!({"model_profile":profile,"model_schemas":p.model_records.iter().map(|s|json!({"schema_name":s.name,"schema_version":s.version})).collect::<Vec<_>>(),"metrics":p.metrics.iter().map(|name|json!({"metric_id":name,"version":"1","unit":registry.metrics.get(name).map(|m|m.unit.as_str()).unwrap_or("count"),"value_kind":"integer","sampling":"point","aggregation":"identity"})).collect::<Vec<_>>()} )}
+        if registry.builtin_profiles.contains(profile) { profile_catalog(profile).unwrap() } else {json!({"model_profile":profile,"model_schemas":p.model_records.iter().map(|s|json!({"schema_name":s.name,"schema_version":s.version})).collect::<Vec<_>>(),"metrics":p.metrics.iter().map(|name|json!({"metric_id":name,"version":"1","unit":registry.metrics.get(name).map(|m|m.unit.as_str()).unwrap_or("count"),"value_kind":"integer","sampling":"point","aggregation":"identity"})).collect::<Vec<_>>()} )}
     });
     let version = if selected.is_some() {
         registry.profile(profile).unwrap().output_schema_version
@@ -214,7 +214,7 @@ pub(crate) fn export_preparation_failure(
         1
     };
     let models=registry.profile(profile).filter(|_|selected.is_some()).map(|p| {
-        if registry.builtin_profiles.contains(profile) {vec![json!({"type":profile,"version":p.implementation_version,"assumptions":[]})]}
+        if registry.builtin_profiles.contains(profile) && !matches!(profile,"ethernet.l2.dynamic.v1"|"ethernet.tsn.v1"|"can.ethernet.gateway.v1") {vec![json!({"type":profile,"version":p.implementation_version,"assumptions":[]})]}
         else {p.modules.iter().filter_map(|key|registry.module(key).map(|m|(key.clone(),json!({"type":key,"version":m.implementation_version,"assumptions":[]})))).collect::<BTreeMap<_,_>>().into_values().collect()}
     }).unwrap_or_default();
     let mut sources:Vec<_>=inputs.iter().map(|i| {

@@ -1,4 +1,5 @@
 //! Fixed-width, bounded external sort for CAN metric window contributions.
+use super::disk_sort::Run;
 use crate::{Diagnostic, allocation::reserve_vec};
 use std::{
     fs::{self, File, OpenOptions},
@@ -87,7 +88,7 @@ impl Row {
 pub(super) struct Sorter {
     directory: PathBuf,
     chunk: Vec<Row>,
-    levels: Vec<Vec<PathBuf>>,
+    levels: Vec<Vec<Run>>,
     next: u64,
     file_serial: u64,
 }
@@ -164,11 +165,15 @@ impl Sorter {
                 .map_err(|e| error("write", e))?;
         }
         writer.flush().map_err(|e| error("flush", e))?;
-        self.promote(path, 0)?;
+        let bytes = u64::try_from(self.chunk.len())
+            .ok()
+            .and_then(|count| count.checked_mul(ROW_BYTES as u64))
+            .ok_or_else(|| error("write", "run length overflow"))?;
+        self.promote(Run { path, bytes }, 0)?;
         self.chunk.clear();
         Ok(())
     }
-    fn promote(&mut self, mut path: PathBuf, mut level: usize) -> Result<(), Diagnostic> {
+    fn promote(&mut self, mut path: Run, mut level: usize) -> Result<(), Diagnostic> {
         loop {
             if self.levels.len() <= level {
                 reserve_vec(&mut self.levels, 1, "output_contribution_levels")?;
@@ -182,7 +187,7 @@ impl Sorter {
             let paths = std::mem::take(&mut self.levels[level]);
             let merged = self.merge(&paths)?;
             for old in paths {
-                fs::remove_file(old).map_err(|e| error("cleanup", e))?;
+                fs::remove_file(&old.path).map_err(|e| error("cleanup", e))?;
             }
             level = level
                 .checked_add(1)
@@ -190,7 +195,7 @@ impl Sorter {
             path = merged;
         }
     }
-    fn merge(&mut self, paths: &[PathBuf]) -> Result<PathBuf, Diagnostic> {
+    fn merge(&mut self, paths: &[Run]) -> Result<Run, Diagnostic> {
         let path = self.path()?;
         let mut writer = BufWriter::new(
             OpenOptions::new()
@@ -203,12 +208,13 @@ impl Sorter {
         let mut heads = Vec::new();
         for source in paths {
             reserve_vec(&mut readers, 1, "output_contribution_readers")?;
-            readers.push(RunReader::open(source)?);
+            readers.push(RunReader::open(&source.path, source.bytes)?);
         }
         for reader in &mut readers {
             reserve_vec(&mut heads, 1, "output_contribution_heads")?;
             heads.push(reader.next_row()?);
         }
+        let mut bytes = 0u64;
         while let Some(index) = heads
             .iter()
             .enumerate()
@@ -219,13 +225,16 @@ impl Sorter {
             let row = heads[index]
                 .take()
                 .ok_or_else(|| error("merge", "missing head"))?;
+            bytes = bytes
+                .checked_add(ROW_BYTES as u64)
+                .ok_or_else(|| error("write", "run length overflow"))?;
             writer
                 .write_all(&row.encode())
                 .map_err(|e| error("write", e))?;
             heads[index] = readers[index].next_row()?;
         }
         writer.flush().map_err(|e| error("flush", e))?;
-        Ok(path)
+        Ok(Run { path, bytes })
     }
     pub fn finish(mut self) -> Result<Sorted, Diagnostic> {
         self.flush()?;
@@ -241,13 +250,19 @@ impl Sorter {
                 reserve_vec(&mut pending, 1, "output_contribution_pending")?;
                 pending.push(path);
                 for old in group {
-                    fs::remove_file(old).map_err(|e| error("cleanup", e))?;
+                    fs::remove_file(&old.path).map_err(|e| error("cleanup", e))?;
                 }
             }
         }
-        let path = pending.pop();
+        let run = pending.pop();
+        let bytes = run.as_ref().map_or(0, |run| run.bytes);
+        let path = run.map(|run| run.path);
         let directory = std::mem::take(&mut self.directory);
-        Ok(Sorted { directory, path })
+        Ok(Sorted {
+            directory,
+            path,
+            bytes,
+        })
     }
 }
 impl Drop for Sorter {
@@ -261,10 +276,16 @@ impl Drop for Sorter {
 pub(super) struct Sorted {
     directory: PathBuf,
     path: Option<PathBuf>,
+    bytes: u64,
 }
 impl Sorted {
     pub fn iter(&self) -> Result<Rows, Diagnostic> {
-        Ok(Rows(self.path.as_deref().map(RunReader::open).transpose()?))
+        Ok(Rows(
+            self.path
+                .as_deref()
+                .map(|path| RunReader::open(path, self.bytes))
+                .transpose()?,
+        ))
     }
 }
 impl Drop for Sorted {
@@ -283,29 +304,32 @@ impl Iterator for Rows {
 }
 struct RunReader {
     reader: BufReader<File>,
+    remaining: u64,
 }
 impl RunReader {
-    fn open(path: &Path) -> Result<Self, Diagnostic> {
+    fn open(path: &Path, expected_bytes: u64) -> Result<Self, Diagnostic> {
+        let file = File::open(path).map_err(|e| error("read", e))?;
+        if file.metadata().map_err(|e| error("read", e))?.len() != expected_bytes {
+            return Err(error("read", "run length differs from producer"));
+        }
         Ok(Self {
-            reader: BufReader::new(File::open(path).map_err(|e| error("read", e))?),
+            reader: BufReader::new(file),
+            remaining: expected_bytes,
         })
     }
     fn next_row(&mut self) -> Result<Option<Row>, Diagnostic> {
-        let mut bytes = [0; ROW_BYTES];
-        match self
-            .reader
-            .read(&mut bytes[..1])
-            .map_err(|e| error("read", e))?
-        {
-            0 => Ok(None),
-            1 => {
-                self.reader
-                    .read_exact(&mut bytes[1..])
-                    .map_err(|e| error("read", e))?;
-                Row::decode(bytes).map(Some)
-            }
-            _ => unreachable!(),
+        if self.remaining == 0 {
+            return Ok(None);
         }
+        if self.remaining < ROW_BYTES as u64 {
+            return Err(error("decode", "truncated contribution record"));
+        }
+        let mut bytes = [0; ROW_BYTES];
+        self.reader
+            .read_exact(&mut bytes)
+            .map_err(|e| error("read", e))?;
+        self.remaining -= ROW_BYTES as u64;
+        Row::decode(bytes).map(Some)
     }
 }
 
@@ -354,9 +378,184 @@ mod tests {
         );
         let path = sorted.path.clone().unwrap();
         fs::write(&path, &rows[0].encode()[..ROW_BYTES - 1]).unwrap();
-        assert!(sorted.iter().unwrap().next().unwrap().is_err());
+        assert!(
+            sorted
+                .iter()
+                .and_then(|rows| rows.collect::<Result<Vec<_>, _>>())
+                .is_err()
+        );
         drop(sorted);
         assert!(!path.exists());
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_fixed_rows_reject_every_partial_record_in_reader_and_merge() {
+        let base = std::env::temp_dir().join(format!(
+            "dir-contribution-pr37-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        fs::create_dir(&base).unwrap();
+        let rows = [
+            Row {
+                time: 0,
+                tie: 0,
+                target: 0,
+                kind: Kind::Busy,
+                amount: 1,
+            },
+            Row {
+                time: 1,
+                tie: 1,
+                target: 0,
+                kind: Kind::Busy,
+                amount: -1,
+            },
+        ];
+        let data = [rows[0].encode(), rows[1].encode()].concat();
+        for cut in 0..=data.len() {
+            let mut sorter = Sorter::new_in(&base).unwrap();
+            let path = sorter.path().unwrap();
+            fs::write(&path, &data[..cut]).unwrap();
+            let sorted = Sorted {
+                directory: PathBuf::new(),
+                path: Some(path.clone()),
+                bytes: cut as u64,
+            };
+            let result = sorted.iter().unwrap().collect::<Result<Vec<_>, _>>();
+            let merged = sorter.merge(&[Run {
+                path,
+                bytes: cut as u64,
+            }]);
+            if cut % ROW_BYTES == 0 {
+                assert_eq!(result.unwrap(), rows[..cut / ROW_BYTES], "reader cut={cut}");
+                let mut reader = {
+                    let merged = merged.unwrap();
+                    RunReader::open(&merged.path, merged.bytes)
+                }
+                .unwrap();
+                let mut actual = Vec::new();
+                while let Some(row) = reader.next_row().unwrap() {
+                    actual.push(row);
+                }
+                assert_eq!(actual, rows[..cut / ROW_BYTES], "merge cut={cut}");
+            } else {
+                assert_eq!(
+                    result
+                        .expect_err(&format!("reader accepted cut={cut}"))
+                        .code,
+                    "E-0003"
+                );
+                assert_eq!(
+                    merged.expect_err(&format!("merge accepted cut={cut}")).code,
+                    "E-0003"
+                );
+            }
+            drop(sorted);
+            drop(sorter);
+            assert_eq!(fs::read_dir(&base).unwrap().count(), 0, "cut={cut}");
+        }
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_finalized_contribution_producer_rejects_whole_row_loss() {
+        let base = std::env::temp_dir().join(format!(
+            "dir-pr37-contrib-final-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        fs::create_dir(&base).unwrap();
+        let mut sorter = Sorter::new_in(&base).unwrap();
+        sorter.push(0, 0, Kind::Busy, 1).unwrap();
+        sorter.push(1, 0, Kind::Busy, -1).unwrap();
+        let sorted = sorter.finish().unwrap();
+        OpenOptions::new()
+            .write(true)
+            .open(sorted.path.as_ref().unwrap())
+            .unwrap()
+            .set_len(ROW_BYTES as u64)
+            .unwrap();
+        assert_eq!(
+            sorted
+                .iter()
+                .and_then(|rows| rows.collect::<Result<Vec<_>, _>>())
+                .expect_err("contribution output silently lost a complete row")
+                .code,
+            "E-0003"
+        );
+        drop(sorted);
+        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_intermediate_contribution_merge_rejects_whole_row_loss() {
+        let base = std::env::temp_dir().join(format!(
+            "dir-pr37-contrib-merge-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        fs::create_dir(&base).unwrap();
+        let mut sorter = Sorter::new_in(&base).unwrap();
+        sorter.push(0, 0, Kind::Busy, 1).unwrap();
+        sorter.push(1, 0, Kind::Busy, -1).unwrap();
+        sorter.flush().unwrap();
+        let run = sorter.levels[0][0].clone();
+        OpenOptions::new()
+            .write(true)
+            .open(&run.path)
+            .unwrap()
+            .set_len(ROW_BYTES as u64)
+            .unwrap();
+        assert_eq!(
+            sorter
+                .merge(&[run])
+                .expect_err("contribution merge silently lost a complete row")
+                .code,
+            "E-0003"
+        );
+        drop(sorter);
+        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_contribution_reader_rejects_truncation_after_open() {
+        let base = std::env::temp_dir().join(format!(
+            "dir-pr37-contrib-open-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        fs::create_dir(&base).unwrap();
+        let mut sorter = Sorter::new_in(&base).unwrap();
+        for i in 0..1024u64 {
+            sorter.push(i, 0, Kind::Queue, i as i128).unwrap();
+        }
+        let sorted = sorter.finish().unwrap();
+        assert!(sorted.bytes > 4 * 8192);
+        let mut reader = sorted.iter().unwrap();
+        assert!(reader.next().unwrap().is_ok());
+        OpenOptions::new()
+            .write(true)
+            .open(sorted.path.as_ref().unwrap())
+            .unwrap()
+            .set_len(ROW_BYTES as u64)
+            .unwrap();
+        let mut read = 1;
+        loop {
+            match reader
+                .next()
+                .expect("unexpected clean EOF after late shrink")
+            {
+                Ok(_) => read += 1,
+                Err(error) => {
+                    assert_eq!(error.code, "E-0003");
+                    break;
+                }
+            }
+        }
+        assert!(read < 1024);
+        drop(reader);
+        drop(sorted);
+        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
         fs::remove_dir(base).unwrap();
     }
 }

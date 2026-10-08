@@ -49,11 +49,57 @@ fn ethernet_schedule(schedule: &crate::types::ethernet::EthernetSchedule) -> Val
         }
     }
 }
+fn tsn_schedule(s: &crate::types::ethernet::tsn::Schedule) -> Value {
+    let mut value = fields!(s;id,base_ps,cycle_ps,entries,prefix_ps,open_total_ps);
+    value["class_open_runs"] = json!(
+        s.class_open_runs
+            .iter()
+            .map(|runs| {
+                runs.iter()
+                    .map(|r| json!({"start_ps":r.start_ps,"end_ps":r.end_ps.to_string()}))
+                    .collect::<Vec<_>>()
+            })
+            .collect::<Vec<_>>()
+    );
+    value
+}
+fn registered_model(m: &crate::registry::PreparedRegistered) -> Value {
+    json!({"models":m.models.iter().map(|r|fields!(r;id,subject,implementation_key,parameters,connections,output_sources)).collect::<Vec<_>>(),"channels":m.channels.iter().map(|r|fields!(r;id,implementation_key,parameters)).collect::<Vec<_>>()})
+}
 /// Actual adapter-resolved data, including policy defaults and calculated wire
 /// values. This is an additive reproduction snapshot, independent of runtime.
 fn effective_model(p: &PreparedSimulation) -> Value {
+    if let Some(network) = p.registered.as_ref().and_then(|m| m.network.as_ref()) {
+        // A composed profile also uses the generic runtime, but its coordinator
+        // parameters do not describe the network's resolved policies.
+        let mut base = p.clone();
+        base.registered = None;
+        base.ethernet = Some(network.ethernet.clone());
+        let ethernet = effective_model(&base);
+        let dynamic = network.dynamic.as_ref().map(|m| {
+            fields!(m;mac_age_ps,convergence_ps,bridges,links,registrable,limits,controls,generator_ip,mac_keys)
+        });
+        let tsn = network.tsn.as_ref().map(|m| {
+            json!({
+                "outputs":m.outputs.iter().map(|r|json!({"port":r.port,"link_bps":r.link_bps,"tas":r.tas.as_deref().map(tsn_schedule),"cbs":r.cbs.iter().map(|c|c.as_ref().map(|c|json!({"priority":c.priority,"idle_bps":c.idle_bps,"link_bps":c.link_bps,"hi":c.hi.to_string(),"lo":c.lo.to_string()}))).collect::<Vec<_>>()})).collect::<Vec<_>>(),
+                "streams":m.streams.iter().map(|r|json!({"id":r.id,"key":r.key,"max_sdu_bytes":r.max_sdu_bytes,"gate":r.gate.as_deref().map(tsn_schedule),"meter":r.meter.as_ref().map(|m|json!({"committed_rate_bps":m.committed_rate_bps,"peak_rate_bps":m.peak_rate_bps,"committed_cap":m.committed_cap.to_string(),"peak_cap":m.peak_cap.to_string(),"yellow_drop":m.yellow_drop}))})).collect::<Vec<_>>(),
+                "updates":m.updates.iter().map(|r|json!({"id":r.id,"submitted_at_ps":r.submitted_at_ps,"effective_at_ps":r.effective_at_ps,"port":r.port,"schedule":tsn_schedule(r.schedule.as_ref())})).collect::<Vec<_>>()
+            })
+        });
+        let bridge = network.bridge.as_ref().map(|m| {
+            base.ethernet = None;
+            base.can = m.can.clone();
+            json!({"can":effective_model(&base),"gateways":m.gateways})
+        });
+        let mut effective = registered_model(p.registered.as_ref().unwrap());
+        effective["ethernet"] = ethernet;
+        effective["dynamic"] = json!(dynamic);
+        effective["tsn"] = json!(tsn);
+        effective["bridge"] = json!(bridge);
+        return effective;
+    }
     if let Some(m) = &p.registered.as_ref().filter(|m| m.is_generic()) {
-        return json!({"models":m.models.iter().map(|r|fields!(r;id,subject,implementation_key,parameters,connections,output_sources)).collect::<Vec<_>>(),"channels":m.channels.iter().map(|r|fields!(r;id,implementation_key,parameters)).collect::<Vec<_>>()});
+        return registered_model(m);
     }
     if let Some(m) = &p.axi {
         let managers = m

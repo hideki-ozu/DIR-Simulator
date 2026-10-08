@@ -1109,9 +1109,9 @@ impl Default for Registry {
                 name,
                 "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1" | "can.ethernet.gateway.v1"
             );
-            if !composed {
-                registry.builtin_profiles.insert(name.into());
-            }
+            // Built-in preparation is selected by registration provenance,
+            // including composed profiles that execute through the generic runtime.
+            registry.builtin_profiles.insert(name.into());
             registry.profiles.insert(
                 name.into(),
                 ProfileDescriptor {

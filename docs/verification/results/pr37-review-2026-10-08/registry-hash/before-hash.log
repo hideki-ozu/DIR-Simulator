@@ -1,0 +1,36 @@
+    Blocking waiting for file lock on build directory
+   Compiling dir-simulator v0.1.0 (/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.39s
+     Running tests/provenance.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/provenance-cbf4ddabcd2d03a9)
+
+running 3 tests
+
+thread 'composed_tsn_policy_changes_effective_configuration_hash' panicked at crates/dir-simulator/tests/provenance.rs:260:5:
+assertion `left != right` failed: ethernet/tsn/tas.ini: effective setting /tsn/outputs/0/tas/base_time_ps omitted from config hash
+  left: String("1c659de1cfdd377ad56809faf4e908f130c330ede93abd82b158edbfff0cde04")
+ right: String("1c659de1cfdd377ad56809faf4e908f130c330ede93abd82b158edbfff0cde04")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test composed_tsn_policy_changes_effective_configuration_hash ... FAILED
+
+thread 'composed_bridge_rule_changes_effective_configuration_hash' panicked at crates/dir-simulator/tests/provenance.rs:260:5:
+assertion `left != right` failed: can-ethernet/r01.ini: effective setting /gateways/0/rules/0/match/can_id omitted from config hash
+  left: String("bfe1229bf477de43eb278807b6f9751a95cbe37b2508f7ddcc981caa305871cc")
+ right: String("bfe1229bf477de43eb278807b6f9751a95cbe37b2508f7ddcc981caa305871cc")
+test composed_bridge_rule_changes_effective_configuration_hash ... FAILED
+
+thread 'composed_dynamic_policy_changes_effective_configuration_hash' panicked at crates/dir-simulator/tests/provenance.rs:260:5:
+assertion `left != right` failed: ethernet/dynamic/unicast.ini: effective setting /dynamic/mac_age_ps omitted from config hash
+  left: String("97d6d77af24a0d7bb28f71f4579aff5899c09c75a321689f1959fad333585ded")
+ right: String("97d6d77af24a0d7bb28f71f4579aff5899c09c75a321689f1959fad333585ded")
+test composed_dynamic_policy_changes_effective_configuration_hash ... FAILED
+
+failures:
+
+failures:
+    composed_bridge_rule_changes_effective_configuration_hash
+    composed_dynamic_policy_changes_effective_configuration_hash
+    composed_tsn_policy_changes_effective_configuration_hash
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 4 filtered out; finished in 3.01s
+
+error: test failed, to rerun pass `--test provenance`

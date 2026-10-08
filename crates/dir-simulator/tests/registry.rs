@@ -844,6 +844,92 @@ fn custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog() {
     );
 }
 
+fn custom_composed_name_uses_registered_models_and_catalog(profile: &str) {
+    let f = Fixture::new();
+    let mut r = registry_factories_in(
+        Registry::empty(),
+        |_| Ok(Box::new(Sender)),
+        |_| Ok(Box::new(Receiver { fail: false })),
+    );
+    let mut descriptor = r.profile("test.profile.v1").unwrap().clone();
+    descriptor.name = profile.into();
+    r.register_profile(descriptor).unwrap();
+    let config = std::fs::read_to_string(f.config())
+        .unwrap()
+        .replace("test.profile.v1", profile);
+    std::fs::write(f.config(), &config).unwrap();
+    let prepared = dir_simulator::registry::prepare_with_registry_and_source(
+        &f.config(),
+        &f.0,
+        &dir_simulator::input::FsInputSource,
+        r.clone(),
+    )
+    .unwrap();
+    assert_eq!(prepared.node_count(), 2);
+    assert_eq!(prepared.common.profile, profile);
+    let output = f.0.join("success");
+    let report = dir_simulator::run_config_with_registry(&f.config(), &output, r.clone()).unwrap();
+    assert_eq!(report.exit_code, 0);
+    let result: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(output.join("results.json")).unwrap()).unwrap();
+    let configs = result["metadata"]["sources"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|row| row["logical_path"] == "config")
+        .collect::<Vec<_>>();
+    assert_eq!(configs.len(), 1);
+    assert_eq!(configs[0]["content_utf8"], config);
+    assert_eq!(result["simulation"]["committed_events"], "3");
+    assert_eq!(result["simulation"]["model_records"][0]["data"]["byte"], 7);
+    assert_custom_catalog(&result);
+
+    std::fs::write(f.config(), format!("{config}max-events = 0\n")).unwrap();
+    let failed = f.0.join("failed");
+    let report = dir_simulator::run_config_with_registry(&f.config(), &failed, r).unwrap();
+    assert_eq!(report.exit_code, 2);
+    let result: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(failed.join("results.json")).unwrap()).unwrap();
+    assert_custom_catalog(&result);
+}
+fn assert_custom_catalog(result: &serde_json::Value) {
+    assert_eq!(result["schema_version"], 2);
+    assert_eq!(
+        result["metadata"]["metrics"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|row| row["metric_id"].as_str().unwrap())
+            .collect::<Vec<_>>(),
+        ["test.arbitrations", "test.received"]
+    );
+    assert_eq!(
+        result["metadata"]["model_schemas"],
+        serde_json::json!([{"schema_name":"test.Record","schema_version":1}])
+    );
+    assert_eq!(
+        result["metadata"]["models"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|row| row["type"].as_str().unwrap())
+            .collect::<Vec<_>>(),
+        ["test.Receiver", "test.Sender"]
+    );
+}
+#[test]
+fn custom_dynamic_builtin_name_uses_custom_registry() {
+    custom_composed_name_uses_registered_models_and_catalog("ethernet.l2.dynamic.v1");
+}
+#[test]
+fn custom_tsn_builtin_name_uses_custom_registry() {
+    custom_composed_name_uses_registered_models_and_catalog("ethernet.tsn.v1");
+}
+#[test]
+fn custom_gateway_builtin_name_uses_custom_registry() {
+    custom_composed_name_uses_registered_models_and_catalog("can.ethernet.gateway.v1");
+}
+
 #[test]
 fn profile_rejects_module_schemas_outside_its_allowlist() {
     let f = Fixture::new();

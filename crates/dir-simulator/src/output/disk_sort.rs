@@ -306,12 +306,20 @@ fn decode_key(key: &[u8]) -> Result<Vec<String>, Diagnostic> {
     Ok(parts)
 }
 
+/// Trusted producer length travels with each run through merges and final reads.
+/// A shorter file is corruption even if it ends exactly after a complete row.
+#[derive(Clone, Debug)]
+pub(super) struct Run {
+    pub path: PathBuf,
+    pub bytes: u64,
+}
+
 /// Owns every run and removes it on both success and failure.
 pub(super) struct Sorter {
     directory: PathBuf,
     chunk: Vec<EncodedRow>,
     chunk_bytes: usize,
-    levels: Vec<Vec<PathBuf>>,
+    levels: Vec<Vec<Run>>,
     next: u64,
     file_serial: u64,
     max_frame_bytes: usize,
@@ -370,7 +378,7 @@ impl Sorter {
             .ok_or_else(|| error("count", "overflow"))?;
         Ok(self.directory.join(format!("run-{n}")))
     }
-    fn write_row(writer: &mut BufWriter<File>, row: &EncodedRow) -> Result<(), Diagnostic> {
+    fn write_row(writer: &mut BufWriter<File>, row: &EncodedRow) -> Result<u64, Diagnostic> {
         let fields = [
             row.frame_len()? as u64,
             row.key.len() as u64,
@@ -385,7 +393,10 @@ impl Sorter {
         writer
             .write_all(&row.key)
             .and_then(|()| writer.write_all(&row.payload))
-            .map_err(|e| error("write", e))
+            .map_err(|e| error("write", e))?;
+        fields[0]
+            .checked_add(8)
+            .ok_or_else(|| error("write", "run length overflow"))
     }
     fn flush(&mut self) -> Result<(), Diagnostic> {
         if self.chunk.is_empty() {
@@ -400,16 +411,19 @@ impl Sorter {
             .map_err(|e| error("create", e))?;
         let mut writer = BufWriter::with_capacity(1024 * 1024, file);
         writer.write_all(MAGIC).map_err(|e| error("write", e))?;
+        let mut bytes = MAGIC.len() as u64;
         for row in &self.chunk {
-            Self::write_row(&mut writer, row)?;
+            bytes = bytes
+                .checked_add(Self::write_row(&mut writer, row)?)
+                .ok_or_else(|| error("write", "run length overflow"))?;
         }
         writer.flush().map_err(|e| error("flush", e))?;
-        self.promote(path, 0)?;
+        self.promote(Run { path, bytes }, 0)?;
         self.chunk.clear();
         self.chunk_bytes = 0;
         Ok(())
     }
-    fn promote(&mut self, mut path: PathBuf, mut level: usize) -> Result<(), Diagnostic> {
+    fn promote(&mut self, mut path: Run, mut level: usize) -> Result<(), Diagnostic> {
         loop {
             if self.levels.len() <= level {
                 reserve_vec(&mut self.levels, 1, "output_sort_levels")?;
@@ -423,7 +437,7 @@ impl Sorter {
             let paths = std::mem::take(&mut self.levels[level]);
             let merged = self.merge(&paths)?;
             for old in paths {
-                fs::remove_file(old).map_err(|e| error("cleanup", e))?;
+                fs::remove_file(&old.path).map_err(|e| error("cleanup", e))?;
             }
             level = level
                 .checked_add(1)
@@ -431,7 +445,7 @@ impl Sorter {
             path = merged;
         }
     }
-    fn merge(&mut self, paths: &[PathBuf]) -> Result<PathBuf, Diagnostic> {
+    fn merge(&mut self, paths: &[Run]) -> Result<Run, Diagnostic> {
         let path = self.path()?;
         let file = OpenOptions::new()
             .create_new(true)
@@ -443,13 +457,18 @@ impl Sorter {
         let mut readers = Vec::new();
         for path in paths {
             reserve_vec(&mut readers, 1, "output_sort_readers")?;
-            readers.push(RunReader::open(path, self.max_frame_bytes)?);
+            readers.push(RunReader::open(
+                &path.path,
+                self.max_frame_bytes,
+                path.bytes,
+            )?);
         }
         let mut heads = Vec::new();
         for reader in &mut readers {
             reserve_vec(&mut heads, 1, "output_sort_heads")?;
             heads.push(reader.next_row()?);
         }
+        let mut bytes = MAGIC.len() as u64;
         while let Some(index) = heads
             .iter()
             .enumerate()
@@ -458,11 +477,13 @@ impl Sorter {
             .map(|(index, _)| index)
         {
             let row = heads[index].take().expect("selected sort head");
-            Self::write_row(&mut writer, &row)?;
+            bytes = bytes
+                .checked_add(Self::write_row(&mut writer, &row)?)
+                .ok_or_else(|| error("write", "run length overflow"))?;
             heads[index] = readers[index].next_row()?;
         }
         writer.flush().map_err(|e| error("flush", e))?;
-        Ok(path)
+        Ok(Run { path, bytes })
     }
     pub fn finish(mut self) -> Result<Sorted, Diagnostic> {
         self.flush()?;
@@ -478,16 +499,19 @@ impl Sorter {
                 reserve_vec(&mut pending, 1, "output_sort_pending")?;
                 pending.push(path);
                 for old in group {
-                    fs::remove_file(old).map_err(|e| error("cleanup", e))?;
+                    fs::remove_file(&old.path).map_err(|e| error("cleanup", e))?;
                 }
             }
         }
-        let path = pending.pop();
+        let run = pending.pop();
+        let bytes = run.as_ref().map_or(0, |run| run.bytes);
+        let path = run.map(|run| run.path);
         let directory = std::mem::take(&mut self.directory);
         Ok(Sorted {
             directory,
             path,
             max_frame_bytes: self.max_frame_bytes,
+            bytes,
         })
     }
 }
@@ -503,13 +527,14 @@ pub(super) struct Sorted {
     directory: PathBuf,
     path: Option<PathBuf>,
     max_frame_bytes: usize,
+    bytes: u64,
 }
 impl Sorted {
     pub fn iter(&self) -> Result<Rows, Diagnostic> {
         Ok(Rows(
             self.path
                 .as_ref()
-                .map(|path| RunReader::open(path, self.max_frame_bytes))
+                .map(|path| RunReader::open(path, self.max_frame_bytes, self.bytes))
                 .transpose()?,
         ))
     }
@@ -546,6 +571,7 @@ pub(super) struct OrderedWriter {
     disordered: bool,
     next: u64,
     max_frame_bytes: usize,
+    bytes: u64,
 }
 impl OrderedWriter {
     pub fn new_in(base: &Path) -> Result<Self, Diagnostic> {
@@ -573,6 +599,7 @@ impl OrderedWriter {
                                 disordered: false,
                                 next: 0,
                                 max_frame_bytes: 0,
+                                bytes: MAGIC.len() as u64,
                             };
                             result
                                 .writer
@@ -601,10 +628,13 @@ impl OrderedWriter {
             .ok_or_else(|| error("count", "overflow"))?;
         let row = EncodedRow::new(&key, tie, &value)?;
         let frame_len = row.frame_len()?;
-        Sorter::write_row(
-            self.writer.as_mut().expect("unfinished ordered writer"),
-            &row,
-        )?;
+        self.bytes = self
+            .bytes
+            .checked_add(Sorter::write_row(
+                self.writer.as_mut().expect("unfinished ordered writer"),
+                &row,
+            )?)
+            .ok_or_else(|| error("write", "run length overflow"))?;
         if self
             .previous
             .as_ref()
@@ -626,7 +656,7 @@ impl OrderedWriter {
         self.writer.take();
         if self.disordered {
             let mut sorter = Sorter::new_in(self.directory.parent().unwrap())?;
-            let mut reader = RunReader::open(&self.path, self.max_frame_bytes)?;
+            let mut reader = RunReader::open(&self.path, self.max_frame_bytes, self.bytes)?;
             while let Some(row) = reader.next_row()? {
                 let row = row.decode()?;
                 sorter.push(row.key, row.value)?;
@@ -639,6 +669,7 @@ impl OrderedWriter {
             directory,
             path: Some(path),
             max_frame_bytes: self.max_frame_bytes,
+            bytes: self.bytes,
         })
     }
 }
@@ -706,9 +737,16 @@ struct RunReader {
     max_frame_bytes: usize,
 }
 impl RunReader {
-    fn open(path: &PathBuf, max_frame_bytes: usize) -> Result<Self, Diagnostic> {
+    fn open(
+        path: &PathBuf,
+        max_frame_bytes: usize,
+        expected_bytes: u64,
+    ) -> Result<Self, Diagnostic> {
         let file = File::open(path).map_err(|e| error("read", e))?;
         let size = file.metadata().map_err(|e| error("read", e))?.len();
+        if size != expected_bytes {
+            return Err(error("read", "run length differs from producer"));
+        }
         let mut reader = BufReader::with_capacity(1024 * 1024, file);
         let mut magic = [0u8; 8];
         reader
@@ -971,7 +1009,8 @@ mod tests {
         ];
         for data in frames {
             fs::write(&path, &data).unwrap();
-            let mut reader = RunReader::open(&path, 24).unwrap();
+            let mut reader =
+                RunReader::open(&path, 24, fs::metadata(&path).unwrap().len()).unwrap();
             assert!(reader.next_row().is_err());
         }
         fs::write(
@@ -987,9 +1026,14 @@ mod tests {
             .concat(),
         )
         .unwrap();
-        assert!(RunReader::open(&path, 100).unwrap().next_row().is_err());
+        assert!(
+            RunReader::open(&path, 100, fs::metadata(&path).unwrap().len())
+                .unwrap()
+                .next_row()
+                .is_err()
+        );
         fs::write(&path, b"BADMAGIC").unwrap();
-        assert!(RunReader::open(&path, 100).is_err());
+        assert!(RunReader::open(&path, 100, fs::metadata(&path).unwrap().len()).is_err());
         fs::remove_dir_all(&base).unwrap();
     }
     #[test]
@@ -1012,10 +1056,13 @@ mod tests {
             )
             .unwrap();
             writer.flush().unwrap();
-            paths.push(path);
+            paths.push(Run {
+                path,
+                bytes: 8 + 8 + 25,
+            });
         }
         let path = sorter.merge(&paths).unwrap();
-        let mut reader = RunReader::open(&path, 25).unwrap();
+        let mut reader = RunReader::open(&path.path, 25, path.bytes).unwrap();
         let row = reader.next_row().unwrap().unwrap();
         assert_eq!(row.payload, [99]);
         assert!(row.decode().is_err());
@@ -1023,7 +1070,7 @@ mod tests {
         assert!(reader.next_row().unwrap().is_none());
         // Corrupt a run's bound and force an actual merge failure under Sorter RAII.
         fs::write(
-            &paths[0],
+            &paths[0].path,
             [MAGIC.to_vec(), u64::MAX.to_le_bytes().to_vec()].concat(),
         )
         .unwrap();
@@ -1340,7 +1387,12 @@ mod tests {
                 assert!(writer.finish().is_err());
             } else {
                 let sorted = writer.finish().unwrap();
-                assert!(sorted.iter().unwrap().next().unwrap().is_err());
+                assert!(
+                    sorted
+                        .iter()
+                        .and_then(|rows| rows.collect::<Result<Vec<_>, _>>())
+                        .is_err()
+                );
                 drop(sorted);
             }
             assert!(!path.exists());
@@ -1349,90 +1401,389 @@ mod tests {
         }
     }
     #[test]
-    fn late_binary_decode_failure_cleans_the_paired_publication_stage() {
-        use super::super::{
-            aggregate::{MetricValue, Record},
-            json, publish, stream,
-        };
-        use std::io::{Seek, SeekFrom};
-        let base = base();
-        let prepared = crate::prepare(
-            &Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/can/baseline.ini"),
-        )
-        .unwrap();
-        let snapshot = crate::snapshot::Snapshot::empty(&prepared);
-        let mut points = OrderedWriter::new_in(&base).unwrap();
-        let mut last_payload_offset = 0;
-        let mut offset = MAGIC.len() as u64;
-        for i in 0..150u64 {
-            let record = Record::aggregate(
-                &format!("quoted,\"\r\né😀{}", "x".repeat(1024)),
-                "queue_length",
-                MetricValue::Integer(i as u128),
-                0,
-                i + 1,
-            );
-            let key = vec![format!("{i:016x}")];
-            let value = json::record_value(&record);
-            let encoded = EncodedRow::new(&key, i, &value).unwrap();
-            last_payload_offset = offset + 8 + FRAME_FIELDS as u64 + encoded.key.len() as u64;
-            offset += 8 + encoded.frame_len().unwrap() as u64;
-            points.push(key, value).unwrap();
-        }
-        let points = points.finish().unwrap();
-        let mut file = OpenOptions::new()
-            .write(true)
-            .open(points.path.as_ref().unwrap())
+    fn late_binary_decode_and_truncation_failures_clean_the_paired_publication_stage() {
+        for corruption in [
+            "tag",
+            "partial-length",
+            "partial-fields",
+            "partial-payload",
+            "whole-row",
+        ] {
+            use super::super::{
+                aggregate::{MetricValue, Record},
+                json, publish, stream,
+            };
+            use std::io::{Seek, SeekFrom};
+            let base = base();
+            let prepared = crate::prepare(
+                &Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/can/baseline.ini"),
+            )
             .unwrap();
-        file.seek(SeekFrom::Start(last_payload_offset)).unwrap();
-        file.write_all(&[99]).unwrap(); // valid frame/key, invalid final Value tag
-        drop(file);
-        let records = MergedRecords {
-            points,
-            windows: OrderedWriter::new_in(&base).unwrap().finish().unwrap(),
-        };
-        let result = stream::Prepared {
-            records,
-            models: None,
-            requests: Some(Sorter::new_in(&base).unwrap().finish().unwrap()),
-            receivers: Some(Sorter::new_in(&base).unwrap().finish().unwrap()),
-            summary: Vec::new(),
-        };
-        let error = publish::stream(&base, "late-binary", 1, &snapshot, |stage| {
-            stage.write_pair("results.json", "events.csv", |left, right| {
-                let error = json::write_stream_result(
-                    left,
-                    right,
-                    &prepared,
-                    &snapshot,
-                    "late-binary",
-                    "2026-10-08T00:00:00Z",
-                    &result,
-                )
-                .unwrap_err();
-                // Enough prefix rows reached both real staging files before the late failure.
-                assert!(
-                    fs::metadata(base.join(".tmp-late-binary/results.json"))
-                        .unwrap()
-                        .len()
-                        > 0
+            let snapshot = crate::snapshot::Snapshot::empty(&prepared);
+            let mut points = OrderedWriter::new_in(&base).unwrap();
+            let mut last_payload_offset = 0;
+            let mut last_frame_offset = 0;
+            let mut offset = MAGIC.len() as u64;
+            for i in 0..150u64 {
+                let record = Record::aggregate(
+                    &format!("quoted,\"\r\né😀{}", "x".repeat(1024)),
+                    "queue_length",
+                    MetricValue::Integer(i as u128),
+                    0,
+                    i + 1,
                 );
-                assert!(
-                    fs::metadata(base.join(".tmp-late-binary/events.csv"))
-                        .unwrap()
-                        .len()
-                        > 0
-                );
-                Err(error)
+                let key = vec![format!("{i:016x}")];
+                let value = json::record_value(&record);
+                let encoded = EncodedRow::new(&key, i, &value).unwrap();
+                last_frame_offset = offset;
+                last_payload_offset = offset + 8 + FRAME_FIELDS as u64 + encoded.key.len() as u64;
+                offset += 8 + encoded.frame_len().unwrap() as u64;
+                points.push(key, value).unwrap();
+            }
+            let points = points.finish().unwrap();
+            let mut file = OpenOptions::new()
+                .write(true)
+                .open(points.path.as_ref().unwrap())
+                .unwrap();
+            match corruption {
+                "tag" => {
+                    file.seek(SeekFrom::Start(last_payload_offset)).unwrap();
+                    file.write_all(&[99]).unwrap();
+                }
+                "partial-length" => file.set_len(last_frame_offset + 3).unwrap(),
+                "partial-fields" => file.set_len(last_frame_offset + 8 + 11).unwrap(),
+                "partial-payload" => file.set_len(offset - 1).unwrap(),
+                "whole-row" => file.set_len(last_frame_offset).unwrap(),
+                _ => unreachable!(),
+            }
+            drop(file);
+            let records = MergedRecords {
+                points,
+                windows: OrderedWriter::new_in(&base).unwrap().finish().unwrap(),
+            };
+            let result = stream::Prepared {
+                records,
+                models: None,
+                requests: Some(Sorter::new_in(&base).unwrap().finish().unwrap()),
+                receivers: Some(Sorter::new_in(&base).unwrap().finish().unwrap()),
+                summary: Vec::new(),
+            };
+            let error = publish::stream(&base, "late-binary", 1, &snapshot, |stage| {
+                stage.write_pair("results.json", "events.csv", |left, right| {
+                    let error = json::write_stream_result(
+                        left,
+                        right,
+                        &prepared,
+                        &snapshot,
+                        "late-binary",
+                        "2026-10-08T00:00:00Z",
+                        &result,
+                    )
+                    .unwrap_err();
+                    if corruption == "tag" {
+                        // Enough prefix rows reached both real staging files before the late failure.
+                        assert!(
+                            fs::metadata(base.join(".tmp-late-binary/results.json"))
+                                .unwrap()
+                                .len()
+                                > 0
+                        );
+                        assert!(
+                            fs::metadata(base.join(".tmp-late-binary/events.csv"))
+                                .unwrap()
+                                .len()
+                                > 0
+                        );
+                    }
+                    Err(error)
+                })
             })
-        })
-        .unwrap_err();
+            .unwrap_err();
+            assert_eq!(error.code, "E-0003");
+            assert!(!base.join("manifest.json").exists());
+            assert!(!base.join("results.json").exists());
+            assert!(!base.join("events.csv").exists());
+            assert!(!base.join(".tmp-late-binary").exists());
+            drop(result);
+            assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
+            fs::remove_dir(base).unwrap();
+        }
+    }
+    #[test]
+    fn pr37_every_partial_binary_frame_rejects_in_sorted_and_ordered_streams() {
+        let base = base();
+        for ordered in [false, true] {
+            let value = serde_json::json!({"payload":"é\0", "bits":u64::MAX});
+            let sorted = if ordered {
+                let mut writer = OrderedWriter::new_in(&base).unwrap();
+                for key in ["a", "b"] {
+                    writer.push(vec![key.into()], value.clone()).unwrap();
+                }
+                writer.finish().unwrap()
+            } else {
+                let mut sorter = Sorter::new_in(&base).unwrap();
+                for key in ["b", "a"] {
+                    sorter.push(vec![key.into()], value.clone()).unwrap();
+                }
+                sorter.finish().unwrap()
+            };
+            let path = sorted.path.as_ref().unwrap();
+            let data = fs::read(path).unwrap();
+            for cut in 0..=data.len() {
+                fs::write(path, &data[..cut]).unwrap();
+                let result = sorted
+                    .iter()
+                    .and_then(|rows| rows.collect::<Result<Vec<_>, _>>());
+                if cut == data.len() {
+                    assert_eq!(result.unwrap().len(), 2, "ordered={ordered}, cut={cut}");
+                } else {
+                    let error = result.expect_err(&format!(
+                        "accepted partial binary row: ordered={ordered}, cut={cut}"
+                    ));
+                    assert_eq!(error.code, "E-0003", "ordered={ordered}, cut={cut}");
+                }
+            }
+            drop(sorted);
+        }
+        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_binary_fallback_and_merge_reject_partial_headers_lengths_and_bodies() {
+        let base = base();
+        let value = serde_json::json!({"payload":"é\0", "bits":u64::MAX});
+        let frame = EncodedRow::new(&["b".into()], 0, &value)
+            .unwrap()
+            .frame_len()
+            .unwrap();
+        let full = MAGIC.len() + 2 * (8 + frame);
+        for cut in 0..=full {
+            let mut writer = OrderedWriter::new_in(&base).unwrap();
+            for key in ["b", "a"] {
+                writer.push(vec![key.into()], value.clone()).unwrap();
+            }
+            assert!(writer.disordered);
+            writer.writer.as_mut().unwrap().flush().unwrap();
+            let data = fs::read(&writer.path).unwrap();
+            fs::write(&writer.path, &data[..cut]).unwrap();
+            let result = writer
+                .finish()
+                .and_then(|sorted| sorted.iter()?.collect::<Result<Vec<_>, _>>());
+            let mut merger = Sorter::new_in(&base).unwrap();
+            merger.max_frame_bytes = frame;
+            let path = merger.path().unwrap();
+            fs::write(&path, &data[..cut]).unwrap();
+            let merged = merger.merge(&[Run {
+                path,
+                bytes: data.len() as u64,
+            }]);
+            if cut == full {
+                let expected = 2;
+                assert_eq!(result.unwrap().len(), expected, "fallback cut={cut}");
+                let merged = merged.unwrap();
+                let mut reader = RunReader::open(&merged.path, frame, merged.bytes).unwrap();
+                let mut count = 0;
+                while reader.next_row().unwrap().is_some() {
+                    count += 1;
+                }
+                assert_eq!(count, expected, "merge cut={cut}");
+            } else {
+                assert_eq!(
+                    result
+                        .expect_err(&format!("fallback accepted cut={cut}"))
+                        .code,
+                    "E-0003"
+                );
+                assert_eq!(
+                    merged.expect_err(&format!("merge accepted cut={cut}")).code,
+                    "E-0003"
+                );
+            }
+            drop(merger);
+            assert_eq!(fs::read_dir(&base).unwrap().count(), 0, "cut={cut}");
+        }
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_finalized_general_and_ordered_producers_reject_whole_row_loss() {
+        for ordered in [false, true] {
+            let base = base();
+            let value = Value::Null;
+            let sorted = if ordered {
+                let mut writer = OrderedWriter::new_in(&base).unwrap();
+                writer.push(vec!["a".into()], value.clone()).unwrap();
+                writer.push(vec!["b".into()], value.clone()).unwrap();
+                writer.finish().unwrap()
+            } else {
+                let mut sorter = Sorter::new_in(&base).unwrap();
+                sorter.push(vec!["a".into()], value.clone()).unwrap();
+                sorter.push(vec!["b".into()], value.clone()).unwrap();
+                sorter.finish().unwrap()
+            };
+            let retained = MAGIC.len()
+                + 8
+                + EncodedRow::new(&["a".into()], 0, &value)
+                    .unwrap()
+                    .frame_len()
+                    .unwrap();
+            OpenOptions::new()
+                .write(true)
+                .open(sorted.path.as_ref().unwrap())
+                .unwrap()
+                .set_len(retained as u64)
+                .unwrap();
+            let result = sorted
+                .iter()
+                .and_then(|rows| rows.collect::<Result<Vec<_>, _>>());
+            assert_eq!(
+                result
+                    .expect_err("finalized producer silently lost a complete row")
+                    .code,
+                "E-0003",
+                "ordered={ordered}"
+            );
+            drop(sorted);
+            assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
+            fs::remove_dir(base).unwrap();
+        }
+    }
+    #[test]
+    fn pr37_retained_fallback_producer_rejects_whole_row_loss() {
+        let base = base();
+        let mut writer = OrderedWriter::new_in(&base).unwrap();
+        writer.push(vec!["b".into()], Value::Null).unwrap();
+        writer.push(vec!["a".into()], Value::Null).unwrap();
+        writer.writer.as_mut().unwrap().flush().unwrap();
+        let retained = MAGIC.len()
+            + 8
+            + EncodedRow::new(&["b".into()], 0, &Value::Null)
+                .unwrap()
+                .frame_len()
+                .unwrap();
+        OpenOptions::new()
+            .write(true)
+            .open(&writer.path)
+            .unwrap()
+            .set_len(retained as u64)
+            .unwrap();
+        let error = match writer.finish() {
+            Err(error) => error,
+            Ok(_) => panic!("fallback silently lost a complete row"),
+        };
         assert_eq!(error.code, "E-0003");
-        assert!(!base.join("manifest.json").exists());
-        assert!(!base.join("results.json").exists());
-        assert!(!base.join("events.csv").exists());
-        assert!(!base.join(".tmp-late-binary").exists());
-        drop(result);
+        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_intermediate_general_merge_rejects_whole_row_loss() {
+        let base = base();
+        let mut sorter = Sorter::new_in(&base).unwrap();
+        sorter.push(vec!["a".into()], Value::Null).unwrap();
+        sorter.push(vec!["b".into()], Value::Null).unwrap();
+        sorter.flush().unwrap();
+        let run = sorter.levels[0][0].clone();
+        let retained = MAGIC.len()
+            + 8
+            + EncodedRow::new(&["a".into()], 0, &Value::Null)
+                .unwrap()
+                .frame_len()
+                .unwrap();
+        OpenOptions::new()
+            .write(true)
+            .open(&run.path)
+            .unwrap()
+            .set_len(retained as u64)
+            .unwrap();
+        assert_eq!(
+            sorter
+                .merge(&[run])
+                .expect_err("merge silently lost a complete row")
+                .code,
+            "E-0003"
+        );
+        drop(sorter);
+        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_valid_empty_and_record_boundary_eof_remain_accepted() {
+        let base = base();
+        for count in 0..3u64 {
+            let mut sorter = Sorter::new_in(&base).unwrap();
+            let mut ordered = OrderedWriter::new_in(&base).unwrap();
+            for i in 0..count {
+                sorter.push(vec![i.to_string()], Value::Null).unwrap();
+                ordered.push(vec![i.to_string()], Value::Null).unwrap();
+            }
+            for sorted in [sorter.finish().unwrap(), ordered.finish().unwrap()] {
+                assert_eq!(
+                    sorted
+                        .iter()
+                        .unwrap()
+                        .collect::<Result<Vec<_>, _>>()
+                        .unwrap()
+                        .len(),
+                    count as usize
+                );
+            }
+            let mut fallback = OrderedWriter::new_in(&base).unwrap();
+            for i in (0..count).rev() {
+                fallback.push(vec![i.to_string()], Value::Null).unwrap();
+            }
+            let sorted = fallback.finish().unwrap();
+            assert_eq!(
+                sorted
+                    .iter()
+                    .unwrap()
+                    .collect::<Result<Vec<_>, _>>()
+                    .unwrap()
+                    .len(),
+                count as usize
+            );
+        }
+        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
+        fs::remove_dir(base).unwrap();
+    }
+    #[test]
+    fn pr37_binary_reader_rejects_late_shrink_beyond_prefetched_rows() {
+        let base = base();
+        let mut writer = OrderedWriter::new_in(&base).unwrap();
+        let value = Value::from("x".repeat(64 * 1024));
+        for i in 0..40u64 {
+            writer.push(vec![format!("{i:03}")], value.clone()).unwrap();
+        }
+        let sorted = writer.finish().unwrap();
+        assert!(sorted.bytes > 2 * 1024 * 1024);
+        let mut reader = sorted.iter().unwrap();
+        assert!(reader.next().unwrap().is_ok());
+        let retained = MAGIC.len()
+            + 8
+            + EncodedRow::new(&["000".into()], 0, &value)
+                .unwrap()
+                .frame_len()
+                .unwrap();
+        OpenOptions::new()
+            .write(true)
+            .open(sorted.path.as_ref().unwrap())
+            .unwrap()
+            .set_len(retained as u64)
+            .unwrap();
+        let mut read = 1;
+        loop {
+            match reader
+                .next()
+                .expect("unexpected clean EOF after late shrink")
+            {
+                Ok(_) => read += 1,
+                Err(error) => {
+                    assert_eq!(error.code, "E-0003");
+                    break;
+                }
+            }
+        }
+        assert!(read < 40);
+        drop(reader);
+        drop(sorted);
         assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
         fs::remove_dir(base).unwrap();
     }

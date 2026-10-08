@@ -511,15 +511,16 @@ fn dir_test_0108_p10_reversed_gateway_rule_port_queue_arrays_preserve_records_an
 fn dir_test_0108_p09_event_limit_every_callback_keeps_successful_journal_prefix() {
     let original = prepare(&fixtures().join("r01/run.ini")).unwrap();
     let full = dir_simulator::runtime::simulate(&original).unwrap();
-    assert_eq!(full.common.committed_events, 17);
+    // Positive conversion completion schedules a distinct phase-1 notification.
+    assert_eq!(full.common.committed_events, 18);
     let final_records = &full.registered.as_ref().unwrap().model_records;
     let mut prior_ids = std::collections::BTreeSet::new();
-    for budget in 0..=17 {
+    for budget in 0..=18 {
         let mut prepared = original.clone();
         prepared.common.max_events = budget;
         let snapshot = dir_simulator::runtime::simulate(&prepared).unwrap();
         assert_eq!(snapshot.common.committed_events, budget);
-        if budget < 17 {
+        if budget < 18 {
             assert_eq!(snapshot.common.termination, "execution_failed");
             assert!(snapshot.common.pending_events > 0);
             assert_eq!(snapshot.common.diagnostics[0].reason, "event_limit");
@@ -753,4 +754,84 @@ fn dir_test_0106_n05_connected_switch_cycle_and_n06_duplicate_json_rule_key_reje
         Some("/gateways/0/rules/0/match/can_id"),
         "duplicate_definition",
     );
+}
+
+#[test]
+fn positive_conversion_delay_offers_after_existing_same_time_ingress() {
+    let input = Output::new();
+    fs::create_dir_all(&input.0).unwrap();
+    let mut model: Value =
+        serde_json::from_slice(&fs::read(fixtures().join("r01/model.json")).unwrap()).unwrap();
+    model["gateways"][0]["rx_capacity"] = serde_json::json!(1);
+    fs::write(
+        input.0.join("model.json"),
+        serde_json::to_vec(&model).unwrap(),
+    )
+    .unwrap();
+    let mut workload: Value =
+        serde_json::from_slice(&fs::read(fixtures().join("r01/workload.json")).unwrap()).unwrap();
+    workload["ethernet"]["generators"] = serde_json::json!([{
+        "id": "native", "node": "R01.sink", "kind": "ethernet.explicit.v1",
+        "times_ps": ["98424000"], "priority": 3, "flow_id": "native", "deadline_ps": null,
+        "frame": {"dst_mac": "02:00:00:00:00:01", "ether_type": 34997, "data": "4449524301000000000000", "tag": null}
+    }]);
+    fs::write(
+        input.0.join("workload.json"),
+        serde_json::to_vec(&workload).unwrap(),
+    )
+    .unwrap();
+    let ini = format!(
+        "[General]\nnetwork = bridge.R01\nned-path = \"{}\"\nmodel-profile = \"can.ethernet.gateway.v1\"\nmodel-config = \"model.json\"\nworkload = \"workload.json\"\nsim-time-limit = 1ms\nR01.gw.can.rxProcessingDelay = 1us\nR01.gw.eth.txProcessingDelay = 0ps\n",
+        fixtures().join("topologies/d2acd8e6f7f5").display()
+    );
+    fs::write(input.0.join("run.ini"), &ini).unwrap();
+    let execute = |limit: Option<u64>| {
+        let mut prepared = prepare(&input.0.join("run.ini")).unwrap();
+        if let Some(limit) = limit {
+            prepared.common.time_limit_ps = limit;
+        }
+        let output = Output::new();
+        run(prepared, &output.0).unwrap();
+        serde_json::from_slice::<Value>(&fs::read(output.0.join("results.json")).unwrap()).unwrap()
+    };
+    let result = execute(None);
+    // CAN EOF 100 us + RX 1 us + conversion 2 us = 103 us.
+    // Native Ethernet SOF 98.424 us + 576 ns serialization + 4 us link
+    // also arrives at 103 us; that phase-1 arrival was reserved before
+    // the conversion's phase-0 completion can reserve its phase-1 offer.
+    let conversions = rows(&result, "dir.can_ethernet.conversion");
+    let incoming = conversions
+        .iter()
+        .find(|c| c["data"]["origin_id"].as_str().unwrap().contains("native"))
+        .unwrap();
+    assert_eq!(n(&incoming["data"]["observed_ps"]), 103_000_000);
+    assert_eq!(incoming["data"]["reason"], "rx_full");
+    let branch = rows(&result, "dir.can_ethernet.branch")[0];
+    assert_eq!(n(&branch["data"]["offer_ps"]), 103_000_000);
+    assert_eq!(n(&branch["data"]["sof_ps"]), 103_000_000);
+    assert_eq!(result["simulation"], execute(None)["simulation"]);
+    let prefix = execute(Some(103_000_000));
+    let branch = rows(&prefix, "dir.can_ethernet.branch")[0];
+    assert!(branch["data"]["offer_ps"].is_null());
+    assert!(branch["data"]["sof_ps"].is_null());
+    conserved(&result);
+    conserved(&prefix);
+
+    // The zero-delay path still offers inside its phase-1 ingress callback.
+    model["gateways"][0]["conversion_delay_ps"] = serde_json::json!("0");
+    fs::write(
+        input.0.join("model.json"),
+        serde_json::to_vec(&model).unwrap(),
+    )
+    .unwrap();
+    fs::write(
+        input.0.join("run.ini"),
+        ini.replace("rxProcessingDelay = 1us", "rxProcessingDelay = 0ps"),
+    )
+    .unwrap();
+    let zero = execute(Some(100_000_001));
+    let branch = rows(&zero, "dir.can_ethernet.branch")[0];
+    assert_eq!(n(&branch["data"]["offer_ps"]), 100_000_000);
+    assert_eq!(n(&branch["data"]["sof_ps"]), 100_000_000);
+    conserved(&zero);
 }

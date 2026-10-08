@@ -168,6 +168,9 @@ fn every_builtin_profile_shares_build_and_effective_reproduction_data() {
         "ethernet/vlan-unicast.ini",
         "ethernet/media/mixed.ini",
         "ethernet/media/100base-t1.ini",
+        "ethernet/dynamic/unicast.ini",
+        "ethernet/tsn/tas.ini",
+        "can-ethernet/r01.ini",
     ] {
         let temp = Temp::new();
         let mut prepared = prepare(&root().join("examples").join(config)).unwrap();
@@ -210,4 +213,201 @@ fn every_builtin_profile_shares_build_and_effective_reproduction_data() {
         ids.dedup();
         assert_eq!(ids.len(), original, "{config}: duplicate initial state");
     }
+}
+
+fn compare_composed_policy_hashes(example: &str, pointer: &str, changed: Value) {
+    compare_composed_document_hashes(example, pointer, changed, false);
+}
+fn compare_composed_document_hashes(example: &str, pointer: &str, changed: Value, workload: bool) {
+    let temp = Temp::new();
+    let original = root().join("examples").join(example);
+    let header = dir_simulator::input::inspect_config(
+        &fs::read_to_string(&original).unwrap(),
+        &original,
+        &root(),
+    )
+    .unwrap();
+    let mut ini = format!(
+        "[General]\nnetwork = {}\nned-path = \"{}\"\nmodel-profile = \"{}\"\nmodel-config = \"model.json\"\nworkload = \"workload.json\"\nsim-time-limit = 0ps\n",
+        header.network.as_ref().unwrap(),
+        header.roots[0].display(),
+        header.profile.as_ref().unwrap(),
+    );
+    for (key, value) in &header.general {
+        if key.contains('.') {
+            ini.push_str(&format!("{key} = {value}\n"));
+        }
+    }
+    let config = temp.0.join("run.ini");
+    let model = temp.0.join("model.json");
+    fs::write(&config, &ini).unwrap();
+    let workload_path = temp.0.join("workload.json");
+    fs::copy(header.model_config.as_ref().unwrap(), &model).unwrap();
+    fs::copy(header.workload.as_ref().unwrap(), &workload_path).unwrap();
+    let changed_path = if workload { &workload_path } else { &model };
+    let mut value = load(changed_path);
+    let before = prepare(&config).unwrap();
+    *value.pointer_mut(pointer).unwrap() = changed;
+    fs::write(changed_path, serde_json::to_vec(&value).unwrap()).unwrap();
+    let after = prepare(&config).unwrap();
+    fs::remove_file(&config).unwrap();
+    fs::remove_file(&model).unwrap();
+    fs::remove_file(&workload_path).unwrap();
+    run(before, &temp.0.join("before")).unwrap();
+    run(after, &temp.0.join("after")).unwrap();
+    let before = load(&temp.0.join("before/results.json"));
+    let after = load(&temp.0.join("after/results.json"));
+    for result in [&before, &after] {
+        let sources = result["metadata"]["sources"].as_array().unwrap();
+        assert_eq!(
+            sources
+                .iter()
+                .filter(|s| s["logical_path"] == "config")
+                .count(),
+            1
+        );
+        assert_eq!(
+            sources
+                .iter()
+                .find(|s| s["logical_path"] == "config")
+                .unwrap()["content_utf8"],
+            ini
+        );
+    }
+    assert_ne!(
+        before["metadata"]["input_sha256"],
+        after["metadata"]["input_sha256"]
+    );
+    assert_ne!(
+        before["metadata"]["config_sha256"], after["metadata"]["config_sha256"],
+        "{example}: effective setting {pointer} omitted from config hash"
+    );
+}
+#[test]
+fn composed_tsn_policy_changes_effective_configuration_hash() {
+    compare_composed_policy_hashes(
+        "ethernet/tsn/tas.ini",
+        "/tsn/outputs/0/tas/base_time_ps",
+        Value::String("1".into()),
+    );
+}
+#[test]
+fn composed_dynamic_policy_changes_effective_configuration_hash() {
+    compare_composed_policy_hashes(
+        "ethernet/dynamic/unicast.ini",
+        "/dynamic/mac_age_ps",
+        Value::String("5000001".into()),
+    );
+}
+#[test]
+fn composed_bridge_rule_changes_effective_configuration_hash() {
+    compare_composed_policy_hashes(
+        "can-ethernet/r01.ini",
+        "/gateways/0/rules/0/match/can_id",
+        Value::Number(1.into()),
+    );
+}
+
+#[test]
+fn composed_dynamic_control_changes_effective_configuration_hash() {
+    compare_composed_document_hashes(
+        "ethernet/dynamic/topology.ini",
+        "/controls/0/at_ps",
+        Value::String("800001".into()),
+        true,
+    );
+}
+#[test]
+fn composed_tsn_large_cbs_credit_is_hashed_without_truncation() {
+    compare_composed_policy_hashes(
+        "ethernet/tsn/cbs.ini",
+        "/tsn/outputs/0/cbs/0/hi_credit_bits",
+        Value::String(u64::MAX.to_string()),
+    );
+}
+#[test]
+fn composed_tsn_large_meter_capacity_is_hashed_without_truncation() {
+    compare_composed_policy_hashes(
+        "ethernet/tsn/psfp.ini",
+        "/tsn/streams/0/meter/peak_burst_bytes",
+        Value::String(u64::MAX.to_string()),
+    );
+}
+
+fn composed_prepared_metadata(prepared: dir_simulator::PreparedSimulation, output: &Path) -> Value {
+    run(prepared, output).unwrap();
+    load(&output.join("results.json"))["metadata"].clone()
+}
+#[test]
+fn composed_registered_parameters_and_channels_remain_in_effective_configuration() {
+    use dir_simulator::registry::{ChannelConfig, ParameterValue};
+    let temp = Temp::new();
+    let mut prepared = prepare(&root().join("examples/ethernet/tsn/tas.ini")).unwrap();
+    prepared.common.time_limit_ps = 0;
+    let before = composed_prepared_metadata(prepared.clone(), &temp.0.join("before"));
+    prepared.registered.as_mut().unwrap().models[0]
+        .parameters
+        .insert("extension_setting".into(), ParameterValue::Quantity(7));
+    let parameters = composed_prepared_metadata(prepared.clone(), &temp.0.join("parameters"));
+    assert_eq!(before["input_sha256"], parameters["input_sha256"]);
+    assert_ne!(before["config_sha256"], parameters["config_sha256"]);
+    prepared
+        .registered
+        .as_mut()
+        .unwrap()
+        .channels
+        .push(ChannelConfig {
+            id: "@network::extension".into(),
+            implementation_key: "dir.link.FixedDelay".into(),
+            parameters: [("delay".into(), ParameterValue::Quantity(3))].into(),
+        });
+    let channels = composed_prepared_metadata(prepared.clone(), &temp.0.join("channels"));
+    assert_eq!(parameters["input_sha256"], channels["input_sha256"]);
+    assert_ne!(parameters["config_sha256"], channels["config_sha256"]);
+    prepared.registered.as_mut().unwrap().channels[0]
+        .parameters
+        .insert("delay".into(), ParameterValue::Quantity(4));
+    let channel_value = composed_prepared_metadata(prepared.clone(), &temp.0.join("channel-value"));
+    assert_eq!(channels["input_sha256"], channel_value["input_sha256"]);
+    assert_ne!(channels["config_sha256"], channel_value["config_sha256"]);
+    let effective: Value = serde_json::from_str(
+        channel_value["config"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|row| row["key"] == "@prepared-model")
+            .unwrap()["value"]
+            .as_str()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        effective["models"][0]["parameters"],
+        serde_json::to_value(&prepared.registered.as_ref().unwrap().models[0].parameters).unwrap()
+    );
+    assert_eq!(
+        effective["channels"][0]["parameters"],
+        serde_json::to_value(&prepared.registered.as_ref().unwrap().channels[0].parameters)
+            .unwrap()
+    );
+    assert!(effective["tsn"].is_object());
+    assert!(effective["ethernet"].is_object());
+}
+#[test]
+fn composed_registered_subject_changes_execution_and_effective_configuration_hash() {
+    let temp = Temp::new();
+    let mut prepared = prepare(&root().join("examples/ethernet/dynamic/unicast.ini")).unwrap();
+    let before = composed_prepared_metadata(prepared.clone(), &temp.0.join("before"));
+    prepared.registered.as_mut().unwrap().models[0].subject = "resolved-network-subject".into();
+    let after = composed_prepared_metadata(prepared, &temp.0.join("after"));
+    let results = load(&temp.0.join("after/results.json"));
+    assert!(
+        results["simulation"]["model_records"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|row| row["subject"] == "resolved-network-subject")
+    );
+    assert_eq!(before["input_sha256"], after["input_sha256"]);
+    assert_ne!(before["config_sha256"], after["config_sha256"]);
 }

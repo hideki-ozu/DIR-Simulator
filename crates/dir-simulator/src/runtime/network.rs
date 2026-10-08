@@ -520,6 +520,12 @@ impl NetworkState {
                 d.due = Some(due);
                 for kind in current {
                     match kind {
+                        Completion::Bridge(timer @ BridgeTimer::ConversionReady { .. }) => {
+                            // Positive-delay conversion completion notifies phase 1.
+                            // Admission (and RX release) must follow already-reserved
+                            // arrivals, just like Ethernet processing completions.
+                            Self::schedule(c, now, Event::Bridge(timer))?;
+                        }
                         Completion::Bridge(timer) => {
                             self.bridge_event(&BridgeEvent::Timer(timer), &mut d, c, limit)?
                         }
