@@ -202,6 +202,27 @@ pub(super) fn build_environment() -> BTreeMap<String, String> {
     values
 }
 
+fn ledger_identified(build: &BTreeMap<String, String>) -> bool {
+    let hash_valid = build
+        .get("adoption_ledger_sha256")
+        .is_some_and(|hash| hash.len() == 64 && hash.bytes().all(|byte| byte.is_ascii_hexdigit()));
+    let version_valid = build.get("adoption_ledger_version").is_some_and(|version| {
+        let parts = version.split('.').collect::<Vec<_>>();
+        parts.len() == 3
+            && parts
+                .iter()
+                .all(|part| !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit()))
+    });
+    hash_valid && version_valid
+}
+
+fn reproduction_identified(build: &BTreeMap<String, String>) -> bool {
+    ledger_identified(build)
+        && !build
+            .values()
+            .any(|value| value.is_empty() || value == "unknown" || value == "not-present")
+}
+
 pub(super) fn enrich(prepared: &PreparedSimulation, result: &mut Value) -> Result<(), Diagnostic> {
     let provenance = &prepared.common.provenance;
     result["source_roots"] = json!(provenance.roots);
@@ -305,10 +326,10 @@ pub(super) fn enrich(prepared: &PreparedSimulation, result: &mut Value) -> Resul
         result["started_at_utc"] = json!(identity.started_at_utc);
     }
     result["implementation_coverage"]["reproduction_conditions"] =
-        json!(if build.values().any(|v| v == "unknown") {
-            "partially_identified"
-        } else {
+        json!(if reproduction_identified(&build) {
             "identified"
+        } else {
+            "partially_identified"
         });
     if let Some(limitations) = result["implementation_coverage"]["limitations"].as_array_mut() {
         limitations.retain(|v| {
@@ -324,6 +345,11 @@ pub(super) fn enrich(prepared: &PreparedSimulation, result: &mut Value) -> Resul
                     && !s.contains("prepare failures use CLI")
             })
         });
+        if !ledger_identified(&build) {
+            limitations.push(json!(
+                "adoption ledger hash/document version is missing or invalid; distribution approval is not established"
+            ));
+        }
         if prepared.common.run_identity.is_none() {
             limitations.push(json!(
                 "direct export without execution identity uses export time for started_at_utc"
@@ -333,4 +359,47 @@ pub(super) fn enrich(prepared: &PreparedSimulation, result: &mut Value) -> Resul
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod adoption_tests {
+    use super::reproduction_identified;
+    use std::collections::BTreeMap;
+
+    fn identified_build() -> BTreeMap<String, String> {
+        BTreeMap::from([
+            ("compiler".into(), "rustc 1.85.0".into()),
+            ("adoption_ledger_sha256".into(), "a".repeat(64)),
+            ("adoption_ledger_version".into(), "1.1.0".into()),
+        ])
+    }
+
+    #[test]
+    fn missing_ledger_never_identifies_reproduction() {
+        let mut build = identified_build();
+        assert!(reproduction_identified(&build));
+        for missing in ["not-present", "unknown", "", "abc"] {
+            build.insert("adoption_ledger_sha256".into(), missing.into());
+            assert!(!reproduction_identified(&build));
+        }
+        build.remove("adoption_ledger_sha256");
+        assert!(!reproduction_identified(&build));
+    }
+
+    #[test]
+    fn ledger_version_and_other_build_fields_must_be_identified() {
+        let mut build = identified_build();
+        for missing in [
+            "not-present",
+            "unknown",
+            "",
+            "3309dbdb08e76eb3690d108790a0ad4fa7040c1b",
+        ] {
+            build.insert("adoption_ledger_version".into(), missing.into());
+            assert!(!reproduction_identified(&build));
+        }
+        build = identified_build();
+        build.insert("compiler".into(), "unknown".into());
+        assert!(!reproduction_identified(&build));
+    }
 }

@@ -1,5 +1,6 @@
 //! Capture only explicit, non-secret build identity at compilation time.
 use sha2::{Digest, Sha256};
+mod build_identity;
 use std::{env, fs, path::Path, process::Command};
 
 fn command(program: &str, args: &[&str], root: &Path) -> Option<String> {
@@ -31,6 +32,7 @@ fn source_hash(root: &Path) -> String {
         root.join("rust-toolchain.toml"),
         root.join("crates/dir-simulator/Cargo.toml"),
         root.join("crates/dir-simulator/build.rs"),
+        root.join("crates/dir-simulator/build_identity.rs"),
     ];
     collect(&root.join("crates/dir-simulator/src"), &mut files);
     collect(&root.join("docs/specs"), &mut files);
@@ -66,6 +68,8 @@ fn main() {
     let lock = fs::read(root.join("Cargo.lock"))
         .map(|bytes| format!("{:x}", Sha256::digest(bytes)))
         .unwrap_or_else(|_| "unknown".into());
+    let ledger_bytes = fs::read(root.join("docs/third-party/採用物台帳.md")).ok();
+    let (ledger_sha256, ledger_version) = build_identity::ledger_identity(ledger_bytes.as_deref());
     let values = [
         ("git_commit", git.clone()),
         (
@@ -88,14 +92,8 @@ fn main() {
         ),
         ("cargo_lock_sha256", lock),
         ("build_source_sha256", source_hash(&root)),
-        (
-            "adoption_ledger_sha256",
-            fs::read(root.join("docs/third-party/採用物台帳.md"))
-                .map(|bytes| format!("{:x}", Sha256::digest(bytes)))
-                .unwrap_or_else(|_| "not-present".into()),
-        ),
-        // A full repository revision identifies the adopted model/specification set.
-        ("adoption_ledger_version", git),
+        ("adoption_ledger_sha256", ledger_sha256),
+        ("adoption_ledger_version", ledger_version),
     ];
     let mut generated = String::new();
     for (key, value) in values {
@@ -110,6 +108,7 @@ fn main() {
         "Cargo.lock",
         "Cargo.toml",
         "crates/dir-simulator/Cargo.toml",
+        "crates/dir-simulator/build_identity.rs",
         "rust-toolchain.toml",
         "docs/third-party/採用物台帳.md",
     ] {

@@ -4,3 +4,9 @@
 docs/verification/results/**/*.log -whitespace
 docs/verification/results/**/*.patch -whitespace
 docs/verification/results/can-export-optimization-2026-10-08/profiles/**/*.txt -whitespace
+
+# Upstream license originals include CRLF and intentional blank lines. Preserve
+# their bytes in the Git index and across checkouts for hash-based verification.
+docs/third-party/licenses/** -text -whitespace
+docs/guide/assets/licenses/*.txt -text -whitespace
+docs/verification/results/release-native-distribution-audit-2026-10-08/license-originals-validation-2026-10-08/*.txt -text -whitespace
