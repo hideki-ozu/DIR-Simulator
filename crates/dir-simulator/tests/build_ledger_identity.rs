@@ -27,8 +27,5 @@ fn ledger_identity_requires_a_real_document_version() {
             "unknown"
         );
     }
-    assert_eq!(
-        build_identity::ledger_identity(Some(&[0xff])).1,
-        "unknown"
-    );
+    assert_eq!(build_identity::ledger_identity(Some(&[0xff])).1, "unknown");
 }

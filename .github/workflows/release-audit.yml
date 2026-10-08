@@ -22,12 +22,13 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
+          set-safe-directory: false
       - name: Install fixed toolchain
         run: rustup toolchain install 1.85.0 --profile minimal --component rustfmt --component clippy
       - name: Format and regression
         run: |
-          cargo test --locked --workspace
           cargo fmt --all -- --check
+          cargo test --locked --workspace
           cargo clippy --locked --workspace --all-targets -- -D warnings
       - name: Verify actual product ledger reference
         run: |

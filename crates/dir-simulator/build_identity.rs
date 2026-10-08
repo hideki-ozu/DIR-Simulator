@@ -15,9 +15,9 @@ pub fn ledger_identity(bytes: Option<&[u8]>) -> (String, String) {
         .filter(|version| {
             let parts = version.split('.').collect::<Vec<_>>();
             parts.len() == 3
-                && parts.iter().all(|part| {
-                    !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit())
-                })
+                && parts
+                    .iter()
+                    .all(|part| !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit()))
         })
         .unwrap_or("unknown")
         .to_owned();

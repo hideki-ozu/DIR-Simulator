@@ -202,26 +202,25 @@ pub(super) fn build_environment() -> BTreeMap<String, String> {
     values
 }
 
-
 fn ledger_identified(build: &BTreeMap<String, String>) -> bool {
-    let hash_valid = build.get("adoption_ledger_sha256").is_some_and(|hash| {
-        hash.len() == 64 && hash.bytes().all(|byte| byte.is_ascii_hexdigit())
-    });
+    let hash_valid = build
+        .get("adoption_ledger_sha256")
+        .is_some_and(|hash| hash.len() == 64 && hash.bytes().all(|byte| byte.is_ascii_hexdigit()));
     let version_valid = build.get("adoption_ledger_version").is_some_and(|version| {
         let parts = version.split('.').collect::<Vec<_>>();
         parts.len() == 3
-            && parts.iter().all(|part| {
-                !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit())
-            })
+            && parts
+                .iter()
+                .all(|part| !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit()))
     });
     hash_valid && version_valid
 }
 
 fn reproduction_identified(build: &BTreeMap<String, String>) -> bool {
     ledger_identified(build)
-        && !build.values().any(|value| {
-            value.is_empty() || value == "unknown" || value == "not-present"
-        })
+        && !build
+            .values()
+            .any(|value| value.is_empty() || value == "unknown" || value == "not-present")
 }
 
 pub(super) fn enrich(prepared: &PreparedSimulation, result: &mut Value) -> Result<(), Diagnostic> {
@@ -390,7 +389,12 @@ mod adoption_tests {
     #[test]
     fn ledger_version_and_other_build_fields_must_be_identified() {
         let mut build = identified_build();
-        for missing in ["not-present", "unknown", "", "3309dbdb08e76eb3690d108790a0ad4fa7040c1b"] {
+        for missing in [
+            "not-present",
+            "unknown",
+            "",
+            "3309dbdb08e76eb3690d108790a0ad4fa7040c1b",
+        ] {
             build.insert("adoption_ledger_version".into(), missing.into());
             assert!(!reproduction_identified(&build));
         }
@@ -399,4 +403,3 @@ mod adoption_tests {
         assert!(!reproduction_identified(&build));
     }
 }
-
