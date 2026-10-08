@@ -1,0 +1,295 @@
+{
+  "baseline": "main @ 2f1e60b",
+  "planned_release": "v1.1.4",
+  "preparation_date": "2026-10-08",
+  "documents": [
+    {
+      "path": "docs/design/AXIモデル詳細設計書.md",
+      "base_version": "1.1.0",
+      "new_version": "1.1.1",
+      "history_summary": "公開RegistryのAXI組込みアダプターと専用処理の境界、共通API検証とAXI固有製品照合の区別を追記"
+    },
+    {
+      "path": "docs/design/CANFD・100BASE-T1詳細設計書.md",
+      "base_version": "1.1.2",
+      "new_version": "1.1.3",
+      "history_summary": "CAN FD・100BASE-T1の状態所有とcallback事前検証、公開Registry・共通実行経路と組込みアダプターの境界を反映。v1.1.2公開済み実装と今回改修を区別"
+    },
+    {
+      "path": "docs/design/CANモデル詳細設計書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "CAN完了台帳の安定ハンドル・退避条件・停止時凍結と、逐次窓集計の内部責務を追記"
+    },
+    {
+      "path": "docs/design/CAN・Ethernet変換詳細設計書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、CAN↔Ethernet変換のprepare・codec・協調実行・lineage・結果の詳細設計と実装・検証範囲を確定"
+    },
+    {
+      "path": "docs/design/CAN出力最適化詳細設計書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、CAN出力最適化①〜⑤の内部形式・接続・独立試作と製品統合の比較方法・検証範囲を記録"
+    },
+    {
+      "path": "docs/design/EthernetTSN詳細設計書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、TAS・CBS・PSFPの状態・算術・共有coordinator・確定境界・観測の詳細設計と実装・検証範囲を確定"
+    },
+    {
+      "path": "docs/design/EthernetVLAN・マルチキャスト詳細設計書.md",
+      "base_version": "1.1.1",
+      "new_version": "1.1.2",
+      "history_summary": "CAN↔Ethernet変換・Ethernet動的制御・TSNの別profileへの詳細設計参照と静的VLAN契約の境界を追記。追加profileの実装・製品検証状態を更新"
+    },
+    {
+      "path": "docs/design/Ethernetモデル詳細設計書.md",
+      "base_version": "1.1.0",
+      "new_version": "1.1.1",
+      "history_summary": "全二重L2・媒体拡張v2の開発実装と、検証仕様で管理する実施範囲を明記"
+    },
+    {
+      "path": "docs/design/Ethernet動的制御詳細設計書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、動的membership・VID登録・学習・tree・制御stateの所有と原子的commit・観測の詳細設計を確定"
+    },
+    {
+      "path": "docs/design/Ethernet媒体拡張詳細設計書.md",
+      "base_version": "1.1.2",
+      "new_version": "1.1.3",
+      "history_summary": "媒体拡張の状態所有・callback事前検証と公開Registry・共通実行経路・組込みアダプターの境界を反映。v1.1.2公開済み実装と今回改修を区別"
+    },
+    {
+      "path": "docs/design/GWモデル詳細設計書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "GWの公開Registry接続、専用エンジン・schema2結果・系譜の配置と、外部登録モデルの検証境界を反映"
+    },
+    {
+      "path": "docs/design/SoC・AHB・NoC詳細設計書.md",
+      "base_version": "1.1.0",
+      "new_version": "1.1.1",
+      "history_summary": "SoC・AHB・NoCの公開Registry組込みアダプターと専用仲裁・転送・経路処理、共通APIと固有検証の境界を追記"
+    },
+    {
+      "path": "docs/design/メモリ・IPC詳細設計書.md",
+      "base_version": "1.1.0",
+      "new_version": "1.1.1",
+      "history_summary": "メモリ・IPCの公開Registry組込みアダプターと専用競合・台帳処理、共通APIと固有検証の境界を追記"
+    },
+    {
+      "path": "docs/design/入力・設定詳細設計書.md",
+      "base_version": "1.1.0",
+      "new_version": "1.1.1",
+      "history_summary": "公開Registryによる拡張profile準備、位置付き診断と取得済み入力の再現情報・準備失敗公開の設計を追記"
+    },
+    {
+      "path": "docs/design/実行詳細設計書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "登録モデル共通エンジンのcallback確定・成功prefix、観測点退避、検出可能な確保失敗とイベント処理計測を追記"
+    },
+    {
+      "path": "docs/design/結果処理詳細設計書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "登録モデル結果・再現メタデータ・準備失敗公開、CAN/GW台帳退避・逐次集計と出力最適化①〜⑤の内部責務を反映"
+    },
+    {
+      "path": "docs/design/複数モデル統合詳細設計書.md",
+      "base_version": "1.1.3",
+      "new_version": "1.1.4",
+      "history_summary": "公開Registryと登録モデル共通実行・出力、追加ネットワーク3 profileの単一FES・coordinator・確定境界を規定"
+    },
+    {
+      "path": "docs/specs/models/AXIモデル詳細機能仕様書.md",
+      "base_version": "1.1.0",
+      "new_version": "1.1.1",
+      "history_summary": "AXIの仕様・詳細設計・fixtureと製品実行記録の対応および検証範囲の管理先を明記"
+    },
+    {
+      "path": "docs/specs/models/CANFD・100BASE-T1詳細機能仕様書.md",
+      "base_version": "1.1.2",
+      "new_version": "1.1.3",
+      "history_summary": "v1.1.2で公開済みの抽象profile実装と、今回の共通API・診断・成果物改修および検証境界を区別"
+    },
+    {
+      "path": "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、CAN↔Ethernet変換の入力・codec・方向別規則・容量・時間・lineage・結果契約と実装範囲を確定"
+    },
+    {
+      "path": "docs/specs/models/EthernetTSN詳細機能仕様書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、TSNのTAS・CBS・PSFPの入力・算術・状態遷移・合成・観測と独立期待値の契約を確定"
+    },
+    {
+      "path": "docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md",
+      "base_version": "1.1.1",
+      "new_version": "1.1.2",
+      "history_summary": "静的VLAN契約と、動的学習・snooping・VID登録・STPおよびTSNの別profileへの詳細化境界を追記。追加profileの実装・製品検証状態を更新"
+    },
+    {
+      "path": "docs/specs/models/Ethernetモデル詳細機能仕様書.md",
+      "base_version": "1.1.0",
+      "new_version": "1.1.1",
+      "history_summary": "全二重L2・媒体拡張v2の開発実装と、取得時点の製品検証記録で管理する実施範囲を明記"
+    },
+    {
+      "path": "docs/specs/models/Ethernet動的制御詳細機能仕様書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、MAC学習・源別membership・VID登録・抽象STP・link変更・観測の動的制御契約を確定"
+    },
+    {
+      "path": "docs/specs/models/GWモデル詳細機能仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "GWの専用組込み実装と公開Registry・構造化診断・準備失敗成果物の提供状態および検証範囲を整理"
+    },
+    {
+      "path": "docs/specs/インタフェース詳細機能仕様書.md",
+      "base_version": "1.0.1",
+      "new_version": "1.1.0",
+      "history_summary": "公開Registry・Schema・Envelope・Contextと登録入口、既存API互換性、RunReport・codec・descriptor契約を反映"
+    },
+    {
+      "path": "docs/specs/実行詳細機能仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "実行基盤の製品実装・受け入れ試験の実施範囲と、全仕様期待値・正式性能判定との境界を明記"
+    },
+    {
+      "path": "docs/specs/拡張モデル共通詳細機能仕様書.md",
+      "base_version": "1.1.1",
+      "new_version": "1.1.2",
+      "history_summary": "公開Registry登録・prepare凍結と共通エンジン、追加ネットワーク3 profileと既存nativeアダプターの境界を反映。追加profileのv1.1.4の公開予定を反映"
+    },
+    {
+      "path": "docs/specs/結果詳細機能仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "取得済み入力・確定設定の再現情報、準備失敗5ファイル公開、観測点退避・順次出力の実装と検証境界を明記"
+    },
+    {
+      "path": "docs/specs/診断詳細機能仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "位置付きE-0001〜E-0004診断、準備失敗5ファイル公開・成功prefixの実装と共通境界の検証範囲を明記"
+    },
+    {
+      "path": "docs/specs/資源詳細機能仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "有限資源の製品実装・受け入れ試験の実施範囲と、全項目・正式性能合格との境界を明記"
+    },
+    {
+      "path": "docs/verification/cases/CANFD・100BASE-T1検証仕様書.md",
+      "base_version": "1.1.2",
+      "new_version": "1.1.3",
+      "history_summary": "v1.1.2で公開済みの抽象profile実装と、今回の共通API・診断・成果物改修および検証境界を区別"
+    },
+    {
+      "path": "docs/verification/cases/CAN・Ethernet変換検証仕様書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、CAN↔Ethernet変換の独立codec・時間・容量・lineage・受信母数期待値と製品照合範囲を規定"
+    },
+    {
+      "path": "docs/verification/cases/EthernetTSN検証仕様書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、TAS・CBS・PSFPの独立算術・合成・停止・部分結果の検証契約と製品照合範囲を規定"
+    },
+    {
+      "path": "docs/verification/cases/Ethernetモデル検証仕様書.md",
+      "base_version": "1.1.0",
+      "new_version": "1.1.1",
+      "history_summary": "全二重L2・媒体v2の実装状態と、当時の未実行項目・準備失敗動作・後続共通runtime検証を区別"
+    },
+    {
+      "path": "docs/verification/cases/Ethernet動的制御検証仕様書.md",
+      "base_version": null,
+      "new_version": "1.1.0",
+      "history_summary": "初回pushに向け、動的制御・経路・時刻・上限・停止・互換性の独立期待値と製品照合範囲を規定"
+    },
+    {
+      "path": "docs/verification/cases/Ethernet媒体拡張検証仕様書.md",
+      "base_version": "1.1.2",
+      "new_version": "1.1.3",
+      "history_summary": "媒体拡張の取得時点の準備拒否・未実行範囲と、後続の公開API・共通runtime検証を区別"
+    },
+    {
+      "path": "docs/verification/cases/GWモデル検証仕様書.md",
+      "base_version": "1.0.1",
+      "new_version": "1.1.0",
+      "history_summary": "GW検証取得時点の準備失敗・位置情報の状態と、後続共通診断・成果物の検証範囲を区別"
+    },
+    {
+      "path": "docs/verification/cases/共通実行検証仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "製品実装・共通実行4ケースの部分確認を受け入れ実施記録へ接続し、未確認項目と合格の区別を明記"
+    },
+    {
+      "path": "docs/verification/cases/利用フロー・品質検証仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "受け入れ検証・未確認条件を記録し、100万要求の中断測定と最適化統合後の完走観測・時間目標未達を区別"
+    },
+    {
+      "path": "docs/verification/cases/拡張モデル統合検証仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "製品実装・拡張モデル統合4ケースの部分確認を受け入れ実施記録へ接続し、未確認項目と合格の区別を明記"
+    },
+    {
+      "path": "docs/verification/cases/結果処理検証仕様書.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "CAN出力最適化①〜⑤の独立試作・製品統合比較、出力一致・失敗境界・保存証跡をDIR-TEST-0117として規定"
+    },
+    {
+      "path": "docs/アーキテクチャ設計書.md",
+      "base_version": "1.1.3",
+      "new_version": "1.1.4",
+      "history_summary": "公開Registry・登録モデル共通エンジン・API互換性・再現情報の配置と、追加ネットワーク3 profileの責務分担を反映。追加profileのv1.1.4の公開予定を反映"
+    },
+    {
+      "path": "docs/ドキュメント作成・運用規約.md",
+      "base_version": "1.0.0",
+      "new_version": "1.1.0",
+      "history_summary": "CAN↔Ethernet変換・Ethernet動的制御・TSNの仕様・設計・検証文書の対応と文書IDを追記。追加profileの実装・検証状態とv1.1.4の公開予定を反映"
+    },
+    {
+      "path": "docs/品質・配布方針.md",
+      "base_version": "1.0.1",
+      "new_version": "1.1.0",
+      "history_summary": "CAN大規模処理・出力最適化の改修とWSL2測定を記録し、100万要求の完走観測・時間目標未達・正式判定未完了を明記"
+    },
+    {
+      "path": "docs/将来拡張計画.md",
+      "base_version": "1.1.3",
+      "new_version": "1.1.4",
+      "history_summary": "公開拡張API・大規模逐次処理・出力最適化と追加ネットワーク3 profileの開発実装・検証範囲・性能残課題を反映"
+    },
+    {
+      "path": "docs/機能仕様書.md",
+      "base_version": "1.1.3",
+      "new_version": "1.1.4",
+      "history_summary": "CAN↔Ethernet変換・動的制御・TSNの6機能・要件対応と、追加3 profileの実装・共通エンジン接続を反映。追加profileの実装・検証状態とv1.1.4の公開予定を反映"
+    },
+    {
+      "path": "docs/要件定義書.md",
+      "base_version": "1.1.4",
+      "new_version": "1.1.5",
+      "history_summary": "CAN↔Ethernet変換・動的制御・TSNの22要件・6受入条件と、追加モデル・100万要求の受け入れ検証範囲を反映。追加profileのv1.1.4の公開予定を反映"
+    }
+  ]
+}

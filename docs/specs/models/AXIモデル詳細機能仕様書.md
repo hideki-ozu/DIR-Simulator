@@ -1,13 +1,14 @@
 # AXIモデル詳細機能仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`main @ 9ad16c4`
-予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`main @ 2f1e60b`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-08` | AXIの仕様・詳細設計・fixtureと製品実行記録の対応および検証範囲の管理先を明記 |
 | `1.1.0` | `2026-10-05` | 本書の初期抽象profileの組込み実装・製品照合とv1.1.3向け提供範囲を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
@@ -206,7 +207,7 @@ writeの一部WがT未満に到達しBがT以上にある場合、RAM更新済�
 | axi.handshake | schema_version1。record_id=`request_id:channel:beat`（AW/AR/Bのbeat suffixは0）、subject=Interconnect、request_idはtransaction。data=`{channel:S,beat:D?,valid_since_ps:D,address:D?,data_hex:S?,wstrb:D?,last:boolean?,response:S?}`。time_psはhandshake edge。AW/ARはaddressだけ、Wはbeat/data/wstrb/last、Bはresponseだけ、Rはbeat/data/last/responseだけを値とし他はnull |
 | axi.memory | schema_version1。record_id=subject=Ram path、request_id=null。data=`{base:D,size:D,data_hex:S}`は全RAM byte列を昇順アドレスの小文字hexで保存。time_psは最後の有効WSTRB付きW commit（初期0）、値が同じでも有効byteを書けば更新する |
 | 記録の存在 | transactionは生成commit、handshakeは該当edgeのcommit、memoryはinitialize全成功後に現れる。停止や失敗は共通journalの確定prefixから出力する。共通requests/receiversへのAXI行混入は対象外（注） |
-| 検証 | [AXI詳細設計](../../design/AXIモデル詳細設計書.md)、[AXI検証仕様](../../verification/cases/AXIモデル検証仕様書.md)、[完全fixture](../../verification/fixtures/axi/scenarios.json)へ接続する。実装試験は未実施 |
+| 検証 | [AXI詳細設計](../../design/AXIモデル詳細設計書.md)、[AXI検証仕様](../../verification/cases/AXIモデル検証仕様書.md)、[完全fixture](../../verification/fixtures/axi/scenarios.json)へ接続する。実装試験の実施範囲は検証仕様の製品実行記録で管理する |
 
 
 ### 5.1. AXI指標の有限登録集合

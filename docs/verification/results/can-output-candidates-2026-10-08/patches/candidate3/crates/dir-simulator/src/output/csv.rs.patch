@@ -1,0 +1,105 @@
+--- a/crates/dir-simulator/src/output/csv.rs
++++ b/crates/dir-simulator/src/output/csv.rs
+@@ -67,9 +67,17 @@
+     Ok(())
+ }
+ 
+-pub(super) fn write_stream(
++pub(super) fn write_stream_header(
+     writer: &mut dyn std::io::Write,
+-    rows: impl IntoIterator<Item = Result<Value, crate::Diagnostic>>,
++) -> Result<(), crate::Diagnostic> {
++    writer
++        .write_all(HEADER.as_bytes())
++        .map_err(|e| crate::Diagnostic::output(format!("Cannot write CSV header: {e}")))
++}
++
++pub(super) fn write_stream_row(
++    writer: &mut dyn std::io::Write,
++    row: &Value,
+     run_id: &str,
+     version: u32,
+ ) -> Result<(), crate::Diagnostic> {
+@@ -83,47 +91,41 @@
+     fn text(row: &Value, field: &str) -> String {
+         row[field].as_str().unwrap_or_default().to_owned()
+     }
++    let value = if row["value"].is_null() {
++        String::new()
++    } else if let Some(n) = row["value"].as_f64() {
++        number_wire(n)
++    } else {
++        text(row, "value")
++    };
++    let cells = [
++        version.to_string(),
++        run_id.to_owned(),
++        text(row, "seq"),
++        text(row, "event_seq"),
++        text(row, "effect_seq"),
++        text(row, "target"),
++        text(row, "metric"),
++        text(row, "unit"),
++        text(row, "value_kind"),
++        value,
++        text(row, "time_ps"),
++        text(row, "start_ps"),
++        text(row, "end_ps"),
++        text(row, "request_id"),
++        text(row, "receiver"),
++        text(row, "reason"),
++        text(row, "sample_count"),
++    ];
++    let line = cells
++        .into_iter()
++        .enumerate()
++        .map(|(i, s)| if i < 2 { s } else { cell(s) })
++        .collect::<Vec<_>>()
++        .join(",");
+     writer
+-        .write_all(HEADER.as_bytes())
+-        .map_err(|e| crate::Diagnostic::output(format!("Cannot write CSV header: {e}")))?;
+-    for row in rows {
+-        let row = row?;
+-        let value = if row["value"].is_null() {
+-            String::new()
+-        } else if let Some(n) = row["value"].as_f64() {
+-            number_wire(n)
+-        } else {
+-            text(&row, "value")
+-        };
+-        let cells = [
+-            version.to_string(),
+-            run_id.to_owned(),
+-            text(&row, "seq"),
+-            text(&row, "event_seq"),
+-            text(&row, "effect_seq"),
+-            text(&row, "target"),
+-            text(&row, "metric"),
+-            text(&row, "unit"),
+-            text(&row, "value_kind"),
+-            value,
+-            text(&row, "time_ps"),
+-            text(&row, "start_ps"),
+-            text(&row, "end_ps"),
+-            text(&row, "request_id"),
+-            text(&row, "receiver"),
+-            text(&row, "reason"),
+-            text(&row, "sample_count"),
+-        ];
+-        let line = cells
+-            .into_iter()
+-            .enumerate()
+-            .map(|(i, s)| if i < 2 { s } else { cell(s) })
+-            .collect::<Vec<_>>()
+-            .join(",");
+-        writer
+-            .write_all(line.as_bytes())
+-            .and_then(|()| writer.write_all(b"\n"))
+-            .map_err(|e| crate::Diagnostic::output(format!("Cannot write CSV record: {e}")))?;
+-    }
++        .write_all(line.as_bytes())
++        .and_then(|()| writer.write_all(b"\n"))
++        .map_err(|e| crate::Diagnostic::output(format!("Cannot write CSV record: {e}")))?;
+     Ok(())
+ }

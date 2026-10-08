@@ -1,0 +1,206 @@
+# 資源詳細機能仕様書
+
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.0.0` | `2026-10-03` | GW ingressの有限RX容量とコピーのTX受理待ちを反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
+| `0.1.0` | `2026-10-01` | 作業内容を集約：初版。採用する規則・境界・拡張契約を確定。有界キュー・資源の操作契約とCAN共有状態の所有境界を具体化。モデル別の容量単位・選出・占有責務を具体化。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
+
+文書ID：`spec-resources`
+
+| 項目 | 内容 |
+| --- | --- |
+| 文書状態 | 仕様決定済み。共通操作とCAN適用を規定。詳細な所有状態・処理は[CANモデル詳細設計](../design/CANモデル詳細設計書.md)に対応。製品実装・実行試験は未実施 |
+| 対象 | [遅延・バッファ・共有資源](../機能仕様書.md#dir-func-0015)の共通契約。CAN固有優先度は[CAN仕様](models/CANモデル詳細機能仕様書.md#arbitration)が定める |
+
+本書は[離散イベント実行の親要件](../要件定義書.md#dir-req-0007)を、遅延源、有界バッファ、共有資源の状態と操作の側から具体化する。入力は確定容量・遅延・帯域、ready要求と解放通知であり、出力は受理／破棄、勝者、占有区間、待機状態とその観測更新である。[実行仕様](実行詳細機能仕様書.md#event-order)が操作順と公開単位を、モデル仕様が候補・優先度・転送量を、[結果仕様](結果詳細機能仕様書.md#measurement-points)が標本と母数を定める。
+
+[バッファ状態](../要件定義書.md#dir-req-0038)と[共有資源の競合](../要件定義書.md#dir-req-0040)は、勝者の取出し・占有開始・完了予約・観測を同じ成功効果として確定する境界で連携する。候補提示と仲裁敗北は待機の継続であり、容量減少や送信試行の増加を伴うのはSOF確定時である。この分担をキュー長、要求状態と資源状態の一致で確認する。
+
+<a id="queue"></a>
+
+## 1. 有界バッファ
+
+```trace
+{
+  "id": "spec-resources#queue",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0035",
+    "DIR-REQ-0038",
+    "DIR-REQ-0039",
+    "DIR-REQ-0083",
+    "DIR-REQ-0089",
+    "DIR-REQ-0090",
+    "DIR-REQ-0104",
+    "DIR-REQ-0107"
+  ],
+  "upstream": [
+    "DIR-FUNC-0015",
+    "DIR-FUNC-0016",
+    "DIR-FUNC-0018",
+    "DIR-FUNC-0019",
+    "DIR-FUNC-0023"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 項目 | 採用規則 |
+| --- | --- |
+| 単位・容量 | CAN送信キューはフレーム件数。`queueCapacity`は0～4294967295の整数、既定64。実際の割当失敗は実行失敗として診断する。注：容量の事前全量メモリ確保は要求対象外 |
+| 使用量 | ready後に受理した待機フレームを数える。ローカル候補・仲裁敗者を含める。注：TX処理中、バスで送信中、受信処理中は容量算入の対象外 |
+| 格納 | ready通知で使用量<容量なら1件増加。使用量=容量なら新着をdrop-newestとして破棄し、既存フレームを保つ。生成時刻と破棄時刻を保存する |
+| 容量0 | 全てのready要求をdrop-newestとして破棄する。注：空バスへの直送は対象外。使用率は分母0としてnull、使用量は0 |
+| 取出し | 仲裁勝者のSOF確定時に1件を取り出す。候補提示・敗北では格納状態を保持する。SOF後のフレームは送信状態へ移す |
+| 同時刻境界 | 完了・解放を先に処理するが、待機キューの取出しはphase 2。phase 1の新着が満杯なら、同じ時刻の後段で取出し予定でも破棄する。容量判定は当該phaseで確定済の使用量を用いる |
+| 状態記録 | 格納・取出し・破棄で前後の使用量、容量、要求ID、時刻、処理連番を記録。最大キュー長は全遷移後値の最大。破棄でも観測記録を残す |
+| 将来方針 | `drop-newest`を既定の登録済みpolicyとして識別する。別のpolicyは同じ格納結果（accepted/droppedと理由）契約で追加し、未知policyは準備失敗。注：未登録policyの暗黙fallbackは対象外 |
+| 例 | 容量1、A待機、同時刻にB readyと調停があるとBは破棄、その後A送信で使用量0。A送信中にB readyならBは使用量1で受理できる |
+
+### 1.1. 操作と観測の契約
+
+| 操作 | 入力・前提 | 結果・確定する効果 |
+| --- | --- | --- |
+| create_queue | queue_id、capacity、policy_id | 長さ0、上限capacityの論理キュー。初期policyはdrop-newest、version=1。queue_idは所有Controllerの正規パスに`.tx_queue`を付けた計測上のID |
+| offer | 一意request_id、ready_ps、安定した生成順、優先キー | 空きありはAcceptedで保持し長さ+1、満杯はDropped(queue_full)で長さ維持。同じrequest_idの再投入は実行不変条件違反。成功した効果バッチに要求状態とキュー遷移を一度だけ記録 |
+| peek_candidate | 現在の待機集合と仲裁policy | 最小優先キーの要求を読取専用で返す。空ならNone。CANの同一優先キーは生成順で比較する |
+| take_winner | 同じ仲裁callback内のpeekで得たrequest_id | 対象を待機集合から一度だけ取り出して長さ-1、状態をin_flightへ変更。候補が既に無い場合は不変条件違反。選出と取出しは同一callback内で連続して処理する |
+| 観測の独立性 | 内部コンテナと出力用journal | 内部は優先ヒープ等で実装し、journalは成功更新から長さ・要求状態を再現する。終了後はjournalの値を使用する |
+| CANでの所有 | BusContextに属するcontroller別キュー | CANは同一BusContext内で各キューを選出し、勝者取出し・バス占有・予約・観測を一イベントの効果として処理する。simple moduleのControllerとBusは同じcontextの識別子を参照する |
+| 拡張 | policy descriptorと候補キー比較 | キューの格納・取出し結果と観測契約を共通にし、CAN固有比較はCAN登録実装へ置く。将来の複数バスは別context、GW出力は別queue_idを持つ |
+
+<a id="resource"></a>
+
+## 2. 調停と資源の占有
+
+```trace
+{
+  "id": "spec-resources#resource",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0035",
+    "DIR-REQ-0040",
+    "DIR-REQ-0041",
+    "DIR-REQ-0085",
+    "DIR-REQ-0087",
+    "DIR-REQ-0091",
+    "DIR-REQ-0105",
+    "DIR-REQ-0107",
+    "DIR-REQ-0108",
+    "DIR-REQ-0110"
+  ],
+  "upstream": [
+    "DIR-FUNC-0012",
+    "DIR-FUNC-0015",
+    "DIR-FUNC-0016",
+    "DIR-FUNC-0017",
+    "DIR-FUNC-0018",
+    "DIR-FUNC-0019",
+    "DIR-FUNC-0023"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 項目 | 採用規則 |
+| --- | --- |
+| 状態 | `idle`、`transmitting`、`intermission`を区別する。汎用側はownerと占有開始・解放時刻を管理し、モデル固有の内訳は型付き状態として扱う |
+| 選出 | idle時の調停機会にready候補集合を確定。モデルの優先キー、ready時刻、要求の安定連番の順で1件を選ぶ。同順位は要求IDの生成順で決定。CANは[専用仲裁](models/CANモデル詳細機能仕様書.md#arbitration)を優先する |
+| 敗者 | 要求ID・生成時刻・ready時刻・キュー位置の基準連番を保持する。次の機会で候補を再計算。仲裁敗北を待機状態の継続として扱う |
+| 非プリエンプション | 占有期間中は所有者を保持する。フレーム完了と次回利用可能時刻を分け、新しいSOFはintermissionの終端以後に許可する |
+| 待ち時間 | readyからSOFまでの全待機をarbitration_wait_psとする。ローカル選出待ちと共有バス待ちは和集合の期間として1回算入する。候補提示からSOFまでの別指標を追加する場合は母集団と始点を別名で示す |
+| 使用率 | CAN資源のbusyはSOFからintermission終端まで。`∫busy(t)dt/(区間長)`、バッファは`∫q(t)dt/(capacity*区間長)`。同時刻の遷移間の時間は0。計測窓で区間を切り詰め、0分母はnull |
+| IDと拡張 | 資源IDは正規インスタンスパス。各busが固有IDと独立した候補集合・所有者・解放イベントを持つ契約にする。現行準備検証は共有CANバス1個を要求する |
+
+<a id="delay"></a>
+
+## 3. 遅延の計算境界
+
+```trace
+{
+  "id": "spec-resources#delay",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0034",
+    "DIR-REQ-0035",
+    "DIR-REQ-0036",
+    "DIR-REQ-0037",
+    "DIR-REQ-0084",
+    "DIR-REQ-0088",
+    "DIR-REQ-0098",
+    "DIR-REQ-0109",
+    "DIR-REQ-0111"
+  ],
+  "upstream": [
+    "DIR-FUNC-0009",
+    "DIR-FUNC-0012",
+    "DIR-FUNC-0013",
+    "DIR-FUNC-0015",
+    "DIR-FUNC-0016",
+    "DIR-FUNC-0017",
+    "DIR-FUNC-0018",
+    "DIR-FUNC-0019",
+    "DIR-FUNC-0023"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 時間成分 | 所有者・計算・重なり |
+| --- | --- |
+| TX処理 | Controllerの固定txProcessingDelay。生成からreadyまで各要求独立に経過する。注：CPU競合・直列化は初期モデルの対象外 |
+| 待ち | 有界送信キューとバス。readyからSOFまで。TX処理とは独立した成分として1回算入する |
+| 転送 | Busがフレーム全内容、CRC、stuff bits、bitrateからSOF→EOFを計算。注：channelでの帯域計算は対象外 |
+| フレーム間隔 | BusがSOF基準の全占有期間を計算。EOF後の3bit intermissionを資源使用率へ算入し、受信遅延はEOFまでの期間を用いる |
+| 伝搬 | source側tx channelとdestination側rx channelの固定delayの和。EOF後に完了フレームの観測を遅らせる抽象モデル。伝搬待ち中にバスが次フレームを送信できる |
+| RX処理 | Controllerの固定rxProcessingDelay。受信フィルタに適合した観測から受信完了まで。各受信を独立に処理し、別の受信や送信と重ねられる |
+| 総遅延 | `rx_complete-generated = TX処理 + 待ち + SOF→EOF + 伝搬 + RX処理`。受信者ごとに計算。channelの遅延は伝搬成分にだけ算入する |
+| 境界 | 全固定遅延は0以上の正確なps、既定0。負値・分解能不適合は準備失敗。受信完了がT以上なら未完了として記録 |
+| 確認例 | 生成0、TX処理2us、待ち4us、転送100us、source/destination delay各1us/3us、RX処理5usならSOF6us、EOF106us、観測110us、受信完了115us、総遅延115us |
+
+## 4. 資源状態と操作順
+
+[待ち時間](../要件定義書.md#dir-req-0035)はローカル選出待ちと共有バス待ちの発生源を区別し、CANではready→SOFの重なる期間を一回だけ算入する。[遅延の時刻反映](../要件定義書.md#dir-req-0037)の確認は、各成分の所有者が決めた生成・ready・SOF・EOF・観測・受信完了の実到達点を、結果側の同じ要求／受信先で照合して行う。占有終端と受信完了は独立した境界として扱う。
+
+| 現在状態 | 契機 | 次状態・処理 |
+| --- | --- | --- |
+| idle、候補なし | 仲裁評価 | idleを保持し、次のready通知を待つ |
+| idle、候補あり | 仲裁評価 | 勝者の期間・EOF・releaseを先に検査し、キュー取出し、owner設定、transmitting、EOF/release予約と観測を一括確定 |
+| transmitting | EOF | ownerを保ちintermissionへ遷移。送信要求はsuccessとなり、受信者ごとの観測予約を作る |
+| intermission | release | ownerをNoneとしてidleへ遷移し、同時刻の調停を要求 |
+| transmitting/intermission | 新規ready・調停 | 既存ownerと予定完了を保持する。新規要求は待機集合へ格納 |
+| 任意 | T又は実行失敗 | journalの最後の整合状態を凍結。占有区間・未完了は結果仕様の観測終端で評価 |
+| 共通の最小状態 | 汎用資源 | idle/busy、owner、開始・解放時刻を共通契約とする。transmitting/intermissionはCANプロファイルの内訳。初期の処理遅延と伝搬値は[CAN詳細設計](../design/CANモデル詳細設計書.md)のイベントに対応 |
+
+## モデル別資源の適用
+
+| profile | 容量と選出 | 資源の境界 |
+| --- | --- | --- |
+| can.cc.ideal.v1 / multibus通常Controller | 待機フレーム数、CAN優先度、drop-newest | bus別のSOF～intermission終端。ControllerごとのTXキュー |
+| can.cc.multibus.v1 GW port | ingress RXは保持親フレーム数でdrop-newest。egress TXは待機数、CAN優先度、正容量満杯はRXでwaiting_tx、TX0はqueue_full | [GW仕様](models/GWモデル詳細機能仕様書.md#forwarding)の全枝受理/終端までRX保持、SOFのTX除去で空き通知。Bus busyとTX受理は独立 |
+| axi4.transaction.v1 | manager別outstanding数、モデルで規定したmanager調停 | transactionのgrantから最終応答handshake。READYによる待ちを含み、beatごとの受理をAXIモデルが決める |
+| ethernet.l2.store-forward.v1 | 出力portの待機copy数、FIFO、drop-newest | 方向別リンクのSOF～IFG終端。反対方向・別出力は独立 |
+| 操作の共通部分 | accepted/dropped、候補選出、占有／解放、成功時のjournal更新 | 選出・容量単位は登録policyのdescriptorに属し、CANの優先キーを他モデルへ固定することは範囲注釈上の対象外 |
+| 計測 | 対象queue/resource ID、長さ又はoutstanding、占有区間と理由 | 各モデル仕様のmetric schemaで単位・母数・観測契機を定義 |
+
+| 対象 | 待機・容量 | 占有・時間 |
+| --- | --- | --- |
+| ethernet.l2.store-forward.v2 | 待機FIFOと送信中又は再送待ちのcurrent frameを別管理。再送中は同じ要求を保持 | 半二重は媒体のcarrier区間・jamとMAC別backoffを所有。全二重/T1は方向独立。詳細は[媒体仕様](models/Ethernet媒体拡張詳細機能仕様書.md) |
+
+## 将来対応モデルへの適用
+
+上記のCAN容量・仲裁・intermissionは現行Classical CANの契約であり、以下の将来モデルでは各正本の容量単位と占有状態を適用する。[profile登録](拡張モデル共通詳細機能仕様書.md#selection)によって共通の受理・確定・観測へ接続する。
+
+| 項目 | 契約 |
+| --- | --- |
+| 将来モデル | 共有バス、Router入力キュー、DDR bank、SRAM port、共有slot、DMA記述子、mailboxを各正本の容量単位と占有規則で管理する。受理・待機・確定・解放を同じ時刻基盤へ接続し、モデル固有の調停を資源所有者へ委譲する。 |
+| 正本 | [CAN FD・100BASE-T1](models/CANFD・100BASE-T1詳細機能仕様書.md)、[SoC・AHB・NoC](models/SoC・AHB・NoC詳細機能仕様書.md)、[DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC](models/メモリ・IPC詳細機能仕様書.md) |

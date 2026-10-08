@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "can": {
+    "schema_version": 2,
+    "generators": [
+      {
+        "id": "can_source",
+        "kind": "can.periodic.v1",
+        "node": "R02.src",
+        "start": "200us",
+        "period": "1ms",
+        "end": "1ms",
+        "frame": {
+          "format": "standard",
+          "id": 0,
+          "data": ""
+        }
+      }
+    ]
+  },
+  "ethernet": {
+    "schema_version": 3,
+    "generators": [
+      {
+        "id": "eth_source",
+        "node": "R02.sink",
+        "kind": "ethernet.explicit.v1",
+        "times_ps": [
+          "0"
+        ],
+        "frame": {
+          "dst_mac": "02:00:00:00:00:01",
+          "ether_type": 34997,
+          "data": "4449524301000000000000",
+          "tag": {
+            "vid": 10,
+            "pcp": 3,
+            "dei": 0
+          }
+        },
+        "flow_id": "reverse",
+        "priority": 3,
+        "deadline_ps": null
+      }
+    ]
+  }
+}

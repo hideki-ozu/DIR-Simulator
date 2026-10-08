@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-08",
+  "scope": "Focused Viewer native dynamic capability-reference regression; parent owns v4 binary/exported-HTML/full catalog rebuild.",
+  "changed_paths": [
+    "crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js",
+    "tests/network_viewer_model.test.cjs"
+  ],
+  "source_hashes": {
+    "crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js": "9ad80da3d9589061594ef1eb682ea7fc968d109ccbfc7147fcffdd53c4f8d784",
+    "tests/network_viewer_model.test.cjs": "91b0722c173221e6593a1ddd57ccc87b4a52b3310211979317482480e6390fa3"
+  },
+  "input_artifact": "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json",
+  "input_artifact_sha256": "c46df54934d54d2df532b05168b0ae7a8d1fce7b333b78d41337afc63ffd1f7a",
+  "expected": "Declared tagged registrable VLAN references load without promoting declared capabilities into static or effective runtime membership.",
+  "before": {
+    "evidence": "/tmp/dir-acceptance-catalog-final-2026-10-08/browser-coverage.json",
+    "production_assets_exit_code": 1,
+    "error": "Error: Ethernet: 購読VLANがmemberではありません\n    at fail (/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js:9:32)\n    at Object.parseResults (/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js:394:99)\n    at /home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs:12:69\n",
+    "exported_html_exit_code": 1
+  },
+  "actual": {
+    "strict_native_result_loader": "passed",
+    "production_assets_browser": "passed",
+    "node_model_tests": {
+      "tests": 49,
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0
+    },
+    "static_source_membership": "VID20 absent from Net.a.tx static members throughout replay",
+    "runtime_initial_membership": "VID20 absent from frozen initial policy metadata",
+    "runtime_registered_membership": "VID20 present at time0 only because recorded registration controls commit at0",
+    "runtime_expired_membership": "VID20 absent at100000000ps after recorded expiry"
+  },
+  "implementation": {
+    "reference_validation": "Separate copy of static per-port member maps extended only by validated declared tagged capabilities; used for Endpoint subscription, switch static VLAN FDB, switch multicast egress and native source VLAN validation.",
+    "capability_validation": "Exact fields, integer VID 1..4094, known output Port, tagged true, no duplicate Port/VID and no overlap with static member.",
+    "runtime_semantics": "Static policies and history/effective VLAN sets retain original content; declaring capability alone does not register membership.",
+    "static_profiles": "Existing strict static membership checks remain enforced; a dynamic metadata declaration cannot authorize a static-profile reference."
+  },
+  "new_named_tests": [
+    "declared dynamic tagged capability validates subscription, FDB and multicast without registering runtime membership",
+    "dynamic reference validation rejects undeclared, foreign, malformed, untagged and duplicate capabilities",
+    "static VLAN references cannot borrow a dynamic capability declaration",
+    "dynamic native source VLAN uses declared tagged permission while PVID and effective membership stay static",
+    "current CLI queued-membership-leave result loads declared subscriptions and source VLANs"
+  ],
+  "negative_cases": [
+    "undeclared VLAN subscription",
+    "capability on foreign known endpoint Port",
+    "unknown Port",
+    "ingress Port supplied as capability",
+    "untagged capability",
+    "bool/string/zero/4095 VID",
+    "unknown capability field",
+    "duplicate capability",
+    "static/capability overlap",
+    "foreign switch FDB egress",
+    "foreign switch multicast egress",
+    "undeclared switch FDB VLAN",
+    "undeclared switch multicast VLAN",
+    "undeclared and foreign native source permission",
+    "PVID declared only through capability",
+    "static VLAN reference borrowing dynamic declaration"
+  ],
+  "commands": [
+    {
+      "command": "DIR_VIEWER_CAPABILITY_RESULT=/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json node --test tests/network_viewer_model.test.cjs",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "log": "/tmp/dir-viewer-capability-model.log"
+    },
+    {
+      "command": "NODE_PATH=/home/hideki/.npm/_npx/705bc6b22212b352/node_modules node tests/network_viewer_browser.cjs /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "log": "/tmp/dir-viewer-capability-browser.log"
+    },
+    {
+      "command": "node --check crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "node --check tests/network_viewer_model.test.cjs",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0
+    }
+  ],
+  "artifact_hashes": {
+    "/tmp/dir-viewer-capability-model.log": "cd1a49a30594c083c1262cb102d3766344fd93ef26fb747566a866c2398b6ed7",
+    "/tmp/dir-viewer-capability-browser.log": "b767460b19f767ec27ecbb9caa878a585a0d28a1bd23b44ff1056755488f545d"
+  },
+  "unresolved_gaps": [
+    "New compiled binary and exported-HTML full catalog/browser verification are delegated to parent; v3 embedded Viewer assets are frozen and were not overwritten."
+  ],
+  "constraints": {
+    "rust_edits": false,
+    "fixture_edits": false,
+    "document_edits": false,
+    "child_agents": false,
+    "commit": false,
+    "files_frozen": true
+  }
+}

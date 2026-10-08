@@ -1,0 +1,327 @@
+# 利用フロー・品質検証仕様書
+
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
+| `0.1.0` | `2026-10-02` | 初版予定：利用フロー、有限資源、再現性・性能、実装・出自のレビュー手順を規定 |
+
+文書ID：`verification-workflow-quality`
+
+文書状態：検証ケースを規定済み。2026-10-08の初回受け入れ検証では100万要求のWSL2測定12試行とも180秒上限で未完了だった。その後の出力最適化統合版では3条件を各1回完走測定し、時間目標未達と全プロセス最大RSS 2 GiB以内を確認した。正式反復、native基準機の合格、全受入条件の充足は未確認。個別の合否・部分確認と旧測定の区別は第9節と各実施記録を参照する。
+
+本書は[機能仕様の対応表](../../機能仕様書.md#112-要件ごとの対応)から割り当てる統合検証である。各traceのconfirmedはケースの規定状態を表す。合否の実績は、入力一式・製品commit・環境・実測結果・期待値との差分・実施日・確認者をケースIDごとに保存して初めて記録する。下記の整数時刻・状態・件数は完全一致、比率は[品質方針](../../品質・配布方針.md)の許容差を使う。全体の作成状況は[トレーサビリティ管理規約](../../トレーサビリティ管理規約.md)と生成一覧に記録する。
+
+## 1. 構造・条件から結果取得まで
+
+<a id="dir-test-0080"></a>
+
+```trace
+{
+  "id": "DIR-TEST-0080",
+  "stage": "verification",
+  "requirements": [
+    "DIR-REQ-0005",
+    "DIR-REQ-0006",
+    "DIR-REQ-0007",
+    "DIR-REQ-0008",
+    "DIR-REQ-0024",
+    "DIR-REQ-0030",
+    "DIR-REQ-0031",
+    "DIR-REQ-0044",
+    "DIR-REQ-0053",
+    "DIR-REQ-0055",
+    "DIR-REQ-0056",
+    "DIR-REQ-0118",
+    "DIR-REQ-0119",
+    "DIR-REQ-0120",
+    "DIR-REQ-0121"
+  ],
+  "upstream": [
+    "design-runtime#lifecycle"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+前提は[CAN delay-filter.ini](../fixtures/can/delay-filter.ini)、同じディレクトリのworkloadとmodels。比較Bは別の空作業領域へ同じ入力一式を配置し、INIのa.txProcessingDelayだけを3usから5usへ変更する。出力先は各実行で新規の別ディレクトリを使う。A/Bとも`dir-simulator validate --config PATH`成功後に`dir-simulator run --config PATH --output DIR`を実行する。ライブラリのprepare/runでも同じ入力を実行する。
+
+| 観点 | 期待結果・判定 |
+| --- | --- |
+| 準備 | validateはexit0と版1の検証要約を返し、factory/initialize/on_event/finishの呼出し数は0。NEDの内容hash・正規構造・接続はA/B同一、INI hashとa.txProcessingDelayの確定値だけが該当差分となる |
+| ライフサイクル | runは全factory/initialize成功後に初期イベントを開始し、初期化成功済み各モデルのfinishと解放を一回ずつ実施する。CLIとlibraryのsimulationは同じ |
+| 送信A | 標準ID0、空dataの独立CAN vectorは50bit。generated=0、ready=SOF=3000000ps、EOF=103000000ps、release=109000000ps。wireは50/500000秒=100000000ps、間隔は6000000ps |
+| 受信A | bは経路2us+3usでobserved=108000000ps、rx_complete=115000000ps。cはobserved=105000000psでfiltered。送信元自己受信の行はない |
+| 変更B | generated=0、ready=SOF=5000000ps、EOF=105000000ps、release=111000000ps、b observed=110000000ps、rx_complete=117000000ps、c observed=107000000ps。wire・経路・RXの内訳とfiltered結果はAと同じ |
+| 集計 | A/Bともgenerated=1、success=1、received=1、filtered=1、dropped=0。全体delivery平均はA115000000ps、B117000000ps。end_ps=300000000、events_exhausted、exit0、partial=false |
+| 保存と読戻し | results.json、events.csv、summary.csv、diagnostics.jsonl、manifest.jsonを[結果仕様](../../specs/結果詳細機能仕様書.md)で解釈する。manifestの件数・byte数・hash・metadata参照、結果のrun_id、入力hash、確定値、profile版が同じ実行へ対応する。正常例のerror診断数0 |
+| 操作表現 | stdoutは操作仕様の一行JSON、stderrは診断仕様のJSON Lines。library RunReportのtermination/exit/partialとCLI、manifest、simulationが一致する |
+
+DIR-AC-0010の条件変更として、同じNEDと基準Aから次の三条件も独立に実行する。各条件のINI・workloadと確定値を結果から識別し、validate→run→JSON/CSV読戻しを同じ手順で行う。
+
+| 条件差分 | 独立期待値 |
+| --- | --- |
+| C：Main.bus.bitrateだけ250kbps | ready=SOF=3000000ps、EOF=203000000ps、release=215000000ps、b observed=208000000ps、rx_complete=215000000ps、c observed=205000000ps。generated=success=received=filtered=1、dropped=0。転送200usと間隔12usへ変化 |
+| D：Main.a.queueCapacityだけ0 | 3usで新着a:0をqueue_full、generated=1、dropped=1、admitted=attempts=success=received=filtered=0。SOF/EOF/release未到達、キュー長0、容量0のbuffer率はnull |
+| E：INIのworkloadを別ファイルへ変更し、元JSONのtimesだけ["0ps","150us"] | a:0はAと同じ、a:1はgenerated=150000000ps、SOF153000000ps、EOF253000000ps、release259000000ps、b rx_complete265000000ps。generated=success=received=filtered=2、dropped=0、delivery平均115000000ps |
+
+C/D/Eともend_ps=300000000、events_exhausted、exit0、partial=false。時刻の文字表現・null・母数をCSV/JSONの同じ実行で照合する。
+
+DIR-AC-0002・0004・0006・0010・0026のうち公開操作と段階間連携を本ケースで確認する。入力個別診断は入力・設定検証、出力schemaの各型は結果処理検証へ分担する。
+
+## 2. 準備・実行・終了・出力の失敗境界
+
+<a id="dir-test-0081"></a>
+
+```trace
+{
+  "id": "DIR-TEST-0081",
+  "stage": "verification",
+  "requirements": [
+    "DIR-REQ-0005",
+    "DIR-REQ-0006",
+    "DIR-REQ-0007",
+    "DIR-REQ-0008",
+    "DIR-REQ-0024",
+    "DIR-REQ-0030",
+    "DIR-REQ-0031",
+    "DIR-REQ-0044",
+    "DIR-REQ-0053",
+    "DIR-REQ-0055",
+    "DIR-REQ-0056",
+    "DIR-REQ-0118",
+    "DIR-REQ-0119",
+    "DIR-REQ-0120",
+    "DIR-REQ-0121"
+  ],
+  "upstream": [
+    "design-runtime#lifecycle"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+DIR-TEST-0080の入力を基準に、以下を独立実行する。偽factory/モデル/I/O境界を用いて呼出し順、予約集合、journal、解放済み集合を観測する。診断のcode・phase・source・time・seqは[診断仕様](../../specs/診断詳細機能仕様書.md)へ照合する。
+
+| 変更／失敗注入 | 期待結果 |
+| --- | --- |
+| workload不存在、INIに負のT、未知optionを一件ずつ | 準備失敗exit2。問題のfile/key又はargvを特定し、イベントcallbackは0。入力取得不能と値域違反を混同しない |
+| allocate/factory失敗、二つ目のinitialize失敗 | 初期化成功済みだけに逆順finish、allocate済み全件を解放。予約取消し、committed_events=0、終了はprep_failed/exit2 |
+| 時刻10psの成功イベント後、20psのcallbackが状態・予約・観測を作って失敗 | exit3。確定journalは10psまで、20psの効果を未公開、失敗候補はpendingに保持。Hと未完了は結果仕様のexecution_failed境界に一致 |
+| 上記runtime失敗に加えfinish一件失敗 | 一次診断はruntimeを保持しfinishは二次診断。残りのfinish/解放を継続し、部分結果の同じsnapshotを保存する |
+| 正常終了後のfinish失敗 | reason=finish_failed、termination=execution_failed、exit3、確定計測は凍結済みの値。診断とpartialは診断・結果仕様の対応表どおり |
+| 既存非空の出力先 | exit4、既存ファイルを保持、成功manifestを新規公開しない |
+| data書込み又はrename又はmanifest確定でI/O失敗 | exit4、manifest未公開。stderrへ出力失敗を記録し、成功したようなstdoutを返さない。先行runtime診断がある場合は一次原因を保持する |
+| T=EOF、T=0 | time_limit/exit0。前者のEOFは未実行でin_flight、後者はイベント0件。予定完了値を実績へ置換しない |
+
+ACの対応はDIR-TEST-0080に加え、DIR-AC-0013・0014・0016・0017・0024。出力段階の細分化した失敗は[結果処理検証](結果処理検証仕様書.md)も実行する。
+
+## 3. 有限資源・競合・時間成分
+
+<a id="dir-test-0082"></a>
+
+```trace
+{
+  "id": "DIR-TEST-0082",
+  "stage": "verification",
+  "requirements": [
+    "DIR-REQ-0007",
+    "DIR-REQ-0034",
+    "DIR-REQ-0035",
+    "DIR-REQ-0036",
+    "DIR-REQ-0037",
+    "DIR-REQ-0038",
+    "DIR-REQ-0039",
+    "DIR-REQ-0040",
+    "DIR-REQ-0041"
+  ],
+  "upstream": [
+    "design-runtime#resources"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+前提は容量1の待機QueueStateと非プリエンプティブ資源R、独立資源S。時刻は整数ps。AはRのownerとして[0,10)を占有済み、Bを2ps、より高優先Cを3psにRへofferする。送信中Aは待機容量の対象外とする。
+
+| 操作 | 期待結果 |
+| --- | --- |
+| 2psでBをoffer、3psでCをoffer | lenは0→1、B受理。Cだけqueue_full、len=1、Aはownerのまま。Cの高優先度でAを中断しない |
+| Bを候補として繰返し参照 | len=1、Bは待機中。候補を見ただけで容量解放しない |
+| 10psでA release、同時刻にD到着、その後仲裁 | phase0で解放、phase1ではBがまだ容量を占めるのでD破棄、phase2でBを選びlen=0。Bの待ち=10−2=8ps |
+| Sへ3psの要求を投入 | RがbusyでもSは開始でき、Rのowner/予約は不変 |
+| 容量を0へ変更して新着を投入 | 常に新着queue_full、len=0、負値にならない |
+| B選出時に予約の時刻加算失敗を注入 | take_winner・owner・予約・観測が部分公開されず、直前の確定len=1と待機Bがsnapshotに残る |
+| 時間内訳 | DIR-TEST-0080 AではTX処理3us、待ち0、wire100us、経路5us、RX7us、delivery115us。release109usを受信完了と混同しない |
+
+DIR-AC-0004・0005の有限容量、競合、帯域・固定処理・待ちの分離を確認する。CAN優先キー自体はDIR-TEST-0002、積分・母数は結果処理検証に分担する。
+
+## 4. 同一条件の反復と同時刻順序
+
+<a id="dir-test-0083"></a>
+
+```trace
+{
+  "id": "DIR-TEST-0083",
+  "stage": "verification",
+  "requirements": [
+    "DIR-REQ-0045",
+    "DIR-REQ-0046"
+  ],
+  "upstream": [
+    "design-runtime#lifecycle",
+    "design-runtime#scheduler",
+    "design-runtime#dispatch"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+[competition](../fixtures/can/competition.ini)と[release-arrival](../fixtures/can/release-arrival.ini)、およびDIR-TEST-0008の同時刻偽モデルを、それぞれ同じbinary・依存lock・Registry・論理配置・確定値・初期状態で独立に3回実行する。環境の記録方法は品質方針を使用する。
+
+1. metadataから条件の同一性を確認する。run_id・wall時刻・wall性能・絶対パスは実行ごとに保持し、simulationの比較から分離する。
+2. JSONはsimulationを型付き構造で比較し、配列順を維持する。CSVはrun_id列のみ除いて全行・値・順序を照合する。比較のためにイベント列をソートし直さない。
+3. competitionはa:0 SOF0/EOF100000000ps、b:0 SOF106000000/EOF200000000ps、release-arrivalはSOF順b:0,a:0,b:1、時刻0,100000000,206000000psを独立期待値へ照合する。
+4. generator記述順とdirty資源の登録順を反転した入力を用意する。generator ID・初期条件・意味を保持し、同時刻のCAN勝者とモデル観測が同じになることを確認する。変更した入力hashは異なってよい。
+5. EventKeyの時刻/delta/phase/sequenceを照合し、phase0→phase1の固定点→資源ID順phase2と次deltaを確認する。結果だけ同じでも順序違反は不合格。
+6. 固定版のUbuntu nativeとWSL2で整数値・順序・件数を完全一致、派生比率を品質方針の許容差で比較し、環境差は別記録とする。
+
+DIR-AC-0007に対応する。条件差があれば「比較条件不一致」とし、再現性の合格・失敗と区別する。
+
+## 5. 小規模の正しさと中規模性能
+
+<a id="dir-test-0084"></a>
+
+```trace
+{
+  "id": "DIR-TEST-0084",
+  "stage": "verification",
+  "requirements": [
+    "DIR-REQ-0001",
+    "DIR-REQ-0058",
+    "DIR-REQ-0116"
+  ],
+  "upstream": [
+    "design-can#workload-validation"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+[品質方針第1節](../../品質・配布方針.md)を入力と合格値の正本とし、次の手順でDIR-AC-0009・0025の残分担を実施する。
+
+1. 先にCAN DIR-TEST-0001～0006を合格させる。小規模の整数値・CRC・仲裁・件数保存と派生量の許容差を確認し、性能測定で意味が変わっていないことの基準にする。
+2. 規定の32送信元、各31250件、8byte全0、標準ID0x100..0x11Fから独立serializerでC_iを求め、rho=0.30/0.90/1.20ごとにP、位相、Tを生成する。浮動小数点rhoで入力時刻を丸めず3/10,9/10,6/5の有理数を使う。各送信元の時刻列が[0,T)に31250件、合計1000000件であることを実行前に確認する。
+3. 入力一式とhash、生成式、C_i、binary・依存lock・環境・出力設定を保存する。基準機条件を満たすrelease、実行1スレッド・同時評価1件で各条件ウォームアップ1回、計測3回を行う。
+4. 測定開始はCLIプロセス起動による準備開始、終了はmanifest確定とプロセス終了。外部計測器でwallと最大RSSを記録し、内部のイベント処理wallと混同しない。途中失敗は時間が短くても不合格。
+5. 各条件で総wallの中央値≤120秒、最大RSSの3回最大値≤2147483648byteを判定する。全反復値、event数、要求数、出力byte数、使用率、待ち、破棄、未完了を記録する。過負荷でも1000000生成の保存則が成立し、Tで未完了が残る場合を脱落扱いにしない。
+6. 同条件の決定的な結果を3回比較する。通常／高負荷／過負荷の各結果を同じ指標定義で比較し、実測なしに単調性やゼロ破棄を仮定しない。異なる機械の値は別系列として報告する。
+
+記録表の列はcondition/input_hash/binary_hash/environment/repetition/wall_total/wall_events/max_rss/events/generated/output_bytes/termination/correctness/pass。[2026-10-06のWSL2実測](../results/can-million-performance-2026-10-06.json)に入力・バイナリhash、全反復値、保護上限と中断結果を保存した。3負荷条件で2 GiBのメモリ目標を超過し、出力確定まで完了しなかった。メモリ保護または180秒の観測上限による中断の時間は完了時間ではなく、観測RSSは無制限実行の最大値とは別である。イベント処理のみの時間と、完成した製品出力を要する件数・使用率・待ち・破棄・再現性は未取得として記録する。native基準機での合格判定は未完了。期待値checkerの所要時間を本ケースの製品性能実績として使用しない。
+
+同日の[逐次処理改修後の記録](../results/can-streaming-2026-10-06.json)は、3,200要求の3条件の各1回完了と、100万要求通常負荷の各1回観測を別系列として保存する。100万要求の観測最大RSSは115.098 MiBで、120秒後も未完了、180秒上限で停止した。ウォームアップ＋測定3回の正式合否、完成出力の再現性、無制限実行の最大RSSをこの1回観測から判定しない。内部タイマーは実装し完了した小規模条件で値を取得したが、強制停止した100万要求ではCLI最終報告がなく未取得である。
+
+[2026-10-08の出力最適化統合後の完走記録](../results/can-million-integrated-2026-10-08.md)は、①〜⑤を適用した版で各条件1回の完走観測を行った別系列である。通常／高負荷／過負荷のwallは754.75／740.48／592.35秒、全プロセス最大RSSは47.41／49.06／47.88 MiBだった。時間はすべて120秒を超え、正式反復へ進めなかった。全条件で終了コード0、manifestの4ファイル照合、生成件数1000000を確認し、過負荷は成功833375・破棄166241・未完了384の保存則を確認した。今回初めて完走時のRSSと内部イベント処理wallを取得したが、上記手順の3測定中央値・3測定最大RSS・同条件の反復再現性による正式合格とは区別する。native基準機の合否は引き続き未検証である。
+
+## 6. Rust実装のレビュー
+
+<a id="dir-test-0085"></a>
+
+```trace
+{
+  "id": "DIR-TEST-0085",
+  "stage": "verification",
+  "requirements": [
+    "DIR-REQ-0047"
+  ],
+  "upstream": [
+    "DIR-REQ-0047"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+DIR-AC-0008の登録例外経路。対象commitのCargo workspace、package/target一覧、依存lock、エンジンのscheduler/dispatch、CANのfactory/serializer/仲裁/状態遷移までをレビュー対象とする。
+
+| 操作 | 合格条件・証跡 |
+| --- | --- |
+| ビルド構成と実装言語を照合 | エンジンとCANの振る舞いがRustのソース・targetとして存在し、操作仕様のRust/edition/OS条件でビルド可能。ファイルと担当責務、build command/log、binary hashを保存 |
+| 公開操作から登録経路を追う | CLI/library→Registry→factory→CAN callbackの到達をソース位置と試験で示す。fixture checkerや文書だけでは実装済み判定にならない |
+| 外部連携を確認 | FFIや外部プロセスがあれば担当範囲を記録し、エンジン/CANの要求された責務の実装場所を特定する |
+| 判定 | 対象ソース欠落・build未実施・経路未確認は未確認又は不合格として残す。実装・経路のレビューを実施。未確認の条件は[2026-10-08実施記録](../results/acceptance-2026-10-08.md)に保持 |
+
+## 7. NED独立実装のレビュー
+
+<a id="dir-test-0086"></a>
+
+```trace
+{
+  "id": "DIR-TEST-0086",
+  "stage": "verification",
+  "requirements": [
+    "DIR-REQ-0048"
+  ],
+  "upstream": [
+    "DIR-REQ-0048"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+DIR-AC-0008の登録例外経路。[NED仕様](../../specs/NED詳細機能仕様書.md)の公開参照版と対応サブセット、[入力設計](../../design/入力・設定詳細設計書.md)、実装ソース、変更記録を対象とする。
+
+1. parserの各生成規則とモデル解決処理に、公開仕様の版・節／観測可能な振る舞い・DIR仕様節・実装位置・検証ケースを対応付けたレビュー表を作る。
+2. package/import/@class/compound/channel/値解決について、独立に作成した実装と試験であることを作成者の出自記録・依存一覧・変更履歴から確認する。INI優先等DIR独自の契約を公開NED全体の互換性と混同しない。
+3. 対応サブセット正常例と未対応構文の診断は入力・設定検証へ照合する。試験合格だけでは出自確認を代替しない。
+4. 参照・履歴・責務の対応が欠ければ未確認として指摘し、確認者・確認日・対象commit・是正先を残す。実装適合レビューを一部実施。全条件の充足は未完了で、個別の未確認事項は[2026-10-08実施記録](../results/acceptance-2026-10-08.md)に保持する。
+
+## 8. 出自・依存・配布物の照合レビュー
+
+<a id="dir-test-0087"></a>
+
+```trace
+{
+  "id": "DIR-TEST-0087",
+  "stage": "verification",
+  "requirements": [
+    "DIR-REQ-0049"
+  ],
+  "upstream": [
+    "DIR-REQ-0049"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+DIR-AC-0008の登録例外経路。[品質・配布方針第2節](../../品質・配布方針.md)の採用物台帳項目を検査する手順であり、現在の依存物がすべて適合済みとする宣言ではない。
+
+| 操作 | 合格条件・証跡 |
+| --- | --- |
+| 対象集合を確定 | 対象commitと配布archiveを固定し、直接・推移依存、vendored code、生成器由来コード、fixture/第三者素材を列挙。Cargo.lock等の一覧と台帳を突合し過不足0件 |
+| 台帳を照合 | 一採用物一行で名前・版・URL・取得日・hash・SPDX式・著作者・改変・同梱物・確認者／日・判定を確認。0件は対象集合を調べた証跡とともに記録 |
+| 出自を確認 | ソース・取得元・変更履歴を対応させ、独立実装方針との適合をレビュー。由来を特定できない項目は要確認として記録 |
+| 配布archiveを確認 | 必要なライセンス本文・NOTICE・著作者／改変表示を採用元の条件と照合し、方針に従う判定・根拠・未解決事項を保存する。プロジェクトの両ライセンス本文も照合 |
+| 結果と紐付け | results.metadata.adoption_ledger_versionから配布に使用した台帳版へ到達し、manifest.metadata_refと対応する |
+
+全項目の根拠があり配布集合の条件が充足された場合にレビュー合格とする。単なるSPDX文字列の存在や自動checkerの成功のみでは合格としない。採用物・実装の適合レビューを一部実施したが、台帳・配布集合の照合を含む全項目の充足は未完了。個別の不足は[2026-10-08実施記録](../results/acceptance-2026-10-08.md)に保持する。
+
+## 9. 2026-10-08の受け入れ検証実施記録
+
+[総合実施記録](../results/acceptance-2026-10-08.md)と[機械可読記録](../results/acceptance-2026-10-08.json)に、固定release binary・入力・source hash、環境、実行コマンド、個別判定を保存した。利用フローの33項目、ライフサイクル/finish/出力失敗、有限資源、phase固定点と次delta、反復とgenerator/dirty順序反転を実行した。Rust全体521件、JavaScript165件、全271 INIのvalidate/run/viewとmanifest照合、119出力のproduction-assets/CLI生成HTMLの両ブラウザ経路を確認した。SoCとメモリ/IPCの独立fixture照合は31件のfocused実行と最終全体回帰に記録する。37指標・Input Aの独立期待値照合6試験も合格した。
+
+この初回受け入れ検証の100万要求は3条件の各ウォームアップ1回＋測定3回、合計12試行をWSLで逐次実測した。出力確定まで完了した試行は0回。途中停止時刻は完了時間ではなく、観測RSSだけで完走時のメモリ合格を判定しない。詳細は[全測定記録](../results/acceptance-2026-10-08/performance.json)に保持する。その後の[出力最適化統合版の完走追試](../results/can-million-integrated-2026-10-08.md)では3条件各1回の完成出力と全プロセスRSSを取得したが、時間目標は未達だった。旧12試行の記録は更新せず、追試の測定方針と正式反復未実施を別記する。native基準機との比較と、実在する採用物台帳・固定配布アーカイブの照合は未完了。
+
+個々のTEST/ACの判定は[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を参照する。全体回帰の成功を仕様の全チェック行の合格へ読み替えない。Tを変えたときのBridge/AXIのevent_seq不変性は、現行仕様に明記されていない追加の厳格な比較として記録する。

@@ -1,13 +1,14 @@
 # CANFD・100BASE-T1詳細設計書
 
-文書バージョン：`1.1.2`
-対象GitHubバージョン：`main @ 7bb9bfc`
-予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.3`
+対象GitHubバージョン：`main @ 2f1e60b`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.3` | `2026-10-08` | CAN FD・100BASE-T1の状態所有とcallback事前検証、公開Registry・共通実行経路と組込みアダプターの境界を反映。v1.1.2公開済み実装と今回改修を区別 |
 | `1.1.2` | `2026-10-04` | 外部位相bit数CAN FDと専用100BASE-T1の内部実装、通知codecと公開拡張APIの境界を反映 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
@@ -15,7 +16,7 @@
 
 文書ID：`design-original-network`
 
-状態：採用した抽象profileの契約を確定。開発中ソースに製品実装を追加。製品試験の実施範囲は本書の検証記録又は対応する検証仕様を参照。規格全体適合・実機試験は未実施。文書版を1.1.2に統一し、公開版はv1.1.2向けPRとして準備する。独立解析fixtureと製品実行の証跡は区別する。
+状態：採用した抽象profileの契約を確定。開発中ソースに製品実装を追加。製品試験の実施範囲は本書の検証記録又は対応する検証仕様を参照。規格全体適合・実機試験は未実施。抽象profileの製品実装はv1.1.2で公開済み。今回の予定公開版v1.1.4（本PR）では共通登録API・診断・結果成果物の改修と、既存媒体／CAN FD固有の製品検証範囲を区別して記録する。独立解析fixtureと製品実行の証跡は区別する。
 
 [architecture#arch-original-network](../アーキテクチャ設計書.md#arch-original-network)の分担を具体化する。仕様正本は[追加通信仕様](../specs/models/CANFD・100BASE-T1詳細機能仕様書.md)。共通Core/dispatcher/Context/journalの契約を変更しない。
 
@@ -90,6 +91,6 @@
 
 ## 開発中実装の境界
 
-製品コードは共通INI/NED・結果公開層に専用input/runtime/outputを接続する。媒体対の論理timeline・予約世代・試行状態、CAN FDの不変frame cacheと受信状態をモデル内部で所有し、callbackの時刻・予約を事前検証してから結果へ反映する。公開ProfileRegistry、汎用Context/Envelope/TimerToken APIとモデル共通arenaは未実装であり、上記設計の公開拡張APIへの適合完了を示さない。
+製品コードは共通INI/NED・結果公開層に専用input/runtime/outputを接続する。媒体対の論理timeline・予約世代・試行状態、CAN FDの不変frame cacheと受信状態をモデル内部で所有し、callbackの時刻・予約を事前検証してから結果へ反映する。公開Registry、Context、Envelope、TimerTokenと登録モデル用の共通実行経路を開発中ソースに追加した。CAN FD・100BASE-T1の組込みprofileは引き続き専用エンジンのアダプターとして動き、モデル固有の製品適合は対応する検証記録で判定する。
 
 CAN FDは外部位相bit数による時間評価で、結果に`externally-precomputed-phase-bits`と`structural-only`を保存する。媒体v2は連続idle96bitのdeferenceと固定SHA-256 BEB、T1は時刻0からlink-up済みの固定PHY遅延を採用する。内容依存FD CRC/stuffing、波形、training、規格全文適合はこの実装の範囲外。

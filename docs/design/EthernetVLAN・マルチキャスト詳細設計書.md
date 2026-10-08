@@ -1,13 +1,14 @@
 # EthernetVLAN・マルチキャスト詳細設計書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ 811360a`
-予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`main @ 2f1e60b`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-08` | CAN↔Ethernet変換・Ethernet動的制御・TSNの別profileへの詳細設計参照と静的VLAN契約の境界を追記。追加profileの実装・製品検証状態を更新 |
 | `1.1.1` | `2026-10-04` | 初版：Port policy、copy別wire/class、原子的VLAN/group交換、schema・Viewerの実装と検証への対応を記録。利用者指定の文書版1.1.1で初回push |
 
 文書ID：`design-ethernet-vlan`
@@ -109,4 +110,4 @@ viewerのpure Ethernet modelでprofile/schema集合とTag値・wire hex長/FCS�
 
 実装前の算術fixtureは[wire vectors](../verification/fixtures/ethernet-vlan/wire-vectors.json)へ置く。[unicast例](../../examples/ethernet/vlan-unicast.ini)・[multicast例](../../examples/ethernet/vlan-multicast.ini)をCLIで実行可能にした。入力・Rust内部境界・外部CLI・viewerの[製品実行記録](../verification/results/ethernet-vlan-2026-10-04.json)を別途保存し、既存v1.1.0の証跡をVLAN合格へ流用しない。
 
-この段階が完了した後の次候補はCAN↔Ethernet Gateway。変換ルール、lineage、サイズ/優先度対応、複数受信・待機容量を別途設計し、VLAN表や静的group設定へ暗黙に混在させない。
+後続の[CAN↔Ethernet変換](CAN・Ethernet変換詳細設計書.md)、[動的制御](Ethernet動的制御詳細設計書.md)、[TSN](EthernetTSN詳細設計書.md)は2026-10-07に詳細設計と共通CLI・schema2出力・Viewerの製品実装を追加済み。試験の実施範囲は[製品検証記録](../verification/results/network-extension-product-2026-10-07.json)と[受け入れ実施記録](../verification/results/acceptance-2026-10-08.md)で管理し、規格全体適合・全受入条件の合格とは区別する。別profileの入力・state・codec契約として扱い、本VLAN profileの静的表やwireの意味は保持する。

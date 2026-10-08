@@ -1,0 +1,918 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "name": "dynamic-schema",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/schema_version",
+      "value": 3,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-unknown",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/surprise",
+      "value": 0,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-missing",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/mac_age_ps",
+      "value": null,
+      "remove": true,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-decimal-bool",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/mac_age_ps",
+      "value": true,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-decimal-leading-zero",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/mac_age_ps",
+      "value": "01",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-decimal-negative",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/mac_age_ps",
+      "value": "-1",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-decimal-overflow",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/mac_age_ps",
+      "value": "18446744073709551616",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-zero-age",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/mac_age_ps",
+      "value": "0",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-cost-zero",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/links/0/cost",
+      "value": "0",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-bridge-id-duplicate",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/bridges/1/bridge_id",
+      "value": "1",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-limit-bool",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/limits/mac_entries",
+      "value": true,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-vid-zero",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/ports/0/vlans/0/vid",
+      "value": 0,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-vid-4095",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/ports/0/vlans/0/vid",
+      "value": 4095,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-registrable-static",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/registrable/0/vid",
+      "value": 10,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-registrable-untagged",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/registrable/0/tagged",
+      "value": false,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-duplicate-key",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "",
+      "value": null,
+      "remove": false,
+      "duplicate_json_key": true,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-links-missing",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/links",
+      "value": [
+        {
+          "id": "A",
+          "ports": [
+            "Net.a.tx",
+            "Net.s1.tx_a"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "B",
+          "ports": [
+            "Net.b.tx",
+            "Net.s2.tx_a"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "C",
+          "ports": [
+            "Net.c.tx",
+            "Net.s3.tx_a"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "L12",
+          "ports": [
+            "Net.s1.tx_b",
+            "Net.s2.tx_b"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "L13",
+          "ports": [
+            "Net.s1.tx_c",
+            "Net.s3.tx_b"
+          ],
+          "up": true,
+          "cost": "10"
+        }
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-links-duplicate",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/links",
+      "value": [
+        {
+          "id": "A",
+          "ports": [
+            "Net.a.tx",
+            "Net.s1.tx_a"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "B",
+          "ports": [
+            "Net.b.tx",
+            "Net.s2.tx_a"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "C",
+          "ports": [
+            "Net.c.tx",
+            "Net.s3.tx_a"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "L12",
+          "ports": [
+            "Net.s1.tx_b",
+            "Net.s2.tx_b"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "L13",
+          "ports": [
+            "Net.s1.tx_c",
+            "Net.s3.tx_b"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "L23",
+          "ports": [
+            "Net.s2.tx_c",
+            "Net.s3.tx_c"
+          ],
+          "up": true,
+          "cost": "10"
+        },
+        {
+          "id": "A",
+          "ports": [
+            "Net.a.tx",
+            "Net.s1.tx_a"
+          ],
+          "up": true,
+          "cost": "10"
+        }
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-links-unknown-pair",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/links/0/ports",
+      "value": [
+        "Net.a.tx",
+        "Net.b.tx"
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-bridges-missing",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/bridges",
+      "value": [
+        {
+          "instance": "Net.s1",
+          "bridge_id": "1"
+        },
+        {
+          "instance": "Net.s2",
+          "bridge_id": "2"
+        }
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-cost-overflow",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/links/0/cost",
+      "value": "18446744073709551615",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-control-cap",
+      "base": "wire-boundaries",
+      "target": "model",
+      "pointer": "/dynamic/limits/control_events",
+      "value": 1,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "dynamic-control-id-duplicate",
+      "base": "wire-boundaries",
+      "target": "workload",
+      "pointer": "/controls/1/id",
+      "value": "register",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "dynamic-control-bool",
+      "base": "wire-boundaries",
+      "target": "workload",
+      "pointer": "/controls/0/at_ps",
+      "value": true,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "dynamic-control-zero-life",
+      "base": "wire-boundaries",
+      "target": "workload",
+      "pointer": "/controls/0/lifetime_ps",
+      "value": "0",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "dynamic-control-unauthorized",
+      "base": "wire-boundaries",
+      "target": "workload",
+      "pointer": "/controls/0/vid",
+      "value": 21,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "dynamic-control-static",
+      "base": "wire-boundaries",
+      "target": "workload",
+      "pointer": "/controls/0/vid",
+      "value": 10,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "dynamic-control-expiry-overflow",
+      "base": "wire-boundaries",
+      "target": "workload",
+      "pointer": "/controls/0/at_ps",
+      "value": "18446744073709551615",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "dynamic-control-unknown",
+      "base": "wire-boundaries",
+      "target": "workload",
+      "pointer": "/controls/0/unknown",
+      "value": 0,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "dynamic-control-missing",
+      "base": "wire-boundaries",
+      "target": "workload",
+      "pointer": "/controls/0/kind",
+      "value": null,
+      "remove": true,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "dynamic-convergence-overflow",
+      "base": "down-onwire",
+      "target": "workload",
+      "pointer": "/controls/0/at_ps",
+      "value": "18446744073709551615",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "extra": [
+        {
+          "target": "model",
+          "pointer": "/dynamic/convergence_ps",
+          "value": "1"
+        }
+      ],
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "ip-family",
+      "base": "ipv4-filters",
+      "target": "workload",
+      "pointer": "/generators/0/frame/ip_multicast/family",
+      "value": "ipv6",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true
+    },
+    {
+      "name": "ip-source-group",
+      "base": "ipv4-filters",
+      "target": "workload",
+      "pointer": "/generators/0/frame/ip_multicast/source",
+      "value": "239.1.1.1",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true
+    },
+    {
+      "name": "ip-group-unicast",
+      "base": "ipv4-filters",
+      "target": "workload",
+      "pointer": "/generators/0/frame/ip_multicast/group",
+      "value": "192.0.2.1",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true
+    },
+    {
+      "name": "ip-mac-map",
+      "base": "ipv4-filters",
+      "target": "workload",
+      "pointer": "/generators/0/frame/dst_mac",
+      "value": "01:00:5e:01:01:02",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true
+    },
+    {
+      "name": "ip-ethertype",
+      "base": "ipv4-filters",
+      "target": "workload",
+      "pointer": "/generators/0/frame/ether_type",
+      "value": 34525,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true
+    },
+    {
+      "name": "ip-ipv6-equivalent-source",
+      "base": "ipv6-filters",
+      "target": "workload",
+      "pointer": "/controls/0/sources",
+      "value": [
+        "2001:db8::1",
+        "2001:0db8:0:0:0:0:0:1"
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "ip-source-cap",
+      "base": "ipv4-filters",
+      "target": "workload",
+      "pointer": "/controls/0/sources",
+      "value": [
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1",
+        "192.0.2.1"
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1,
+      "future_inputs": true,
+      "empty_generators": true
+    },
+    {
+      "name": "tsn-cycle-zero",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/tas/cycle_time_ps",
+      "value": "0",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-duration-zero",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/tas/entries/0/duration_ps",
+      "value": "0",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-duration-sum",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/tas/entries/0/duration_ps",
+      "value": "999999",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-priority-duplicate",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/tas/entries/0/open_priorities",
+      "value": [
+        7,
+        7
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-priority-eight",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/tas/entries/0/open_priorities",
+      "value": [
+        8
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-priority-bool",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/tas/entries/0/open_priorities",
+      "value": [
+        true
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-unknown",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/unknown",
+      "value": 0,
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-missing",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/clock",
+      "value": null,
+      "remove": true,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-base-effective",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/gcl_updates/0/schedule/base_time_ps",
+      "value": "2000001",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-submitted-after",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/gcl_updates/0/submitted_at_ps",
+      "value": "2000001",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-unconnected-port",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/port",
+      "value": "Net.missing.tx",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-effective-leading-zero",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/gcl_updates/0/effective_at_ps",
+      "value": "02000000",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-future-gcl-zero",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/gcl_updates/0/schedule/cycle_time_ps",
+      "value": "0",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-same-port-effective",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "/tsn/gcl_updates",
+      "value": [
+        {
+          "id": "u1",
+          "submitted_at_ps": "0",
+          "effective_at_ps": "2000000",
+          "port": "Net.a.tx",
+          "schedule": {
+            "id": "g1",
+            "base_time_ps": "2000000",
+            "cycle_time_ps": "2000000",
+            "entries": [
+              {
+                "duration_ps": "800000",
+                "open_priorities": [
+                  7
+                ]
+              },
+              {
+                "duration_ps": "1200000",
+                "open_priorities": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "u2",
+          "submitted_at_ps": "0",
+          "effective_at_ps": "2000000",
+          "port": "Net.a.tx",
+          "schedule": {
+            "id": "g1",
+            "base_time_ps": "2000000",
+            "cycle_time_ps": "2000000",
+            "entries": [
+              {
+                "duration_ps": "800000",
+                "open_priorities": [
+                  7
+                ]
+              },
+              {
+                "duration_ps": "1200000",
+                "open_priorities": []
+              }
+            ]
+          }
+        }
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "tsn-duplicate-key",
+      "base": "tas-08",
+      "target": "model",
+      "pointer": "",
+      "value": null,
+      "remove": false,
+      "duplicate_json_key": true,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "cbs-slope-zero",
+      "base": "cbs-boundaries",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/cbs/0/idle_slope_bps",
+      "value": "0",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "cbs-slope-at-rate",
+      "base": "cbs-boundaries",
+      "target": "model",
+      "pointer": "/tsn/outputs/0/cbs/0/idle_slope_bps",
+      "value": "1000000000",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "psfp-burst-zero",
+      "base": "psfp-five",
+      "target": "model",
+      "pointer": "/tsn/streams/0/meter/peak_burst_bytes",
+      "value": "0",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "psfp-rate-order",
+      "base": "psfp-five",
+      "target": "model",
+      "pointer": "/tsn/streams/0/meter/committed_rate_bps",
+      "value": "16000001",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "psfp-ingress",
+      "base": "psfp-five",
+      "target": "model",
+      "pointer": "/tsn/streams/0/ingress",
+      "value": "Net.missing.rx",
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    },
+    {
+      "name": "psfp-tuple-duplicate",
+      "base": "psfp-five",
+      "target": "model",
+      "pointer": "/tsn/streams",
+      "value": [
+        {
+          "id": "s0",
+          "ingress": "Net.b.rx",
+          "dst_mac": "02:00:00:00:00:02",
+          "vid": 10,
+          "priority": 7,
+          "max_sdu_bytes": "64",
+          "gate": null,
+          "meter": {
+            "committed_rate_bps": "8000000",
+            "peak_rate_bps": "16000000",
+            "committed_burst_bytes": "64",
+            "peak_burst_bytes": "128",
+            "yellow_action": "pass"
+          }
+        },
+        {
+          "id": "other",
+          "ingress": "Net.b.rx",
+          "dst_mac": "02:00:00:00:00:02",
+          "vid": 10,
+          "priority": 7,
+          "max_sdu_bytes": "64",
+          "gate": null,
+          "meter": {
+            "committed_rate_bps": "8000000",
+            "peak_rate_bps": "16000000",
+            "committed_burst_bytes": "64",
+            "peak_burst_bytes": "128",
+            "yellow_action": "pass"
+          }
+        }
+      ],
+      "remove": false,
+      "duplicate_json_key": false,
+      "expected_code": "E-0001",
+      "future_horizon_ps": 1
+    }
+  ]
+}

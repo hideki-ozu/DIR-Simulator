@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "review_status": "approved_executed_source_and_evidence_verified",
+  "scope": "Final read-only architecture, executed assertion and evidence review; focused tests6/6 twice; no reviewer CPU test execution or repository edits.",
+  "source_sha256": {
+    "crates/dir-simulator/tests/acceptance_output.rs": "961d15bf054a661dd1926b66bf8c617065f65c2a88347b19bb1d8d0ad2d158f4",
+    "docs/verification/cases/結果処理検証仕様書.md": "cfc2a119b393ea6e62d3a9d64117a350780969dd35370f0a9548287a0969703f",
+    "crates/dir-simulator/src/output/aggregate.rs": "cfd9952fa074a405fd6821cbc84ff9a79707a13026b2329988b529ecd0711c30",
+    "crates/dir-simulator/src/runtime/can.rs": "05021a0b3b35b75ea10ccc3bdec249a18d9ebeef8ac7283a8361ab37ac40b562",
+    "crates/dir-simulator/src/output/tests.rs": "10dea1230306b38979a1dde24bb5caba941cf710e4b01ccf5728e90edd776fa1"
+  },
+  "boundary": {
+    "approved": true,
+    "reason": "Specification explicitly permits abstract committed journal input at result-processing boundary. Public Snapshot plus output::export exercises aggregation, DTO publication and CSV serialization without claiming native CAN timing.",
+    "h29": "Faithful: two reached EOFs create four receiver opportunities; o=29 excluded by normal H=29, so load:1 b/c remain pending with observed_ps/received_ps null; load:2 has ready22 but future SOF32 removed and is pending. Runtime CAN EOF path independently confirms pending receiver rows created before Observe."
+  },
+  "coverage": {
+    "DIR-TEST-0070": [
+      "All ten queue points and Q/C derived observations",
+      "Three SOF wait samples, two reached EOF transfer samples, three received delivery samples",
+      "C=0 point null versus C>0 zero",
+      "Distinct effects for t4 accepted/full-drop observations"
+    ],
+    "DIR-TEST-0071": [
+      "Independent literal table of 37 descriptors and metric set",
+      "Full expected point/window/summary records including zero targets, sample counts and nullable fields",
+      "Four windows with authored queue areas, union lengths and completion quantities",
+      "Binary64 expectations use one division of exactly representable authored integers, not product aggregator",
+      "Full 15-column Input A CSV projection to JSON"
+    ],
+    "DIR-TEST-0072": [
+      "Seven full Request and four full Receiver DTO expectations",
+      "Direct state counts and request/receiver conservation",
+      "Per-receiver means and independent aggregate 65/3, rejecting mean-of-means alternatives",
+      "H29 pending observation cutoff"
+    ],
+    "DIR-TEST-0073": [
+      "H10 ledger and occupancy clipping",
+      "H0 empty rows and null averages/rates",
+      "H30 W100 empty interval and zero/null summaries",
+      "Instantaneous queue peak retained with zero area",
+      "Generic overlapping interval union expected8/10"
+    ]
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "test_coverage",
+      "status": "corrected_and_source_reviewed",
+      "file": "crates/dir-simulator/tests/acceptance_output.rs",
+      "function": "dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows",
+      "detail": "H30 window rows currently check boundaries but not each value/existence. Assert 19 window rows for four controllers plus bus, all integer quantities0, all number values0 except zero-capacity buffer mean null.",
+      "resolution": "Now requires 19 window rows and verifies each value including zero-capacity null."
+    },
+    {
+      "id": "R2",
+      "severity": "fixture_coherence",
+      "status": "corrected_and_source_reviewed",
+      "file": "crates/dir-simulator/tests/acceptance_output.rs",
+      "function": "dir_test_0073_instantaneous_peak_and_overlapping_interval_union",
+      "detail": "Union template retains ready2 while first SOF1. Set generated/ready/tx_enqueued consistently before each SOF. Intentional overlapping resource intervals are expressly allowed as generic aggregation-only data.",
+      "resolution": "Union requests now have generation/ready/admission0 and reached EOF/release endpoints with success status; timing inversion removed. Probe remains explicitly generic resource union data."
+    }
+  ],
+  "remaining_limits": [
+    "This synthetic test does not prove native CAN runtime journal provenance; TEST0070 real-model clause remains separately evidenced.",
+    "CSV splitter is intentionally sufficient only for Input A fields without quoting; generic CSV escaping/rejection tests remain separate.",
+    "Reservation identifiers are monotonic authored callback groups; inverse reservation/commit ordering is covered separately by existing typed_sort_preserves_numeric_effects_callback_groups_and_option_order, not this Input A test.",
+    "This does not close TEST0074 large-integer exact-sum, ties, overflow or wire-format procedures."
+  ],
+  "verification": [
+    "Read spec TEST0070-0073 and adjacent TEST0074-0075 scope",
+    "Read complete new test source",
+    "Read output aggregate grouping, sorting, occupancy and interval implementation",
+    "Read CAN EOF receiver opportunity creation",
+    "No repository edits, compilation, test execution or performance workload",
+    "Verified all59 source/input/log/artifact SHA256 values from final execution report",
+    "Read formatted final assertions and optional evidence-retention implementation; acceptance assertions unchanged",
+    "Updated criteria-specific coverage only: TEST0071-0073 pass; TEST0070 native provenance remains partial",
+    "Final v5 workspace521 tests pass; all source hashes, four gate-log hashes and pinned release binary independently verified"
+  ],
+  "initial_source_sha256": "11c4ec10b754e0b8951103a86999919de7f0e10ff4abfb533cd5f074fdc73008",
+  "execution": {
+    "report": "/tmp/dir-acceptance-output.json",
+    "final_test_log": "/tmp/dir-acceptance-output-tests-final.log",
+    "passed": 6,
+    "failed": 0,
+    "focused_clippy": "passed",
+    "format": "passed",
+    "source_input_log_artifact_hashes_verified": 59,
+    "retained_exports": 8,
+    "final_workspace_gates": "/tmp/dir-acceptance-final-gates-v5/report.json",
+    "final_workspace_tests_passed": 521,
+    "final_release_sha256": "35000619b4d15cd8858c3270e0be5d35f23b0aeadb748a30ec5e94bb84c7f9ba"
+  }
+}

@@ -1,0 +1,137 @@
+# EthernetTSN詳細機能仕様書
+
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 2f1e60b`
+設計日：`2026-10-07`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書ID：`spec-ethernet-tsn`
+文書状態：未公開。抽象モデルを実装済みで、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.1.0` | `2026-10-08` | 初回pushに向け、TSNのTAS・CBS・PSFPの入力・算術・状態遷移・合成・観測と独立期待値の契約を確定 |
+
+## 1. 対象・規格資料・互換境界
+
+native CLIで実行できる [TAS](../../../examples/ethernet/tsn/tas.ini)、[GCL更新](../../../examples/ethernet/tsn/tas-update.ini)、[CBS](../../../examples/ethernet/tsn/cbs.ini)、[gate付きCBS](../../../examples/ethernet/tsn/cbs-gated.ini)、[PSFP](../../../examples/ethernet/tsn/psfp.ini)、[stream gate](../../../examples/ethernet/tsn/psfp-gate.ini) を同梱する。[独立fixture](../../verification/fixtures/network-extensions/tsn/expected.json) と [検証仕様](../../verification/cases/EthernetTSN検証仕様書.md) に実測との比較範囲を記録する。
+
+profile `ethernet.tsn.v1`は`ethernet.l2.dynamic.v1`のVLAN分類、8class、動的FDB・membership・STP/link状態、整数ps、全二重store-and-forwardを継承する。選択はINIの`model-profile`で明示する。切断したグラフも受理する一般グラフのloop抑止はdynamic契約に従い、半二重媒体・PAUSEとの組合せは準備拒否する。clockは全node共通の理想時計 `local_time_ps=simulation_time_ps`。offset/drift/同期誤差は0固定。
+
+IEEEの[Qbvプロジェクト](https://ieee802.org/1/pages/802.1bv.html)は時刻に基づく送信制御、[Qciプロジェクト](https://grouper.ieee.org/groups/802/1/pages/802.1ci.html)はstream単位のfilter/policing、[TSN公式一覧](https://www.ieee802.org/1/pages/tsn.html)はQav CBS等の位置付けの一次資料とする。本書のIFG込みguard、credit freeze、2 bucket meterは再現可能性のため選択した抽象規則であり、規格本文の全状態機械の実装を主張しない。802.1AS/PTP wire交換、FRER、frame preemption/Qbu、規格準拠meterの全mode、Qcc中央設定protocol、時刻誤差モデルは後続の別profile/改版境界とする。
+
+[既存VLAN仕様](EthernetVLAN・マルチキャスト詳細機能仕様書.md)、[QoS仕様](Ethernet負荷・QoS詳細機能仕様書.md)、[媒体仕様](Ethernet媒体拡張詳細機能仕様書.md)の旧profile入力・結果を変更しない。TSN用キーは旧profileで拒否する。
+
+<a id="scheduling"></a>
+
+## 2. 入力と送信制御
+
+```trace
+{"id":"spec-ethernet-tsn#scheduling","stage":"spec","requirements":["DIR-REQ-0248","DIR-REQ-0249","DIR-REQ-0250","DIR-REQ-0251"],"upstream":["DIR-FUNC-0062"],"state":"confirmed","pending":[]}
+```
+
+### 2.1. 入力型
+
+TSN model-configは `{schema_version:1,base:{profile:"ethernet.l2.dynamic.v1",config:object},tsn:{clock:"ideal_shared",outputs:[],streams:[],gcl_updates:[]}}`。base.configはdynamic profileのmodel-configそのもの。workloadはdynamicで受理するVLAN workloadを再利用する。TSN profile選択時だけこのwrapperをdecodeし、base decoderへ渡す。すべての列・fieldは必須、未知・重複キーを拒否する。Sは非空ASCII識別子（portは解決済み完全パス）、Dはu64の正規非負十進文字列、Jはboolを除くJSON整数。時刻・rate・容量はD、priority/VIDはJを用いる。
+
+outputsは全接続outputを一度ずつ列挙し、各行は `{port:S,tas:Schedule?,cbs:Cbs[]}`。tas=nullなら全class常時open。Scheduleは `{id:S,base_time_ps:D,cycle_time_ps:D,entries:[{duration_ps:D,open_priorities:J[]}]}`。entryは1件以上、duration>0、checked合計=cycle>0、priorityは0～7の一意集合。空集合は全closed。base以前は全closed、base以後は `(t-base)%cycle` に該当する半開区間を使う。隣接entry/周期境界を跨いでも同classがopenなら一つの連続open窓として扱う。全entryでopenのclassは終了時刻なし。
+
+Cbsは `{priority:J,idle_slope_bps:D,hi_credit_bits:D,lo_credit_bits:D}`。priority一意、`0<idle_slope_bps<R`、loは負の下限の絶対値。hi/loを明示入力し自動推定しない。CBSなしclassはcredit検査不要。base output schedulerは`strict_priority`必須、class内FIFO。
+
+以下はtsn部分の完全例（portはbaseに存在するものに置換）。credit bound 1000bit、1Gbpsを仮定する。
+
+```json
+{
+  "clock":"ideal_shared",
+  "outputs":[{
+    "port":"Main.sw.tx1",
+    "tas":{"id":"g0","base_time_ps":"0","cycle_time_ps":"2000000","entries":[
+      {"duration_ps":"1000000","open_priorities":[7]},
+      {"duration_ps":"1000000","open_priorities":[0,1,2,3,4,5,6]}
+    ]},
+    "cbs":[{"priority":7,"idle_slope_bps":"250000000","hi_credit_bits":"1000","lo_credit_bits":"1000"}]
+  }],
+  "streams":[],
+  "gcl_updates":[{
+    "id":"u1","submitted_at_ps":"500000","effective_at_ps":"2000000","port":"Main.sw.tx1",
+    "schedule":{"id":"g1","base_time_ps":"2000000","cycle_time_ps":"2000000","entries":[
+      {"duration_ps":"800000","open_priorities":[7]},
+      {"duration_ps":"1200000","open_priorities":[0,1,2,3,4,5,6]}
+    ]}
+  }]
+}
+```
+
+gcl_updatesは静的入力に列挙した予定管理操作。IDは実行内一意、`submitted_at<=effective_at`かつ `schedule.base_time=effective_at` を必須とし、同port/effectiveの重複を拒否する。submitted時刻をcurrentとしeffective<currentを拒否、effective=currentを受理する。初期Scheduleだけはbase=0又は未来を許す。動的APIによる後付けは初版に含めない。操作入力の配列順は意味を持たず、時刻・port・ID辞書順で正規化する。将来・空負荷の設定もprepareで検証する。
+
+### 2.2. TAS guardとatomic更新
+
+MAC長Mはegress VLAN tag変換・padding・FCS後のbyte数。`serialization_ps=ceil((M+8)*8*10^12/R)`、`occupancy_ps=ceil((M+8+12)*8*10^12/R)`をSOF原点から別々に算出する。EOF=SOF+serialization、release=SOF+occupancy。gate判定はEOFでなくIFGを含むreleaseまでを対象とし、`release<=open_window_end`だけ開始可能。等号を許す。guardは固定長を引く操作ではなく候補ごとのfit判定である。高priorityの先頭がfitしなければ低priorityのeligible先頭を選べる。同classの後続は追越不可。
+
+既知の次GCL有効時刻は旧窓の上限にもする。この保守的規則により更新境界を跨ぐ新送信を開始しない。effective時刻のphase0で旧GCLを一括交換し、gate/credit wakeの世代を更新して旧予約を無効化する。同時刻phase2は新GCLだけを参照する。wire上のframeは管理操作・link/STP変更でも中断しない。
+
+状態は `ready / busy / gate_closed / guard_blocked / credit_negative / no_active_schedule / never_eligible`。base未到来はno_active_schedule。現在GCLの全周期の最大連続open幅が先頭のoccupancyより短い場合never_eligible（全closedも含む）とし、queueを保持しdropしない。後続更新・先頭削除で再判定する。将来変化なしなら周期tickを予約しない。
+
+### 2.3. CBSの厳密整数規則
+
+`Q=10^12`、credit numerator `C` は符号＋u128絶対値で保持し、credit(bit)=C/Q。初期C=0、boundsは `[-lo*Q,hi*Q]`。rateはbit/s、経過時間dtはps。浮動小数を使わず `delta_C=slope_bps*dt` をchecked u128で計算する。
+
+| 状態（旧状態で[t0,t)積分後、新状態へ遷移） | 傾き・処理 |
+| --- | --- |
+| 自class送信中（SOFからIFG終了releaseまで） | `idle_slope-R`。途中gate閉鎖があっても減算継続 |
+| 非送信、TAS gate closed/base前 | Cを凍結 |
+| 非送信、gate open、backlogあり | idle_slopeで増加、hiで飽和 |
+| 非送信、gate open、queue空、C<0 | idle_slopeで0まで回復 |
+| 非送信、queue空、C>=0 | 即0へreset（gate閉鎖でも正creditを保持しない） |
+
+下限loで負側を飽和、上限hiで正側を飽和する。数値丸めは行わず、負creditの0到達wakeだけ `ceil(abs(C)/idle_slope)`ps。CBS対象はC>=0かつTAS/guard/dynamic eligibilityを満たした先頭だけ開始できる。SOFで最後の待機を取り出しても「自class送信中」が優先されreleaseまで減算する。他class送信中もopen/backlogのclassは回復する。CBS rateは固定link R、runtime bitrate変更は初版準備拒否。
+
+<a id="policing"></a>
+
+## 3. PSFP・合成・観測
+
+```trace
+{"id":"spec-ethernet-tsn#policing","stage":"spec","requirements":["DIR-REQ-0252","DIR-REQ-0253","DIR-REQ-0254","DIR-REQ-0255"],"upstream":["DIR-FUNC-0063"],"state":"confirmed","pending":[]}
+```
+
+### 3.1. stream filter/gate/meter
+
+streamsは `{id:S,ingress:S,dst_mac:S,vid:J,priority:J,max_sdu_bytes:D,gate:StreamGate?,meter:Meter?}` の列。ingressは受信rxの完全パス、VIDは1～4094、priorityは0～7。同じ `(ingress,dst_mac,vid,priority)` の重複を拒否し、wildcardやrule優先度は初版に設けない。VLAN ingress分類・admit成功後、Switchの固定処理遅延前に完全一致で識別する。Endpoint ingressにも同様に適用する。未一致はbypass。source生成には適用せず、各装置への一回の実到着ごとに適用する。flow_idは識別キーに用いない。
+
+max_sduは当該ingress MAC byte数（header/tag/padding/FCS込み、preamble/IFG除外）を上限とする抽象契約。field名のSDUは規格の全SDU定義を代弁しない。`M>max_sdu`をpsfp_max_sduでdrop、等号は受理。StreamGateは `{base_time_ps:D,cycle_time_ps:D,entries:[{duration_ps:D,open:bool}]}`。TASと同じ半開区間・正duration・合計条件、base前closed、null常時open。到着瞬間がclosedならpsfp_gate_closedでdropし待機させない。stream gate変更は初版は静的のみ。
+
+Meterは `{committed_rate_bps:D,peak_rate_bps:D,committed_burst_bytes:D,peak_burst_bytes:D,yellow_action:"pass"|"drop"}`。`0<committed<=peak`、`0<committed_burst<=peak_burst`。2 bucket color-blind抽象meterとし、初期bucketは満杯。token numeratorはbit*Q、cap=`burst_bytes*8*Q`、消費cost=`M*8*Q`。前回meter評価から `rate*dt` を独立にrefillして各capへclampする。
+
+| 条件（refill後） | 色・消費・結果 |
+| --- | --- |
+| peak<cost | red、消費0、psfp_meter_red drop |
+| peak>=cost かつ committed<cost | yellow、peakだけcost消費、yellow_actionに従いpass又はpsfp_meter_yellow drop |
+| 両bucket>=cost | green、両方cost消費、pass |
+
+処理順は分類→SDU→stream gate→meter。前段dropではmeter評価・消費しない（次回評価時のdtは前回評価から）。到着frame一つに一回評価し、その後のegress複製ごとには消費しない。後段FDB不一致・dynamic不適格・満杯・T停止でもrefundしない。別hopの到着は別filterの評価となる。red/yellowはDEI/PCPを書換えず観測色だけとする。recordのconsumed_bitsは全bucketから実際に減算したbitの合計（green=2*M*8、yellow=M*8、red/前段drop/bypass=0）とする。
+
+### 3.2. 共通時刻とdynamic合成
+
+profile-owned coordinatorが同時刻phase0のbatch内で `wire完了/release → link/STP → registration/membership → aging → GCL切替` を実行する。各群はdynamicのsource正規順、同種TSN操作はport/ID順。既存Engineのphaseは増設しない。その後phase1入力/到着/offer、phase2 arbitration。旧状態のcredit積分は状態を変更する前にtまで行う。同時刻closedのstream gateに到着すればdropし、同時刻releaseと新GCLでは新gateを採用する。
+
+queued copyはSOF選択前に最新policy_epochでegressのlink状態・STP転送状態・VID登録状態だけの適格性を再確認する。不適格copyをdynamic契約の理由付きdropとして取り除き容量を返す。同class先頭を再評価し、PSFP tokenは返却しない。offer済みの目的port集合は固定し、後のgroup/source membership・FDB変更によって遡及取消・追加・経路付替えをしない。既存copyの目的portやwire tagを別portへ付替えない。wire中のcopyは非中断で既存arrivalを維持し、受信側は到着時のingress policyで判断する。CBSは実送信したclassだけ減算、通常dropで送信相当creditを引かない。
+
+### 3.3. 結果・診断・viewer
+
+外側output_schema_version=2と既存5ファイル構成を維持する。dynamicの5種 `ethernet.dynamic.frame/1`, `ethernet.dynamic.transfer/1`, `ethernet.dynamic.reception/1`, `ethernet.dynamic.control/1`, `ethernet.dynamic.policy/1` をすべて継承・登録し、visit ID・epoch・再訪可能なlineageを維持する。旧VLANの`@fromport`形式識別子を再訪に流用せず、dynamicのID生成を用いる。これに固有record `ethernet.tsn.gate/1`, `ethernet.tsn.credit/1`, `ethernet.tsn.policing/1`, `ethernet.tsn.decision/1` をmodel_recordsへ追加する。
+
+| record | 必須data（共通ID/time/effect_seqに追加） |
+| --- | --- |
+| gate | port, schedule_id, generation, open_priorities, next_boundary_ps(nullable), cause(initial/boundary/update) |
+| credit | port, priority, sign, magnitude（u128十進文字列）, scale=1000000000000, slope_bps（符号文字列）, cause |
+| policing | stream_id(nullable: bypass), reception_id, ingress, mac_bytes, verdict, color(null/green/yellow/red), committed_before/after, peak_before/after（meter未評価はnull）, consumed_bits |
+| decision | port, transfer_id(nullable), priority(nullable), state, policy_epoch, schedule_generation, next_wake_ps(nullable), reason |
+
+metadataにdynamic 5種とTSN 4種の全Schema集合を保存し、clock、正規化した設定、採用抽象規則名 `ifg-inclusive-guard / release-based-credit / independent-two-bucket`、初期credit0・token満杯、全schedule更新を保存する。count指標 `ethernet.tsn.psfp_pass/drop`, `ethernet.tsn.guard_blocked`, `ethernet.tsn.gcl_updates` はstream/port単位count/integer/summary/sum。guard_blockedは各arbitration batchの当該port/先頭ごとに1回（時間割合ではない）。policingの前段dropとmeter色を別集計する。
+
+prepareの型/参照/範囲/組合せ不一致は既存入力診断体系、runtime checked算術・予約不変条件失敗はE-0004でcallbackを未commitとしcontextへport/stream/fieldを記録する。never_eligibleは実行失敗でなく理由付き待機状態。[0,T)停止でTと等しいgate切替/credit wake/arrivalを実行しない。partial出力に予定wake/EOFを実績として混入させない。
+
+viewerはgate、credit、meter判定、待機理由とpolicy_epochをBigIntで純粋replayし、Tまで未到着のreceiverを合成しない。連続再生は方向線強調、stepは到達先イベントの直前区間を再演し前進/巻戻し同一到達先で一致させる。
+
+[詳細設計](../../design/EthernetTSN詳細設計書.md)・[検証仕様](../../verification/cases/EthernetTSN検証仕様書.md)を実装着手時の契約とする。

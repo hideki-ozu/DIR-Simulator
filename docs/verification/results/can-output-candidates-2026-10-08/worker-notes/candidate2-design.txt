@@ -1,0 +1,34 @@
+# Candidate 2: ordered record streams
+
+This is an isolated experiment for CAN/Gateway archive export. It changes only
+the `records` sort. Model records, schema-1 requests and receivers, and metric
+contributions keep their existing external sorters.
+
+Point records and window records are generated in separate streams. The initial
+point batch (`event_seq = None`) and each window's bounded vector are stable
+sorted by the complete non-callback wire key before writing. Callback point
+sorting and effect sequence assignment retain their current behavior. Each
+stream writes every row once as the existing JSONL `Row`, checks successive
+full keys, and keeps the raw file until its final disposition is known.
+
+If a stream remains monotonic, its raw file becomes its `Sorted` backing file.
+If a late key violation appears, the entire raw file is replayed in original
+push order into the existing stable external sorter. This avoids rerunning
+points/windows, which would repeat statistics and contributions. The two
+finished streams are merged by full key; equal keys select the point stream
+first, matching the original all-points-then-all-windows push order. JSON and
+CSV readers can reopen the merged iterator independently. Sequence numbers
+are still assigned by their existing consumers.
+
+The live record state is bounded by the current point callback group, one
+window vector, one previous key per writer, and one merge head per stream.
+Failure to create, write, flush, reread, or sort drops owned temporary
+directories. The existing staging and manifest-last publication flow remains
+the error boundary. Exact `u128` aggregation and schema behavior are untouched.
+
+Focused checks: direct path for the baseline archive, late violation after a
+long prefix with duplicate keys, point-first equal-key merge, fallback input
+corruption cleanup, and existing sort stability. Run repository formatting,
+focused output tests, locked full tests, and byte comparison against the frozen
+baseline under the shared measurement scheduler. This candidate is for design
+and measurement only; no production adoption is implied.

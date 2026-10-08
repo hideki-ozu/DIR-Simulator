@@ -1,0 +1,1 @@
+Historical pre-gate worker artifacts. These notes and scripts record design/edit work; they are not current gate or measurement evidence. Current acceptance evidence is in the successful latest gate reports and completed comparison reports.

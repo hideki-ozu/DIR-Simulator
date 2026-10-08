@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "can": {},
+  "ethernet": {
+    "schema_version": 3,
+    "endpoints": [
+      {
+        "instance": "R02.gw.eth",
+        "mac": "02:00:00:00:00:01",
+        "multicast": []
+      },
+      {
+        "instance": "R02.sink",
+        "mac": "02:00:00:00:00:02",
+        "multicast": []
+      }
+    ],
+    "switches": [],
+    "ports": [
+      {
+        "port": "R02.gw.eth.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "R02.sink.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "port": "R02.gw.eth.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "R02.sink.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      }
+    ]
+  },
+  "gateways": [
+    {
+      "instance": "R02.gw",
+      "can_ports": [
+        "R02.gw.can"
+      ],
+      "ethernet_endpoint": "R02.gw.eth",
+      "rx_capacity": 2,
+      "conversion_delay_ps": "3000000",
+      "max_hops": 8,
+      "rules": [
+        {
+          "id": "to_eth",
+          "direction": "can_to_ethernet",
+          "ingress": "R02.gw.can",
+          "match": {
+            "format": "standard",
+            "can_id": 0
+          },
+          "egresses": [
+            {
+              "port": "R02.gw.eth.tx",
+              "dst_mac": "02:00:00:00:00:02",
+              "vid": 10,
+              "pcp": 3
+            }
+          ]
+        },
+        {
+          "id": "to_can",
+          "direction": "ethernet_to_can",
+          "ingress": "R02.gw.eth",
+          "match": {
+            "vid": 10,
+            "pcp": 3,
+            "format": "standard",
+            "can_id": 0
+          },
+          "egresses": [
+            {
+              "port": "R02.gw.can.tx",
+              "format": "standard",
+              "can_id": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

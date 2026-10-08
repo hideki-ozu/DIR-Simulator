@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "provenance": "Frozen acceptance arithmetic and byte vectors, independent of product serializers. Rust acceptance_bridge assertions retain these constants.",
+  "codec": {
+    "C01": "4449524301000000000000",
+    "C02": "4449524301000000012302aabb",
+    "C03": "444952430100000007ff08ffffffffffffffff",
+    "C03E": "4449524301011fffffff08ffffffffffffffff"
+  },
+  "R01": {
+    "observed_ps": "100000000",
+    "ready_ps": "103000000",
+    "sof_ps": "106000000",
+    "eof_ps": "106576000",
+    "release_ps": "106672000",
+    "arrival_ps": "110576000",
+    "completed_ps": "115576000"
+  },
+  "R02": {
+    "ethernet_eof_ps": "608000",
+    "ethernet_release_ps": "704000",
+    "observed_ps": "1608000",
+    "ready_ps": "6608000",
+    "can_sof_ps": "10608000",
+    "can_eof_ps": "110608000",
+    "can_release_ps": "116608000",
+    "completed_ps": "115608000"
+  },
+  "loop": {
+    "ethernet_first_terminal_ps": "103218000",
+    "ethernet_second_terminal_ps": "108218000",
+    "can_first_terminal_ps": "203218000",
+    "can_second_terminal_ps": "208218000",
+    "end_to_end_target_count": 4
+  },
+  "native": {
+    "can_id1_bits": 47,
+    "can_first_terminal_ps": "94000000",
+    "can_second_terminal_ps": "99000000",
+    "ethernet_first_terminal_ps": "3218000",
+    "ethernet_second_terminal_ps": "8218000"
+  },
+  "perturbations": {
+    "tagged_r01_extra_ps": "32000",
+    "single_delay_extra_ps": "1"
+  },
+  "ordering": "Half-open [0,T), all R01/R02 milestones tested at T-1,T,T+1. Event-limit budgets 0 through 17."
+}

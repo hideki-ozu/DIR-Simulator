@@ -1,0 +1,228 @@
+# インタフェース詳細機能仕様書
+
+文書バージョン：`1.0.1`
+対象GitHubバージョン：`v1.0.0`
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.0.1` | `2026-10-03` | レビュー修正：現行CAN/GW APIと未提供のRegistry目標契約、実装・検証状態を区別 |
+| `1.0.0` | `2026-10-03` | ライブラリのソース配置と公開API・GW拡張契約の実装境界を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
+| `0.1.0` | `2026-10-01` | 作業内容を集約：単純な初期仕様と拡張境界を定義し、関連TBDの判断を確定。公開操作・登録descriptor・Context効果とCLI書式を実装可能な契約へ具体化。profile登録・model-config・schema2 journalの公開契約を追加。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
+
+文書ID：`spec-interfaces`
+
+文書状態：仕様規定済み。CAN/GWのCLI・ライブラリは実装し、[製品試験の実施範囲](../verification/cases/GWモデル検証仕様書.md)を記録済み。開発中ソースでは公開Registry/Envelope/Contextを実装した。組込み13 profileは専用エンジンのアダプターであり、任意の登録モデルによる全モデル仕様の適合は個別に検証する。
+
+入力・値は[設定仕様](設定詳細機能仕様書.md)、実行順序は[実行仕様](実行詳細機能仕様書.md)、出力は[結果仕様](結果詳細機能仕様書.md)、失敗は[診断仕様](診断詳細機能仕様書.md)を正とする。現行の呼出し方は[公開APIと互換性](../アーキテクチャ設計書.md#公開apiと互換性)を参照する。従来の`prepare(&Path)`・`run`と、追加の`prepare_with_registry(&Path, Registry)`・`run_config(&Path, &Path)`・`run_config_with_registry(&Path, &Path, Registry)`・`run_with_diagnostics`を区別する。
+
+[利用手順の要件](../要件定義書.md#dir-req-0118)は、構造と実験条件を指定し、準備・実行・結果取得まで進める公開操作を求める。CLIの`validate`とライブラリの`prepare`は検証済み構造・値・接続を確定する入口となる。モデルのfactory・initializeは`run`の準備で行い、全初期化成功後にイベント実行へ移るため、`validate`成功は初期化・実行・出力成功の証跡とは別である。
+
+この一連の操作は、[構造定義](../要件定義書.md#dir-req-0005)、[実験条件の初期化](../要件定義書.md#dir-req-0006)、[離散イベント実行](../要件定義書.md#dir-req-0007)、[評価結果の取得](../要件定義書.md#dir-req-0008)を同じ入力snapshotからつなぐ。戻り値の`termination`、`partial`と診断は実行の状態を、`output_manifest`とファイルのhashは成果の公開完了を示す。利用手順の確認では両方を照合し、部分結果を正常実行の計測結果と区別する。
+
+## 1. 操作と環境
+
+<a id="operation"></a>
+
+```trace
+{
+  "id": "spec-interfaces#operation",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0001",
+    "DIR-REQ-0005",
+    "DIR-REQ-0006",
+    "DIR-REQ-0007",
+    "DIR-REQ-0008",
+    "DIR-REQ-0025",
+    "DIR-REQ-0026",
+    "DIR-REQ-0028",
+    "DIR-REQ-0029",
+    "DIR-REQ-0030",
+    "DIR-REQ-0045",
+    "DIR-REQ-0053",
+    "DIR-REQ-0055",
+    "DIR-REQ-0056",
+    "DIR-REQ-0058",
+    "DIR-REQ-0116",
+    "DIR-REQ-0117",
+    "DIR-REQ-0118",
+    "DIR-REQ-0119",
+    "DIR-REQ-0121"
+  ],
+  "upstream": [
+    "DIR-FUNC-0001",
+    "DIR-FUNC-0008",
+    "DIR-FUNC-0010",
+    "DIR-FUNC-0011",
+    "DIR-FUNC-0014",
+    "DIR-FUNC-0020",
+    "DIR-FUNC-0021",
+    "DIR-FUNC-0022"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 項目 | 確定する契約 |
+| --- | --- |
+| 提供形態 | ローカルCLIとRustライブラリを提供し、同じ読み込み・準備・実行・出力処理を使用する。CLI名はdir-simulator、ライブラリ名はdir_simulator |
+| 初期環境 | Ubuntu 24.04 LTSのx86_64 Linux、UTF-8のファイル入出力を受け入れ対象とする。WSL2上の同環境も同じLinux契約を適用。OS依存のファイル操作は入出力境界へ集約する |
+| Rust | edition 2024、最小Rust 1.85.0。配布ビルドはCargo.lockで依存版を固定し、使用したrustc -Vv、ターゲット、Cargo.lockのハッシュをresults.metadataへ記録し、manifest.metadata_refから参照。初期の互換性評価は1.85.0に固定 |
+| 入力検証 | `dir-simulator validate --config scenario.ini`。入力取得・構文・値・参照・構造・Registry対応・選択profileの前提を検証し、正常時にstdoutへスキーマ版1のJSON検証要約を出力する。実行時間のイベント処理はrunの責務 |
+| 実行 | `dir-simulator run --config scenario.ini --output results`。configとoutputを必須の単一値として受理。出力先は新規または空ディレクトリ、親ディレクトリは既存とする |
+| オプション | `--help`と`--version`を提供。未知・重複オプションと必須値欠落はE-0001。モデル選択・入力探索・仮想終了時刻・上限はINIへ集約し、優先順位を一つにする |
+| 終了コード | 0=正常（validate成功、time_limit、events_exhausted）、2=準備失敗、3=実行失敗、4=出力失敗。構造化診断はstderrへJSON Linesで出力し、run開始後はdiagnostics.jsonlにも記録 |
+| 検証要約 | `{"schema_version":1,"status":"valid","network":"demo.Baseline","node_count":"4","channel_count":"6"}`の形とし、件数は実際の展開結果を文字列で記録 |
+| 正常終了 | 仮想観測区間は[0,T)。イベント枯渇時にも終端をTとしてアイドル区間を計測へ反映し、最後に処理したイベント時刻を別に記録する |
+| 構築・導入 | 実装時のworkspace packageをdir-simulatorとし、`cargo build --locked --release -p dir-simulator`、`cargo install --locked --path crates/dir-simulator`で構築・導入する。CAN/GWの製品ビルドと試験結果は上記の検証記録に対応付ける。将来モデル・公開拡張APIの提供を示すものではない |
+| 最小操作例 | [NED仕様の最小構成](NED詳細機能仕様書.md)と[設定仕様のINI](設定詳細機能仕様書.md)を同じ作業ディレクトリへ配置し、validate成功後にrunする。manifest.statusとresults、診断を[結果仕様](結果詳細機能仕様書.md)に従って確認する |
+| 確認 | DIR-AC-0010・DIR-AC-0026。最小構成の正常終了、未知の型によるコード2、モデル実行失敗によるコード3、書込失敗によるコード4を区別する。例は検証用入力仕様であり実行合格の記録ではない |
+
+## 2. ライブラリ・登録・拡張の契約
+
+開発中ソースは`dir_simulator::registry`に`Registry`、`Schema`、`Envelope`、`Model`、`Channel`、`Context`、各descriptorを公開する。従来の一引数`prepare(&Path)`を保持し、登録済みモデルには別入口`prepare_with_registry(&Path, Registry)`を用いる。Registryは静的リンクされたfactoryとvalidatorを保持し、選択profileの参照集合を準備時に照合・凍結する。CLIは既定Registry、ライブラリの`run_config_with_registry`は渡したRegistryを使う。以下の契約のうち、個別profileの入出力形式・製品適合は各モデルの検証記録に従う。
+
+<a id="extension-contract"></a>
+
+```trace
+{
+  "id": "spec-interfaces#extension-contract",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0015",
+    "DIR-REQ-0017",
+    "DIR-REQ-0019",
+    "DIR-REQ-0023",
+    "DIR-REQ-0028",
+    "DIR-REQ-0029",
+    "DIR-REQ-0031",
+    "DIR-REQ-0032",
+    "DIR-REQ-0033",
+    "DIR-REQ-0034",
+    "DIR-REQ-0038",
+    "DIR-REQ-0040",
+    "DIR-REQ-0041",
+    "DIR-REQ-0045",
+    "DIR-REQ-0051",
+    "DIR-REQ-0058",
+    "DIR-REQ-0117",
+    "DIR-REQ-0118",
+    "DIR-REQ-0122"
+  ],
+  "upstream": [
+    "DIR-FUNC-0001",
+    "DIR-FUNC-0004",
+    "DIR-FUNC-0005",
+    "DIR-FUNC-0006",
+    "DIR-FUNC-0010",
+    "DIR-FUNC-0012",
+    "DIR-FUNC-0013",
+    "DIR-FUNC-0015",
+    "DIR-FUNC-0016",
+    "DIR-FUNC-0017",
+    "DIR-FUNC-0020",
+    "DIR-FUNC-0023",
+    "DIR-FUNC-0027"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 項目 | 確定する契約 |
+| --- | --- |
+| ライブラリ操作 | `Registry::new()`（組込み登録を含む）又は`Registry::empty()`から登録し、`prepare_with_registry(config_path, registry)`で`PreparedSimulation`または準備診断を取得する。既存の`prepare(config_path)`も維持する。`run(prepared, output_path)`で実行し、準備失敗を結果へ保存する一括入口は`run_config_with_registry(config_path, output_path, registry)`とする |
+| モデル登録 | `register_module(implementation_key, factory, descriptor)`と`register_channel(implementation_key, factory, descriptor)`を公開操作とする。descriptorにパラメータschema、ポート契約、実装版を含め、重複した登録キーは準備失敗とする。implementation_keyは@classの実装キーとし、利用者のNED型の完全修飾名とは分離する。NED完全修飾名から実装キーへの対応表は読み込み時に構築する |
+| イベント契約 | モデルは初期化・イベント受信・終了のコールバックを持つ。受信時は仮想時刻、自己ID、入力Envelope、時刻順序を保った予約・配送・計測のContextを参照できる。コールバックのエラーは実行診断として伝播する |
+| Envelope | 公開型は`event_id`、`source`、`destination`、任意の`request_id`と`input_port`、`time_ps`、名前と整数版からなる`Schema`、`Vec<u8>`の`payload`を保持する。CAN識別子やAXI応答等の固有フィールドは各モデルのpayload契約で定義する。組込みprofileの専用codecを公開event schema登録と同一視しない |
+| 型の識別 | プロトコル・モデル・channel・payload・負荷生成方式を名前空間付きの文字列と版で識別する。意味が異なる新方式は新しい識別子として登録し、既存の識別子の意味を維持する |
+| 差し替え境界 | 調停、キュー規則、負荷生成、channel特性、計測定義、出力先は責務ごとの実装登録を通して追加する。既定の方式は本書群で固定し、未登録識別子は準備失敗とする |
+| 初期方式 | CAN・固定遅延channel・優先度選出・有限キュー・決定的な負荷・CSV/JSONを提供。注：乱数生成、詳細な誤り状態、別のバス方式等は初期提供範囲外であり、方式追加時に独立のschema・実装を登録する |
+| 組込み方法 | 実装はRustの静的リンクでRegistryへ登録し、独立したcrateを追加できる。注：動的ライブラリのABI・実行中の登録差替えは初期の公開契約の対象外 |
+| バスの独立性 | エンジンは個々のバスをインスタンスIDで識別し、仲裁・占有状態を各バスモデルが所有する。既定can.cc.ideal.v1の単一CANバスという制約は準備時のプロファイル検証で扱う |
+| channelの状態 | 型定義は再利用し、接続ごとの値・実行状態は各接続インスタンスに属する。特定接続の状態変更は同じ型を使う別接続の状態から独立する |
+| 互換性 | 入力・出力schemaは整数版で識別。新しい任意項目の既定動作は旧仕様と一致させ、必須項目や意味の変更は新schema版で提供する。未知版は準備／読込診断として扱う |
+| 上限 | ノードID・バスID・イベントID・要求IDは検査付き整数または文字列の不透明識別子として扱う。実行の資源上限は設定で与える。注：単一バスや32ノード等の評価規模はエンジンの固定上限の対象外 |
+| 拡張確認 | DIR-AC-0027。テスト用に別payload schemaと別channel型・キュー規則を登録し、既存CAN入力の意味とイベント順序を維持したまま追加実装を呼べることを検証する。未登録型を与えた準備診断と、別バスインスタンス間の状態独立も確認する |
+
+### 2.1. 登録情報と呼出し結果
+
+| 型・操作 | 必須の内容 | 検査・失敗・寿命 |
+| --- | --- | --- |
+| ModuleDescriptor | implementation_key、実装版、parameter_schema、port_schema、event_schema、factory | NEDの@classとキーが一致する実装を選択。名前はASCII識別子をピリオドで区切る。版は空でないUTF-8文字列。同一keyの多重登録は準備失敗 |
+| ParameterDescriptor | 名前、NED型、物理量dimension（dimensionless/time/bitrate/data）、正規値の型、最小・最大、必須性 | 既定値はNED宣言を正とし、INI解決後の正規値を渡す。初期schemaの完全一致規則はNED仕様を適用 |
+| PortDescriptor | 公開型は名前、方向input/output、`Schema`を保持する | 登録拡張モデルではNEDの名前・方向とdescriptorを照合し、接続する両端のpayload schema名・版を一致させる。組込みCAN Busの任意ゲート名とControllerへの経路照合は専用アダプターで維持する（[NED仕様](NED詳細機能仕様書.md#implementation)） |
+| ChannelDescriptor | implementation_key、実装版、parameter_schema、capability名と版、factory | 初期FixedDelayは`propagation-delay`版1を提供し、経路へdelay_psを渡す。他モデルは対応capabilityを明示して解決する |
+| EventDescriptor | `Schema`、phase（0又は1）、bytes validator | Timer/完了の配送契約。payloadの復号はモデル自身が担当し、登録後は当該実行内で固定する。phase 2はエンジン仲裁操作に対応 |
+| Registryの凍結 | prepare開始時に登録集合を所有し固定 | factory又はcallbackからは読取用descriptorを参照する。追加モデルは別Registryを構築して次のprepareへ渡す |
+| PreparedSimulation | 入力snapshot、正規構造・値、Registry、解決済み接続、実行設定 | prepare成功で返す所有値。runは消費して一回実行する。validateはprepareまでの処理を使い、モデルinitializeはrun準備時に行う |
+| ModelFactory | インスタンスID・解決済み値・接続descriptorを受け取る | 構築済みモデル又はModelErrorを返す。失敗はprep_failed。モデル生成後のinitializeも準備段階に属する |
+| callback | initialize(Context)、on_event(Envelope,Context)、finish(FinishContext) | initialize/on_eventは成功又はModelError。Contextは一callback限りの借用。finishは凍結済みsnapshot参照と解放責務を持つ |
+| RunReport | schema_version、termination、exit_code、partial、output_path、manifest_path、primary_diagnostic、committed_events、finish_ps、last_event_time_ps、event_processing_wall_seconds、diagnostics | 保存に成功した実行・準備失敗の状態を返す。結果公開失敗は`RunFailure`で返し、CLIは同じ終了コードを使う |
+| payload codec | schema名・版から登録されたbytes validatorを選び、モデルへ`Envelope`を渡す | コアはbytesを不透明なpayloadとして扱い、型付き復号はモデル側で行う。初期CANの正確なwire codecは[CANモデル詳細仕様](models/CANモデル詳細機能仕様書.md#controller)を適用。bytesはCAN物理フレームのビット列とは別 |
+
+### 2.2. Context操作
+
+| 操作 | 入力・戻り値 | 外部から見える動作 |
+| --- | --- | --- |
+| now / self_id | 時刻ps／安定モデルID | 現在イベントの時刻と対象。実行中は単調時刻を保つ |
+| schedule_at | at_ps、登録イベントschema、payload → TimerToken又はModelError | 自モデルへ登録phaseで予約。phase/deltaは実行仕様から決定する |
+| schedule_after | 非負delay_ps、schema、payload → TimerToken又はModelError | now+delayを検査してschedule_atへ委譲する |
+| cancel | TimerToken → bool | 実行仕様の所有者・状態規則で取消し結果を返し、効果をバッチへ追加する |
+| send_at | 出力port、at_ps、schema、payload → 成功又はModelError | 解決済み経路の入力portへphase 1で配送。at_psはモデルがchannel特性を適用済みの時刻。注：コアによる経路delayの再加算は対象外 |
+| request_arbitration | resource_id → 成功又はModelError | 現在又は次deltaのdirty集合へ追加。資源登録と所有関係を検査する |
+| observe | 登録計測ID・対象・整数`u64`値 → 成功又はModelError | 観測を呼出し順で効果バッチへ蓄積。エンジンのjournalを更新するための情報を渡す |
+| コミット | callback成功後にエンジンが一括検証・公開 | 予約・取消し・仲裁要求・観測を同一単位で確定。callback失敗時は全実行を停止し、journalの最後の確定結果を保存する |
+| 資源の所有 | Moduleが所有するresource_id及び共有モデルcontext | generic coreは登録resource callbackを呼ぶ。CAN固有fieldの解釈はモデル側の責務とする。CANのqueueとbusの一括更新はBusContext内の処理として実現する |
+
+`event_processing_wall_seconds`は成功・異常停止までのイベントループ実時間を秒で返す付加情報で、準備失敗ではnullとする。仮想時刻・イベント順序には使わず、results.jsonとCSVの決定的な結果へ混ぜない。出力を含む総実時間と最大RSSは外部で測定する。
+
+### 2.3. CLIの字句・標準出力
+
+| 条件 | 振る舞い |
+| --- | --- |
+| 構文 | `dir-simulator validate --config PATH`又は`dir-simulator run --config PATH --output DIR`。オプション順は任意。shellが分割した次のargv一個を値にする。注：`--name=value`、短縮形、位置引数は初期契約の対象外 |
+| help/version | 引数が`--help`又は`--version`だけの場合、UTF-8 LFでstdoutへ表示してexit0。subcommandの直後の`--help`も受理する |
+| 引数の誤り | 未知subcommand・未知／重複option・空値・欠落・余分なargvをE-0001としてstderrへ返してexit2。help/versionとの実行option混在も入力不正 |
+| validate成功 | 検証要約JSON一行とLFをstdoutへ返す。node_countはsimpleの実行インスタンス数、channel_countは明示したchannelを持つ辺の数。compoundとrootはnode_countの対象外 |
+| run成功／失敗 | stdoutへ`{schema_version:1,termination:S,exit_code:N,partial:B,output_path:S?,manifest_path:S?}`のJSON一行を返す。パスは正規絶対パス、manifest公開前はmanifest_path=null。診断情報はstderrと診断ファイルに対応付ける |
+| 出力先 | 出力dirを排他的に作成又は空であることを確認する。既存成果との衝突はE-0003/exit4。入力がその出力dir内にある場合は準備不正としてexit2。出力失敗の優先順位は診断仕様を適用 |
+
+## 3. 根拠
+
+| 資料 | 用途 |
+| --- | --- |
+| [Rust 1.85.0と2024 Edition](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0/) | edition 2024を利用する初期の最小ツールチェーン |
+| [要件定義書](../要件定義書.md) | DIR-TBD-0007の決定記録、DIR-REQ-0122の拡張契約 |
+
+## 拡張profileの操作
+
+[機能追加と契約の維持](../要件定義書.md#dir-req-0122)は、現行Classical CANの入力・時刻・結果契約を維持する共通の拡張責務である。以下は将来profileを登録して同じ公開操作へ接続する契約を示す。追加モデルの構成・通信意味・成功判定と提供範囲は[拡張共通仕様](拡張モデル共通詳細機能仕様書.md#selection)と各モデル仕様で定める。
+
+| 操作・型 | 契約 |
+| --- | --- |
+| register_profile | profile名とProfileDescriptorを登録し、同名の重複を準備失敗とする。profileが参照するmodule・channel・event・metric・model recordを個別登録し、入力validatorとgenerator戦略も必要に応じて別登録する。[拡張共通仕様](拡張モデル共通詳細機能仕様書.md#selection)の選択契約を適用する |
+| CLI / library | 共通のvalidate/run/prepareとRunReportを使用。選択値はGeneralのmodel-profile/model-configへ集約する |
+| Context拡張 | 登録schemaとModelRecordを受け取る`upsert_model_record(record)`を効果batchへ追加する。型・subject・時刻検査と一括公開は[統合設計](../design/複数モデル統合詳細設計書.md#journal)を適用 |
+| 出力互換 | 操作要約のschema1は維持。ファイル側schemaはprofileで選択し、解析器はmanifest/results.schema_versionを確認する |
+| 公開codec | 外部登録モデルのevent schemaは`EventDescriptor`のbytes validator、結果schemaは`ModelRecordDescriptor`のJSON validatorで検査する。GW・AXI・Ethernetの組込みprofileは専用codec経路を維持する |
+
+| 項目 | 契約 |
+| --- | --- |
+| Ethernet媒体拡張 | v2 profileは媒体別capability、イベントschema、複数版のModelRecord validatorを登録する。新しいCSMA/CD・PHY方式はモデル側で実装し、共通Engineは時刻・schema・journalの契約を適用 |
+
+| 項目 | 契約 |
+| --- | --- |
+| 共有contextの送信 | prepare時にprofile coordinatorへ担当contextのoutput集合と解決済経路handleを束縛し、初期化後は固定する。coordinatorからのsend_atはそのhandleの所有・schema・宛先を照合する。通常simpleの有効集合は自身のoutput。注：任意の外部port名による実行時の送信権追加は対象外 |
+| 送信者の識別 | send_atのEnvelope送信元は解決済outputの所有モデルID、callbackのself_idは実行中のsimple又はcoordinator IDとする。共有contextによる代理配送とMAC上の送信元を区別する。集合外handleはE-0002 invalid_event |
+
+## 将来対応モデルへの適用
+
+| 項目 | 契約 |
+| --- | --- |
+| 将来モデル | 追加profileはProfileDescriptor、型・payload codec、入力validator、ModelRecord schema、metricを登録する。モデル専用状態を共通Engineの比較キーへ追加せず、共通Contextとjournalの契約を使って拡張する。 |
+| 正本 | [CAN FD・100BASE-T1](models/CANFD・100BASE-T1詳細機能仕様書.md)、[SoC・AHB・NoC](models/SoC・AHB・NoC詳細機能仕様書.md)、[DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC](models/メモリ・IPC詳細機能仕様書.md) |
