@@ -1,0 +1,245 @@
+--- a/crates/dir-simulator/src/output/stream.rs
++++ b/crates/dir-simulator/src/output/stream.rs
+@@ -70,6 +70,51 @@
+     }
+ }
+ 
++/// Stable topology slots; names are looked up once per archived subject.
++struct StatsTable {
++    indices: BTreeMap<String, usize>,
++    values: Vec<Stats>,
++    all: usize,
++}
++impl StatsTable {
++    fn new(prepared: &PreparedSimulation) -> Result<Self, Diagnostic> {
++        let mut result = Self {
++            indices: BTreeMap::new(),
++            values: Vec::new(),
++            all: 0,
++        };
++        for id in prepared
++            .can
++            .controllers
++            .iter()
++            .map(|c| c.id.as_str())
++            .chain(prepared.can.buses.iter().map(|b| b.id.as_str()))
++            .chain(std::iter::once("$all"))
++        {
++            if !result.indices.contains_key(id) {
++                let slot = result.values.len();
++                reserve_vec(&mut result.values, 1, "output_stats_slots")?;
++                result.values.push(Stats::default());
++                result.indices.insert(id.to_owned(), slot);
++            }
++        }
++        result.all = result.slot("$all")?;
++        Ok(result)
++    }
++    fn slot(&self, name: &str) -> Result<usize, Diagnostic> {
++        self.indices
++            .get(name)
++            .copied()
++            .ok_or_else(|| Diagnostic::output("Unknown archived statistics target"))
++    }
++}
++impl std::ops::Index<&String> for StatsTable {
++    type Output = Stats;
++    fn index(&self, name: &String) -> &Self::Output {
++        &self.values[self.indices[name]]
++    }
++}
++
+ pub(super) struct Prepared {
+     pub records: Sorted,
+     pub models: Option<Sorted>,
+@@ -136,7 +181,7 @@
+     requests: &'a mut Option<Sorter>,
+     receivers: &'a mut Option<Sorter>,
+     contributions: &'a mut Sorter,
+-    stats: &'a mut BTreeMap<String, Stats>,
++    stats: &'a mut StatsTable,
+     gateway_pending: &'a mut [u128],
+ }
+ fn one(
+@@ -155,11 +200,12 @@
+         &mut *sinks.gateway_pending,
+     );
+     let r = &row.request;
+-    for target in [&r.source, &r.bus, &String::from("$all")] {
+-        stats
+-            .entry(target.clone())
+-            .or_default()
+-            .request(&r.status)?;
++    let source_slot = stats.slot(&r.source)?;
++    let bus_slot = stats.slot(&r.bus)?;
++    let all_slot = stats.all;
++    let request_slots = [source_slot, bus_slot, all_slot];
++    for slot in request_slots {
++        stats.values[slot].request(&r.status)?;
+     }
+     if let Some(sof) = r.sof_ps {
+         let tx = sof
+@@ -171,9 +217,9 @@
+                     .ok_or_else(|| Diagnostic::output("Missing TX enqueue"))?,
+             )
+             .ok_or_else(|| Diagnostic::output("Invalid arbitration wait"))?;
+-        for target in [&r.source, &r.bus, &String::from("$all")] {
+-            stats.entry(target.clone()).or_default().delay(0, tx)?;
+-            stats.entry(target.clone()).or_default().delay(1, arb)?;
++        for slot in request_slots {
++            stats.values[slot].delay(0, tx)?;
++            stats.values[slot].delay(1, arb)?;
+         }
+         if sof < h {
+             contribution(contributions, sof, "busy", &r.bus, 1)?;
+@@ -185,17 +231,14 @@
+         }
+     }
+     if let Some(eof) = r.eof_ps {
+-        let bus = stats.entry(r.bus.clone()).or_default();
++        let bus = &mut stats.values[bus_slot];
+         bus.payload_bits = aggregate::add(bus.payload_bits, r.payload_bits as u128)?;
+         bus.serialized_bits = aggregate::add(bus.serialized_bits, r.frame_bits as u128)?;
+-        for target in [&r.bus, &String::from("$all")] {
++        for slot in [bus_slot, all_slot] {
+             let transfer = eof
+                 .checked_sub(r.sof_ps.ok_or_else(|| Diagnostic::output("Missing SOF"))?)
+                 .ok_or_else(|| Diagnostic::output("Invalid transfer delay"))?;
+-            stats
+-                .entry(target.clone())
+-                .or_default()
+-                .delay(2, transfer)?;
++            stats.values[slot].delay(2, transfer)?;
+         }
+         if eof < h {
+             contribution(
+@@ -215,7 +258,7 @@
+         }
+     }
+     if let Some(release) = r.release_ps {
+-        let bus = stats.entry(r.bus.clone()).or_default();
++        let bus = &mut stats.values[bus_slot];
+         bus.occupied_bits = aggregate::add(bus.occupied_bits, r.frame_bits as u128 + 3)?;
+         if release < h {
+             contribution(
+@@ -228,24 +271,20 @@
+         }
+     }
+     for receiver in &row.receivers {
+-        for target in [&receiver.receiver, &r.bus, &String::from("$all")] {
+-            stats
+-                .entry(target.clone())
+-                .or_default()
+-                .receiver(&receiver.status)?;
++        let receiver_slot = stats.slot(&receiver.receiver)?;
++        let receiver_slots = [receiver_slot, bus_slot, all_slot];
++        for slot in receiver_slots {
++            stats.values[slot].receiver(&receiver.status)?;
+         }
+         if let Some(t) = receiver.received_ps {
+-            let receiver_stats = stats.entry(receiver.receiver.clone()).or_default();
++            let receiver_stats = &mut stats.values[receiver_slot];
+             receiver_stats.received_bits =
+                 aggregate::add(receiver_stats.received_bits, r.payload_bits as u128)?;
+-            for target in [&receiver.receiver, &r.bus, &String::from("$all")] {
++            for slot in receiver_slots {
+                 let delivery = t
+                     .checked_sub(r.generated_ps)
+                     .ok_or_else(|| Diagnostic::output("Invalid delivery delay"))?;
+-                stats
+-                    .entry(target.clone())
+-                    .or_default()
+-                    .delay(3, delivery)?;
++                stats.values[slot].delay(3, delivery)?;
+             }
+             if t < h {
+                 contribution(
+@@ -443,7 +482,7 @@
+ fn window_rows(
+     prepared: &PreparedSimulation,
+     state: &BTreeMap<String, Timeline>,
+-    stats: &BTreeMap<String, Stats>,
++    stats: &StatsTable,
+     start: u64,
+     end: u64,
+     full: bool,
+@@ -539,7 +578,7 @@
+     snapshot: &Snapshot,
+     contributions: Sorted,
+     records: &mut Sorter,
+-    stats: &BTreeMap<String, Stats>,
++    stats: &StatsTable,
+ ) -> Result<BTreeMap<String, Timeline>, Diagnostic> {
+     let h = snapshot.common.end_ps;
+     let mut state = BTreeMap::new();
+@@ -632,7 +671,7 @@
+ fn summaries(
+     prepared: &PreparedSimulation,
+     snapshot: &Snapshot,
+-    stats: &BTreeMap<String, Stats>,
++    stats: &StatsTable,
+     gateway_pending: &[u128],
+     queue_max: &BTreeMap<String, u64>,
+     state: &BTreeMap<String, Timeline>,
+@@ -814,14 +853,7 @@
+     };
+     let mut contributions = Sorter::new_in(output)?;
+     let mut records = Sorter::new_in(output)?;
+-    let mut stats = BTreeMap::new();
+-    for c in &prepared.can.controllers {
+-        stats.insert(c.id.clone(), Stats::default());
+-    }
+-    for bus in &prepared.can.buses {
+-        stats.insert(bus.id.clone(), Stats::default());
+-    }
+-    stats.insert("$all".into(), Stats::default());
++    let mut stats = StatsTable::new(prepared)?;
+     let mut gateway_pending = vec![0; prepared.gateway.gateways.len()];
+     for bundle in archive.iter()? {
+         one(
+@@ -946,4 +978,44 @@
+         drop(snapshot);
+         fs::remove_dir_all(output).unwrap();
+     }
+-}
++    #[test]
++    fn unknown_archived_statistics_target_is_a_diagnostic() {
++        let output = directory();
++        let prepared = prepared();
++        let snapshot =
++            crate::runtime::spool::with_spooling(&output, || crate::runtime::simulate(&prepared))
++                .unwrap();
++        let archive = fs::read_dir(&output)
++            .unwrap()
++            .map(|e| e.unwrap().path())
++            .find(|p| {
++                p.file_name()
++                    .unwrap()
++                    .to_string_lossy()
++                    .starts_with(".dir-can-ledger-")
++            })
++            .unwrap();
++        let text = fs::read_to_string(&archive).unwrap();
++        let mut lines = text.lines();
++        let mut first: serde_json::Value = serde_json::from_str(lines.next().unwrap()).unwrap();
++        first["request"]["source"] = json!("unknown-topology-node");
++        let mut altered = serde_json::to_string(&first).unwrap();
++        altered.push('\n');
++        for line in lines {
++            altered.push_str(line);
++            altered.push('\n');
++        }
++        fs::write(&archive, altered).unwrap();
++        let error = super::super::export(&prepared, &snapshot, &output).unwrap_err();
++        assert_eq!(error.code, "E-0003");
++        assert!(!output.join("manifest.json").exists());
++        assert!(!fs::read_dir(&output).unwrap().any(|e| {
++            e.unwrap()
++                .file_name()
++                .to_string_lossy()
++                .starts_with(".dir-result-sort-")
++        }));
++        drop(snapshot);
++        fs::remove_dir_all(output).unwrap();
++    }
++}

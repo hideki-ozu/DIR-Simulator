@@ -1,0 +1,80 @@
+# Experimental candidate①: binary external-sort runs
+
+Status: implementation and static review complete; **not compiled, tested, or benchmarked**. The parent scheduler owns all CPU checks and actual CLI output/performance comparison. No real-repository file was changed.
+
+## Scope and unchanged interface
+
+Only `candidate1/crates/dir-simulator/src/output/disk_sort.rs` differs from frozen baseline. `Sorter.push(Vec<String>, Value)`, final `Sorted.iter() -> Result<Rows, Diagnostic>`, `Rows::Item = Result<Row, Diagnostic>`, and `Row { key, tie, value }` remain intact. Original native `Row::Ord` is retained. Production CHUNK_BYTES=4MiB and FAN_IN=16, test overrides, buffered readers/writers, promotion/final merge structure and owned-directory cleanup stay unchanged. No dependencies, archived journal changes, public output/schema/writer changes, or other candidate effects are included.
+
+## Order-preserving key encoding
+
+Each String is emitted as its UTF8 bytes, escaping every NUL byte as `00 ff`, and ending each String with `00 00`. A Vec key concatenates those terminated components; the empty Vec encodes as zero bytes. Comparison remains byte-key lexicographic order followed by the original u64 insertion tie.
+
+Proof: valid UTF8 byte order is Rust String order. For the first differing String byte, nonzero bytes remain unchanged, while escaped NUL still sorts before every nonzero byte. A String ending before its counterpart sorts smaller because terminator `00 00` sorts before escaped NUL `00 ff` and before nonzero bytes. Identical components align their terminators; then comparison continues with the next component. A Vec ending first is a byte-prefix of the other, including the distinction between no components and a single empty String. Therefore encoded byte comparison matches Vec<String>::cmp for empty/NUL/Unicode/prefix cases. Readers validate escape grammar and every UTF8 segment without allocating decoded String keys. Original Vec<String> keys are reconstructed only during final iteration.
+
+## Run and frame format
+
+Run begins with 8-byte magic/version `DIRSORT1`. Each row contains:
+
+| Field | Bytes |
+| --- | --- |
+| body length | u64 little endian |
+| key length | u64 little endian |
+| payload length | u64 little endian |
+| original tie | u64 little endian |
+| order-preserving key | key length bytes |
+| typed payload | payload length bytes |
+
+Body length is 24+key length+payload length; framed row length is body+8. Chunk accounting uses this actual encoded length. Push encodes the Value once, retains encoded key/payload bytes in the chunk, and sorts byte keys. Merge reads one encoded head per run, selects with the same min/tie policy, and copies frame fields and payload bytes; **no JSON/Value parsing or typed-value decoding occurs in merge**. Final iterator decodes once when returning the existing Row interface.
+
+## Typed Value codec
+
+| Tag | Payload |
+| --- | --- |
+| 0 | null |
+| 1 / 2 | false / true |
+| 3 | u64, 8 little-endian bytes |
+| 4 | i64, 8 little-endian two's-complement bytes |
+| 5 | f64::to_bits, 8 little-endian bytes |
+| 6 | UTF8 String: u64 byte length then bytes |
+| 7 | array: u64 element count then tagged values |
+| 8 | object: u64 entry count, then String key length/bytes and tagged value per entry |
+
+Numbers are classified using serde_json Number's existing f64/u64/i64 representations. Floating bits preserve finite values, subnormals and negative zero; nonfinite corrupted frames are rejected. Object traversal and insertion retain serde_json Map's current key order; no independent map feature assumption is added. Strings preserve NUL/control, Unicode and slash as raw UTF8 bytes; existing public writers retain their escaping and canonical spelling.
+
+## Bounds and failure behavior
+
+Each Sorter tracks the largest body length actually encoded by trusted push calls and transfers it into readers and Sorted. Before reserving frame vectors, readers check the body length against both that producer bound and the physical remaining file bytes, checked header component sums and nonempty payload. This rejects u64::MAX/truncated/contradictory lengths before allocation without imposing a new maximum legitimate row size. The original one-oversized-row chunk behavior is preserved and specifically tested.
+
+Nested string lengths must fit remaining payload bytes; array counts must fit remaining minimum one-byte tags; object counts must fit remaining minimum nine-byte key-length/tag framing before allocation. Decode/encode depth is bounded to128 to avoid malicious recursive stack growth, consistent with the existing JSON parser's bounded-depth domain. Unknown tags, invalid UTF8/key escapes, duplicate object keys, nonfinite floats, trailing payload bytes and excessive depth fail structurally. Payload internals are intentionally validated only at final decode, since opaque merge is this candidate's optimization. The existing output Diagnostic and RAII ownership stay intact; invalid magic can now fail at iter-open instead of the first row, still via the same public Result boundary. No ability to resume after a corrupt internal run is claimed.
+
+Resident storage remains a chunk of at most4MiB encoded rows plus a possible single larger row, existing buffered readers/writer, and at most16 encoded merge heads bounded by the largest produced row. Final decoding temporarily holds one payload and its reconstructed Value. New vectors/String copies use existing fallible allocation helpers. Worst-case container expansion is bounded by actual remaining payload bytes and depth, rather than trusting unvalidated counts. Map node allocation remains serde_json's standard behavior, as in the original Value parse.
+
+## Static review and execution plan
+
+Single-file rustfmt parsed/formatted the implementation. Python independently checked all17956 ordered pairs of134 Vec keys against native UTF8 tuple lexicographic order; all passed. Static inspection confirmed production chunk/fan-in constants, unchanged push interface, and absent value codec calls from merge. Tree comparison found only the authorized disk_sort.rs differs from baseline. Rust execution has not occurred.
+
+Recommended parent-scheduled commands, working directory candidate1:
+
+```
+PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --lib output::disk_sort::tests
+PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --lib output::tests
+PATH=/home/hideki/.cargo/bin:$PATH cargo clippy --locked -p dir-simulator --lib -- -D warnings
+```
+
+Then parent builds the actual CLI and compares complete normalized outputs against baseline before isolated timing. This candidate makes no speedup claim until those measurements pass.
+
+Focused tests authored:
+- `binary_value_tags_and_numeric_bits_match_authored_vectors`
+- `escaped_byte_keys_preserve_vector_string_order_and_roundtrip`
+- `malformed_payload_tags_counts_utf8_depth_and_trailing_bytes_reject`
+- `oversized_truncated_and_inconsistent_frames_reject_before_allocation`
+- `merge_keeps_payload_opaque_and_failure_cleans_owned_files`
+- `binary_multi_pass_sort_preserves_special_keys_full_values_and_stable_ties`
+- `a_single_row_larger_than_chunk_has_no_new_row_size_limit`
+- `multi_pass_sort_is_stable_and_cleans_owned_files`
+- `truncated_run_is_reported_and_removed`
+
+Remaining uncertainty: Rust compiler/clippy and these tests have not run; binary codec output equivalence and performance require the parent's actual CLI comparison. No production adoption is authorized by this experimental source alone. Existing parser depth behavior should be considered during any later broader/private-Sorter use, since the codec deliberately rejects depth>128.
+
+Source SHA-256: `5270f28af07cd00a5093ef94d62f73c717f5b17acc35c318fb065ea2668750e1`.

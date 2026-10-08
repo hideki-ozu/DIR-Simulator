@@ -1,0 +1,484 @@
+{
+  "schema_version": 1,
+  "verified_at_utc": "2026-10-08T06:20:17.800166+00:00",
+  "input_report": "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08.json",
+  "input_report_sha256": "4fa1a5adb7546c4e4a7e1c29f071db5fd573f701d48d6404a1b1b391fd121352",
+  "support_directory": "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08",
+  "document_id": "can-output-candidates-2026-10-08",
+  "checks": {
+    "support_inventory": {
+      "expected_entries": 733,
+      "unique_entries": 733,
+      "verified_files": 733,
+      "errors": [],
+      "uninventoried_support_files": [],
+      "missing_inventory_files": [],
+      "all_verified": true
+    },
+    "baseline_saved_source_files": {
+      "expected": 183,
+      "verified": 183,
+      "errors": [],
+      "all_verified": true
+    },
+    "baseline_source_archive": {
+      "path": "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/source-snapshots/baseline-source.tar.gz",
+      "expected_source_files": 183,
+      "member_count": 1191,
+      "regular_file_count": 1191,
+      "recorded_regular_file_count": 1191,
+      "baseline_map_entries_present": 183,
+      "missing_baseline_entries": [],
+      "baseline_map_hash_mismatches": [],
+      "docs_specs_regular_files": 21,
+      "fixture_regular_files": 744,
+      "adoption_ledger_present_in_archive": false,
+      "adoption_ledger_reported_present": false,
+      "forbidden_directory_members": [],
+      "unsafe_members": [],
+      "credential_named_members": [],
+      "binary_named_or_magic_members": [],
+      "errors": [],
+      "exact_baseline_map_verified": true
+    },
+    "patch_replay": {
+      "patch_executable": "/usr/bin/patch",
+      "method": "fresh copies of saved sources/baseline; GNU patch -p1 --batch --forward --fuzz=0",
+      "replay_root": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx",
+      "candidate_count": 5,
+      "candidates": [
+        {
+          "candidate": "candidate1",
+          "fresh_replay_directory": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate1",
+          "patch_file_count": 1,
+          "patch_commands": [
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate1/crates/dir-simulator/src/output/disk_sort.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate1",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/disk_sort.rs\n",
+              "stderr_tail": ""
+            }
+          ],
+          "expected_gate_source_file_count": 183,
+          "actual_replayed_source_file_count": 183,
+          "source_map_mismatches": [],
+          "reject_or_backup_files": [],
+          "patches_applied": true,
+          "source_map_exact_match": true,
+          "gate_source_delta": {
+            "added": [],
+            "removed": [],
+            "changed": [
+              "crates/dir-simulator/src/output/disk_sort.rs"
+            ]
+          }
+        },
+        {
+          "candidate": "candidate2",
+          "fresh_replay_directory": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate2",
+          "patch_file_count": 2,
+          "patch_commands": [
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate2/crates/dir-simulator/src/output/disk_sort.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate2",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/disk_sort.rs\n",
+              "stderr_tail": ""
+            },
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate2/crates/dir-simulator/src/output/stream.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate2",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/stream.rs\n",
+              "stderr_tail": ""
+            }
+          ],
+          "expected_gate_source_file_count": 183,
+          "actual_replayed_source_file_count": 183,
+          "source_map_mismatches": [],
+          "reject_or_backup_files": [],
+          "patches_applied": true,
+          "source_map_exact_match": true,
+          "gate_source_delta": {
+            "added": [],
+            "removed": [],
+            "changed": [
+              "crates/dir-simulator/src/output/disk_sort.rs",
+              "crates/dir-simulator/src/output/stream.rs"
+            ]
+          }
+        },
+        {
+          "candidate": "candidate3",
+          "fresh_replay_directory": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate3",
+          "patch_file_count": 4,
+          "patch_commands": [
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate3/crates/dir-simulator/src/output/csv.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate3",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/csv.rs\n",
+              "stderr_tail": ""
+            },
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate3/crates/dir-simulator/src/output/json.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate3",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/json.rs\n",
+              "stderr_tail": ""
+            },
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate3/crates/dir-simulator/src/output/publish.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate3",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/publish.rs\n",
+              "stderr_tail": ""
+            },
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate3/crates/dir-simulator/src/output.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate3",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output.rs\n",
+              "stderr_tail": ""
+            }
+          ],
+          "expected_gate_source_file_count": 183,
+          "actual_replayed_source_file_count": 183,
+          "source_map_mismatches": [],
+          "reject_or_backup_files": [],
+          "patches_applied": true,
+          "source_map_exact_match": true,
+          "gate_source_delta": {
+            "added": [],
+            "removed": [],
+            "changed": [
+              "crates/dir-simulator/src/output.rs",
+              "crates/dir-simulator/src/output/csv.rs",
+              "crates/dir-simulator/src/output/json.rs",
+              "crates/dir-simulator/src/output/publish.rs"
+            ]
+          }
+        },
+        {
+          "candidate": "candidate4",
+          "fresh_replay_directory": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate4",
+          "patch_file_count": 3,
+          "patch_commands": [
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate4/crates/dir-simulator/src/output/contribution_sort.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate4",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/contribution_sort.rs\n",
+              "stderr_tail": ""
+            },
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate4/crates/dir-simulator/src/output/stream.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate4",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/stream.rs\n",
+              "stderr_tail": ""
+            },
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate4/crates/dir-simulator/src/output.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate4",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output.rs\n",
+              "stderr_tail": ""
+            }
+          ],
+          "expected_gate_source_file_count": 184,
+          "actual_replayed_source_file_count": 184,
+          "source_map_mismatches": [],
+          "reject_or_backup_files": [],
+          "patches_applied": true,
+          "source_map_exact_match": true,
+          "gate_source_delta": {
+            "added": [
+              "crates/dir-simulator/src/output/contribution_sort.rs"
+            ],
+            "removed": [],
+            "changed": [
+              "crates/dir-simulator/src/output.rs",
+              "crates/dir-simulator/src/output/stream.rs"
+            ]
+          }
+        },
+        {
+          "candidate": "candidate5",
+          "fresh_replay_directory": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate5",
+          "patch_file_count": 1,
+          "patch_commands": [
+            {
+              "argv": [
+                "/usr/bin/patch",
+                "-p1",
+                "--batch",
+                "--forward",
+                "--fuzz=0",
+                "-i",
+                "/home/hideki/DIR-Simulator/docs/verification/results/can-output-candidates-2026-10-08/patches/candidate5/crates/dir-simulator/src/output/stream.rs.patch"
+              ],
+              "cwd": "/tmp/dir-opt-five-2026-10-08/integrity-replay-0tivdirx/candidate5",
+              "exit_code": 0,
+              "stdout_tail": "patching file crates/dir-simulator/src/output/stream.rs\n",
+              "stderr_tail": ""
+            }
+          ],
+          "expected_gate_source_file_count": 183,
+          "actual_replayed_source_file_count": 183,
+          "source_map_mismatches": [],
+          "reject_or_backup_files": [],
+          "patches_applied": true,
+          "source_map_exact_match": true,
+          "gate_source_delta": {
+            "added": [],
+            "removed": [],
+            "changed": [
+              "crates/dir-simulator/src/output/stream.rs"
+            ]
+          }
+        }
+      ],
+      "all_candidates_exact": true,
+      "errors": []
+    },
+    "gnu_time_reconciliation": {
+      "expected_attempts": 72,
+      "raw_attempts_seen": 72,
+      "wall_match_count": 72,
+      "rss_match_count": 72,
+      "attempt_json_match_count": 72,
+      "all_wall_values_match": true,
+      "all_rss_values_match": true,
+      "all_attempt_json_fields_match": true,
+      "wall_mismatches": [],
+      "rss_mismatches": [],
+      "attempt_json_mismatches": [],
+      "errors": []
+    },
+    "latest_gate_report_reconciliation": {
+      "expected_reports": 6,
+      "verified_reports": 6,
+      "reports": [
+        {
+          "variant": "baseline",
+          "support_report_path": "gates/baseline/latest.json",
+          "sha256": "672bd8f430ca24fc28a21c5ba87ef43d12ddd1933c477beeebd0b25a0acfec33",
+          "source_file_count": 183,
+          "tests": {
+            "passed": 522,
+            "failed": 0,
+            "ignored": 0,
+            "suites": 28
+          }
+        },
+        {
+          "variant": "candidate1",
+          "support_report_path": "gates/candidate1/latest.json",
+          "sha256": "8a4b88e6daa6f7bc58e21bc83dce9cf4fb17cd7fe8aeb36ae181a9ff111dc4f3",
+          "source_file_count": 183,
+          "tests": {
+            "passed": 529,
+            "failed": 0,
+            "ignored": 0,
+            "suites": 28
+          }
+        },
+        {
+          "variant": "candidate2",
+          "support_report_path": "gates/candidate2/latest.json",
+          "sha256": "f480f4bb61bfb9a358a642c76f6a85b7a15bf472a0bc191655c8ba1a4962a292",
+          "source_file_count": 183,
+          "tests": {
+            "passed": 527,
+            "failed": 0,
+            "ignored": 0,
+            "suites": 28
+          }
+        },
+        {
+          "variant": "candidate3",
+          "support_report_path": "gates/candidate3/latest.json",
+          "sha256": "ced46e7816f2d21128ef373cee0a64f3657723289d4aca0a28ce67545ab89d37",
+          "source_file_count": 183,
+          "tests": {
+            "passed": 523,
+            "failed": 0,
+            "ignored": 0,
+            "suites": 28
+          }
+        },
+        {
+          "variant": "candidate4",
+          "support_report_path": "gates/candidate4/latest.json",
+          "sha256": "3ef1b422530de1d569ff679499035a292241b652e2ee0921fae56b77b7291d1e",
+          "source_file_count": 184,
+          "tests": {
+            "passed": 525,
+            "failed": 0,
+            "ignored": 0,
+            "suites": 28
+          }
+        },
+        {
+          "variant": "candidate5",
+          "support_report_path": "gates/candidate5/latest.json",
+          "sha256": "b92090685b47e0ce8157208f456e7651b5e6bdd508990adc238eadeb8e044b20",
+          "source_file_count": 183,
+          "tests": {
+            "passed": 523,
+            "failed": 0,
+            "ignored": 0,
+            "suites": 28
+          }
+        }
+      ],
+      "errors": [],
+      "all_verified": true
+    },
+    "pinned_input_reconciliation": {
+      "input_set_count": 2,
+      "input_sets": [
+        {
+          "input_set": "inputs-16000",
+          "pinned_files": 7,
+          "generation_sha256": "a534ce6517ffed92b58024fcd7d1674cb044f3b6175ba901e16fddffefa951b7"
+        },
+        {
+          "input_set": "inputs-3200",
+          "pinned_files": 7,
+          "generation_sha256": "90c6d351cf7da57d8383a97da19efd86bd38aeffdabbb239d2be5ac51ac71a94"
+        }
+      ],
+      "case_count": 3,
+      "cases": [
+        {
+          "case": "n16000-rho030",
+          "input_set": "inputs-16000",
+          "rho": 0.3,
+          "request_count_per_configuration": 16000,
+          "config_sha256": "da8e6a0dc99a7a639329fa925e595c6bf1dd907b0b8a4afec3f191d264c1f33b"
+        },
+        {
+          "case": "n3200-rho090",
+          "input_set": "inputs-3200",
+          "rho": 0.9,
+          "request_count_per_configuration": 3200,
+          "config_sha256": "5a76d31a78c24b0680fd5e7683236cbc5fc1ca4e49e65db6be78c94c73c1243a"
+        },
+        {
+          "case": "n3200-rho120",
+          "input_set": "inputs-3200",
+          "rho": 1.2,
+          "request_count_per_configuration": 3200,
+          "config_sha256": "260cc70290f4eb275a67159eba86cffae90978d29e14842641100cc3ed7f21ed"
+        }
+      ],
+      "errors": [],
+      "all_verified": true
+    }
+  },
+  "overall_status": "pass",
+  "overall_checks_passed": 10,
+  "overall_checks_expected": 10,
+  "commands": [
+    {
+      "argv": "verify each support_files SHA-256 and byte count",
+      "completed": true
+    },
+    {
+      "argv": "inspect baseline-source.tar.gz member paths and hash the 183 gate-inventory files",
+      "completed": true
+    },
+    {
+      "argv": "patch -p1 --batch --forward --fuzz=0 per candidate in fresh /tmp source trees",
+      "executable": "/usr/bin/patch",
+      "completed": true
+    },
+    {
+      "argv": "compare GNU time and attempt.json to all comparison.json records",
+      "completed": true
+    }
+  ]
+}

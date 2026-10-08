@@ -1,0 +1,74 @@
+{
+  "schema_version": 4,
+  "generators": [
+    {
+      "id": "x",
+      "node": "Net.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "0"
+      ],
+      "frame": {
+        "dst_mac": "33:33:00:00:00:01",
+        "ether_type": 34525,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 7,
+          "dei": 0
+        },
+        "ip_multicast": {
+          "family": "ipv6",
+          "source": "2001:db8::1",
+          "group": "ff3e::1"
+        }
+      },
+      "flow_id": "x",
+      "priority": 7,
+      "deadline_ps": null
+    },
+    {
+      "id": "y",
+      "node": "Net.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "2000000"
+      ],
+      "frame": {
+        "dst_mac": "33:33:00:00:00:01",
+        "ether_type": 34525,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 7,
+          "dei": 0
+        },
+        "ip_multicast": {
+          "family": "ipv6",
+          "source": "2001:db8::2",
+          "group": "ff3e::1"
+        }
+      },
+      "flow_id": "y",
+      "priority": 7,
+      "deadline_ps": null
+    }
+  ],
+  "controls": [
+    {
+      "id": "include",
+      "at_ps": "0",
+      "kind": "membership_set",
+      "switch": "Net.s",
+      "port": "Net.s.tx_b",
+      "vid": 10,
+      "family": "ipv6",
+      "group": "ff3e::1",
+      "mode": "include",
+      "sources": [
+        "2001:db8::1"
+      ],
+      "lifetime_ps": "10000000"
+    }
+  ]
+}

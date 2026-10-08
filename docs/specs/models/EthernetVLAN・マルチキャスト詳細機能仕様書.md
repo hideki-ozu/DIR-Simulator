@@ -1,13 +1,14 @@
 # EthernetVLAN・マルチキャスト詳細機能仕様書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ 811360a`
-予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`main @ 2f1e60b`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-08` | 静的VLAN契約と、動的学習・snooping・VID登録・STPおよびTSNの別profileへの詳細化境界を追記。追加profileの実装・製品検証状態を更新 |
 | `1.1.1` | `2026-10-04` | 初版：単一VLANタグ・Port policy・VLAN別交換・静的multicast・購読・hop別観測の実装契約と製品試験参照を確定。利用者指定の文書版1.1.1で初回push |
 
 文書ID：`spec-ethernet-vlan`
@@ -17,7 +18,7 @@
 
 v1.1.0の全二重L2・負荷・QoSに続き、`model-profile = "ethernet.l2.vlan.v1"`を追加する。[QoS仕様](Ethernet負荷・QoS詳細機能仕様書.md)のNED型、connected tree、方向別送信器、8class、lazy負荷、固定処理遅延、整数ps、半開区間[0,T)、フロー期限を継承する。既存L2/QoS/CANのprofile、入力・schema・時刻は維持する。媒体用の`ethernet.l2.store-forward.v2`は転用しない。
 
-単一C-tag、静的ポート設定、VLAN別unicast FDB、静的L2 multicast表・Endpoint購読を対象とする。VID 0のpriority-tag、QinQ、MAC学習・aging、IGMP/MLD snooping、MVRP、STP、ループ構成、PAUSE、TSN、上位protocolの解釈、raw-wire入力は後続契約で扱う。規格全体適合を表すprofileではない。
+単一C-tag、静的ポート設定、VLAN別unicast FDB、静的L2 multicast表・Endpoint購読を対象とする。VID 0のpriority-tag、QinQ、MAC学習・aging、IGMP/MLD snooping、MVRP、STP、ループ構成、PAUSE、TSN、上位protocolの解釈、raw-wire入力は後続契約で扱う。規格全体適合を表すprofileではない。 MAC学習・aging、源別snooping、VID登録、抽象STPと閉路は[動的制御仕様](Ethernet動的制御詳細機能仕様書.md)、TAS/CBS/PSFPは[TSN仕様](EthernetTSN詳細機能仕様書.md)で詳細化し、別profileとして共通CLI・schema2出力・Viewerへ実装した。製品試験の実施範囲は[製品検証記録](../../verification/results/network-extension-product-2026-10-07.json)と[受け入れ実施記録](../../verification/results/acceptance-2026-10-08.md)を参照し、本静的VLAN profileの契約や規格全体適合とは区別する。
 
 <a id="ports-codec"></a>
 

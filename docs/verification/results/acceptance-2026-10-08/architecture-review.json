@@ -1,0 +1,821 @@
+{
+  "status": "partial_review_acceptance_not_established",
+  "reviewer": "Codex architecture review (not author attestation)",
+  "reviewed_at_utc": "2026-10-08T00:26:40.395067+00:00",
+  "base_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+  "working_tree_dirty": true,
+  "repository_changed_paths": [],
+  "artifacts": [
+    "/tmp/dir-acceptance-architecture-review.json",
+    "/tmp/dir-acceptance-architecture-review.md",
+    "/tmp/dir-acceptance-cargo-metadata.json",
+    "/tmp/dir-acceptance-official-ned-6.4.tex"
+  ],
+  "source_hashes": {
+    "Cargo.toml": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc",
+    "Cargo.lock": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+    "rust-toolchain.toml": "dc8a9e7668c882190e58da244ac78e86d0d9875140a6249849f49b74d7382a76",
+    "LICENSE": "52757742ffe318367ebff7ce816ad5a587ffd86ac88d47613caad3b6cc79afdb",
+    "LICENSE-MIT": "0f5b20888da43d21ba271897c0dd201e6519105d2a9f9c130996387f5101843a",
+    "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "crates/dir-simulator/Cargo.toml": "f3e47338d3831c315c6e0d9ed8c6d4c552f5ec5df8697d231c7b0ee265653fd4",
+    "crates/dir-simulator/build.rs": "6720e9a190c90baa6e0c9387a3094a3dd24a6a86eed0f758735716186364ea22",
+    "crates/dir-simulator/src/input/ned.rs": "89b5f74da2b5b42fc58a80044f018779fa1ad1cda3f58e55bf43716fdeecd886",
+    "crates/dir-simulator/src/registry/mod.rs": "43a92eb5e97b842a570bf174c347f0c19913499a18d7f6216c72c248be1f23de",
+    "crates/dir-simulator/src/registry/prepare.rs": "1d06654d5bca40e474ae0fa8ede90ce9cadb554dc82d035ed169d069c1fcae3a",
+    "crates/dir-simulator/src/runtime/engine.rs": "1df3c82bd580b0b8d2e2eacbdba863f51be2fbd595cda45c6b1b5ff17a7f62f2",
+    "crates/dir-simulator/src/runtime/can.rs": "db061d636e7a74f378bfa723a234f003eb4c50ca6ace96d45a6c6eb8b1afb564",
+    "crates/dir-simulator/src/runtime/can/protocol.rs": "1958d0b904829d7eb6b61c6abe2dc331b7f3cec5acdd5facfe49c88f4a850a00",
+    "crates/dir-simulator/src/output/metadata.rs": "b2f5469838c40d691ad0e6e740d11b50042be9695b55e2a6f6ea9b0fde8d8fac"
+  },
+  "official_source": {
+    "url": "https://github.com/omnetpp/omnetpp/blob/omnetpp-6.4.0/doc/src/manual/ch-ned-lang.tex",
+    "tag": "omnetpp-6.4.0",
+    "download_sha256": "6c7abb71e7d23b2635852385ba70fd6ec21dcb1140821a9aaa12c30aa8a70c4a",
+    "retrieval": "web open exact reference succeeded; GitHub Raw click blocked; raw.githubusercontent.com exact tagged source downloaded via urllib"
+  },
+  "commands_checked": [
+    "cargo metadata --locked --format-version 1 (exit 0)",
+    "rustc -Vv (1.85.0, x86_64-unknown-linux-gnu)",
+    "git rev-parse HEAD",
+    "git status --porcelain --untracked-files=normal",
+    "git ls-files license/notice/ledger/archive/native-code patterns",
+    "git log -3 --format=... -- input/ned.rs",
+    "rg source/parser/tests/FFI/process/metadata paths; sed source/reference reads"
+  ],
+  "assertions": [
+    {
+      "id": "0085.1",
+      "item": "Rust implementation/build graph",
+      "status": "source_confirmed_build_evidence_pending",
+      "evidence": [
+        "Cargo.toml:1 one member, edition 2024; crates/dir-simulator/Cargo.toml:1 Rust minimum 1.85; rust-toolchain.toml:1 pins 1.85.0",
+        "cargo metadata --locked --format-version 1 succeeded: one workspace package, Rust lib/bin, integration test targets and Rust custom build script",
+        "runtime/engine.rs:201 dispatch, runtime/can.rs:84 generation dispatch and :213 arbitration; runtime/can/protocol.rs:18 serialization",
+        "docs/specs/インタフェース詳細機能仕様書.md:73-74 defines Ubuntu 24.04 x86_64/native and WSL2, Rust edition/version"
+      ],
+      "unresolved_evidence": [
+        "Current build log, binary SHA-256 and source identity must be attached by build worker; metadata success is not compilation. Native/WSL acceptance environments require separate evidence."
+      ]
+    },
+    {
+      "id": "0085.2",
+      "item": "Public operation to CAN execution route",
+      "status": "source_confirmed_route_wording_gap",
+      "evidence": [
+        "src/main.rs:100 validate→prepare, :107 run_config; src/lib.rs:21 public prepare and :23 public run family; src/run.rs:171 run_config",
+        "src/registry/prepare.rs:70 builtin preparation installs BuiltinAdapter; src/runtime/registered.rs:1024 calls simulate_builtin; src/runtime.rs:47 selects Rust CAN Engine",
+        "src/runtime/registered.rs:349,357 generic channel/module factories are a separate extension route",
+        "tests/registry.rs:600 registered_builtin_adapter_preserves_builtin_result compares native and registered Gateway/CAN snapshots and event counts"
+      ],
+      "unresolved_evidence": [
+        "Fresh execution of route regression required. Literal CLI/library→Registry→factory→CAN callback wording does not describe builtin CAN: native path bypasses generic ModelFactory. Clarify acceptance mapping to actual adapter/native route; do not assert generic CAN factory coverage."
+      ]
+    },
+    {
+      "id": "0085.3",
+      "item": "External integration responsibility",
+      "status": "source_confirmed",
+      "evidence": [
+        "rg extern/Command over src and build.rs found process execution only in build.rs:6 for git/rustc build identity",
+        "Cargo metadata contains Rust system interface dependencies rustix/libc/linux-raw-sys and platform-specific Windows crates; no OMNeT++ or INET dependency",
+        "Viewer/editor embed JS/CSS/HTML using include_str/include_bytes; core CAN and scheduler responsibility remains Rust"
+      ],
+      "unresolved_evidence": [
+        "Search is source evidence, not proof of absence of every transitive native/OS interface; distribution inventory must include embedded assets and used transitive dependencies."
+      ]
+    },
+    {
+      "id": "0085.4",
+      "item": "Review disposition",
+      "status": "partial",
+      "evidence": [
+        "Required Rust sources exist; source-only missing-implementation statement at 利用フロー・品質検証仕様書.md:260 is stale against current tree"
+      ],
+      "unresolved_evidence": [
+        "Retain pending current build/path execution evidence and target snapshot identity; do not mark entire 0085 passed from source inspection."
+      ]
+    },
+    {
+      "id": "0086.1",
+      "item": "Grammar/resolution reference mapping",
+      "status": "partial",
+      "evidence": [
+        "Official tagged OMNeT++ 6.4.0 NED chapter read; mapping below joins DIR subset, parser/resolver and test source"
+      ],
+      "unresolved_evidence": [
+        "Mapping identifies tests but is not an exhaustive fresh grammar execution matrix; named unsupported import/extends/allowunconnected rejection tests were not located in searched Rust input/integration sources."
+      ]
+    },
+    {
+      "id": "0086.2",
+      "item": "Independent implementation/provenance",
+      "status": "unverified",
+      "evidence": [
+        "src/input/ned.rs:16 handwritten lexer and :283 Parser methods; :609 parse and :1185 resolve; no parser-generator or OMNeT++ dependency in Cargo graph",
+        "git log of input/ned.rs shows current tracked history including 0ff5e98, a6c33b4, 8d8e68e"
+      ],
+      "unresolved_evidence": [
+        "No author-origin attestation or source-acquisition provenance ledger was established. Handwritten code, dependencies and commit history alone cannot attest independent authorship or no copied source."
+      ]
+    },
+    {
+      "id": "0086.3",
+      "item": "Supported and unsupported input correspondence",
+      "status": "partial",
+      "evidence": [
+        "src/input/tests.rs:73 valid fixtures, :101 defaults/overrides, :180 compound/channel, :205 invalid declarations/wiring, :268 truncation, :391 roots/symlinks; see detailed mapping",
+        "DIR explicitly rejects import, local simple type references, dynamic structures and expressions; INI value selection and Rust @class keys are DIR contracts"
+      ],
+      "unresolved_evidence": [
+        "Fresh focused input tests and complete negative syntax matrix required; input test success does not resolve authorship evidence."
+      ]
+    },
+    {
+      "id": "0086.4",
+      "item": "Reviewer/date/identity and corrective destination",
+      "status": "recorded_with_limits",
+      "evidence": [
+        "Reviewer: Codex architecture review; reviewed UTC timestamp and Git base/source hashes recorded in this artifact",
+        "Corrective destinations: verification case sections 6-8, NED reference correspondence, docs/third-party/採用物台帳.md and release evidence"
+      ],
+      "unresolved_evidence": [
+        "Dirty working tree is not a released/committed snapshot. Human authorship/provenance confirmation remains unavailable; do not substitute agent reviewer identity."
+      ]
+    },
+    {
+      "id": "0087.1",
+      "item": "Define adoption and distribution set",
+      "status": "incomplete",
+      "evidence": [
+        "Cargo metadata inventories 42 external packages across all target branches; lockfile has versions/checksums; package inventory included below",
+        "git ls-files for LICENSE/NOTICE/third-party/archive/native code found project LICENSE, LICENSE-APACHE, LICENSE-MIT; no tracked distribution archive or third-party ledger"
+      ],
+      "unresolved_evidence": [
+        "No nominated immutable distribution archive; no complete fixture/embedded asset/generator/vendored-material adoption enumeration; Cargo graph alone is not full adoption set."
+      ]
+    },
+    {
+      "id": "0087.2",
+      "item": "One-row-per-adoption ledger fields",
+      "status": "not_satisfied",
+      "evidence": [
+        "docs/品質・配布方針.md:90 requires docs/third-party/採用物台帳.md; file does not exist at review time",
+        "42 external metadata packages makes a zero-adoption declaration unsupported"
+      ],
+      "unresolved_evidence": [
+        "All required per-item acquisition date, source URL/hash, author/notice, modifications, bundled documents, reviewer/date and disposition entries remain to be documented. Declared Cargo license values are not compliance decisions."
+      ]
+    },
+    {
+      "id": "0087.3",
+      "item": "Source/history provenance review",
+      "status": "unverified",
+      "evidence": [
+        "Project LICENSE scopes dual license to project-authored material and excludes third-party material",
+        "Parser source/history inspected; external dependencies identified by registry package source"
+      ],
+      "unresolved_evidence": [
+        "Unresolved author attestations and acquired material provenance; no legal or independent-authorship conclusion provided."
+      ]
+    },
+    {
+      "id": "0087.4",
+      "item": "Distribution archive licenses/notices",
+      "status": "not_verifiable",
+      "evidence": [
+        "LICENSE:1 declares MIT OR Apache-2.0; LICENSE-MIT and LICENSE-APACHE are tracked and present; manifest workspace/package declarations agree"
+      ],
+      "unresolved_evidence": [
+        "Archive absent/unselected, so cannot confirm both project texts or third-party notices/conditions in actual shipped set. Upstream package license texts/NOTICE requirements have not all been compared."
+      ]
+    },
+    {
+      "id": "0087.5",
+      "item": "Result→ledger→manifest linkage",
+      "status": "not_satisfied",
+      "evidence": [
+        "src/output/publish.rs:143,175 metadata_ref points to results.json#/metadata",
+        "build.rs:91 computes adoption_ledger_sha256 or not-present; :98 assigns adoption_ledger_version = Git HEAD; output/metadata.rs:178 publishes provenance"
+      ],
+      "unresolved_evidence": [
+        "A Git version string with missing ledger does not identify a populated distribution ledger. Actual result/manifest and nominated release ledger/archive must be linked and verified."
+      ]
+    }
+  ],
+  "ned_mapping": [
+    {
+      "rule": "File/package/QName",
+      "official_reference": "sec:ned-lang:packages; sec:ned-lang:imports-and-name-resolution",
+      "dir_contract": "NED spec §1: explicit directory-matched nonempty package, qualified references; no imports/default package",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:609,363; input.rs root collection",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:73,205,391",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Lexical ID/Literal/String/Unit",
+      "official_reference": "NED chapter parameters/properties concepts; exact lexer limits are DIR-defined",
+      "dir_contract": "NED spec §1 lexical tables and configuration values: ASCII tokens, BOM, comments, literals, reserved words",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:16,356,376; input.rs identifier/reserved/string_literal",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:39,205,268",
+      "evidence_limit": "Exact official formal lexical grammar is outside the declared chapter; no full lexical conformance assertion."
+    },
+    {
+      "rule": "Declaration/Kind and ordered sections",
+      "official_reference": "sec:ned-lang:simple-modules; sec:ned-lang:compound-modules; sec:ned-lang:channels",
+      "dir_contract": "NED spec §1: four declaration kinds; explicit sections, allowed order and multiplicity",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:413",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:73,180,205",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Parameters/Parameter/ScalarType/default",
+      "official_reference": "sec:ned-lang:parameters; sec:ned-lang:parameter-assignments",
+      "dir_contract": "NED spec §1: four scalar types and literal defaults only; no general expressions/fixed assignments",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:460,647",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:39,101,205",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "TypeProperty/ParameterProperty/@class",
+      "official_reference": "sec:ned-lang:simple-modules; sec:ned-lang:channels; sec:ned-lang:properties",
+      "dir_contract": "NED spec §2: mandatory Rust implementation key on simple/channel; limited annotations; no OMNeT C++ loading",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:390,469,763; input/can.rs ModelRules",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:205; tests/registry.rs:223",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Gates",
+      "official_reference": "sec:ned-lang:gates",
+      "dir_contract": "NED spec §1/3: scalar input/output only; no vectors/inout",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:526,786,825",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:124,163,205",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Submodules/QName",
+      "official_reference": "sec:ned-lang:submodules",
+      "dir_contract": "NED spec §1: named scalar child with qualified type; no vector/conditional/parametric child",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:544; :1185 resolution",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:180,205",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Connections/Endpoint/optional channel",
+      "official_reference": "sec:ned-lang:connections; sec:ned-lang:channel-specification",
+      "dir_contract": "NED spec §1/3: one forward edge, optional qualified channel; direct-child or boundary gate endpoints",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:562,786,825,933,949",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:180,205",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Channel values/path delay",
+      "official_reference": "sec:ned-lang:channels; sec:ned-lang:channel-specification",
+      "dir_contract": "NED spec §2/3: registered FixedDelay, independent instance overrides and checked integer-ps sum",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:1137; input/can.rs",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:180; tests/registry.rs:223",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Containment/expansion/schema resolution",
+      "official_reference": "sec:ned-lang:compound-modules; sec:ned-lang:imports-and-name-resolution",
+      "dir_contract": "NED spec §1/2/3: all declarations validated; recursion rejection; selected network depth-first expansion",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:763,859,888,1185",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:180,205; input/can/tests.rs:15",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Value resolution",
+      "official_reference": "sec:ned-lang:parameter-assignments",
+      "dir_contract": "DIR configuration precedence, descriptors/ranges and inactive-value checks, not full public NED equivalence",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:983,647",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:101,205; input/can/tests.rs:34",
+      "evidence_limit": "Source correspondence only; tests not rerun by this reviewer."
+    },
+    {
+      "rule": "Unsupported import/extends/like/interfaces/types/loops/expressions",
+      "official_reference": "sec:ned-lang:imports-and-name-resolution; inheritance/parametric/multiple-connections sections",
+      "dir_contract": "NED spec §1 explicitly excludes these constructs",
+      "implementation": "crates/dir-simulator/src/input/ned.rs:413,449; :363 qualified name; :376 literal",
+      "test_mapping": "crates/dir-simulator/src/input/tests.rs:205 covers vector/inout/bare type/fixed assignment rejection",
+      "evidence_limit": "Named tests for every excluded construct not established; grammar-based rejection is source evidence, not executed coverage."
+    }
+  ],
+  "cargo_package_count": 43,
+  "external_package_count": 42,
+  "external_packages": [
+    {
+      "name": "ascii",
+      "version": "1.1.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "Apache-2.0 OR MIT",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ascii-1.1.0/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "bitflags",
+      "version": "2.13.2",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bitflags-2.13.2/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "block-buffer",
+      "version": "0.10.4",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/block-buffer-0.10.4/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "cfg-if",
+      "version": "1.0.5",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cfg-if-1.0.5/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "chunked_transfer",
+      "version": "1.5.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/chunked_transfer-1.5.0/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "cpufeatures",
+      "version": "0.2.17",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.2.17/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "crypto-common",
+      "version": "0.1.7",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crypto-common-0.1.7/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "digest",
+      "version": "0.10.7",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/digest-0.10.7/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "errno",
+      "version": "0.3.14",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/errno-0.3.14/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "generic-array",
+      "version": "0.14.7",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/generic-array-0.14.7/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "httpdate",
+      "version": "1.0.3",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/httpdate-1.0.3/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "itoa",
+      "version": "1.0.18",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/itoa-1.0.18/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "libc",
+      "version": "0.2.189",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.189/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "linux-raw-sys",
+      "version": "0.4.15",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.4.15/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "log",
+      "version": "0.4.34",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.34/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "memchr",
+      "version": "2.8.3",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "Unlicense OR MIT",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memchr-2.8.3/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "proc-macro2",
+      "version": "1.0.107",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.107/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "quote",
+      "version": "1.0.47",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quote-1.0.47/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "rustix",
+      "version": "0.38.44",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-0.38.44/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "serde",
+      "version": "1.0.229",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "serde_core",
+      "version": "1.0.229",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "serde_derive",
+      "version": "1.0.229",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_derive-1.0.229/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "serde_json",
+      "version": "1.0.151",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "sha2",
+      "version": "0.10.9",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/sha2-0.10.9/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "syn",
+      "version": "3.0.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "tiny_http",
+      "version": "0.12.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tiny_http-0.12.0/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "typenum",
+      "version": "1.20.1",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/typenum-1.20.1/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "unicode-ident",
+      "version": "1.0.26",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "(MIT OR Apache-2.0) AND Unicode-3.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/unicode-ident-1.0.26/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "version_check",
+      "version": "0.9.5",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT/Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/version_check-0.9.5/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows-link",
+      "version": "0.2.1",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows-link-0.2.1/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows-sys",
+      "version": "0.59.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows-sys-0.59.0/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows-sys",
+      "version": "0.61.2",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows-sys-0.61.2/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows-targets",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows-targets-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows_aarch64_gnullvm",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_aarch64_gnullvm-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows_aarch64_msvc",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_aarch64_msvc-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows_i686_gnu",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_i686_gnu-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows_i686_gnullvm",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_i686_gnullvm-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows_i686_msvc",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_i686_msvc-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows_x86_64_gnu",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_x86_64_gnu-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows_x86_64_gnullvm",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_x86_64_gnullvm-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "windows_x86_64_msvc",
+      "version": "0.52.6",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT OR Apache-2.0",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows_x86_64_msvc-0.52.6/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    },
+    {
+      "name": "zmij",
+      "version": "1.0.23",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "declared_license": "MIT",
+      "manifest_path": "/home/hideki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.23/Cargo.toml",
+      "assessment": "inventory_only_not_approved"
+    }
+  ],
+  "workspace_targets": [
+    {
+      "name": "dir_simulator",
+      "kind": [
+        "lib"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/lib.rs"
+    },
+    {
+      "name": "dir-simulator",
+      "kind": [
+        "bin"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/main.rs"
+    },
+    {
+      "name": "acceptance_bridge",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/acceptance_bridge.rs"
+    },
+    {
+      "name": "axi",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/axi.rs"
+    },
+    {
+      "name": "can_scenarios",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/can_scenarios.rs"
+    },
+    {
+      "name": "canfd",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/canfd.rs"
+    },
+    {
+      "name": "cli",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/cli.rs"
+    },
+    {
+      "name": "diagnostics",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/diagnostics.rs"
+    },
+    {
+      "name": "ethernet",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/ethernet.rs"
+    },
+    {
+      "name": "ethernet_media",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/ethernet_media.rs"
+    },
+    {
+      "name": "ethernet_qos",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/ethernet_qos.rs"
+    },
+    {
+      "name": "ethernet_vlan",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/ethernet_vlan.rs"
+    },
+    {
+      "name": "event_timing",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/event_timing.rs"
+    },
+    {
+      "name": "gateway",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/gateway.rs"
+    },
+    {
+      "name": "memory_ipc",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/memory_ipc.rs"
+    },
+    {
+      "name": "network_extensions",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/network_extensions.rs"
+    },
+    {
+      "name": "preparation_failures",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/preparation_failures.rs"
+    },
+    {
+      "name": "provenance",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/provenance.rs"
+    },
+    {
+      "name": "registry",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/registry.rs"
+    },
+    {
+      "name": "registry_diagnostics",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/registry_diagnostics.rs"
+    },
+    {
+      "name": "soc",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/soc.rs"
+    },
+    {
+      "name": "spooling",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/spooling.rs"
+    },
+    {
+      "name": "viewer_cli",
+      "kind": [
+        "test"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/tests/viewer_cli.rs"
+    },
+    {
+      "name": "build-script-build",
+      "kind": [
+        "custom-build"
+      ],
+      "source": "/home/hideki/DIR-Simulator/crates/dir-simulator/build.rs"
+    }
+  ],
+  "evidence_limits": [
+    "No compile or large test run; build/test worker evidence must be attached separately.",
+    "Dependency inventory includes target-conditional packages, not a declaration that every package ships in Linux binary.",
+    "No distribution archive chosen, no adoption ledger present, no authorship attestation established.",
+    "No legal conclusion; upstream license text/notice obligations not exhaustively reviewed.",
+    "Current tree is dirty/concurrently changing; base commit alone does not identify reviewed implementation."
+  ]
+}

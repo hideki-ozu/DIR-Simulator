@@ -1,0 +1,479 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-08T01:04:57.377028+00:00",
+  "goal": "Close bounded existing core fixture comparison projection gaps using authored expected fields without production or fixture changes",
+  "workspace": "/home/hideki/DIR-Simulator",
+  "changed_paths": [
+    "crates/dir-simulator/tests/soc.rs",
+    "crates/dir-simulator/tests/memory_ipc.rs"
+  ],
+  "unchanged_scope": [
+    "crates/dir-simulator/tests/axi.rs",
+    "all fixture, production, and documentation files"
+  ],
+  "commands": [
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH rustfmt --edition 2024 crates/dir-simulator/tests/soc.rs crates/dir-simulator/tests/memory_ipc.rs",
+      "exit_code": 0
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --test soc --test memory_ipc > /tmp/dir-acceptance-core-projections-tests.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-core-projections-tests.log",
+      "results": {
+        "soc": {
+          "passed": 20,
+          "failed": 0
+        },
+        "memory_ipc": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "log_sha256": "936e07fe69f601931845802ed5007be72e172b1c5816068e75fe655a9d2efa2a",
+      "output": "   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator/crates/dir-simulator)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.38s\n     Running tests/memory_ipc.rs (target/debug/deps/memory_ipc-654be7b8e2b8bcff)\n\nrunning 11 tests\ntest independent_invalid_fixture_rules_are_diagnosed ... ok\ntest preparation_is_strict_and_validates_after_stop ... ok\ntest zero_horizon_empty_metrics_are_null_without_points ... ok\ntest service_overflow_retains_admitted_request_and_unmodified_memory ... ok\ntest simultaneous_generator_prefix_uses_generator_then_ordinal ... ok\ntest metric_points_preserve_reservation_and_callback_effect_order ... ok\ntest metadata_registries_sorted_and_cohort_owner_survives_later_port_reuse ... ok\ntest dma_uses_row_boundary_chunks_and_same_memory_nonoverlap ... ok\ntest failure_during_admission_preserves_awaiting_child_and_offered_conservation ... ok\ntest final_dma_write_and_notification_reservation_fail_atomically ... ok\ntest every_fixture_matches_independent_bytes_times_and_prefixes ... ok\n\ntest result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.99s\n\n     Running tests/soc.rs (target/debug/deps/soc-6dcc6ce60d8bdebc)\n\nrunning 20 tests\ntest noc_arbitration_overflow_rolls_back_prior_grants_and_gauges_in_same_batch ... ok\ntest zero_delay_channels_are_valid_and_nonzero_delays_reject ... ok\ntest strict_validation_includes_unexecuted_workload ... ok\ntest future_generation_uses_one_dispatcher_and_failed_ordinal_stays_pending ... ok\ntest long_sequential_histories_keep_fifo_capacity_and_completion_accounting ... ok\ntest bus_decode_crossing_and_error_cycles ... ok\ntest failure_prefix_keeps_completion_at_h_but_excludes_half_open_window ... ok\ntest arithmetic_overflow_keeps_generated_pending_prefix ... ok\ntest zero_horizon_empty_metrics_and_descriptors ... ok\ntest fixed_priority_and_fifo_selection ... ok\ntest simultaneous_opposite_links_are_independent ... ok\ntest noc_three_parallel_outputs_and_final_delivery_only ... ok\ntest multi_target_shared_resource_gap_and_full_interval_decode ... ok\ntest noc_rr_head_of_line_and_same_router_parallel_outputs ... ok\ntest priority_tie_path_and_nonpreemption ... ok\ntest single_manager_ahb_error_phase_and_exact_completion_boundary ... ok\ntest exact_queue_means_sample_denominators_and_window_boundary ... ok\ntest invalid_topology_ranges_bool_duplicate_json_and_empty_load ... ok\ntest ahb_stop_in_every_stage_preserves_busy_and_no_completion ... ok\ntest all_analytic_fixtures_execute ... ok\n\ntest result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.75s\n\n"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo clippy --locked -p dir-simulator --test soc --test memory_ipc -- -D warnings > /tmp/dir-acceptance-core-projections-clippy.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-core-projections-clippy.log",
+      "log_sha256": "b5f0a0d4fe0e7831967958982cb5856394b17ed85e244559faf8e360e20462ea",
+      "output": "   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator/crates/dir-simulator)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.50s\n"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH rustfmt --edition 2024 --check crates/dir-simulator/tests/soc.rs crates/dir-simulator/tests/memory_ipc.rs > /tmp/dir-acceptance-core-projections-fmt.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-core-projections-fmt.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": ""
+    },
+    {
+      "command": "git diff --check -- crates/dir-simulator/tests/soc.rs crates/dir-simulator/tests/memory_ipc.rs > /tmp/dir-acceptance-core-projections-diff-check.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-core-projections-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": ""
+    }
+  ],
+  "newly_checked_fields": [
+    {
+      "case": "soc-round-robin",
+      "test": "soc::all_analytic_fixtures_execute",
+      "authored_fields": {
+        "busy_ps": 90,
+        "utilization": {
+          "numerator_ps": 90,
+          "denominator_ps": 100
+        },
+        "actual_projection": "sum of emitted Main.bus transfer durations plus clipped active-plan durations"
+      },
+      "result": "passed"
+    },
+    {
+      "case": "soc-capacity-stop",
+      "test": "soc::all_analytic_fixtures_execute",
+      "authored_fields": {
+        "busy_ps": 40,
+        "utilization": {
+          "numerator_ps": 40,
+          "denominator_ps": 40
+        },
+        "actual_projection": "sum of emitted Main.bus transfer durations plus clipped active-plan durations",
+        "active_plan.resource": {
+          "a:2": "Main.bus"
+        }
+      },
+      "result": "passed"
+    },
+    {
+      "case": "ahb-wait-error",
+      "test": "soc::all_analytic_fixtures_execute",
+      "authored_fields": {
+        "busy_ps": 90,
+        "utilization": {
+          "numerator_ps": 90,
+          "denominator_ps": 100
+        },
+        "actual_projection": "sum of emitted Main.bus transfer durations plus clipped active-plan durations"
+      },
+      "result": "passed"
+    },
+    {
+      "case": "ahb-boundary",
+      "test": "soc::all_analytic_fixtures_execute",
+      "authored_fields": {
+        "busy_ps": 30,
+        "utilization": {
+          "numerator_ps": 30,
+          "denominator_ps": 30
+        },
+        "actual_projection": "sum of emitted Main.bus transfer durations plus clipped active-plan durations",
+        "active_plan.resource": {
+          "a:0": "Main.bus"
+        }
+      },
+      "result": "passed"
+    },
+    {
+      "case": "noc-backpressure",
+      "test": "soc::all_analytic_fixtures_execute",
+      "authored_fields": {
+        "active_plan.resource": {
+          "a:2": "Main.r10:local_out"
+        }
+      },
+      "result": "passed"
+    },
+    {
+      "case": "ddr-row-refresh",
+      "test": "memory_ipc::every_fixture_matches_independent_bytes_times_and_prefixes",
+      "authored_fields": {
+        "read_hex[1]": "aabbccdd",
+        "actual_projection": "d:0.output_hex",
+        "busy_ratio": {
+          "numerator_ps": "27",
+          "denominator_ps": "33"
+        },
+        "busy_ratio_change": "existing hardcoded ratio now reads independently authored numerator/stop"
+      },
+      "result": "passed"
+    },
+    {
+      "case": "sram-ports",
+      "test": "memory_ipc::every_fixture_matches_independent_bytes_times_and_prefixes",
+      "authored_fields": {
+        "busy_ps": "12",
+        "busy_denominator_ps": "18",
+        "actual_numerator": "sum of emitted Main.sram request [started_ps,min(completed_ps or planned_completion_ps,stop_ps)) durations",
+        "actual_denominator": "authored stop_ps times emitted memory ports length",
+        "busy_ratio": "authored busy_ps / authored busy_denominator_ps"
+      },
+      "result": "passed"
+    },
+    {
+      "case": "sram-stop",
+      "test": "memory_ipc::every_fixture_matches_independent_bytes_times_and_prefixes",
+      "authored_fields": {
+        "busy_ps": "12",
+        "busy_denominator_ps": "16",
+        "actual_numerator": "sum of emitted Main.sram request [started_ps,min(completed_ps or planned_completion_ps,stop_ps)) durations",
+        "actual_denominator": "authored stop_ps times emitted memory ports length",
+        "busy_ratio": "authored busy_ps / authored busy_denominator_ps"
+      },
+      "result": "passed"
+    },
+    {
+      "case": "shared-ownership",
+      "test": "memory_ipc::every_fixture_matches_independent_bytes_times_and_prefixes",
+      "authored_fields": {
+        "published": "1",
+        "consumed": "1",
+        "counter_projection": "exact count of corresponding subject/op request records with status completed and reason ok; full/empty and future completion excluded"
+      },
+      "result": "passed"
+    },
+    {
+      "case": "shared-stop",
+      "test": "memory_ipc::every_fixture_matches_independent_bytes_times_and_prefixes",
+      "authored_fields": {
+        "published": "0",
+        "consumed": "0",
+        "counter_projection": "exact count of corresponding subject/op request records with status completed and reason ok; full/empty and future completion excluded"
+      },
+      "result": "passed"
+    },
+    {
+      "case": "mailbox-fifo",
+      "test": "memory_ipc::every_fixture_matches_independent_bytes_times_and_prefixes",
+      "authored_fields": {
+        "sent": "1",
+        "received": "1",
+        "counter_projection": "exact count of corresponding subject/op request records with status completed and reason ok; full/empty and future completion excluded"
+      },
+      "result": "passed"
+    },
+    {
+      "case": "mailbox-stop",
+      "test": "memory_ipc::every_fixture_matches_independent_bytes_times_and_prefixes",
+      "authored_fields": {
+        "sent": "1",
+        "received": "1",
+        "counter_projection": "exact count of corresponding subject/op request records with status completed and reason ok; full/empty and future completion excluded"
+      },
+      "result": "passed"
+    }
+  ],
+  "source_sha256": {
+    "Cargo.lock": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+    "Cargo.toml": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc",
+    "crates/dir-simulator/Cargo.toml": "f3e47338d3831c315c6e0d9ed8c6d4c552f5ec5df8697d231c7b0ee265653fd4",
+    "crates/dir-simulator/src/allocation.rs": "6c299edd05d9286fb17ec3ab349871f779337f6beec35192782ba3b647204c6d",
+    "crates/dir-simulator/src/input/axi.rs": "0c5bc31d249b69c6cdf6968d1f30dfdf65577a2dbbb4591e0b8d8abfd82c639e",
+    "crates/dir-simulator/src/input/can/tests.rs": "e9c52637371cd8de5060a2034690e762783075c97f97345f47bd49a7105cb5c5",
+    "crates/dir-simulator/src/input/can.rs": "926074b9288768968a11e36171b1ddf7517ab15f73b774c964c82767e6b780d0",
+    "crates/dir-simulator/src/input/can_ethernet.rs": "636b3e078023a149e986fd4f7c1b7fbe8d3158ecc7337d257d81c25bcb21d0f0",
+    "crates/dir-simulator/src/input/canfd.rs": "9ce70bb4f35012d670b181d03c9224b32652d83c18c45a371f6eb31fdc9a03de",
+    "crates/dir-simulator/src/input/editor_api_tests.rs": "f6387fb620542e9b3804edb51122f9c529700aea36f80423078753f97a289a1a",
+    "crates/dir-simulator/src/input/ethernet/dynamic.rs": "7a5a12dba79e38140d2bc687c5069ad045c51b771e72b54fdc7f5bdb2bd3c534",
+    "crates/dir-simulator/src/input/ethernet/tests.rs": "b5fcd2af750e56a2afe5f4faedb0f3ed9df13bb4fd58ad9ffa44b500cbe7777e",
+    "crates/dir-simulator/src/input/ethernet/tsn.rs": "da3dc76bcdf0098b2b953a1f35970d0032b5ca83314d4c2227d4f035b84ed921",
+    "crates/dir-simulator/src/input/ethernet.rs": "cb7f8814394edc1c084dd10bf99c7e0fdba7561f3416b306ceca4ff186749e27",
+    "crates/dir-simulator/src/input/gateway.rs": "b809a9c4ce08a161026d821c8fa89420b35c071dbc9db7feb80acb7b7cc11b3d",
+    "crates/dir-simulator/src/input/json_diagnostics.rs": "d3cbf3167c772511a4627802b69e2c266fb7d44b9c2591088bd2908611d9759f",
+    "crates/dir-simulator/src/input/memory_ipc.rs": "670c54011cf845f1cca1fc6e1f99be123d37cd2e2861302e451ef64b20431dfb",
+    "crates/dir-simulator/src/input/ned/tests.rs": "c72c66c33cc775afa8771af20ef586230a1e773ade4601fb802ba5d206a62219",
+    "crates/dir-simulator/src/input/ned.rs": "89b5f74da2b5b42fc58a80044f018779fa1ad1cda3f58e55bf43716fdeecd886",
+    "crates/dir-simulator/src/input/network/topology.rs": "6300b17ae5cb590d2d91748fa29adcc213f60f62040b6f8cd8524a0501f95365",
+    "crates/dir-simulator/src/input/network.rs": "3790a8e861841aa9258e7aa89583732bf293922cee43b3827135d3c46cbea72f",
+    "crates/dir-simulator/src/input/provenance.rs": "308b9659b0f03012f655b5fa99c80a76b6261f9cbd09419966fd58d826d942e4",
+    "crates/dir-simulator/src/input/soc.rs": "d2899837921393698739bb9f4bedaad8c61bf5950140bdb0a145dfa1756c0258",
+    "crates/dir-simulator/src/input/tests.rs": "62f958dfbd4f5c81254bfa2570aee12ac74e0775b0a24d89cf3418a03d38d7c8",
+    "crates/dir-simulator/src/input.rs": "7bd2b39c9ac8c03d1129bf32246c9897d99d7a85ffb890c76c72ed4c6bb95bd8",
+    "crates/dir-simulator/src/lib/snapshot/axi.rs": "8dd682727f513c68f6d4e3e2b14d4ba8db9981c7704245ef93d5adcae2dc5e5b",
+    "crates/dir-simulator/src/lib/snapshot/can.rs": "017bea2d68f5e07cd28c9c76ae12c2aa9990516c9a552e4df3d46d81a5aa08b6",
+    "crates/dir-simulator/src/lib/snapshot/can_ethernet.rs": "56ca0697e213d7c7d5f615caf3861fe828e80b88b4495d1f17420398b3febf3a",
+    "crates/dir-simulator/src/lib/snapshot/canfd.rs": "6e4eed941a8fe29f59ab45c918ef8b62ca9f5316e930993e7248f103caac6674",
+    "crates/dir-simulator/src/lib/snapshot/common.rs": "75694192a86776adcfba176e95f11640adac4f675e2a5bc5134d30831179a361",
+    "crates/dir-simulator/src/lib/snapshot/ethernet/dynamic.rs": "cc6faf381101e872589e375dd0c79170dd47e4372fb4fc62c2ae821bd9565905",
+    "crates/dir-simulator/src/lib/snapshot/ethernet/tsn.rs": "885329fdcdc19a1df0216e77d267363c67fca6499472d9d9a14e5769425ea828",
+    "crates/dir-simulator/src/lib/snapshot/ethernet.rs": "a626ca577c768d7e824bc98097fd6f5fcb255e8d4385804e2b40a927c607116f",
+    "crates/dir-simulator/src/lib/snapshot/gateway.rs": "a2e294aaaae6e178ce913f5c25d586f3fddc869c8423e5a0a4c43cb8f51a9f3c",
+    "crates/dir-simulator/src/lib/snapshot/memory_ipc.rs": "3425346b7bd29242393a844e7c43e2af8115879ae7c8daee4ea89684e38b183b",
+    "crates/dir-simulator/src/lib/snapshot/soc.rs": "609a59d49825eb9c4e8a01c8c413cfc470b61466624647f137b9da55da93421f",
+    "crates/dir-simulator/src/lib/snapshot.rs": "3f45283155ab787d97e241807a044e7f2ea30d9701c87e03597fbe924e3cad1d",
+    "crates/dir-simulator/src/lib/types/axi.rs": "6ee551e711a442fc45b0ed1051e6d4d23808b9bd0004c6d5eadc1a21d4c3d169",
+    "crates/dir-simulator/src/lib/types/can.rs": "92b0fe28035fe52bc740e683d496acfa5b28e4b79786436c91662997c682c0f3",
+    "crates/dir-simulator/src/lib/types/can_ethernet.rs": "b851d612c1c7591c973a0f66c45e5b87ec56df7a3a4d4cf2eb30f890dc95c57d",
+    "crates/dir-simulator/src/lib/types/canfd.rs": "3eca46a8e66cedb3cc2038098119b801bc4ad8b20d9e2ba0d4f6237275942787",
+    "crates/dir-simulator/src/lib/types/common.rs": "0c30dd2ae55d11a98addccc2ffb1c44a695d6b3650bba685e3f4540e22c46d99",
+    "crates/dir-simulator/src/lib/types/ethernet/dynamic.rs": "bb304a9715e27d46ae663ae84df798dc2c84c6dce7387dd9c0d5145ec84e2610",
+    "crates/dir-simulator/src/lib/types/ethernet/tsn.rs": "fa474525b11e6f30181f780ff7470b01a1bb3241abb01662dda53ed996ffe092",
+    "crates/dir-simulator/src/lib/types/ethernet.rs": "a939ed331b9da01fd8077eb267a2c8985708a2277604d458ef7470748df38041",
+    "crates/dir-simulator/src/lib/types/gateway.rs": "748ff29f2c7d8df33d1018236b4bd98c8168f408c3a63a3b1e9d95af9eaa6bc5",
+    "crates/dir-simulator/src/lib/types/memory_ipc.rs": "ceb8f595c37a245ec4ce506afe278f0368064211288c050dc21452eef6e8314e",
+    "crates/dir-simulator/src/lib/types/network.rs": "fa0cdaae75e56025934dcfa559a03f26030d65f9030f550eb30d233c22517c0c",
+    "crates/dir-simulator/src/lib/types/prepared.rs": "40dd60200973fa3ec52730f09f74b43d4ce557e327c062a1f93a7a154159e277",
+    "crates/dir-simulator/src/lib/types/soc.rs": "d26b723b22e4a066e5c2bbc92e1087468cb1226b0167ed60d1bb0c0fe7dfb30f",
+    "crates/dir-simulator/src/lib/types.rs": "ce5199fd0d1ced0a06691e6cdf4dd85e59adea1dbf4a59741bda3c698b20f69a",
+    "crates/dir-simulator/src/lib.rs": "ef4d98cfd432608ffcca8b40d2de3d08118caaf5193cbddcaf33e9e9f3de5ed2",
+    "crates/dir-simulator/src/main.rs": "9c07a7e7e4737409e2d6140dd927d569e9a44426b467e606a7e4b5851899ed66",
+    "crates/dir-simulator/src/output/aggregate.rs": "cfd9952fa074a405fd6821cbc84ff9a79707a13026b2329988b529ecd0711c30",
+    "crates/dir-simulator/src/output/axi.rs": "008771a004dc5f993fa01f6a60dfdff66ca14f1fbe0d9c8552729f9193fc158d",
+    "crates/dir-simulator/src/output/canfd.rs": "454fb7150c159fcfab009af94a0f4e44fee257a51751d0176bec7e02a7e7149d",
+    "crates/dir-simulator/src/output/csv.rs": "4872d34e8492d1e9a6ec7546de5c6af90a98a3b9ce26a6ea9a6688c84f54b70b",
+    "crates/dir-simulator/src/output/disk_sort.rs": "50e38134aa66eab3328c3cfd85bef22b67c6c141a2a4773fbe19c56b0586c14a",
+    "crates/dir-simulator/src/output/ethernet/flow.rs": "32a4d71d548fd8cd5cf950948cbc4c4cf9de2ee7d7e235d04c95b8a14a496fb8",
+    "crates/dir-simulator/src/output/ethernet/media.rs": "0db5b887bcff07e9f98bd0966c3f33998e869194481201a2dae7dbcb46757505",
+    "crates/dir-simulator/src/output/ethernet.rs": "b07a46f7e2ab7645e47b186a22952f8f0e30cf9bba799b86e2ef1396941e5d5c",
+    "crates/dir-simulator/src/output/json.rs": "fdcabcef7d5566ac4bf95e4dbeaf7a646cb54dc4a7aa74b8033bfb45728255d9",
+    "crates/dir-simulator/src/output/memory_ipc.rs": "0e620e0fad08f63fb53fdd4d22a8a3b75a3774aed2b51f1d8b26ddaacfa4a646",
+    "crates/dir-simulator/src/output/metadata/reproduction.rs": "110e195d722a53110330bb59bfaf54a1b0bee319e8c54c68582bf9460ed84f46",
+    "crates/dir-simulator/src/output/metadata.rs": "b2f5469838c40d691ad0e6e740d11b50042be9695b55e2a6f6ea9b0fde8d8fac",
+    "crates/dir-simulator/src/output/model_records.rs": "77f48ceddaf71dbb567e42bf8eb13291d894cd2b1c8d1cb4f4d2c8bf10930b9c",
+    "crates/dir-simulator/src/output/network.rs": "4497ae96b1e5c9bcbe159e4e34d7f21cd184ea886b8eb5f4e9b31f38f0ad49da",
+    "crates/dir-simulator/src/output/preparation.rs": "e78bd75280a282a3b60d2ac3b9c6503d07b79f6d62dfd83ddeeecc81e949f419",
+    "crates/dir-simulator/src/output/publish.rs": "5027126d63a5f1ac141e50a9f3e476dbe658d53e1ef069874c0ecbc659d29cd8",
+    "crates/dir-simulator/src/output/registered.rs": "b5f018272f94b5559a6d73c578aeb3c69282f59be10e37a51e2deb52584fae35",
+    "crates/dir-simulator/src/output/reservation.rs": "be95bc664439c671ef3e146d013d9bb91424681980900d36835de392fce36992",
+    "crates/dir-simulator/src/output/soc.rs": "86ce43009140ed0d3f202fdf205274abb6bd6befbbffa10aee82a81d736b2ae3",
+    "crates/dir-simulator/src/output/stream.rs": "7b16476f7ee35631148d07486363a63892c98fff105230b2dc866bf2f9b0d61c",
+    "crates/dir-simulator/src/output/tests.rs": "10dea1230306b38979a1dde24bb5caba941cf710e4b01ccf5728e90edd776fa1",
+    "crates/dir-simulator/src/output.rs": "17a158fe804cea3271779bec04d571a4f73cf8ed37be63972058ec149520624e",
+    "crates/dir-simulator/src/registry/mod.rs": "43a92eb5e97b842a570bf174c347f0c19913499a18d7f6216c72c248be1f23de",
+    "crates/dir-simulator/src/registry/prepare.rs": "1d06654d5bca40e474ae0fa8ede90ce9cadb554dc82d035ed169d069c1fcae3a",
+    "crates/dir-simulator/src/run.rs": "6fe470477d4aa6bbe304cb594a468f24cecc999a42d713941cf4adf7a59bfaf4",
+    "crates/dir-simulator/src/runtime/axi/protocol.rs": "ba9d27db6b706c46c337096a4f51d6596422d46f9e4d0856c2afe65ee3efd8a7",
+    "crates/dir-simulator/src/runtime/axi.rs": "6de016a370c295c4ffed7e344e24d9b4bfe8d91f981e835caa6bd32c3bec32a4",
+    "crates/dir-simulator/src/runtime/can/protocol.rs": "1958d0b904829d7eb6b61c6abe2dc331b7f3cec5acdd5facfe49c88f4a850a00",
+    "crates/dir-simulator/src/runtime/can/tests.rs": "1bbf4c3bee79f9d38085684b530457d983e4cb201413a45bcfab6b3a3efdb7c7",
+    "crates/dir-simulator/src/runtime/can.rs": "05021a0b3b35b75ea10ccc3bdec249a18d9ebeef8ac7283a8361ab37ac40b562",
+    "crates/dir-simulator/src/runtime/can_archive.rs": "c8c71b282a40871790f5a243a848e0ff3fe98de6c2a5594d77dd0de990b16264",
+    "crates/dir-simulator/src/runtime/can_ethernet/protocol.rs": "63933cb3b28400ddd2c2315cbd6bf144b88fd652b0bd503b6aa37b60d3f915a7",
+    "crates/dir-simulator/src/runtime/can_ethernet.rs": "24a0352fa37b8142736838de48d3f1c23e7d79a11d8b13c48db7c3db70366a51",
+    "crates/dir-simulator/src/runtime/canfd/protocol.rs": "2dab96bc489ad9cef60eedbeece468588ed03a3ea9de521ebd57b0042a57204c",
+    "crates/dir-simulator/src/runtime/canfd.rs": "ef41e0972ba0eec7edd9a07d0dfff32f96c863865f2ded2317458625770976b8",
+    "crates/dir-simulator/src/runtime/engine.rs": "920056c41e825fc53203b6199f8314fa73bb433b7c777b57d64cd4789d023a4c",
+    "crates/dir-simulator/src/runtime/ethernet/dynamic.rs": "e190911a24b935dd9f1fd7f5538d060e51dc0affdc77c56eec3b1af9b50edece",
+    "crates/dir-simulator/src/runtime/ethernet/l2.rs": "b8335bde2b29bf500911aaa46caae5fbc846ea8a19dbdeb6f34948dceb643d51",
+    "crates/dir-simulator/src/runtime/ethernet/media.rs": "c3bd6e988b12c8ae9ff6b36a8d07b68957d76731ac85d9b5eec9618e3a085f13",
+    "crates/dir-simulator/src/runtime/ethernet/tests.rs": "67353b34d944f6a5890d7f405087473f665be6b25376252b62b6462e0f3937cf",
+    "crates/dir-simulator/src/runtime/ethernet/tsn.rs": "ce63ee39d22f5c3a9874f0f766aeb837ab97228aa009187d2a8ff84fd146cd2b",
+    "crates/dir-simulator/src/runtime/ethernet.rs": "08bf7ccf3ee917d080212bbaf62bd9abc79c5f1ae9f7c334d87c9fbfb5cff19a",
+    "crates/dir-simulator/src/runtime/gateway.rs": "10b994461cffac6640d80d075c44aeb46cfba0ab8342b57bfb3d9432fb47f8b0",
+    "crates/dir-simulator/src/runtime/memory_ipc/protocol.rs": "b83a503ab53c3256813612afa4b2e9172e8bacc9dfc40f588dc9cca9f2b50ae3",
+    "crates/dir-simulator/src/runtime/memory_ipc.rs": "6f3d46c9d617e7cf81dc76cda483ae1089c5576d699d7ed1faad1ec360e6950a",
+    "crates/dir-simulator/src/runtime/network.rs": "187fddcedda45f9f961bcecc82f30d558bdc1afa0cdb6ff3997ecdc5c36fa50a",
+    "crates/dir-simulator/src/runtime/registered.rs": "a81fb773312a8a6a60dcd686a0aa492bd16764137431e04b5e236b61ab191729",
+    "crates/dir-simulator/src/runtime/scheduler.rs": "c2bd78b03dd35487bebdbede4e3b9e38ed4b7d8c966c00c64114b2bfc46e81b7",
+    "crates/dir-simulator/src/runtime/soc/protocol.rs": "2f445e95fc55ebc059344cc9e612a156e7d0b36c69e114cd1a72d001cbe179fe",
+    "crates/dir-simulator/src/runtime/soc.rs": "3335b0ee430741166bd460b762d2928fd2dee043d05b3c1ff3ad0771a146a020",
+    "crates/dir-simulator/src/runtime/spool.rs": "22e004ad362f8ce79ac53c68bad84e16e3b391adca2acb295f44d2a106649c65",
+    "crates/dir-simulator/src/runtime/tests.rs": "483cf969a984eafa120452b2ef5912ed79f1960e242b26db9a9fc3c98a7f93e2",
+    "crates/dir-simulator/src/runtime/timing.rs": "c934952fb18c9e84983b40452fe63b36164ac53d26eb96c4bae5a36818415d5c",
+    "crates/dir-simulator/src/runtime.rs": "d710384693f9aa9405e2938a61b9504b3c4dfe987b7fff50cc044ec1bc8e4fc6",
+    "crates/dir-simulator/src/tool/ned-editor/analysis.rs": "52614b68de2672491b41ac44843e9be5ef7cec61afcba3aa2f4a9d4ac19f98e1",
+    "crates/dir-simulator/src/tool/ned-editor/builtin.rs": "574e85b2cde4d8d2f24bb941f7ef3ae3d6acf0601c39e9241d059e351553335b",
+    "crates/dir-simulator/src/tool/ned-editor/commands.rs": "131f41b1482f2e0ae87fba14da156e141c0246fa3038d1c5bebb07e488a1c0da",
+    "crates/dir-simulator/src/tool/ned-editor/composition.rs": "56fd7f530bb69e203ae4fb55be2ad25832e7af2d63d2819bbd12cd36da9a1d8a",
+    "crates/dir-simulator/src/tool/ned-editor/composition_tests.rs": "9ed9a1fc2fc6eb0298592b61a3d3b4c3404efc5d7f1f2fe4c8fcd446e5de58b2",
+    "crates/dir-simulator/src/tool/ned-editor/controller.rs": "3169d4fda3261ea0c4dd55a5ee2dd68502c5b1131874820d795ed9f64adf768f",
+    "crates/dir-simulator/src/tool/ned-editor/controller_tests.rs": "826d993cd39999358c0c398d4543894a6207c435e37e3fc04e05eead57415e7f",
+    "crates/dir-simulator/src/tool/ned-editor/input.rs": "fffb92a930a848f2140f8afd143a4d2e7fb07a45ab6b4258478c445c1f500f54",
+    "crates/dir-simulator/src/tool/ned-editor/layout.rs": "0c4dcc168cc61a28d6591c70b241cffdf4bf363d5cb7e82c49fd1eefe44b11c4",
+    "crates/dir-simulator/src/tool/ned-editor/mod.rs": "544f6e5cc64f4972744b063ec4bb0b10fc06f68b1a16b817564de9fb2b1a6d30",
+    "crates/dir-simulator/src/tool/ned-editor/model.rs": "96097d4b1f8c51370bd81b635e17647ad65a7cfd2ead03160e3e10c26c23c913",
+    "crates/dir-simulator/src/tool/ned-editor/output.rs": "3b4994cd74f7fd712dfcc432ebb0dfeb72a5466d1750bcfd908804b8d78e06c9",
+    "crates/dir-simulator/src/tool/ned-editor/output_tests.rs": "ac78954da8f7d776b34ac7f5b5cf46163dd58dece96014ad91e0c806b6dbee06",
+    "crates/dir-simulator/src/tool/ned-editor/server.rs": "efb4350e5563334b906e33449f0303eb9e896c52e4280c68cbb0900ca9349bc1",
+    "crates/dir-simulator/src/tool/ned-editor/settings.rs": "e2d3c9d1a76807e7eebc9de978db633f563e25519504452d4509544f5aaca129",
+    "crates/dir-simulator/src/tool/ned-editor/settings_tests.rs": "ca9d9becc75612c134d4241efa475320fbcab3cfcbd1182afba093a5cf74f11c",
+    "crates/dir-simulator/src/tool/ned-editor/source_index.rs": "3d760bf616b6abc2951cef1e6b24e22fac14044301d4154b95ffa0b00fa63c44",
+    "crates/dir-simulator/src/tool/ned-editor/template.rs": "eeebb45da0423a74b639e38b71011f25a39f6b4e921710f180e1cb06e3cd49fc",
+    "crates/dir-simulator/src/tool/ned-editor/template_tests.rs": "23aeeb18cf19fafba00c6d729dc256357acd5735b2bcb54f1afa9aefd1f7717a",
+    "crates/dir-simulator/src/tool/ned-editor/tests.rs": "22b0b68675d77e37b74f7a72b676c37e16386e6a1c65029741806985eca2eee1",
+    "crates/dir-simulator/src/tool/ned-editor/view.rs": "8c7995b720b19a19e1bad215c2689c82d3cb876f092ab075edd2053a28a5d0f8",
+    "crates/dir-simulator/src/tool/viewer/tests.rs": "c282c1c92763b20697569d4fc5cd60ecec8afd62823cc75d67cae22d9bcbc822",
+    "crates/dir-simulator/src/tool/viewer.rs": "c6ad4c53a0eee0c4d79f340f22d58579fedbb4df208ab7a0245f3bba395f157a",
+    "crates/dir-simulator/src/tool.rs": "8210ae0f0a164a39f3c65c49757cd2e05e98155c0ac264c0de7800e1c22c3669",
+    "crates/dir-simulator/tests/axi.rs": "f23f91c5947b0a79a39114ee8b7fb2459ad7d52e4693b16ff4c36ba5a99c017e",
+    "crates/dir-simulator/tests/memory_ipc.rs": "a52e62845a5d7de1ff89f8fc63b702f6140f8070f0a67187ac2c21f8fd19ba33",
+    "crates/dir-simulator/tests/soc.rs": "debc4374f08e6db5defaa41a528fabb6f0dd27a0d49cc9a91f28bcb988db71db"
+  },
+  "input_sha256": {
+    "docs/verification/fixtures/axi/backpressure.ini": "10d8ee05a8aa9d417f15a687ae3dcf8cbfde89bf23b8c03e017f9790b93e690e",
+    "docs/verification/fixtures/axi/backpressure.model.json": "709cfcf68567c9a71211dab9c171fa53ac98491fab0b5e4e65975e67a3546992",
+    "docs/verification/fixtures/axi/backpressure.workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+    "docs/verification/fixtures/axi/capacity.ini": "4c125e1a26c4b19d187c3beeb4df674e461f8ffdc4123630a0f93df3c06aba85",
+    "docs/verification/fixtures/axi/capacity.model.json": "e456272e35b87506966b3417383beecbfa3abcc4978e0c619b2c8b4608349a04",
+    "docs/verification/fixtures/axi/capacity.workload.json": "46c0048eb0f258c377ca53db007a056432c82e01b56b887f0c0b696c49f29444",
+    "docs/verification/fixtures/axi/invalid-transactions.json": "bf463fa2c5879f022e41c549b425737e9c05c25aeda75e966b401d4ef36227f1",
+    "docs/verification/fixtures/axi/metrics.json": "4a97e393153aac832bc63b82977955a1b8abfebbc2982c3ec1d1531353374b6a",
+    "docs/verification/fixtures/axi/models/demo/Main.ned": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd",
+    "docs/verification/fixtures/axi/read-write.ini": "0adcc609328586d740bffe89455bf6b372138053adbe8b024fc1316aa74ab8ad",
+    "docs/verification/fixtures/axi/read-write.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+    "docs/verification/fixtures/axi/read-write.workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+    "docs/verification/fixtures/axi/responses.ini": "53ce9beee40854675fe1306fb93b200cc5a70858a2383f3c372a5d7aa5de28ac",
+    "docs/verification/fixtures/axi/responses.model.json": "329a7602e4e7d7b896886b173cab13964fed7d0a6d55a541e0e7f68fab37e646",
+    "docs/verification/fixtures/axi/responses.workload.json": "8e136d3a7d55ae4bfcd1172a028d5d92d55bbf74d35dc920c1a55a0f8131a83f",
+    "docs/verification/fixtures/axi/round-robin.ini": "1c0c652e5586e73520c7a14e21980b9774637baf05f359b51c0a8d2125d6c474",
+    "docs/verification/fixtures/axi/round-robin.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+    "docs/verification/fixtures/axi/round-robin.workload.json": "40762545409cbe3a7cf641b770c4d401d9d7fd707540be5b3a299cbdbe535fa8",
+    "docs/verification/fixtures/axi/scenarios.json": "11ac095af5ba6c8724fb8207b48c2d1c7b4f50feec4a4863b9350f386978df48",
+    "docs/verification/fixtures/axi/stop-mid-write.ini": "cecfe1fb5c5cd77f4dc29971962117aa17fb69d8d8b8da9fb462d08bb2e475a3",
+    "docs/verification/fixtures/axi/stop-mid-write.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+    "docs/verification/fixtures/axi/stop-mid-write.workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+    "docs/verification/fixtures/axi/stop-response.ini": "dbe31941902312851a24f93f70411f4c20071ace7edf0fc1b0182cc16c0bb04b",
+    "docs/verification/fixtures/axi/stop-response.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+    "docs/verification/fixtures/axi/stop-response.workload.json": "4c18fc1b9f84c8cd4609bc06280170ce4e4e3ba7a0ecade262c4b96dae5f2f76",
+    "docs/verification/fixtures/axi/verify_fixtures.py": "2a0832db6e6638be9d814b45996a9187de5e27c4ade865676f1831354ab8f4be",
+    "docs/verification/fixtures/axi/zero-strobe.ini": "a7d9164ac2aa5e2a58442ef4dd51c1b82b2eee539be9269c3357042b9f84c51a",
+    "docs/verification/fixtures/axi/zero-strobe.model.json": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92",
+    "docs/verification/fixtures/axi/zero-strobe.workload.json": "ffcd079933cdf1dc6a826e22bcdcc11092fee9a41f98a6a2944e18bb1af3c034",
+    "docs/verification/fixtures/memory-ipc/ddr-errors.ini": "e381ac228cb2a3b955e410a8cbc84c0d80add0ffdd27842a1eef606f07d033a3",
+    "docs/verification/fixtures/memory-ipc/ddr-errors.model.json": "5b50ffd57b176eaf6a7a3a31b235453ebb24d5a7b6208dcdea689c92d0f1124d",
+    "docs/verification/fixtures/memory-ipc/ddr-errors.workload.json": "8cb6afa3140bcb33fa752de214d1e6958da4c51be7b9d74fdc52f4001026a841",
+    "docs/verification/fixtures/memory-ipc/ddr-row-refresh.ini": "86f1175ac5f403124c937760a623f88bfc9518caf590ebf46dbe96b5be2df613",
+    "docs/verification/fixtures/memory-ipc/ddr-row-refresh.model.json": "21f364b6ac199404895b3c88c93daacfcc2373b73f599535fc2c785fb2c223a2",
+    "docs/verification/fixtures/memory-ipc/ddr-row-refresh.workload.json": "38a14001977196974f9a2823690170dd81e12300a011ed7e219ee495addc8f3d",
+    "docs/verification/fixtures/memory-ipc/ddr-stop.ini": "1264c93d7df3d55aee0c833b0b4cf8ed3aab99d5e73c8df3d0f387ff0ca4b54d",
+    "docs/verification/fixtures/memory-ipc/ddr-stop.model.json": "21f364b6ac199404895b3c88c93daacfcc2373b73f599535fc2c785fb2c223a2",
+    "docs/verification/fixtures/memory-ipc/ddr-stop.workload.json": "38a14001977196974f9a2823690170dd81e12300a011ed7e219ee495addc8f3d",
+    "docs/verification/fixtures/memory-ipc/dma-fault-prefix.ini": "421c7c640ff0da5d90833edb33761edfcef23bfec828fe36e51932d60095f658",
+    "docs/verification/fixtures/memory-ipc/dma-fault-prefix.model.json": "f3275150066cc801aa55b90f255015f13b72e116bfd36e2341e3ad1d3347dbc5",
+    "docs/verification/fixtures/memory-ipc/dma-fault-prefix.workload.json": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175",
+    "docs/verification/fixtures/memory-ipc/dma-memory-content.ini": "e75ddf78fd40024b149a669e155e252a0b58fe4418c923207647f632753b9c06",
+    "docs/verification/fixtures/memory-ipc/dma-memory-content.model.json": "2565a28c5f2d1bfc0c5e7f174a11df6f08e9326fd03e685f13ddd07f6c410c74",
+    "docs/verification/fixtures/memory-ipc/dma-memory-content.workload.json": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175",
+    "docs/verification/fixtures/memory-ipc/dma-offer-order.ini": "00edc52bae64f91ea42b73cb02cccdf96cee4f7e35551d9c8fc4ed714e431835",
+    "docs/verification/fixtures/memory-ipc/dma-offer-order.model.json": "f49485b0ec3fa3d81893c52d0259ef3d016e32a0495b6dcf6170c1623be7f822",
+    "docs/verification/fixtures/memory-ipc/dma-offer-order.workload.json": "86e3fecc7850e909a94752ac05b28a92405d7b354c80ab54c4c442690e94aa2a",
+    "docs/verification/fixtures/memory-ipc/dma-stop.ini": "44616f891e3b69acda6c101be585c4b17479ede3275cfe8a3c51b6a4b70ecaf4",
+    "docs/verification/fixtures/memory-ipc/dma-stop.model.json": "2565a28c5f2d1bfc0c5e7f174a11df6f08e9326fd03e685f13ddd07f6c410c74",
+    "docs/verification/fixtures/memory-ipc/dma-stop.workload.json": "4d12f93f2d27149db1b1353ba0979f76fccf669aabf2744a337ae87c4e8b2175",
+    "docs/verification/fixtures/memory-ipc/invalid-configs.json": "84fb673bb44097a873a770618f571a5834f23ac7b39c936a2779c401c77eda76",
+    "docs/verification/fixtures/memory-ipc/mailbox-fifo.ini": "b9352eb7692171fb1dc71993ebd1e43857a84bb15dfddbf92aa90390ccd97225",
+    "docs/verification/fixtures/memory-ipc/mailbox-fifo.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+    "docs/verification/fixtures/memory-ipc/mailbox-fifo.workload.json": "84539ce4f4fd8507086736822ac7ebe45fbdde6abbb006f4727b086381f85d5a",
+    "docs/verification/fixtures/memory-ipc/mailbox-stop.ini": "b6d25f62c2acd5a1cbe3823267d4c4915e43c9da9163556f853327f7c1840e6d",
+    "docs/verification/fixtures/memory-ipc/mailbox-stop.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+    "docs/verification/fixtures/memory-ipc/mailbox-stop.workload.json": "84539ce4f4fd8507086736822ac7ebe45fbdde6abbb006f4727b086381f85d5a",
+    "docs/verification/fixtures/memory-ipc/models/memoryipc/Main.ned": "62f940a0a00a22e9f3da6af42f450ab922342517c9e0eee39a701d40fc96c27d",
+    "docs/verification/fixtures/memory-ipc/models/memoryipc/Types.ned": "962ba61582efc0e9a3edc7312bb404a1d0d5aba6b8bf084a1fe858877e50932c",
+    "docs/verification/fixtures/memory-ipc/scenarios.json": "046f07c6df337b2309c280cb0eb3ce65acd0fda3dd3b99b0682ae5449ce03ce3",
+    "docs/verification/fixtures/memory-ipc/shared-ownership.ini": "b4511e9191373f328d139118141aa457180303e30f700170b3715c564ef212ca",
+    "docs/verification/fixtures/memory-ipc/shared-ownership.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+    "docs/verification/fixtures/memory-ipc/shared-ownership.workload.json": "83644d176e5aa0206232cffd86953d68f18f64c4810e2e95a078f472f7c7d9d2",
+    "docs/verification/fixtures/memory-ipc/shared-stop.ini": "6e0c4e6b75b54a8dea2a1d303b9c0485f9b886bb0de45d842e643c4d3d8be735",
+    "docs/verification/fixtures/memory-ipc/shared-stop.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+    "docs/verification/fixtures/memory-ipc/shared-stop.workload.json": "83644d176e5aa0206232cffd86953d68f18f64c4810e2e95a078f472f7c7d9d2",
+    "docs/verification/fixtures/memory-ipc/sram-ports.ini": "dc963663eeb17c297cfeb89463ee624b72e0446e0f9c34fd99d0b65cd7cea3ea",
+    "docs/verification/fixtures/memory-ipc/sram-ports.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+    "docs/verification/fixtures/memory-ipc/sram-ports.workload.json": "8921580d356f51e2d84d53f883c76e18668230454dd14d6bda4b861c7cf1e10c",
+    "docs/verification/fixtures/memory-ipc/sram-stop.ini": "255fd5203bcfde9308c53b50fdccf46a2040254fe448d803b124e56695f8e175",
+    "docs/verification/fixtures/memory-ipc/sram-stop.model.json": "24f6eb671b6dde6a3df52440397a32c9ccd6f0b38d8f77a854bc598a149f7f5a",
+    "docs/verification/fixtures/memory-ipc/sram-stop.workload.json": "8921580d356f51e2d84d53f883c76e18668230454dd14d6bda4b861c7cf1e10c",
+    "docs/verification/fixtures/memory-ipc/verify_expectations.py": "d38a8b92719f351d1298d36bc73efdb0235850d8536707206483837cbc4d87f1",
+    "docs/verification/fixtures/soc/ahb-boundary.ini": "da0b4cda9c23e28df5065b8a2135ea742e4e59ebf66829ebf27403c2e5ed419e",
+    "docs/verification/fixtures/soc/ahb-boundary.model.json": "7df309267ab902e7f1e7df2dfc660dd768ae014191cf7cadff92e854550f124d",
+    "docs/verification/fixtures/soc/ahb-boundary.workload.json": "89bb2453a1463520663c452849c334a237f634a7cc7c8a5e141601b66f207947",
+    "docs/verification/fixtures/soc/ahb-wait-error.ini": "8a48efb749597bd5b15dde9a6e9d37aa9b7db747f20e5ea8bdeaee753eb295d9",
+    "docs/verification/fixtures/soc/ahb-wait-error.model.json": "a90fc88e67e830503fbe1e6656c1df14288f7ee7c9f59d3eaac71d8b24e3c954",
+    "docs/verification/fixtures/soc/ahb-wait-error.workload.json": "5d6b506d8ec0315bbf9591d3d92b6a872923f953add414b43cb9bcf90d1ef4b2",
+    "docs/verification/fixtures/soc/models/ahb-boundary/demo/Main.ned": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92",
+    "docs/verification/fixtures/soc/models/ahb-wait-error/demo/Main.ned": "9217f51b5c1905d4750949abe7ca12dfa51b1aaf6ee92a3cd66d34713ae50c92",
+    "docs/verification/fixtures/soc/models/noc-backpressure/demo/Main.ned": "9f42eb9bae35946ad71b7fe6554756ecbc50dda9fddb063bf0a9135e7a43046d",
+    "docs/verification/fixtures/soc/models/noc-xy/demo/Main.ned": "eaa619c50f0bff5d97eadf50bc730a9b6927bb3f024d3e3daf58240d4f915aa6",
+    "docs/verification/fixtures/soc/models/soc-capacity-stop/demo/Main.ned": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f",
+    "docs/verification/fixtures/soc/models/soc-round-robin/demo/Main.ned": "1fa4721b020f2d4ee4a7bd31fa78ff006d80d995155befef70807c713d25269f",
+    "docs/verification/fixtures/soc/noc-backpressure.ini": "3690ddcaa89f74933eb48c833b7b631891bc5f626823f03c275e333617f01bbb",
+    "docs/verification/fixtures/soc/noc-backpressure.model.json": "ec7fc22d77c0d8a6aafdf8231bf51457986e41fd1d9b3e411a6e25c048d2ed6e",
+    "docs/verification/fixtures/soc/noc-backpressure.workload.json": "e09202677e6f951aec41ba6005a174472d0163849cf2f70076596ca9b6dd7f27",
+    "docs/verification/fixtures/soc/noc-xy.ini": "3440abd663112423302cce73e6670cca037c3a55dbe43d1dfdec3d8127050009",
+    "docs/verification/fixtures/soc/noc-xy.model.json": "ea20ec4f2db617b8fd4a0d4af1f66a64d0111bc23406740347bd574d783e55e0",
+    "docs/verification/fixtures/soc/noc-xy.workload.json": "9d7332efe46823ad1ec95b35a7547085628665132477ff76f7b5beac33fedee3",
+    "docs/verification/fixtures/soc/scenarios.json": "077f258212c3bb25488b1b79c2e5202de32ec0712cad7329df2b097ba5db2d08",
+    "docs/verification/fixtures/soc/soc-capacity-stop.ini": "2847688a7594bcc48ae4d564f458216b1bae26477760587c552e1804966378a0",
+    "docs/verification/fixtures/soc/soc-capacity-stop.model.json": "0d71e5e2de478fa63bd2b220959f4eaaf16959dcec7150fe002ca450448aa912",
+    "docs/verification/fixtures/soc/soc-capacity-stop.workload.json": "f9c3cbda0532cb2b09cf457618bca94ddaac7dbffe45b7a8fbb0f6b174b061ba",
+    "docs/verification/fixtures/soc/soc-round-robin.ini": "a0ed4974c99530310a39df2488e973baeb23f4ca4fb088c77abf7b6f53cbf3f4",
+    "docs/verification/fixtures/soc/soc-round-robin.model.json": "93f425772c9d5ee6ba0d5166a3a76989ec1f168c88cbe016ae12a8158915266c",
+    "docs/verification/fixtures/soc/soc-round-robin.workload.json": "dbd75b4b2906b3d29651a3bfb7b6ed8b968a60256c0a2b1e73f4e9764914a603",
+    "docs/verification/fixtures/soc/verify_fixtures.py": "00e69c28a309051d7e2dbf4af83723f5243a4c4ba1d3ca86d02492712708d2fc"
+  },
+  "reviewed_diff": "diff --git a/crates/dir-simulator/tests/memory_ipc.rs b/crates/dir-simulator/tests/memory_ipc.rs\nindex b196284..9594092 100644\n--- a/crates/dir-simulator/tests/memory_ipc.rs\n+++ b/crates/dir-simulator/tests/memory_ipc.rs\n@@ -87,6 +87,7 @@ fn every_fixture_matches_independent_bytes_times_and_prefixes() {\n                 assert_eq!(r[\"refresh_started_ps\"], e[\"refresh_start\"]);\n                 assert_eq!(r[\"refresh_ended_ps\"], e[\"refresh_end\"]);\n                 assert_eq!(request(&v, \"b:0\")[\"output_hex\"], e[\"read_hex\"][0]);\n+                assert_eq!(request(&v, \"d:0\")[\"output_hex\"], e[\"read_hex\"][1]);\n                 assert_eq!(\n                     metric(&v, \"Main.ddr\", \"memory_ipc.committed_bytes\"),\n                     &e[\"committed_bytes\"]\n@@ -95,7 +96,8 @@ fn every_fixture_matches_independent_bytes_times_and_prefixes() {\n                     metric(&v, \"Main.ddr\", \"memory_ipc.busy_ratio\")\n                         .as_f64()\n                         .unwrap(),\n-                    27.0 / 33.0\n+                    e[\"busy_ps\"].as_str().unwrap().parse::<u64>().unwrap() as f64\n+                        / case[\"stop_ps\"].as_str().unwrap().parse::<u64>().unwrap() as f64\n                 );\n             }\n             \"ddr-stop\" => {\n@@ -119,6 +121,37 @@ fn every_fixture_matches_independent_bytes_times_and_prefixes() {\n                     metric(&v, \"Main.sram\", \"memory_ipc.committed_bytes\"),\n                     &e[\"committed_bytes\"]\n                 );\n+                let decimal = |n: &Value| n.as_str().unwrap().parse::<u64>().unwrap();\n+                let horizon = decimal(&case[\"stop_ps\"]);\n+                let busy: u64 = rows(&v, \"memory-ipc.request\")\n+                    .into_iter()\n+                    .filter(|q| q[\"subject\"] == \"Main.sram\")\n+                    .filter(|q| !q[\"data\"][\"started_ps\"].is_null())\n+                    .map(|q| {\n+                        let q = &q[\"data\"];\n+                        let end = if q[\"completed_ps\"].is_null() {\n+                            &q[\"planned_completion_ps\"]\n+                        } else {\n+                            &q[\"completed_ps\"]\n+                        };\n+                        decimal(end)\n+                            .min(horizon)\n+                            .saturating_sub(decimal(&q[\"started_ps\"]))\n+                    })\n+                    .sum();\n+                assert_eq!(busy, decimal(&e[\"busy_ps\"]), \"{id} busy_ps\");\n+                assert_eq!(\n+                    horizon * r[\"ports\"].as_array().unwrap().len() as u64,\n+                    decimal(&e[\"busy_denominator_ps\"]),\n+                    \"{id} busy denominator\"\n+                );\n+                assert_eq!(\n+                    metric(&v, \"Main.sram\", \"memory_ipc.busy_ratio\")\n+                        .as_f64()\n+                        .unwrap(),\n+                    decimal(&e[\"busy_ps\"]) as f64 / decimal(&e[\"busy_denominator_ps\"]) as f64,\n+                    \"{id} busy ratio\"\n+                );\n                 if id == \"sram-ports\" {\n                     for (i, name) in [\"a:0\", \"b:0\", \"c:0\"].iter().enumerate() {\n                         let q = request(&v, name);\n@@ -212,6 +245,25 @@ fn every_fixture_matches_independent_bytes_times_and_prefixes() {\n             }\n             _ => panic!(\"unknown fixture {id}\"),\n         }\n+        for (field, node, op) in [\n+            (\"published\", \"Main.shared\", \"publish\"),\n+            (\"consumed\", \"Main.shared\", \"consume\"),\n+            (\"sent\", \"Main.mailbox\", \"send\"),\n+            (\"received\", \"Main.mailbox\", \"receive\"),\n+        ] {\n+            if let Some(expected) = e.get(field) {\n+                let completed = rows(&v, \"memory-ipc.request\")\n+                    .into_iter()\n+                    .filter(|q| {\n+                        q[\"subject\"] == node\n+                            && q[\"data\"][\"op\"] == op\n+                            && q[\"data\"][\"status\"] == \"completed\"\n+                            && q[\"data\"][\"reason\"] == \"ok\"\n+                    })\n+                    .count();\n+                assert_eq!(json!(completed.to_string()), *expected, \"{id} {field}\");\n+            }\n+        }\n         for res in v[\"metadata\"][\"topology\"][\"resources\"].as_array().unwrap() {\n             let node = res[\"id\"].as_str().unwrap();\n             let offered = metric(&v, node, \"memory_ipc.offered\")\ndiff --git a/crates/dir-simulator/tests/soc.rs b/crates/dir-simulator/tests/soc.rs\nindex f63cb6d..6bb6853 100644\n--- a/crates/dir-simulator/tests/soc.rs\n+++ b/crates/dir-simulator/tests/soc.rs\n@@ -150,6 +150,10 @@ fn all_analytic_fixtures_execute() {\n             if expected[\"active_plan\"].is_null() {\n                 assert!(row[\"data\"][\"active_plan\"].is_null());\n             } else {\n+                assert_eq!(\n+                    row[\"data\"][\"active_plan\"][\"resource\"], expected[\"active_plan\"][\"resource\"],\n+                    \"{name} active resource\"\n+                );\n                 for field in [\"hop\", \"start_ps\", \"planned_end_ps\"] {\n                     assert_eq!(\n                         row[\"data\"][\"active_plan\"][field],\n@@ -163,6 +167,39 @@ fn all_analytic_fixtures_execute() {\n             metric(&v, \"$all\", &format!(\"{p}.delivered_bits\")),\n             json!(bits.to_string())\n         );\n+        if let Some(expected_busy) = case[\"expected\"][\"busy_ps\"].as_u64() {\n+            let horizon = case[\"T\"].as_u64().unwrap();\n+            let decimal = |n: &Value| n.as_str().unwrap().parse::<u64>().unwrap();\n+            let completed_busy: u64 = rows(&v, &format!(\"{p}.transfer\"))\n+                .iter()\n+                .filter(|r| r[\"subject\"] == \"Main.bus\")\n+                .map(|r| {\n+                    decimal(&r[\"data\"][\"end_ps\"])\n+                        .min(horizon)\n+                        .saturating_sub(decimal(&r[\"data\"][\"start_ps\"]))\n+                })\n+                .sum();\n+            let active_busy: u64 = tx\n+                .iter()\n+                .map(|r| &r[\"data\"][\"active_plan\"])\n+                .filter(|plan| plan[\"resource\"] == \"Main.bus\")\n+                .map(|plan| {\n+                    decimal(&plan[\"planned_end_ps\"])\n+                        .min(horizon)\n+                        .saturating_sub(decimal(&plan[\"start_ps\"]))\n+                })\n+                .sum();\n+            assert_eq!(\n+                completed_busy + active_busy,\n+                expected_busy,\n+                \"{name} busy_ps\"\n+            );\n+            assert_eq!(\n+                metric(&v, \"Main.bus\", &format!(\"{p}.utilization\")),\n+                json!(expected_busy as f64 / horizon as f64),\n+                \"{name} utilization\"\n+            );\n+        }\n         if let Some(hops) = case[\"expected\"][\"hops\"].as_array() {\n             let transfers = rows(&v, &format!(\"{p}.transfer\"));\n             assert_eq!(transfers.len(), hops.len());\n",
+  "reviewed_diff_sha256": "355cb046ce7b86c3427d2555696d55db7f81bb8d32b246e43e407ae31defcfc8",
+  "gaps": [
+    {
+      "area": "AXI handshake payload/LAST",
+      "status": "not asserted; no independent authored expectation available",
+      "expected_handshake_keys": [
+        "beat",
+        "channel",
+        "request_id",
+        "time_ps",
+        "valid_since_ps"
+      ],
+      "output_available_fields": [
+        "data_hex",
+        "last"
+      ],
+      "reason": "Existing authored expected.handshakes contain only request_id, channel, beat, time_ps, valid_since_ps. Adding payload/LAST expectations would require new fixture expectation authoring outside the authorized test-only scope. Existing axi comparisons remain unchanged."
+    },
+    {
+      "area": "Shared published/consumed and mailbox sent/received metric names",
+      "status": "closed via public model records rather than nonexistent named metrics",
+      "reason": "Output exposes exact successful operation records, but no named counters for these four fields. Assertions count completed operations with reason ok and check the authored expectations."
+    }
+  ],
+  "acceptance_summary": {
+    "focused_tests_passed": 31,
+    "focused_tests_failed": 0,
+    "targeted_clippy": "passed",
+    "format": "passed",
+    "diff_check": "passed",
+    "production_changed": false,
+    "fixtures_changed": false,
+    "axi_new_checks": "unavailable independent expected fields",
+    "cpu_verification_complete": true
+  }
+}

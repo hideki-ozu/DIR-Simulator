@@ -1,0 +1,116 @@
+--- a/crates/dir-simulator/src/output/publish.rs
++++ b/crates/dir-simulator/src/output/publish.rs
+@@ -68,11 +68,7 @@
+     }
+ }
+ impl Staging {
+-    pub(super) fn write(
+-        &mut self,
+-        name: &str,
+-        write: impl FnOnce(&mut dyn Write) -> Result<(), Diagnostic>,
+-    ) -> Result<(), Diagnostic> {
++    fn open(&self, name: &str) -> Result<BufWriter<HashWriter>, Diagnostic> {
+         if ![
+             "results.json",
+             "events.csv",
+@@ -89,28 +85,54 @@
+             .create_new(true)
+             .open(self.directory.join(name))
+             .map_err(|e| Diagnostic::output(format!("Cannot create {name}: {e}")))?;
+-        let mut writer = BufWriter::with_capacity(
++        Ok(BufWriter::with_capacity(
+             64 * 1024,
+             HashWriter {
+                 file,
+                 hash: Sha256::new(),
+                 bytes: 0,
+             },
+-        );
+-        write(&mut writer)?;
++        ))
++    }
++    fn close(name: &str, mut writer: BufWriter<HashWriter>) -> Result<ValueFile, Diagnostic> {
+         writer
+             .flush()
+             .map_err(|e| Diagnostic::output(format!("Cannot flush {name}: {e}")))?;
+         let writer = writer
+             .into_inner()
+             .map_err(|e| Diagnostic::output(format!("Cannot close {name}: {e}")))?;
+-        self.files.insert(
+-            name.into(),
+-            ValueFile {
+-                sha256: format!("{:x}", writer.hash.finalize()),
+-                bytes: writer.bytes,
+-            },
+-        );
++        Ok(ValueFile {
++            sha256: format!("{:x}", writer.hash.finalize()),
++            bytes: writer.bytes,
++        })
++    }
++    pub(super) fn write(
++        &mut self,
++        name: &str,
++        write: impl FnOnce(&mut dyn Write) -> Result<(), Diagnostic>,
++    ) -> Result<(), Diagnostic> {
++        let mut writer = self.open(name)?;
++        write(&mut writer)?;
++        let value = Self::close(name, writer)?;
++        self.files.insert(name.into(), value);
++        Ok(())
++    }
++    pub(super) fn write_pair(
++        &mut self,
++        left: &str,
++        right: &str,
++        write: impl FnOnce(&mut dyn Write, &mut dyn Write) -> Result<(), Diagnostic>,
++    ) -> Result<(), Diagnostic> {
++        if left == right {
++            return Err(Diagnostic::output("duplicate output pair"));
++        }
++        let mut a = self.open(left)?;
++        let mut b = self.open(right)?;
++        write(&mut a, &mut b)?;
++        let a = Self::close(left, a)?;
++        let b = Self::close(right, b)?;
++        self.files.insert(left.into(), a);
++        self.files.insert(right.into(), b);
+         Ok(())
+     }
+ }
+@@ -284,4 +306,34 @@
+             fs::remove_dir_all(&out).unwrap();
+         }
+     }
+-}
++    #[test]
++    fn paired_writer_failure_never_publishes_either_output() {
++        let prepared = crate::prepare(
++            &Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/can/baseline.ini"),
++        )
++        .unwrap();
++        let snapshot = Snapshot::empty(&prepared);
++        for side in 0..3 {
++            let out = std::env::temp_dir()
++                .join(format!("dir-paired-failure-{}-{side}", std::process::id()));
++            fs::create_dir(&out).unwrap();
++            let error = stream(&out, "pair-failure", 1, &snapshot, |stage| {
++                stage.write_pair("results.json", "events.csv", |left, right| {
++                    if side == 0 {
++                        return Err(Diagnostic::output("injected before left"));
++                    }
++                    left.write_all(b"left complete\n").unwrap();
++                    if side == 1 {
++                        return Err(Diagnostic::output("injected before right"));
++                    }
++                    right.write_all(b"right complete\n").unwrap();
++                    Err(Diagnostic::output("injected after both writes"))
++                })
++            })
++            .unwrap_err();
++            assert_eq!(error.code, "E-0003");
++            assert_eq!(fs::read_dir(&out).unwrap().count(), 0);
++            fs::remove_dir(out).unwrap();
++        }
++    }
++}

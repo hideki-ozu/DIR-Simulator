@@ -1,0 +1,55 @@
+   Compiling dir-simulator v0.1.0 (/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.53s
+     Running tests/provenance.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/provenance-cbf4ddabcd2d03a9)
+
+running 12 tests
+test execution_settings_adjusted_after_prepare_override_captured_source_values ... ok
+test separate_roots_lineage_and_deleted_sources_survive_export ... ok
+test relocation_preserves_canonical_configuration_and_input_hashes ... ok
+test composed_tsn_large_cbs_credit_is_hashed_without_truncation ... ok
+test composed_tsn_large_meter_capacity_is_hashed_without_truncation ... ok
+test composed_bridge_rule_changes_effective_configuration_hash ... ok
+test composed_tsn_policy_changes_effective_configuration_hash ... ok
+test composed_registered_parameters_and_channels_remain_in_effective_configuration ... ok
+test composed_dynamic_policy_changes_effective_configuration_hash ... ok
+test composed_dynamic_control_changes_effective_configuration_hash ... ok
+test composed_registered_subject_changes_execution_and_effective_configuration_hash ... ok
+test every_builtin_profile_shares_build_and_effective_reproduction_data ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.12s
+
+     Running tests/registry.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/registry-686ebde1ef88a2aa)
+
+running 29 tests
+test duplicate_registration_does_not_replace_original ... ok
+test custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically ... ok
+test event_limit_and_half_open_time_boundary_are_enforced ... ok
+test custom_profile_validates_owned_json_and_factory_receives_it ... ok
+test coordinator_borrows_frozen_output_preserves_lineage_and_finishes_before_simples ... ok
+test callback_failure_discards_every_effect_and_preserves_pending_current ... ok
+test channel_capability_checks_descriptor_even_when_implementation_is_permissive ... ok
+test custom_profile_cannot_publish_schema_two_layout_under_schema_one ... ok
+test cancellation_excludes_current_timer_and_removes_future_tombstones_from_pending ... ok
+test backwards_phase_runs_after_current_arbitration_and_hits_delta_guard_with_context ... ok
+test failed_callback_does_not_commit_cancellation_of_an_existing_timer ... ok
+test strategy_registrations_are_executable ... ok
+test initialization_error_discards_effects_and_finishes_successful_initializations ... ok
+test profile_rejects_module_schemas_outside_its_allowlist ... ok
+test panic_is_diagnostic_and_cleanup_receives_committed_prefix ... ok
+test unknown_schema_and_port_version_are_prepare_errors ... ok
+test zero_time_limit_without_initial_events_still_reports_time_limit ... ok
+test coordinator_rejects_noncompound_targets_and_unowned_or_incompatible_outputs ... ok
+test acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix ... ok
+test registered_builtin_adapter_preserves_builtin_result ... ok
+test acceptance_phase_fixed_point_resource_order_and_next_delta_repeat ... ok
+test custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog ... ok
+test custom_preparation_failure_uses_registered_implementation_versions ... ok
+test live_channel_settings_override_captured_initial_state_after_prepare ... ok
+test custom_run_publishes_registered_records_and_metrics ... ok
+test custom_gateway_builtin_name_uses_custom_registry ... ok
+test custom_dynamic_builtin_name_uses_custom_registry ... ok
+test custom_tsn_builtin_name_uses_custom_registry ... ok
+test finish_can_retain_frozen_spool_after_full_buffer_and_tail_are_committed ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.79s
+

@@ -1,0 +1,43 @@
+{
+  "schema_version": 4,
+  "generators": [
+    {
+      "id": "unicast",
+      "node": "Net.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "0"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 0,
+          "dei": 0
+        },
+        "ip_multicast": null
+      },
+      "flow_id": "unicast",
+      "priority": 0,
+      "deadline_ps": null
+    }
+  ],
+  "controls": [
+    {
+      "id": "down-after-ingress",
+      "at_ps": "1220001",
+      "kind": "link_set",
+      "link": "L13",
+      "up": false
+    },
+    {
+      "id": "up-after-revisit",
+      "at_ps": "2540001",
+      "kind": "link_set",
+      "link": "L13",
+      "up": true
+    }
+  ]
+}

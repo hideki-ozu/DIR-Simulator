@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "scripts/build_guide_inputs.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/guide-gates/0.log",
+      "log_sha256": "89845470a0ccb73c3b7353537eb5d1b7d6179a690bb0572448009c41aa610aaa"
+    },
+    {
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/guide-env/bin/python",
+        "-m",
+        "mkdocs",
+        "build",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/guide-gates/1.log",
+      "log_sha256": "92ba37e1dbca3750d2543d79923864f71650713e1b4b1ff48efe71b0ff9e8f26"
+    },
+    {
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/guide-env/bin/python",
+        "scripts/check_guide_links.py"
+      ],
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/guide-gates/2.log",
+      "log_sha256": "7b1960f33aae87caa9610f4e1f6278b0528d9905a3763f42060573dbcc980bf4"
+    }
+  ]
+}

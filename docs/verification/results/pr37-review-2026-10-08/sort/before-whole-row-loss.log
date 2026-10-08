@@ -1,0 +1,39 @@
+   Compiling dir-simulator v0.1.0 (/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.85s
+     Running unittests src/lib.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/dir_simulator-9b09ac6eb469f515)
+
+running 5 tests
+
+thread 'output::contribution_sort::tests::pr37_finalized_contribution_producer_rejects_whole_row_loss' panicked at crates/dir-simulator/src/output/contribution_sort.rs:445:18:
+contribution output silently lost a complete row: [Row { time: 0, tie: 0, target: 0, kind: Busy, amount: 1 }]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'output::contribution_sort::tests::pr37_intermediate_contribution_merge_rejects_whole_row_loss' panicked at crates/dir-simulator/src/output/contribution_sort.rs:475:18:
+contribution merge silently lost a complete row: "/tmp/dir-pr37-contrib-merge-1424990-1/.dir-contribution-sort-1424990-3/run-1"
+test output::contribution_sort::tests::pr37_finalized_contribution_producer_rejects_whole_row_loss ... FAILED
+test output::contribution_sort::tests::pr37_intermediate_contribution_merge_rejects_whole_row_loss ... FAILED
+
+thread 'output::disk_sort::tests::pr37_finalized_general_and_ordered_producers_reject_whole_row_loss' panicked at crates/dir-simulator/src/output/disk_sort.rs:1606:22:
+finalized producer silently lost a complete row: [Row { key: ["a"], tie: 0, value: Null }]
+test output::disk_sort::tests::pr37_finalized_general_and_ordered_producers_reject_whole_row_loss ... FAILED
+
+thread 'output::disk_sort::tests::pr37_intermediate_general_merge_rejects_whole_row_loss' panicked at crates/dir-simulator/src/output/disk_sort.rs:1666:18:
+merge silently lost a complete row: "/tmp/dir-binary-sort-1424990-2/.dir-result-sort-1424990-5/run-1"
+
+thread 'output::disk_sort::tests::pr37_retained_fallback_producer_rejects_whole_row_loss' panicked at crates/dir-simulator/src/output/disk_sort.rs:1637:22:
+fallback silently lost a complete row
+test output::disk_sort::tests::pr37_intermediate_general_merge_rejects_whole_row_loss ... FAILED
+test output::disk_sort::tests::pr37_retained_fallback_producer_rejects_whole_row_loss ... FAILED
+
+failures:
+
+failures:
+    output::contribution_sort::tests::pr37_finalized_contribution_producer_rejects_whole_row_loss
+    output::contribution_sort::tests::pr37_intermediate_contribution_merge_rejects_whole_row_loss
+    output::disk_sort::tests::pr37_finalized_general_and_ordered_producers_reject_whole_row_loss
+    output::disk_sort::tests::pr37_intermediate_general_merge_rejects_whole_row_loss
+    output::disk_sort::tests::pr37_retained_fallback_producer_rejects_whole_row_loss
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 311 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

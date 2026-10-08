@@ -1,0 +1,405 @@
+# 結果処理検証仕様書
+
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
+| `0.1.0` | `2026-10-02` | 初版予定。37指標の独立期待値、窓・台帳・schema・メタデータ・原子的公開の検証を規定 |
+
+文書ID：`verification-results`
+
+| 項目 | 内容 |
+| --- | --- |
+| 状態 | ケース規定済み。以下に解析入力と期待値を記載する。既存ケースの実施状態は個別記述を参照。§11に局所最適化の独立試作と製品統合の比較方法を規定し、実施記録を別に管理する |
+| 担当設計 | [結果処理詳細設計](../../design/結果処理詳細設計書.md)。実装後にjournal入力の単体検証とCAN CLI経路の結果読み戻しを行う |
+| 実施方法 | 共通入力を結果処理のjournal境界へ投入する。実CAN時間とは分けた抽象journalで集計器を検証する。実モデル接続では[CAN検証](CANモデル検証仕様書.md)のcompetition/queue-full/eof-boundary fixtureを使用し、実際の確定journalから下記と同じ独立式で期待値を作る |
+| 判定 | ps・bits・件数・文字列・状態・null・順序は完全一致。有理数を一回binary64最近接偶数丸めした期待値と、保存された17桁十進値を読み戻したbinary64を完全一致比較する。製品集計器を期待値生成に使わない |
+| 上位確認 | DIR-AC-0006（時系列/集計/CSV/JSON）、0015（意味付け）、0017（異常）、0023（前提）、0024（未完了）、0026（条件）を、各ケースの担当子要件と組み合わせて確認する |
+
+## 共通入力A：短縮窓・複数受信・全要求状態
+
+全時刻の単位はps。Net.a、Net.b、Net.c、Net.busを接続し、Net.a.txQueueのC=2、H=35、W=10とする。b/cの送信キューは空のC=2。フレーム時間は以下に明記した抽象値を使う。実CANのbitrateからこの短い時刻を作る試験ではなく、結果処理境界の入力である。全点は成功コミット済み、EOF/release予定だけの点は到達済みとしない。
+
+| request_id | g | q | s | e | release | payload_bits | serialized_bits | Hでの状態 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| load:0 | 0 | 2 | 5 | 15 | 18 | 8 | 52 | success |
+| load:1 | 3 | 4 | 18 | 28 | 31 | 16 | 60 | success |
+| load:2 | 20 | 22 | 32 | 未到達（予定42） | 未到達（予定45） | 8 | 52 | in_flight |
+| load:3 | 29 | 30 | 未到達 | 未到達 | 未到達 | 8 | 52 | pending |
+| load:4 | 32 | 33 | 未到達 | 未到達 | 未到達 | 8 | 52 | pending |
+| load:5 | 3 | 4 | 未到達 | 未到達 | 未到達 | 8 | 52 | dropped、queue_full |
+| load:6 | 34 | 未到達 | 未到達 | 未到達 | 未到達 | 8 | 52 | processing |
+
+| 受信キー | o | r | Hでの状態 |
+| --- | --- | --- | --- |
+| load:0 / Net.b | 16 | 18 | received |
+| load:0 / Net.c | 17 | 20 | received |
+| load:1 / Net.b | 29 | 30 | received |
+| load:1 / Net.c | 29 | 未到達 | filtered |
+
+キュー変化の確定順は `(0,0初期),(2,1受理),(4,2受理),(4,2満杯破棄),(5,1SOF),(18,0SOF),(22,1受理),(30,2受理),(32,1SOF),(33,2受理)`。時刻4の受理と破棄は異なる観測effectで同じキュー長を出す。占有は[5,18)、[18,31)、[32,45予定)、frameは[5,15)、[18,28)、[32,42予定)である。正常time_limit・partial=false、requests=7行、receivers=4行。event_seq絶対値は実装の予約に従い、effectとcommitの相対順を確認する。
+
+<a id="dir-test-0070"></a>
+
+## 1. 観測点と資源状態の対応
+
+```trace
+{
+  "id": "DIR-TEST-0070",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0042", "DIR-REQ-0083", "DIR-REQ-0084", "DIR-REQ-0087"],
+  "upstream": ["design-results#resource-observations"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力・操作 | 期待結果・判定 |
+| --- | --- |
+| 入力Aをjournalへ投入し点標本を取り出す | Net.a.txQueueのqueue_lengthは上記10点、buffer_utilizationは各Q/2で0,0.5,1,1,0.5,0,0.5,1,0.5,1。b/cも初期0点を持つ。満杯破棄を省略せず同時刻の2行をeffect_seqで区別する |
+| SOF到達の3要求を比較 | tx_wait_ps=(5,15,12)、arbitration_wait_ps=(3,14,10)。source=Net.a、各request_id、time_ps=s、unit=ps、value_kind=integer。敗者の待ちはSOFまで継続する |
+| EOFと受信完了点を比較 | transfer_psはload:0/1の10,10、target=Net.bus、time=e。delivery_psは(b,load:0)=18、(c,load:0)=20、(b,load:1)=27、time=r、receiver=target。filteredと未完了load:2からdelivery/transfer標本を作らない |
+| C=0の空キューを一つ追加 | queue_length点0、buffer_utilization点null。Q=0・C>0の点0と区別する |
+| 実モデル接続 | CANの受理・SOF・EOF・フィルタ・rの確定journalとRecordの出自を一対一に対応付ける。予定EOFから点標本を作っていないことをcutoff fixtureで確認する |
+
+実行結果：未実施。
+
+<a id="dir-test-0071"></a>
+
+## 2. 37指標・窓・時間積分の全件検証
+
+```trace
+{
+  "id": "DIR-TEST-0071",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0043", "DIR-REQ-0085", "DIR-REQ-0086", "DIR-REQ-0088", "DIR-REQ-0089", "DIR-REQ-0090", "DIR-REQ-0091"],
+  "upstream": ["design-results#resource-observations", "design-results#aggregation"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+入力Aを集計し、以下37指標の存在・値・descriptorを全件検査する。整数valueはD、numberは有限N又はnull。件数はNet.a、Net.bus、$allで同じ下記値、droppedはNet.a.txQueueにも1・reason=queue_full。受信件数はNet.bus/$allが下記値で、受信先別値は次ケースへ分担する。無通信b/cの要求件数は全て0。summaryは全行start=0/end=35、遅延平均だけにsample_countを設定する。
+
+| 番号 | metric | unit / value_kind | 入力Aの点又は全体期待値 |
+| --- | --- | --- | --- |
+| 1 | queue_length | count / integer | 上記Q列 |
+| 2 | queue_max | count / integer | a=2、b/c=0 |
+| 3 | generated | count / integer | 7 |
+| 4 | admitted | count / integer | 5 |
+| 5 | processing | count / integer | 1 |
+| 6 | pending | count / integer | 2 |
+| 7 | in_flight | count / integer | 1 |
+| 8 | success | count / integer | 2 |
+| 9 | dropped | count / integer | 1 |
+| 10 | unfinished | count / integer | 4 |
+| 11 | attempts | count / integer | 3 |
+| 12 | retries | count / integer | 0 |
+| 13 | failed | count / integer | 0 |
+| 14 | receiver_opportunities | count / integer | 4 |
+| 15 | received | count / integer | 3 |
+| 16 | filtered | count / integer | 1 |
+| 17 | rx_pending | count / integer | 0 |
+| 18 | tx_wait_ps | ps / integer | 5,15,12 |
+| 19 | arbitration_wait_ps | ps / integer | 3,14,10 |
+| 20 | transfer_ps | ps / integer | 10,10 |
+| 21 | delivery_ps | ps / integer | 18,20,27 |
+| 22 | tx_wait_mean_ps | ps / number | 32/3、sample_count=3 |
+| 23 | arbitration_wait_mean_ps | ps / number | 9、sample_count=3 |
+| 24 | transfer_mean_ps | ps / number | 10、sample_count=2 |
+| 25 | delivery_mean_ps | ps / number | 65/3、sample_count=3 |
+| 26 | queue_mean | count / number | a=34/35、b/c=0 |
+| 27 | buffer_utilization | 1 / number | 上記Q/2列 |
+| 28 | buffer_utilization_mean | 1 / number | a=17/35、b/c=0 |
+| 29 | bus_utilization | 1 / number | 29/35 |
+| 30 | frame_utilization | 1 / number | 23/35 |
+| 31 | payload_bits | bit / integer | bus=24 |
+| 32 | serialized_bits | bit / integer | bus=112 |
+| 33 | occupied_bits | bit / integer | bus=118（55+63） |
+| 34 | received_payload_bits | bit / integer | b=24、c=8、a=0 |
+| 35 | payload_throughput_bps | bit/s / number | bus=24×10^12/35 |
+| 36 | serialized_throughput_bps | bit/s / number | bus=112×10^12/35 |
+| 37 | received_throughput_bps | bit/s / number | b=24×10^12/35、c=8×10^12/35、a=0 |
+
+独立積分はQの水平区間の長方形を足す。area=1×2+2×1+1×13+1×8+2×2+1×1+2×2=34。バス和集合長は13+13+3=29、frame長は10+10+3=23。途上load:2のpayload/serialized/occupiedを完了量へ足さない。
+
+| metric / 対象 | [0,10) | [10,20) | [20,30) | [30,35) |
+| --- | --- | --- | --- | --- |
+| a.buffer_utilization_mean | 9/20 | 8/20 | 8/20 | 9/10 |
+| bus_utilization | 1/2 | 1 | 1 | 4/5 |
+| frame_utilization | 1/2 | 7/10 | 4/5 | 3/5 |
+| bus.payload_bits | 0 | 8 | 16 | 0 |
+| bus.serialized_bits | 0 | 52 | 60 | 0 |
+| bus.occupied_bits | 0 | 55 | 0 | 63 |
+| b.received_payload_bits | 0 | 8 | 0 | 16 |
+| c.received_payload_bits | 0 | 0 | 8 | 0 |
+| bus.payload_throughput_bps | 0 | 8×10^11 | 16×10^11 | 0 |
+| bus.serialized_throughput_bps | 0 | 52×10^11 | 60×10^11 | 0 |
+| b.received_throughput_bps | 0 | 8×10^11 | 0 | 32×10^11 |
+| c.received_throughput_bps | 0 | 0 | 8×10^11 | 0 |
+
+各窓のstart/end、全接続バス・受信先・キューの必須0行も照合する。r=20は第3窓、r=30とrelease=31は実長5の最終窓へ帰属する。窓ratioの実長加重和/Hはsummaryと一致し、単純平均(busの33/40)を29/35の代用にしない。descriptorのversion=文字列1、点=point/identity、件数=sum、queue_max=max、遅延平均=sample_mean、queue_mean=summary/time_mean、buffer平均=window_summary/time_mean、使用率=occupancy_ratio、bit量=sum、rate=rateを照合する。
+
+実行結果：未実施。
+
+<a id="dir-test-0072"></a>
+
+## 3. 要求・受信母数と破棄の保存則
+
+```trace
+{
+  "id": "DIR-TEST-0072",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0043", "DIR-REQ-0088", "DIR-REQ-0090"],
+  "upstream": ["design-results#resource-observations", "design-results#aggregation"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力・操作 | 期待結果 |
+| --- | --- |
+| 入力Aの台帳を直接数える | 7=1+5+1、5=2+1+2、4=1+2+1、3=1+2。receiver_opportunities=4=3+1+0。success=2をreceived=3で置換しない |
+| 受信先別に照合 | b: opportunities2/received2/filtered0/pending0、delivery平均45/2・標本2。c: opportunities2/received1/filtered1/pending0、delivery平均20・標本1。a:全受信件数0、delivery平均null・標本0 |
+| $allのdeliveryを独立計算 | (18+20+27)/3=65/3。受信先平均の単純平均85/4や、要求ごとに平均した23を採用しない |
+| H=29に切り替える | load:0受信2件、load:1のEOF後受信2件は未観測pending。opportunities4/received2/filtered0/rx_pending2、success2、load:2はpending。正常Hのo=29は実行しない |
+| drop理由を比較 | load:5だけdropped=1/queue_full。filteredの1、未完了4、仲裁待ちをdrop/retries/failedへ加算しない。対象キューとsource/bus/$allに同じ一破棄が各対象内で一回数えられる |
+
+実行結果：未実施。
+
+<a id="dir-test-0073"></a>
+
+## 4. 空区間・初期値・クリップ・瞬間ピーク
+
+```trace
+{
+  "id": "DIR-TEST-0073",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0043", "DIR-REQ-0085", "DIR-REQ-0086", "DIR-REQ-0088", "DIR-REQ-0089", "DIR-REQ-0090", "DIR-REQ-0091", "DIR-REQ-0120"],
+  "upstream": ["design-results#aggregation"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力 | 期待結果 |
+| --- | --- |
+| 正常T=H=0、空キュー | records/requests/receivers空、窓なし、件数/量0、queue_max0、算術平均null/sample_count0、queue_mean/buffer平均/使用率/rate=null。初期キュー点は出さない |
+| H=30、W=100、イベントなし | 一窓[0,30)、queue平均/使用率/rate=0（C>0）、遅延平均null。last_event_time_ps=null、committed_events0、Hは0へ縮めない |
+| H=30、Qが時刻5で0→1→0（別成功effect） | 同時刻Q=1点を保持、queue_max1、area0/queue_mean0。時間平均だけからmaxを推定しない |
+| 入力Aを正常H=10で停止 | success0/in_flight1、admitted2/pending1、dropped1、generated3、unfinished2、attempts1、受信機会0。bus/frame使用率各1/2、完了量0、transfer/delivery平均null。queue area9/mean9/10、buffer平均9/20。H以後の要求を先行生成しない |
+| 区間union補助入力 | resourceの占有区間[1,6)、[4,8)、[8,9)にH=10を適用し、union長8、使用率4/5。重複長を足した12/10を出さない。この補助入力は汎用区間集計の単体検査で、CAN ownerの二重占有を許可するモデル試験ではない |
+
+実行結果：未実施。
+
+<a id="dir-test-0074"></a>
+
+## 5. 正確整数・一回丸め・値域
+
+```trace
+{
+  "id": "DIR-TEST-0074",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0043", "DIR-REQ-0088", "DIR-REQ-0091"],
+  "upstream": ["design-results#aggregation"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力 | 期待結果・手順 |
+| --- | --- |
+| 入力Aの65/3と29/35 | 任意精度整数の分子/分母から独立に最近接偶数binary64を求める。65/3のwireは2.1666666666666668e+1、29/35は8.2857142857142863e-1。逐次float平均を期待値にしない |
+| 平均標本2^53、2^53+1、2^53+1 | 正確和27021597764222978/3を最後に丸め、9007199254740992を得る。最初に標本をbinary64化すると情報を失うため、内部正確和も照合する |
+| 最近接偶数のtie | (2^53+(2^53+2))/2=2^53+1→9007199254740992、((2^53+2)+(2^53+4))/2=2^53+3→9007199254740996。隣接representable値の偶数mantissaを選ぶ |
+| 大きい時刻 | Dの18446744073709551615をu64上限として受理、翌psへの加算をwrapせずE-0004。area/counterのchecked u128実装では上限ちょうどを受理し次の+1をE-0004。さらに広い実装では公開Dのu128上限を検査する |
+| 率とゼロ | rational0/正分母→正0のwire0.0000000000000000e+0。NaN/±Infinity、非有限変換、整数の途中overflowはE-0004へ伝播し、不正数値を出力しない。nullは0へ変換しない |
+
+実行結果：未実施。
+
+<a id="dir-test-0075"></a>
+
+## 6. 完全schema1・CSV/JSON読み戻し
+
+```trace
+{
+  "id": "DIR-TEST-0075",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0044", "DIR-REQ-0054", "DIR-REQ-0092", "DIR-REQ-0093", "DIR-REQ-0094", "DIR-REQ-0095", "DIR-REQ-0096"],
+  "upstream": ["design-results#schema"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力・手順 | 期待結果 |
+| --- | --- |
+| 完全schema集合 | [結果仕様の完全prep_failed生成例](../../specs/結果詳細機能仕様書.md#atomic-output)を独立readerのschema全キー検査へ入力する。次にCANのstandard ID0・空payload・500000bps、g=q=s=0、e=r=100000000、release106000000、H200000000/W100000000の正常結果を実装後に生成する |
+| 正常CANの完全Request | payload_bits0/serialized_bits50、model_fields profile=can.cc.ideal.v1/schema_version=JSON整数1/crc15文字列0/stuff_bits6/frame_bits50/intermission_bits3/bitrate500000、planned_eof100000000/planned_release106000000/release106000000。attempts1/retries0/drop_reason=null、receiver Net.bはobserved=received=100000000。全必須キーを保持する |
+| 完全JSONの型検査 | rootのschema_version/run_id/metadata/simulation、Simulationの全11キー、Record15キー、Request14キー、CanFields10キー、Receiver5キーを正本と照合する。integer valueと時刻・件数はD、schema_versionはJSON整数。nullableキーも存在させる |
+| 全出力の照合 | metadata.metricsが37個で重複なし。Recordのunit/type/点時刻/区間/対象/要求/receiver/reason/sample_countを正本の出力集合と照合する。CSV17列のschema_version/run_idを除いた15列からRecordを復元しJSON records/summaryと完全一致。events/summaryのseqは各0から隙間なし |
+| 順序入力 | 同じ有効時刻に窓行、初期点、callback点を配置。callbackのcommit順を予約sequenceの大小と逆にする。窓→初期→callback、callbackはcommit順/effect順。requests load:10とload:2はload:10先、receiversはrequest_id/receiver順、nullは文字列より前 |
+| wire文字とCSV引用 | serializer単体でS=`日本語,\"引用\"`、LF、backslash、制御U+0001、組合せUnicodeを含む値を渡す。JSONは制御を小文字hexで逃がしUnicodeを正規化せず、CSVはcomma/quote/LFを含むセルを引用する。引用の戻し後に元Sが一致する。モデルの正規path文法と異なるSはserializerだけの補助入力とする |
+| 拒否変形 | schema_version99、D=01/負値/JSON数値時刻、seq重複、必須nullキー欠落、metric未知、unit又はvalue_kind違い、NaN表現、Request不存在参照、statusと時刻の矛盾を各一箇所だけ変形。不正出力と明示し有効結果へ補正しない |
+| 正常CANの窓帰属 | EOF/r=100000000は第2窓[100000000,200000000)。第1窓payload/serialized/received量0、第2窓payload0/serialized50/occupied53/received_payload0。frame使用率は第1窓1、第2窓0、busは第1窓1、第2窓6/100、summary bus53/100/frame1/2 |
+
+完全キーは上表の個数だけで判断せず、正本の名前集合・型・値を照合する。schema1の正常H=0はsummaryが存在し得る一方、prep_failedはsummaryも空という差を確認する。実行結果：未実施。
+
+<a id="dir-test-0076"></a>
+
+## 7. メタデータと再現条件
+
+```trace
+{
+  "id": "DIR-TEST-0076",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0114", "DIR-REQ-0117"],
+  "upstream": ["design-results#metadata"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力・手順 | 期待結果 |
+| --- | --- |
+| snapshotの固定 | sourcesのraw bytesを読んだ直後、保存前に元INIを変更する。保存content_utf8/raw SHA256は実行に使った元bytesのまま。INI/workload/全読込NEDをlogical_path順に保存し、探索rootから収集した全NEDを未選択型の宣言も含めて保持し、非NEDファイルは含めない。未選択型だけのNEDのコメントを変更した再実行でもsourcesの該当hashとinput_sha256が変わる |
+| hash独立計算 | config=[]/sources=[]の正規hashはどちらもSHA256(b"[]")=4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945。通常入力ではconfig key/value配列、sourcesのlogical_path/sha256だけの配列を末尾LFなしで独立canonical化し、config_sha256/input_sha256と照合 |
+| 異なる実行識別 | 同条件を2回実行しUUIDv4 run_idを新規採番。results/CSV/manifestで各run_id一致、run間は異なる。simulationとrun_id列を除いたCSVは一致。実時間のUTC文字列をps標本時刻へ混入しない |
+| 条件差 | 同じファイル内容を別絶対rootへ移し論理配置を保つとcanonical_pathは変わるがinput_sha256は同じ。設定値/既定値/入力bytes/モデル版/初期状態を各一個変え、それぞれ該当欄から差を特定できる。hash一致だけで版・環境一致を判断しない |
+| モデル前提 | models.type/version/assumptionsと初期状態をCAN仕様へ照合。理想ACK、再送なし、エラー注入なし、内容依存時間、固定伝搬、自己配送なし、フィルタ/ACK独立、参照規格と採用台帳版を結果から特定できる |
+| 完全metadata | runtime/git/binary/model-registry/compiler/target/OS/CPU、cargo_lock_sha256/toolchain/adoption_ledger_version、metrics37個、time_resolution_ps=1、window_ps、seed=nullを検査。不明値はunknownで再現条件未同定。環境変数/認証情報を自動収集しないことを収集項目のコードレビューで確認する |
+| 準備途中失敗 | 2番目入力で不正UTF-8、値解決途中、initialize途中の3点で失敗注入。取得済有効sourcesだけ、全件成功前config/initial_stateは[]、hashは実際の配列から計算、未取得環境値unknown、解決前window既定1000000000を保持する |
+
+一般のruntime順序決定性は[共通実行検証](共通実行検証仕様書.md)へ分担し、本ケースは結果から条件を同定し正しい比較範囲を選べることを確認する。実行結果：未実施。
+
+<a id="dir-test-0077"></a>
+
+## 8. 原子的公開・manifest・I/O失敗
+
+```trace
+{
+  "id": "DIR-TEST-0077",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0044", "DIR-REQ-0056", "DIR-REQ-0120"],
+  "upstream": ["design-results#publication"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力・失敗注入 | 期待結果 |
+| --- | --- |
+| 空又は新規出力先で正常公開 | 4データをclose/hash後にrename、manifest最後。filesはdiagnostics.jsonl/events.csv/results.json/summary.csv順、各raw bytes数とSHA256一致、metadata_ref固定、status complete、5ファイル全部存在。空diagnosticsのbytes0/SHA256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
+| 既存sentinelを置いた非空output | 準備段階でE-0003/exit4、sentinel bytes/hashを保持し新規出力を書かない |
+| 各操作を一つずつ失敗 | .tmp作成、各データwrite/flush/close/hash、各4rename、manifest write/flush/close/renameを失敗させる。E-0003/exit4、段階・operation・対象・原因を通知、manifest完成物なし、読者は不完全と判定。既公開データは調査用に保持、一時物削除失敗も完成としない |
+| 診断ファイルwriteとstderr通知 | diagnostics自体を書けない場合にもstderrへE-0003通知を試みる。stderr側も失敗する偽writerでは成功通知を捏造せずexit4を保つ |
+| 公開途中のreader | 各rename直後に読取を挟み、manifest前は完成集合として受理しない。manifest後は全hashを検査してから受理する。公開後resultsの1byteを書き換えるとhash不一致で拒否、manifestのbytes変形も拒否 |
+| 未完了の正常結果 | 入力Aをtime_limit/partial=falseで公開し、manifest complete、in_flight/pending/processingの4要求を結果から読み戻す。未完了を異常又はdropへ変形しない |
+
+電源断耐久試験は本契約の保証対象外。実行結果：未実施。
+
+<a id="dir-test-0078"></a>
+
+## 9. 異常prefix・部分結果・二次失敗
+
+```trace
+{
+  "id": "DIR-TEST-0078",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0044", "DIR-REQ-0056", "DIR-REQ-0120"],
+  "upstream": ["design-results#aggregation", "design-results#publication"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力・手順 | 期待結果 |
+| --- | --- |
+| 入力AのH=30における異常 | 時刻30でNet.bのload:1受信完了とload:3受理を成功commit、その後同時刻別callbackが暫定点/予約/要求更新を生成して失敗。H=30、execution_failed/partial=true、last_event_time_ps=30、committed_eventsは成功分だけ、失敗候補もpending_eventsに残る。失敗batchの全効果を除く |
+| Hの成功点と窓 | bのr=30はrecords/delivery summaryへ含むが[0,30)窓のreceived_payload量には含めない。b summary量24、窓合計8、差16がHの成功点。delivery全体は65/3・標本3。load:3はpending、Q最大2、area=25/queue_mean5/6、buffer平均5/12。bus使用率25/30、frame20/30 |
+| 時刻0で成功後の失敗 | 空初期状態からg=q=s=0の一要求を成功commit、同時刻次callbackで失敗。H=0でもSOF点とRequest in_flightを保持、generated=admitted=attempts=unfinished1、success/drop0、tx/仲裁平均0・標本1。窓なし、時間率/平均null、瞬間Qピークがあればqueue_maxへ保持 |
+| 初期化途中の失敗 | 基底journal未公開、prep_failed/partial=true、start/end0、last_event null、committed/pending0、records/summary/requests/receivers空。構築途中のモデル状態を保存しない |
+| 正常実行後finish失敗 | 正常freeze済H=Tの台帳/計測を保ちtermination=execution_failed/partial=true、exit3。finishのsend/観測通知を結果へ追加しない |
+| 部分結果の公開成功/失敗 | 実行失敗でも保存成功ならmanifest completeと診断primaryを保存、exit3。続いてoutput失敗を注入するとexit4/E-0003をstderrへ通知、manifest完成物なし。先行primaryと二次診断の関係は診断仕様と照合する |
+
+実行結果：未実施。
+
+<a id="dir-test-0079"></a>
+
+## 10. schema2の包絡とschema1回帰
+
+```trace
+{
+  "id": "DIR-TEST-0079",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0044", "DIR-REQ-0054", "DIR-REQ-0092", "DIR-REQ-0093", "DIR-REQ-0094", "DIR-REQ-0095", "DIR-REQ-0096"],
+  "upstream": ["design-results#schema"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力・操作 | 期待結果 |
+| --- | --- |
+| 登録追加profile | [拡張モデル統合検証](拡張モデル統合検証仕様書.md)のGW/AXI/Ethernet各正規fixtureを使い、profile登録のmetric/model_schemasを凍結してschema2へ保存する。固有data期待値は各モデル検証を正とする |
+| 包絡 | results/manifest/CSVの版2、diagnosticsレコード版1。Simulation2全10キー（requests/receivers無し、model_records有り）、Metadata全必須キー＋model_profile/model_schemas、ModelRecord全8キーを名前/型で照合。time_psとRecord整数はD、ModelRecord schema_versionは登録正整数JSON number |
+| 登録順と更新 | 同一(schema_name,record_id)を時刻2、5で成功更新し、時刻6の更新を失敗させる。snapshotは最後の成功値/time5一行。recordsの履歴は独立に保持。schema_name/subject/record_id順、model_schemasとmetricsは名前順、origin_request_idとdata参照が同一run内の元要求へ対応する |
+| 未知版・重複 | 未登録schema_name/版、同名異版混在、ModelRecordキー重複、data型違反、request参照切れを各一箇所変形して拒否。対応schemaのみ読むreaderは未解釈schema集合を明示する |
+| 準備失敗版 | profile確定後のmodel-config失敗はschema2/空model_records/選択登録集合。profile解決前INI失敗や未登録profileはschema1 prep_failed。既定CAN再実行はschema1のrequests/receivers/CanFields/37指標を保持しCSV列と値は変わらない |
+| 保存の共通契約 | schema2でも17列CSV往復、null/D/N、UTF-8・数値表記、実bytes/hash、manifest最後、異常prefixを0075/0077/0078と同じ方法で確認する |
+
+完全包絡の独立例として、AXIの正規fixtureのRAMをbase=0、size=4、initial=[]、error_ranges=[]へ置換し、空workloadで初期化する。RAMの正規インスタンスパスをNet.ramとした場合、全4byteが0で、次のModelRecordを一行だけ保存する。実fixtureのRAM名が異なる場合はrecord_id/subjectを同じ実パスへ置換する。他のAXI構成値と接続はfixtureを保持する。
+
+```json
+{"schema_name":"axi.memory","schema_version":1,"record_id":"Net.ram","subject":"Net.ram","request_id":null,"origin_request_id":null,"time_ps":"0","data":{"base":"0","size":"4","data_hex":"00000000"}}
+```
+
+ModelRecordの8キー、dataの3キー、JSON整数版1、Dの時刻/サイズとnull要求をそれぞれ照合する。この行をSimulation2.model_recordsへ格納し、Metadata2.model_profile=axi4.transaction.v1、model_schemasのaxi.memory/1と対応付ける。初期RAMの全byte保存を、CANのrequests配列やRecordのinteger valueへ変換しない。
+
+本ケースは追加モデルの提供完了を示さず、共通exporterの版選択とopaque codec境界の検証を規定する。実行結果：未実施。
+
+<a id="dir-test-0117"></a>
+
+## 11. CAN出力最適化①〜⑤の個別・製品統合比較
+
+```trace
+{
+  "id": "DIR-TEST-0117",
+  "stage": "verification",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0042", "DIR-REQ-0043", "DIR-REQ-0054"],
+  "upstream": ["design-can-output-optimization#internal-output"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+[最適化設計](../../design/CAN出力最適化詳細設計書.md)の5案を同じ基準ソースへ個別に適用し、公開結果の契約を維持したまま効果を測る。製品統合後にも同じ基準版へ直接比較する。個別試作と製品統合の記録を区別し、100万要求の受け入れを本比較で代替しない。
+
+### 個別試作
+
+| 入力・操作 | 期待結果・記録 |
+| --- | --- |
+| ソースとビルド | 基準版と各案のソースSHA-256、Cargo.lock、releaseバイナリを固定する。各版のfmt・locked/offline clippy・workspace test・release buildが通過し、測定版とgateの対応が一致する |
+| 条件と反復 | 16,000要求・rho 0.30、3,200要求・rho 0.90、3,200要求・rho 1.20。各条件で6版それぞれwarmup 1回、測定3回を逐次実行し、roundごとに版順を反転する。全72実行の終了状態と実行argvを保存する |
+| 公開内容 | 同条件のsimulation JSON、run_idを正規化したevents.csv／summary.csvとdiagnostics.jsonlのhashが一致する。各manifestの4ファイルのサイズとSHA-256が実ファイルに一致する。構築版等のmetadataは版ごとの識別情報として扱う |
+| 効果 | 準備から出力完了までのwall生値・中央値と最大RSSを記録し、各案を同条件の共通基準版と比較する。短縮率を加算せず、小さい差の有意性を3試行だけで断定しない |
+| 境界と失敗 | ①の手書きcodecベクトル・破損・安定性、②の同一キー・遅い順序違反・全行fallback、③のpaired writer callback失敗、④の同時刻寄与順・target ID、⑤の未知target診断を確認する。既存の窓・部分実行・CAN／Gateway出力・cleanupの試験も維持する |
+| 保存 | 入力pin、ソース・試作patch、gate log、生測定・manifest・正規化hashを保存する。大きな出力を削除する場合は照合後とし、その事実を記録する。独立試作時には製品ソースが固定基準版と一致することも確認する |
+
+2026-10-08に独立試作の比較を実施した。[個別実測記録](../results/can-output-candidates-2026-10-08.md)に生値、短縮率、最大RSS、出力一致とgate証跡を保存した。同記録は当時の製品未適用・併用効果未測定の状態を保存し、後続の統合結果で書き換えない。
+
+### 製品統合
+
+| 入力・操作 | 期待結果・記録 |
+| --- | --- |
+| 統合版とgate | ①〜⑤を同じ製品ソースへ反映し、fmt・locked/offline clippy・workspace test・release buildを行う。測定するreleaseバイナリとgateのソース・バイナリhashが一致する |
+| 組合せ | 共通バイナリ保存による②の遅い順序違反・全行fallback、同一キーの点優先・再走査、④と⑤の異なる対象表、後半行の破損による③のpaired出力失敗とcleanupを確認する |
+| 直接比較 | 個別試作と同じ3入力条件を使い、基準版と統合版それぞれwarmup 1回・測定3回、計24実行を順序反転しながら逐次実行する。各実行のmanifestと同条件の正規化結果・診断hashが一致する |
+| 判定と保存 | wall／最大RSSを基準版と直接比較し、個別短縮率を加算しない。変更対象外の製品ソースを保存した変更前hashと照合する。gate・生測定・入力pin・ソース差分を[製品統合記録](../results/can-output-integrated-2026-10-08.md)へ保存する |
+
+2026-10-08に①〜⑤の製品統合を検証した。543テストと4つのRust gateが通過し、比較24実行すべてが完了した。各条件内の正規化JSON／CSV・診断hashが一致し、計96ファイルのmanifest宣言値を照合した。直接比較でwall中央値は65.8〜68.2%短縮した。生値とソース対応は[製品統合記録](../results/can-output-integrated-2026-10-08.md)に保存する。

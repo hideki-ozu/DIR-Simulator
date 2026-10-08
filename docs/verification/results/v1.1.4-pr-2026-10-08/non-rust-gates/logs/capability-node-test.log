@@ -1,0 +1,1014 @@
+TAP version 13
+# Subtest: milestones preserve independent serialization, arrival, release and receive boundaries
+ok 1 - milestones preserve independent serialization, arrival, release and receive boundaries
+  ---
+  duration_ms: 2.769637
+  type: 'test'
+  ...
+# Subtest: partial run never invents reception from planned arrival
+ok 2 - partial run never invents reception from planned arrival
+  ---
+  duration_ms: 0.426174
+  type: 'test'
+  ...
+# Subtest: capacity drop is retained without physical transfer
+ok 3 - capacity drop is retained without physical transfer
+  ---
+  duration_ms: 0.540412
+  type: 'test'
+  ...
+# Subtest: replay at a destination is independent of navigation history
+ok 4 - replay at a destination is independent of navigation history
+  ---
+  duration_ms: 1.121773
+  type: 'test'
+  ...
+# Subtest: corrupt references, time order, envelope updates and fabricated receipts are rejected
+ok 5 - corrupt references, time order, envelope updates and fabricated receipts are rejected
+  ---
+  duration_ms: 1.286256
+  type: 'test'
+  ...
+# Subtest: large timestamps preserve picoseconds beyond binary64 safe integers
+ok 6 - large timestamps preserve picoseconds beyond binary64 safe integers
+  ---
+  duration_ms: 0.337251
+  type: 'test'
+  ...
+# Subtest: opposite link directions transmit concurrently without sharing a queue
+ok 7 - opposite link directions transmit concurrently without sharing a queue
+  ---
+  duration_ms: 0.354031
+  type: 'test'
+  ...
+# Subtest: switch flood links accepted and dropped children to a single reception
+ok 8 - switch flood links accepted and dropped children to a single reception
+  ---
+  duration_ms: 0.296099
+  type: 'test'
+  ...
+# Subtest: QoS class queue occupancy counts MAC bytes and excludes active transfer
+ok 9 - QoS class queue occupancy counts MAC bytes and excludes active transfer
+  ---
+  duration_ms: 1.099523
+  type: 'test'
+  ...
+# Subtest: QoS schema is explicit: version mismatches, invalid class and incomplete topology reject
+ok 10 - QoS schema is explicit: version mismatches, invalid class and incomplete topology reject
+  ---
+  duration_ms: 0.855812
+  type: 'test'
+  ...
+# Subtest: VLAN hop wire and classification preserve source contract and reclassify untagged ingress
+ok 11 - VLAN hop wire and classification preserve source contract and reclassify untagged ingress
+  ---
+  duration_ms: 0.941284
+  type: 'test'
+  ...
+# Subtest: VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN
+ok 12 - VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN
+  ---
+  duration_ms: 0.684515
+  type: 'test'
+  ...
+# Subtest: VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy
+ok 13 - VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy
+  ---
+  duration_ms: 5.430644
+  type: 'test'
+  ...
+# Subtest: VLAN immediate endpoint filter keeps one reason without inventing a dropped copy
+ok 14 - VLAN immediate endpoint filter keeps one reason without inventing a dropped copy
+  ---
+  duration_ms: 0.602116
+  type: 'test'
+  ...
+# Subtest: VLAN ingress admission rejection stops before child offers and requires exact classification
+ok 15 - VLAN ingress admission rejection stops before child offers and requires exact classification
+  ---
+  duration_ms: 0.513176
+  type: 'test'
+  ...
+# Subtest: VLAN pending planned arrival never synthesizes receiver or classification
+ok 16 - VLAN pending planned arrival never synthesizes receiver or classification
+  ---
+  duration_ms: 0.432473
+  type: 'test'
+  ...
+# Subtest: media replay preserves collision, jam, backoff and retry at each destination
+ok 17 - media replay preserves collision, jam, backoff and retry at each destination
+  ---
+  duration_ms: 21.435958
+  type: 'test'
+  ...
+# Subtest: partial jam and T1 arrival boundary retain null actuals and never fabricate reception
+ok 18 - partial jam and T1 arrival boundary retain null actuals and never fabricate reception
+  ---
+  duration_ms: 34.105619
+  type: 'test'
+  ...
+# Subtest: T1 pipeline receives an older immutable attempt after a newer SOF
+ok 19 - T1 pipeline receives an older immutable attempt after a newer SOF
+  ---
+  duration_ms: 13.965276
+  type: 'test'
+  ...
+# Subtest: CAN FD replay keeps two-rate timing, evidence and declared wiring
+ok 20 - CAN FD replay keeps two-rate timing, evidence and declared wiring
+  ---
+  duration_ms: 16.942331
+  type: 'test'
+  ...
+# Subtest: media decoder rejects fabricated completion, attempt lineage and mixed schemas
+ok 21 - media decoder rejects fabricated completion, attempt lineage and mixed schemas
+  ---
+  duration_ms: 2.339145
+  type: 'test'
+  ...
+# Subtest: initial carrier deferral remains in the FIFO and rewinds identically
+ok 22 - initial carrier deferral remains in the FIFO and rewinds identically
+  ---
+  duration_ms: 13.953899
+  type: 'test'
+  ...
+# NED browser round-trip passed: auth, hierarchy, editing/export, standard Gateway migration/undo, New from template, INI/JSON edits, standalone CLI validation.
+# Subtest: NED editor real-browser and project export round-trip
+ok 23 - NED editor real-browser and project export round-trip
+  ---
+  duration_ms: 10906.539545
+  type: 'test'
+  ...
+# NED composition browser test passed: empty Multibus project, Router boundary ports, three custom-gated buses, Gateway fanout, UI settings, export, validation, and standalone run.
+# Subtest: NED editor UI-only empty-project to three-bus Gateway fanout
+ok 24 - NED editor UI-only empty-project to three-bus Gateway fanout
+  ---
+  duration_ms: 22374.607391
+  type: 'test'
+  ...
+# Subtest: recovery-only lock remains visible even when no journal can be listed
+ok 25 - recovery-only lock remains visible even when no journal can be listed
+  ---
+  duration_ms: 3.877758
+  type: 'test'
+  ...
+# Subtest: completed publication awaiting registry checkpoint offers only finalization
+ok 26 - completed publication awaiting registry checkpoint offers only finalization
+  ---
+  duration_ms: 0.956146
+  type: 'test'
+  ...
+# Subtest: invalid journal remains visible with diagnostic and neither destructive recovery action
+ok 27 - invalid journal remains visible with diagnostic and neither destructive recovery action
+  ---
+  duration_ms: 1.194893
+  type: 'test'
+  ...
+# Subtest: boundary port addition is enabled only on module declarations
+ok 28 - boundary port addition is enabled only on module declarations
+  ---
+  duration_ms: 0.91585
+  type: 'test'
+  ...
+# Subtest: LF shadow maps BOM, Japanese, emoji and CRLF using byte/codepoint boundaries
+ok 29 - LF shadow maps BOM, Japanese, emoji and CRLF using byte/codepoint boundaries
+  ---
+  duration_ms: 1.239
+  type: 'test'
+  ...
+# Subtest: local patch retains BOM, comments and every unmodified mixed newline
+ok 30 - local patch retains BOM, comments and every unmodified mixed newline
+  ---
+  duration_ms: 0.369486
+  type: 'test'
+  ...
+# Subtest: emoji replacement expands a common surrogate prefix to complete code points
+ok 31 - emoji replacement expands a common surrogate prefix to complete code points
+  ---
+  duration_ms: 0.256568
+  type: 'test'
+  ...
+# Subtest: newlines inserted in an interval use its nearest original newline
+ok 32 - newlines inserted in an interval use its nearest original newline
+  ---
+  duration_ms: 0.113616
+  type: 'test'
+  ...
+# Subtest: acknowledgement updates the baseline without overwriting newer typing
+ok 33 - acknowledgement updates the baseline without overwriting newer typing
+  ---
+  duration_ms: 0.20994
+  type: 'test'
+  ...
+# Subtest: blocked buffer preserves unsent text, and IME end explicitly releases waiters
+ok 34 - blocked buffer preserves unsent text, and IME end explicitly releases waiters
+  ---
+  duration_ms: 0.21565
+  type: 'test'
+  ...
+# Subtest: JSON body limit counts encoded UTF-8 and escapes, not UTF-16 length
+ok 35 - JSON body limit counts encoded UTF-8 and escapes, not UTF-16 length
+  ---
+  duration_ms: 0.152279
+  type: 'test'
+  ...
+# Subtest: API keeps credentials only in the required header and supplies JSON content type
+ok 36 - API keeps credentials only in the required header and supplies JSON content type
+  ---
+  duration_ms: 1.240168
+  type: 'test'
+  ...
+# Subtest: command DTO preserves all u64 values as strings and forwards opaque acknowledgement
+ok 37 - command DTO preserves all u64 values as strings and forwards opaque acknowledgement
+  ---
+  duration_ms: 0.698086
+  type: 'test'
+  ...
+# Subtest: 202 reserves sequence, blocks the next command and waits for a terminal job
+ok 38 - 202 reserves sequence, blocks the next command and waits for a terminal job
+  ---
+  duration_ms: 251.615447
+  type: 'test'
+  ...
+# Subtest: consumed terminal rejection advances sequence and retains command without retransmitting
+ok 39 - consumed terminal rejection advances sequence and retains command without retransmitting
+  ---
+  duration_ms: 0.399277
+  type: 'test'
+  ...
+# Subtest: unconsumed terminal rejection does not advance sequence
+ok 40 - unconsumed terminal rejection does not advance sequence
+  ---
+  duration_ms: 0.132597
+  type: 'test'
+  ...
+# Subtest: uncertain response retains exact command and resolves through same-ID lookup only
+ok 41 - uncertain response retains exact command and resolves through same-ID lookup only
+  ---
+  duration_ms: 0.17742
+  type: 'test'
+  ...
+# Subtest: oversized command remains a local error, never an uncertain transmission
+ok 42 - oversized command remains a local error, never an uncertain transmission
+  ---
+  duration_ms: 0.105696
+  type: 'test'
+  ...
+# Subtest: read-only clients cannot send mutation commands
+ok 43 - read-only clients cannot send mutation commands
+  ---
+  duration_ms: 0.149096
+  type: 'test'
+  ...
+# Subtest: view adoption rejects old scope, session and sequences with exact u64 comparison
+ok 44 - view adoption rejects old scope, session and sequences with exact u64 comparison
+  ---
+  duration_ms: 0.10026
+  type: 'test'
+  ...
+# Subtest: port roles reverse only at compound boundaries without changing input/output labels
+ok 45 - port roles reverse only at compound boundaries without changing input/output labels
+  ---
+  duration_ms: 0.303483
+  type: 'test'
+  ...
+# Subtest: display geometry preserves backend coordinates and unresolved nodes have no invented gates
+ok 46 - display geometry preserves backend coordinates and unresolved nodes have no invented gates
+  ---
+  duration_ms: 0.07682
+  type: 'test'
+  ...
+# Subtest: pending text takes display priority over a past ready state; recovery comes first
+ok 47 - pending text takes display priority over a past ready state; recovery comes first
+  ---
+  duration_ms: 0.319132
+  type: 'test'
+  ...
+# Subtest: instance selection resolves the exact shared type key and sends its file, path and scope generation
+ok 48 - instance selection resolves the exact shared type key and sends its file, path and scope generation
+  ---
+  duration_ms: 0.1777
+  type: 'test'
+  ...
+# Subtest: node navigation keeps the current instance branch and rejects absent, unresolved and mismatched children
+ok 49 - node navigation keeps the current instance branch and rejects absent, unresolved and mismatched children
+  ---
+  duration_ms: 0.089463
+  type: 'test'
+  ...
+# Subtest: hierarchy filtering retains ancestors and backend instance order without inventing children
+ok 50 - hierarchy filtering retains ancestors and backend instance order without inventing children
+  ---
+  duration_ms: 0.179079
+  type: 'test'
+  ...
+# Subtest: cycle instances can be inspected but structural editing is disabled only in invalid selected contexts
+ok 51 - cycle instances can be inspected but structural editing is disabled only in invalid selected contexts
+  ---
+  duration_ms: 0.09241
+  type: 'test'
+  ...
+# Subtest: parameter values require the selected instance, corresponding graph and current projection
+ok 52 - parameter values require the selected instance, corresponding graph and current projection
+  ---
+  duration_ms: 0.143255
+  type: 'test'
+  ...
+# Subtest: browser callbacks navigate instances and breadcrumbs, clear context on type/file selection and retain source buffers
+ok 53 - browser callbacks navigate instances and breadcrumbs, clear context on type/file selection and retain source buffers
+  ---
+  duration_ms: 3.280523
+  type: 'test'
+  ...
+# Subtest: source acknowledgement uses the committed raw hash and retains later typing on a cross-tab race
+ok 54 - source acknowledgement uses the committed raw hash and retains later typing on a cross-tab race
+  ---
+  duration_ms: 4.855746
+  type: 'test'
+  ...
+# Subtest: default fetch is bound to the browser global instead of the Api instance
+ok 55 - default fetch is bound to the browser global instead of the Api instance
+  ---
+  duration_ms: 0.328434
+  type: 'test'
+  ...
+# Subtest: builtin choices remain available without NED definitions and preserve colliding project names
+ok 56 - builtin choices remain available without NED definitions and preserve colliding project names
+  ---
+  duration_ms: 0.212473
+  type: 'test'
+  ...
+# Subtest: file badges distinguish NED parsing from INI and JSON source roles
+ok 57 - file badges distinguish NED parsing from INI and JSON source roles
+  ---
+  duration_ms: 0.125351
+  type: 'test'
+  ...
+# Subtest: CAN pair candidates use Classical and Multibus implementation metadata and unused gates
+ok 58 - CAN pair candidates use Classical and Multibus implementation metadata and unused gates
+  ---
+  duration_ms: 0.225199
+  type: 'test'
+  ...
+# Subtest: project reset clears old buffers and scope while retaining monotonic response counters
+ok 59 - project reset clears old buffers and scope while retaining monotonic response counters
+  ---
+  duration_ms: 0.17201
+  type: 'test'
+  ...
+# Subtest: New confirmation cancellation and terminal rejection preserve buffers and selected scope
+ok 60 - New confirmation cancellation and terminal rejection preserve buffers and selected scope
+  ---
+  duration_ms: 2.361061
+  type: 'test'
+  ...
+# Subtest: successful New and uncertain same-ID lookup clear old context then select the new network
+ok 61 - successful New and uncertain same-ID lookup clear old context then select the new network
+  ---
+  duration_ms: 1.763121
+  type: 'test'
+  ...
+# Subtest: INI and JSON navigation edits and flushes through the same lossless source command
+ok 62 - INI and JSON navigation edits and flushes through the same lossless source command
+  ---
+  duration_ms: 9.402907
+  type: 'test'
+  ...
+# Subtest: instance choices use resolved Controller metadata and exact descendant path boundaries
+ok 63 - instance choices use resolved Controller metadata and exact descendant path boundaries
+  ---
+  duration_ms: 0.345047
+  type: 'test'
+  ...
+# Subtest: Gateway structured payload supports fanout and rejects duplicate IDs, foreign ports and reversed ranges
+ok 64 - Gateway structured payload supports fanout and rejects duplicate IDs, foreign ports and reversed ranges
+  ---
+  duration_ms: 0.368217
+  type: 'test'
+  ...
+# Subtest: workload form canonicalizes periodic/explicit rows and rejects duplicate and unsafe values
+ok 65 - workload form canonicalizes periodic/explicit rows and rejects duplicate and unsafe values
+  ---
+  duration_ms: 0.65973
+  type: 'test'
+  ...
+# Subtest: gate forms produce atomic direction pairs and reject duplicate or invalid identifiers
+ok 66 - gate forms produce atomic direction pairs and reject duplicate or invalid identifiers
+  ---
+  duration_ms: 0.318899
+  type: 'test'
+  ...
+# Subtest: composition dialogs use structural confirmations and atomic boundary-port commands
+ok 67 - composition dialogs use structural confirmations and atomic boundary-port commands
+  ---
+  duration_ms: 1.016919
+  type: 'test'
+  ...
+# Subtest: configuration commands confirm impacts, preserve count strings for INI and block unreadable JSON
+ok 68 - configuration commands confirm impacts, preserve count strings for INI and block unreadable JSON
+  ---
+  duration_ms: 2.311193
+  type: 'test'
+  ...
+# Subtest: workload settings flush pending JSON before constructing rows and show the latest count
+ok 69 - workload settings flush pending JSON before constructing rows and show the latest count
+  ---
+  duration_ms: 3.321131
+  type: 'test'
+  ...
+# Subtest: settings submission rejects changed raw buffers or remote revision instead of overwriting newer JSON
+ok 70 - settings submission rejects changed raw buffers or remote revision instead of overwriting newer JSON
+  ---
+  duration_ms: 3.101299
+  type: 'test'
+  ...
+# Subtest: network and instance settings use refreshed projections rather than earlier button snapshots
+ok 71 - network and instance settings use refreshed projections rather than earlier button snapshots
+  ---
+  duration_ms: 2.118343
+  type: 'test'
+  ...
+# Subtest: Gateway settings bind both node selection and route forms to the current source snapshot
+ok 72 - Gateway settings bind both node selection and route forms to the current source snapshot
+  ---
+  duration_ms: 0.857645
+  type: 'test'
+  ...
+# Subtest: settings snapshot also rejects drift after a newer edit has already been acknowledged
+ok 73 - settings snapshot also rejects drift after a newer edit has already been acknowledged
+  ---
+  duration_ms: 0.295078
+  type: 'test'
+  ...
+# Subtest: settings recheck source after shared-impact confirmation and preserve a remote edit
+ok 74 - settings recheck source after shared-impact confirmation and preserve a remote edit
+  ---
+  duration_ms: 1.365623
+  type: 'test'
+  ...
+# Subtest: settings opening waits for IME completion before taking the source snapshot
+ok 75 - settings opening waits for IME completion before taking the source snapshot
+  ---
+  duration_ms: 0.968642
+  type: 'test'
+  ...
+# Subtest: Gateway choices retain orphan settings nodes and unavailable configured ports
+ok 76 - Gateway choices retain orphan settings nodes and unavailable configured ports
+  ---
+  duration_ms: 0.157269
+  type: 'test'
+  ...
+# Subtest: Gateway settings can delete an orphan entry and reject configuring an absent compound
+ok 77 - Gateway settings can delete an orphan entry and reject configuring an absent compound
+  ---
+  duration_ms: 0.563716
+  type: 'test'
+  ...
+# Subtest: Gateway dialogs preserve missing checked ports and route values until explicitly unchecked
+ok 78 - Gateway dialogs preserve missing checked ports and route values until explicitly unchecked
+  ---
+  duration_ms: 4.88252
+  type: 'test'
+  ...
+# Subtest: a queued close event from the preceding dialog cannot close the next settings step
+ok 79 - a queued close event from the preceding dialog cannot close the next settings step
+  ---
+  duration_ms: 0.790026
+  type: 'test'
+  ...
+# Subtest: repeatable forms retain invalid rows, allow removal/addition and collect only live rows
+ok 80 - repeatable forms retain invalid rows, allow removal/addition and collect only live rows
+  ---
+  duration_ms: 2.017171
+  type: 'test'
+  ...
+# Subtest: repeatable route choices track checked Gateway ports and disabled conditional inputs
+ok 81 - repeatable route choices track checked Gateway ports and disabled conditional inputs
+  ---
+  duration_ms: 1.276959
+  type: 'test'
+  ...
+# Subtest: Save As requires writer before opening its dialog and sends the current lease
+ok 82 - Save As requires writer before opening its dialog and sends the current lease
+  ---
+  duration_ms: 0.7095
+  type: 'test'
+  ...
+# Subtest: Save As rechecks writer after its dialog, so a takeover cannot register a destination
+ok 83 - Save As rechecks writer after its dialog, so a takeover cannot register a destination
+  ---
+  duration_ms: 0.426073
+  type: 'test'
+  ...
+# Subtest: layout-only drag and collapse send commands without type impact confirmations
+ok 84 - layout-only drag and collapse send commands without type impact confirmations
+  ---
+  duration_ms: 0.497642
+  type: 'test'
+  ...
+# Subtest: explicit time form roundtrip preserves spaces between numbers and units
+ok 85 - explicit time form roundtrip preserves spaces between numbers and units
+  ---
+  duration_ms: 0.095409
+  type: 'test'
+  ...
+# Subtest: milestones preserve independent serialization, arrival, release and receive boundaries
+ok 86 - milestones preserve independent serialization, arrival, release and receive boundaries
+  ---
+  duration_ms: 3.185028
+  type: 'test'
+  ...
+# Subtest: partial run never invents reception from planned arrival
+ok 87 - partial run never invents reception from planned arrival
+  ---
+  duration_ms: 0.456421
+  type: 'test'
+  ...
+# Subtest: capacity drop is retained without physical transfer
+ok 88 - capacity drop is retained without physical transfer
+  ---
+  duration_ms: 1.158747
+  type: 'test'
+  ...
+# Subtest: replay at a destination is independent of navigation history
+ok 89 - replay at a destination is independent of navigation history
+  ---
+  duration_ms: 1.053531
+  type: 'test'
+  ...
+# Subtest: corrupt references, time order, envelope updates and fabricated receipts are rejected
+ok 90 - corrupt references, time order, envelope updates and fabricated receipts are rejected
+  ---
+  duration_ms: 1.136006
+  type: 'test'
+  ...
+# Subtest: large timestamps preserve picoseconds beyond binary64 safe integers
+ok 91 - large timestamps preserve picoseconds beyond binary64 safe integers
+  ---
+  duration_ms: 0.236557
+  type: 'test'
+  ...
+# Subtest: opposite link directions transmit concurrently without sharing a queue
+ok 92 - opposite link directions transmit concurrently without sharing a queue
+  ---
+  duration_ms: 0.257938
+  type: 'test'
+  ...
+# Subtest: switch flood links accepted and dropped children to a single reception
+ok 93 - switch flood links accepted and dropped children to a single reception
+  ---
+  duration_ms: 0.227208
+  type: 'test'
+  ...
+# Subtest: QoS class queue occupancy counts MAC bytes and excludes active transfer
+ok 94 - QoS class queue occupancy counts MAC bytes and excludes active transfer
+  ---
+  duration_ms: 0.347234
+  type: 'test'
+  ...
+# Subtest: QoS schema is explicit: version mismatches, invalid class and incomplete topology reject
+ok 95 - QoS schema is explicit: version mismatches, invalid class and incomplete topology reject
+  ---
+  duration_ms: 0.777436
+  type: 'test'
+  ...
+# Subtest: VLAN hop wire and classification preserve source contract and reclassify untagged ingress
+ok 96 - VLAN hop wire and classification preserve source contract and reclassify untagged ingress
+  ---
+  duration_ms: 1.049567
+  type: 'test'
+  ...
+# Subtest: VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN
+ok 97 - VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN
+  ---
+  duration_ms: 1.493179
+  type: 'test'
+  ...
+# Subtest: VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy
+ok 98 - VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy
+  ---
+  duration_ms: 5.040834
+  type: 'test'
+  ...
+# Subtest: VLAN immediate endpoint filter keeps one reason without inventing a dropped copy
+ok 99 - VLAN immediate endpoint filter keeps one reason without inventing a dropped copy
+  ---
+  duration_ms: 0.728221
+  type: 'test'
+  ...
+# Subtest: VLAN ingress admission rejection stops before child offers and requires exact classification
+ok 100 - VLAN ingress admission rejection stops before child offers and requires exact classification
+  ---
+  duration_ms: 0.261643
+  type: 'test'
+  ...
+# Subtest: VLAN pending planned arrival never synthesizes receiver or classification
+ok 101 - VLAN pending planned arrival never synthesizes receiver or classification
+  ---
+  duration_ms: 0.202196
+  type: 'test'
+  ...
+# Subtest: GCL uses half-open boundaries and preserves exact time beyond Number range
+ok 102 - GCL uses half-open boundaries and preserves exact time beyond Number range
+  ---
+  duration_ms: 0.360724
+  type: 'test'
+  ...
+# Subtest: open duration handles millions of cycles with integer prefix arithmetic
+ok 103 - open duration handles millions of cycles with integer prefix arithmetic
+  ---
+  duration_ms: 0.25603
+  type: 'test'
+  ...
+# Subtest: CBS continues through IFG, freezes at closed gates and resets empty positive credit
+ok 104 - CBS continues through IFG, freezes at closed gates and resets empty positive credit
+  ---
+  duration_ms: 0.245192
+  type: 'test'
+  ...
+# Subtest: meter potential refill saturates u128 without inventing token consumption
+ok 105 - meter potential refill saturates u128 without inventing token consumption
+  ---
+  duration_ms: 0.102835
+  type: 'test'
+  ...
+# Subtest: malformed schedules fail before replay
+ok 106 - malformed schedules fail before replay
+  ---
+  duration_ms: 0.168172
+  type: 'test'
+  ...
+# Subtest: TAS fit includes IFG and accepts equality at close or a pending update
+ok 107 - TAS fit includes IFG and accepts equality at close or a pending update
+  ---
+  duration_ms: 0.207689
+  type: 'test'
+  ...
+# Subtest: TAS combines adjacent open entries and the end/start of a cycle
+ok 108 - TAS combines adjacent open entries and the end/start of a cycle
+  ---
+  duration_ms: 0.073501
+  type: 'test'
+  ...
+# Subtest: IP membership identity uses address bytes and multicast MAC mapping
+ok 109 - IP membership identity uses address bytes and multicast MAC mapping
+  ---
+  duration_ms: 0.377556
+  type: 'test'
+  ...
+# Subtest: dynamic loader supports versioned visit IDs and quiet policy state
+ok 110 - dynamic loader supports versioned visit IDs and quiet policy state
+  ---
+  duration_ms: 1.611015
+  type: 'test'
+  ...
+# Subtest: dynamic filtering reasons preserve a completed switch reception without child copies
+ok 111 - dynamic filtering reasons preserve a completed switch reception without child copies
+  ---
+  duration_ms: 1.604544
+  type: 'test'
+  ...
+# Subtest: dynamic loader rejects unknown schema, epochs, visit IDs and version mixing
+ok 112 - dynamic loader rejects unknown schema, epochs, visit IDs and version mixing
+  ---
+  duration_ms: 2.496994
+  type: 'test'
+  ...
+# Subtest: TSN loader replays signed credit through IFG and shows quiet gate configuration
+ok 113 - TSN loader replays signed credit through IFG and shows quiet gate configuration
+  ---
+  duration_ms: 1.543358
+  type: 'test'
+  ...
+# Subtest: TSN loader rejects negative zero, unknown states, overflowing numerator and incomplete schema sets
+ok 114 - TSN loader rejects negative zero, unknown states, overflowing numerator and incomplete schema sets
+  ---
+  duration_ms: 1.110603
+  type: 'test'
+  ...
+# Subtest: composite loader retains both physical media and frozen SOF terminal counts
+ok 115 - composite loader retains both physical media and frozen SOF terminal counts
+  ---
+  duration_ms: 4.401005
+  type: 'test'
+  ...
+# Subtest: composite segment loader rejects fabricated completions and Gateway terminal opportunities
+ok 116 - composite segment loader rejects fabricated completions and Gateway terminal opportunities
+  ---
+  duration_ms: 1.220001
+  type: 'test'
+  ...
+# Subtest: DIR codec validates length, ID width, reserved flags and zero padding
+ok 117 - DIR codec validates length, ID width, reserved flags and zero padding
+  ---
+  duration_ms: 0.309611
+  type: 'test'
+  ...
+# Subtest: dynamic policy checkpoints preserve prefix tables, expiry and never reuse a deleted generation
+ok 118 - dynamic policy checkpoints preserve prefix tables, expiry and never reuse a deleted generation
+  ---
+  duration_ms: 2.307646
+  type: 'test'
+  ...
+# Subtest: PSFP records conserve two buckets and distinguish actual from potential refill
+ok 119 - PSFP records conserve two buckets and distinguish actual from potential refill
+  ---
+  duration_ms: 3.20057
+  type: 'test'
+  ...
+# Subtest: composite branch closure keeps origin and RX capacity while awaiting a real child
+ok 120 - composite branch closure keeps origin and RX capacity while awaiting a real child
+  ---
+  duration_ms: 3.469732
+  type: 'test'
+  ...
+# Subtest: composite origin identity must agree with the recorded ingress media
+ok 121 - composite origin identity must agree with the recorded ingress media
+  ---
+  duration_ms: 0.827775
+  type: 'test'
+  ...
+# Subtest: composite segment IDs share native source IDs while duplicate schema identities reject
+ok 122 - composite segment IDs share native source IDs while duplicate schema identities reject
+  ---
+  duration_ms: 0.561468
+  type: 'test'
+  ...
+# Subtest: partial mixed replay retains admitted children without future SOF or fabricated receivers
+ok 123 - partial mixed replay retains admitted children without future SOF or fabricated receivers
+  ---
+  duration_ms: 0.44708
+  type: 'test'
+  ...
+# Subtest: TSN decisions require the visible schedule generation and physical copy class
+ok 124 - TSN decisions require the visible schedule generation and physical copy class
+  ---
+  duration_ms: 1.739938
+  type: 'test'
+  ...
+# Subtest: quiet TSN networks show configured gates and initial CBS credit without traffic
+ok 125 - quiet TSN networks show configured gates and initial CBS credit without traffic
+  ---
+  duration_ms: 0.308691
+  type: 'test'
+  ...
+# Subtest: dynamic control audit follows time and effect sequence independent of file ordering
+ok 126 - dynamic control audit follows time and effect sequence independent of file ordering
+  ---
+  duration_ms: 0.727083
+  type: 'test'
+  ...
+# Subtest: zero horizon retains only the frozen initial network policy
+ok 127 - zero horizon retains only the frozen initial network policy
+  ---
+  duration_ms: 0.3495
+  type: 'test'
+  ...
+# Subtest: zero TSN horizon permits only explicit initial gate and empty ready decision
+ok 128 - zero TSN horizon permits only explicit initial gate and empty ready decision
+  ---
+  duration_ms: 0.906791
+  type: 'test'
+  ...
+# Subtest: equal native IDs remain distinct qualified media origins and preserve generation times
+ok 129 - equal native IDs remain distinct qualified media origins and preserve generation times
+  ---
+  duration_ms: 2.181966
+  type: 'test'
+  ...
+# Subtest: declared dynamic tagged capability validates subscription, FDB and multicast without registering runtime membership
+ok 130 - declared dynamic tagged capability validates subscription, FDB and multicast without registering runtime membership
+  ---
+  duration_ms: 1.061912
+  type: 'test'
+  ...
+# Subtest: dynamic reference validation rejects undeclared, foreign, malformed, untagged and duplicate capabilities
+ok 131 - dynamic reference validation rejects undeclared, foreign, malformed, untagged and duplicate capabilities
+  ---
+  duration_ms: 2.192563
+  type: 'test'
+  ...
+# Subtest: static VLAN references cannot borrow a dynamic capability declaration
+ok 132 - static VLAN references cannot borrow a dynamic capability declaration
+  ---
+  duration_ms: 0.158652
+  type: 'test'
+  ...
+# Subtest: dynamic native source VLAN uses declared tagged permission while PVID and effective membership stay static
+ok 133 - dynamic native source VLAN uses declared tagged permission while PVID and effective membership stay static
+  ---
+  duration_ms: 1.377594
+  type: 'test'
+  ...
+# Subtest: current CLI queued-membership-leave result loads declared subscriptions and source VLANs
+ok 134 - current CLI queued-membership-leave result loads declared subscriptions and source VLANs
+  ---
+  duration_ms: 5.063297
+  type: 'test'
+  ...
+# Subtest: viewer model launcher builds through PATH Cargo with the platform executable name
+ok 135 - viewer model launcher builds through PATH Cargo with the platform executable name
+  ---
+  duration_ms: 1.412678
+  type: 'test'
+  ...
+# Subtest: viewer model launcher honors CARGO and an existing DIR_SIMULATOR_BIN without rebuilding
+ok 136 - viewer model launcher honors CARGO and an existing DIR_SIMULATOR_BIN without rebuilding
+  ---
+  duration_ms: 0.145224
+  type: 'test'
+  ...
+# Subtest: replay uses actual grant and completion, preserving integer picoseconds
+ok 137 - replay uses actual grant and completion, preserving integer picoseconds
+  ---
+  duration_ms: 1.9562
+  type: 'test'
+  ...
+# Subtest: a stopped active request remains unfinished despite future planned time
+ok 138 - a stopped active request remains unfinished despite future planned time
+  ---
+  duration_ms: 0.847228
+  type: 'test'
+  ...
+# Subtest: step replay depends only on the destination interval and recorded direction
+ok 139 - step replay depends only on the destination interval and recorded direction
+  ---
+  duration_ms: 0.262924
+  type: 'test'
+  ...
+# Subtest: partial prefixes include a committed completion at H
+ok 140 - partial prefixes include a committed completion at H
+  ---
+  duration_ms: 1.082826
+  type: 'test'
+  ...
+# Subtest: unregistered schemas, duplicate IDs, unknown references and invalid times reject
+ok 141 - unregistered schemas, duplicate IDs, unknown references and invalid times reject
+  ---
+  duration_ms: 0.505201
+  type: 'test'
+  ...
+# Subtest: unknown data fields and malformed byte strings reject
+ok 142 - unknown data fields and malformed byte strings reject
+  ---
+  duration_ms: 0.163991
+  type: 'test'
+  ...
+# Subtest: terminal timelines stop at actual completion, including rejection at zero
+ok 143 - terminal timelines stop at actual completion, including rejection at zero
+  ---
+  duration_ms: 0.214294
+  type: 'test'
+  ...
+# Subtest: timeline preserves pending, active, completed, dropped and failed boundaries
+ok 144 - timeline preserves pending, active, completed, dropped and failed boundaries
+  ---
+  duration_ms: 0.160961
+  type: 'test'
+  ...
+# Subtest: actual schema2 results replay multiple buses, forwarding boundaries and origin path delay
+ok 145 - actual schema2 results replay multiple buses, forwarding boundaries and origin path delay
+  ---
+  duration_ms: 240.049041
+  type: 'test'
+  ...
+# Subtest: actual fanout steps order incoming CAN, internal transfer, outgoing CAN and both receivers
+ok 146 - actual fanout steps order incoming CAN, internal transfer, outgoing CAN and both receivers
+  ---
+  duration_ms: 35.500995
+  type: 'test'
+  ...
+# Subtest: replay reflects reached milestones, queues, receiver delay and filters in both directions
+ok 147 - replay reflects reached milestones, queues, receiver delay and filters in both directions
+  ---
+  duration_ms: 0.898641
+  type: 'test'
+  ...
+# Subtest: EOF cutoff and unreached planned release remain transmitting/intermission
+ok 148 - EOF cutoff and unreached planned release remain transmitting/intermission
+  ---
+  duration_ms: 0.360889
+  type: 'test'
+  ...
+# Subtest: partial boundary keeps only committed milestones, including at H
+ok 149 - partial boundary keeps only committed milestones, including at H
+  ---
+  duration_ms: 0.326627
+  type: 'test'
+  ...
+# Subtest: same-time queue measurements use record order, never reservation event_seq
+ok 150 - same-time queue measurements use record order, never reservation event_seq
+  ---
+  duration_ms: 0.207961
+  type: 'test'
+  ...
+# Subtest: adjacent u64 times remain exact for cursor, formatting, order and state
+ok 151 - adjacent u64 times remain exact for cursor, formatting, order and state
+  ---
+  duration_ms: 0.600901
+  type: 'test'
+  ...
+# Subtest: idle nodes survive empty or zero-duration simulation via metadata
+ok 152 - idle nodes survive empty or zero-duration simulation via metadata
+  ---
+  duration_ms: 0.219712
+  type: 'test'
+  ...
+# Subtest: drop transition occurs at ready, not generated; never generates success
+ok 153 - drop transition occurs at ready, not generated; never generates success
+  ---
+  duration_ms: 0.470669
+  type: 'test'
+  ...
+# Subtest: invalid schema, noncanonical time, statuses, references and chronology reject
+ok 154 - invalid schema, noncanonical time, statuses, references and chronology reject
+  ---
+  duration_ms: 1.017641
+  type: 'test'
+  ...
+# Subtest: time conversion rejects fractional ps and malformed numbers
+ok 155 - time conversion rejects fractional ps and malformed numbers
+  ---
+  duration_ms: 0.21542
+  type: 'test'
+  ...
+# Subtest: network progress is exact, reversible and keeps delayed RX after bus release
+ok 156 - network progress is exact, reversible and keeps delayed RX after bus release
+  ---
+  duration_ms: 0.573228
+  type: 'test'
+  ...
+# Subtest: event steps include zero-delay TX/RX, preserve physical direction on rewind, and exclude older frames
+ok 157 - event steps include zero-delay TX/RX, preserve physical direction on rewind, and exclude older frames
+  ---
+  duration_ms: 1.366169
+  type: 'test'
+  ...
+# Subtest: zero-delay broadcast completes simultaneously with deterministic visual trails
+ok 158 - zero-delay broadcast completes simultaneously with deterministic visual trails
+  ---
+  duration_ms: 0.243031
+  type: 'test'
+  ...
+# Subtest: network EOF cutoff does not invent completion or receive records
+ok 159 - network EOF cutoff does not invent completion or receive records
+  ---
+  duration_ms: 0.090294
+  type: 'test'
+  ...
+# Subtest: active network packets are independent of the 500 timeline interval limit
+ok 160 - active network packets are independent of the 500 timeline interval limit
+  ---
+  duration_ms: 4.100157
+  type: 'test'
+  ...
+# Subtest: network progress preserves precision for adjacent large timestamps
+ok 161 - network progress preserves precision for adjacent large timestamps
+  ---
+  duration_ms: 0.167195
+  type: 'test'
+  ...
+# Subtest: declared idle wiring and directed Gateway routes are visible before any event
+ok 162 - declared idle wiring and directed Gateway routes are visible before any event
+  ---
+  duration_ms: 0.883741
+  type: 'test'
+  ...
+# Subtest: fanout holds one RX parent through sibling admission, wait is excluded from TX, and rewind is exact
+ok 163 - fanout holds one RX parent through sibling admission, wait is excluded from TX, and rewind is exact
+  ---
+  duration_ms: 0.728988
+  type: 'test'
+  ...
+# Subtest: Gateway replay keeps blocked fanout siblings at ingress and receives only an admitted branch
+ok 164 - Gateway replay keeps blocked fanout siblings at ingress and receives only an admitted branch
+  ---
+  duration_ms: 0.38287
+  type: 'test'
+  ...
+# Subtest: schema2 holding cutoff, no-route immediate release, legacy fields and strict RX validation
+ok 165 - schema2 holding cutoff, no-route immediate release, legacy fields and strict RX validation
+  ---
+  duration_ms: 1.113497
+  type: 'test'
+  ...
+# Subtest: schema1 declared wiring retains an idle Controller without guessing Gateway membership
+ok 166 - schema1 declared wiring retains an idle Controller without guessing Gateway membership
+  ---
+  duration_ms: 0.138488
+  type: 'test'
+  ...
+# Subtest: legacy Gateway membership never guesses idle CAN wiring from a single observed bus
+ok 167 - legacy Gateway membership never guesses idle CAN wiring from a single observed bus
+  ---
+  duration_ms: 0.093033
+  type: 'test'
+  ...
+1..167
+# tests 167
+# suites 0
+# pass 167
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25602.058901

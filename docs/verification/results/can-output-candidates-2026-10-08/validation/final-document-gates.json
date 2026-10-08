@@ -1,0 +1,48 @@
+{
+  "checked_at_utc": "2026-10-08T06:22:58.140759+00:00",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "cwd": "/home/hideki/DIR-Simulator",
+      "exit_code": 0,
+      "stdout": "All traceability reports and the hierarchy annex are up to date\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "cwd": "/home/hideki/DIR-Simulator",
+      "exit_code": 0,
+      "stdout": "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/home/hideki/DIR-Simulator",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "document_sha256": {
+    "docs/design/CAN出力最適化詳細設計書.md": "cadb59f505926f75c44062e1e86bce55551d358f82bf8e4f6440428b91ef0adc",
+    "docs/design/結果処理詳細設計書.md": "8a0bcad9d8a77f6d413632ac2cd90f1bd24f159c12e395029232fd1d7706b9b5",
+    "docs/verification/cases/結果処理検証仕様書.md": "2fdd04d46c94cbe5bc29832b6ddb1b04a5c4a94f543cb1c5daa843933f51fc4d",
+    "docs/verification/results/can-output-candidates-2026-10-08.md": "1b7b89887d85950af1327f0d8b18cf0390d3dbdfa057b150c575ef4801d3a679",
+    "docs/要件トレーサビリティ一覧.md": "87a6ec7c3725644437f8b1e32d59658170fdf5c7f0a121bbb6875a813fd19cf9",
+    "docs/要件トレーサビリティ一覧.html": "fe84d338caae17cb0d010449c0270a9db84a22d1ecb9ca2b923dd55a30a60a87",
+    "docs/要件階層.html": "f389cfa1f2570e0b3bd03a66a1cbb726a823c337f42ee5d352e40dbbce95c514"
+  },
+  "all_commands_passed": true
+}

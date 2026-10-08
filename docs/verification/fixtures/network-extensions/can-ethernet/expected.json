@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "product_execution": false,
+  "R01": {
+    "native_can_sof_ps": "0",
+    "native_can_eof_ps": "100000000",
+    "observed_ps": "100000000",
+    "ready_ps": "103000000",
+    "offer_ps": "106000000",
+    "ethernet_sof_ps": "106000000",
+    "ethernet_eof_ps": "106576000",
+    "ethernet_release_ps": "106672000",
+    "sink_observed_ps": "110576000",
+    "sink_received_ps": "115576000"
+  },
+  "R02": {
+    "ethernet_sof_ps": "0",
+    "ethernet_eof_ps": "608000",
+    "observed_ps": "1608000",
+    "ready_ps": "6608000",
+    "can_sof_ps": "10608000",
+    "can_eof_ps": "110608000",
+    "can_release_ps": "116608000",
+    "sink_received_ps": "115608000"
+  },
+  "codec": [
+    {
+      "format": "standard",
+      "can_id": 0,
+      "data": "",
+      "hex": "4449524301000000000000",
+      "bytes": 11
+    },
+    {
+      "format": "standard",
+      "can_id": 291,
+      "data": "aabb",
+      "hex": "4449524301000000012302aabb",
+      "bytes": 13
+    },
+    {
+      "format": "extended",
+      "can_id": 536870911,
+      "data": "ffffffffffffffff",
+      "hex": "4449524301011fffffff08ffffffffffffffff",
+      "bytes": 19
+    }
+  ],
+  "R03": {
+    "can_a_sof_ps": "10608000",
+    "can_b_sof_ps": "10608000",
+    "can_a_eof_ps": "110608000",
+    "can_b_eof_ps": "210608000",
+    "can_b_release_ps": "222608000",
+    "rx_released_ps": "10608000"
+  },
+  "rx_limit": {
+    "attempted": 3,
+    "accepted": 1,
+    "rx_full": 2,
+    "max_occupancy": 1
+  }
+}

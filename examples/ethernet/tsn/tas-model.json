@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "base": {
+    "profile": "ethernet.l2.dynamic.v1",
+    "config": {
+      "schema_version": 4,
+      "endpoints": [
+        {
+          "instance": "Net.a",
+          "mac": "02:00:00:00:00:01",
+          "multicast": []
+        },
+        {
+          "instance": "Net.b",
+          "mac": "02:00:00:00:00:02",
+          "multicast": []
+        }
+      ],
+      "switches": [],
+      "ports": [
+        {
+          "port": "Net.a.tx",
+          "pvid": 10,
+          "admit": "all",
+          "default_priority": 7,
+          "vlans": [
+            {
+              "vid": 10,
+              "tagged": false
+            }
+          ]
+        },
+        {
+          "port": "Net.b.tx",
+          "pvid": 10,
+          "admit": "all",
+          "default_priority": 7,
+          "vlans": [
+            {
+              "vid": 10,
+              "tagged": false
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "port": "Net.a.tx",
+          "scheduler": "strict_priority",
+          "queues": [
+            {
+              "priority": 0,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 1,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 2,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 3,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 4,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 5,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 6,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 7,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            }
+          ]
+        },
+        {
+          "port": "Net.b.tx",
+          "scheduler": "strict_priority",
+          "queues": [
+            {
+              "priority": 0,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 1,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 2,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 3,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 4,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 5,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 6,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            },
+            {
+              "priority": 7,
+              "capacity_frames": "64",
+              "capacity_bytes": null
+            }
+          ]
+        }
+      ],
+      "dynamic": {
+        "mac_age_ps": "100000000",
+        "convergence_ps": "0",
+        "bridges": [],
+        "links": [
+          {
+            "id": "a-b",
+            "ports": [
+              "Net.a.tx",
+              "Net.b.tx"
+            ],
+            "up": true,
+            "cost": "1"
+          }
+        ],
+        "registrable": [],
+        "limits": {
+          "mac_entries": 16,
+          "membership_entries": 16,
+          "sources_per_entry": 16,
+          "registrations": 16,
+          "control_events": 16,
+          "pending_timers": 16,
+          "visits_per_frame": 16
+        }
+      }
+    }
+  },
+  "tsn": {
+    "clock": "ideal_shared",
+    "outputs": [
+      {
+        "port": "Net.a.tx",
+        "tas": {
+          "id": "g0",
+          "base_time_ps": "0",
+          "cycle_time_ps": "2000000",
+          "entries": [
+            {
+              "duration_ps": "800000",
+              "open_priorities": [
+                7
+              ]
+            },
+            {
+              "duration_ps": "1200000",
+              "open_priorities": []
+            }
+          ]
+        },
+        "cbs": []
+      },
+      {
+        "port": "Net.b.tx",
+        "tas": null,
+        "cbs": []
+      }
+    ],
+    "streams": [],
+    "gcl_updates": []
+  }
+}

@@ -1,0 +1,3369 @@
+{
+  "record_type": "product-execution",
+  "recorded_at_utc": "2026-10-05T14:37:55.126522+00:00",
+  "integration_status": "passed",
+  "base_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+  "scope": [
+    "public static Registry / Envelope / Context and registered model arena",
+    "structured diagnostic schema and parser-owned source spans",
+    "immutable input/configuration/build reproduction metadata",
+    "preparation-failure five-file publication",
+    "observation JSONL spooling and streaming manifest-last publication"
+  ],
+  "architecture_boundaries": [
+    "13 built-in profiles retain their dedicated input/runtime/output adapters",
+    "Custom models use the registered engine and statically linked factories/validators",
+    "In-memory direct runtime::simulate remains supported; run/run_config enable temporary observation spooling",
+    "Model ledgers and some final aggregate rows remain in memory"
+  ],
+  "executed_checks": [
+    {
+      "command": "/home/hideki/.cargo/bin/cargo test --locked",
+      "status": "passed",
+      "passed": 383,
+      "failed": 0,
+      "test_binaries_including_doctests": 21,
+      "note": "Final current-source full suite, including 24 public registry, 8 generic source-span, 15 structured diagnostic, 4 reproduction and 2 preparation/spool matrix tests each."
+    },
+    {
+      "command": "/home/hideki/.cargo/bin/cargo clippy --locked --all-targets -- -D warnings",
+      "status": "passed"
+    },
+    {
+      "command": "node --test tests/*.test.cjs",
+      "status": "passed",
+      "passed": 114,
+      "skipped": 2,
+      "note": "Editor browser tests run separately with installed Playwright: 2/2 passed."
+    },
+    {
+      "command": "node tests/viewer_browser.cjs (with installed Playwright)",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_check_traceability.py; test_generate_traceability.py; test_traceability_hook.py",
+      "status": "passed",
+      "passed": 39
+    },
+    {
+      "command": "/home/hideki/.cargo/bin/cargo fmt --all -- --check",
+      "status": "passed"
+    },
+    {
+      "command": "python3 scripts/check_traceability.py --strict",
+      "status": "passed",
+      "requirements": 205,
+      "functions": 54,
+      "trace_nodes": 245,
+      "structural_errors": 0,
+      "incomplete_items": 0
+    },
+    {
+      "command": "python3 scripts/generate_traceability.py --check",
+      "status": "passed"
+    },
+    {
+      "command": "python3 scripts/render_diagrams.py --check",
+      "status": "passed",
+      "diagrams": 11
+    }
+  ],
+  "excluded_checks": [
+    {
+      "command": "python3 -m unittest discover -s tests",
+      "reason": "Untracked ignored legacy OMNeT comparison tests reference removed fixtures; tracked Python suites pass. No legacy files changed."
+    }
+  ],
+  "limits": [
+    "Million-request performance/memory targets have not been measured",
+    "Protocol/standards conformance remains limited to each profile existing product fixtures",
+    "Absent adoption ledger is explicitly recorded; build identity is not a third-party license review"
+  ],
+  "browser_validation": {
+    "tested_binary": {
+      "source_path": "/home/hideki/DIR-Simulator/target/debug/dir-simulator",
+      "pinned_copy": "/tmp/dir-extension-example-audit.4WRswm/dir-simulator",
+      "sha256_at_pinning": "2ccdcf8aacc5c9ed8bbc117c95ddf2760ddad29a703e39a10a798454bc5e911f",
+      "sha256_after_matrix": "2ccdcf8aacc5c9ed8bbc117c95ddf2760ddad29a703e39a10a798454bc5e911f",
+      "sha256_observed_before_pinning": "7ef3ece3ae23d8a0374447866a02827c5b0bea3b5651db4a5a980e094e4958b4",
+      "shared_binary_changed_before_pinning": true,
+      "audit_cli_and_browser_used_pinned_copy_only": true
+    },
+    "build_identity": {
+      "binary_sha256": "2ccdcf8aacc5c9ed8bbc117c95ddf2760ddad29a703e39a10a798454bc5e911f",
+      "build_source_sha256": "79bd1bd9bdb5cf9eb8ca24314f4300917d58cd66a4737687bf9cb3f6f480b151",
+      "cargo_lock_sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+      "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+      "git_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+      "git_dirty": "true",
+      "runtime_version": "0.1.0"
+    },
+    "gates": [
+      {
+        "name": "ethernet_qos_vlan",
+        "script": "tests/ethernet_viewer_browser.cjs",
+        "inputs": [
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__ethernet__vlan-multicast/run/results.json"
+        ],
+        "argv": [
+          "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+          "tests/ethernet_viewer_browser.cjs",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__ethernet__vlan-multicast/run/results.json"
+        ],
+        "environment": {
+          "NODE_PATH": "/home/hideki/DIR-Simulator/tmp/viewer-tests/node_modules",
+          "DIR_SIMULATOR_BIN": "/tmp/dir-extension-example-audit.4WRswm/dir-simulator"
+        },
+        "exit_code": 0,
+        "stdout": "Ethernet browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__ethernet__vlan-multicast/run/results.json\n",
+        "stderr": "",
+        "covered_examples": [
+          "examples/ethernet/vlan-multicast.ini"
+        ],
+        "success": true
+      },
+      {
+        "name": "fd_precomputed_media_collision",
+        "script": "tests/media_fd_viewer_browser.cjs",
+        "inputs": [
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__canfd__precomputed/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__ethernet__media__collision/run/results.json"
+        ],
+        "argv": [
+          "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+          "tests/media_fd_viewer_browser.cjs",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__canfd__precomputed/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__ethernet__media__collision/run/results.json"
+        ],
+        "environment": {
+          "NODE_PATH": "/home/hideki/DIR-Simulator/tmp/viewer-tests/node_modules",
+          "DIR_SIMULATOR_BIN": "/tmp/dir-extension-example-audit.4WRswm/dir-simulator"
+        },
+        "exit_code": 0,
+        "stdout": "FD and media browser checks passed\n",
+        "stderr": "",
+        "covered_examples": [
+          "examples/canfd/precomputed.ini",
+          "examples/ethernet/media/collision.ini"
+        ],
+        "success": true
+      },
+      {
+        "name": "transaction_profiles",
+        "script": "tests/transaction_viewer_browser.cjs",
+        "inputs": [
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__axi__read-write/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__memory-ipc__copy/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__ahb-boundary/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__ahb-wait-error/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__noc-backpressure/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__noc-xy/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__soc-capacity-stop/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__soc-round-robin/run/results.json"
+        ],
+        "argv": [
+          "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+          "tests/transaction_viewer_browser.cjs",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__axi__read-write/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__memory-ipc__copy/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__ahb-boundary/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__ahb-wait-error/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__noc-backpressure/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__noc-xy/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__soc-capacity-stop/run/results.json",
+          "/tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__soc-round-robin/run/results.json"
+        ],
+        "environment": {
+          "NODE_PATH": "/home/hideki/DIR-Simulator/tmp/viewer-tests/node_modules",
+          "DIR_SIMULATOR_BIN": "/tmp/dir-extension-example-audit.4WRswm/dir-simulator"
+        },
+        "exit_code": 0,
+        "stdout": "Transaction browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__axi__read-write/run/results.json\nTransaction browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__memory-ipc__copy/run/results.json\nTransaction browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__ahb-boundary/run/results.json\nTransaction browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__ahb-wait-error/run/results.json\nTransaction browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__noc-backpressure/run/results.json\nTransaction browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__noc-xy/run/results.json\nTransaction browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__soc-capacity-stop/run/results.json\nTransaction browser smoke passed: /tmp/dir-extension-example-audit.4WRswm/runs/examples__soc__soc-round-robin/run/results.json\n",
+        "stderr": "",
+        "covered_examples": [
+          "examples/axi/read-write.ini",
+          "examples/memory-ipc/copy.ini",
+          "examples/soc/ahb-boundary.ini",
+          "examples/soc/ahb-wait-error.ini",
+          "examples/soc/noc-backpressure.ini",
+          "examples/soc/noc-xy.ini",
+          "examples/soc/soc-capacity-stop.ini",
+          "examples/soc/soc-round-robin.ini"
+        ],
+        "success": true
+      }
+    ],
+    "note": "Existing built-in rendering and simulation scope; pinned binary before final library-mutation provenance and generic-only changes. Current-source CLI example matrix refreshed separately."
+  },
+  "feature_regressions": {
+    "public_registry": "Payload/channel contracts, timers and cancellation, phase/delta/guards, transactional effects, factory/initialize/finish/panic failures, coordinator borrowed ports, immutable finish snapshot, schema records, duplicate/profile allowlists, standard built-in adapter compatibility",
+    "structured_diagnostics": "Parser-owned positions in INI/NED/JSON including BOM/CRLF/Unicode/EOF, all six non-CAN family primitive failures, related duplicate positions, stderr/persisted equality and sequencing, generic overrides/default bounds including unused declarations",
+    "reproduction": "Immutable source capture and deletion after prepare, root filename collision, relocation-invariant input/config hashes, environment identity, live common and generic channel settings after preparation",
+    "preparation_failure": "All 13 built-in selected profile catalogs; unknown/unreadable input fallback; custom catalog using a builtin profile name; prior diagnostic preservation if output rejected; 5 file hashes and lengths",
+    "spooling": "All 13 built-in output projections exactly match in-memory simulation/CSV; more than4096 CAN observations and partial failure prefix; generic frozen spool retained in finish; truncation/read and creation failure classification; cleanup and manifest-last no-clobber publication"
+  },
+  "completed_at_utc": "2026-10-05T14:42:54.773372+00:00",
+  "final_build_identity": {
+    "binary_sha256": "6c17e4c013e24c88601ab8c3fbaa1199d3536f7ae6b163116a1151b16e963f3f",
+    "build_source_sha256": "ef105b9c092a64be33303948d4688a8bca6a9e25ee1414ebf3c2705a1dca065a",
+    "cargo_lock_sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+    "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "git_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+    "git_dirty": "true",
+    "runtime_version": "0.1.0"
+  },
+  "current_example_matrix": {
+    "audit": "final_current_built_cli_examples",
+    "repository": "/home/hideki/DIR-Simulator",
+    "tracked_ini_count": 25,
+    "binary": {
+      "shared_path": "/home/hideki/DIR-Simulator/target/debug/dir-simulator",
+      "pinned_copy": "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+      "shared_sha256_at_pin": "6c17e4c013e24c88601ab8c3fbaa1199d3536f7ae6b163116a1151b16e963f3f",
+      "pinned_sha256_at_pin": "6c17e4c013e24c88601ab8c3fbaa1199d3536f7ae6b163116a1151b16e963f3f",
+      "shared_sha256_after_matrix": "6c17e4c013e24c88601ab8c3fbaa1199d3536f7ae6b163116a1151b16e963f3f",
+      "pinned_sha256_after_matrix": "6c17e4c013e24c88601ab8c3fbaa1199d3536f7ae6b163116a1151b16e963f3f"
+    },
+    "build_identity_from_results": {
+      "binary_sha256": "6c17e4c013e24c88601ab8c3fbaa1199d3536f7ae6b163116a1151b16e963f3f",
+      "build_source_sha256": "ef105b9c092a64be33303948d4688a8bca6a9e25ee1414ebf3c2705a1dca065a",
+      "cargo_lock_sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+      "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+      "git_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+      "git_dirty": "true",
+      "runtime_version": "0.1.0"
+    },
+    "examples": [
+      {
+        "index": 1,
+        "config": "examples/axi/read-write.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__axi__read-write/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__axi__read-write/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__axi__read-write/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__axi__read-write/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/axi/read-write.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003121
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/axi/read-write.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__axi__read-write/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.976938
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__axi__read-write/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__axi__read-write/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.008303
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "9cfd39660409270427d66de43e4bddec73927bd0cccec08b18850fbbbfdb6b18",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "667723415cdfe393e7c530b5ffef73b7886d8b536c860fc3fb34a169d86a4658",
+              "actual_sha256": "667723415cdfe393e7c530b5ffef73b7886d8b536c860fc3fb34a169d86a4658",
+              "expected_bytes": "5193",
+              "actual_bytes": "5193",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "7cf753f11a29f76da3c39fa02b2a81356d9e44741c2e844ca51a868e84df34d1",
+              "actual_sha256": "7cf753f11a29f76da3c39fa02b2a81356d9e44741c2e844ca51a868e84df34d1",
+              "expected_bytes": "79463",
+              "actual_bytes": "79463",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "a479cea5a4e1024267e57936c1dada55010efc3e82b295ff1b5bacd22a128740",
+              "actual_sha256": "a479cea5a4e1024267e57936c1dada55010efc3e82b295ff1b5bacd22a128740",
+              "expected_bytes": "5561",
+              "actual_bytes": "5561",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "2634efea-a9f1-4977-ac1e-c24b4d4418e3",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "axi4.transaction.v1",
+          "model_schemas": [
+            {
+              "schema_name": "axi.handshake",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "axi.memory",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "axi.transaction",
+              "schema_version": 1
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "12",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "100000",
+          "run_id": "2634efea-a9f1-4977-ac1e-c24b4d4418e3",
+          "counts": {
+            "requests": 0,
+            "model_records": 10,
+            "records": 47,
+            "summary": 53
+          },
+          "results_sha256": "7cf753f11a29f76da3c39fa02b2a81356d9e44741c2e844ca51a868e84df34d1"
+        },
+        "success": true
+      },
+      {
+        "index": 2,
+        "config": "examples/can/baseline.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__baseline/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__baseline/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__baseline/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__baseline/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/can/baseline.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003227
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/can/baseline.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__baseline/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.094142
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__baseline/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__baseline/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.026261
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "2da724960fef9a48012a29667935e47e213e87872a394b4d4e2188c34dfe1bce",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "2791740b8b275cdeb94dd58535853e25afe19622f76a006ced14499901d6b72e",
+              "actual_sha256": "2791740b8b275cdeb94dd58535853e25afe19622f76a006ced14499901d6b72e",
+              "expected_bytes": "106424",
+              "actual_bytes": "106424",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "2fdd8ca19a0df20b61c22d8c370521734f92c5be06072c3dafb92e782eaa432a",
+              "actual_sha256": "2fdd8ca19a0df20b61c22d8c370521734f92c5be06072c3dafb92e782eaa432a",
+              "expected_bytes": "373760",
+              "actual_bytes": "373760",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "ece896fd0807ae1b71d7479429a2e041b8e1bcbe58ece42118798cf74bc71bce",
+              "actual_sha256": "ece896fd0807ae1b71d7479429a2e041b8e1bcbe58ece42118798cf74bc71bce",
+              "expected_bytes": "12608",
+              "actual_bytes": "12608",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 1,
+          "termination": "events_exhausted",
+          "run_id": "8d3c9fe6-44b2-4867-a2eb-903810cfda46",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 1,
+          "model_profile": "can.cc.ideal.v1",
+          "model_schemas": null,
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "580",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "20000000000",
+          "run_id": "8d3c9fe6-44b2-4867-a2eb-903810cfda46",
+          "counts": {
+            "requests": 60,
+            "model_records": 0,
+            "records": 866,
+            "summary": 117
+          },
+          "results_sha256": "2fdd8ca19a0df20b61c22d8c370521734f92c5be06072c3dafb92e782eaa432a"
+        },
+        "success": true
+      },
+      {
+        "index": 3,
+        "config": "examples/can/contention.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__contention/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__contention/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__contention/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__contention/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/can/contention.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003557
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/can/contention.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__contention/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.203264
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__contention/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__contention/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.045123
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "220f533365e6e49764334af08497f73ff8a2cb35f51dda8de5e34464f2e6cdf6",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "040cf468167ecce85f8636307f76462b962eec80554f9482e3c34073c0338b30",
+              "actual_sha256": "040cf468167ecce85f8636307f76462b962eec80554f9482e3c34073c0338b30",
+              "expected_bytes": "185949",
+              "actual_bytes": "185949",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "9fff747a7b48ea37bfe5c644443340663fe318286e70aa8baaeff477791abc78",
+              "actual_sha256": "9fff747a7b48ea37bfe5c644443340663fe318286e70aa8baaeff477791abc78",
+              "expected_bytes": "673133",
+              "actual_bytes": "673133",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "94d2dee6ce42eb0218ff5a9a871bc24eb52e3483215b70eefdd8e9421d681e74",
+              "actual_sha256": "94d2dee6ce42eb0218ff5a9a871bc24eb52e3483215b70eefdd8e9421d681e74",
+              "expected_bytes": "12521",
+              "actual_bytes": "12521",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 1,
+          "termination": "time_limit",
+          "run_id": "c98476ab-7c12-4eba-9999-72b92478b743",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 1,
+          "model_profile": "can.cc.ideal.v1",
+          "model_schemas": null,
+          "termination": "time_limit",
+          "partial": false,
+          "committed_events": "1366",
+          "pending_events": "2",
+          "start_ps": "0",
+          "end_ps": "20000000000",
+          "run_id": "c98476ab-7c12-4eba-9999-72b92478b743",
+          "counts": {
+            "requests": 300,
+            "model_records": 0,
+            "records": 1497,
+            "summary": 117
+          },
+          "results_sha256": "9fff747a7b48ea37bfe5c644443340663fe318286e70aa8baaeff477791abc78"
+        },
+        "success": true
+      },
+      {
+        "index": 4,
+        "config": "examples/can/overload.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__overload/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__overload/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__overload/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__overload/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/can/overload.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.004147
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/can/overload.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__overload/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.460278
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__overload/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__can__overload/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.103263
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "969c5e3ccba998d99f48dcc0115bf7794641c1d7fafdd96d5bc43e8b45b3324b",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "954b2f8648b25d11c6e72ef431e46d0920c091814e6cc2ca633d22b995f63c21",
+              "actual_sha256": "954b2f8648b25d11c6e72ef431e46d0920c091814e6cc2ca633d22b995f63c21",
+              "expected_bytes": "416196",
+              "actual_bytes": "416196",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "6363d84445a9f6f0727a6b03d519d518636dad4aa9c590994389c25e472ae5eb",
+              "actual_sha256": "6363d84445a9f6f0727a6b03d519d518636dad4aa9c590994389c25e472ae5eb",
+              "expected_bytes": "1624194",
+              "actual_bytes": "1624194",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "fb7036b74465c48d15eb332a9b62613fba22b133b3c55861effd2ed2cffc3b4b",
+              "actual_sha256": "fb7036b74465c48d15eb332a9b62613fba22b133b3c55861effd2ed2cffc3b4b",
+              "expected_bytes": "12513",
+              "actual_bytes": "12513",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 1,
+          "termination": "time_limit",
+          "run_id": "b89066ad-36fa-4245-b7fb-1de93e98d268",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 1,
+          "model_profile": "can.cc.ideal.v1",
+          "model_schemas": null,
+          "termination": "time_limit",
+          "partial": false,
+          "committed_events": "3451",
+          "pending_events": "2",
+          "start_ps": "0",
+          "end_ps": "20000000000",
+          "run_id": "b89066ad-36fa-4245-b7fb-1de93e98d268",
+          "counts": {
+            "requests": 1200,
+            "model_records": 0,
+            "records": 3297,
+            "summary": 117
+          },
+          "results_sha256": "6363d84445a9f6f0727a6b03d519d518636dad4aa9c590994389c25e472ae5eb"
+        },
+        "success": true
+      },
+      {
+        "index": 5,
+        "config": "examples/canfd/precomputed.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__canfd__precomputed/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__canfd__precomputed/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__canfd__precomputed/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__canfd__precomputed/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/canfd/precomputed.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003872
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/canfd/precomputed.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__canfd__precomputed/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.987813
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__canfd__precomputed/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__canfd__precomputed/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.007146
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "8603f35a61317c10dc84a36c384c24faf2757151745499b6033b6532ab2138c1",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "5e0cea6c607d26b130916139b76d6f3586aa88054f4560ecd2c7a9003e0dc62e",
+              "actual_sha256": "5e0cea6c607d26b130916139b76d6f3586aa88054f4560ecd2c7a9003e0dc62e",
+              "expected_bytes": "147",
+              "actual_bytes": "147",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "edd33564f75aa9823002b4c464de30b7a593304a0444d8dd11300e21d7af08e3",
+              "actual_sha256": "edd33564f75aa9823002b4c464de30b7a593304a0444d8dd11300e21d7af08e3",
+              "expected_bytes": "61817",
+              "actual_bytes": "61817",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "e558bff93bcadb6cce7979cb0dc7f828e9fb14c91379426b69be974a97cb5386",
+              "actual_sha256": "e558bff93bcadb6cce7979cb0dc7f828e9fb14c91379426b69be974a97cb5386",
+              "expected_bytes": "1737",
+              "actual_bytes": "1737",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "98e9d2d2-7594-47b2-987a-1ad0a4889399",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "can.fd.precomputed.v1",
+          "model_schemas": [
+            {
+              "schema_name": "dir.canfd.frame",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "dir.canfd.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "dir.canfd.request",
+              "schema_version": 1
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "14",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "1000000000",
+          "run_id": "98e9d2d2-7594-47b2-987a-1ad0a4889399",
+          "counts": {
+            "requests": 0,
+            "model_records": 7,
+            "records": 0,
+            "summary": 16
+          },
+          "results_sha256": "edd33564f75aa9823002b4c464de30b7a593304a0444d8dd11300e21d7af08e3"
+        },
+        "success": true
+      },
+      {
+        "index": 6,
+        "config": "examples/ethernet/duplex.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__duplex/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__duplex/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__duplex/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__duplex/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/duplex.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.004386
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/duplex.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__duplex/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.01117
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__duplex/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__duplex/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.012549
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "5aa3bd40847ce2d29e69e87ee59494a679250b5807aa774a1de357c71d243350",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "0dbde12f2f09e79ba37cda91e236882c63219b55e46796ab50a0d082b974a2e7",
+              "actual_sha256": "0dbde12f2f09e79ba37cda91e236882c63219b55e46796ab50a0d082b974a2e7",
+              "expected_bytes": "6010",
+              "actual_bytes": "6010",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "59481c45a03125461c635c19035217f03e6d0ad0d37d38e85901e17b5355b0f8",
+              "actual_sha256": "59481c45a03125461c635c19035217f03e6d0ad0d37d38e85901e17b5355b0f8",
+              "expected_bytes": "167438",
+              "actual_bytes": "167438",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "15409709f3a90296e00237c45a406038d3896c73a3e73ca39d823b8f13955b61",
+              "actual_sha256": "15409709f3a90296e00237c45a406038d3896c73a3e73ca39d823b8f13955b61",
+              "expected_bytes": "12636",
+              "actual_bytes": "12636",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "b583d3c1-bf14-40c9-8842-85e08a52e70e",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.store-forward.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "28",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "30000000",
+          "run_id": "b583d3c1-bf14-40c9-8842-85e08a52e70e",
+          "counts": {
+            "requests": 0,
+            "model_records": 10,
+            "records": 52,
+            "summary": 113
+          },
+          "results_sha256": "59481c45a03125461c635c19035217f03e6d0ad0d37d38e85901e17b5355b0f8"
+        },
+        "success": true
+      },
+      {
+        "index": 7,
+        "config": "examples/ethernet/media/100base-t1.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__100base-t1/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__100base-t1/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__100base-t1/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__100base-t1/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/media/100base-t1.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003684
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/media/100base-t1.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__100base-t1/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.968737
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__100base-t1/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__100base-t1/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.008053
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "e28948e99bb5f684efbec5689f5094e7146ed43a141e1e726bd0364c739689a7",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "3ce14a833e0efa5900d4af5722a0b289a3de16bd43a18c25b42aaf961e80f0d8",
+              "actual_sha256": "3ce14a833e0efa5900d4af5722a0b289a3de16bd43a18c25b42aaf961e80f0d8",
+              "expected_bytes": "1305",
+              "actual_bytes": "1305",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "1fcc63592a5d4e418b6e6ebeb4bbc33741d62818f9e08c7ff4748244151f8998",
+              "actual_sha256": "1fcc63592a5d4e418b6e6ebeb4bbc33741d62818f9e08c7ff4748244151f8998",
+              "expected_bytes": "78803",
+              "actual_bytes": "78803",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "d6146f791b14bf905350e4564faa242d25cc5d67f7a4c0a6039ebfa0f861eb51",
+              "actual_sha256": "d6146f791b14bf905350e4564faa242d25cc5d67f7a4c0a6039ebfa0f861eb51",
+              "expected_bytes": "2225",
+              "actual_bytes": "2225",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "dd91e97b-49ee-4736-8c88-f35d11ff3ace",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.100base-t1.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.attempt",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.phy_link",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 2
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "11",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "100000000",
+          "run_id": "dd91e97b-49ee-4736-8c88-f35d11ff3ace",
+          "counts": {
+            "requests": 0,
+            "model_records": 9,
+            "records": 10,
+            "summary": 18
+          },
+          "results_sha256": "1fcc63592a5d4e418b6e6ebeb4bbc33741d62818f9e08c7ff4748244151f8998"
+        },
+        "success": true
+      },
+      {
+        "index": 8,
+        "config": "examples/ethernet/media/collision.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__collision/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__collision/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__collision/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__collision/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/media/collision.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003137
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/media/collision.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__collision/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.008971
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__collision/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__collision/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.008545
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "b010837d5708403bb21e4f00adf751b3ab4328f2de87eb75443a24a92b7c8872",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "31ff9fd131c99548db7a1d2c00b3749e9cc813df04d6c8de73709f1a4a85f10b",
+              "actual_sha256": "31ff9fd131c99548db7a1d2c00b3749e9cc813df04d6c8de73709f1a4a85f10b",
+              "expected_bytes": "1549",
+              "actual_bytes": "1549",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "a573172ad4121ae98dbce8034f9fdb09cf2da175c7aa7cbcb3c20536fd228b8c",
+              "actual_sha256": "a573172ad4121ae98dbce8034f9fdb09cf2da175c7aa7cbcb3c20536fd228b8c",
+              "expected_bytes": "80774",
+              "actual_bytes": "80774",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "2430b030b5831102bd80a74f439d3e105e36a28f850d192084bb21037d119a35",
+              "actual_sha256": "2430b030b5831102bd80a74f439d3e105e36a28f850d192084bb21037d119a35",
+              "expected_bytes": "2235",
+              "actual_bytes": "2235",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "e5658472-84bd-4e63-9ae9-94fcd1919bfb",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.store-forward.v2",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.attempt",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.phy_link",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 2
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "37",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "100000000",
+          "run_id": "e5658472-84bd-4e63-9ae9-94fcd1919bfb",
+          "counts": {
+            "requests": 0,
+            "model_records": 11,
+            "records": 12,
+            "summary": 18
+          },
+          "results_sha256": "a573172ad4121ae98dbce8034f9fdb09cf2da175c7aa7cbcb3c20536fd228b8c"
+        },
+        "success": true
+      },
+      {
+        "index": 9,
+        "config": "examples/ethernet/media/mixed.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__mixed/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__mixed/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__mixed/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__mixed/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/media/mixed.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.004691
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/media/mixed.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__mixed/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.007462
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__mixed/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__mixed/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.011937
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "f31e3957e81424175cabd5d62e6c21dcc83130b64801d5618c20852451dcf257",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "919fd0114ad5c898ec735bd1481096f4b39114499cad9da1bcc18de716c4a8e6",
+              "actual_sha256": "919fd0114ad5c898ec735bd1481096f4b39114499cad9da1bcc18de716c4a8e6",
+              "expected_bytes": "3715",
+              "actual_bytes": "3715",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "9b1d18351f882d9c857f4abd64ea35e2de80f75ff74a88021ce66c91d15cd97c",
+              "actual_sha256": "9b1d18351f882d9c857f4abd64ea35e2de80f75ff74a88021ce66c91d15cd97c",
+              "expected_bytes": "151840",
+              "actual_bytes": "151840",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "e795d71700f090816ee62b2395bf561c673d06eee395cc77d989947bfcf444f0",
+              "actual_sha256": "e795d71700f090816ee62b2395bf561c673d06eee395cc77d989947bfcf444f0",
+              "expected_bytes": "5221",
+              "actual_bytes": "5221",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "824c533b-9906-4644-a671-504c013e139e",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.store-forward.v2",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.attempt",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.phy_link",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 2
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "52",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "100000000",
+          "run_id": "824c533b-9906-4644-a671-504c013e139e",
+          "counts": {
+            "requests": 0,
+            "model_records": 23,
+            "records": 30,
+            "summary": 43
+          },
+          "results_sha256": "9b1d18351f882d9c857f4abd64ea35e2de80f75ff74a88021ce66c91d15cd97c"
+        },
+        "success": true
+      },
+      {
+        "index": 10,
+        "config": "examples/ethernet/media/t1-duplex.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-duplex/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-duplex/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-duplex/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-duplex/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/media/t1-duplex.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003709
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/media/t1-duplex.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-duplex/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.988953
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-duplex/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-duplex/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.008101
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "6bbafb2fd55692b3a93e46cee7958486e65a6e9d65a1d739c2e4ee67f68bdb8a",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "c3c6f504fb9f390d74121be0e56cfd99ba976b24e675543cf1a34060fdc475ca",
+              "actual_sha256": "c3c6f504fb9f390d74121be0e56cfd99ba976b24e675543cf1a34060fdc475ca",
+              "expected_bytes": "1305",
+              "actual_bytes": "1305",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "0f7239c2ff8d08f0a72b3f0575243cbb22082925111fc785b6ac7399e8d98138",
+              "actual_sha256": "0f7239c2ff8d08f0a72b3f0575243cbb22082925111fc785b6ac7399e8d98138",
+              "expected_bytes": "78813",
+              "actual_bytes": "78813",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "cb6f1b54b5a2b7e563eff70470544ca14d9e432d9dd247656fe93c8f54f27500",
+              "actual_sha256": "cb6f1b54b5a2b7e563eff70470544ca14d9e432d9dd247656fe93c8f54f27500",
+              "expected_bytes": "2225",
+              "actual_bytes": "2225",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "153a33d6-b944-4142-9ce0-46df8e311442",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.store-forward.v2",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.attempt",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.phy_link",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 2
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "11",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "100000000",
+          "run_id": "153a33d6-b944-4142-9ce0-46df8e311442",
+          "counts": {
+            "requests": 0,
+            "model_records": 9,
+            "records": 10,
+            "summary": 18
+          },
+          "results_sha256": "0f7239c2ff8d08f0a72b3f0575243cbb22082925111fc785b6ac7399e8d98138"
+        },
+        "success": true
+      },
+      {
+        "index": 11,
+        "config": "examples/ethernet/media/t1-pipeline.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-pipeline/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-pipeline/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-pipeline/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-pipeline/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/media/t1-pipeline.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003835
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/media/t1-pipeline.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-pipeline/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.985201
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-pipeline/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__media__t1-pipeline/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.007394
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "9c165b185c4e21d1c27308548ea4c228aef982654a02068cfcfd252c860378f5",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "b443737cdd01be5c10e8a1d75d4a6b087a4175500ce422b4bd7b1bd592d3344a",
+              "actual_sha256": "b443737cdd01be5c10e8a1d75d4a6b087a4175500ce422b4bd7b1bd592d3344a",
+              "expected_bytes": "1310",
+              "actual_bytes": "1310",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "cccd035a390ef58ed212a405f5d835da52d1cdd013d2fd70763d8294766c75c4",
+              "actual_sha256": "cccd035a390ef58ed212a405f5d835da52d1cdd013d2fd70763d8294766c75c4",
+              "expected_bytes": "70096",
+              "actual_bytes": "70096",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "32e7c5a336ae9a86b4405a7cfbe128f0a6581493210ac3d3ac118a95f0ab457e",
+              "actual_sha256": "32e7c5a336ae9a86b4405a7cfbe128f0a6581493210ac3d3ac118a95f0ab457e",
+              "expected_bytes": "2225",
+              "actual_bytes": "2225",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "dc20629b-a441-4da7-8b3c-156cc6014d06",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.store-forward.v2",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.attempt",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.phy_link",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 2
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "15",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "100000000",
+          "run_id": "dc20629b-a441-4da7-8b3c-156cc6014d06",
+          "counts": {
+            "requests": 0,
+            "model_records": 9,
+            "records": 10,
+            "summary": 18
+          },
+          "results_sha256": "cccd035a390ef58ed212a405f5d835da52d1cdd013d2fd70763d8294766c75c4"
+        },
+        "success": true
+      },
+      {
+        "index": 12,
+        "config": "examples/ethernet/qos-periodic-burst.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-periodic-burst/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-periodic-burst/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-periodic-burst/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-periodic-burst/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/qos-periodic-burst.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.005021
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/qos-periodic-burst.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-periodic-burst/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.091158
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-periodic-burst/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-periodic-burst/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.027213
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "444e82a555f324cd20f1d128ce75045df30b710ef4050f36378e6a139701ffd7",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "ae82de881aad52d74fd682672c39635cb00e194892b53ca36df528507f336aec",
+              "actual_sha256": "ae82de881aad52d74fd682672c39635cb00e194892b53ca36df528507f336aec",
+              "expected_bytes": "28479",
+              "actual_bytes": "28479",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "1a63ff6f4d3130717b3a7131ea7ea62790ccdebaba1fd28f4e3654df4d1102ae",
+              "actual_sha256": "1a63ff6f4d3130717b3a7131ea7ea62790ccdebaba1fd28f4e3654df4d1102ae",
+              "expected_bytes": "415866",
+              "actual_bytes": "415866",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "3a3cd7e14095e1886915f79e3f475f48afd03b9d5ee42191fc356fbc511ccd3d",
+              "actual_sha256": "3a3cd7e14095e1886915f79e3f475f48afd03b9d5ee42191fc356fbc511ccd3d",
+              "expected_bytes": "53199",
+              "actual_bytes": "53199",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "de65a91c-7626-4c8f-a62a-b70ef37674dc",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.qos.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 2
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 2
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "96",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "14000000",
+          "run_id": "de65a91c-7626-4c8f-a62a-b70ef37674dc",
+          "counts": {
+            "requests": 0,
+            "model_records": 35,
+            "records": 257,
+            "summary": 441
+          },
+          "results_sha256": "1a63ff6f4d3130717b3a7131ea7ea62790ccdebaba1fd28f4e3654df4d1102ae"
+        },
+        "success": true
+      },
+      {
+        "index": 13,
+        "config": "examples/ethernet/qos-priority.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-priority/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-priority/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-priority/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-priority/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/qos-priority.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.005048
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/qos-priority.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-priority/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.080462
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-priority/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__qos-priority/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.027424
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "6fe6b32ccef38973ae624ec8982d77582926b86991743bc2a8c04fbf37135f9b",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "47f380e27f52c83a3dfe2f83b42b769f2fc032bbe870a0c06564a36957eeeeaf",
+              "actual_sha256": "47f380e27f52c83a3dfe2f83b42b769f2fc032bbe870a0c06564a36957eeeeaf",
+              "expected_bytes": "20219",
+              "actual_bytes": "20219",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "6458470daa7891252a1001fe61ecda5681e1781a2a518b2f0464ee98ce5cce04",
+              "actual_sha256": "6458470daa7891252a1001fe61ecda5681e1781a2a518b2f0464ee98ce5cce04",
+              "expected_bytes": "408758",
+              "actual_bytes": "408758",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "7631f3fcfe78c10da04a058e2c8a50079655aa0524eb757a13d61ffe7970d60e",
+              "actual_sha256": "7631f3fcfe78c10da04a058e2c8a50079655aa0524eb757a13d61ffe7970d60e",
+              "expected_bytes": "61051",
+              "actual_bytes": "61051",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "28b29396-4090-44f3-868d-c72be67cf544",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.qos.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 2
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 2
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "38",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "3000000",
+          "run_id": "28b29396-4090-44f3-868d-c72be67cf544",
+          "counts": {
+            "requests": 0,
+            "model_records": 15,
+            "records": 189,
+            "summary": 509
+          },
+          "results_sha256": "6458470daa7891252a1001fe61ecda5681e1781a2a518b2f0464ee98ce5cce04"
+        },
+        "success": true
+      },
+      {
+        "index": 14,
+        "config": "examples/ethernet/unicast.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__unicast/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__unicast/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__unicast/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__unicast/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/unicast.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.003957
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/unicast.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__unicast/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.982604
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__unicast/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__unicast/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.011134
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "ae0ad2ba687e98315b9456bf7b9a56f56d1932b3965133c5ac518cef1d714291",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "0f3a4df5b98555dadfe1a54bd127da664c99bf8b800b8eba96cb25647877216c",
+              "actual_sha256": "0f3a4df5b98555dadfe1a54bd127da664c99bf8b800b8eba96cb25647877216c",
+              "expected_bytes": "5391",
+              "actual_bytes": "5391",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "26a9582f717d7e98838f65e0bc3ae39915cc2576331cfb8acab5cacd68370362",
+              "actual_sha256": "26a9582f717d7e98838f65e0bc3ae39915cc2576331cfb8acab5cacd68370362",
+              "expected_bytes": "133453",
+              "actual_bytes": "133453",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "edfaae47eebb300ba658ed4c4a4846686f700046ba7a5825793860d5e855eef8",
+              "actual_sha256": "edfaae47eebb300ba658ed4c4a4846686f700046ba7a5825793860d5e855eef8",
+              "expected_bytes": "12470",
+              "actual_bytes": "12470",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "acf4a752-f060-4a05-ad0b-172230cad718",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.store-forward.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "14",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "3000000",
+          "run_id": "acf4a752-f060-4a05-ad0b-172230cad718",
+          "counts": {
+            "requests": 0,
+            "model_records": 5,
+            "records": 47,
+            "summary": 113
+          },
+          "results_sha256": "26a9582f717d7e98838f65e0bc3ae39915cc2576331cfb8acab5cacd68370362"
+        },
+        "success": true
+      },
+      {
+        "index": 15,
+        "config": "examples/ethernet/vlan-multicast.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-multicast/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-multicast/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-multicast/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-multicast/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/vlan-multicast.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.008209
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/vlan-multicast.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-multicast/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.518638
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-multicast/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-multicast/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.052774
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "9b306e23abca17d6ca3ba3bc7df9ee75ebe77cc86aaca1cf314d93f32260b259",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "fbe030f00a53aaed5ebf240c1e020c0e34b819119dc41161735638cd33e9aee9",
+              "actual_sha256": "fbe030f00a53aaed5ebf240c1e020c0e34b819119dc41161735638cd33e9aee9",
+              "expected_bytes": "40819",
+              "actual_bytes": "40819",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "b9617ed27bfcafac59151947026635a6e7c3773f23295cb6a6d808de79702763",
+              "actual_sha256": "b9617ed27bfcafac59151947026635a6e7c3773f23295cb6a6d808de79702763",
+              "expected_bytes": "853854",
+              "actual_bytes": "853854",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "c1e15f0f47c2f8bb2d9bd867934112c76982852f083c95999224c38ca9abddbb",
+              "actual_sha256": "c1e15f0f47c2f8bb2d9bd867934112c76982852f083c95999224c38ca9abddbb",
+              "expected_bytes": "104988",
+              "actual_bytes": "104988",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "72fc50e4-61f8-4e97-a741-c73cd89a9643",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.vlan.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 3
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 2
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 3
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "43",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "4000000",
+          "run_id": "72fc50e4-61f8-4e97-a741-c73cd89a9643",
+          "counts": {
+            "requests": 0,
+            "model_records": 15,
+            "records": 369,
+            "summary": 861
+          },
+          "results_sha256": "b9617ed27bfcafac59151947026635a6e7c3773f23295cb6a6d808de79702763"
+        },
+        "success": true
+      },
+      {
+        "index": 16,
+        "config": "examples/ethernet/vlan-unicast.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-unicast/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-unicast/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-unicast/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-unicast/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/ethernet/vlan-unicast.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.008409
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/ethernet/vlan-unicast.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-unicast/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.5237
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-unicast/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__ethernet__vlan-unicast/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.052264
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "d1ae442c3da43f7689a80e76f7d0921b4a6b9f477ea0fd57bf1b3e2c3ad6cd15",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "8d11f32944e53f7d078f41957d1104f02eefa808003580a793136974f2436851",
+              "actual_sha256": "8d11f32944e53f7d078f41957d1104f02eefa808003580a793136974f2436851",
+              "expected_bytes": "37638",
+              "actual_bytes": "37638",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "7a18204c02bf6e93aaf05cfed36bc1b9e200e8743cae5975fae4869a7cfbc8ed",
+              "actual_sha256": "7a18204c02bf6e93aaf05cfed36bc1b9e200e8743cae5975fae4869a7cfbc8ed",
+              "expected_bytes": "839100",
+              "actual_bytes": "839100",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "d1b5e8e8297d11238b923eae50ec55ceed8ca6dcfd26d5951f0f777de4ea6337",
+              "actual_sha256": "d1b5e8e8297d11238b923eae50ec55ceed8ca6dcfd26d5951f0f777de4ea6337",
+              "expected_bytes": "104753",
+              "actual_bytes": "104753",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "f54d69d8-776e-497b-bac4-62b23ccfdaa1",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ethernet.l2.vlan.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ethernet.frame",
+              "schema_version": 3
+            },
+            {
+              "schema_name": "ethernet.reception",
+              "schema_version": 2
+            },
+            {
+              "schema_name": "ethernet.transfer",
+              "schema_version": 3
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "21",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "4000000",
+          "run_id": "f54d69d8-776e-497b-bac4-62b23ccfdaa1",
+          "counts": {
+            "requests": 0,
+            "model_records": 7,
+            "records": 345,
+            "summary": 861
+          },
+          "results_sha256": "7a18204c02bf6e93aaf05cfed36bc1b9e200e8743cae5975fae4869a7cfbc8ed"
+        },
+        "success": true
+      },
+      {
+        "index": 17,
+        "config": "examples/gateway/buffered-fanout.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__buffered-fanout/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__buffered-fanout/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__buffered-fanout/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__buffered-fanout/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/gateway/buffered-fanout.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.005465
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/gateway/buffered-fanout.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__buffered-fanout/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.031286
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__buffered-fanout/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__buffered-fanout/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.022347
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "b5592e65b6430dcfc794bfdb22656078faeac4cd79d4c33a43f34f94d6d8d353",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "998acc51af2216e225e67ae9a2044671961454afb3dc18cb5b4504166c92c6cc",
+              "actual_sha256": "998acc51af2216e225e67ae9a2044671961454afb3dc18cb5b4504166c92c6cc",
+              "expected_bytes": "42139",
+              "actual_bytes": "42139",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "eabf8c56e17e4ac558c06d9707186be795537460ae2d881e8a2e53aa079544cd",
+              "actual_sha256": "eabf8c56e17e4ac558c06d9707186be795537460ae2d881e8a2e53aa079544cd",
+              "expected_bytes": "296240",
+              "actual_bytes": "296240",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "bd3e17630941e8368dd6eb94461c8cceb3df6077291c2bbbd421a2075fbe48dc",
+              "actual_sha256": "bd3e17630941e8368dd6eb94461c8cceb3df6077291c2bbbd421a2075fbe48dc",
+              "expected_bytes": "27648",
+              "actual_bytes": "27648",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "time_limit",
+          "run_id": "0f5dbd9e-ed92-41e0-a185-f460e525000b",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "can.cc.multibus.v1",
+          "model_schemas": [
+            {
+              "schema_name": "can.receiver",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "can.request",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "gw.forward",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "gw.rx_buffer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "time_limit",
+          "partial": false,
+          "committed_events": "190",
+          "pending_events": "2",
+          "start_ps": "0",
+          "end_ps": "2000000000",
+          "run_id": "0f5dbd9e-ed92-41e0-a185-f460e525000b",
+          "counts": {
+            "requests": 0,
+            "model_records": 64,
+            "records": 317,
+            "summary": 255
+          },
+          "results_sha256": "eabf8c56e17e4ac558c06d9707186be795537460ae2d881e8a2e53aa079544cd"
+        },
+        "success": true
+      },
+      {
+        "index": 18,
+        "config": "examples/gateway/fanout.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__fanout/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__fanout/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__fanout/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__fanout/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/gateway/fanout.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.004857
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/gateway/fanout.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__fanout/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 2.128524
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__fanout/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__gateway__fanout/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.033381
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "e1a99f9f46f54ebe8e641019fa7ae7a21fa0a18af0b05e5bed0355284ac7371c",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "c8f52200d9dff4fc12f21175f51c2b991d965da8bca9c9ba74967c2cd59d8db5",
+              "actual_sha256": "c8f52200d9dff4fc12f21175f51c2b991d965da8bca9c9ba74967c2cd59d8db5",
+              "expected_bytes": "115931",
+              "actual_bytes": "115931",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "ba23fc011f92b99cf3ac48fa371feff4b3a311ef8ccd2976c89bb09ee782e3b5",
+              "actual_sha256": "ba23fc011f92b99cf3ac48fa371feff4b3a311ef8ccd2976c89bb09ee782e3b5",
+              "expected_bytes": "509365",
+              "actual_bytes": "509365",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "173e407cf975b047fde3a98b6e6ce980ec6b77a232ab09742e4e929b2398ed80",
+              "actual_sha256": "173e407cf975b047fde3a98b6e6ce980ec6b77a232ab09742e4e929b2398ed80",
+              "expected_bytes": "28038",
+              "actual_bytes": "28038",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "time_limit",
+          "run_id": "6ce1b617-db43-4a4f-abdc-3b71b73eb9ba",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "can.cc.multibus.v1",
+          "model_schemas": [
+            {
+              "schema_name": "can.receiver",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "can.request",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "gw.forward",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "gw.rx_buffer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "time_limit",
+          "partial": false,
+          "committed_events": "420",
+          "pending_events": "2",
+          "start_ps": "0",
+          "end_ps": "10000000000",
+          "run_id": "6ce1b617-db43-4a4f-abdc-3b71b73eb9ba",
+          "counts": {
+            "requests": 0,
+            "model_records": 140,
+            "records": 859,
+            "summary": 255
+          },
+          "results_sha256": "ba23fc011f92b99cf3ac48fa371feff4b3a311ef8ccd2976c89bb09ee782e3b5"
+        },
+        "success": true
+      },
+      {
+        "index": 19,
+        "config": "examples/memory-ipc/copy.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__memory-ipc__copy/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__memory-ipc__copy/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__memory-ipc__copy/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__memory-ipc__copy/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/memory-ipc/copy.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.002636
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/memory-ipc/copy.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__memory-ipc__copy/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.983838
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__memory-ipc__copy/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__memory-ipc__copy/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.011163
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "a968a5cabe4294343a1a17d393ca25ec9b2e063c8d3da9721d497a98f4afc5e4",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "81075d2b058434381550d386f0c6616ae6ff696ae9048a52f62227d2bc529534",
+              "actual_sha256": "81075d2b058434381550d386f0c6616ae6ff696ae9048a52f62227d2bc529534",
+              "expected_bytes": "2609",
+              "actual_bytes": "2609",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "cd6530f3440a78b4ebbb4d11493848d7a4d6c20f7130922467273eae8eea72bf",
+              "actual_sha256": "cd6530f3440a78b4ebbb4d11493848d7a4d6c20f7130922467273eae8eea72bf",
+              "expected_bytes": "119639",
+              "actual_bytes": "119639",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "54affb510c2c3fd9c86d7c0b8b7d430cb18f74cc1cb04d91a73d366bf542b343",
+              "actual_sha256": "54affb510c2c3fd9c86d7c0b8b7d430cb18f74cc1cb04d91a73d366bf542b343",
+              "expected_bytes": "3691",
+              "actual_bytes": "3691",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "time_limit",
+          "run_id": "3edf0b1a-69a5-42ab-a535-9d381e71398d",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "memory.ipc.transaction.v1",
+          "model_schemas": [
+            {
+              "schema_name": "memory-ipc.dma",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "memory-ipc.mailbox",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "memory-ipc.memory",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "memory-ipc.notification",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "memory-ipc.request",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "memory-ipc.shared",
+              "schema_version": 1
+            }
+          ],
+          "termination": "time_limit",
+          "partial": false,
+          "committed_events": "41",
+          "pending_events": "1",
+          "start_ps": "0",
+          "end_ps": "25",
+          "run_id": "3edf0b1a-69a5-42ab-a535-9d381e71398d",
+          "counts": {
+            "requests": 0,
+            "model_records": 11,
+            "records": 23,
+            "summary": 33
+          },
+          "results_sha256": "cd6530f3440a78b4ebbb4d11493848d7a4d6c20f7130922467273eae8eea72bf"
+        },
+        "success": true
+      },
+      {
+        "index": 20,
+        "config": "examples/soc/ahb-boundary.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-boundary/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-boundary/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-boundary/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-boundary/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/soc/ahb-boundary.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.00252
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/soc/ahb-boundary.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-boundary/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.972172
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-boundary/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-boundary/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.006352
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "5f3b84cc6db77ee3bf61e7f9927fe3899c7277b1d9e152695ddb45d01ac1f90a",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "5d6046b6b540bfa4968cb6e41b26d74b8542fa4e62c0fa688b6d3d7d8405083a",
+              "actual_sha256": "5d6046b6b540bfa4968cb6e41b26d74b8542fa4e62c0fa688b6d3d7d8405083a",
+              "expected_bytes": "2362",
+              "actual_bytes": "2362",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "78067ba0a08ddf1e54fe4b82b98f01524ca5287a1f193b430c6ddf95799b89cc",
+              "actual_sha256": "78067ba0a08ddf1e54fe4b82b98f01524ca5287a1f193b430c6ddf95799b89cc",
+              "expected_bytes": "48452",
+              "actual_bytes": "48452",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "d6f6c21e40370dab7ba6fb6a15cc2cace06e679a17f504123844f2fdc6cf2df5",
+              "actual_sha256": "d6f6c21e40370dab7ba6fb6a15cc2cace06e679a17f504123844f2fdc6cf2df5",
+              "expected_bytes": "3481",
+              "actual_bytes": "3481",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "time_limit",
+          "run_id": "bbd96493-0172-4c74-ab4d-af477bd9e606",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ahb.transaction.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ahb.transaction",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ahb.transfer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "time_limit",
+          "partial": false,
+          "committed_events": "3",
+          "pending_events": "1",
+          "start_ps": "0",
+          "end_ps": "30",
+          "run_id": "bbd96493-0172-4c74-ab4d-af477bd9e606",
+          "counts": {
+            "requests": 0,
+            "model_records": 2,
+            "records": 21,
+            "summary": 35
+          },
+          "results_sha256": "78067ba0a08ddf1e54fe4b82b98f01524ca5287a1f193b430c6ddf95799b89cc"
+        },
+        "success": true
+      },
+      {
+        "index": 21,
+        "config": "examples/soc/ahb-wait-error.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-wait-error/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-wait-error/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-wait-error/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-wait-error/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/soc/ahb-wait-error.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.002645
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/soc/ahb-wait-error.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-wait-error/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.974435
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-wait-error/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__ahb-wait-error/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.00726
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "3a4d89d7a65dc3e19ffefdc5ee965788bbb2ebb9a91bbb69a6f0f2f665b190f8",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "4a46ac2975ef05be6a85aaf038ce1d336d4a37d0e572134a58d5832c2a47a5a1",
+              "actual_sha256": "4a46ac2975ef05be6a85aaf038ce1d336d4a37d0e572134a58d5832c2a47a5a1",
+              "expected_bytes": "7581",
+              "actual_bytes": "7581",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "83403c031e2e598b2d444c2de8cfb31f2888e53402981e1c36b3538a90dabe49",
+              "actual_sha256": "83403c031e2e598b2d444c2de8cfb31f2888e53402981e1c36b3538a90dabe49",
+              "expected_bytes": "65532",
+              "actual_bytes": "65532",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "65da03827fa7128c8f4643369e5c1d624bfd3b044f97c16a6d5d86698eead3f3",
+              "actual_sha256": "65da03827fa7128c8f4643369e5c1d624bfd3b044f97c16a6d5d86698eead3f3",
+              "expected_bytes": "3604",
+              "actual_bytes": "3604",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "abc9dcf0-f87f-4607-84ca-c6a23a88b62d",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "ahb.transaction.v1",
+          "model_schemas": [
+            {
+              "schema_name": "ahb.transaction",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "ahb.transfer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "7",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "100",
+          "run_id": "abc9dcf0-f87f-4607-84ca-c6a23a88b62d",
+          "counts": {
+            "requests": 0,
+            "model_records": 4,
+            "records": 70,
+            "summary": 35
+          },
+          "results_sha256": "83403c031e2e598b2d444c2de8cfb31f2888e53402981e1c36b3538a90dabe49"
+        },
+        "success": true
+      },
+      {
+        "index": 22,
+        "config": "examples/soc/noc-backpressure.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-backpressure/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-backpressure/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-backpressure/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-backpressure/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/soc/noc-backpressure.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.002819
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/soc/noc-backpressure.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-backpressure/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.970298
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-backpressure/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-backpressure/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.007906
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "59d54e2ea34f318828be65c6737c14c31051307a807f762759e3b62b9e7e5af6",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "0d9908ef9f790199f5bb1e2e0e81fc8bf76ec980b40069c47d217fa0cdbb95ab",
+              "actual_sha256": "0d9908ef9f790199f5bb1e2e0e81fc8bf76ec980b40069c47d217fa0cdbb95ab",
+              "expected_bytes": "7974",
+              "actual_bytes": "7974",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "bd36961976e446542245aeed6189575242f1e4e9f990c42c968a34a7d4318fb4",
+              "actual_sha256": "bd36961976e446542245aeed6189575242f1e4e9f990c42c968a34a7d4318fb4",
+              "expected_bytes": "73112",
+              "actual_bytes": "73112",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "d9757d3944460916c045fa8bbbd5954d0bd0d328aee2dc3ced2c401c30aa3b46",
+              "actual_sha256": "d9757d3944460916c045fa8bbbd5954d0bd0d328aee2dc3ced2c401c30aa3b46",
+              "expected_bytes": "4885",
+              "actual_bytes": "4885",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "time_limit",
+          "run_id": "07e1fd0b-36c9-465b-9d2e-0047471893c0",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "noc.xy.v1",
+          "model_schemas": [
+            {
+              "schema_name": "noc.transaction",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "noc.transfer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "time_limit",
+          "partial": false,
+          "committed_events": "15",
+          "pending_events": "1",
+          "start_ps": "0",
+          "end_ps": "65",
+          "run_id": "07e1fd0b-36c9-465b-9d2e-0047471893c0",
+          "counts": {
+            "requests": 0,
+            "model_records": 11,
+            "records": 70,
+            "summary": 46
+          },
+          "results_sha256": "bd36961976e446542245aeed6189575242f1e4e9f990c42c968a34a7d4318fb4"
+        },
+        "success": true
+      },
+      {
+        "index": 23,
+        "config": "examples/soc/noc-xy.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-xy/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-xy/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-xy/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-xy/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/soc/noc-xy.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.002856
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/soc/noc-xy.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-xy/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.985543
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-xy/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__noc-xy/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.01047
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "bebc31b0ebbd4d5aa9afa68876eb0b19a8c2dd966a1814e35983d915484baccd",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "6d912fb001fce8c4b343b8fe601e3ec063bc4b1051e80ed9a03edf25c5d8cdc1",
+              "actual_sha256": "6d912fb001fce8c4b343b8fe601e3ec063bc4b1051e80ed9a03edf25c5d8cdc1",
+              "expected_bytes": "17778",
+              "actual_bytes": "17778",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "f6fb057c86b05228be5f971d401309f642c1c88c49ebcfd91e5fccb04263c381",
+              "actual_sha256": "f6fb057c86b05228be5f971d401309f642c1c88c49ebcfd91e5fccb04263c381",
+              "expected_bytes": "123003",
+              "actual_bytes": "123003",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "31ac8043f343347d8f47478308091b5f6bffc465876ded723cec479d5440e0f2",
+              "actual_sha256": "31ac8043f343347d8f47478308091b5f6bffc465876ded723cec479d5440e0f2",
+              "expected_bytes": "9921",
+              "actual_bytes": "9921",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "30ea88bb-7615-4c5e-8f63-5272fb05ea59",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "noc.xy.v1",
+          "model_schemas": [
+            {
+              "schema_name": "noc.transaction",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "noc.transfer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "8",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "70",
+          "run_id": "30ea88bb-7615-4c5e-8f63-5272fb05ea59",
+          "counts": {
+            "requests": 0,
+            "model_records": 4,
+            "records": 154,
+            "summary": 94
+          },
+          "results_sha256": "f6fb057c86b05228be5f971d401309f642c1c88c49ebcfd91e5fccb04263c381"
+        },
+        "success": true
+      },
+      {
+        "index": 24,
+        "config": "examples/soc/soc-capacity-stop.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-capacity-stop/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-capacity-stop/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-capacity-stop/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-capacity-stop/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/soc/soc-capacity-stop.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.002657
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/soc/soc-capacity-stop.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-capacity-stop/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.969359
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-capacity-stop/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-capacity-stop/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.006615
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "acd87e55cd803d8b6b4bee4d1f000eb0895201dc52563dfad7efdf73ff7d1eff",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "2f1fd04a1f05613d7f631813b1ec87ddfaffbf406cb5d0b195e6be271cd4a08f",
+              "actual_sha256": "2f1fd04a1f05613d7f631813b1ec87ddfaffbf406cb5d0b195e6be271cd4a08f",
+              "expected_bytes": "3106",
+              "actual_bytes": "3106",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "0ebd97f12a8e280e74683116e254bf32063fb4c050b4fae39ddc478b79e695b9",
+              "actual_sha256": "0ebd97f12a8e280e74683116e254bf32063fb4c050b4fae39ddc478b79e695b9",
+              "expected_bytes": "51641",
+              "actual_bytes": "51641",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "52de3f05c8bb356e3a39320d29d35d99db8425a288706975b7e2533f5848d1ed",
+              "actual_sha256": "52de3f05c8bb356e3a39320d29d35d99db8425a288706975b7e2533f5848d1ed",
+              "expected_bytes": "3523",
+              "actual_bytes": "3523",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "time_limit",
+          "run_id": "abb3666a-60c7-4b49-9cb2-3a2ed5f754bf",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "soc.shared.v1",
+          "model_schemas": [
+            {
+              "schema_name": "soc.transaction",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "soc.transfer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "time_limit",
+          "partial": false,
+          "committed_events": "6",
+          "pending_events": "1",
+          "start_ps": "0",
+          "end_ps": "40",
+          "run_id": "abb3666a-60c7-4b49-9cb2-3a2ed5f754bf",
+          "counts": {
+            "requests": 0,
+            "model_records": 4,
+            "records": 28,
+            "summary": 35
+          },
+          "results_sha256": "0ebd97f12a8e280e74683116e254bf32063fb4c050b4fae39ddc478b79e695b9"
+        },
+        "success": true
+      },
+      {
+        "index": 25,
+        "config": "examples/soc/soc-round-robin.ini",
+        "paths": {
+          "run_dir": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-round-robin/run",
+          "results_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-round-robin/run/results.json",
+          "manifest_json": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-round-robin/run/manifest.json",
+          "viewer_html": "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-round-robin/viewer.html"
+        },
+        "commands": {
+          "validate": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "validate",
+              "--config",
+              "examples/soc/soc-round-robin.ini"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.002393
+          },
+          "run": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "run",
+              "--config",
+              "examples/soc/soc-round-robin.ini",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-round-robin/run"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 1.978536
+          },
+          "view": {
+            "argv": [
+              "/tmp/dir-extension-example-final.glyaFi/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-round-robin/run/results.json",
+              "--output",
+              "/tmp/dir-extension-example-final.glyaFi/runs/examples__soc__soc-round-robin/viewer.html"
+            ],
+            "exit_code": 0,
+            "duration_seconds": 0.007514
+          }
+        },
+        "remaining_temp_or_observation_paths": [],
+        "manifest": {
+          "exists": true,
+          "sha256": "407ccbb333f3ddb4eabbf13138a3a4213dde6b72b6c78f6ec352254827f6c127",
+          "file_checks": [
+            {
+              "name": "diagnostics.jsonl",
+              "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "actual_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "expected_bytes": "0",
+              "actual_bytes": "0",
+              "valid": true
+            },
+            {
+              "name": "events.csv",
+              "expected_sha256": "f3dc88c910634b2cf0837858c4cb7084df61d89d9e12cfba66734162fe5d49f1",
+              "actual_sha256": "f3dc88c910634b2cf0837858c4cb7084df61d89d9e12cfba66734162fe5d49f1",
+              "expected_bytes": "7589",
+              "actual_bytes": "7589",
+              "valid": true
+            },
+            {
+              "name": "results.json",
+              "expected_sha256": "2d7d4351bc98506d95d7eb54f5b0802cdd1797646348c3574174c7ea5324e67e",
+              "actual_sha256": "2d7d4351bc98506d95d7eb54f5b0802cdd1797646348c3574174c7ea5324e67e",
+              "expected_bytes": "66778",
+              "actual_bytes": "66778",
+              "valid": true
+            },
+            {
+              "name": "summary.csv",
+              "expected_sha256": "50fbac91f823631ce14ffaebdcf0f9f5c47e0112b64f0f67ea7852c0673ee893",
+              "actual_sha256": "50fbac91f823631ce14ffaebdcf0f9f5c47e0112b64f0f67ea7852c0673ee893",
+              "expected_bytes": "3608",
+              "actual_bytes": "3608",
+              "valid": true
+            }
+          ],
+          "status": "complete",
+          "schema_version": 2,
+          "termination": "events_exhausted",
+          "run_id": "a50f1003-abe0-4e42-a535-0bc92cba913e",
+          "all_file_hashes_and_sizes_valid": true
+        },
+        "result": {
+          "schema_version": 2,
+          "model_profile": "soc.shared.v1",
+          "model_schemas": [
+            {
+              "schema_name": "soc.transaction",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "soc.transfer",
+              "schema_version": 1
+            }
+          ],
+          "termination": "events_exhausted",
+          "partial": false,
+          "committed_events": "10",
+          "pending_events": "0",
+          "start_ps": "0",
+          "end_ps": "100",
+          "run_id": "a50f1003-abe0-4e42-a535-0bc92cba913e",
+          "counts": {
+            "requests": 0,
+            "model_records": 6,
+            "records": 70,
+            "summary": 35
+          },
+          "results_sha256": "2d7d4351bc98506d95d7eb54f5b0802cdd1797646348c3574174c7ea5324e67e"
+        },
+        "success": true
+      }
+    ],
+    "success_count": 25,
+    "failure_count": 0,
+    "all_cli_steps_exit_zero": true,
+    "manifest_reference_count": 100,
+    "all_manifest_hashes_and_sizes_valid": true,
+    "remaining_temp_or_observation_paths": [],
+    "all_passed": true,
+    "summary": {
+      "profile_counts": {
+        "ahb.transaction.v1": 2,
+        "axi4.transaction.v1": 1,
+        "can.cc.ideal.v1": 3,
+        "can.cc.multibus.v1": 2,
+        "can.fd.precomputed.v1": 1,
+        "ethernet.l2.100base-t1.v1": 1,
+        "ethernet.l2.qos.v1": 2,
+        "ethernet.l2.store-forward.v1": 2,
+        "ethernet.l2.store-forward.v2": 4,
+        "ethernet.l2.vlan.v1": 2,
+        "memory.ipc.transaction.v1": 1,
+        "noc.xy.v1": 2,
+        "soc.shared.v1": 2
+      },
+      "output_schema_version_counts": {
+        "1": 3,
+        "2": 22
+      },
+      "termination_counts": {
+        "events_exhausted": 17,
+        "time_limit": 8
+      },
+      "total_committed_events": 6489,
+      "manifest_reference_hash_checks_valid": true,
+      "remaining_temp_or_observation_path_count": 0
+    },
+    "prior_browser_evidence": {
+      "report_path": "/tmp/dir-extension-example-audit.json",
+      "report_sha256": "f5c9ff28d9fe0526067851af682cd9ec71708b3886a5363157a8c3927d7ed621",
+      "browser_gates_passed": true,
+      "binary_sha256": "2ccdcf8aacc5c9ed8bbc117c95ddf2760ddad29a703e39a10a798454bc5e911f",
+      "build_source_sha256": "79bd1bd9bdb5cf9eb8ca24314f4300917d58cd66a4737687bf9cb3f6f480b151"
+    },
+    "final_independent_check": {
+      "problems": [],
+      "all_passed": true
+    }
+  },
+  "review": {
+    "status": "passed",
+    "scope": "Registered engine, lifecycle, atomic effects, output/no-clobber publication, diagnostic sequencing, build and live configuration provenance",
+    "resolved_findings": [
+      "Freeze observation spool before finish and preserve original I/O diagnostic",
+      "Canonical direct-export diagnostic sequence and boundary time",
+      "Selected profile/model descriptor versions and sorted unique metadata",
+      "Dirty/untracked source and optional adoption ledger/toolchain content identity",
+      "Actual common execution settings take precedence over captured source values",
+      "Live generic channel initial state agrees with execution while original value lineage remains available"
+    ]
+  }
+}

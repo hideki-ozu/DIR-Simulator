@@ -1,0 +1,3402 @@
+{
+  "record_type": "product-execution",
+  "product_execution": true,
+  "recorded_at_utc": "2026-10-07T15:22:34.781161+00:00",
+  "integration_status": "passed",
+  "base_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+  "working_tree_dirty": true,
+  "scope": [
+    "can.ethernet.gateway.v1",
+    "ethernet.l2.dynamic.v1",
+    "ethernet.tsn.v1"
+  ],
+  "architecture": [
+    "Single registered Engine and FES with private staged network coordinator",
+    "Native CAN and VLAN record schemas retained; media-qualified composite origin references",
+    "Checked planning and effect reservation precede commit; normal time_limit/events_exhausted stops keep partial=false",
+    "CLI validate/run/view, schema-2 five-file result publication, metrics and offline Viewer"
+  ],
+  "build_identity": {
+    "binary_sha256": "2f0d87205ae0d9c9259b1c8c5a4542c933da34bc4b409f8a3aca7eff40256c6f",
+    "build_source_sha256": "af153a1694952ae8075f30f0cc9c3b7f7c39353dcdec7e2bc1aa6740c538df90",
+    "cargo_lock_sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+    "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7",
+    "target_triple": "x86_64-unknown-linux-gnu",
+    "git_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+    "git_dirty": "true",
+    "runtime_version": "0.1.0"
+  },
+  "source_manifest_sha256": "ef697c21da84b378150c68a17061a87f262552007a063e3efd837f96124a1b45",
+  "source_files": [
+    {
+      "path": "Cargo.lock",
+      "sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc"
+    },
+    {
+      "path": "crates/dir-simulator/Cargo.toml",
+      "sha256": "f3e47338d3831c315c6e0d9ed8c6d4c552f5ec5df8697d231c7b0ee265653fd4"
+    },
+    {
+      "path": "crates/dir-simulator/build.rs",
+      "sha256": "6720e9a190c90baa6e0c9387a3094a3dd24a6a86eed0f758735716186364ea22"
+    },
+    {
+      "path": "crates/dir-simulator/src/allocation.rs",
+      "sha256": "6c299edd05d9286fb17ec3ab349871f779337f6beec35192782ba3b647204c6d"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/axi.rs",
+      "sha256": "0c5bc31d249b69c6cdf6968d1f30dfdf65577a2dbbb4591e0b8d8abfd82c639e"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/can/tests.rs",
+      "sha256": "e9c52637371cd8de5060a2034690e762783075c97f97345f47bd49a7105cb5c5"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/can.rs",
+      "sha256": "926074b9288768968a11e36171b1ddf7517ab15f73b774c964c82767e6b780d0"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/can_ethernet.rs",
+      "sha256": "7367513f6c0e2e7c6bbc6e526022f383e6933b080f6e7ea2e42a41dbb4248b98"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/canfd.rs",
+      "sha256": "9ce70bb4f35012d670b181d03c9224b32652d83c18c45a371f6eb31fdc9a03de"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/editor_api_tests.rs",
+      "sha256": "f6387fb620542e9b3804edb51122f9c529700aea36f80423078753f97a289a1a"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ethernet/dynamic.rs",
+      "sha256": "7a5a12dba79e38140d2bc687c5069ad045c51b771e72b54fdc7f5bdb2bd3c534"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ethernet/tests.rs",
+      "sha256": "b5fcd2af750e56a2afe5f4faedb0f3ed9df13bb4fd58ad9ffa44b500cbe7777e"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ethernet/tsn.rs",
+      "sha256": "da3dc76bcdf0098b2b953a1f35970d0032b5ca83314d4c2227d4f035b84ed921"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ethernet.rs",
+      "sha256": "69e21f97280969e9340e3d39fcb6faacb5baea9c115f77b20a7f2c868ba32cd9"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/gateway.rs",
+      "sha256": "b809a9c4ce08a161026d821c8fa89420b35c071dbc9db7feb80acb7b7cc11b3d"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/json_diagnostics.rs",
+      "sha256": "d3cbf3167c772511a4627802b69e2c266fb7d44b9c2591088bd2908611d9759f"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/memory_ipc.rs",
+      "sha256": "670c54011cf845f1cca1fc6e1f99be123d37cd2e2861302e451ef64b20431dfb"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ned/tests.rs",
+      "sha256": "c72c66c33cc775afa8771af20ef586230a1e773ade4601fb802ba5d206a62219"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ned.rs",
+      "sha256": "89b5f74da2b5b42fc58a80044f018779fa1ad1cda3f58e55bf43716fdeecd886"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/topology.rs",
+      "sha256": "6300b17ae5cb590d2d91748fa29adcc213f60f62040b6f8cd8524a0501f95365"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network.rs",
+      "sha256": "3790a8e861841aa9258e7aa89583732bf293922cee43b3827135d3c46cbea72f"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/provenance.rs",
+      "sha256": "308b9659b0f03012f655b5fa99c80a76b6261f9cbd09419966fd58d826d942e4"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/soc.rs",
+      "sha256": "d2899837921393698739bb9f4bedaad8c61bf5950140bdb0a145dfa1756c0258"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "sha256": "62f958dfbd4f5c81254bfa2570aee12ac74e0775b0a24d89cf3418a03d38d7c8"
+    },
+    {
+      "path": "crates/dir-simulator/src/input.rs",
+      "sha256": "7bd2b39c9ac8c03d1129bf32246c9897d99d7a85ffb890c76c72ed4c6bb95bd8"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/axi.rs",
+      "sha256": "8dd682727f513c68f6d4e3e2b14d4ba8db9981c7704245ef93d5adcae2dc5e5b"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/can.rs",
+      "sha256": "017bea2d68f5e07cd28c9c76ae12c2aa9990516c9a552e4df3d46d81a5aa08b6"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/can_ethernet.rs",
+      "sha256": "56ca0697e213d7c7d5f615caf3861fe828e80b88b4495d1f17420398b3febf3a"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/canfd.rs",
+      "sha256": "6e4eed941a8fe29f59ab45c918ef8b62ca9f5316e930993e7248f103caac6674"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/common.rs",
+      "sha256": "75694192a86776adcfba176e95f11640adac4f675e2a5bc5134d30831179a361"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/ethernet/dynamic.rs",
+      "sha256": "cc6faf381101e872589e375dd0c79170dd47e4372fb4fc62c2ae821bd9565905"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/ethernet/tsn.rs",
+      "sha256": "885329fdcdc19a1df0216e77d267363c67fca6499472d9d9a14e5769425ea828"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/ethernet.rs",
+      "sha256": "a626ca577c768d7e824bc98097fd6f5fcb255e8d4385804e2b40a927c607116f"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/gateway.rs",
+      "sha256": "a2e294aaaae6e178ce913f5c25d586f3fddc869c8423e5a0a4c43cb8f51a9f3c"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/memory_ipc.rs",
+      "sha256": "3425346b7bd29242393a844e7c43e2af8115879ae7c8daee4ea89684e38b183b"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/soc.rs",
+      "sha256": "609a59d49825eb9c4e8a01c8c413cfc470b61466624647f137b9da55da93421f"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot.rs",
+      "sha256": "3f45283155ab787d97e241807a044e7f2ea30d9701c87e03597fbe924e3cad1d"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/axi.rs",
+      "sha256": "6ee551e711a442fc45b0ed1051e6d4d23808b9bd0004c6d5eadc1a21d4c3d169"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/can.rs",
+      "sha256": "92b0fe28035fe52bc740e683d496acfa5b28e4b79786436c91662997c682c0f3"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/can_ethernet.rs",
+      "sha256": "b851d612c1c7591c973a0f66c45e5b87ec56df7a3a4d4cf2eb30f890dc95c57d"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/canfd.rs",
+      "sha256": "3eca46a8e66cedb3cc2038098119b801bc4ad8b20d9e2ba0d4f6237275942787"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/common.rs",
+      "sha256": "0c30dd2ae55d11a98addccc2ffb1c44a695d6b3650bba685e3f4540e22c46d99"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/ethernet/dynamic.rs",
+      "sha256": "bb304a9715e27d46ae663ae84df798dc2c84c6dce7387dd9c0d5145ec84e2610"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/ethernet/tsn.rs",
+      "sha256": "fa474525b11e6f30181f780ff7470b01a1bb3241abb01662dda53ed996ffe092"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/ethernet.rs",
+      "sha256": "a939ed331b9da01fd8077eb267a2c8985708a2277604d458ef7470748df38041"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/gateway.rs",
+      "sha256": "748ff29f2c7d8df33d1018236b4bd98c8168f408c3a63a3b1e9d95af9eaa6bc5"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/memory_ipc.rs",
+      "sha256": "ceb8f595c37a245ec4ce506afe278f0368064211288c050dc21452eef6e8314e"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/network.rs",
+      "sha256": "fa0cdaae75e56025934dcfa559a03f26030d65f9030f550eb30d233c22517c0c"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/prepared.rs",
+      "sha256": "40dd60200973fa3ec52730f09f74b43d4ce557e327c062a1f93a7a154159e277"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/soc.rs",
+      "sha256": "d26b723b22e4a066e5c2bbc92e1087468cb1226b0167ed60d1bb0c0fe7dfb30f"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types.rs",
+      "sha256": "ce5199fd0d1ced0a06691e6cdf4dd85e59adea1dbf4a59741bda3c698b20f69a"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib.rs",
+      "sha256": "ef4d98cfd432608ffcca8b40d2de3d08118caaf5193cbddcaf33e9e9f3de5ed2"
+    },
+    {
+      "path": "crates/dir-simulator/src/main.rs",
+      "sha256": "9c07a7e7e4737409e2d6140dd927d569e9a44426b467e606a7e4b5851899ed66"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/aggregate.rs",
+      "sha256": "cfd9952fa074a405fd6821cbc84ff9a79707a13026b2329988b529ecd0711c30"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/axi.rs",
+      "sha256": "008771a004dc5f993fa01f6a60dfdff66ca14f1fbe0d9c8552729f9193fc158d"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/canfd.rs",
+      "sha256": "454fb7150c159fcfab009af94a0f4e44fee257a51751d0176bec7e02a7e7149d"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/csv.rs",
+      "sha256": "4872d34e8492d1e9a6ec7546de5c6af90a98a3b9ce26a6ea9a6688c84f54b70b"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/disk_sort.rs",
+      "sha256": "50e38134aa66eab3328c3cfd85bef22b67c6c141a2a4773fbe19c56b0586c14a"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/ethernet/flow.rs",
+      "sha256": "32a4d71d548fd8cd5cf950948cbc4c4cf9de2ee7d7e235d04c95b8a14a496fb8"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/ethernet/media.rs",
+      "sha256": "0db5b887bcff07e9f98bd0966c3f33998e869194481201a2dae7dbcb46757505"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/ethernet.rs",
+      "sha256": "70b3241ea6d4b27dfa98a219415fb7e4856dbd0cecc33e640576c389616b67ad"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/json.rs",
+      "sha256": "fdcabcef7d5566ac4bf95e4dbeaf7a646cb54dc4a7aa74b8033bfb45728255d9"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/memory_ipc.rs",
+      "sha256": "0e620e0fad08f63fb53fdd4d22a8a3b75a3774aed2b51f1d8b26ddaacfa4a646"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/metadata/reproduction.rs",
+      "sha256": "110e195d722a53110330bb59bfaf54a1b0bee319e8c54c68582bf9460ed84f46"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/metadata.rs",
+      "sha256": "b2f5469838c40d691ad0e6e740d11b50042be9695b55e2a6f6ea9b0fde8d8fac"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/model_records.rs",
+      "sha256": "77f48ceddaf71dbb567e42bf8eb13291d894cd2b1c8d1cb4f4d2c8bf10930b9c"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/network.rs",
+      "sha256": "4497ae96b1e5c9bcbe159e4e34d7f21cd184ea886b8eb5f4e9b31f38f0ad49da"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/preparation.rs",
+      "sha256": "e78bd75280a282a3b60d2ac3b9c6503d07b79f6d62dfd83ddeeecc81e949f419"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/publish.rs",
+      "sha256": "f546fad129a3c34a2089b0dd4d7a1ed254be47a3e243d646df6c6cedfa10f466"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/registered.rs",
+      "sha256": "b5f018272f94b5559a6d73c578aeb3c69282f59be10e37a51e2deb52584fae35"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/reservation.rs",
+      "sha256": "be95bc664439c671ef3e146d013d9bb91424681980900d36835de392fce36992"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/soc.rs",
+      "sha256": "86ce43009140ed0d3f202fdf205274abb6bd6befbbffa10aee82a81d736b2ae3"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/stream.rs",
+      "sha256": "7b16476f7ee35631148d07486363a63892c98fff105230b2dc866bf2f9b0d61c"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/tests.rs",
+      "sha256": "10dea1230306b38979a1dde24bb5caba941cf710e4b01ccf5728e90edd776fa1"
+    },
+    {
+      "path": "crates/dir-simulator/src/output.rs",
+      "sha256": "17a158fe804cea3271779bec04d571a4f73cf8ed37be63972058ec149520624e"
+    },
+    {
+      "path": "crates/dir-simulator/src/registry/mod.rs",
+      "sha256": "43a92eb5e97b842a570bf174c347f0c19913499a18d7f6216c72c248be1f23de"
+    },
+    {
+      "path": "crates/dir-simulator/src/registry/prepare.rs",
+      "sha256": "1d06654d5bca40e474ae0fa8ede90ce9cadb554dc82d035ed169d069c1fcae3a"
+    },
+    {
+      "path": "crates/dir-simulator/src/run.rs",
+      "sha256": "6fe470477d4aa6bbe304cb594a468f24cecc999a42d713941cf4adf7a59bfaf4"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/axi/protocol.rs",
+      "sha256": "ba9d27db6b706c46c337096a4f51d6596422d46f9e4d0856c2afe65ee3efd8a7"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/axi.rs",
+      "sha256": "6de016a370c295c4ffed7e344e24d9b4bfe8d91f981e835caa6bd32c3bec32a4"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can/protocol.rs",
+      "sha256": "2992807158651b2e6f2e08cbf954c1dacb9745e090e8cddfa1f182c357d5b565"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can/tests.rs",
+      "sha256": "3b840c924b526b87b079f3f67f9e2c21095ab62f96793ae7ef87f53ea38e9b69"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can.rs",
+      "sha256": "db061d636e7a74f378bfa723a234f003eb4c50ca6ace96d45a6c6eb8b1afb564"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_archive.rs",
+      "sha256": "c8c71b282a40871790f5a243a848e0ff3fe98de6c2a5594d77dd0de990b16264"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_ethernet/protocol.rs",
+      "sha256": "63933cb3b28400ddd2c2315cbd6bf144b88fd652b0bd503b6aa37b60d3f915a7"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_ethernet.rs",
+      "sha256": "068408c5db84970ea41c42d5650f1d273c03d6207c0b846b310a99298e409d7a"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/canfd/protocol.rs",
+      "sha256": "2dab96bc489ad9cef60eedbeece468588ed03a3ea9de521ebd57b0042a57204c"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/canfd.rs",
+      "sha256": "ef41e0972ba0eec7edd9a07d0dfff32f96c863865f2ded2317458625770976b8"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/engine.rs",
+      "sha256": "1df3c82bd580b0b8d2e2eacbdba863f51be2fbd595cda45c6b1b5ff17a7f62f2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/dynamic.rs",
+      "sha256": "e190911a24b935dd9f1fd7f5538d060e51dc0affdc77c56eec3b1af9b50edece"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/l2.rs",
+      "sha256": "b8335bde2b29bf500911aaa46caae5fbc846ea8a19dbdeb6f34948dceb643d51"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/media.rs",
+      "sha256": "c3bd6e988b12c8ae9ff6b36a8d07b68957d76731ac85d9b5eec9618e3a085f13"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/tests.rs",
+      "sha256": "d45e5218e6d4c5a2c5e99f81a76e5432f18ece6002d52c5ace217d3e78c49c42"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/tsn.rs",
+      "sha256": "ce63ee39d22f5c3a9874f0f766aeb837ab97228aa009187d2a8ff84fd146cd2b"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet.rs",
+      "sha256": "c88c30740c3ba7faebbcb72d70d9a8158082b11dff54399274ea42a338606a18"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/gateway.rs",
+      "sha256": "02134dbe2144e692ce7eaa73240ab216dfcf444ab274e9dcabb4281997088958"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/memory_ipc/protocol.rs",
+      "sha256": "b83a503ab53c3256813612afa4b2e9172e8bacc9dfc40f588dc9cca9f2b50ae3"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/memory_ipc.rs",
+      "sha256": "6f3d46c9d617e7cf81dc76cda483ae1089c5576d699d7ed1faad1ec360e6950a"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network.rs",
+      "sha256": "b223d9bd3d892a075209abd1d5bab0687f57a04154dac41b3538c6c0883bebf6"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/registered.rs",
+      "sha256": "a81fb773312a8a6a60dcd686a0aa492bd16764137431e04b5e236b61ab191729"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/scheduler.rs",
+      "sha256": "15f44401dd2f5b6528a091b9aff2a50ff508d18e2f62ee835426ac826627a06a"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc/protocol.rs",
+      "sha256": "2f445e95fc55ebc059344cc9e612a156e7d0b36c69e114cd1a72d001cbe179fe"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc.rs",
+      "sha256": "3335b0ee430741166bd460b762d2928fd2dee043d05b3c1ff3ad0771a146a020"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/spool.rs",
+      "sha256": "22e004ad362f8ce79ac53c68bad84e16e3b391adca2acb295f44d2a106649c65"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/tests.rs",
+      "sha256": "483cf969a984eafa120452b2ef5912ed79f1960e242b26db9a9fc3c98a7f93e2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/timing.rs",
+      "sha256": "c934952fb18c9e84983b40452fe63b36164ac53d26eb96c4bae5a36818415d5c"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime.rs",
+      "sha256": "d710384693f9aa9405e2938a61b9504b3c4dfe987b7fff50cc044ec1bc8e4fc6"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/analysis.rs",
+      "sha256": "52614b68de2672491b41ac44843e9be5ef7cec61afcba3aa2f4a9d4ac19f98e1"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/assets/index.html",
+      "sha256": "e8042b5daaca2c400c6c19ca09fe3055c7ee967882e1da8e57c4973670f7d930"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/assets/input.js",
+      "sha256": "f80a82a696951435452f14abbe136a61ce24c4ab70be0bac1d197d52f4462e5e"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/assets/style.css",
+      "sha256": "bc356f34998be4dac89654383ae008eb0f7997238140899161252231df8364b5"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/assets/view.js",
+      "sha256": "8e8bdea27a7666cba2e82e2b7f525748dc8130c1e9489c5ed9d5e3cd8061b259"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/builtin.rs",
+      "sha256": "574e85b2cde4d8d2f24bb941f7ef3ae3d6acf0601c39e9241d059e351553335b"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/commands.rs",
+      "sha256": "131f41b1482f2e0ae87fba14da156e141c0246fa3038d1c5bebb07e488a1c0da"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/composition.rs",
+      "sha256": "56fd7f530bb69e203ae4fb55be2ad25832e7af2d63d2819bbd12cd36da9a1d8a"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/composition_tests.rs",
+      "sha256": "9ed9a1fc2fc6eb0298592b61a3d3b4c3404efc5d7f1f2fe4c8fcd446e5de58b2"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/controller.rs",
+      "sha256": "3169d4fda3261ea0c4dd55a5ee2dd68502c5b1131874820d795ed9f64adf768f"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/controller_tests.rs",
+      "sha256": "826d993cd39999358c0c398d4543894a6207c435e37e3fc04e05eead57415e7f"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/input.rs",
+      "sha256": "fffb92a930a848f2140f8afd143a4d2e7fb07a45ab6b4258478c445c1f500f54"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/layout.rs",
+      "sha256": "0c4dcc168cc61a28d6591c70b241cffdf4bf363d5cb7e82c49fd1eefe44b11c4"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/mod.rs",
+      "sha256": "544f6e5cc64f4972744b063ec4bb0b10fc06f68b1a16b817564de9fb2b1a6d30"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/model.rs",
+      "sha256": "96097d4b1f8c51370bd81b635e17647ad65a7cfd2ead03160e3e10c26c23c913"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/output.rs",
+      "sha256": "3b4994cd74f7fd712dfcc432ebb0dfeb72a5466d1750bcfd908804b8d78e06c9"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/output_tests.rs",
+      "sha256": "ac78954da8f7d776b34ac7f5b5cf46163dd58dece96014ad91e0c806b6dbee06"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/server.rs",
+      "sha256": "efb4350e5563334b906e33449f0303eb9e896c52e4280c68cbb0900ca9349bc1"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/settings.rs",
+      "sha256": "e2d3c9d1a76807e7eebc9de978db633f563e25519504452d4509544f5aaca129"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/settings_tests.rs",
+      "sha256": "ca9d9becc75612c134d4241efa475320fbcab3cfcbd1182afba093a5cf74f11c"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/source_index.rs",
+      "sha256": "3d760bf616b6abc2951cef1e6b24e22fac14044301d4154b95ffa0b00fa63c44"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/template.rs",
+      "sha256": "eeebb45da0423a74b639e38b71011f25a39f6b4e921710f180e1cb06e3cd49fc"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/template_tests.rs",
+      "sha256": "23aeeb18cf19fafba00c6d729dc256357acd5735b2bcb54f1afa9aefd1f7717a"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/bus.ned",
+      "sha256": "211d561c0bf23875ce31cac6fac7c3b1a70a2b824eaab62d085cef57a8808058"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/controller.ned",
+      "sha256": "940edee484fa7e3b948cc3eed29df268526e5caed141e05586da73044ec933ef"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/fanout.ned",
+      "sha256": "8fd69b2ecd4d220333ef76556d6ff3b6e6ed4cae567fa4b0f86cbf6a65a44ab7"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/fixed-delay.ned",
+      "sha256": "66268de622b64156cb8950345fa714c3b203c25f6f0e4aab30961cfe1f6a2253"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/gateway-starter.ini",
+      "sha256": "74376aa16fefa5e2dbee829434b5edb69aef8a7dbbb39a11759c242ef49134b4"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/gateway-starter.ned",
+      "sha256": "2779fbe73cc161017567fc9f0f0a1bd02c424caa1a1121b28f882efb99a77ede"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/gateway.ned",
+      "sha256": "27add37056005716e060679ab0d443233af7eaa2e1430c251fd3dc5baf08365b"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/routing-empty.json",
+      "sha256": "88ff5bc13c99ae6092adb3d627b34f04d0535cf31d48a96d4b8ba0e2529c2404"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/routing-gateway.json",
+      "sha256": "d276270b024cbbb839ca32f4b03ff0bba66302121b93c2b8d4c9f89302770d6d"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/starter.ini",
+      "sha256": "0613c4e7d544b5d935138c48bfb12df66f4572f0372b508e8fdc1b05af52f598"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/starter.ned",
+      "sha256": "4e8bf59e4455f52d34689b8d3e1f605dc8680e68dc693845ddc86d4cc9e7b7cf"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/templates/workload.json",
+      "sha256": "c9edc0cd27b0d9692090623e2c7e88d889c11f92cf98c7307ad2b3055f855255"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/tests.rs",
+      "sha256": "22b0b68675d77e37b74f7a72b676c37e16386e6a1c65029741806985eca2eee1"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/ned-editor/view.rs",
+      "sha256": "8c7995b720b19a19e1bad215c2689c82d3cb876f092ab075edd2053a28a5d0f8"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/app.js",
+      "sha256": "0705df4a7eaaad85059ff5525f8cc45d029c5d39949af37783de54c630afa5a3"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/ethernet-app.js",
+      "sha256": "474e114218ade9a18416a121cd6c8d821faa3695c1f4f4ca2e16b51188f02f3f"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js",
+      "sha256": "704e5e9344dd450b9e2d22d34ed0604f8dd5409a66f506519ef8b3f9081c96e1"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/index.html",
+      "sha256": "438bbbdae3334b0c3e0866e9498faf79a368bca67ec45278d91168d4fbb49cfe"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/model.js",
+      "sha256": "f0b43ef7aa0a8c1fce97237afcd2a22abfc1652ddad923d809dee0ab1aa9f7dc"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/style.css",
+      "sha256": "fe65ee0aad1e198f6524f78fd66a13e08e7c0bfbeddeaf5cff80c58d866ba171"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/transaction-app.js",
+      "sha256": "435a81901ac244b1049de609ccd785851330ce7714b35f6223c2fd86de6a7150"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/transaction-model.js",
+      "sha256": "0ace7a251a6edb9cf0d0496d5126a078a1534be2e04562566a74359c416383c2"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/tests.rs",
+      "sha256": "c282c1c92763b20697569d4fc5cd60ecec8afd62823cc75d67cae22d9bcbc822"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer.rs",
+      "sha256": "c6ad4c53a0eee0c4d79f340f22d58579fedbb4df208ab7a0245f3bba395f157a"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool.rs",
+      "sha256": "8210ae0f0a164a39f3c65c49757cd2e05e98155c0ac264c0de7800e1c22c3669"
+    },
+    {
+      "path": "crates/dir-simulator/tests/axi.rs",
+      "sha256": "f23f91c5947b0a79a39114ee8b7fb2459ad7d52e4693b16ff4c36ba5a99c017e"
+    },
+    {
+      "path": "crates/dir-simulator/tests/can_scenarios.rs",
+      "sha256": "26d5d0c632461954b14bd1517580664eb3c96af5a0f4d9fbb82a2a4aec76c465"
+    },
+    {
+      "path": "crates/dir-simulator/tests/canfd.rs",
+      "sha256": "f7ecdb0f5770a0d0c47c0d2885af986fb6913981982fe302339cd3449df4b44c"
+    },
+    {
+      "path": "crates/dir-simulator/tests/cli.rs",
+      "sha256": "b4bcfd3bd9b85a712ea38e4a21ff42a4442900b05a9c90b18b97dac90840bed9"
+    },
+    {
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "sha256": "7dbe11abe6fbd359da2d44f1337865ff62a87e33071bb185377abd13db5fae03"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ethernet.rs",
+      "sha256": "7dcc8a53462653ef57cf58db507512f173b1246b080ea48b3104cfc219ad28b3"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ethernet_media.rs",
+      "sha256": "c50e2bfc1bb633111c67aa8c45113f350ec0cc0bb095af63756d5d8c2a03a5d4"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ethernet_qos.rs",
+      "sha256": "2c3208a3f52cd146efcc78da8abd1e8f9d65988f6235e058fa14e508408ee2f3"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ethernet_vlan.rs",
+      "sha256": "4b3b7b48f9ce55495fc1037c83862bb5a4c5cb9ad1fb79c80cedb0299e0b540a"
+    },
+    {
+      "path": "crates/dir-simulator/tests/event_timing.rs",
+      "sha256": "f10613f66f46a03a80cf8586995de56c6771ca4749fe91a3ab4503b47248b021"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/ethernet_tsn/design-vectors.json",
+      "sha256": "32fe0a093430cdb2650a3974e3ba1fe468ea87fd1ca71974ea559fa20629ec46"
+    },
+    {
+      "path": "crates/dir-simulator/tests/gateway.rs",
+      "sha256": "2d8cbb5d1867a49915d375c499f092bedc2c9664334a9bf0385f8d3ebd965b8c"
+    },
+    {
+      "path": "crates/dir-simulator/tests/memory_ipc.rs",
+      "sha256": "a4cb80a0d8c50eada08f98f2d24ef1d5a356a194bcae05cb78c58a909e7d2463"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_extensions.rs",
+      "sha256": "42605a9ae474cc87ee11d64ff0a93055cb718c63d1fd33549902c1f02d96245b"
+    },
+    {
+      "path": "crates/dir-simulator/tests/preparation_failures.rs",
+      "sha256": "9d2e917f1f532efc9ea78d7750a9df309a7692a8cc56b4431cfda24794400b6d"
+    },
+    {
+      "path": "crates/dir-simulator/tests/provenance.rs",
+      "sha256": "8c6cefc93aced28f844f624cd36705f4078225fa7df58c11692b737187870287"
+    },
+    {
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "sha256": "e6155e3c056876ecad2d38e13be80da7258fba9329764b07df0ffd1bf1e6fd89"
+    },
+    {
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "sha256": "f628fa7c4d12465b5acecace85cdb42863739ab8f3538530c3c1872be296124f"
+    },
+    {
+      "path": "crates/dir-simulator/tests/soc.rs",
+      "sha256": "7d25ebdbc5edaf2e7396d12e8f2f224e78b09ef769fee7f54a58458edfca5067"
+    },
+    {
+      "path": "crates/dir-simulator/tests/spooling.rs",
+      "sha256": "8bd5cea73ca584c3afed86bd233d0018071a88348f19013a7cb6265704322290"
+    },
+    {
+      "path": "crates/dir-simulator/tests/viewer_cli.rs",
+      "sha256": "a283be42361e94800ad1bdec5ee6bb5677e9c17a2d2455b26a5fbef2f82dbcfc"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "dc8a9e7668c882190e58da244ac78e86d0d9875140a6249849f49b74d7382a76"
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "docs/verification/fixtures/network-extensions/can-ethernet/README.md",
+      "sha256": "9ca67f589eeb351aac7d1713acb3b2b102f06a67651f6a5fcad242ead698afb2"
+    },
+    {
+      "path": "docs/verification/fixtures/network-extensions/can-ethernet/expected.json",
+      "sha256": "3098d0300aefffe159e0deb668fe3eda53bb8bdc9e5b9046ffd00f6697ac0bcc"
+    },
+    {
+      "path": "docs/verification/fixtures/network-extensions/design-vectors.json",
+      "sha256": "69e0bb0a76354de0d74cd20f7c4328afc89c4b1bcc9c96675c7a2c61ed31a55f"
+    },
+    {
+      "path": "docs/verification/fixtures/network-extensions/dynamic/README.md",
+      "sha256": "18322c51fdbb1087c476ee96f96ef283aef0fcb802749ce3d758b459276aea34"
+    },
+    {
+      "path": "docs/verification/fixtures/network-extensions/dynamic/expected.json",
+      "sha256": "f2c9d5330ae3b74f8e70772a0ca09acf1fb0eedd1f9a56422fbc0720f89796fb"
+    },
+    {
+      "path": "docs/verification/fixtures/network-extensions/tsn/expected.json",
+      "sha256": "ef2bd0e6c1a406a43af71ee2568e69d80b58a6d285be2624c1c8b7442c678140"
+    },
+    {
+      "path": "examples/can-ethernet/bidirectional-workload.json",
+      "sha256": "df2562311825081d55430fcf436487e754a4c36c074d0a64fad555edb8c6bd6c"
+    },
+    {
+      "path": "examples/can-ethernet/bidirectional.ini",
+      "sha256": "bf92188abeea09df676274227737e8c8c28388e7571e5cdd72128982d4c559fb"
+    },
+    {
+      "path": "examples/can-ethernet/fanout-model.json",
+      "sha256": "f67786fc5b7a40f9b10223d94ee07e64134d2f930af02ccbb944b6e730352e0c"
+    },
+    {
+      "path": "examples/can-ethernet/fanout-workload.json",
+      "sha256": "82a5f2d8e3a29bff020a511df3d7a24f70e4a766d0acd07d230f1cdc26341e95"
+    },
+    {
+      "path": "examples/can-ethernet/fanout.ini",
+      "sha256": "ab200b2cec71d7aedf5609dd24f59a8f1f76c816dc6d9dc72534118d98f5db33"
+    },
+    {
+      "path": "examples/can-ethernet/models/bridge/Main.ned",
+      "sha256": "d2acd8e6f7f5e222c1710bc0ee6b6c1b4dd94d95686290090649adac35527413"
+    },
+    {
+      "path": "examples/can-ethernet/r01-model.json",
+      "sha256": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae"
+    },
+    {
+      "path": "examples/can-ethernet/r01-workload.json",
+      "sha256": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855"
+    },
+    {
+      "path": "examples/can-ethernet/r01.ini",
+      "sha256": "55a7d4d34a45aa5cee9154a0a8751879d2955d219a008b6572ec978a5c4a05de"
+    },
+    {
+      "path": "examples/can-ethernet/r02-model.json",
+      "sha256": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656"
+    },
+    {
+      "path": "examples/can-ethernet/r02-workload.json",
+      "sha256": "ea01dafe5d00d8baec5e6ce78e8e782866744f62545ede2746ed53c813d8f2e6"
+    },
+    {
+      "path": "examples/can-ethernet/r02.ini",
+      "sha256": "0ffd28fc899bdc17d274b2a034cdeb983745918c32cffb826be352f35e9b77b8"
+    },
+    {
+      "path": "examples/can-ethernet/rx-limit-model.json",
+      "sha256": "bd326d6d807c1a8ff4b2b036a031cab921028e1ee425e6834e7dd428db5d22f7"
+    },
+    {
+      "path": "examples/can-ethernet/rx-limit-workload.json",
+      "sha256": "a62589eba66c6dc77af53833aeb8d4b2c6f8a4490493086368da1ab8c429a0b6"
+    },
+    {
+      "path": "examples/can-ethernet/rx-limit.ini",
+      "sha256": "2b15fc41e98a718cc62409251cc3ffe0dfd7497931872ed18c4604fa1c09a857"
+    },
+    {
+      "path": "examples/ethernet/dynamic/empty.ini",
+      "sha256": "46b5af3b102776bbd74fb91eed4ae2822dbcc3a3f62ff40432ac1f1ac8311fad"
+    },
+    {
+      "path": "examples/ethernet/dynamic/empty.json",
+      "sha256": "eaff7af12b75e1534e540096782f1bb9f9e938cd3d8a2b8bb2ec95d580b13c7d"
+    },
+    {
+      "path": "examples/ethernet/dynamic/membership.ini",
+      "sha256": "bc4a7dffbe2f0d764b06961f3a7280a87ff5b4b50c41ed6a4ee3bf724230ebbc"
+    },
+    {
+      "path": "examples/ethernet/dynamic/membership.json",
+      "sha256": "2af63c2939dd9234f79dc20667537abe0f82aed49da5f1203f1e746020869e13"
+    },
+    {
+      "path": "examples/ethernet/dynamic/model.json",
+      "sha256": "5d691c863c29a1ede29649c038d608baf91d448a846295fe31e095f370e14ae0"
+    },
+    {
+      "path": "examples/ethernet/dynamic/models/ethdynamic/Main.ned",
+      "sha256": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d"
+    },
+    {
+      "path": "examples/ethernet/dynamic/registration.ini",
+      "sha256": "975571d0819827b2024afbbece05bc2c7acd7c433077ed625db19cd580481931"
+    },
+    {
+      "path": "examples/ethernet/dynamic/registration.json",
+      "sha256": "7de82ff2ed959d39b8131512b6181abbf1f7d76ea779f3de750b5276807caf2e"
+    },
+    {
+      "path": "examples/ethernet/dynamic/topology.ini",
+      "sha256": "77f6ce4bde5fd4fc6b4f730623ad176582ee2bc30f408b97cb13094b9a9cd4b3"
+    },
+    {
+      "path": "examples/ethernet/dynamic/topology.json",
+      "sha256": "7756cca107d2b28d0979cd21472a69db9ab3d4f2da41cfe442aaa93abb38463c"
+    },
+    {
+      "path": "examples/ethernet/dynamic/unicast.ini",
+      "sha256": "84cc485d6d0a4d878b14de7d2bdff6e7d7e8c124a37d677513f1764accb33e34"
+    },
+    {
+      "path": "examples/ethernet/dynamic/unicast.json",
+      "sha256": "5912c001b3468cb223e5165e72f56e02c05cf76f629f3fa7a6211a464fdcf3d1"
+    },
+    {
+      "path": "examples/ethernet/tsn/cbs-gated-model.json",
+      "sha256": "cac9820fe24fff0543bb61b05159b5b3d4d0213c37c717376f073beb6f1a23de"
+    },
+    {
+      "path": "examples/ethernet/tsn/cbs-gated-workload.json",
+      "sha256": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181"
+    },
+    {
+      "path": "examples/ethernet/tsn/cbs-gated.ini",
+      "sha256": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548"
+    },
+    {
+      "path": "examples/ethernet/tsn/cbs-model.json",
+      "sha256": "a33137294b0938db856fba5998d13d8a56695f4c888ae9d1945950d2ba9481f2"
+    },
+    {
+      "path": "examples/ethernet/tsn/cbs-workload.json",
+      "sha256": "a280693d037e6b2fbe78003334b00e9bc342f655e14ea1cdf15ae5ad33c8aafb"
+    },
+    {
+      "path": "examples/ethernet/tsn/cbs.ini",
+      "sha256": "73159e73edb1c491543a41a2a6fe3777b40cbfac4c08365e6d5e65270cd30159"
+    },
+    {
+      "path": "examples/ethernet/tsn/models/ethtsn/Main.ned",
+      "sha256": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+    },
+    {
+      "path": "examples/ethernet/tsn/psfp-gate-model.json",
+      "sha256": "8fc03b0691223113cd33ae9e6620bd508b3bcc610934d9a33b5deaf5c6f2200c"
+    },
+    {
+      "path": "examples/ethernet/tsn/psfp-gate-workload.json",
+      "sha256": "613d1ea23c33438faf186a27204f7aae732fcbf77cb3dcb9ec743bb7d9efe13c"
+    },
+    {
+      "path": "examples/ethernet/tsn/psfp-gate.ini",
+      "sha256": "a48e85954a98e0c69dcc428582e09c14d2a3676e570b0ead3a78b4ffe979a0b7"
+    },
+    {
+      "path": "examples/ethernet/tsn/psfp-model.json",
+      "sha256": "88a0671a6f7eab7438ef7ffc37704614f3b2af2f79852c4ddee89f5b63d3b2cf"
+    },
+    {
+      "path": "examples/ethernet/tsn/psfp-workload.json",
+      "sha256": "2bb4b24bbcaa9a91a7ccda27dec84c2e567d1468c68982cf5d7797b68504fade"
+    },
+    {
+      "path": "examples/ethernet/tsn/psfp.ini",
+      "sha256": "8d2f4ddc5408bed1180a519ad8b8f83f658dfdb96cc2d3481b09933857eaf7aa"
+    },
+    {
+      "path": "examples/ethernet/tsn/tas-model.json",
+      "sha256": "27386373b386cd21d9b31e95caa26059df31dc401cc33d080e593032e12a6410"
+    },
+    {
+      "path": "examples/ethernet/tsn/tas-update-model.json",
+      "sha256": "cbd550360caab0592711a2f1a57e9c284324b6f7256174770f1f535b77184894"
+    },
+    {
+      "path": "examples/ethernet/tsn/tas-update-workload.json",
+      "sha256": "e18e639ca291d644b57ef83201e3bf9f5813d161752071c6caabada18d5af78a"
+    },
+    {
+      "path": "examples/ethernet/tsn/tas-update.ini",
+      "sha256": "89b4b6e7fefc319ffff7a1a1566ae2cafd60e264684edd494191ca3c735072ea"
+    },
+    {
+      "path": "examples/ethernet/tsn/tas-workload.json",
+      "sha256": "de9ecd37c6bd0bfb2f73b69b76bb20359b9de27646d8cb762ed44087ba06cfb8"
+    },
+    {
+      "path": "examples/ethernet/tsn/tas.ini",
+      "sha256": "3c8c2fd55985f1d586392031c4082089637ca151eee56829814fe48850c6f2b4"
+    }
+  ],
+  "javascript_test_files": [
+    {
+      "path": "tests/ethernet_viewer_model.test.cjs",
+      "sha256": "deab06304687a34a0211d897ed6621f489b3f06705f2027362482aad8746ed53"
+    },
+    {
+      "path": "tests/media_fd_viewer_model.test.cjs",
+      "sha256": "cd04766e97eb37c5a47b2a646f1b0c8ada83875cc976e7d317562e875f51a433"
+    },
+    {
+      "path": "tests/ned_editor_browser.test.cjs",
+      "sha256": "aac85c05cf9d8f9e514614c75fcb6bc07df7bc8a9aadddcc33163fe0e472ed7d"
+    },
+    {
+      "path": "tests/ned_editor_composition_browser.test.cjs",
+      "sha256": "e3eff02cedc70065af84e7e51211a3a4cd6963042baba401bdc56887acde7419"
+    },
+    {
+      "path": "tests/ned_editor_recovery.test.cjs",
+      "sha256": "5e39cd0c80322b50325aef800d3d167fd37c7c79feef6e64577c40d6209d26cc"
+    },
+    {
+      "path": "tests/ned_editor_ui.test.cjs",
+      "sha256": "eba0a5509a35af575b2d4179f4f132dd940121d899af897046a029908291fbb2"
+    },
+    {
+      "path": "tests/network_viewer_model.test.cjs",
+      "sha256": "ddbf0af6943d5d507162466d2d387909bc1a1ff9d14181ba9a8d4c72d5532b4d"
+    },
+    {
+      "path": "tests/simulator_binary.test.cjs",
+      "sha256": "3516298d52576e7222be93b247d2b4aee29b8bbd6318b0ac9bfd6cefa5747fec"
+    },
+    {
+      "path": "tests/transaction_viewer_model.test.cjs",
+      "sha256": "0d2181c73127119f0f2a6457d4733fc1fa1270736b297b7e6e9d4f284e479b14"
+    },
+    {
+      "path": "tests/viewer_model.test.cjs",
+      "sha256": "b4dffddababc0ae4c4d4fea125649dbc44ae24e9223a1f0d8906b10ce2e08d5b"
+    },
+    {
+      "path": "tests/network_viewer_browser.cjs",
+      "sha256": "803e9554c1c7cc8e0a7c53fd37b6fa1270dd026cff87d43a33d950906d5de32d"
+    }
+  ],
+  "independent_expected": {
+    "dynamic": {
+      "schema_version": 1,
+      "profile": "ethernet.l2.dynamic.v1",
+      "fixture": "examples/ethernet/dynamic/unicast.ini",
+      "wire_bits": "608",
+      "occupied_bits": "704",
+      "hops": [
+        {
+          "from": "Net.a.tx",
+          "sof_ps": "0",
+          "eof_ps": "608000",
+          "release_ps": "704000",
+          "arrival_ps": "609000"
+        },
+        {
+          "from": "Net.s1.tx_b",
+          "sof_ps": "611000",
+          "eof_ps": "1219000",
+          "release_ps": "1315000",
+          "arrival_ps": "1220000"
+        },
+        {
+          "from": "Net.s2.tx_a",
+          "sof_ps": "1222000",
+          "eof_ps": "1830000",
+          "release_ps": "1926000",
+          "arrival_ps": "1831000"
+        }
+      ],
+      "initial_roles": {
+        "Net.s2.tx_b": "root",
+        "Net.s3.tx_b": "root",
+        "Net.s2.tx_c": "designated",
+        "Net.s3.tx_c": "alternate"
+      },
+      "registration_intervals": [
+        {
+          "port": "Net.s1.tx_c",
+          "vid": 20,
+          "start_ps": "100",
+          "end_ps": "2100"
+        }
+      ],
+      "boundaries_ps": [
+        "0",
+        "100",
+        "1100",
+        "2100",
+        "609000",
+        "611000",
+        "800000",
+        "900000",
+        "1000000",
+        "1220000",
+        "1831000",
+        "5000000"
+      ]
+    },
+    "tsn": {
+      "schema_version": 1,
+      "cbs_sof_ps": [
+        "0",
+        "2688000"
+      ],
+      "cbs_gated_sof_ps": [
+        "0",
+        "3688000"
+      ],
+      "tas_sof_ps": [
+        "128000",
+        "2000000"
+      ],
+      "tas_update_sof_ps": [
+        "0",
+        "1000000"
+      ],
+      "psfp_colors": [
+        "green",
+        "yellow",
+        "red",
+        "yellow",
+        "green"
+      ],
+      "psfp_gate_verdict": "psfp_gate_closed"
+    },
+    "can-ethernet": {
+      "schema_version": 1,
+      "product_execution": false,
+      "R01": {
+        "native_can_sof_ps": "0",
+        "native_can_eof_ps": "100000000",
+        "observed_ps": "100000000",
+        "ready_ps": "103000000",
+        "offer_ps": "106000000",
+        "ethernet_sof_ps": "106000000",
+        "ethernet_eof_ps": "106576000",
+        "ethernet_release_ps": "106672000",
+        "sink_observed_ps": "110576000",
+        "sink_received_ps": "115576000"
+      },
+      "R02": {
+        "ethernet_sof_ps": "0",
+        "ethernet_eof_ps": "608000",
+        "observed_ps": "1608000",
+        "ready_ps": "6608000",
+        "can_sof_ps": "10608000",
+        "can_eof_ps": "110608000",
+        "can_release_ps": "116608000",
+        "sink_received_ps": "115608000"
+      },
+      "codec": [
+        {
+          "format": "standard",
+          "can_id": 0,
+          "data": "",
+          "hex": "4449524301000000000000",
+          "bytes": 11
+        },
+        {
+          "format": "standard",
+          "can_id": 291,
+          "data": "aabb",
+          "hex": "4449524301000000012302aabb",
+          "bytes": 13
+        },
+        {
+          "format": "extended",
+          "can_id": 536870911,
+          "data": "ffffffffffffffff",
+          "hex": "4449524301011fffffff08ffffffffffffffff",
+          "bytes": 19
+        }
+      ],
+      "R03": {
+        "can_a_sof_ps": "10608000",
+        "can_b_sof_ps": "10608000",
+        "can_a_eof_ps": "110608000",
+        "can_b_eof_ps": "210608000",
+        "can_b_release_ps": "222608000",
+        "rx_released_ps": "10608000"
+      },
+      "rx_limit": {
+        "attempted": 3,
+        "accepted": 1,
+        "rx_full": 2,
+        "max_occupancy": 1
+      }
+    }
+  },
+  "verification": {
+    "rust": {
+      "status": "passed",
+      "environment": {
+        "rust_toolchain_path": "/home/hideki/.cargo/bin",
+        "frozen_marker": "/tmp/dir-network-code-frozen"
+      },
+      "gates": [
+        {
+          "name": "format",
+          "command": "cargo fmt --all -- --check",
+          "exit_code": 0,
+          "log": "/tmp/dir-network-release-format.log"
+        },
+        {
+          "name": "clippy",
+          "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+          "exit_code": 0,
+          "log": "/tmp/dir-network-release-clippy.log"
+        },
+        {
+          "name": "test",
+          "command": "cargo test --locked --workspace",
+          "exit_code": 0,
+          "log": "/tmp/dir-network-release-tests.log"
+        },
+        {
+          "name": "build",
+          "command": "cargo build --locked -p dir-simulator --bin dir-simulator",
+          "exit_code": 0,
+          "log": "/tmp/dir-network-release-build.log"
+        }
+      ],
+      "test_counts": {
+        "by_kind": {
+          "unit": {
+            "passed": 283,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "targets": 2
+          },
+          "integration": {
+            "passed": 188,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "targets": 20
+          },
+          "doc": {
+            "passed": 1,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "targets": 1
+          }
+        },
+        "totals": {
+          "passed": 472,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        "targets": [
+          {
+            "name": "unittests src/lib.rs",
+            "target": "unittests src/lib.rs",
+            "kind": "unit",
+            "passed": 283,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 7.72
+          },
+          {
+            "name": "unittests src/main.rs",
+            "target": "unittests src/main.rs",
+            "kind": "unit",
+            "passed": 0,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 0.0
+          },
+          {
+            "name": "axi",
+            "target": "tests/axi.rs",
+            "kind": "integration",
+            "passed": 11,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.93
+          },
+          {
+            "name": "can_scenarios",
+            "target": "tests/can_scenarios.rs",
+            "kind": "integration",
+            "passed": 5,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 0.02
+          },
+          {
+            "name": "canfd",
+            "target": "tests/canfd.rs",
+            "kind": "integration",
+            "passed": 9,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.96
+          },
+          {
+            "name": "cli",
+            "target": "tests/cli.rs",
+            "kind": "integration",
+            "passed": 8,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.76
+          },
+          {
+            "name": "diagnostics",
+            "target": "tests/diagnostics.rs",
+            "kind": "integration",
+            "passed": 15,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.71
+          },
+          {
+            "name": "ethernet",
+            "target": "tests/ethernet.rs",
+            "kind": "integration",
+            "passed": 6,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.89
+          },
+          {
+            "name": "ethernet_media",
+            "target": "tests/ethernet_media.rs",
+            "kind": "integration",
+            "passed": 14,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.75
+          },
+          {
+            "name": "ethernet_qos",
+            "target": "tests/ethernet_qos.rs",
+            "kind": "integration",
+            "passed": 5,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 3.17
+          },
+          {
+            "name": "ethernet_vlan",
+            "target": "tests/ethernet_vlan.rs",
+            "kind": "integration",
+            "passed": 7,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 14.41
+          },
+          {
+            "name": "event_timing",
+            "target": "tests/event_timing.rs",
+            "kind": "integration",
+            "passed": 1,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 8.05
+          },
+          {
+            "name": "gateway",
+            "target": "tests/gateway.rs",
+            "kind": "integration",
+            "passed": 16,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 3.3
+          },
+          {
+            "name": "memory_ipc",
+            "target": "tests/memory_ipc.rs",
+            "kind": "integration",
+            "passed": 11,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 3.0
+          },
+          {
+            "name": "network_extensions",
+            "target": "tests/network_extensions.rs",
+            "kind": "integration",
+            "passed": 11,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 4.87
+          },
+          {
+            "name": "preparation_failures",
+            "target": "tests/preparation_failures.rs",
+            "kind": "integration",
+            "passed": 2,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 4.01
+          },
+          {
+            "name": "provenance",
+            "target": "tests/provenance.rs",
+            "kind": "integration",
+            "passed": 4,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 3.49
+          },
+          {
+            "name": "registry",
+            "target": "tests/registry.rs",
+            "kind": "integration",
+            "passed": 24,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.85
+          },
+          {
+            "name": "registry_diagnostics",
+            "target": "tests/registry_diagnostics.rs",
+            "kind": "integration",
+            "passed": 8,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.69
+          },
+          {
+            "name": "soc",
+            "target": "tests/soc.rs",
+            "kind": "integration",
+            "passed": 20,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 2.75
+          },
+          {
+            "name": "spooling",
+            "target": "tests/spooling.rs",
+            "kind": "integration",
+            "passed": 5,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 8.99
+          },
+          {
+            "name": "viewer_cli",
+            "target": "tests/viewer_cli.rs",
+            "kind": "integration",
+            "passed": 6,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 0.01
+          },
+          {
+            "name": "dir_simulator",
+            "target": "Doc-tests dir_simulator",
+            "kind": "doc",
+            "passed": 1,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0,
+            "duration_seconds": 0.02
+          }
+        ]
+      },
+      "failures": [],
+      "unresolved_uncertainty": [],
+      "notes": [
+        "Exit codes are from the sequential run after the source-freeze marker was present.",
+        "No repository files were modified."
+      ]
+    },
+    "javascript": {
+      "status": "passed",
+      "command": "env -u NODE_TEST_CONTEXT PATH=\"/home/hideki/.cargo/bin:$PATH\" DIR_SIMULATOR_BIN=/home/hideki/DIR-Simulator/target/debug/dir-simulator /home/hideki/.nvm/versions/node/v22.22.0/bin/node --test tests/*.test.cjs",
+      "exit_code": 0,
+      "counts": {
+        "tests": 159,
+        "passed": 157,
+        "failed": 0,
+        "skipped": 2,
+        "cancelled": 0
+      },
+      "log": "/tmp/dir-network-js-root-recheck.log",
+      "log_sha256": "931f084cc7af5df04d06ef80de7a5170eecfcf2b9fac6616ce773aa4b74ce442",
+      "execution": "Final current-source parent integration run with per-test TAP",
+      "initial_worker_attempt": {
+        "report": "/tmp/dir-network-js-initial-attempt.json",
+        "status": "tooling_failure",
+        "reason": "Cargo absent from worker PATH and file-level TAP insufficient for actual per-test counts"
+      },
+      "optional_browser_tests": "Two NED editor Playwright suites skipped; network Viewer browser tests executed separately and recorded in viewer evidence",
+      "worker_recheck_limitation": {
+        "status": "tooling_failure",
+        "reason": "The separate CLI worker could not launch the prebuilt simulator from Node (spawnSync EPERM). Parent ran the full suite using already-supplied workspace access; no tool, policy, approval, or sandbox settings were changed."
+      }
+    },
+    "viewer": {
+      "schema_version": 1,
+      "status": "passed",
+      "created_at_utc": "2026-10-07T15:21:34.645Z",
+      "cwd": "/home/hideki/DIR-Simulator",
+      "node_version": "v22.22.0",
+      "counts": {
+        "strict_parsed_results": 21,
+        "production_browser_results": 21,
+        "exported_html_browser_results": 4,
+        "model_tests": {
+          "tests": 94,
+          "pass": 94,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        }
+      },
+      "commands": [
+        {
+          "kind": "strict_parser",
+          "argv": [
+            "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+            "-"
+          ],
+          "stdin": "const fs=require('fs'),E=require('./crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js'),paths=fs.readFileSync('/tmp/dir-network-final-product-inputs.txt','utf8').trim().split('\\n');for(const p of paths){const m=E.parseResults(JSON.parse(fs.readFileSync(p)));console.log('Strict parser passed:',p,'frames='+m.frames.size,'transfers='+m.transfers.size,'origins='+(m.origins?.size??0));}console.log('Passed',paths.length,'actual outputs');",
+          "stdout_log": "/tmp/dir-network-viewer-release-parser.log",
+          "exit_code": 0
+        },
+        {
+          "kind": "production_browser_wrapper",
+          "argv": [
+            "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+            "-"
+          ],
+          "stdin": "const fs=require('fs'),cp=require('child_process'),inputs=fs.readFileSync('/tmp/dir-network-final-product-inputs.txt','utf8').trim().split('\\n');const r=cp.spawnSync(process.execPath,['tests/network_viewer_browser.cjs',...inputs],{stdio:'inherit'});process.exitCode=r.status??1;",
+          "env": {
+            "NODE_PATH": "/home/hideki/.npm/_npx/705bc6b22212b352/node_modules"
+          },
+          "stdout_stderr_log": "/tmp/dir-network-viewer-release-browser.log",
+          "exit_code": 0
+        },
+        {
+          "kind": "production_browser_child",
+          "argv": [
+            "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+            "tests/network_viewer_browser.cjs",
+            "/tmp/dir-network-release-products/00-bidirectional/results.json",
+            "/tmp/dir-network-release-products/01-fanout/results.json",
+            "/tmp/dir-network-release-products/02-r01/results.json",
+            "/tmp/dir-network-release-products/03-r02/results.json",
+            "/tmp/dir-network-release-products/04-rx-limit/results.json",
+            "/tmp/dir-network-release-products/05-empty/results.json",
+            "/tmp/dir-network-release-products/06-membership/results.json",
+            "/tmp/dir-network-release-products/07-registration/results.json",
+            "/tmp/dir-network-release-products/08-topology/results.json",
+            "/tmp/dir-network-release-products/09-unicast/results.json",
+            "/tmp/dir-network-release-products/10-cbs-gated/results.json",
+            "/tmp/dir-network-release-products/11-cbs/results.json",
+            "/tmp/dir-network-release-products/12-psfp-gate/results.json",
+            "/tmp/dir-network-release-products/13-psfp/results.json",
+            "/tmp/dir-network-release-products/14-tas-update/results.json",
+            "/tmp/dir-network-release-products/15-tas/results.json",
+            "/tmp/dir-network-release-products/16-retry/results.json",
+            "/tmp/dir-network-release-products/17-collision/results.json",
+            "/tmp/dir-network-release-products/18-denominator/results.json",
+            "/tmp/dir-network-release-products/19-at-control/results.json",
+            "/tmp/dir-network-release-products/20-cost/results.json"
+          ],
+          "env": {
+            "NODE_PATH": "/home/hideki/.npm/_npx/705bc6b22212b352/node_modules"
+          },
+          "exit_code": 0
+        },
+        {
+          "kind": "standalone_html_export",
+          "argv": [
+            "target/debug/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-network-release-products/09-unicast/results.json",
+            "--output",
+            "/tmp/dir-network-viewer-release-exports/09-unicast.html"
+          ],
+          "exit_code": 0
+        },
+        {
+          "kind": "standalone_html_export",
+          "argv": [
+            "target/debug/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-network-release-products/11-cbs/results.json",
+            "--output",
+            "/tmp/dir-network-viewer-release-exports/11-cbs.html"
+          ],
+          "exit_code": 0
+        },
+        {
+          "kind": "standalone_html_export",
+          "argv": [
+            "target/debug/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-network-release-products/17-collision/results.json",
+            "--output",
+            "/tmp/dir-network-viewer-release-exports/17-collision.html"
+          ],
+          "exit_code": 0
+        },
+        {
+          "kind": "standalone_html_export",
+          "argv": [
+            "target/debug/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-network-release-products/16-retry/results.json",
+            "--output",
+            "/tmp/dir-network-viewer-release-exports/16-retry.html"
+          ],
+          "exit_code": 0
+        },
+        {
+          "kind": "standalone_html_browser",
+          "argv": [
+            "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+            "-"
+          ],
+          "env": {
+            "NODE_PATH": "/home/hideki/.npm/_npx/705bc6b22212b352/node_modules"
+          },
+          "target_paths": [
+            "/tmp/dir-network-viewer-release-exports/09-unicast.html",
+            "/tmp/dir-network-viewer-release-exports/11-cbs.html",
+            "/tmp/dir-network-viewer-release-exports/17-collision.html",
+            "/tmp/dir-network-viewer-release-exports/16-retry.html"
+          ],
+          "stdout_stderr_log": "/tmp/dir-network-viewer-release-export-browser.log",
+          "method": "Playwright Chromium launched headless; every exported HTML opened via file URL at 1440x1000. Asserted dashboard visibility, no error banner, expected profile panels, no page errors or network requests; same-ID collision selected both qualified origins and exact native CAN/Ethernet inspectors.",
+          "exit_code": 0
+        },
+        {
+          "kind": "model_regression",
+          "argv": [
+            "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+            "--test",
+            "tests/network_viewer_model.test.cjs",
+            "tests/ethernet_viewer_model.test.cjs",
+            "tests/media_fd_viewer_model.test.cjs",
+            "tests/viewer_model.test.cjs",
+            "tests/transaction_viewer_model.test.cjs"
+          ],
+          "env": {
+            "DIR_SIMULATOR_BIN": "target/debug/dir-simulator"
+          },
+          "stdout_log": "/tmp/dir-network-viewer-release-model.log",
+          "exit_code": 0
+        },
+        {
+          "kind": "diff_check",
+          "argv": [
+            "git",
+            "diff",
+            "--check",
+            "--",
+            "crates/dir-simulator/src/tool/viewer.rs",
+            "crates/dir-simulator/src/tool/viewer/assets",
+            "tests/network_viewer_model.test.cjs",
+            "tests/network_viewer_browser.cjs"
+          ],
+          "exit_code": 0
+        }
+      ],
+      "source_hashes": [
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer.rs",
+          "bytes": 7817,
+          "sha256": "c6ad4c53a0eee0c4d79f340f22d58579fedbb4df208ab7a0245f3bba395f157a"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/app.js",
+          "bytes": 67190,
+          "sha256": "0705df4a7eaaad85059ff5525f8cc45d029c5d39949af37783de54c630afa5a3"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js",
+          "bytes": 96617,
+          "sha256": "704e5e9344dd450b9e2d22d34ed0604f8dd5409a66f506519ef8b3f9081c96e1"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/ethernet-app.js",
+          "bytes": 36730,
+          "sha256": "474e114218ade9a18416a121cd6c8d821faa3695c1f4f4ca2e16b51188f02f3f"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/model.js",
+          "bytes": 48452,
+          "sha256": "f0b43ef7aa0a8c1fce97237afcd2a22abfc1652ddad923d809dee0ab1aa9f7dc"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/transaction-model.js",
+          "bytes": 9833,
+          "sha256": "0ace7a251a6edb9cf0d0496d5126a078a1534be2e04562566a74359c416383c2"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/transaction-app.js",
+          "bytes": 12438,
+          "sha256": "435a81901ac244b1049de609ccd785851330ce7714b35f6223c2fd86de6a7150"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/index.html",
+          "bytes": 14015,
+          "sha256": "438bbbdae3334b0c3e0866e9498faf79a368bca67ec45278d91168d4fbb49cfe"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/style.css",
+          "bytes": 21408,
+          "sha256": "fe65ee0aad1e198f6524f78fd66a13e08e7c0bfbeddeaf5cff80c58d866ba171"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs",
+          "bytes": 6391,
+          "sha256": "803e9554c1c7cc8e0a7c53fd37b6fa1270dd026cff87d43a33d950906d5de32d"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/tests/network_viewer_model.test.cjs",
+          "bytes": 28887,
+          "sha256": "ddbf0af6943d5d507162466d2d387909bc1a1ff9d14181ba9a8d4c72d5532b4d"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/tests/ethernet_viewer_model.test.cjs",
+          "bytes": 17409,
+          "sha256": "deab06304687a34a0211d897ed6621f489b3f06705f2027362482aad8746ed53"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/tests/media_fd_viewer_model.test.cjs",
+          "bytes": 5919,
+          "sha256": "cd04766e97eb37c5a47b2a646f1b0c8ada83875cc976e7d317562e875f51a433"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/tests/viewer_model.test.cjs",
+          "bytes": 33263,
+          "sha256": "b4dffddababc0ae4c4d4fea125649dbc44ae24e9223a1f0d8906b10ce2e08d5b"
+        },
+        {
+          "path": "/home/hideki/DIR-Simulator/tests/transaction_viewer_model.test.cjs",
+          "bytes": 3830,
+          "sha256": "0d2181c73127119f0f2a6457d4733fc1fa1270736b297b7e6e9d4f284e479b14"
+        }
+      ],
+      "binary_hash": {
+        "path": "/home/hideki/DIR-Simulator/target/debug/dir-simulator",
+        "bytes": 141923104,
+        "sha256": "2f0d87205ae0d9c9259b1c8c5a4542c933da34bc4b409f8a3aca7eff40256c6f"
+      },
+      "input_list_hash": {
+        "path": "/tmp/dir-network-final-product-inputs.txt",
+        "bytes": 1223,
+        "sha256": "f17bda9b92673fd4bd11a96b35c949cb497f4512e6edaf22c33179ace02eb8a3"
+      },
+      "run_manifest_hash": {
+        "path": "/tmp/dir-network-final-product-runs.json",
+        "bytes": 46013,
+        "sha256": "4ae444a54523a3391de90513470b26b76c1fde57a7aa51a0f112595d565bd008"
+      },
+      "result_hashes": [
+        {
+          "path": "/tmp/dir-network-release-products/00-bidirectional/results.json",
+          "bytes": 223353,
+          "sha256": "667af2e2ea39a958d4c570367708699cdb63eb6d23cbdf6f7eb7f629c1da810c"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/01-fanout/results.json",
+          "bytes": 246847,
+          "sha256": "26aa162968c7a90ce70e8b44d3e5c689b9b5d7bf3c886b1886aa1bdf3a08e150"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/02-r01/results.json",
+          "bytes": 174317,
+          "sha256": "c412d5ea3b9d62ff46d32474afef0fb3cf061012a308624593de235fd437d0b7"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/03-r02/results.json",
+          "bytes": 190881,
+          "sha256": "2cab049c13c0bf5fb0b3ab2fbc2aa0fc143ebd7c8e73d01de3f97f7869eb3449"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/04-rx-limit/results.json",
+          "bytes": 237339,
+          "sha256": "1ca3b95f3b08ba09f819d278337477d038b2524a1ca5c0a9feabd16b799542cd"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/05-empty/results.json",
+          "bytes": 363824,
+          "sha256": "ac7e878329b0e35fa56039ced5d16b97366b674a20e4559ee565b0dd00e91ab7"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/06-membership/results.json",
+          "bytes": 657794,
+          "sha256": "fbd3e76e65b0bd87f5d98dcbdbaeb0476923c0d97832e89e04a9dbb0038051f6"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/07-registration/results.json",
+          "bytes": 445094,
+          "sha256": "c8bcd128ef2674bcc3477a48aebd5b7e8de2d8363cbccbdf2cb83da7c945da39"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/08-topology/results.json",
+          "bytes": 495227,
+          "sha256": "3592c8c70ab9d163bb098ca2c78bf47a04601c073bcecd90d9105976a9fe0f8c"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/09-unicast/results.json",
+          "bytes": 435482,
+          "sha256": "bca321bae92fe3ea000ca747eee9e1751f4ac40ca130a57efd3926d83f0aea3f"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/10-cbs-gated/results.json",
+          "bytes": 159843,
+          "sha256": "90eceb8a5a4ee9c718c8ad7594c6fe8e058d4e2c047916c01235ce7753d617cd"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/11-cbs/results.json",
+          "bytes": 155833,
+          "sha256": "867914b491c8dd8461f9b5365adfb7a5f3b9fba9ae05eb9b00c0bda2ca018158"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/12-psfp-gate/results.json",
+          "bytes": 134551,
+          "sha256": "70446172cb25cb441a523c291ed4b8cd0bacc0c21096330ea97c38c85881f2de"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/13-psfp/results.json",
+          "bytes": 209141,
+          "sha256": "89f1b31c2244f7d52ebabf63972109afe85373438a4ec4d4d30d4f6a1509d587"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/14-tas-update/results.json",
+          "bytes": 154090,
+          "sha256": "8c6a9cdf65578e9ebf961f978cf1625d6529f859372c0c687e0267cad7b2171b"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/15-tas/results.json",
+          "bytes": 154663,
+          "sha256": "26b3dfbd9efd95ffc51b01473fd1507ff3b2dc2e4d48833fd459e970ef6914d0"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/16-retry/results.json",
+          "bytes": 677334,
+          "sha256": "f2200f2cf15fefc2ef266bae80125ed9e411e06fc090eb11d3d00a391a556f78"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/17-collision/results.json",
+          "bytes": 221856,
+          "sha256": "ee9da7d24645e922dbe35ebbcdc59ee51582979afc970414eb35e334b96d4a4d"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/18-denominator/results.json",
+          "bytes": 169424,
+          "sha256": "68e41aa7de8723a7882c0a45d55f5720a0c7bbbea28b306ec7be21ba3c920d1c"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/19-at-control/results.json",
+          "bytes": 364574,
+          "sha256": "1db3eab8f6356a4325f8d3f1bddb8b926cbac404bdf726e7fe99f2350787c92d"
+        },
+        {
+          "path": "/tmp/dir-network-release-products/20-cost/results.json",
+          "bytes": 352131,
+          "sha256": "3dcc6d026b349c2f339a6c6ebb151aa8fc352399a525da3b7b0427d5e48d3c0d"
+        }
+      ],
+      "exported_html_hashes": [
+        {
+          "path": "/tmp/dir-network-viewer-release-exports/09-unicast.html",
+          "bytes": 733734,
+          "sha256": "a5a6d2d862fba5af57f312a08b20d05a858d0180a30d047cadced3f8c83da1d2",
+          "input": "/tmp/dir-network-release-products/09-unicast/results.json"
+        },
+        {
+          "path": "/tmp/dir-network-viewer-release-exports/11-cbs.html",
+          "bytes": 460564,
+          "sha256": "7f0e6a410ee115b887b4a1099344bc0175f4186752fc6fb48a92613dfc367453",
+          "input": "/tmp/dir-network-release-products/11-cbs/results.json"
+        },
+        {
+          "path": "/tmp/dir-network-viewer-release-exports/17-collision.html",
+          "bytes": 526229,
+          "sha256": "6290dc135e737bfb0e96e61fe7191707be44547b333e44cbe2361698746217fd",
+          "input": "/tmp/dir-network-release-products/17-collision/results.json"
+        },
+        {
+          "path": "/tmp/dir-network-viewer-release-exports/16-retry.html",
+          "bytes": 982658,
+          "sha256": "b100bf57025a6190711fdfd0253f744664520df18ef68d8d75db6e97cd546eb4",
+          "input": "/tmp/dir-network-release-products/16-retry/results.json"
+        }
+      ],
+      "log_hashes": [
+        {
+          "path": "/tmp/dir-network-viewer-release-parser.log",
+          "bytes": 2365,
+          "sha256": "996aadb7cd33971a21629d855527dfd96dc6c4efb2bb4c96eb23666929991172"
+        },
+        {
+          "path": "/tmp/dir-network-viewer-release-browser.log",
+          "bytes": 1727,
+          "sha256": "a57d6d83aaf386f6d268ebe3dc26fa76f46fa4ed1aa90deabd86bd593649ec68"
+        },
+        {
+          "path": "/tmp/dir-network-viewer-release-export-browser.log",
+          "bytes": 1708,
+          "sha256": "d1f6eef0ce3f9c4382d98ff70fb2fa27ec37a2574e4c95b586a6940bf52e51eb"
+        },
+        {
+          "path": "/tmp/dir-network-viewer-release-model.log",
+          "bytes": 21179,
+          "sha256": "9a7247213d50e5aa34f9f90d7d9177e57a18ef1111e2567c204e0b077dd6e143"
+        }
+      ],
+      "browser_target_paths": {
+        "production_results": [
+          "/tmp/dir-network-release-products/00-bidirectional/results.json",
+          "/tmp/dir-network-release-products/01-fanout/results.json",
+          "/tmp/dir-network-release-products/02-r01/results.json",
+          "/tmp/dir-network-release-products/03-r02/results.json",
+          "/tmp/dir-network-release-products/04-rx-limit/results.json",
+          "/tmp/dir-network-release-products/05-empty/results.json",
+          "/tmp/dir-network-release-products/06-membership/results.json",
+          "/tmp/dir-network-release-products/07-registration/results.json",
+          "/tmp/dir-network-release-products/08-topology/results.json",
+          "/tmp/dir-network-release-products/09-unicast/results.json",
+          "/tmp/dir-network-release-products/10-cbs-gated/results.json",
+          "/tmp/dir-network-release-products/11-cbs/results.json",
+          "/tmp/dir-network-release-products/12-psfp-gate/results.json",
+          "/tmp/dir-network-release-products/13-psfp/results.json",
+          "/tmp/dir-network-release-products/14-tas-update/results.json",
+          "/tmp/dir-network-release-products/15-tas/results.json",
+          "/tmp/dir-network-release-products/16-retry/results.json",
+          "/tmp/dir-network-release-products/17-collision/results.json",
+          "/tmp/dir-network-release-products/18-denominator/results.json",
+          "/tmp/dir-network-release-products/19-at-control/results.json",
+          "/tmp/dir-network-release-products/20-cost/results.json"
+        ],
+        "standalone_html": [
+          "/tmp/dir-network-viewer-release-exports/09-unicast.html",
+          "/tmp/dir-network-viewer-release-exports/11-cbs.html",
+          "/tmp/dir-network-viewer-release-exports/17-collision.html",
+          "/tmp/dir-network-viewer-release-exports/16-retry.html"
+        ]
+      },
+      "coverage": [
+        "All 16 new-profile examples and all five independent-review reproductions passed strict parsing and production-asset browser checks.",
+        "Production browser checks cover quiet topology, dynamic policy/control and TSN panels, origin filtering, correct native inspectors for equal CAN/Ethernet IDs, deterministic forward/back destination replay, continuous playback without packet glyphs, responsive 390px viewport, and absence of page errors or external requests.",
+        "Four freshly exported CLI HTML files cover dynamic unicast, TSN CBS, native same-ID collision, and cross-class retry. Native schemas and the strict conversion envelope guard remain unchanged.",
+        "The previous 93 model tests remain passing with one additional native cross-media collision regression."
+      ],
+      "limitations": [
+        "This is viewer/abstract-profile behavioral evidence, not CAN/IEEE conformance, performance, allocation-failure, or stress certification.",
+        "Chromium only; other browser engines were not exercised.",
+        "Strict parsing and browser audit cover the concrete 21 generated artifacts, not every possible workload.",
+        "Workspace Rust/clippy/fmt gates are recorded by the parent separately.",
+        "Source/result hashes identify the final artifacts used; no source files were changed during this release audit."
+      ]
+    },
+    "traceability": {
+      "status": "passed",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/generate_traceability.py"
+          ],
+          "exit_code": 0,
+          "log": "/tmp/dir-network-doc-generation.log",
+          "log_sha256": "afde75c737d0fefbafdb7d5e9456793d413f07f7ec692cd8c6f946b02869e7ed"
+        },
+        {
+          "command": [
+            "python3",
+            "scripts/check_traceability.py",
+            "--strict"
+          ],
+          "exit_code": 0,
+          "log": "/tmp/dir-network-doc-strict.log",
+          "log_sha256": "8c4251a1de18347615f6910b53100e93153ef0a2759c80049092dd6cf94dda73"
+        },
+        {
+          "command": [
+            "python3",
+            "scripts/generate_traceability.py",
+            "--check"
+          ],
+          "exit_code": 0,
+          "log": "/tmp/dir-network-doc-check.log",
+          "log_sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3"
+        }
+      ],
+      "local_links": {
+        "documents": 18,
+        "checked": 2497,
+        "missing": []
+      },
+      "parsed_json_files": [
+        "docs/verification/fixtures/network-extensions/can-ethernet/expected.json",
+        "docs/verification/fixtures/network-extensions/design-vectors.json",
+        "docs/verification/fixtures/network-extensions/dynamic/expected.json",
+        "docs/verification/fixtures/network-extensions/tsn/expected.json",
+        "examples/can-ethernet/bidirectional-workload.json",
+        "examples/can-ethernet/fanout-model.json",
+        "examples/can-ethernet/fanout-workload.json",
+        "examples/can-ethernet/r01-model.json",
+        "examples/can-ethernet/r01-workload.json",
+        "examples/can-ethernet/r02-model.json",
+        "examples/can-ethernet/r02-workload.json",
+        "examples/can-ethernet/rx-limit-model.json",
+        "examples/can-ethernet/rx-limit-workload.json",
+        "examples/ethernet/dynamic/empty.json",
+        "examples/ethernet/dynamic/membership.json",
+        "examples/ethernet/dynamic/model.json",
+        "examples/ethernet/dynamic/registration.json",
+        "examples/ethernet/dynamic/topology.json",
+        "examples/ethernet/dynamic/unicast.json",
+        "examples/ethernet/tsn/cbs-gated-model.json",
+        "examples/ethernet/tsn/cbs-gated-workload.json",
+        "examples/ethernet/tsn/cbs-model.json",
+        "examples/ethernet/tsn/cbs-workload.json",
+        "examples/ethernet/tsn/psfp-gate-model.json",
+        "examples/ethernet/tsn/psfp-gate-workload.json",
+        "examples/ethernet/tsn/psfp-model.json",
+        "examples/ethernet/tsn/psfp-workload.json",
+        "examples/ethernet/tsn/tas-model.json",
+        "examples/ethernet/tsn/tas-update-model.json",
+        "examples/ethernet/tsn/tas-update-workload.json",
+        "examples/ethernet/tsn/tas-workload.json"
+      ],
+      "traceability": {
+        "requirements": 231,
+        "functions": 60,
+        "nodes": 272,
+        "structural_errors": 0,
+        "incomplete_requirements": 0,
+        "incomplete_items": 0
+      },
+      "named_tests": {
+        "referenced_in_new_verification_tables": 63,
+        "missing": 0
+      }
+    }
+  },
+  "test_bindings": [
+    {
+      "test_id": "DIR-TEST-0105",
+      "specification": "docs/verification/cases/CAN・Ethernet変換検証仕様書.md",
+      "named_tests": [
+        "fixed_vectors",
+        "complete_native_r01_r02_inputs_validate",
+        "can_ethernet_product_preserves_r01_and_r02_processing_and_wire_times"
+      ],
+      "coverage": "C01/C02/C03/C03Eの固定byte、standard/extended境界、完全native入力、R01/R02のserializerと媒体因果。C04の全CRC変種、C06の中継再分類、C07の二Gateway組合せを全部実行した主張ではない"
+    },
+    {
+      "test_id": "DIR-TEST-0106",
+      "specification": "docs/verification/cases/CAN・Ethernet変換検証仕様書.md",
+      "named_tests": [
+        "every_invalid_field_and_padding",
+        "strict_rules_ownership_and_ranges_reject",
+        "source_ownership_checked_for_zero_count_and_future_time",
+        "rx_capacity_and_loop_hop_rule_order"
+      ],
+      "coverage": "codec不正field/offset、rule/所有/範囲、count0/将来所有source、loop/hop/no_rule/RX判定順。媒体FCS・購読・全不正組合せをN01〜N07ごとに網羅した集計ではない"
+    },
+    {
+      "test_id": "DIR-TEST-0107",
+      "specification": "docs/verification/cases/CAN・Ethernet変換検証仕様書.md",
+      "named_tests": [
+        "r01_exact_store_and_forward_and_rx_hold",
+        "r02_exact_timing_native_can_and_terminal_completion",
+        "fanout_buses_start_together_with_independent_wire_times",
+        "fanout_wait_keeps_rx_and_retries_only_unadmitted_branch_at_sof",
+        "zero_delay_admits_and_unadmittable_terminates",
+        "staged_multiple_ingress_capacity_and_error_atomicity",
+        "can_controller_queue_uses_can_arbitration_priority",
+        "bridge_fanout_rx_limit_and_partial_denominators_preserve_native_contracts"
+      ],
+      "coverage": "R01/R02の実時刻、R03二Bus、R04 RX保持とSOF再試行、R05永久不能、R06同時容量、CAN優先仲裁、segment実SOF対象と重複completion。RX-limit実行例はRX1・3到着を追加照合"
+    },
+    {
+      "test_id": "DIR-TEST-0108",
+      "specification": "docs/verification/cases/CAN・Ethernet変換検証仕様書.md",
+      "named_tests": [
+        "segment_denominator_freezes_and_duplicate_completion_does_not_increment",
+        "future_native_generation_flag_without_synthesized_rows",
+        "malformed_timer_handles_and_impossible_transition_do_not_mutate",
+        "staged_effect_validation_keeps_frame_queue_and_failed_event_uncommitted",
+        "staged_publication_reservation_failure_keeps_fes_and_journal_prefix"
+      ],
+      "coverage": "実SOF分母・null未来実績・重複通知、未来生成、失敗callback保持、T=101000000psでnative CAN pendingかつEthernet受信なし、正常/不正prefix replay。全P03〜P06のT±1ps組合せや全preflight地点への故障注入の合格を意味しない"
+    },
+    {
+      "test_id": "DIR-TEST-0109",
+      "specification": "docs/verification/cases/Ethernet動的制御検証仕様書.md",
+      "named_tests": [
+        "strict_input_validates_future_controls_and_ip",
+        "learning_refresh_move_capacity_and_expiry",
+        "static_shadow_and_known_ineligible_do_not_flood",
+        "timer_refresh_bounded_and_generation_overflow_atomic",
+        "staged_learning_lookup_observes_delta_before_commit",
+        "empty_and_control_only_workloads_run_on_the_same_prepared_profile"
+      ],
+      "coverage": "将来不正control/IP、学習refresh/move/expiry/capacity、static優先、期限取消/世代overflow、同callback学習後lookup、空負荷。負例表の全fieldを終了時刻ごとに掛け合わせた試験ではない"
+    },
+    {
+      "test_id": "DIR-TEST-0110",
+      "specification": "docs/verification/cases/Ethernet動的制御検証仕様書.md",
+      "named_tests": [
+        "source_filter_static_union_router_and_ip_collision",
+        "known_source_mismatch_does_not_flood_and_router_unions",
+        "control_refresh_at_expiry_and_registration_eligibility",
+        "atomic_capacity_failure_retains_state_and_epoch",
+        "registrable_source_and_fdb_use_effective_membership_and_drop_expired_queue_copy"
+      ],
+      "coverage": "INCLUDE/EXCLUDE・router・static union、MAC collision別group、known不一致、control優先refresh、VID期限/eligibility、上限時未commit、登録source/FDBの実転送とsource期限切れqueued copyのdrop。IPv6を含む全組合せ・Endpoint購読拒否・実FES大量refreshの性能を網羅した主張ではない"
+    },
+    {
+      "test_id": "DIR-TEST-0111",
+      "specification": "docs/verification/cases/Ethernet動的制御検証仕様書.md",
+      "named_tests": [
+        "tree_triangle_deterministic_and_break_before_make",
+        "isolated_components",
+        "parallel_same_cost_chooses_lexical_ports",
+        "stale_convergence_replaced_and_noop_epoch",
+        "dynamic_triangle_matches_independent_three_hop_timing"
+      ],
+      "coverage": "triangle、非連結、parallel決定性、旧収束無効/no-op、三hopの全SOF/EOF/release/arrivalとB完了1831000ps。linkdownを各wire境界へ配置した全行のCLI照合、実Switch再訪経路のfixtureは別途必要"
+    },
+    {
+      "test_id": "DIR-TEST-0112",
+      "specification": "docs/verification/cases/Ethernet動的制御検証仕様書.md",
+      "named_tests": [
+        "time_limited_dynamic_run_keeps_planned_and_observed_receptions_separate",
+        "staged_sof_overflow_preserves_admitted_copy_without_planned_transmission",
+        "staged_effect_validation_keeps_frame_queue_and_failed_event_uncommitted",
+        "staged_publication_reservation_failure_keeps_fes_and_journal_prefix"
+      ],
+      "coverage": "T=700000psで予定EOFと実績を分離、失敗時queue/FES/journal prefix保持、policy/epoch/visit参照検証、前後seek・quiet topology。全T=t/t+1ps、全失敗地点、全旧profile入力変種の成功数ではない"
+    },
+    {
+      "test_id": "DIR-TEST-0113",
+      "specification": "docs/verification/cases/EthernetTSN検証仕様書.md",
+      "named_tests": [
+        "rejects_missing_unknown_numeric_bool_and_noncanonical_fields",
+        "validates_every_future_update_and_normalizes_order",
+        "tas_01_to_05_ifg_exact_fit_adjacent_and_circular",
+        "tas_06_07_future_base_closed_and_oversized_no_periodic_tick",
+        "tas_08_09_10_control_clips_all_open_invalidates_old_wake",
+        "schedule_generation_overflow_and_empty_control_noop_are_atomic",
+        "tsn_wire_scheduling_matches_independent_tas_and_cbs_boundaries"
+      ],
+      "coverage": "TAS-01〜10のproduction window/planner vector、未来update・strict入力、GCL境界世代と原子性、TAS/TAS-updateの実SOF。全JSONキー順反転・全port/媒体組合せまで網羅する意味ではない"
+    },
+    {
+      "test_id": "DIR-TEST-0114",
+      "specification": "docs/verification/cases/EthernetTSN検証仕様書.md",
+      "named_tests": [
+        "cbs_ifg_and_two_frame_independent_timeline",
+        "cbs_lazy_freeze_and_old_timer_noop",
+        "cbs_saturation_reset_fractional_recovery_and_full_u128",
+        "lower_ready_class_can_send_and_fifo_head_never_bypassed",
+        "overflow_plans_are_atomic_future_wake_u128_and_no_busy_loop",
+        "staged_never_eligible_retains_queue_without_infinite_gate_ticks"
+      ],
+      "coverage": "IFGまでSending、0回復2688000/3688000ps、freeze/clamp/端数/u128、低class/FIFO、overflow未commit、never_eligible有限wake。全class競合やdynamic dropの各組合せをCLIで実行した主張ではない"
+    },
+    {
+      "test_id": "DIR-TEST-0115",
+      "specification": "docs/verification/cases/EthernetTSN検証仕様書.md",
+      "named_tests": [
+        "validates_stream_tuple_gate_and_meter",
+        "psfp_five_arrival_independent_vector_and_yellow_drop",
+        "psfp_sdu_and_gate_drops_preserve_meter_last_time_and_bypass_tuple",
+        "psfp_red_refill_saturation_fraction_no_refund_and_discarded_delta",
+        "composed_arrivals_share_staged_meter_but_never_mutate_before_apply",
+        "psfp_product_arrivals_consume_once_and_stream_gate_drops_before_meter"
+      ],
+      "coverage": "5到着の色/2bucket、yellow drop、前段SDU/gateでmeter非評価、tuple bypass、飽和/端数/差分破棄、同batch消費、PSFPとstream gateの製品実行。3egress実fanoutとqueue_fullの全組合せは別途必要"
+    },
+    {
+      "test_id": "DIR-TEST-0116",
+      "specification": "docs/verification/cases/EthernetTSN検証仕様書.md",
+      "named_tests": [
+        "partial_snapshot_keeps_unexecuted_boundary_and_records_decimal",
+        "composed_control_selection_sof_commits_once_and_stale_wake_stays_empty",
+        "metadata_roundtrips_and_snapshot_json_stays_decimal",
+        "staged_return_to_committed_mode_emits_correcting_credit_observation"
+      ],
+      "coverage": "未実行境界/null、同batch制御→selection/SOF、古いwake、metadata/D projection、credit観測とprefix replay、quiet gate、BigInt・前後seek。第5節の全domain同時刻fixture・全T境界・TSN無効とdynamicの全実績同値の網羅を意味しない"
+    }
+  ],
+  "cli_examples": 16,
+  "cli_review_reproductions": 5,
+  "cli_checks": 63,
+  "cli_runs": {
+    "completed_at_utc": "2026-10-07T15:17:43.332587+00:00",
+    "runs": [
+      {
+        "config": "examples/can-ethernet/bidirectional.ini",
+        "output": "/tmp/dir-network-release-products/00-bidirectional",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/bidirectional.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R02\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/bidirectional.ini",
+              "--output",
+              "/tmp/dir-network-release-products/00-bidirectional"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/00-bidirectional\",\"manifest_path\":\"/tmp/dir-network-release-products/00-bidirectional/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"33\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"306000000\",\"event_processing_wall_seconds\":0.001993139}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/00-bidirectional/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/00-bidirectional/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/00-bidirectional/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "can.ethernet.gateway.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "33",
+        "end_ps": "1000000000",
+        "model_records": 18,
+        "summary_records": 320,
+        "results_sha256": "667af2e2ea39a958d4c570367708699cdb63eb6d23cbdf6f7eb7f629c1da810c"
+      },
+      {
+        "config": "examples/can-ethernet/fanout.ini",
+        "output": "/tmp/dir-network-release-products/01-fanout",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/fanout.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.Fanout\",\"node_count\":\"8\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/fanout.ini",
+              "--output",
+              "/tmp/dir-network-release-products/01-fanout"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/01-fanout\",\"manifest_path\":\"/tmp/dir-network-release-products/01-fanout/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"26\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"222608000\",\"event_processing_wall_seconds\":0.001799862}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/01-fanout/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/01-fanout/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/01-fanout/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "can.ethernet.gateway.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "26",
+        "end_ps": "1000000000",
+        "model_records": 13,
+        "summary_records": 397,
+        "results_sha256": "26aa162968c7a90ce70e8b44d3e5c689b9b5d7bf3c886b1886aa1bdf3a08e150"
+      },
+      {
+        "config": "examples/can-ethernet/r01.ini",
+        "output": "/tmp/dir-network-release-products/02-r01",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/r01.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R01\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/r01.ini",
+              "--output",
+              "/tmp/dir-network-release-products/02-r01"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/02-r01\",\"manifest_path\":\"/tmp/dir-network-release-products/02-r01/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"17\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"115576000\",\"event_processing_wall_seconds\":0.001388359}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/02-r01/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/02-r01/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/02-r01/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "can.ethernet.gateway.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "17",
+        "end_ps": "1000000000",
+        "model_records": 9,
+        "summary_records": 267,
+        "results_sha256": "c412d5ea3b9d62ff46d32474afef0fb3cf061012a308624593de235fd437d0b7"
+      },
+      {
+        "config": "examples/can-ethernet/r02.ini",
+        "output": "/tmp/dir-network-release-products/03-r02",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/r02.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R02\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/r02.ini",
+              "--output",
+              "/tmp/dir-network-release-products/03-r02"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/03-r02\",\"manifest_path\":\"/tmp/dir-network-release-products/03-r02/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"19\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"116608000\",\"event_processing_wall_seconds\":0.001550455}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/03-r02/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/03-r02/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/03-r02/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "can.ethernet.gateway.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "19",
+        "end_ps": "1000000000",
+        "model_records": 9,
+        "summary_records": 319,
+        "results_sha256": "2cab049c13c0bf5fb0b3ab2fbc2aa0fc143ebd7c8e73d01de3f97f7869eb3449"
+      },
+      {
+        "config": "examples/can-ethernet/rx-limit.ini",
+        "output": "/tmp/dir-network-release-products/04-rx-limit",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/rx-limit.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R02\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/can-ethernet/rx-limit.ini",
+              "--output",
+              "/tmp/dir-network-release-products/04-rx-limit"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/04-rx-limit\",\"manifest_path\":\"/tmp/dir-network-release-products/04-rx-limit/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"39\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"123608000\",\"event_processing_wall_seconds\":0.00188733}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/04-rx-limit/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/04-rx-limit/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/04-rx-limit/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "can.ethernet.gateway.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "39",
+        "end_ps": "1000000000",
+        "model_records": 19,
+        "summary_records": 319,
+        "results_sha256": "1ca3b95f3b08ba09f819d278337477d038b2524a1ca5c0a9feabd16b799542cd"
+      },
+      {
+        "config": "examples/ethernet/dynamic/empty.ini",
+        "output": "/tmp/dir-network-release-products/05-empty",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/empty.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/empty.ini",
+              "--output",
+              "/tmp/dir-network-release-products/05-empty"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/05-empty\",\"manifest_path\":\"/tmp/dir-network-release-products/05-empty/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"0\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":null,\"event_processing_wall_seconds\":2.569e-6}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/05-empty/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/05-empty/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/05-empty/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.l2.dynamic.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "0",
+        "end_ps": "10000000",
+        "model_records": 1,
+        "summary_records": 693,
+        "results_sha256": "ac7e878329b0e35fa56039ced5d16b97366b674a20e4559ee565b0dd00e91ab7"
+      },
+      {
+        "config": "examples/ethernet/dynamic/membership.ini",
+        "output": "/tmp/dir-network-release-products/06-membership",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/membership.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/membership.ini",
+              "--output",
+              "/tmp/dir-network-release-products/06-membership"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/06-membership\",\"manifest_path\":\"/tmp/dir-network-release-products/06-membership/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"77\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"9220000\",\"event_processing_wall_seconds\":0.009047945}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/06-membership/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/06-membership/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/06-membership/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.l2.dynamic.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "77",
+        "end_ps": "10000000",
+        "model_records": 65,
+        "summary_records": 838,
+        "results_sha256": "fbd3e76e65b0bd87f5d98dcbdbaeb0476923c0d97832e89e04a9dbb0038051f6"
+      },
+      {
+        "config": "examples/ethernet/dynamic/registration.ini",
+        "output": "/tmp/dir-network-release-products/07-registration",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/registration.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/registration.ini",
+              "--output",
+              "/tmp/dir-network-release-products/07-registration"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/07-registration\",\"manifest_path\":\"/tmp/dir-network-release-products/07-registration/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"29\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"6220000\",\"event_processing_wall_seconds\":0.003791079}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/07-registration/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/07-registration/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/07-registration/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.l2.dynamic.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "29",
+        "end_ps": "10000000",
+        "model_records": 22,
+        "summary_records": 766,
+        "results_sha256": "c8bcd128ef2674bcc3477a48aebd5b7e8de2d8363cbccbdf2cb83da7c945da39"
+      },
+      {
+        "config": "examples/ethernet/dynamic/topology.ini",
+        "output": "/tmp/dir-network-release-products/08-topology",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/topology.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/topology.ini",
+              "--output",
+              "/tmp/dir-network-release-products/08-topology"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/08-topology\",\"manifest_path\":\"/tmp/dir-network-release-products/08-topology/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"50\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"8220000\",\"event_processing_wall_seconds\":0.006750325}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/08-topology/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/08-topology/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/08-topology/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.l2.dynamic.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "50",
+        "end_ps": "10000000",
+        "model_records": 34,
+        "summary_records": 768,
+        "results_sha256": "3592c8c70ab9d163bb098ca2c78bf47a04601c073bcecd90d9105976a9fe0f8c"
+      },
+      {
+        "config": "examples/ethernet/dynamic/unicast.ini",
+        "output": "/tmp/dir-network-release-products/09-unicast",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/unicast.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/dynamic/unicast.ini",
+              "--output",
+              "/tmp/dir-network-release-products/09-unicast"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/09-unicast\",\"manifest_path\":\"/tmp/dir-network-release-products/09-unicast/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"23\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"6220000\",\"event_processing_wall_seconds\":0.002580351}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/09-unicast/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/09-unicast/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/09-unicast/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.l2.dynamic.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "23",
+        "end_ps": "10000000",
+        "model_records": 16,
+        "summary_records": 764,
+        "results_sha256": "bca321bae92fe3ea000ca747eee9e1751f4ac40ca130a57efd3926d83f0aea3f"
+      },
+      {
+        "config": "examples/ethernet/tsn/cbs-gated.ini",
+        "output": "/tmp/dir-network-release-products/10-cbs-gated",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/cbs-gated.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/cbs-gated.ini",
+              "--output",
+              "/tmp/dir-network-release-products/10-cbs-gated"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/10-cbs-gated\",\"manifest_path\":\"/tmp/dir-network-release-products/10-cbs-gated/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"18\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"6376000\",\"event_processing_wall_seconds\":0.001122224}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/10-cbs-gated/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/10-cbs-gated/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/10-cbs-gated/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.tsn.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "18",
+        "end_ps": "120000000",
+        "model_records": 42,
+        "summary_records": 217,
+        "results_sha256": "90eceb8a5a4ee9c718c8ad7594c6fe8e058d4e2c047916c01235ce7753d617cd"
+      },
+      {
+        "config": "examples/ethernet/tsn/cbs.ini",
+        "output": "/tmp/dir-network-release-products/11-cbs",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/cbs.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/cbs.ini",
+              "--output",
+              "/tmp/dir-network-release-products/11-cbs"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/11-cbs\",\"manifest_path\":\"/tmp/dir-network-release-products/11-cbs/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"16\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"5376000\",\"event_processing_wall_seconds\":0.001252248}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/11-cbs/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/11-cbs/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/11-cbs/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.tsn.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "16",
+        "end_ps": "120000000",
+        "model_records": 36,
+        "summary_records": 215,
+        "results_sha256": "867914b491c8dd8461f9b5365adfb7a5f3b9fba9ae05eb9b00c0bda2ca018158"
+      },
+      {
+        "config": "examples/ethernet/tsn/psfp-gate.ini",
+        "output": "/tmp/dir-network-release-products/12-psfp-gate",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/psfp-gate.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/psfp-gate.ini",
+              "--output",
+              "/tmp/dir-network-release-products/12-psfp-gate"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/12-psfp-gate\",\"manifest_path\":\"/tmp/dir-network-release-products/12-psfp-gate/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"7\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"672000\",\"event_processing_wall_seconds\":0.000488866}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/12-psfp-gate/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/12-psfp-gate/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/12-psfp-gate/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.tsn.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "7",
+        "end_ps": "120000000",
+        "model_records": 16,
+        "summary_records": 214,
+        "results_sha256": "70446172cb25cb441a523c291ed4b8cd0bacc0c21096330ea97c38c85881f2de"
+      },
+      {
+        "config": "examples/ethernet/tsn/psfp.ini",
+        "output": "/tmp/dir-network-release-products/13-psfp",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/psfp.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/psfp.ini",
+              "--output",
+              "/tmp/dir-network-release-products/13-psfp"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/13-psfp\",\"manifest_path\":\"/tmp/dir-network-release-products/13-psfp/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"33\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"96672000\",\"event_processing_wall_seconds\":0.002048575}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/13-psfp/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/13-psfp/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/13-psfp/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.tsn.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "33",
+        "end_ps": "120000000",
+        "model_records": 56,
+        "summary_records": 217,
+        "results_sha256": "89f1b31c2244f7d52ebabf63972109afe85373438a4ec4d4d30d4f6a1509d587"
+      },
+      {
+        "config": "examples/ethernet/tsn/tas-update.ini",
+        "output": "/tmp/dir-network-release-products/14-tas-update",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/tas-update.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/tas-update.ini",
+              "--output",
+              "/tmp/dir-network-release-products/14-tas-update"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/14-tas-update\",\"manifest_path\":\"/tmp/dir-network-release-products/14-tas-update/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"15\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"1672000\",\"event_processing_wall_seconds\":0.000939504}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/14-tas-update/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/14-tas-update/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/14-tas-update/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.tsn.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "15",
+        "end_ps": "120000000",
+        "model_records": 29,
+        "summary_records": 214,
+        "results_sha256": "8c6a9cdf65578e9ebf961f978cf1625d6529f859372c0c687e0267cad7b2171b"
+      },
+      {
+        "config": "examples/ethernet/tsn/tas.ini",
+        "output": "/tmp/dir-network-release-products/15-tas",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/tas.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator/examples/ethernet/tsn/tas.ini",
+              "--output",
+              "/tmp/dir-network-release-products/15-tas"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/15-tas\",\"manifest_path\":\"/tmp/dir-network-release-products/15-tas/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"16\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"2672000\",\"event_processing_wall_seconds\":0.001298099}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/15-tas/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/15-tas/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/15-tas/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.tsn.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "16",
+        "end_ps": "120000000",
+        "model_records": 32,
+        "summary_records": 214,
+        "results_sha256": "26b3dfbd9efd95ffc51b01473fd1507ff3b2dc2e4d48833fd459e970ef6914d0"
+      },
+      {
+        "config": "/tmp/dir-network-review-repros/retry.ini",
+        "output": "/tmp/dir-network-release-products/16-retry",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/tmp/dir-network-review-repros/retry.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R01\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/tmp/dir-network-review-repros/retry.ini",
+              "--output",
+              "/tmp/dir-network-release-products/16-retry"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/16-retry\",\"manifest_path\":\"/tmp/dir-network-release-products/16-retry/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"272\",\"finish_ps\":\"3000000000\",\"last_event_time_ps\":\"1131200000\",\"event_processing_wall_seconds\":0.015005836}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/16-retry/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/16-retry/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/16-retry/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "can.ethernet.gateway.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "272",
+        "end_ps": "3000000000",
+        "model_records": 144,
+        "summary_records": 282,
+        "results_sha256": "f2200f2cf15fefc2ef266bae80125ed9e411e06fc090eb11d3d00a391a556f78"
+      },
+      {
+        "config": "/tmp/dir-network-review-repros/collision.ini",
+        "output": "/tmp/dir-network-release-products/17-collision",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/tmp/dir-network-review-repros/collision.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R02\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/tmp/dir-network-review-repros/collision.ini",
+              "--output",
+              "/tmp/dir-network-release-products/17-collision"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/17-collision\",\"manifest_path\":\"/tmp/dir-network-release-products/17-collision/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"33\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"373400000\",\"event_processing_wall_seconds\":0.002066271}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/17-collision/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/17-collision/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/17-collision/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "can.ethernet.gateway.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "33",
+        "end_ps": "1000000000",
+        "model_records": 18,
+        "summary_records": 320,
+        "results_sha256": "ee9da7d24645e922dbe35ebbcdc59ee51582979afc970414eb35e334b96d4a4d"
+      },
+      {
+        "config": "/tmp/dir-network-review-repros/denominator.ini",
+        "output": "/tmp/dir-network-release-products/18-denominator",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/tmp/dir-network-review-repros/denominator.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R01\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/tmp/dir-network-review-repros/denominator.ini",
+              "--output",
+              "/tmp/dir-network-release-products/18-denominator"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/18-denominator\",\"manifest_path\":\"/tmp/dir-network-release-products/18-denominator/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"15\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"173200000\",\"event_processing_wall_seconds\":0.000934595}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/18-denominator/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/18-denominator/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/18-denominator/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "can.ethernet.gateway.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "15",
+        "end_ps": "1000000000",
+        "model_records": 9,
+        "summary_records": 266,
+        "results_sha256": "68e41aa7de8723a7882c0a45d55f5720a0c7bbbea28b306ec7be21ba3c920d1c"
+      },
+      {
+        "config": "/tmp/dir-network-review-repros/at-control.ini",
+        "output": "/tmp/dir-network-release-products/19-at-control",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/tmp/dir-network-review-repros/at-control.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/tmp/dir-network-review-repros/at-control.ini",
+              "--output",
+              "/tmp/dir-network-release-products/19-at-control"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/19-at-control\",\"manifest_path\":\"/tmp/dir-network-release-products/19-at-control/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"1\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"100\",\"event_processing_wall_seconds\":0.00007988}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/19-at-control/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/19-at-control/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/19-at-control/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.l2.dynamic.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "1",
+        "end_ps": "10000000",
+        "model_records": 2,
+        "summary_records": 694,
+        "results_sha256": "1db3eab8f6356a4325f8d3f1bddb8b926cbac404bdf726e7fe99f2350787c92d"
+      },
+      {
+        "config": "/tmp/dir-network-review-repros/cost.ini",
+        "output": "/tmp/dir-network-release-products/20-cost",
+        "checks": [
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "validate",
+              "--config",
+              "/tmp/dir-network-review-repros/cost.ini"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "run",
+              "--config",
+              "/tmp/dir-network-review-repros/cost.ini",
+              "--output",
+              "/tmp/dir-network-release-products/20-cost"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-network-release-products/20-cost\",\"manifest_path\":\"/tmp/dir-network-release-products/20-cost/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"1\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"100\",\"event_processing_wall_seconds\":0.000068567}",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "target/debug/dir-simulator",
+              "view",
+              "--input",
+              "/tmp/dir-network-release-products/20-cost/results.json",
+              "--output",
+              "/tmp/dir-network-release-products/20-cost/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-network-release-products/20-cost/viewer.html\"}",
+            "stderr": ""
+          }
+        ],
+        "passed": true,
+        "profile": "ethernet.l2.dynamic.v1",
+        "termination": "events_exhausted",
+        "partial": false,
+        "committed_events": "1",
+        "end_ps": "10000000",
+        "model_records": 2,
+        "summary_records": 694,
+        "results_sha256": "3dcc6d026b349c2f339a6c6ebb151aa8fc352399a525da3b7b0427d5e48d3c0d"
+      }
+    ]
+  },
+  "independent_review": {
+    "reviewer_profile": "astra",
+    "reasoning_effort": "medium",
+    "report": {
+      "path": "/tmp/dir-network-review.md",
+      "sha256": "a2dac55f3e0252a072c3ff7185c8e4ef950b75b591ba603cfbb5e80d2b18ba77"
+    },
+    "confirmed_findings": 5,
+    "resolutions": [
+      {
+        "finding": "Shared Ethernet port capacity release must retry all waiting priorities",
+        "status": "fixed",
+        "reproduction": "retry",
+        "tests": [
+          "shared_ethernet_port_retry_wakes_all_classes_in_stable_order"
+        ]
+      },
+      {
+        "finding": "Equal native CAN and Ethernet generator IDs must preserve origin identity and latency",
+        "status": "fixed",
+        "reproduction": "collision",
+        "tests": [
+          "identical_native_generator_ids_keep_media_qualified_origins_and_latencies"
+        ]
+      },
+      {
+        "finding": "Ingress rejection or static misrouting must not shrink intended SOF terminal denominator",
+        "status": "fixed",
+        "reproduction": "denominator",
+        "tests": [
+          "intended_terminal_survives_ingress_rejection_without_completion",
+          "intended_terminal_set_uses_source_vid_and_ignores_static_misrouting"
+        ]
+      },
+      {
+        "finding": "Settled Dijkstra neighbors must be skipped before checked cost addition",
+        "status": "fixed",
+        "reproduction": "cost",
+        "tests": [
+          "dynamic_large_cost_tree_and_at_prefixed_control_id_remain_valid"
+        ]
+      },
+      {
+        "finding": "Accepted user controls beginning with @ must retain their identity",
+        "status": "fixed",
+        "reproduction": "at-control",
+        "tests": [
+          "dynamic_large_cost_tree_and_at_prefixed_control_id_remain_valid"
+        ]
+      },
+      {
+        "finding": "Unchanged conversion and sibling branch DTOs must not advance envelope times at retry or child SOF",
+        "status": "fixed",
+        "tests": [
+          "conversion_upserts_preserve_milestone_times_on_retries_and_late_sof",
+          "same_batch_branch_sof_emits_each_changed_branch_once"
+        ]
+      }
+    ],
+    "final_review": {
+      "status": "no_substantive_defect_established",
+      "inspected_paths": [
+        "crates/dir-simulator/src/runtime/can_ethernet.rs",
+        "crates/dir-simulator/src/lib/snapshot/can_ethernet.rs",
+        "crates/dir-simulator/src/runtime/network.rs",
+        "crates/dir-simulator/src/runtime/ethernet/dynamic.rs",
+        "crates/dir-simulator/src/lib/snapshot/ethernet/dynamic.rs",
+        "crates/dir-simulator/src/lib/types/can_ethernet.rs",
+        "crates/dir-simulator/src/output/network.rs"
+      ],
+      "findings": [],
+      "verified_by_inspection": [
+        "stage_conversion compares latest same-batch staged DTO before committed DTO; typed equality suppresses unchanged conversion and sibling branch records while retaining internal state staging",
+        "Conversion DTO mutations occur at observed, ready, or released milestones; late branch SOF leaves conversion envelope unchanged",
+        "conversion_upserts_preserve_milestone_times_on_retries_and_late_sof covers blocked retry, sibling suppression, delayed release and delayed SOF",
+        "same_batch_branch_sof_emits_each_changed_branch_once covers sequential same-batch updates and duplicate notification idempotence",
+        "ConversionRecord and BranchRecord add equality derives without serialized field changes",
+        "Ethernet shared-port retry selects all priorities by source; intended targets depend on VID and destination membership, with gateway exclusion at segment creation",
+        "Dijkstra skips settled neighbors before checked addition",
+        "Synthetic control marker is serde skipped; user control ID preserved and synthetic collision avoidance retained",
+        "Qualified native origin uses fixed media prefix, preserves full native ID and native schemas; output lookup selects matching medium"
+      ],
+      "evidence_limits": [
+        "Focused read-only source and test inspection; no repository edits",
+        "Tests were inspected but not freshly executed in this review; parent owns final test/clippy/format gates",
+        "No full viewer re-review or exhaustive topology/conformance audit",
+        "Legacy unpublished bare-origin fallback inspected; normal current runtime always emits qualified origins"
+      ]
+    }
+  },
+  "evidence_boundaries": [
+    "Expected fixture files and the historical design record retain product_execution=false; successful product execution is recorded here",
+    "Named test coverage and unexercised acceptance combinations are stated in the three verification specifications",
+    "This is an abstract simulator implementation, not IEEE protocol/clock/standards conformance evidence",
+    "No large-scale performance claim is made for these three new profiles",
+    "Local /tmp paths identify retained run and check artifacts in this workspace; source hashes and named tests identify the reproducible repository inputs"
+  ]
+}

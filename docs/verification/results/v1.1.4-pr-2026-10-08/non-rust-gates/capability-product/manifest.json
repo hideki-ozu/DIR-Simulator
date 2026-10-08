@@ -1,0 +1,90 @@
+{
+  "binary": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+  "binary_sha256": "f55320b3faa212e4e870399aac815dc87412d3d5a3a0d5b55be5f149f4d32195",
+  "fixture_config": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+  "fixture_sha256": {
+    "psfp-queued-membership-leave.ini": "5011a3e0c07e7d7887001010ec76150cf71a2ea527b4d24a13a7acfc0b9acff8",
+    "psfp-queued-membership-leave.model.json": "3c23aa8e59f813a685da637a10802fbf579f8fd5250def2886cbc1ca7ebe76b6",
+    "psfp-queued-membership-leave.workload.json": "34b914b48075d94becc0f755a1a5fc7cf56120684d3548c3c5bbeb6126429482"
+  },
+  "runs": [
+    {
+      "name": "validate",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "validate",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-validate.log",
+      "log_sha256": "a7e851cdd2312ecdd1eb2b7eba565b8bc20070f4572052f0908aa774aba53d06"
+    },
+    {
+      "name": "run",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-run.log",
+      "log_sha256": "6b110976dd10088bc6bf09457172a96f0cb15233eeef7ac6a8481a370d96490a",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run/results.json",
+      "output_sha256": "0c164ee67df5d501bdc1664b145e91fff0b4c806e643d840bb3f12ace235cd60",
+      "profile": null,
+      "partial": false,
+      "termination": "events_exhausted",
+      "end_ps": "200000000000",
+      "model_records_count": 202,
+      "model_records_type": "list"
+    },
+    {
+      "name": "view",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "view",
+        "--input",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run/results.json",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/viewer.html"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-view.log",
+      "log_sha256": "4193fd279af197d9eaf6e1708fcbeff685d757aaab4aa60abc0af2d3b7ad05f1",
+      "output_html": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/viewer.html",
+      "output_sha256": "9039f9621f111cba94a9897fd4a7f0d5ddc99af626d9cc032ed2353f1a575cc0",
+      "output_bytes": 841174
+    }
+  ]
+}

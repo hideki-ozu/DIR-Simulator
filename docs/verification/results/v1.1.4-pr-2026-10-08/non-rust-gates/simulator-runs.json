@@ -1,0 +1,396 @@
+{
+  "binary": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+  "binary_sha256": "f55320b3faa212e4e870399aac815dc87412d3d5a3a0d5b55be5f149f4d32195",
+  "environment_whitelist": {
+    "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+    "CARGO": "/home/hideki/.cargo/bin/cargo",
+    "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+  },
+  "runs": [
+    {
+      "name": "bridge-complete",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/fanout.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/bridge-complete"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-bridge-complete.log",
+      "log_sha256": "1e77d9565be7c318a00e31c751a4346b5c990793e92c8da68123260f06396dc9",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/bridge-complete/results.json",
+      "output_sha256": "ba85fe596d47cd82495637582140bfee3a333605b20685c6face6886f77b4248",
+      "profile": "can.ethernet.gateway.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "end_ps": "1000000000",
+      "model_records": 13,
+      "rejections": []
+    },
+    {
+      "name": "dynamic-complete",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/registration.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/dynamic-complete"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-dynamic-complete.log",
+      "log_sha256": "31eafa08caf3176cc4523352b821df17a4222127ecbe851d6685caae28f6fb11",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/dynamic-complete/results.json",
+      "output_sha256": "47d99b32daf96af4fbbe538d94f12848e779a282c6c475a17b92400c9784c292",
+      "profile": "ethernet.l2.dynamic.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "end_ps": "10000000",
+      "model_records": 22,
+      "rejections": []
+    },
+    {
+      "name": "tsn-complete",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/tas-update.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-complete"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-tsn-complete.log",
+      "log_sha256": "579e8d767b0b76c61eb98982d64730658fb142b44d472547e2edf84c7018ac6b",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-complete/results.json",
+      "output_sha256": "e486a3f36eecbda8014f993dff9cb70a3b2dcbe39c8769f91885babc2eb7bbd2",
+      "profile": "ethernet.tsn.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "end_ps": "120000000",
+      "model_records": 29,
+      "rejections": []
+    },
+    {
+      "name": "bridge-partial",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/configs/bridge-partial.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/bridge-partial"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 3,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-bridge-partial.log",
+      "log_sha256": "0d166c857929238774b1bc08c7d5cade8683f16bd1e1c5662561fa45bda2fe73",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/bridge-partial/results.json",
+      "output_sha256": "8dda40e4690c6005888fe016b3a0e8c15aab23cc9c7906754eaadf5fa94e89f9",
+      "profile": "can.ethernet.gateway.v1",
+      "partial": true,
+      "termination": "execution_failed",
+      "end_ps": "116608000",
+      "model_records": 12,
+      "rejections": []
+    },
+    {
+      "name": "dynamic-partial",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/configs/dynamic-partial.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/dynamic-partial"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 3,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-dynamic-partial.log",
+      "log_sha256": "1341a6f24657ad7bd7af7273f7e201aa70ceba9842eeef0b74d839b8218f4100",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/dynamic-partial/results.json",
+      "output_sha256": "625cd456adeb7351c7e7d6e921137ecf3c60f9e394d568d311fc2bc3dcf4b12e",
+      "profile": "ethernet.l2.dynamic.v1",
+      "partial": true,
+      "termination": "execution_failed",
+      "end_ps": "1222000",
+      "model_records": 17,
+      "rejections": []
+    },
+    {
+      "name": "tsn-cap20-calibration",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/configs/tsn-partial.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-partial"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-tsn-partial.log",
+      "log_sha256": "66beeeeb899708f9d26a60a106487e77b52a87e7027f8c216fc2bf6a37f66346",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-partial/results.json",
+      "output_sha256": "f7878496e377a1bde3685f4270d0473fe801efd0a1f3ef6d347703a3d9cd2b05",
+      "profile": "ethernet.tsn.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "end_ps": "120000000",
+      "model_records": 29,
+      "rejections": [],
+      "note": "max-events=20 completed before cap; not used as the partial browser case"
+    },
+    {
+      "name": "axi-complete",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/axi/read-write.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/axi-complete"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-axi-complete.log",
+      "log_sha256": "c312a6c256abca92536c86b69b1dac73c7826413ef3570b782ab0c24b30805e7",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/axi-complete/results.json",
+      "output_sha256": "ca3a70dfa103a85b7879d4d5076e8186525e814eb637a6c9edda70c1785e18fa",
+      "profile": "axi4.transaction.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "end_ps": "100000",
+      "model_records": 10,
+      "rejections": []
+    },
+    {
+      "name": "soc-complete",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/soc-round-robin.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/soc-complete"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-soc-complete.log",
+      "log_sha256": "66c33431679542e79ec7469871b1fc1799793f5fd4a6b8b18242018ad5a7f408",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/soc-complete/results.json",
+      "output_sha256": "4fcb214d1463485fbb6aa9ed9c5fa96d6e6c21e41b6f7016e983129890d43d16",
+      "profile": "soc.shared.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "end_ps": "100",
+      "model_records": 6,
+      "rejections": []
+    },
+    {
+      "name": "memory-complete",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/memory-ipc/copy.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/memory-complete"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-memory-complete.log",
+      "log_sha256": "4c6bd4b2ab75ac6394a874d9795f0ed14e084164a61f07980eb8c279fca15c73",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/memory-complete/results.json",
+      "output_sha256": "830fe789dfb6a2340f0a1f3c1974834a8d7ad49e9821fef2e46d7e860495b1ff",
+      "profile": "memory.ipc.transaction.v1",
+      "partial": false,
+      "termination": "time_limit",
+      "end_ps": "25",
+      "model_records": 11,
+      "rejections": []
+    },
+    {
+      "name": "ahb-rejection",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/ahb-wait-error.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/ahb-rejection"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-ahb-rejection.log",
+      "log_sha256": "4a2edd5a40c96666868c776a3c48a43da8148c3fcaddb4d7aed7898154ab6290",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/ahb-rejection/results.json",
+      "output_sha256": "df5700ed2dbddd9a524adfc95b8b4ee2487c469ff3eb37edfcd0819e32cd351a",
+      "profile": "ahb.transaction.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "end_ps": "100",
+      "model_records": 4,
+      "rejections": []
+    },
+    {
+      "name": "memory-zero-rejection",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/configs/memory-ipc-zero-reject.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/memory-zero-rejection"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-memory-zero-rejection.log",
+      "log_sha256": "b8641c24c63be68b771948ce71f9d11de163d0d9997e4726db1dbff398d62c3f",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/memory-zero-rejection/results.json",
+      "output_sha256": "f1b791d56cd3e17c08f8d6610c509dc4cb292026117e00e68a7a9d07ccf1c1c9",
+      "profile": "memory.ipc.transaction.v1",
+      "partial": false,
+      "termination": "time_limit",
+      "end_ps": "25",
+      "model_records": 11,
+      "rejections": [
+        {
+          "reason": "address_error",
+          "generated_ps": "0",
+          "started_ps": null,
+          "completed_ps": "0",
+          "record_id": "b:0"
+        }
+      ]
+    },
+    {
+      "name": "tsn-partial-tight",
+      "argv": [
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/configs/tsn-partial.ini",
+        "--output",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-partial-tight"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 3,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-tsn-partial-tight.log",
+      "log_sha256": "17a8ed2ca7f3843ff6f08d10d68b1c68a7e5c51813096b7b3b3e173ea656ad51",
+      "config": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/configs/tsn-partial.ini",
+      "config_sha256": "1ed9c3024499c19ff0351f70aa842a959ac20811429c70fee04bc66c8dea8b67",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-partial-tight/results.json",
+      "output_sha256": "bef268bd373fe3045fcad4241c09dcbd9604de5ece6c6dc7be8d1c3efb3b00e9",
+      "profile": "ethernet.tsn.v1",
+      "partial": true,
+      "termination": "execution_failed",
+      "end_ps": "576000",
+      "model_records": 14
+    }
+  ]
+}

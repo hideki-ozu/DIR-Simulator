@@ -1,0 +1,67 @@
+{
+  "controls": [
+    {
+      "lifetime_ps": "1000",
+      "vid": 20,
+      "port": "Net.s.tx_b",
+      "kind": "vlan_register",
+      "at_ps": "1100",
+      "id": "b"
+    },
+    {
+      "lifetime_ps": "1000",
+      "vid": 20,
+      "port": "Net.s.tx_b",
+      "kind": "vlan_register",
+      "at_ps": "100",
+      "id": "a"
+    }
+  ],
+  "generators": [
+    {
+      "deadline_ps": null,
+      "priority": 7,
+      "flow_id": "b",
+      "frame": {
+        "ip_multicast": null,
+        "tag": {
+          "dei": 0,
+          "pcp": 7,
+          "vid": 10
+        },
+        "data": "",
+        "ether_type": 2048,
+        "dst_mac": "02:00:00:00:00:01"
+      },
+      "times_ps": [
+        "1000000"
+      ],
+      "kind": "ethernet.explicit.v1",
+      "node": "Net.b",
+      "id": "b"
+    },
+    {
+      "deadline_ps": null,
+      "priority": 7,
+      "flow_id": "a",
+      "frame": {
+        "ip_multicast": null,
+        "tag": {
+          "dei": 0,
+          "pcp": 7,
+          "vid": 10
+        },
+        "data": "",
+        "ether_type": 2048,
+        "dst_mac": "02:00:00:00:00:02"
+      },
+      "times_ps": [
+        "0"
+      ],
+      "kind": "ethernet.explicit.v1",
+      "node": "Net.a",
+      "id": "a"
+    }
+  ],
+  "schema_version": 4
+}

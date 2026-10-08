@@ -1,0 +1,46 @@
+{
+  "started_at_utc": "2026-10-08T07:44:02.475429+00:00",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "scripts/generate_traceability.py"
+      ],
+      "exit_code": 0,
+      "log": "/tmp/dir-million-integrated-2026-10-08/documentation-gates/0.log",
+      "log_sha256": "f003287cd7a1a005cc1d3e332db4fb30ded10ce76c0d03e786549a18aa3b3515"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "log": "/tmp/dir-million-integrated-2026-10-08/documentation-gates/1.log",
+      "log_sha256": "915e2ace5ba386c4e2fe574b6d52f309649fff3941c8694fbe1025b22ce43f39"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "/tmp/dir-million-integrated-2026-10-08/documentation-gates/2.log",
+      "log_sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "/tmp/dir-million-integrated-2026-10-08/documentation-gates/3.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "status": "passed",
+  "finished_at_utc": "2026-10-08T07:44:04.302280+00:00"
+}

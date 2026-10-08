@@ -1,0 +1,3440 @@
+{
+  "binary_sha256": "bc65ef7059b898110f187ac83c9bc842f0b6f7cebb2c3c10f9638a525918673a",
+  "cases": [
+    {
+      "config": "examples/axi/read-write.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/axi/read-write.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"0\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/axi/read-write.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/000"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/000\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/000/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"12\",\"finish_ps\":\"100000\",\"last_event_time_ps\":\"70000\",\"event_processing_wall_seconds\":0.000064397}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/000/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/000/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/000/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5193,
+          "sha256": "b52c2e410a124310886a33a5538943d89021ef51ca4ec2af8871f80db8076d9d"
+        },
+        {
+          "path": "results.json",
+          "bytes": 79568,
+          "sha256": "65b441c8cf49c8c0469823e82879cd7fc1f7470c86a9b67f709dc7f1a8dcdef4"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 5561,
+          "sha256": "c176f66fb5e6c1562462ce42c5cbba89847387030cd418a22ad8fdca58a82474"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/can/baseline.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can/baseline.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can/baseline.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/001"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/001\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/001/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"580\",\"finish_ps\":\"20000000000\",\"last_event_time_ps\":\"19536000000\",\"event_processing_wall_seconds\":0.000239269}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/001/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/001/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/001/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 106424,
+          "sha256": "b7070550f5c1af11e0a6a72828317b92b483e8c623bbf860d174f8c5d243fa42"
+        },
+        {
+          "path": "results.json",
+          "bytes": 373844,
+          "sha256": "fb26a0980f5aa6c2097452ed0543d4413937106e2eea8c1a2567584e3ab7f7ce"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12608,
+          "sha256": "e0dd1efcc74dc717232e61d697652bf372ecc4c8dffc58706ef101560d15fb34"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/can/contention.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can/contention.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can/contention.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/002"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/002\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/002/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"1366\",\"finish_ps\":\"20000000000\",\"last_event_time_ps\":\"19800000000\",\"event_processing_wall_seconds\":0.00089536}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/002/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/002/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/002/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 185949,
+          "sha256": "d3d70a695771400ff45aefc1abf57fd274602412d3324bca7f2f694f4c3d1bca"
+        },
+        {
+          "path": "results.json",
+          "bytes": 673217,
+          "sha256": "5da34eed2b2c000172e84d579268abd28639433c0a74d58ea364e3430654c856"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12521,
+          "sha256": "c6edc63beca116f5af659b5f8d103ab08bf29712523c920a908dbf414f4c5f25"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/can/overload.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can/overload.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can/overload.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/003"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/003\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/003/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"3451\",\"finish_ps\":\"20000000000\",\"last_event_time_ps\":\"19950000000\",\"event_processing_wall_seconds\":0.001675638}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/003/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/003/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/003/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 416196,
+          "sha256": "7d19f1828c432fdf54c1aac9aa5d92412f90cf709bfe7d36b511b0f69e8867ff"
+        },
+        {
+          "path": "results.json",
+          "bytes": 1624278,
+          "sha256": "32148d02982ffcc03fdec5dbc4b56e4fe5c56569a422e0399388174e390bdabb"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12513,
+          "sha256": "5b9ae2e988894b9dcf9b7f2908668a23a083b98baabbe5d7f766ee47114c7566"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/can-ethernet/bidirectional.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/bidirectional.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R02\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/bidirectional.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/004"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/004\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/004/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"35\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"306000000\",\"event_processing_wall_seconds\":0.000385984}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/004/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/004/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/004/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 22652,
+          "sha256": "4795c4b0e2c32c5266a3b1c4a7f8d371e324247a5f78403fb9e01033d75fb3b3"
+        },
+        {
+          "path": "results.json",
+          "bytes": 324919,
+          "sha256": "d7cc2658bbc1f63f4fbd4f32cc5712ad064f01a1b85bd7b79152208dcf33a129"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 38653,
+          "sha256": "e70ca42811ca11399c32ebee5a8179852191e55536ba9b5c61391e1a75193042"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/can-ethernet/fanout.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/fanout.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.Fanout\",\"node_count\":\"8\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/fanout.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/005"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/005\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/005/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"27\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"222608000\",\"event_processing_wall_seconds\":0.000339752}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/005/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/005/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/005/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 21775,
+          "sha256": "325679c435c32284083c675f1a4344068f4a06a20c42c1c57d19936cea66f855"
+        },
+        {
+          "path": "results.json",
+          "bytes": 349961,
+          "sha256": "5cc81c342c3b1caa50c74edbc834d70bc78af0de00e231aae1b82fb1b02ca741"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 48244,
+          "sha256": "e230cf56ce3117667e0bd38a38e8411940d36792a544fabc30511cbb3ac80d1c"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/can-ethernet/r01.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/r01.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R01\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/r01.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/006"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/006\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/006/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"18\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"115576000\",\"event_processing_wall_seconds\":0.000240379}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/006/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/006/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/006/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 13531,
+          "sha256": "7f29e5df67c233949259f8a9fc4864da211338b6c3f08abd74b38e977a609812"
+        },
+        {
+          "path": "results.json",
+          "bytes": 265452,
+          "sha256": "29d1041df992f089bfe8395e927e63d1b2b7826076c4ca6d6c1562fa8e7864cb"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 31493,
+          "sha256": "278403afa4392e72dd522fca9fcebd57d6b87a4ed0890df9d9e712181be06011"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/can-ethernet/r02.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/r02.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R02\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/r02.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/007"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/007\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/007/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"20\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"116608000\",\"event_processing_wall_seconds\":0.000235243}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/007/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/007/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/007/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 13371,
+          "sha256": "4938166e85d2b6e21ce196d111c52839253673eb2f536fcaf46b9a0688defc80"
+        },
+        {
+          "path": "results.json",
+          "bytes": 286607,
+          "sha256": "8b359d2521f0ffe25947bf4fbebd583acfda3d237cfcaeac933d3326e272306c"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 38397,
+          "sha256": "5757ebe7511eee64f4b44aed169804d3be876c2d63152778be83ce8b83434515"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/can-ethernet/rx-limit.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/rx-limit.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"bridge.R02\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/can-ethernet/rx-limit.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/008"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/008\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/008/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"40\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"123608000\",\"event_processing_wall_seconds\":0.000396721}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/008/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/008/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/008/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 29095,
+          "sha256": "ded54f0213bb3b7ac56a5e03deb213b30134647502b0b0865522c29f72a17987"
+        },
+        {
+          "path": "results.json",
+          "bytes": 334069,
+          "sha256": "4edd7b7d0710065a58de3aa2d1cd86113c55626798e40e6a3134d3d006ca05b7"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 38401,
+          "sha256": "bb6368d817e6af80cb2474740ee8c311643a1b6d7e0595250e5889f4a9e20f04"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/canfd/precomputed.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/canfd/precomputed.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"fd.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/canfd/precomputed.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/009"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/009\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/009/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"14\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"226000000\",\"event_processing_wall_seconds\":0.000042076}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/009/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/009/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/009/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 147,
+          "sha256": "5e0cea6c607d26b130916139b76d6f3586aa88054f4560ecd2c7a9003e0dc62e"
+        },
+        {
+          "path": "results.json",
+          "bytes": 61922,
+          "sha256": "da54d658d410b6bdd036a14bcb91d053cff2b7049bd04fe6b05875089b3a0771"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 1737,
+          "sha256": "5c7c8b1be40c085524f9369828a57f8c7c43e23a306c626ebf87d7e2273ec0be"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/duplex.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/duplex.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"ethdemo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/duplex.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/010"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/010\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/010/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"28\",\"finish_ps\":\"30000000\",\"last_event_time_ps\":\"24515000\",\"event_processing_wall_seconds\":0.000106766}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/010/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/010/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/010/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 6010,
+          "sha256": "d1778a2c02f79812528803348ecd156fe322ec5fb6486e9e220cdb7f4140ec00"
+        },
+        {
+          "path": "results.json",
+          "bytes": 167564,
+          "sha256": "29ac5c6b32335ad8433899a5337120948dc660c3299170139595a4d7d1a0933f"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12636,
+          "sha256": "7bd6ce9b9fc4cd51e19c084b807b962c375f4e15b53e512e0114cb871856d2f6"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/dynamic/empty.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/empty.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/empty.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/011"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/011\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/011/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"0\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":null,\"event_processing_wall_seconds\":3.88e-7}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/011/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/011/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/011/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 20188,
+          "sha256": "0df6ea9146cc8f443c33e8421e6a01a1a88cb4ff4ec9ad76bb49c68e6578c2f9"
+        },
+        {
+          "path": "results.json",
+          "bytes": 720684,
+          "sha256": "a7c4fda9d82afe343ae8abd7a8eb2175a1f55d8070cc18045a5a01df0618b37e"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 82697,
+          "sha256": "339ad1f1464cc1d585b9a4bf49a041d9dd26576d894e137c0dd4181f8577231d"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/dynamic/membership.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/membership.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/membership.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/012"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/012\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/012/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"77\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"9220000\",\"event_processing_wall_seconds\":0.001437431}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/012/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/012/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/012/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 103584,
+          "sha256": "39069315a16ad4458ecc05ad90590be231b25df23002ed56f8117a978093b256"
+        },
+        {
+          "path": "results.json",
+          "bytes": 1057527,
+          "sha256": "e1ab6742ea46d065054ee0676428db0ec61443c72dd157d57d99db2882e20dba"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 100949,
+          "sha256": "e0ce8744970523360a390b51a2bd1664b82d5c6c4196a99f04966e10bf6b9be9"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/dynamic/registration.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/registration.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/registration.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/013"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/013\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/013/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"29\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"6220000\",\"event_processing_wall_seconds\":0.000595878}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/013/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/013/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/013/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 36539,
+          "sha256": "ed7f1accdc53dfabfaf6fa71183afe7c09acc56817458bc9cb9ed8a600f2b101"
+        },
+        {
+          "path": "results.json",
+          "bytes": 820638,
+          "sha256": "6ad2d4d92eda53ad07d8f80c339fcd30743b3a3a64c6b3a0969382dc29820e27"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 92020,
+          "sha256": "da8ca0d8bba255fb15a5f11a734b892f2bae61585104a791a05ca8157399eabc"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/dynamic/topology.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/topology.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/topology.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/014"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/014\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/014/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"50\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"8220000\",\"event_processing_wall_seconds\":0.000902162}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/014/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/014/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/014/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 53162,
+          "sha256": "4aba0922234f541ae374dfe5de55a6df58a73f8a6ffdf8697ecfb6e4c4b0adf6"
+        },
+        {
+          "path": "results.json",
+          "bytes": 869516,
+          "sha256": "29feab18003e224d85000ae31d5ebc9f887b3aa804f9a9204a541e8dd8b61950"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 92252,
+          "sha256": "2777a3d65397484ecaab2f6c9a44dde579599ed4db66ed4cb4b84ecce58a4d2b"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/dynamic/unicast.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/unicast.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"12\",\"network\":\"ethdynamic.Net\",\"node_count\":\"6\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/dynamic/unicast.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/015"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/015\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/015/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"23\",\"finish_ps\":\"10000000\",\"last_event_time_ps\":\"6220000\",\"event_processing_wall_seconds\":0.0004219}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/015/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/015/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/015/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 36488,
+          "sha256": "055224f03e0422cfecd6b3741db0151e23a770b99330f43b392029793b511494"
+        },
+        {
+          "path": "results.json",
+          "bytes": 803789,
+          "sha256": "ff9228dcd531d03ee1e5d17fd5e6d1ffa4827b0e67ef83eb031ae98757236a76"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 91772,
+          "sha256": "8bc4f2175be67ed366aa04e14cb946fbaab8130e3f0a0616a590de3e694eee67"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/media/100base-t1.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/100base-t1.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"media.Main\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/100base-t1.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/016"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/016\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/016/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"11\",\"finish_ps\":\"100000000\",\"last_event_time_ps\":\"6720000\",\"event_processing_wall_seconds\":0.000059824}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/016/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/016/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/016/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 1305,
+          "sha256": "d681fe172acd19b7be2deb64870ded5dfd602db3949e17639ba763caba44d652"
+        },
+        {
+          "path": "results.json",
+          "bytes": 78950,
+          "sha256": "0ffc2eb73bd585bd533dd0c4758a10d51c7168c7830cfebbadcd62f4676b0975"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 2225,
+          "sha256": "80e69a54e05df02e39e891dd6a36af1749d886638b20bdd194df43c1e704f30a"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/media/collision.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/collision.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"media.Main\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/collision.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/017"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/017\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/017/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"37\",\"finish_ps\":\"100000000\",\"last_event_time_ps\":\"15660000\",\"event_processing_wall_seconds\":0.000067938}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/017/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/017/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/017/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 1549,
+          "sha256": "972d8f3b71c2fbe77b4cf992b4a9ef54004464b6e780c461ef2cc85bcdbad4f8"
+        },
+        {
+          "path": "results.json",
+          "bytes": 80921,
+          "sha256": "f44ca856e602a2168e96ca0340992998830bb1c88bcb5cc7250c725ab4f812d1"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 2235,
+          "sha256": "b2a03d66758cf29d84adad74d6f130b54dbae3d5c7fcbd27a5be6de33f62ff34"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/media/mixed.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/mixed.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"media.Mix\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/mixed.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/018"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/018\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/018/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"52\",\"finish_ps\":\"100000000\",\"last_event_time_ps\":\"14017000\",\"event_processing_wall_seconds\":0.000084736}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/018/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/018/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/018/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 3715,
+          "sha256": "b7f28ad9546b5f9310f3d1e7f473359feac6e26038101324d4edee0f3af94124"
+        },
+        {
+          "path": "results.json",
+          "bytes": 151987,
+          "sha256": "cd21fa7a3bc1443f90ccd9194eb1132786e423f869215c1cbc724c1ebd8a4722"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 5221,
+          "sha256": "4c5e86ad1dd017f9eca8682686c417b69030578c7a4db99668a0d0f89edf6fe1"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/media/t1-duplex.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/t1-duplex.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"media.Main\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/t1-duplex.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/019"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/019\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/019/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"11\",\"finish_ps\":\"100000000\",\"last_event_time_ps\":\"1277000\",\"event_processing_wall_seconds\":0.000043134}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/019/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/019/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/019/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 1305,
+          "sha256": "5e4a01a70cdbdc9a080ff10a9fba97199e7109b6ce13d9a8a7e1d0b583dd0ec7"
+        },
+        {
+          "path": "results.json",
+          "bytes": 78960,
+          "sha256": "2248affdb72e5848728fc19756f7840a6e8ca52a416dcac3b09fc2a31df346c6"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 2225,
+          "sha256": "a6a0687f9dec6065e4292b880f16599e8d192769b603f020570e2158d25200a9"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/media/t1-pipeline.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/t1-pipeline.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"media.Main\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/media/t1-pipeline.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/020"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/020\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/020/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"15\",\"finish_ps\":\"100000000\",\"last_event_time_ps\":\"3249000\",\"event_processing_wall_seconds\":0.000045288}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/020/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/020/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/020/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 1310,
+          "sha256": "2c15eac1a22929bb7f4120f14d2bca79272001c53e27b17dfb67bff70488c1d8"
+        },
+        {
+          "path": "results.json",
+          "bytes": 70243,
+          "sha256": "c1df1588a874f9eaae9b1340ce2a6418716afe50de12048b6a09e7b89a308c86"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 2225,
+          "sha256": "e20353c82dfa64bca5855e59e88f50c720ebad62a6b426051ae025abedb89248"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/qos-periodic-burst.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/qos-periodic-burst.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"ethdemo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/qos-periodic-burst.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/021"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/021\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/021/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"96\",\"finish_ps\":\"14000000\",\"last_event_time_ps\":\"13923000\",\"event_processing_wall_seconds\":0.000095732}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/021/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/021/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/021/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 28479,
+          "sha256": "fc6acbbe91ca466487eab1bfeabd65c04b7855e6d0ebed2d50985296b4b33a07"
+        },
+        {
+          "path": "results.json",
+          "bytes": 415992,
+          "sha256": "a52c5810ec978ba92f90dfe1340d150a591650ce34bc05fe56ea48e827f3eaed"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 53199,
+          "sha256": "bd1f3bca43d26743963d0b9df0d814a732aa7ac6ceef4cb1254c7c7200b00616"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/qos-priority.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/qos-priority.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"ethdemo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/qos-priority.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/022"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/022\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/022/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"38\",\"finish_ps\":\"3000000\",\"last_event_time_ps\":\"2595000\",\"event_processing_wall_seconds\":0.000047743}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/022/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/022/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/022/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 20219,
+          "sha256": "63ddb3bfef677d61f21801e68aa89cc0ac61488aab0deb0bf83db3285cbccc19"
+        },
+        {
+          "path": "results.json",
+          "bytes": 408884,
+          "sha256": "6e228152c3ff1baaa476ba7a848bf9c535a2402fc86d340b2cb4046a11812ecf"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 61051,
+          "sha256": "d8ef50745b12047fa778eec5aa5092615f103b253c0475532c2fdc9eb55d4905"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/tsn/cbs-gated.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/cbs-gated.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/cbs-gated.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/023"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/023\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/023/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"18\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"6376000\",\"event_processing_wall_seconds\":0.000238652}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/023/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/023/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/023/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 13984,
+          "sha256": "22cdb2baa13edf675627a5f2048ab4b181340878827e7c2fd992dbb73cba0aea"
+        },
+        {
+          "path": "results.json",
+          "bytes": 264383,
+          "sha256": "94ce53f04db82d7208a4b05a0fe161c656b7526d1add8dfd5521fa90a0ffa8e1"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 26882,
+          "sha256": "179b62a04c1fd0127a866bc4193d867c91dc7e91eb3283fa04530ae571253f5d"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/tsn/cbs.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/cbs.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/cbs.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/024"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/024\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/024/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"16\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"5376000\",\"event_processing_wall_seconds\":0.000207668}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/024/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/024/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/024/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 13972,
+          "sha256": "d557f6d13e0ec22550a15530714b7ca2df58c4a792c345b3baa773ebe0a6ea3d"
+        },
+        {
+          "path": "results.json",
+          "bytes": 244678,
+          "sha256": "83a56a1bda0d4446fe4e1857945953d12b16e4c130150c87ff8ef9447b440753"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 26349,
+          "sha256": "9cb24602dab3fdce60fd26233caf103c37589eeb5a2d255ce0e811d07672bef8"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/tsn/psfp-gate.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/psfp-gate.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/psfp-gate.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/025"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/025\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/025/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"7\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"672000\",\"event_processing_wall_seconds\":0.000120697}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/025/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/025/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/025/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 8466,
+          "sha256": "dfc80949a4ec6b85dfdc8112ee94bb1fb2f3ac08de2b6f780fdca432d1d982cb"
+        },
+        {
+          "path": "results.json",
+          "bytes": 242819,
+          "sha256": "50eb47062f31695f758f5b24356c156296f9f6fa78374a689ea293b35ffd0660"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 26208,
+          "sha256": "da1679e30c4374e92ded765191a76f70bbfbf241943f64e0262fc45ca66fd3c4"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/tsn/psfp.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/psfp.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/psfp.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/026"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/026\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/026/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"33\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"96672000\",\"event_processing_wall_seconds\":0.000404433}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/026/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/026/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/026/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 30412,
+          "sha256": "2785fe8e3772c0dd6ebdd8eee235d9683877c1cd8da60be59aac111541d00513"
+        },
+        {
+          "path": "results.json",
+          "bytes": 303040,
+          "sha256": "8bd42d49e5793077b0c90f797b69e05af1049002dfc8057f211d81a2438bec78"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 26614,
+          "sha256": "c5d46d96988ba4adeecac0d1a929c6738be7a1f7ed68798c77decc405480d390"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/tsn/tas-update.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/tas-update.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/tas-update.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/027"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/027\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/027/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"15\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"1672000\",\"event_processing_wall_seconds\":0.000206555}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/027/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/027/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/027/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 13986,
+          "sha256": "a73b357ff418cd3bb0eab6c346d508bb64867fe9ba45297439f3b8e29caecae3"
+        },
+        {
+          "path": "results.json",
+          "bytes": 254855,
+          "sha256": "cf3119a30a14aac41c2eabb3ca5da6ff45bc85aa6c037d41d0c040cf511c69e7"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 26578,
+          "sha256": "39d857225a10e0215367bcf913476299b1368cb4b7c9c2c5d301a27df5d7b22f"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/tsn/tas.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/tas.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"2\",\"network\":\"ethtsn.Net\",\"node_count\":\"2\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/tsn/tas.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/028"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/028\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/028/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"16\",\"finish_ps\":\"120000000\",\"last_event_time_ps\":\"2672000\",\"event_processing_wall_seconds\":0.00031165}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/028/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/028/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/028/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 14225,
+          "sha256": "e37ba9ffda4c97e248349297b38228b40877c0bfdd66d47909b1f1128afb6032"
+        },
+        {
+          "path": "results.json",
+          "bytes": 254488,
+          "sha256": "b06190a74a18379961f1c43b4d146913caba0268b45043d86926bbe712f2db8e"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 26212,
+          "sha256": "4e4f44dbafcce6ac9f0f71ee09beb7ff8d53e19c9df6ff854eece7754621328a"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/unicast.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/unicast.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"ethdemo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/unicast.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/029"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/029\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/029/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"14\",\"finish_ps\":\"3000000\",\"last_event_time_ps\":\"1251000\",\"event_processing_wall_seconds\":0.000029459}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/029/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/029/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/029/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5391,
+          "sha256": "eae1edb98d7533f03b7e8c12afcffbcbe6b74ddf089366e6d46a7490febdee6c"
+        },
+        {
+          "path": "results.json",
+          "bytes": 133579,
+          "sha256": "a328b8eeba0ea9480d28d937c8cb83c5b6fae3d137627d352ba2ed19205a4d13"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12470,
+          "sha256": "bda5e89a4975e304cde3c036eb1c2840c262df257ef5cf4eb2f37844dc5c2c14"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/vlan-multicast.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/vlan-multicast.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"14\",\"network\":\"ethdemo.VlanDemo\",\"node_count\":\"8\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/vlan-multicast.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/030"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/030\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/030/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"43\",\"finish_ps\":\"4000000\",\"last_event_time_ps\":\"2537000\",\"event_processing_wall_seconds\":0.000060582}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/030/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/030/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/030/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 40819,
+          "sha256": "a8bf7077fa24d4f4232c83643c04cdb00b731d48173eed2d6dc63dbfa13adc56"
+        },
+        {
+          "path": "results.json",
+          "bytes": 853980,
+          "sha256": "c2d60784c43556857931ac6a22db9ffcbfe062f94ceda57b294a23301581b6f8"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 104988,
+          "sha256": "ab116413706b0805120bd64a75cfb0270a175338ab612ade1b65249a0709ca6c"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/ethernet/vlan-unicast.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/vlan-unicast.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"14\",\"network\":\"ethdemo.VlanDemo\",\"node_count\":\"8\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/ethernet/vlan-unicast.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/031"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/031\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/031/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"21\",\"finish_ps\":\"4000000\",\"last_event_time_ps\":\"1862000\",\"event_processing_wall_seconds\":0.000035566}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/031/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/031/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/031/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 37638,
+          "sha256": "b0d3c2573dae171763d294420a690a14638ec7d4d561d2a908737a4eb89a3260"
+        },
+        {
+          "path": "results.json",
+          "bytes": 839226,
+          "sha256": "4d3c55eebb77cbd8693a77f59d83716d9d4f563ba5a544ce35f917f538340069"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 104753,
+          "sha256": "de17861efba9e054e28864182c4624b6506257d25700480582b9e2f9b367175a"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/gateway/buffered-fanout.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/gateway/buffered-fanout.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"12\",\"network\":\"gateway.Main\",\"node_count\":\"9\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/gateway/buffered-fanout.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/032"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/032\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/032/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"190\",\"finish_ps\":\"2000000000\",\"last_event_time_ps\":\"1796000000\",\"event_processing_wall_seconds\":0.000179584}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/032/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/032/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/032/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 42139,
+          "sha256": "5e753ff9dbfd99f4b9cfcc2f0f234a1de503173cddabd523ff7882391ed39339"
+        },
+        {
+          "path": "results.json",
+          "bytes": 296366,
+          "sha256": "91b662ffb00dedce739c2de9c09f5f4958b29aebff65739f7fa145f71a6757aa"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 27648,
+          "sha256": "85fc5128ef4be77a024943aa2c7e4cab96aeeda7657a1d92d2057c83997f4e1a"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/gateway/fanout.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/gateway/fanout.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"12\",\"network\":\"gateway.Main\",\"node_count\":\"9\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/gateway/fanout.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/033"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/033\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/033/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"420\",\"finish_ps\":\"10000000000\",\"last_event_time_ps\":\"9968000000\",\"event_processing_wall_seconds\":0.000319036}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/033/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/033/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/033/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 115931,
+          "sha256": "e038ae83e7e89738f665bb3a1ee7e882c265c423b9f66d7efef47476ba29f9bc"
+        },
+        {
+          "path": "results.json",
+          "bytes": 509491,
+          "sha256": "d687471c3529418528b6ec82cbf267b9b1caa7fa48dca403719209421490f2a7"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 28038,
+          "sha256": "9ef1e93a910f29ab01521a535a16ea47dc802989fee08fc4e4b19f6ee2ebc971"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/can/fast.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/fast.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/fast.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/034"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/034\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/034/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"29\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"268000000\",\"event_processing_wall_seconds\":0.00005174}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/034/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/034/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/034/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5703,
+          "sha256": "50f302c63d22f9ca1c30a9fcd79ea162027ad7f2c3970427151c905caa9c9fa4"
+        },
+        {
+          "path": "results.json",
+          "bytes": 100850,
+          "sha256": "24413801ce541d2cce4e668c0fc1532ca91e7026ddfe42fc4ae61aadedf729b4"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12430,
+          "sha256": "2d24af856c2552ad263befc18f238190133608d35dc716b862b3177bb8e7df26"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/can/filter-id.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/filter-id.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/filter-id.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/035"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/035\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/035/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"28\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"536000000\",\"event_processing_wall_seconds\":0.000051143}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/035/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/035/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/035/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5593,
+          "sha256": "60651adcd68cdcb8284718f01772d3656f3e8811c8d7342818b66c01ef72b5bf"
+        },
+        {
+          "path": "results.json",
+          "bytes": 100618,
+          "sha256": "65bb430e98157bf182767293c39bcf6dcd73b38a94bb3faa48affa8cdc86e9f2"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12430,
+          "sha256": "235ec4bd8788dd5d10ec0d9d1912b98962472f026a2030c66525335f40542582"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/can/filter-none.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/filter-none.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/filter-none.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/036"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/036\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/036/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"27\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"536000000\",\"event_processing_wall_seconds\":0.000069297}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/036/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/036/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/036/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5480,
+          "sha256": "f9895ffb8959c5b835c2d1678a5f523c8f4b4a635fa3ebe5f5fe7f884fcd9666"
+        },
+        {
+          "path": "results.json",
+          "bytes": 100301,
+          "sha256": "c7483a02b1bb1129f7154f20fefe383349b110b9e0a696b82dc789082047ab39"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12408,
+          "sha256": "9fc7c7484dc8c3b7aca792ed10f0b046018c71d677126bb34845d8134dd45cba"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/can/id-swap.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/id-swap.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/id-swap.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/037"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/037\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/037/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"29\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"536000000\",\"event_processing_wall_seconds\":0.000059579}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/037/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/037/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/037/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5705,
+          "sha256": "c7c2c698bb9e4e60d87efb2d3ebdf686bc39c4f8a1d3ad983c0f4036284e7303"
+        },
+        {
+          "path": "results.json",
+          "bytes": 100849,
+          "sha256": "f1a9414dbf3dcf3ca650cc770a72655d16671227f510f8ae2de713541d246d97"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12430,
+          "sha256": "c84ee25e40a5efe5878b7320ec1febd26156b2c5ac3f8d9b7f36548319f95c0d"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/can/minimal.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/minimal.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/minimal.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/038"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/038\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/038/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"29\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"536000000\",\"event_processing_wall_seconds\":0.000057581}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/038/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/038/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/038/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5705,
+          "sha256": "385614aa96e8c22013175781357731b0fe374cecebb518699d515ae70fa709f5"
+        },
+        {
+          "path": "results.json",
+          "bytes": 100848,
+          "sha256": "4f1c396397ad36006f46cffd182bb3569b85a8616723d1d8a4a61d518f83b183"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12430,
+          "sha256": "cfd57f69eeab3ad8e2bec971709ce65846bc1063350715e635c7147e047c35c9"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/can/rx-delay0.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/rx-delay0.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/rx-delay0.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/039"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/039\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/039/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"29\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"536000000\",\"event_processing_wall_seconds\":0.000050865}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/039/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/039/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/039/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5705,
+          "sha256": "fd15de113f2343d314b9890bb47277359dc1afddb3341a301a70a62dbddea0a4"
+        },
+        {
+          "path": "results.json",
+          "bytes": 100860,
+          "sha256": "d971fd758377e50998ba8f5b064d9784379d5f1c180ad430ccbb231f0a15081b"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12430,
+          "sha256": "1c282da8422d8082d87801cb5f5f83d966e06e9112e88f487ebce2b278744254"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/can/rx-delay200.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/rx-delay200.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/rx-delay200.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/040"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/040\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/040/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"31\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"600000000\",\"event_processing_wall_seconds\":0.00006473}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/040/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/040/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/040/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5705,
+          "sha256": "4c46b5d724bc1ebc2f11a3d3ce2019ac4e16968c0ef1eeb7501492a1f2ed2b51"
+        },
+        {
+          "path": "results.json",
+          "bytes": 100896,
+          "sha256": "ee7dc69f33939890018cdc70297d91949ee8ea5e9229e65f0fe2bb51efeb7d0f"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12430,
+          "sha256": "5f573d5b2331440ec4aaabf0e77ae3a2d48f8b99945cf5427d57a612ef165cc9"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/can/rx-delay900.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/rx-delay900.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/can/rx-delay900.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/041"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/041\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/041/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"27\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"536000000\",\"event_processing_wall_seconds\":0.000051735}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/041/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/041/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/041/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 5480,
+          "sha256": "879761947edbbcd384e2df3b44251f92d8851f9d6f852c8378918f32ceeb7950"
+        },
+        {
+          "path": "results.json",
+          "bytes": 100319,
+          "sha256": "47e9d17f22f680c8b192e02309355d7ae6f945bc341c446718c86ac46cf98b71"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 12408,
+          "sha256": "aa9593dd3f71ec2ac3a95c82349b52423c1d7b3cdc94dcfb62f37a42b3b9e5fb"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/canfd/data1.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/canfd/data1.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"fd.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/canfd/data1.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/042"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/042\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/042/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"14\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"292000000\",\"event_processing_wall_seconds\":0.000036513}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/042/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/042/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/042/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 147,
+          "sha256": "5e0cea6c607d26b130916139b76d6f3586aa88054f4560ecd2c7a9003e0dc62e"
+        },
+        {
+          "path": "results.json",
+          "bytes": 61950,
+          "sha256": "85a04c3b931334a3d339e5bb45385c9af5e3d8314783bab0a388bd9c7dd2c8b7"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 1737,
+          "sha256": "ad9e8980771198470ba83db972b607d3cd368308ae8a1491798c4498755b7a41"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/canfd/data2.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/canfd/data2.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"fd.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/canfd/data2.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/043"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/043\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/043/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"14\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"226000000\",\"event_processing_wall_seconds\":0.000036748}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/043/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/043/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/043/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 147,
+          "sha256": "5e0cea6c607d26b130916139b76d6f3586aa88054f4560ecd2c7a9003e0dc62e"
+        },
+        {
+          "path": "results.json",
+          "bytes": 61950,
+          "sha256": "5af7d5e2a9e449b2a866d0879af0bb8a7c09a37d9fa387f9176ff232bfed3bda"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 1737,
+          "sha256": "d490d077773023837e3abc96665d18d0c2a7a0eb3c15e76cbfc38e9c30d0fd84"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/guide/canfd/data4.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/canfd/data4.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"6\",\"network\":\"fd.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/guide/canfd/data4.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/044"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/044\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/044/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"14\",\"finish_ps\":\"1000000000\",\"last_event_time_ps\":\"206000000\",\"event_processing_wall_seconds\":0.000036072}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/044/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/044/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/044/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 147,
+          "sha256": "5e0cea6c607d26b130916139b76d6f3586aa88054f4560ecd2c7a9003e0dc62e"
+        },
+        {
+          "path": "results.json",
+          "bytes": 61931,
+          "sha256": "39b71f361f4b8aaade0d731ce0e8b778baa53b622f7a1eeb0e44551793fab66f"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 1737,
+          "sha256": "fce61b392ac9c36af18e2fe38030637519222bc8f4c0fe11e15d0ff1c99bae27"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/memory-ipc/copy.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/memory-ipc/copy.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"0\",\"network\":\"memoryipc.Main\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/memory-ipc/copy.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/045"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/045\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/045/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"41\",\"finish_ps\":\"25\",\"last_event_time_ps\":\"24\",\"event_processing_wall_seconds\":0.000046212}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/045/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/045/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/045/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 2609,
+          "sha256": "9a3a74e453ce888c4b65c61c0f08a9add0ce4843b3a444bb1e6cc7c959b7273b"
+        },
+        {
+          "path": "results.json",
+          "bytes": 119765,
+          "sha256": "74a2008c1325df16137bb4ffe902b0c1fbc0d328299e0047d55e81ee257f1c72"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 3691,
+          "sha256": "20138d13f5c260f7f716707ed06a46f7466cbef0eb77e8064c7a254db5300147"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/soc/ahb-boundary.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/ahb-boundary.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"0\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/ahb-boundary.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/046"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/046\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/046/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"3\",\"finish_ps\":\"30\",\"last_event_time_ps\":\"0\",\"event_processing_wall_seconds\":0.000029013}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/046/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/046/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/046/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 2362,
+          "sha256": "e164e822f98abbf7d425263479a07bb727409afdbd52a10698fb9ccd909fcf81"
+        },
+        {
+          "path": "results.json",
+          "bytes": 48557,
+          "sha256": "567128a8cfb8fd2c95420bc656e097ff221ee6d406697de8430990fc95e3427c"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 3481,
+          "sha256": "2434c5ae7dddb1e026048cadafc680f6eaa9c10b2e9fcd128249486eb0ba61e1"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/soc/ahb-wait-error.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/ahb-wait-error.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"0\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/ahb-wait-error.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/047"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/047\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/047/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"7\",\"finish_ps\":\"100\",\"last_event_time_ps\":\"90\",\"event_processing_wall_seconds\":0.000040715}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/047/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/047/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/047/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 7581,
+          "sha256": "712c4104dfb55ddcc79d131032e0f5f663580c2c5a5db8b8190825ed2b5e6c19"
+        },
+        {
+          "path": "results.json",
+          "bytes": 65637,
+          "sha256": "29b722396b4b90f858fb78e1b2c81ab710617fc3f4c7fefb3f8be088da8457b2"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 3604,
+          "sha256": "f2d2a59cd71a36a9da1bf2a4caafc9778c82373ffe6d2f8ecfc7c9fd71167dbd"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/soc/noc-backpressure.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/noc-backpressure.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"0\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/noc-backpressure.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/048"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/048\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/048/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"15\",\"finish_ps\":\"65\",\"last_event_time_ps\":\"60\",\"event_processing_wall_seconds\":0.000076106}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/048/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/048/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/048/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 7974,
+          "sha256": "714c3a892cc9d11d2252cff768eb6cbfad92c90adda7907493fb7945cd32442b"
+        },
+        {
+          "path": "results.json",
+          "bytes": 73217,
+          "sha256": "b843a1d776c56b1a6802cb203fbb2348a0abd7ddfc0650a69dfdc79c83c2a42f"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 4885,
+          "sha256": "d82cea4429116266ada1af3a44023cc50c68476b051885f5a1ff998a556a2bf5"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/soc/noc-xy.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/noc-xy.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"0\",\"network\":\"demo.Main\",\"node_count\":\"8\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/noc-xy.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/049"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/049\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/049/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"8\",\"finish_ps\":\"70\",\"last_event_time_ps\":\"60\",\"event_processing_wall_seconds\":0.000095375}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/049/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/049/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/049/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 17778,
+          "sha256": "5018d0320cbf57721b3abdfb9a32ecb949e0cf6b065f997be4ac26ee15832a89"
+        },
+        {
+          "path": "results.json",
+          "bytes": 123108,
+          "sha256": "ee5d00417bad5d8efcb8a612bb22473fdcf7fefbf7a868d0b093a901aceed797"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 9921,
+          "sha256": "05f3fc1d36986efd05a5403c04525e4c00f69b6cca421816bdaac7180424489f"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    },
+    {
+      "config": "examples/soc/soc-capacity-stop.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/soc-capacity-stop.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"0\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/soc-capacity-stop.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/050"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/050\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/050/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"6\",\"finish_ps\":\"40\",\"last_event_time_ps\":\"20\",\"event_processing_wall_seconds\":0.000037896}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/050/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/050/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/050/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 3106,
+          "sha256": "3ee232c84f3ce027a65edf77bc3aae831b024bd3c88f1ed9b1653c52ed3912bb"
+        },
+        {
+          "path": "results.json",
+          "bytes": 51746,
+          "sha256": "22a2ac93bf7d7f710763469156145444ac66593d7cd07d8d2eaeb991f504d868"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 3523,
+          "sha256": "3dad2c32d51f3d899d93b0ebdcc7746cb1c5db6e2f40bfd664b459b1484485cc"
+        }
+      ],
+      "termination": "time_limit",
+      "partial": false
+    },
+    {
+      "config": "examples/soc/soc-round-robin.ini",
+      "commands": [
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/soc-round-robin.ini"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"channel_count\":\"0\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/examples/soc/soc-round-robin.ini",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/051"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/051\",\"manifest_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/051/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"10\",\"finish_ps\":\"100\",\"last_event_time_ps\":\"90\",\"event_processing_wall_seconds\":0.000043069}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/051/results.json",
+            "--output",
+            "/tmp/dir-pr37-review-2026-10-08/example-gates/051/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-pr37-review-2026-10-08/example-gates/051/viewer.html\"}\n",
+          "stderr": ""
+        }
+      ],
+      "manifest_files_verified": [
+        {
+          "path": "diagnostics.jsonl",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "events.csv",
+          "bytes": 7589,
+          "sha256": "955ae09464ed75046a231d0fdd6630c7078ea690fd8c7bd27a434f911e9f7116"
+        },
+        {
+          "path": "results.json",
+          "bytes": 66883,
+          "sha256": "fbc915a46c1736297d90b89b2ba4e9a46e660bbfaa4e7a429a69cb41ac63c232"
+        },
+        {
+          "path": "summary.csv",
+          "bytes": 3608,
+          "sha256": "98d905d5d8321b9cc2d2fc2c99c2e6d62c29a2ede159d068aec5dc693e6b9edc"
+        }
+      ],
+      "termination": "events_exhausted",
+      "partial": false
+    }
+  ],
+  "status": "passed",
+  "total_cases": 52,
+  "total_manifest_files": 208
+}

@@ -1,0 +1,1055 @@
+{
+  "bit_time_ps": 2000000,
+  "bitrate_bps": 500000,
+  "calculation": {
+    "C_i_definition": "(frame_bits_including_sof_to_eof + 3) * bit_time_ps",
+    "T_definition": "count_per_sender * P",
+    "crc_input": "SOF through data field, before CRC sequence",
+    "crc_polynomial_hex": "0x4599",
+    "dynamic_stuffing": "SOF through CRC sequence inclusive",
+    "intermission_bits": 3,
+    "period_rounding": "ceil(sum(C_i) / rho), using exact rational arithmetic",
+    "phase_definition": "floor(sender_index * P / 32), with zero-based index",
+    "rho_definition": "sum(C_i) / P",
+    "unstuffed_trailing_bits": 10
+  },
+  "channel_delay_ps": 0,
+  "count_per_sender": 100,
+  "frame": {
+    "can_id_first": 256,
+    "can_id_last": 287,
+    "data_hex": "0000000000000000",
+    "format": "standard"
+  },
+  "generator": "scripts/performance/generate_can_million.py",
+  "input_sha256": {
+    "models/canmillion/Main.ned": "a5c6b07aed7c5b36f3f4743fd3221f928b4ab5745719ea434075626a313ac364",
+    "rho-0.30.ini": "cb0595f5f52b1ab0736043180e0c8cfb91a2aa9eebd6c5b4798935af758843dc",
+    "rho-0.30.workload.json": "8668469f45989db4301a3809515883dd5fdf4a6e655eb8660b24c555914af2d6",
+    "rho-0.90.ini": "5a76d31a78c24b0680fd5e7683236cbc5fc1ca4e49e65db6be78c94c73c1243a",
+    "rho-0.90.workload.json": "92b682bf8f0589ea00413ff3204eca02c7c1cd8319d4a4b99fbb12bf261b3175",
+    "rho-1.20.ini": "260cc70290f4eb275a67159eba86cffae90978d29e14842641100cc3ed7f21ed",
+    "rho-1.20.workload.json": "7cbce0beab65183800e8b56ac8fad1971bc79511bd47e5ecd6549c176f14d70b"
+  },
+  "metrics_window": "1ms",
+  "provenance": "Deterministic analytic Classical CAN timing inputs; CRC-15 register and polynomial-division calculations agree. This does not claim simulator execution, performance, hardware capture, or ISO conformance.",
+  "queue_capacity": 64,
+  "request_count_per_configuration": 3200,
+  "rx_filter": "*",
+  "rx_processing_delay_ps": 0,
+  "scenarios": [
+    {
+      "P_ps": 26660000000,
+      "T_ps": 2666000000000,
+      "ini": "rho-0.30.ini",
+      "request_count_per_sender": 100,
+      "request_count_total": 3200,
+      "rho": "0.30",
+      "rho_exact": {
+        "denominator": 10,
+        "numerator": 3
+      },
+      "senders": [
+        {
+          "last_start_ps": 2639340000000,
+          "node": "Main.n00",
+          "phase_ps": 0,
+          "sender_index": 0
+        },
+        {
+          "last_start_ps": 2640173125000,
+          "node": "Main.n01",
+          "phase_ps": 833125000,
+          "sender_index": 1
+        },
+        {
+          "last_start_ps": 2641006250000,
+          "node": "Main.n02",
+          "phase_ps": 1666250000,
+          "sender_index": 2
+        },
+        {
+          "last_start_ps": 2641839375000,
+          "node": "Main.n03",
+          "phase_ps": 2499375000,
+          "sender_index": 3
+        },
+        {
+          "last_start_ps": 2642672500000,
+          "node": "Main.n04",
+          "phase_ps": 3332500000,
+          "sender_index": 4
+        },
+        {
+          "last_start_ps": 2643505625000,
+          "node": "Main.n05",
+          "phase_ps": 4165625000,
+          "sender_index": 5
+        },
+        {
+          "last_start_ps": 2644338750000,
+          "node": "Main.n06",
+          "phase_ps": 4998750000,
+          "sender_index": 6
+        },
+        {
+          "last_start_ps": 2645171875000,
+          "node": "Main.n07",
+          "phase_ps": 5831875000,
+          "sender_index": 7
+        },
+        {
+          "last_start_ps": 2646005000000,
+          "node": "Main.n08",
+          "phase_ps": 6665000000,
+          "sender_index": 8
+        },
+        {
+          "last_start_ps": 2646838125000,
+          "node": "Main.n09",
+          "phase_ps": 7498125000,
+          "sender_index": 9
+        },
+        {
+          "last_start_ps": 2647671250000,
+          "node": "Main.n10",
+          "phase_ps": 8331250000,
+          "sender_index": 10
+        },
+        {
+          "last_start_ps": 2648504375000,
+          "node": "Main.n11",
+          "phase_ps": 9164375000,
+          "sender_index": 11
+        },
+        {
+          "last_start_ps": 2649337500000,
+          "node": "Main.n12",
+          "phase_ps": 9997500000,
+          "sender_index": 12
+        },
+        {
+          "last_start_ps": 2650170625000,
+          "node": "Main.n13",
+          "phase_ps": 10830625000,
+          "sender_index": 13
+        },
+        {
+          "last_start_ps": 2651003750000,
+          "node": "Main.n14",
+          "phase_ps": 11663750000,
+          "sender_index": 14
+        },
+        {
+          "last_start_ps": 2651836875000,
+          "node": "Main.n15",
+          "phase_ps": 12496875000,
+          "sender_index": 15
+        },
+        {
+          "last_start_ps": 2652670000000,
+          "node": "Main.n16",
+          "phase_ps": 13330000000,
+          "sender_index": 16
+        },
+        {
+          "last_start_ps": 2653503125000,
+          "node": "Main.n17",
+          "phase_ps": 14163125000,
+          "sender_index": 17
+        },
+        {
+          "last_start_ps": 2654336250000,
+          "node": "Main.n18",
+          "phase_ps": 14996250000,
+          "sender_index": 18
+        },
+        {
+          "last_start_ps": 2655169375000,
+          "node": "Main.n19",
+          "phase_ps": 15829375000,
+          "sender_index": 19
+        },
+        {
+          "last_start_ps": 2656002500000,
+          "node": "Main.n20",
+          "phase_ps": 16662500000,
+          "sender_index": 20
+        },
+        {
+          "last_start_ps": 2656835625000,
+          "node": "Main.n21",
+          "phase_ps": 17495625000,
+          "sender_index": 21
+        },
+        {
+          "last_start_ps": 2657668750000,
+          "node": "Main.n22",
+          "phase_ps": 18328750000,
+          "sender_index": 22
+        },
+        {
+          "last_start_ps": 2658501875000,
+          "node": "Main.n23",
+          "phase_ps": 19161875000,
+          "sender_index": 23
+        },
+        {
+          "last_start_ps": 2659335000000,
+          "node": "Main.n24",
+          "phase_ps": 19995000000,
+          "sender_index": 24
+        },
+        {
+          "last_start_ps": 2660168125000,
+          "node": "Main.n25",
+          "phase_ps": 20828125000,
+          "sender_index": 25
+        },
+        {
+          "last_start_ps": 2661001250000,
+          "node": "Main.n26",
+          "phase_ps": 21661250000,
+          "sender_index": 26
+        },
+        {
+          "last_start_ps": 2661834375000,
+          "node": "Main.n27",
+          "phase_ps": 22494375000,
+          "sender_index": 27
+        },
+        {
+          "last_start_ps": 2662667500000,
+          "node": "Main.n28",
+          "phase_ps": 23327500000,
+          "sender_index": 28
+        },
+        {
+          "last_start_ps": 2663500625000,
+          "node": "Main.n29",
+          "phase_ps": 24160625000,
+          "sender_index": 29
+        },
+        {
+          "last_start_ps": 2664333750000,
+          "node": "Main.n30",
+          "phase_ps": 24993750000,
+          "sender_index": 30
+        },
+        {
+          "last_start_ps": 2665166875000,
+          "node": "Main.n31",
+          "phase_ps": 25826875000,
+          "sender_index": 31
+        }
+      ],
+      "total_C_i_ps": 7998000000,
+      "workload": "rho-0.30.workload.json"
+    },
+    {
+      "P_ps": 8886666667,
+      "T_ps": 888666666700,
+      "ini": "rho-0.90.ini",
+      "request_count_per_sender": 100,
+      "request_count_total": 3200,
+      "rho": "0.90",
+      "rho_exact": {
+        "denominator": 10,
+        "numerator": 9
+      },
+      "senders": [
+        {
+          "last_start_ps": 879780000033,
+          "node": "Main.n00",
+          "phase_ps": 0,
+          "sender_index": 0
+        },
+        {
+          "last_start_ps": 880057708366,
+          "node": "Main.n01",
+          "phase_ps": 277708333,
+          "sender_index": 1
+        },
+        {
+          "last_start_ps": 880335416699,
+          "node": "Main.n02",
+          "phase_ps": 555416666,
+          "sender_index": 2
+        },
+        {
+          "last_start_ps": 880613125033,
+          "node": "Main.n03",
+          "phase_ps": 833125000,
+          "sender_index": 3
+        },
+        {
+          "last_start_ps": 880890833366,
+          "node": "Main.n04",
+          "phase_ps": 1110833333,
+          "sender_index": 4
+        },
+        {
+          "last_start_ps": 881168541699,
+          "node": "Main.n05",
+          "phase_ps": 1388541666,
+          "sender_index": 5
+        },
+        {
+          "last_start_ps": 881446250033,
+          "node": "Main.n06",
+          "phase_ps": 1666250000,
+          "sender_index": 6
+        },
+        {
+          "last_start_ps": 881723958366,
+          "node": "Main.n07",
+          "phase_ps": 1943958333,
+          "sender_index": 7
+        },
+        {
+          "last_start_ps": 882001666699,
+          "node": "Main.n08",
+          "phase_ps": 2221666666,
+          "sender_index": 8
+        },
+        {
+          "last_start_ps": 882279375033,
+          "node": "Main.n09",
+          "phase_ps": 2499375000,
+          "sender_index": 9
+        },
+        {
+          "last_start_ps": 882557083366,
+          "node": "Main.n10",
+          "phase_ps": 2777083333,
+          "sender_index": 10
+        },
+        {
+          "last_start_ps": 882834791699,
+          "node": "Main.n11",
+          "phase_ps": 3054791666,
+          "sender_index": 11
+        },
+        {
+          "last_start_ps": 883112500033,
+          "node": "Main.n12",
+          "phase_ps": 3332500000,
+          "sender_index": 12
+        },
+        {
+          "last_start_ps": 883390208366,
+          "node": "Main.n13",
+          "phase_ps": 3610208333,
+          "sender_index": 13
+        },
+        {
+          "last_start_ps": 883667916699,
+          "node": "Main.n14",
+          "phase_ps": 3887916666,
+          "sender_index": 14
+        },
+        {
+          "last_start_ps": 883945625033,
+          "node": "Main.n15",
+          "phase_ps": 4165625000,
+          "sender_index": 15
+        },
+        {
+          "last_start_ps": 884223333366,
+          "node": "Main.n16",
+          "phase_ps": 4443333333,
+          "sender_index": 16
+        },
+        {
+          "last_start_ps": 884501041699,
+          "node": "Main.n17",
+          "phase_ps": 4721041666,
+          "sender_index": 17
+        },
+        {
+          "last_start_ps": 884778750033,
+          "node": "Main.n18",
+          "phase_ps": 4998750000,
+          "sender_index": 18
+        },
+        {
+          "last_start_ps": 885056458366,
+          "node": "Main.n19",
+          "phase_ps": 5276458333,
+          "sender_index": 19
+        },
+        {
+          "last_start_ps": 885334166699,
+          "node": "Main.n20",
+          "phase_ps": 5554166666,
+          "sender_index": 20
+        },
+        {
+          "last_start_ps": 885611875033,
+          "node": "Main.n21",
+          "phase_ps": 5831875000,
+          "sender_index": 21
+        },
+        {
+          "last_start_ps": 885889583366,
+          "node": "Main.n22",
+          "phase_ps": 6109583333,
+          "sender_index": 22
+        },
+        {
+          "last_start_ps": 886167291699,
+          "node": "Main.n23",
+          "phase_ps": 6387291666,
+          "sender_index": 23
+        },
+        {
+          "last_start_ps": 886445000033,
+          "node": "Main.n24",
+          "phase_ps": 6665000000,
+          "sender_index": 24
+        },
+        {
+          "last_start_ps": 886722708366,
+          "node": "Main.n25",
+          "phase_ps": 6942708333,
+          "sender_index": 25
+        },
+        {
+          "last_start_ps": 887000416699,
+          "node": "Main.n26",
+          "phase_ps": 7220416666,
+          "sender_index": 26
+        },
+        {
+          "last_start_ps": 887278125033,
+          "node": "Main.n27",
+          "phase_ps": 7498125000,
+          "sender_index": 27
+        },
+        {
+          "last_start_ps": 887555833366,
+          "node": "Main.n28",
+          "phase_ps": 7775833333,
+          "sender_index": 28
+        },
+        {
+          "last_start_ps": 887833541699,
+          "node": "Main.n29",
+          "phase_ps": 8053541666,
+          "sender_index": 29
+        },
+        {
+          "last_start_ps": 888111250033,
+          "node": "Main.n30",
+          "phase_ps": 8331250000,
+          "sender_index": 30
+        },
+        {
+          "last_start_ps": 888388958366,
+          "node": "Main.n31",
+          "phase_ps": 8608958333,
+          "sender_index": 31
+        }
+      ],
+      "total_C_i_ps": 7998000000,
+      "workload": "rho-0.90.workload.json"
+    },
+    {
+      "P_ps": 6665000000,
+      "T_ps": 666500000000,
+      "ini": "rho-1.20.ini",
+      "request_count_per_sender": 100,
+      "request_count_total": 3200,
+      "rho": "1.20",
+      "rho_exact": {
+        "denominator": 5,
+        "numerator": 6
+      },
+      "senders": [
+        {
+          "last_start_ps": 659835000000,
+          "node": "Main.n00",
+          "phase_ps": 0,
+          "sender_index": 0
+        },
+        {
+          "last_start_ps": 660043281250,
+          "node": "Main.n01",
+          "phase_ps": 208281250,
+          "sender_index": 1
+        },
+        {
+          "last_start_ps": 660251562500,
+          "node": "Main.n02",
+          "phase_ps": 416562500,
+          "sender_index": 2
+        },
+        {
+          "last_start_ps": 660459843750,
+          "node": "Main.n03",
+          "phase_ps": 624843750,
+          "sender_index": 3
+        },
+        {
+          "last_start_ps": 660668125000,
+          "node": "Main.n04",
+          "phase_ps": 833125000,
+          "sender_index": 4
+        },
+        {
+          "last_start_ps": 660876406250,
+          "node": "Main.n05",
+          "phase_ps": 1041406250,
+          "sender_index": 5
+        },
+        {
+          "last_start_ps": 661084687500,
+          "node": "Main.n06",
+          "phase_ps": 1249687500,
+          "sender_index": 6
+        },
+        {
+          "last_start_ps": 661292968750,
+          "node": "Main.n07",
+          "phase_ps": 1457968750,
+          "sender_index": 7
+        },
+        {
+          "last_start_ps": 661501250000,
+          "node": "Main.n08",
+          "phase_ps": 1666250000,
+          "sender_index": 8
+        },
+        {
+          "last_start_ps": 661709531250,
+          "node": "Main.n09",
+          "phase_ps": 1874531250,
+          "sender_index": 9
+        },
+        {
+          "last_start_ps": 661917812500,
+          "node": "Main.n10",
+          "phase_ps": 2082812500,
+          "sender_index": 10
+        },
+        {
+          "last_start_ps": 662126093750,
+          "node": "Main.n11",
+          "phase_ps": 2291093750,
+          "sender_index": 11
+        },
+        {
+          "last_start_ps": 662334375000,
+          "node": "Main.n12",
+          "phase_ps": 2499375000,
+          "sender_index": 12
+        },
+        {
+          "last_start_ps": 662542656250,
+          "node": "Main.n13",
+          "phase_ps": 2707656250,
+          "sender_index": 13
+        },
+        {
+          "last_start_ps": 662750937500,
+          "node": "Main.n14",
+          "phase_ps": 2915937500,
+          "sender_index": 14
+        },
+        {
+          "last_start_ps": 662959218750,
+          "node": "Main.n15",
+          "phase_ps": 3124218750,
+          "sender_index": 15
+        },
+        {
+          "last_start_ps": 663167500000,
+          "node": "Main.n16",
+          "phase_ps": 3332500000,
+          "sender_index": 16
+        },
+        {
+          "last_start_ps": 663375781250,
+          "node": "Main.n17",
+          "phase_ps": 3540781250,
+          "sender_index": 17
+        },
+        {
+          "last_start_ps": 663584062500,
+          "node": "Main.n18",
+          "phase_ps": 3749062500,
+          "sender_index": 18
+        },
+        {
+          "last_start_ps": 663792343750,
+          "node": "Main.n19",
+          "phase_ps": 3957343750,
+          "sender_index": 19
+        },
+        {
+          "last_start_ps": 664000625000,
+          "node": "Main.n20",
+          "phase_ps": 4165625000,
+          "sender_index": 20
+        },
+        {
+          "last_start_ps": 664208906250,
+          "node": "Main.n21",
+          "phase_ps": 4373906250,
+          "sender_index": 21
+        },
+        {
+          "last_start_ps": 664417187500,
+          "node": "Main.n22",
+          "phase_ps": 4582187500,
+          "sender_index": 22
+        },
+        {
+          "last_start_ps": 664625468750,
+          "node": "Main.n23",
+          "phase_ps": 4790468750,
+          "sender_index": 23
+        },
+        {
+          "last_start_ps": 664833750000,
+          "node": "Main.n24",
+          "phase_ps": 4998750000,
+          "sender_index": 24
+        },
+        {
+          "last_start_ps": 665042031250,
+          "node": "Main.n25",
+          "phase_ps": 5207031250,
+          "sender_index": 25
+        },
+        {
+          "last_start_ps": 665250312500,
+          "node": "Main.n26",
+          "phase_ps": 5415312500,
+          "sender_index": 26
+        },
+        {
+          "last_start_ps": 665458593750,
+          "node": "Main.n27",
+          "phase_ps": 5623593750,
+          "sender_index": 27
+        },
+        {
+          "last_start_ps": 665666875000,
+          "node": "Main.n28",
+          "phase_ps": 5831875000,
+          "sender_index": 28
+        },
+        {
+          "last_start_ps": 665875156250,
+          "node": "Main.n29",
+          "phase_ps": 6040156250,
+          "sender_index": 29
+        },
+        {
+          "last_start_ps": 666083437500,
+          "node": "Main.n30",
+          "phase_ps": 6248437500,
+          "sender_index": 30
+        },
+        {
+          "last_start_ps": 666291718750,
+          "node": "Main.n31",
+          "phase_ps": 6456718750,
+          "sender_index": 31
+        }
+      ],
+      "total_C_i_ps": 7998000000,
+      "workload": "rho-1.20.workload.json"
+    }
+  ],
+  "schema_version": 1,
+  "sender_count": 32,
+  "senders": [
+    {
+      "C_i_ps": 252000000,
+      "can_id": 256,
+      "crc15": 13480,
+      "frame_bits_including_sof_to_eof": 123,
+      "generator_id": "n00",
+      "intermission_bits": 3,
+      "node": "Main.n00",
+      "occupied_bits_including_intermission": 126,
+      "sender_index": 0,
+      "stuff_bits": 15
+    },
+    {
+      "C_i_ps": 252000000,
+      "can_id": 257,
+      "crc15": 16307,
+      "frame_bits_including_sof_to_eof": 123,
+      "generator_id": "n01",
+      "intermission_bits": 3,
+      "node": "Main.n01",
+      "occupied_bits_including_intermission": 126,
+      "sender_index": 1,
+      "stuff_bits": 15
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 258,
+      "crc15": 8862,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n02",
+      "intermission_bits": 3,
+      "node": "Main.n02",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 2,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 259,
+      "crc15": 10629,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n03",
+      "intermission_bits": 3,
+      "node": "Main.n03",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 3,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 252000000,
+      "can_id": 260,
+      "crc15": 6340,
+      "frame_bits_including_sof_to_eof": 123,
+      "generator_id": "n04",
+      "intermission_bits": 3,
+      "node": "Main.n04",
+      "occupied_bits_including_intermission": 126,
+      "sender_index": 4,
+      "stuff_bits": 15
+    },
+    {
+      "C_i_ps": 252000000,
+      "can_id": 261,
+      "crc15": 5087,
+      "frame_bits_including_sof_to_eof": 123,
+      "generator_id": "n05",
+      "intermission_bits": 3,
+      "node": "Main.n05",
+      "occupied_bits_including_intermission": 126,
+      "sender_index": 5,
+      "stuff_bits": 15
+    },
+    {
+      "C_i_ps": 252000000,
+      "can_id": 262,
+      "crc15": 3826,
+      "frame_bits_including_sof_to_eof": 123,
+      "generator_id": "n06",
+      "intermission_bits": 3,
+      "node": "Main.n06",
+      "occupied_bits_including_intermission": 126,
+      "sender_index": 6,
+      "stuff_bits": 15
+    },
+    {
+      "C_i_ps": 252000000,
+      "can_id": 263,
+      "crc15": 1513,
+      "frame_bits_including_sof_to_eof": 123,
+      "generator_id": "n07",
+      "intermission_bits": 3,
+      "node": "Main.n07",
+      "occupied_bits_including_intermission": 126,
+      "sender_index": 7,
+      "stuff_bits": 15
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 264,
+      "crc15": 27760,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n08",
+      "intermission_bits": 3,
+      "node": "Main.n08",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 8,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 265,
+      "crc15": 26475,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n09",
+      "intermission_bits": 3,
+      "node": "Main.n09",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 9,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 266,
+      "crc15": 31302,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n10",
+      "intermission_bits": 3,
+      "node": "Main.n10",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 10,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 267,
+      "crc15": 29021,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n11",
+      "intermission_bits": 3,
+      "node": "Main.n11",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 11,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 252000000,
+      "can_id": 268,
+      "crc15": 16412,
+      "frame_bits_including_sof_to_eof": 123,
+      "generator_id": "n12",
+      "intermission_bits": 3,
+      "node": "Main.n12",
+      "occupied_bits_including_intermission": 126,
+      "sender_index": 12,
+      "stuff_bits": 15
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 269,
+      "crc15": 19207,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n13",
+      "intermission_bits": 3,
+      "node": "Main.n13",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 13,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 270,
+      "crc15": 22058,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n14",
+      "intermission_bits": 3,
+      "node": "Main.n14",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 14,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 271,
+      "crc15": 23857,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n15",
+      "intermission_bits": 3,
+      "node": "Main.n15",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 15,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 254000000,
+      "can_id": 272,
+      "crc15": 16513,
+      "frame_bits_including_sof_to_eof": 124,
+      "generator_id": "n16",
+      "intermission_bits": 3,
+      "node": "Main.n16",
+      "occupied_bits_including_intermission": 127,
+      "sender_index": 16,
+      "stuff_bits": 16
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 273,
+      "crc15": 19354,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n17",
+      "intermission_bits": 3,
+      "node": "Main.n17",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 17,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 274,
+      "crc15": 22199,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n18",
+      "intermission_bits": 3,
+      "node": "Main.n18",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 18,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 275,
+      "crc15": 23980,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n19",
+      "intermission_bits": 3,
+      "node": "Main.n19",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 19,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 276,
+      "crc15": 27885,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n20",
+      "intermission_bits": 3,
+      "node": "Main.n20",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 20,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 277,
+      "crc15": 26614,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n21",
+      "intermission_bits": 3,
+      "node": "Main.n21",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 21,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 278,
+      "crc15": 31451,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n22",
+      "intermission_bits": 3,
+      "node": "Main.n22",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 22,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 279,
+      "crc15": 29120,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n23",
+      "intermission_bits": 3,
+      "node": "Main.n23",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 23,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 280,
+      "crc15": 6233,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n24",
+      "intermission_bits": 3,
+      "node": "Main.n24",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 24,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 248000000,
+      "can_id": 281,
+      "crc15": 4930,
+      "frame_bits_including_sof_to_eof": 121,
+      "generator_id": "n25",
+      "intermission_bits": 3,
+      "node": "Main.n25",
+      "occupied_bits_including_intermission": 124,
+      "sender_index": 25,
+      "stuff_bits": 13
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 282,
+      "crc15": 3695,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n26",
+      "intermission_bits": 3,
+      "node": "Main.n26",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 26,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 283,
+      "crc15": 1396,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n27",
+      "intermission_bits": 3,
+      "node": "Main.n27",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 27,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 284,
+      "crc15": 13365,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n28",
+      "intermission_bits": 3,
+      "node": "Main.n28",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 28,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 285,
+      "crc15": 16174,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n29",
+      "intermission_bits": 3,
+      "node": "Main.n29",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 29,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 286,
+      "crc15": 8707,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n30",
+      "intermission_bits": 3,
+      "node": "Main.n30",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 30,
+      "stuff_bits": 14
+    },
+    {
+      "C_i_ps": 250000000,
+      "can_id": 287,
+      "crc15": 10520,
+      "frame_bits_including_sof_to_eof": 122,
+      "generator_id": "n31",
+      "intermission_bits": 3,
+      "node": "Main.n31",
+      "occupied_bits_including_intermission": 125,
+      "sender_index": 31,
+      "stuff_bits": 14
+    }
+  ],
+  "tx_processing_delay_ps": 0
+}

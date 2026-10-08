@@ -1,0 +1,64 @@
+{
+  "head": "b90a8d937781a55b47d234335db9d5502bd23e2a",
+  "finding": "Confirmed whole-record-boundary truncation silently omitted producer rows. Partial frame and record truncation already failed correctly.",
+  "fix": "Retain trusted checked producer byte counts per run, final output, and ordered replay. Validate actual byte length on open; fixed-width reader uses trusted remaining bytes and read_exact.",
+  "files": {
+    "crates/dir-simulator/src/output/disk_sort.rs": "fe1aee94b6d793862e9adf0b3b1ad8218f552c8774e3289e04e0808d0ded211c",
+    "crates/dir-simulator/src/output/contribution_sort.rs": "627c7dd2f2d59c4682a509071a124ab6220fdc0dae0307ca3b491d4ac42385db"
+  },
+  "checks": [
+    {
+      "log": "before-existing-disk-sort.log",
+      "command": "CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test --workspace --locked --offline output::disk_sort::tests -- --nocapture",
+      "exit": 0
+    },
+    {
+      "log": "before-pr37-probes.log",
+      "command": "CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test --workspace --locked --offline --lib pr37_ -- --nocapture",
+      "exit": 0,
+      "note": "Initially checks fresh valid boundary EOF, not trusted whole-row loss."
+    },
+    {
+      "log": "before-whole-row-loss.log",
+      "command": "CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test --workspace --locked --offline --lib whole_row_loss -- --nocapture",
+      "exit": 101,
+      "result": "5 failed before fix"
+    },
+    {
+      "log": "before-boundary-publication.log",
+      "command": "CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test --workspace --locked --offline --lib late_binary_decode_and_truncation -- --nocapture",
+      "exit": 101,
+      "result": "real paired writer accepted whole-row loss before fix"
+    },
+    {
+      "log": "after-whole-row-loss.log",
+      "command": "CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test --workspace --locked --offline --lib whole_row_loss -- --nocapture",
+      "exit": 0,
+      "result": "5 passed after fix"
+    },
+    {
+      "log": "after-disk-sort.log",
+      "command": "CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test --workspace --locked --offline --lib output::disk_sort::tests -- --nocapture",
+      "exit": 0,
+      "result": "22 passed after fix"
+    },
+    {
+      "log": "after-contribution-sort.log",
+      "command": "CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test --workspace --locked --offline --lib output::contribution_sort::tests -- --nocapture",
+      "exit": 0,
+      "result": "6 passed after fix"
+    }
+  ],
+  "scaffolding_logs": [
+    "probe-scaffolding-offset-error.log",
+    "probe-scaffolding-delimiter-error.log"
+  ],
+  "static_checks": [
+    "targeted rustfmt --edition 2024 --check --config skip_children=true passed",
+    "git diff --check for owned files passed"
+  ],
+  "limitations": [
+    "No broad workspace gates run by this worker.",
+    "Same-length corruptions remain checked by existing framing/value/kind validation; no checksum format or public schema changes."
+  ]
+}

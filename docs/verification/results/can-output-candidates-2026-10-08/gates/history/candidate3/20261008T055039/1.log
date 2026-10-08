@@ -1,0 +1,135 @@
+   Compiling dir-simulator v0.1.0 (/tmp/dir-opt-five-2026-10-08/candidate3/crates/dir-simulator)
+error: function `write_stream` is never used
+   --> crates/dir-simulator/src/output/csv.rs:133:15
+    |
+133 | pub(super) fn write_stream(
+    |               ^^^^^^^^^^^^
+    |
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(dead_code)]`
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+  --> crates/dir-simulator/src/output/csv.rs:99:14
+   |
+99 |         text(&row, "value")
+   |              ^^^^ help: change this to: `row`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+   = note: `-D clippy::needless-borrow` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::needless_borrow)]`
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:104:14
+    |
+104 |         text(&row, "seq"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:105:14
+    |
+105 |         text(&row, "event_seq"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:106:14
+    |
+106 |         text(&row, "effect_seq"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:107:14
+    |
+107 |         text(&row, "target"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:108:14
+    |
+108 |         text(&row, "metric"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:109:14
+    |
+109 |         text(&row, "unit"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:110:14
+    |
+110 |         text(&row, "value_kind"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:112:14
+    |
+112 |         text(&row, "time_ps"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:113:14
+    |
+113 |         text(&row, "start_ps"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:114:14
+    |
+114 |         text(&row, "end_ps"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:115:14
+    |
+115 |         text(&row, "request_id"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:116:14
+    |
+116 |         text(&row, "receiver"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:117:14
+    |
+117 |         text(&row, "reason"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates/dir-simulator/src/output/csv.rs:118:14
+    |
+118 |         text(&row, "sample_count"),
+    |              ^^^^ help: change this to: `row`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow
+
+error: could not compile `dir-simulator` (lib) due to 16 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `dir-simulator` (lib test) due to 16 previous errors

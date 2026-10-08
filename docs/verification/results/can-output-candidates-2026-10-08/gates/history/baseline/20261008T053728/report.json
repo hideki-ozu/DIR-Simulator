@@ -1,0 +1,57 @@
+{
+  "candidate": "baseline",
+  "source_directory": "/tmp/dir-opt-five-2026-10-08/baseline-source",
+  "commands": [
+    {
+      "argv": [
+        "/home/hideki/.cargo/bin/cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "cwd": "/tmp/dir-opt-five-2026-10-08/baseline-source",
+      "exit_code": 0,
+      "wall_seconds": 0.6866429120418616,
+      "log": "/tmp/dir-opt-five-2026-10-08/gates/baseline/20261008T053728/0.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/home/hideki/.cargo/bin/cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--workspace",
+        "--all-targets",
+        "--target-dir",
+        "/tmp/dir-opt-five-2026-10-08/cargo-target",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "cwd": "/tmp/dir-opt-five-2026-10-08/baseline-source",
+      "exit_code": 0,
+      "wall_seconds": 11.69843619898893,
+      "log": "/tmp/dir-opt-five-2026-10-08/gates/baseline/20261008T053728/1.log",
+      "log_sha256": "6b173512c92e9e6846a868e0ecedbc1bf5178ae1e39dc6a21976280659b94a84"
+    },
+    {
+      "argv": [
+        "/home/hideki/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--workspace",
+        "--target-dir",
+        "/tmp/dir-opt-five-2026-10-08/cargo-target"
+      ],
+      "cwd": "/tmp/dir-opt-five-2026-10-08/baseline-source",
+      "exit_code": 101,
+      "wall_seconds": 127.57218849798664,
+      "log": "/tmp/dir-opt-five-2026-10-08/gates/baseline/20261008T053728/2.log",
+      "log_sha256": "367f49561b09ac1a14aaeb3b23bed4e1520f8c55497934870e1303cddfec15b3"
+    }
+  ],
+  "started_at_utc": "20261008T053728"
+}

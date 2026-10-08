@@ -1,0 +1,126 @@
+# EthernetVLAN・マルチキャスト詳細機能仕様書
+
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`main @ 811360a`
+予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.1.1` | `2026-10-04` | 初版：単一VLANタグ・Port policy・VLAN別交換・静的multicast・購読・hop別観測の実装契約と製品試験参照を確定。利用者指定の文書版1.1.1で初回push |
+
+文書ID：`spec-ethernet-vlan`
+文書状態：v1.1.1向けPR版。入力・runtime・結果・viewerを実装。製品試験の実施範囲は[検証仕様](../../verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)と[実行記録](../../verification/results/ethernet-vlan-2026-10-04.json)で管理する。
+
+## 1. 対象と選択
+
+v1.1.0の全二重L2・負荷・QoSに続き、`model-profile = "ethernet.l2.vlan.v1"`を追加する。[QoS仕様](Ethernet負荷・QoS詳細機能仕様書.md)のNED型、connected tree、方向別送信器、8class、lazy負荷、固定処理遅延、整数ps、半開区間[0,T)、フロー期限を継承する。既存L2/QoS/CANのprofile、入力・schema・時刻は維持する。媒体用の`ethernet.l2.store-forward.v2`は転用しない。
+
+単一C-tag、静的ポート設定、VLAN別unicast FDB、静的L2 multicast表・Endpoint購読を対象とする。VID 0のpriority-tag、QinQ、MAC学習・aging、IGMP/MLD snooping、MVRP、STP、ループ構成、PAUSE、TSN、上位protocolの解釈、raw-wire入力は後続契約で扱う。規格全体適合を表すprofileではない。 MAC学習・aging、源別snooping、VID登録、抽象STPと閉路は[動的制御仕様](Ethernet動的制御詳細機能仕様書.md)、TAS/CBS/PSFPは[TSN仕様](EthernetTSN詳細機能仕様書.md)で詳細化済み・未実装として別profileへ割り当てる。
+
+<a id="ports-codec"></a>
+
+## 2. 入力・VLAN分類・wireと優先度
+
+```trace
+{"id":"spec-ethernet-vlan#ports-codec","stage":"spec","requirements":["DIR-REQ-0224","DIR-REQ-0225","DIR-REQ-0228"],"upstream":["DIR-FUNC-0055"],"state":"confirmed","pending":[]}
+```
+
+### 2.1. 厳密な設定形式
+
+Sは文字列、Dはu64の正規非負十進文字列、?はnull可。設定のVID・PCP・DEI・priorityはJSON整数（bool不可）。未知・欠落・重複キーを拒否し、空負荷・T以後の負荷も準備検証する。
+
+model-configのrootは`{schema_version:3,endpoints:[],switches:[],ports:[],outputs:[]}`。全field必須。
+
+| 行 | 必須fieldと意味 |
+| --- | --- |
+| Endpoint | `{instance:S,mac:S,multicast:[{vid:integer,dst_mac:S}]}`。MACは既存の一意なindividual MAC。購読は(VID,group MAC)の一意集合。送信時に購読は不要 |
+| Switch | `{instance:S,forward_delay_ps:D,fdb:[{vid:integer,dst_mac:S,egress:S}],multicast:[{vid:integer,dst_mac:S,egresses:S[]}],unknown_multicast:S}`。unknown_multicastは`flood`又は`drop` |
+| Port | `{port:S,pvid:integer,admit:S,default_priority:integer,vlans:[{vid:integer,tagged:bool}]}`。portは接続済みtx完全パス。対になるrxは解決済みNED接続から決定する |
+| Output | QoSの`{port,scheduler,queues}`を変更せず使用。全8class・容量・非プリエンプト規則を継承 |
+
+Endpoint/Switchを過不足なく列挙し、全EndpointおよびSwitchの接続済みtx/rx対にPortを一度ずつ設定する。outputsも全txを一度ずつ列挙する。VID/PVIDは1～4094、default_priorityは0～7。PVIDは必ずそのPortのvlansに含める。vlansのVIDは重複不可。`tagged:false`は最大一つで、そのVIDはPVIDとする。tagged:trueのPVIDも許す。
+
+admitは`all`、`tagged_only`、`untagged_only`。ingress membership検査は常に有効。peer側とのPVID・admit・membershipの一致は強制しない。非対称設定によるfilterやuntagged再分類は実際の到達wireから観測する。静的表の参照先は所有Switchの接続済みoutputかつ指定VIDのmemberであることを準備検証する。Endpoint購読VIDも自身のPortのmemberとする。
+
+workloadのrootは`{schema_version:3,generators:[]}`。QoSのkind別field・flow_id・priority・deadline_psを継承し、frameを`{dst_mac:S,ether_type:integer,data:S,tag:{vid:integer,pcp:integer,dei:integer}?}`とする。tagは欠落不可、untaggedはnull。tag VIDは1～4094、PCPは0～7、DEIは0又は1。inner EtherTypeは1536～65535で0x8100/0x88a8を拒否する。dataは従来どおり0～1500byte。
+
+source VLANはtag.vid又はsource PortのPVID。source membershipを満たし、tagの有無はそのVIDのtagged設定と一致させる。source queueはgenerator.priorityを使い、tagがあればpriority=PCPを準備検証する。同一flow_idの各generatorはdst_mac・priority・deadline_ps・tag全体・source VLANを一致させる。異なる送信元は許す。sourceのtagを書き換えて設定不一致を隠さない。
+
+dst_macはindividual、broadcast、通常group MACを許す。groupは先頭octetのI/G bit=1で判定する。broadcastはgroup表・購読へ登録不可。`01:80:c2:00:00:00`～`01:80:c2:00:00:0f`は本profileで制御protocolを扱わないため、負荷宛先・購読・multicast表で準備拒否する。この全範囲の拒否はprofileの対象限定であり、全IEEE bridgeの転送規則を代弁しない。
+
+### 2.2. タグ符号化と各copyの長さ
+
+タグはSAの直後へ`81 00`とTCIの2byteをnetwork byte orderで配置する。`TCI=(PCP<<13)|(DEI<<12)|VID`。その後にinner EtherType、data、padding、FCSを置く。CRC32とFCS little-endian表現は基本L2と同じ。
+
+本profileの生成器はtagの有無によらず`pad_bytes=max(0,46-data_bytes)`のzero paddingを生成する。Switchはdataとこのpaddingを保持し、tag/headerだけを変更してFCSを再計算する。untaggedは64～1518byte、taggedは68～1522byteになる。68byteはこの生成・padding方針の最小値であり、規格で許される全taggedフレームの普遍的最小値を意味しない。
+
+各egressの変換後wireを容量判定前に確定する。queue_bytes・MAC/wire/占有bit量・送信時間・arrival検査はそのcopyのwireを使う。元frameのwireを全hopへ流用しない。1Gbpsでemptyのuntagged/taggedは、直列化576000/608000ps、IFG込み占有672000/704000psとなる。
+
+### 2.3. ingressとegressの優先度
+
+| 場所 | VLAN・priority・DEI |
+| --- | --- |
+| source | VLANはsource Port/tagから求める。priorityはgenerator.priority、DEIはtag.dei又は0 |
+| tagged ingress | VLAN=受信tag.vid、priority=受信PCP、DEI=受信DEI |
+| untagged ingress | VLAN=その受信PortのPVID、priority=default_priority、DEI=0。元frameのpriority/VIDを参照しない |
+| Switch tagged egress | tagを(classified VLAN, current priority, current DEI)で構成 |
+| Switch untagged egress | tagを外す。現在のoutput classはcurrent priorityのまま。次の受信Portはwireに残らないPCP/DEIを継承しない |
+
+PCPとclassはこのprofileでは恒等対応する。priority再マッピング表やDEI依存の破棄は導入しない。Strict Priorityは既存QoSと同じ数値の大きいclassから選択する。
+
+<a id="forwarding"></a>
+
+## 3. VLAN別交換と静的multicast
+
+```trace
+{"id":"spec-ethernet-vlan#forwarding","stage":"spec","requirements":["DIR-REQ-0226","DIR-REQ-0227"],"upstream":["DIR-FUNC-0056"],"state":"confirmed","pending":[]}
+```
+
+実到達したcopyのwireから受信VLAN・priorityを求める。admit不一致又はingressがVIDのmemberでなければ即filteredとして記録する。Endpointも同じ受信分類・admit・membership検査を適用する。EndpointのMAC一致、broadcast又は(VID,group MAC)購読に適合した受信だけをRX処理後receivedにする。宛先不一致・未購読groupは即filtered。frame側のsource VLANによる先取り判定をしない。
+
+Switchは入場した受信をforward_delay後に交換する。eligible egressは「classified VLANのmemberかつingressと別のPort」。FDBは(VID,dst_mac)で一意に参照する。
+
+| 宛先 | 候補決定 |
+| --- | --- |
+| 既知individual | FDBの一portだけ。同じingressならsame_ingressでfilterし、floodへ戻さない |
+| 未知individual・broadcast | eligible egressへflood。候補なしはno_vlan_egress |
+| 登録group | (VID,MAC)に登録したegressesとeligibleの共通部分。空の登録も有効な明示filter。候補なしはmulticast_no_egress |
+| 未登録group | unknown_multicast=floodならeligible、dropならunknown_multicastでfilter。flood候補なしはno_vlan_egress |
+
+FDBはindividual宛先のみ。multicast表は通常groupのみ、egressesの重複不可、空列可。静的表はEndpoint購読から自動生成しない。network中の全Switchへ必要なgroup経路を設定する。
+
+候補をoutput完全パスの辞書順へ正規化する。eligibleでないportのTransfer/dropを作らない。各候補のtag変換・容量・ID・予約をまとめてpreflightし、accepted/queue_fullを一batchで公開する。通常の満杯は当該copyだけをdropし、他候補の転送を進める。全候補が満杯でも候補を作ったSwitch receptionはforwarded。算術・予約・不変条件失敗では当該callbackの効果を公開しない。
+
+<a id="observations"></a>
+
+## 4. 結果・保存則・viewer
+
+```trace
+{"id":"spec-ethernet-vlan#observations","stage":"spec","requirements":["DIR-REQ-0229"],"upstream":["DIR-FUNC-0057"],"state":"confirmed","pending":[]}
+```
+
+外側schema2、ID・parent関連、実績/予定時刻を維持する。結果dataの整数はD。result tagは`{vid:D,pcp:D,dei:D}?`。このprofileで使用するschema集合は次のとおり。一実行中の同schema_nameの版を混在させない。
+
+| schema | 既存QoSからの追加・変更 |
+| --- | --- |
+| `ethernet.frame`/3 | frame/2に`tag`と`source_vlan_id:D`を追加。wire・priorityはsourceの不変値 |
+| `ethernet.transfer`/3 | transfer/2に`vlan_id:D`、`wire:{src_mac:S,dst_mac:S,ether_type:D,data_hex:S,pad_bytes:D,mac_bytes:D,tag:Tag?,fcs_hex:S,mac_hex:S}`を追加。priorityはこのoutputの実効class。dropにも候補wireを保持 |
+| `ethernet.reception`/2 | reception/1に`vlan_id:D,priority:D`を追加。受信wireはincoming transferへ参照。即filterはready=observed、planned_ready=null。処理対象は従来の実績/予定と停止prefixを保持 |
+
+filter reasonは`ingress_frame_type`、`ingress_vlan_membership`、`destination_mismatch`、`multicast_not_subscribed`、`same_ingress`、`no_vlan_egress`、`multicast_no_egress`、`unknown_multicast`のいずれか。一receptionにつき一理由、判定順はadmit→membership→宛先/転送候補。非filteredのreasonはnull。copy dropは従来どおりqueue_fullのみ。
+
+metadataへPort/PVID/admit/membership/egressタグ設定、VLAN別FDB・group表、Endpoint購読、sourceフロー契約を正規化して保存する。タグ変更は新しい元frameを発生させず、ID/parent経路を維持する。
+
+件数・期限・4成分遅延の定義はQoSを継承する。copy_droppedは容量で拒否したhop copy数。ingress filterはreception数でありdrop copyを合成しない。multicastの複数受信・部分drop・未完了を元frame損失率に変換しない。理由別`ethernet.filtered.<reason>`をdeviceと$allにcount/integer/summary/sumで出力し、その和をfilteredへ照合する。MAC/wire/occupied bitsは各transferの実際のwire長を基準とする。flow表のpriorityはsource指定、copy inspectorのpriorityはhop classと明記する。
+
+viewerはVLAN・PCP・DEI、source/hop wire長・FCS、classification、filter理由、group設定・購読とcopy経路を表示する。VLANフィルタは表示対象だけを絞り、保存済み集計値の母数を変えない。quiet portの設定も表示し、未到達receptionを作らない。step・巻戻し・連続再生の意味とBigInt時刻は既存仕様を継承する。
+
+## 5. 根拠と設計上の限定
+
+- [IEEE 802.1Q作業部会のpriority/tag検討資料](https://www.ieee802.org/1/files/public/docs2022/q-rev-seaman-priority-in-tags-0122-v0.pdf)はVID 0と通常VLANタグ、tag除去後のpriority伝達の違いを説明する。本段階ではVID 0を未対応として明示拒否する。この資料は検討資料であり最終規格全文の代用ではない。
+- [RFC 4363のVLAN・multicast管理オブジェクト](https://www.rfc-editor.org/rfc/rfc4363.html)のPVID、admission、membership、VLANごとのgroup転送先を設計の参考とする。本profileは静的・常時ingress検査・全ingress共通表へ対象を限定する。
+- [IEEEのgroup MAC公開一覧](https://standards.ieee.org/products-programs/regauth/grpmac/public/)で制御用予約範囲を確認し、本profileの宛先除外へ使う。
+
+実装分割と具体的な期待値は[詳細設計](../../design/EthernetVLAN・マルチキャスト詳細設計書.md)・[検証仕様](../../verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)を正本とする。
