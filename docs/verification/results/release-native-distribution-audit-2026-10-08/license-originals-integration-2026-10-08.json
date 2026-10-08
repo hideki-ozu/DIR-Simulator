@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "verification_date": "2026-10-08",
+  "scope": "PR39 modified worktree before commit; exact pushed head will also be validated by CI. This is not native/WSL comparison or formal release validation.",
+  "baseline_pr39_head": "b6bee9c0f3f46cfadf44e923170bb0656758946b",
+  "fixed_source_audit_commit": "d7cb3861f9ac56646ac2dbacf6f324b12f7fcb1b",
+  "validation": {
+    "cargo_fmt": "passed",
+    "cargo_test_locked_workspace": {
+      "passed": 569,
+      "failed": 0
+    },
+    "cargo_clippy_locked_workspace_all_targets_D_warnings": "passed",
+    "notice_regression_unittest": {
+      "passed": 9,
+      "failed": 0,
+      "negative_cases": 8
+    },
+    "mkdocs_strict_build": "passed",
+    "guide_local_links_assets_anchors": 463,
+    "guide_html_files": 10,
+    "guide_upstream_assets_sha256": 26,
+    "traceability_strict": {
+      "requirements": 231,
+      "functions": 60,
+      "nodes": 274,
+      "structural_errors": 0,
+      "incomplete_items": 0
+    },
+    "input_only_zip_members_unchanged": [
+      11,
+      8
+    ],
+    "git_index_original_bytes": {
+      "crate": 89,
+      "guide": 8,
+      "status": "passed",
+      "CRLF_preservation": ".gitattributes disables text conversion for upstream originals"
+    }
+  },
+  "actual_product_ledger_and_manifest": {
+    "ledger_version": "1.1.1",
+    "ledger_sha256": "e59b6d9a4aed4e3807cc09eff88a1ea251d15bcd798862d044048d5ee04b992c",
+    "reproduction_conditions": "identified",
+    "metadata_ref": "results.json#/metadata",
+    "manifest_files_checked": 4,
+    "local_precommit_git_commit": "b6bee9c0f3f46cfadf44e923170bb0656758946b",
+    "local_precommit_git_dirty": "true",
+    "status": "passed"
+  },
+  "historical_audit_files_preserved": [
+    {
+      "path": "docs/verification/results/release-native-distribution-audit-2026-10-08/adoption-ledger-preparation-2026-10-08.json",
+      "sha256": "09eee01904e0a9109d60db0d8a5de0c7da6460f5e2bbbbbcc88dbbd52d454540"
+    },
+    {
+      "path": "docs/verification/results/release-native-distribution-audit-2026-10-08/audit-inputs.json",
+      "sha256": "f62a5e17fa58756b35f58cd3b9c8a135e4031ce975f4b4f948aee6028c7df522"
+    },
+    {
+      "path": "docs/verification/results/release-native-distribution-audit-2026-10-08/ledger-source-evidence.json",
+      "sha256": "1879e8db809583db5871f064d7da3d8b86793bb0c94efb98339edce3e6534481"
+    },
+    {
+      "path": "docs/verification/results/release-native-distribution-audit-2026-10-08/native_correctness.py",
+      "sha256": "8e5ae151ba14f7677c9273d9feb91244da4f9cbb4376353c2a153538c65cca49"
+    },
+    {
+      "path": "docs/verification/results/release-native-distribution-audit-2026-10-08/release-audit-2026-10-08.json",
+      "sha256": "bdbb02c264474e23ae1fcfee90f7ab068eca8ce96ab95ce0b43f901bf64705ec"
+    },
+    {
+      "path": "docs/verification/results/release-native-distribution-audit-2026-10-08/verify_release_audit.py",
+      "sha256": "e8df50d09332034cd1f4fa693df9b12e20df1f9b2d54068a25a4268b42b6d130"
+    }
+  ],
+  "review": {
+    "correctness_review": "passed after fixing guide ledger link from temporary branch to main",
+    "original_notice_review": "no omitted or invented author/license declarations found; exact original bytes checked"
+  },
+  "remaining": [
+    "formal product distribution archive and target-dependent runtime inclusion",
+    "adoption approval and remaining source/fixture/generated-material provenance",
+    "Snowball/UMD additional provenance and rustix standalone CC0 original text",
+    "unlocked Python/Playwright build/test dependency environment",
+    "native/WSL same-commit comparison"
+  ],
+  "acceptance_DIR_AC_0008": "not_satisfied",
+  "logs": [
+    {
+      "path": "license-originals-validation-2026-10-08/clippy.txt",
+      "bytes": 833,
+      "sha256": "b7b95125c3139ed3a4cd84e410264d011c9b10cacf04567926eb3276f8bb70fe"
+    },
+    {
+      "path": "license-originals-validation-2026-10-08/fmt.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "license-originals-validation-2026-10-08/guide-build.txt",
+      "bytes": 184,
+      "sha256": "f949b2a4174a288c617cb2ee7097cfb27f995dc976a79e532dcceffbb20c9a59"
+    },
+    {
+      "path": "license-originals-validation-2026-10-08/guide-links.txt",
+      "bytes": 138,
+      "sha256": "6170285734d4a4ec3681ad233ca4f43fc5dd4a3c8c8a769d528d98d967c36174"
+    },
+    {
+      "path": "license-originals-validation-2026-10-08/license-tests.txt",
+      "bytes": 1139,
+      "sha256": "f5c486a7d986a1169c8a94622910030858049891bee59c0461dbe7ab03e10f73"
+    },
+    {
+      "path": "license-originals-validation-2026-10-08/product-build-final.txt",
+      "bytes": 171,
+      "sha256": "c41d1267a9d46e17e82b9d368381334dd173e010aadd0cea0f3f012f0e361951"
+    },
+    {
+      "path": "license-originals-validation-2026-10-08/product-run-final.txt",
+      "bytes": 393,
+      "sha256": "5d561c0802dd582eb7b9a7d9b61a508550814d7805ab009e164777b3d1b4e5f3"
+    },
+    {
+      "path": "license-originals-validation-2026-10-08/rust-tests.txt",
+      "bytes": 56846,
+      "sha256": "7b9f5d0bd2e9ded03b34d8a28035396303f60fd9d3c5bc7b494234a0646b39cf"
+    }
+  ]
+}

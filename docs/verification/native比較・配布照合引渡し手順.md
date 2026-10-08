@@ -1,6 +1,6 @@
 # native比較・配布照合引渡し手順
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 対象GitHubバージョン：`main @ d7cb386`
 予定公開版：`v1.1.4`
 
@@ -8,11 +8,12 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-08` | 添付監査ZIPの受領・Cargo原文とPopper通知の収録・出典固定を引継ぎ済みへ更新。native比較と正式配布照合の残件を維持 |
 | `1.1.0` | `2026-10-08` | 固定commit・入力・反復・比較・証跡手順と配布残件を作成。ZIP v2の取得障害と台帳識別判定の修正・回帰検証を反映 |
 
 文書ID：`native-distribution-handoff`
 
-文書状態：レビュー中。これは実行手順であり、native実行の完了記録ではない。今回のWindows環境ではWSLのE_ACCESSDENIED、Git所有者不一致、native toolchain不足で製品実行0回。性能wall/RSSは[品質・配布方針](../品質・配布方針.md)どおり参考計測で、必須合否へ用いない。
+文書状態：レビュー中。これは実行手順であり、native実行の完了記録ではない。初回監査のWindows環境ではWSLのE_ACCESSDENIED、Git所有者不一致、native toolchain不足で製品実行0回。その記録を今回の添付反映で変更しない。性能wall/RSSは[品質・配布方針](../品質・配布方針.md)どおり参考計測で、必須合否へ用いない。
 
 ## 1. 対象と前提
 
@@ -73,15 +74,15 @@ python3 "$AUDIT/native_correctness.py" compare \
 
 ## 5. 配布・台帳の引継ぎ
 
-[採用物台帳](../third-party/採用物台帳.md)にはRust42件とガイド8件を登録した。提供された監査ZIPはこの環境でHTTP 403となり未取得。通常環境でLibraryの現行手順により同じLibrary IDを取得し、実在・読み取り・archive hashと収録inventoryを確認してから各crateの公式archive hash、license式、著作者、NOTICE、改変、同梱本文を台帳へ反映する。提供報告だけで未確認欄を推測で埋めない。
+[採用物台帳](../third-party/採用物台帳.md)にはRust42件とガイド8件を登録した。初回Library取得はHTTP 403だったが、2026-10-08に利用者からローカル添付ZIPを受領した。原本を保存し、37収録ファイルのchecksum、42件の名前・版・lock checksum、89ライセンス原文、追加ソース表示、既存ガイド原文7件を照合して反映した。原文対応は[第三者ライセンス表示](../third-party/第三者ライセンス表示.md)と[再照合結果](results/release-native-distribution-audit-2026-10-08/license-originals-reconciliation-2026-10-08.json)に記録する。提供側の公式archive取得結果と今回直接確認した原文hashを分け、特定のライセンス経路の採用決定は推測しない。
 
-Bootstrap bundleに含まれるPopper 2.11.8のMIT原本・著作表示が現行本文集合に不足する。lunr-languagesは公式1.12.0 metadataのMPL-1.1と同梱本文を対応付け、生成asset hashとソース提供・改変表示の条件を確認する。TinySegmenter/UMD/Snowballの追加由来とfont/icon別条件も確認する。
+Bootstrap bundleのPopper 2.11.8 MIT原文・Federico Zivolo表示をガイドへ追加した。lunr-languages 1.12.0の出典は固定commitへ更新し、非minifyソースを保持する。Font AwesomeはCSSのMIT、fontのOFL-1.1、現在未収録のSVG/JSアイコンのCC-BY-4.0を区別した。TinySegmenter原文も一致しているが、UMD/Snowballの追加由来確認と正式配布物への対応は残る。
 
 requirements-guide.txtだけではMkDocsの推移版が固定されない。実生成環境のpip freeze/inspect、wheel一覧とhashを保存し、生成物へ実際に入る資産と生成器だけの依存を区別する。固定製品archiveの全member・bytes・SHA-256と、承認された台帳集合・LICENSE両本文・必要NOTICE/表示を過不足0件で照合する。input-only ZIPや過去の結果manifestを製品配布archiveの代わりにしない。
 
 台帳が追加されたPRの製品でadoption_ledger_sha256、adoption_ledger_versionの実在文書への到達、manifest.metadata_refを再取得する。対象d7cb386のversion fieldはGit commitだったが、本PRでは台帳文書版を取得する。台帳なし／不正なhash・版でidentifiedとしない回帰試験をRust CIで実行する。歴史的not-present記録は保持する。全採用物の条件・最終配布・出自レビューが未充足ならAC0008は未充足のまま。
 
-監査ZIPはversion 2への更新後も本環境でHTTP 403となった。全ソース3,465件の照合、unicode-identのUnicode通知、crateごとの追加著作権表示について提供報告を受けている。原文未取得のため具体的な本文を推測で追加しない。通常環境で最新のversion 2を取得してから通知・台帳へ反映する。
+監査ZIPに収録されたunicode-identのUnicode-3.0全文、rustix/linux-raw-sysのCOPYRIGHT、crate別の追加表示を保存した。rustixのCC0-1.0由来はソース表示で確認できるが、独立CC0全文は添付にない。全ソース3,465件の照合証跡は固定d7cb386候補のもので、PR #39修正後の正式製品配布archiveの検査とは区別する。原文未取得を残件から外し、target別実配布集合・承認・archive同梱の検査を引き継ぐ。
 
 ## 6. 証跡と保存
 

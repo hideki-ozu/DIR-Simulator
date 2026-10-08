@@ -6,6 +6,8 @@ on:
     paths:
       - 'crates/**'
       - 'docs/third-party/**'
+      - 'docs/guide/assets/licenses/**'
+      - 'scripts/check_third_party_notices.py'
       - 'docs/verification/results/release-native-distribution-audit-2026-10-08/**'
       - '.github/workflows/release-audit.yml'
 
@@ -35,7 +37,7 @@ jobs:
           cargo build --locked -p dir-simulator
           target/debug/dir-simulator run --config docs/verification/fixtures/can/competition.ini --output "$RUNNER_TEMP/ledger-metadata"
           python3 - <<'PY'
-          import hashlib, json, os
+          import hashlib, json, os, re
           from pathlib import Path
           output = Path(os.environ['RUNNER_TEMP']) / 'ledger-metadata'
           result = json.loads((output / 'results.json').read_text())
@@ -43,7 +45,7 @@ jobs:
           ledger = Path('docs/third-party/採用物台帳.md').read_bytes()
           metadata = result['metadata']
           assert metadata['adoption_ledger_sha256'] == hashlib.sha256(ledger).hexdigest()
-          assert metadata['adoption_ledger_version'] == '1.1.0'
+          assert metadata['adoption_ledger_version'] == re.search(r'文書バージョン：`([^`]+)`', ledger.decode('utf-8')).group(1)
           assert metadata['implementation_coverage']['reproduction_conditions'] == 'identified'
           assert manifest['metadata_ref'] == 'results.json#/metadata'
           for entry in manifest['files']:
@@ -54,6 +56,7 @@ jobs:
           PY
       - name: Audit checker and comparison selftests
         run: |
+          python3 scripts/check_third_party_notices.py
           cd docs/verification/results/release-native-distribution-audit-2026-10-08
           python3 verify_release_audit.py
           python3 native_correctness.py selftest
