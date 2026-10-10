@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.12`
+文書バージョン：`1.1.13`
 対象GitHubバージョン：`v1.1.4`（公開候補）
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.13` | `2026-10-11` | Gatewayの処理遅延1変数実習、正式v1.1.4での測定・実Viewer・独立ZIPへの入口を追加 |
 | `1.1.12` | `2026-10-10` | 第4push。mainの受入・出自・ライセンス記録とEthernet期限ガイドの入口を統合。分岐した1.1.11履歴を両方保持 |
 | `1.1.11` | `2026-10-10` | Ethernet配送期限のCLI実測・実Viewer比較と配布入力への入口を追加（PR #50の分岐履歴） |
 | `1.1.11` | `2026-10-10` | 固定40件のMIT経路選択と外部部品の用途・元の選択肢・追加条件の一覧への入口を追加。原文と歴史的未承認記録を保持 |
@@ -39,6 +40,8 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。初回公開はこの構成をmainへ反映した後です。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
 
 [Ethernet配送期限と遅延判定の比較](docs/guide/Ethernet配送期限と遅延判定の比較.md)では、期限だけを1psずつ変えて、同じ配送遅延に対する超過判定を実測で比較します。入力基礎v1.1.3と実測版v1.1.4を区別し、[8入力のZIP](docs/guide/downloads/ethernet-deadline-inputs.zip)と実Viewer画像を掲載しています。
+
+[Gateway処理遅延と複数CANバスの中継](docs/guide/Gateway処理遅延と複数CANバスの中継.md)では、元CAN送信と別バスへのコピー配送を分けて読みます。[9入力ZIP](docs/guide/downloads/gateway-delay-inputs.zip)でGateway処理遅延だけを0/100/300µsへ変え、同じ400µsの実Viewerを比較できます。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
