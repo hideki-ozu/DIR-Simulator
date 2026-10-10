@@ -1,7 +1,12 @@
 {
   "schema_version": 1,
-  "document_version": "1.1.0",
+  "document_version": "1.1.1",
   "document_history": [
+    {
+      "version": "1.1.1",
+      "date": "2026-10-10",
+      "change": "Second push: CI fmt corrections and five exact commands in existing Rust job; first failure log retained"
+    },
     {
       "version": "1.1.0",
       "date": "2026-10-10",
@@ -36,8 +41,18 @@
     "record": "local-execution-not-run.json"
   },
   "ordinary_GitHub_Actions": {
-    "status": "pending",
-    "reason": "Branch push and exact-head normal CI planned; no target WSL equivalence"
+    "status": "pending_after_fmt_correction",
+    "first_attempt": {
+      "source_commit": "4e3413a00f870c9d43eedc2b8812f9ab59072645",
+      "job_id": 114218099928,
+      "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38053813686/job/114218099928",
+      "fmt": "failed: four formatting differences",
+      "compile_tests_clippy": "not reached",
+      "log": "ci-fmt-4e3413a.log",
+      "log_bytes": 20603,
+      "log_sha256": "ece6e6f542d40c2dbf973f2486108c833d78ccdd9e51b5d24ac08cb1a5221c8d"
+    },
+    "target_WSL_equivalence": false
   },
   "source_inputs": [
     {
@@ -57,8 +72,8 @@
     },
     {
       "path": "crates/dir-simulator/tests/registry.rs",
-      "bytes": 65160,
-      "sha256": "76287a87a78b8f13f09676babf4e679866e6ce0c7acb87cad191023a82f8ab4c"
+      "bytes": 65278,
+      "sha256": "c56997742b4ec5c37703beddc5c33fea2f3be29944acc4dda1dc5bd736af4160"
     },
     {
       "path": "crates/dir-simulator/src/lib.rs",
@@ -84,6 +99,11 @@
       "path": "crates/dir-simulator/src/cli_runtime_boundary_tests.rs",
       "bytes": 2568,
       "sha256": "03f8f511550af6e8b731057538f04614fbba1846e7f5a0187e48d829ec836018"
+    },
+    {
+      "path": ".github/workflows/release-audit.yml",
+      "bytes": 3970,
+      "sha256": "63830e9fea1913c8eb77261f329221cc47473bf65a6bfd7ce4ec4552d405b207"
     }
   ],
   "local_static_checks": {

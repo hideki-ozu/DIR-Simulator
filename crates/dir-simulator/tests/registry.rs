@@ -47,11 +47,8 @@ mod channel_boundary_probe {
             if let Some(route) = c.connections().first() {
                 let channel = route.channels[0].clone();
                 for _ in 0..2 {
-                    let ParameterValue::Quantity(value) = c.channel_capability(
-                        &channel,
-                        &Schema::new("test.propagation", 1),
-                        &[],
-                    )?
+                    let ParameterValue::Quantity(value) =
+                        c.channel_capability(&channel, &Schema::new("test.propagation", 1), &[])?
                     else {
                         return Err("unexpected channel capability type".into());
                     };
@@ -136,8 +133,11 @@ mod channel_boundary_probe {
         };
         std::fs::write(path, format!("{}{network}\n", &old[..end])).unwrap();
         let ini = std::fs::read_to_string(f.config()).unwrap();
-        std::fs::write(f.config(), format!("{ini}\n[Channel Demo::z.out]\ndelay = 7ps\n"))
-            .unwrap();
+        std::fs::write(
+            f.config(),
+            format!("{ini}\n[Channel Demo::z.out]\ndelay = 7ps\n"),
+        )
+        .unwrap();
         f
     }
 }
@@ -161,7 +161,14 @@ fn generic_channel_factories_receive_frozen_inputs_in_stable_order() {
     assert_eq!(snapshot.common.committed_events, 0);
     assert_eq!(snapshot.common.pending_events, 0);
     assert!(snapshot.common.diagnostics.is_empty());
-    assert!(snapshot.registered.as_ref().unwrap().model_records.is_empty());
+    assert!(
+        snapshot
+            .registered
+            .as_ref()
+            .unwrap()
+            .model_records
+            .is_empty()
+    );
     assert_eq!(
         calls(),
         vec![
@@ -234,7 +241,14 @@ fn generic_channel_factory_failure_releases_only_constructed_prefix() {
     assert_eq!(snapshot.common.committed_events, 0);
     assert_eq!(snapshot.common.pending_events, 0);
     assert!(snapshot.common.points.is_empty());
-    assert!(snapshot.registered.as_ref().unwrap().model_records.is_empty());
+    assert!(
+        snapshot
+            .registered
+            .as_ref()
+            .unwrap()
+            .model_records
+            .is_empty()
+    );
     assert_eq!(snapshot.common.diagnostics.len(), 1);
     let error = &snapshot.common.diagnostics[0];
     assert_eq!(error.code, "E-0001");

@@ -1,6 +1,6 @@
 # 拡張channelとCLI validate境界の限定回帰
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`PR #47 @ 17b5faf1e67cfb93abf87493657e1a5f70c9c0f3`  
 文書ID：`extension-channel-cli-followup`  
 状態：未コンパイルの試験コードと実行計画。対象WSL実行・通常CIは別欄で確認予定。
@@ -9,7 +9,8 @@
 
 | 文書版 | 日付 | push単位の内容 |
 | --- | --- | --- |
-| 1.1.0 | 2026-10-10 | 初回push予定。4つの限定回帰と実行記録の分離を追加。旧PR #47の実行証跡は保持 |
+| 1.1.1 | 2026-10-10 | 第2push。通常CIのfmt差分4箇所を修正。既存Rust CIで新4名と既存CLI process1名のexact実行を追加。初回fmt失敗ログを保存し、WSL not_runを保持 |
+| 1.1.0 | 2026-10-10 | 初回push。4つの限定回帰と実行記録の分離を追加。旧PR #47の実行証跡は保持 |
 
 ## 観測する範囲
 
@@ -30,7 +31,7 @@ CLI counterはcfg(test)だけで実入口に置く。in-processで本番CLIソ�
 
 ## 実行環境と証拠
 
-対象環境は既存WSL Ubuntu24.04 LTS x86_64、cargo1.85.0。既知のWSLアクセス拒否を再試行・設定変更で回避しない。今回ローカルRustはnot_runであり、通常GitHub Actionsの成功が得られても対象WSLの合格へ読み替えない。
+対象環境は既存WSL Ubuntu24.04 LTS x86_64、cargo1.85.0。既知のWSLアクセス拒否を再試行・設定変更で回避しない。[初回CI](ci-fmt-4e3413a.log)は4e3413aのfmt差分4箇所で停止し、test/clippyは未到達。提示差分を修正した。既存Rust CIにexact名の新4試験と既存CLI process試験のコマンドを追加し、正常な1件選択を個別に確認する。新しいjob/環境/権限/公開設定は追加しない。今回ローカルRustはnot_runであり、通常GitHub Actionsの成功が得られても対象WSLの合格へ読み替えない。
 
 更新した[実行runner](../../../../scripts/verification/run_extension_acceptance.py)は`--lib`/`--test`を区別し、exact名の`... ok`と`1 passed; 0 failed; 0 ignored`を要求する。0選択は失敗。uname/os-release/rustc/cargo/HEAD/statusとCargo.lock/入力hash、stdout/stderr/exitを保存し、既存8試験と新4試験の後にfmt/workspace/clippyを検査する。toolchainを導入・変更しない。
 
