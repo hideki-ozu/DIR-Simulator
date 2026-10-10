@@ -1,0 +1,576 @@
+{
+  "schema_version": 1,
+  "reviewer": "Codex evidence review",
+  "review_date": "2026-10-10",
+  "product_commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+  "product_clean": true,
+  "ac0008_status": "not_satisfied",
+  "approval": "none; evidence reconciliation only",
+  "rows": [
+    {
+      "id": "0085-1",
+      "operation": "Rust workspace / language / build",
+      "status": "failed_native_windows_build",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/historical-candidate-reverification.json",
+          "sha256": "fde9a9d3c8297c6dfd3dbb913a1c20102f88caa44704acc9a9ea70380f74e717",
+          "bytes": 3261
+        },
+        {
+          "path": "<REPO_ROOT>-audits/native-distribution-0b7b23d-20261008T142910Z/logs/release-build.txt",
+          "sha256": "17eb5b15937418c9d073b6fc17a5a15c4843292811e513849039ade569d8b397",
+          "bytes": 1869
+        },
+        {
+          "path": "<REPO_ROOT>-audits/native-distribution-0b7b23d-20261008T142910Z/logs/rust-tests.txt",
+          "sha256": "beae698fecd91541ed2d844ef54531c7afbeb35341b95d2cb6a8e96ecacf4d84",
+          "bytes": 57690
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/native-result.json",
+          "sha256": "20d49d8f2ae65e0a9513e63d68be50e96743ad3b2af013091e44fa1845ebe454",
+          "bytes": 6606
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/release-build.stderr",
+          "sha256": "cc8f20440245b4818a56820a9aef957ad897a394d25c300bd0c849dd20adb77d",
+          "bytes": 13924
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/rustc-version.stdout",
+          "sha256": "32773cf1f17324f81b3423be1da95ce0a5c4e9f253e71481a8aa68e604748997",
+          "bytes": 194
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/source-git-byte-verification.json",
+          "sha256": "59c95adc8320641df5ddcf7ce334bc25951fdcbd2fefda874459cda60cfb17fe",
+          "bytes": 1193955
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/windows-source-proof.json",
+          "sha256": "96de0f8de0640e5063018a7bdc9458f1a93c081b82b7469c2472d888cf008257",
+          "bytes": 70912
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/logs/wsl-rust-tests.txt",
+          "sha256": "34fc3192d7492cb467fa354643a9dc90cd03354ecdb0a963e1bcf7ccca5a92c9",
+          "bytes": 57683
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/wsl-capture/capture.json",
+          "sha256": "4c4a44d20a198c1b45af9634445884efdc8cf90d1df8cd3135862f7b6ea6e68a",
+          "bytes": 7488
+        }
+      ],
+      "remaining": "Native rustc 1.85.0 MSVC is available in isolated audit staging; actual release build exits 101 with 17 errors in Unix-only NED-editor code. Product executions 0. Exact source independently verified: 3593 Git files and native path proof over 181 build-source files. WSL current-source workspace tests pass 569 in 29 suites.",
+      "action_needed": "User chose to finalize this fixed-commit audit without Windows port. Preserve failure; any future Windows implementation belongs to a separately authorized change and fresh validation."
+    },
+    {
+      "id": "0085-2",
+      "operation": "CLI/library -> Registry -> factory -> CAN callback",
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/product/docs/verification/results/acceptance-2026-10-08/coverage-review.json",
+          "sha256": "3e844dc1be997b887253a2b6f0605305367a9d9436ada2d178007d698092f98c",
+          "bytes": 1266627
+        }
+      ],
+      "remaining": "Actual native path uses BuiltinAdapter and CAN Engine; literal factory/callback acceptance mismatch already recorded and not resolved by archive hashes.",
+      "action_needed": "Trace actual public path with source and named tests; record authorized acceptance or specification correction."
+    },
+    {
+      "id": "0085-3",
+      "operation": "FFI / external process responsibilities",
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/target-dependency-resolution.json",
+          "sha256": "3f915f3d74ee75dc8c193202d0e350b1c7b92605f08d39a5ff61e8ac6e00e5ed",
+          "bytes": 75305
+        },
+        {
+          "path": "<REPO_ROOT>-audits/native-distribution-0b7b23d-20261008T142910Z/support/executable-dynamic-section.txt",
+          "sha256": "8f45757b9b23f55797ad2057c9d7f64d800cff15715670f3820a6a56875a0f0d",
+          "bytes": 1615
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/native-windows-build-review.json",
+          "sha256": "743ee4c19666482ed08ce066fe02160437bf38960c3dc54552bc9c98f689a625",
+          "bytes": 5056
+        }
+      ],
+      "remaining": "Actual Windows compilation fails on std::os::unix, rustix::fs/rand and Unix metadata operations. No Windows executable/link/import evidence exists; Rust stdlib and native libraries remain separate from Cargo graph.",
+      "action_needed": "Bind native imports/link map and toolchain license coverage; do not treat Cargo.lock as full executable contents."
+    },
+    {
+      "id": "0085-4",
+      "operation": "Rust review decision",
+      "status": "not_satisfied",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/product/docs/verification/results/acceptance-2026-10-08/coverage-review.json",
+          "sha256": "3e844dc1be997b887253a2b6f0605305367a9d9436ada2d178007d698092f98c",
+          "bytes": 1266627
+        }
+      ],
+      "remaining": "Native Windows product build demonstrably fails; registration-path acceptance also unresolved. Successful helper probe is not product execution.",
+      "action_needed": "Reviewer records scope, date, exact commit and decision after residuals close."
+    },
+    {
+      "id": "0086-1",
+      "operation": "NED rule / public spec / DIR / implementation / test mapping",
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/product/docs/verification/results/acceptance-2026-10-08/coverage-review.json",
+          "sha256": "3e844dc1be997b887253a2b6f0605305367a9d9436ada2d178007d698092f98c",
+          "bytes": 1266627
+        }
+      ],
+      "remaining": "Historical review says mapping exists; no exhaustive new per-rule reviewed table produced here.",
+      "action_needed": "Complete per-rule mapping at exact commit, including import, package, @class, compound, channel and resolution."
+    },
+    {
+      "id": "0086-2",
+      "operation": "Independent author origin and history, NED / INI boundary",
+      "status": "not_satisfied",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/product/docs/verification/results/acceptance-2026-10-08/coverage-review.json",
+          "sha256": "3e844dc1be997b887253a2b6f0605305367a9d9436ada2d178007d698092f98c",
+          "bytes": 1266627
+        }
+      ],
+      "remaining": "Authorship/history attestation unverified; handwritten parser and passing tests alone do not establish independent origin.",
+      "action_needed": "Record authorship, referenced specification sections and change history for NED and INI precedence; review no implementation-code reuse."
+    },
+    {
+      "id": "0086-3",
+      "operation": "Supported and unsupported NED behavior",
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<REPO_ROOT>-audits/native-distribution-0b7b23d-20261008T142910Z/logs/rust-tests.txt",
+          "sha256": "beae698fecd91541ed2d844ef54531c7afbeb35341b95d2cb6a8e96ecacf4d84",
+          "bytes": 57690
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/logs/wsl-rust-tests.txt",
+          "sha256": "34fc3192d7492cb467fa354643a9dc90cd03354ecdb0a963e1bcf7ccca5a92c9",
+          "bytes": 57683
+        }
+      ],
+      "remaining": "Fresh exact-source WSL workspace tests pass 569; full supported/unsupported NED row mapping and Windows product tests remain unavailable.",
+      "action_needed": "Bind named parser/diagnostic tests to complete mapping and fresh platform test logs."
+    },
+    {
+      "id": "0086-4",
+      "operation": "Reviewer/date/commit/corrective action",
+      "status": "not_satisfied",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/product/docs/verification/results/acceptance-2026-10-08/coverage-review.json",
+          "sha256": "3e844dc1be997b887253a2b6f0605305367a9d9436ada2d178007d698092f98c",
+          "bytes": 1266627
+        }
+      ],
+      "remaining": "This evidence audit is not authorship attestation or final implementation review.",
+      "action_needed": "Appointed reviewer records missing attestations and approved closure against exact source."
+    },
+    {
+      "id": "0087-1",
+      "operation": "Fix complete distribution population",
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/historical-candidate-reverification.json",
+          "sha256": "fde9a9d3c8297c6dfd3dbb913a1c20102f88caa44704acc9a9ea70380f74e717",
+          "bytes": 3261
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/notice-verification.json",
+          "sha256": "c9a5046415cbf94dcec2967d72ff6aac9d164bf406d690ca50b57bf3dccb2244",
+          "bytes": 1272
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/target-dependency-resolution.json",
+          "sha256": "3f915f3d74ee75dc8c193202d0e350b1c7b92605f08d39a5ff61e8ac6e00e5ed",
+          "bytes": 75305
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/fresh-candidate-reverification.json",
+          "sha256": "abe34fcba9a4c75f9e9e3330b3cceec432353bba68c3c7cffcfae079e44a68a1",
+          "bytes": 1497
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/distribution/final-distribution-verification.json",
+          "sha256": "ff5eadf921b977d138e77f3cb952c7693b053524db913edcd8e16376e7032c58",
+          "bytes": 3914
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/distribution/final-distribution-member-inventory.json",
+          "sha256": "c8134e2d555d81e1182b0b891be4f72f3e6ac798747779a6ae9ab3e1e70081f9",
+          "bytes": 1067017
+        }
+      ],
+      "remaining": "Fresh final Linux candidate is fixed and mechanically verified (3705 members; 3593 source; 64 guide). Native Windows build failed, so no Windows executable exists. Toolchain/native linked population and complete origin/condition review remain unresolved.",
+      "action_needed": "Final audit records remaining scope explicitly; future adoption requires complete distribution population review."
+    },
+    {
+      "id": "0087-2",
+      "operation": "One-row ledger fields",
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/notice-verification.json",
+          "sha256": "c9a5046415cbf94dcec2967d72ff6aac9d164bf406d690ca50b57bf3dccb2244",
+          "bytes": 1272
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/product/docs/third-party/採用物台帳.md",
+          "sha256": "e59b6d9a4aed4e3807cc09eff88a1ea251d15bcd798862d044048d5ee04b992c",
+          "bytes": 37953
+        }
+      ],
+      "remaining": "42 registry packages, 89 original license files, 10 source-notice bundles and 8 guide originals verified; all 50 rows remain 要確認. Original adoption date and dependency modifications not confirmed.",
+      "action_needed": "Resolve applicable conditions and record per-item decision; do not choose OR-license routes from attachment suggestions."
+    },
+    {
+      "id": "0087-3",
+      "operation": "Source / origin / change-history review",
+      "status": "not_satisfied",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/historical-candidate-reverification.json",
+          "sha256": "fde9a9d3c8297c6dfd3dbb913a1c20102f88caa44704acc9a9ea70380f74e717",
+          "bytes": 3261
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/source-review-pointers.json",
+          "sha256": "e864c8d41d665ad01d5c76c1313c6c7f9cf36f7e386b2774656242e0f9067421",
+          "bytes": 3660
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/primary-source-retrieval.json",
+          "sha256": "e88c2e6e9dca1958c9b93be10e7f4fbdd4052e975bd4d66a8f7614731ad75510",
+          "bytes": 441
+        }
+      ],
+      "remaining": "Whole-source byte identity verified, not whole-source authorship. UMD/Snowball provenance and source mapping remain. CC0 direct original download denied HTTP403.",
+      "action_needed": "Complete source-origin review and applicable upstream notice mapping. Stop denied retrieval; responsible user supplies authorized evidence or chooses next action."
+    },
+    {
+      "id": "0087-4",
+      "operation": "License / NOTICE / attribution / modification / archive",
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/historical-candidate-reverification.json",
+          "sha256": "fde9a9d3c8297c6dfd3dbb913a1c20102f88caa44704acc9a9ea70380f74e717",
+          "bytes": 3261
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/notice-verification.json",
+          "sha256": "c9a5046415cbf94dcec2967d72ff6aac9d164bf406d690ca50b57bf3dccb2244",
+          "bytes": 1272
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/primary-source-retrieval.json",
+          "sha256": "e88c2e6e9dca1958c9b93be10e7f4fbdd4052e975bd4d66a8f7614731ad75510",
+          "bytes": 441
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/fresh-candidate-reverification.json",
+          "sha256": "abe34fcba9a4c75f9e9e3330b3cceec432353bba68c3c7cffcfae079e44a68a1",
+          "bytes": 1497
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/distribution/final-distribution-verification.json",
+          "sha256": "ff5eadf921b977d138e77f3cb952c7693b053524db913edcd8e16376e7032c58",
+          "bytes": 3914
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/distribution/final-distribution-member-inventory.json",
+          "sha256": "c8134e2d555d81e1182b0b891be4f72f3e6ac798747779a6ae9ab3e1e70081f9",
+          "bytes": 1067017
+        }
+      ],
+      "remaining": "Fresh candidate includes exact project licenses,42 dependency mappings,89 original licenses,10 source notices and8 guide originals. Applicable conditions, UMD/Snowball provenance, standalone CC0 and all adoption approvals remain unresolved.",
+      "action_needed": "Keep local candidate unapproved; close provenance and applicable-condition review before a separate distribution adoption decision."
+    },
+    {
+      "id": "0087-5",
+      "operation": "results ledger version/hash / manifest reference",
+      "status": "passed_fresh_candidate_mechanical_binding",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/historical-candidate-reverification.json",
+          "sha256": "fde9a9d3c8297c6dfd3dbb913a1c20102f88caa44704acc9a9ea70380f74e717",
+          "bytes": 3261
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/notice-verification.json",
+          "sha256": "c9a5046415cbf94dcec2967d72ff6aac9d164bf406d690ca50b57bf3dccb2244",
+          "bytes": 1272
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/ac0008/fresh-candidate-reverification.json",
+          "sha256": "abe34fcba9a4c75f9e9e3330b3cceec432353bba68c3c7cffcfae079e44a68a1",
+          "bytes": 1497
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/distribution/final-distribution-verification.json",
+          "sha256": "ff5eadf921b977d138e77f3cb952c7693b053524db913edcd8e16376e7032c58",
+          "bytes": 3914
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/distribution/final-distribution-member-inventory.json",
+          "sha256": "c8134e2d555d81e1182b0b891be4f72f3e6ac798747779a6ae9ab3e1e70081f9",
+          "bytes": 1067017
+        }
+      ],
+      "remaining": "Fresh archive ledger1.1.1/hash, DISTRIBUTION-MANIFEST reference and all six complete output manifests independently resolve. Windows product metadata does not exist because compilation failed.",
+      "action_needed": "No further binding work for this fixed Linux candidate; no adoption approval or Windows success inferred."
+    },
+    {
+      "id": "scope-ubuntu",
+      "operation": "Original Ubuntu native versus WSL requirement",
+      "status": "not_satisfied",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/product/docs/verification/native比較・配布照合引渡し手順.md",
+          "sha256": "4ba3db2379564f582b1d9e64e1598189ebcb00d0f4a7f15426448fd3df187e1a",
+          "bytes": 10269
+        }
+      ],
+      "remaining": "Old Ubuntu 24.04 bare/native requirement is separate from newly requested Windows-native experiment.",
+      "action_needed": "Report Windows as new scope; no silent substitution or native label inference."
+    },
+    {
+      "id": "0083-pair",
+      "operation": "Requested native Windows versus WSL fixture comparison",
+      "status": "not_run",
+      "evidence": [
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/native-result.json",
+          "sha256": "20d49d8f2ae65e0a9513e63d68be50e96743ad3b2af013091e44fa1845ebe454",
+          "bytes": 6606
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/release-build.stderr",
+          "sha256": "cc8f20440245b4818a56820a9aef957ad897a394d25c300bd0c849dd20adb77d",
+          "bytes": 13924
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/rustc-version.stdout",
+          "sha256": "32773cf1f17324f81b3423be1da95ce0a5c4e9f253e71481a8aa68e604748997",
+          "bytes": 194
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/source-git-byte-verification.json",
+          "sha256": "59c95adc8320641df5ddcf7ce334bc25951fdcbd2fefda874459cda60cfb17fe",
+          "bytes": 1193955
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/windows-source-proof.json",
+          "sha256": "96de0f8de0640e5063018a7bdc9458f1a93c081b82b7469c2472d888cf008257",
+          "bytes": 70912
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/logs/wsl-rust-tests.txt",
+          "sha256": "34fc3192d7492cb467fa354643a9dc90cd03354ecdb0a963e1bcf7ccca5a92c9",
+          "bytes": 57683
+        },
+        {
+          "path": "<PRIOR_AUDIT_ROOT>/wsl-capture/capture.json",
+          "sha256": "4c4a44d20a198c1b45af9634445884efdc8cf90d1df8cd3135862f7b6ea6e68a",
+          "bytes": 7488
+        }
+      ],
+      "remaining": "Windows product build failed before fixture execution. WSL results exist, but no Windows product results exist to compare. This is not a product determinism failure.",
+      "action_needed": "User chose no Windows port for this audit. Finalize pair as not_run; preserve original Ubuntu-native requirement separately."
+    }
+  ],
+  "historical_evidence_rule": "Only mechanically reverified exact 0b7b23d final candidate reused; historical d7cb386/ledger-absent conclusions are not current facts.",
+  "target_scope": "Actual native target confirmed x86_64-pc-windows-msvc with rustc 1.85.0. Native compiler probe passed; product build failed (17 errors), product executions 0.",
+  "guide_scope": "Fresh guide generated after current freeze/inspect identity verification of reused build venv; 17 Python distributions and wheel hashes remain generator evidence. Only64 generated guide members ship; wheels do not ship.",
+  "remaining_license_scope": "Rust standard library/compiler runtime and OS libraries lie outside Cargo.lock. Dynamic dependency names are evidence of requirements, not automatic redistribution of system library files.",
+  "native_windows": {
+    "status": "native_windows_build_failed",
+    "product_build_exit": 101,
+    "compiler_errors": 17,
+    "native_product_executions": 0,
+    "native_compiler_probe": "passed; helper program only, not product execution",
+    "windows_source_git_files_verified": 3593,
+    "windows_source_proof_files": 181,
+    "windows_source_proof_sha256": "9e77d281011b96c0445cccdf55a0d2746b5dd43bf7f1d6774a5c9c98c63cf0a7",
+    "native_checkout_clean_before_after": true,
+    "wsl_rust_test_suites": 29,
+    "wsl_rust_tests_passed": 569,
+    "test0083_windows_wsl_pair": "not_run; missing Windows product binary/results, not determinism failure",
+    "source_locations": [
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/product/crates/dir-simulator/src/tool/ned-editor/input.rs",
+        "sha256": "fffb92a930a848f2140f8afd143a4d2e7fb07a45ab6b4258478c445c1f500f54",
+        "bytes": 19123,
+        "line": 12,
+        "text": "use std::os::unix::fs::{MetadataExt, OpenOptionsExt};"
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/product/crates/dir-simulator/src/tool/ned-editor/input.rs",
+        "sha256": "fffb92a930a848f2140f8afd143a4d2e7fb07a45ab6b4258478c445c1f500f54",
+        "bytes": 19123,
+        "line": 49,
+        "text": "            mode: m.mode() & 0o7777,"
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/product/crates/dir-simulator/src/tool/ned-editor/input.rs",
+        "sha256": "fffb92a930a848f2140f8afd143a4d2e7fb07a45ab6b4258478c445c1f500f54",
+        "bytes": 19123,
+        "line": 296,
+        "text": "        .custom_flags(rustix::fs::OFlags::NOFOLLOW.bits() as i32)"
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/product/crates/dir-simulator/src/tool/ned-editor/output.rs",
+        "sha256": "3b4994cd74f7fd712dfcc432ebb0dfeb72a5466d1750bcfd908804b8d78e06c9",
+        "bytes": 99127,
+        "line": 5,
+        "text": "use rustix::fs::{self as rfs, AtFlags, FileType, FlockOperation, Mode, OFlags};"
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/product/crates/dir-simulator/src/tool/ned-editor/output.rs",
+        "sha256": "3b4994cd74f7fd712dfcc432ebb0dfeb72a5466d1750bcfd908804b8d78e06c9",
+        "bytes": 99127,
+        "line": 12,
+        "text": "use std::os::unix::ffi::OsStrExt;"
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/product/crates/dir-simulator/src/tool/ned-editor/output.rs",
+        "sha256": "3b4994cd74f7fd712dfcc432ebb0dfeb72a5466d1750bcfd908804b8d78e06c9",
+        "bytes": 99127,
+        "line": 230,
+        "text": "    let uid = std::fs::metadata(\"/proc/self\")"
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/product/crates/dir-simulator/src/tool/ned-editor/mod.rs",
+        "sha256": "544f6e5cc64f4972744b063ec4bb0b10fc06f68b1a16b817564de9fb2b1a6d30",
+        "bytes": 3042,
+        "line": 71,
+        "text": "            rustix::rand::getrandom(&mut bytes[offset..], rustix::rand::GetRandomFlags::empty())"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/windows-native/native-result.json",
+        "sha256": "20d49d8f2ae65e0a9513e63d68be50e96743ad3b2af013091e44fa1845ebe454",
+        "bytes": 6606
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/release-build.stderr",
+        "sha256": "cc8f20440245b4818a56820a9aef957ad897a394d25c300bd0c849dd20adb77d",
+        "bytes": 13924
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/rustc-version.stdout",
+        "sha256": "32773cf1f17324f81b3423be1da95ce0a5c4e9f253e71481a8aa68e604748997",
+        "bytes": 194
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/source-git-byte-verification.json",
+        "sha256": "59c95adc8320641df5ddcf7ce334bc25951fdcbd2fefda874459cda60cfb17fe",
+        "bytes": 1193955
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/windows-native/logs/windows-source-proof.json",
+        "sha256": "96de0f8de0640e5063018a7bdc9458f1a93c081b82b7469c2472d888cf008257",
+        "bytes": 70912
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/logs/wsl-rust-tests.txt",
+        "sha256": "34fc3192d7492cb467fa354643a9dc90cd03354ecdb0a963e1bcf7ccca5a92c9",
+        "bytes": 57683
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/wsl-capture/capture.json",
+        "sha256": "4c4a44d20a198c1b45af9634445884efdc8cf90d1df8cd3135862f7b6ea6e68a",
+        "bytes": 7488
+      }
+    ],
+    "next_action": "User chose fixed-commit audit finalization without Windows port. No implementation changes required in this audit; portability remains an evidenced limitation."
+  },
+  "scope_decision": "User selected finalize_fixed_commit_audit_without_windows_port; fixed-commit audit concludes with native portability failure documented and no port requested.",
+  "fresh_final_distribution": {
+    "status": "passed_fresh_candidate_mechanical_reverification",
+    "archive": {
+      "path": "<PRIOR_AUDIT_ROOT>/distribution/DIR-Simulator-v1.1.4-rc-0b7b23d-linux-x86_64.zip",
+      "sha256": "d6ff7c7df26aed238d725fc661a4f9ebbe4469acce30342f30619ece84ca201e",
+      "bytes": 24561334
+    },
+    "member_count": 3705,
+    "internal_manifest_entries": 3704,
+    "complete_result_manifests": 6,
+    "ledger": {
+      "version": "1.1.1",
+      "sha256": "e59b6d9a4aed4e3807cc09eff88a1ea251d15bcd798862d044048d5ee04b992c",
+      "metadata_ref": "candidate-verification/competition-0/results.json#/metadata",
+      "manifest_ref": "DISTRIBUTION-MANIFEST.json"
+    },
+    "approval": "not_granted",
+    "evidence": [
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/distribution/final-distribution-verification.json",
+        "sha256": "ff5eadf921b977d138e77f3cb952c7693b053524db913edcd8e16376e7032c58",
+        "bytes": 3914
+      },
+      {
+        "path": "<PRIOR_AUDIT_ROOT>/distribution/final-distribution-member-inventory.json",
+        "sha256": "c8134e2d555d81e1182b0b891be4f72f3e6ac798747779a6ae9ab3e1e70081f9",
+        "bytes": 1067017
+      }
+    ],
+    "scope_decision": "finalize_fixed_commit_audit_without_windows_port",
+    "historical_candidate": "Separate historical archive 582357dd24733411b80fafa742df9cc336a7cd6d3dab89ffa41eccb269d31a64 retained; not conflated with fresh candidate."
+  }
+}

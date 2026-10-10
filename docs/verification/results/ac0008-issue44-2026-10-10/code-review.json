@@ -1,0 +1,86 @@
+{
+  "goal": "Independent correctness review of narrow Issue44 reason correction",
+  "architecture": {
+    "base_commit": "649dd8ac4fbb4b4abaa0224fee852d2ec467d7e0",
+    "review_snapshot": "Final edits-stopped source and tests independently inspected after name-clause guard correction",
+    "status": "approved_no_open_findings"
+  },
+  "files": [
+    "crates/dir-simulator/src/input/ned.rs",
+    "crates/dir-simulator/tests/ac0008_ned_rejections.rs"
+  ],
+  "interfaces": [
+    "Existing Diagnostic reason override",
+    "prepare and prepare_with_registry",
+    "Registered Model initialize and on_event"
+  ],
+  "constraints": {
+    "read_only_repository": true,
+    "tests_run": false,
+    "external_actions": false,
+    "only_written_artifact": "results/issue44-correctness-review.json"
+  },
+  "findings": [
+    {
+      "severity": "medium",
+      "location": "ned.rs declaration import/extends reason guards",
+      "finding": "Keyword-only guards classify bare import and network Main extends as unsupported_syntax. Existing passing19 cases do not exercise this malformed-name boundary.",
+      "recommendation": "Use a non-consuming token-slice guard for identifier (dot identifier)* followed by semicolon for import or opening brace for extends. Reuse identifier/reserved. Preserve cursor, existing diagnostic, source span and primary error order.",
+      "suggested_controls": [
+        "import",
+        "import ;",
+        "import demo.",
+        "import demo..Controller;",
+        "network Main extends",
+        "network Main extends {",
+        "network Main extends demo. {"
+      ],
+      "status": "resolved",
+      "resolution": "Final name_clause recognizer checks existing token slices without changing cursor; import requires a complete name followed by semicolon and extends requires a complete name followed by opening brace. Five malformed-clause controls added and observed passing."
+    },
+    {
+      "severity": "info",
+      "location": "ned.rs import_wildcard and lex",
+      "finding": "Override attaches only to existing wildcard lexer failure after a top-level dotted import prefix. Strings/comments are tokenized or skipped before recognition; braces prevent nested import classification. Later lexer failures still precede parser import/extends errors. No grammar acceptance added.",
+      "scope_limit": "Classifier does not validate material following the first unsupported wildcard; avoid introducing tail lexing or changing failure priority merely to validate an already unsupported construct.",
+      "recommendation": "Retain unsupported_syntax for import demo.* without trailing semicolon: the primary star already identifies the unsupported wildcard construct from its valid prefix. Do not scan material after the lexer failure or add a comment/whitespace-aware secondary scanner."
+    },
+    {
+      "severity": "info",
+      "location": "ac0008_ned_rejections.rs registry and callback measurement",
+      "finding": "Actual registered Model schedules event during initialize. Positive simulation checks committed_events=1 and on_event counter1. Rejection resets counter and asserts0 following prepare_with_registry error. Mutex serializes all counter users. This is meaningful positive-control evidence for event-callback nonexecution, not a claim that initialize itself is never called."
+    },
+    {
+      "severity": "info",
+      "location": "ac0008_ned_rejections.rs diagnostic assertions",
+      "finding": "Final tests assert E-0001, reason, prepare stage, source, target/time/event absence, primary, exact half-open coordinates and actual/expected for both ordinary and registered fixtures. Ordinary fixture also asserts complete diagnostic message. Existing leakage/priority controls and five malformed-clause controls meaningfully exercise the narrow contract."
+    }
+  ],
+  "acceptance_criteria": {
+    "required_import_and_extends_examples": "pass by inspection and observed final24-case log",
+    "ordinary_existing_syntax_controls": "pass by inspection and observed final24-case log",
+    "incomplete_import_and_extends_controls": "resolved; five focused controls pass in final log",
+    "callback_positive_control_and_zero": "robust actual on_event measurement under mutex with positive control1 and rejection0",
+    "failure_primary_order": "preserved; lexer wildcard failure location and parser keyword/extends failure locations unchanged",
+    "no_grammar_acceptance": "confirmed; only existing failure reasons overridden",
+    "no_open_findings": true
+  },
+  "verification": {
+    "commands": [
+      "git diff -- targeted source/test files",
+      "sed/rg targeted source and test inspection",
+      "tail results/issue44-worker-attempt3-passed.log",
+      "git status --short",
+      "Final git diff and sed inspection after edits stopped",
+      "sha256sum of both changed files"
+    ],
+    "observed_test_log": "results/issue44-worker-attempt5-boundaries.log: 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out",
+    "evidence_limitation": "Reviewer inspected final source, tests and existing worker execution log; reviewer did not rerun tests. Parent will run exact-commit integration gates.",
+    "local_instructions": "No AGENTS.md or CLAUDE.md found in searched repository trees; user-provided AGENTS instructions followed."
+  },
+  "unresolved_uncertainty": [],
+  "file_sha256": {
+    "crates/dir-simulator/src/input/ned.rs": "89e746f520209fdc61235f1428d29464e22ec0f765bbf1b2744dcbb7322c6ddd",
+    "crates/dir-simulator/tests/ac0008_ned_rejections.rs": "431149d60b7c43307e3f83033b92e655b1b5dbcf0bf9882147625f97a06d020c"
+  }
+}

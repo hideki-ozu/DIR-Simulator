@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "issue": 41,
+  "baseline_source_commit": "ffe9c5ea75c93e6fe9ed7710c4f601b7ec0f7306",
+  "implementation_source_state": "uncommitted followup changes; parent creates final source commit",
+  "source_sha256": {
+    "crates/dir-simulator/src/input/ned.rs": "aa050a998e47abdde045e76789aa4136312c4b6fcd2480427f9d1fcb261f70ec",
+    "crates/dir-simulator/tests/ac0008_attributes.rs": "cafb00704e1a35876274b4bd8423160d3c8447a5d5e410c912c68f7283a3ceda"
+  },
+  "implementation": "fail_attribute identifies original attribute first token by retained original byte offset, uses existing fail_at, then applies full SourceSpan; duplicate type/parameter and nonnumeric-unit errors use this path",
+  "unchanged_interfaces": [
+    "retained attribute API",
+    "reason and rejection rules",
+    "metadata values and owners"
+  ],
+  "verification": [
+    {
+      "command": "<HOME>/.cargo/bin/cargo test --locked -p dir-simulator --test ac0008_attributes duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+      "phase": "before_fix",
+      "log": "attribute-diagnostic-coherence-before-fix.log",
+      "exit_code": 101,
+      "observed": "message pointed at following semicolon col87 while structured range starts at duplicate display @ col72"
+    },
+    {
+      "command": "<HOME>/.cargo/bin/cargo test --locked -p dir-simulator --test ac0008_attributes",
+      "phase": "after_fix",
+      "log": "attribute-diagnostic-coherence-regressions.log",
+      "exit_code": 0,
+      "passed": 4
+    },
+    {
+      "command": "<HOME>/.cargo/bin/cargo test --locked -p dir-simulator --lib input::ned::tests",
+      "phase": "after_fix",
+      "log": "attribute-diagnostic-coherence-ned-unit-tests.log",
+      "exit_code": 0,
+      "passed": 4
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "diagnostic_bindings": [
+    {
+      "case": "duplicate type and parameter display/description",
+      "source_lines": [
+        179,
+        190
+      ],
+      "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+      "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+      "helper": "assert_property_diagnostic",
+      "helper_lines": [
+        41,
+        63
+      ],
+      "assertions": [
+        "E-0001",
+        "syntax_error",
+        "absolute source path",
+        "exact original line/column/full attribute end position",
+        "exact message coordinates and got @",
+        "details.actual @",
+        "details.expected error text"
+      ]
+    },
+    {
+      "case": "duplicate class and numeric-parameter unit",
+      "source_lines": [
+        192,
+        205
+      ],
+      "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+      "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+      "helper": "assert_property_diagnostic",
+      "helper_lines": [
+        41,
+        63
+      ],
+      "assertions": [
+        "E-0001",
+        "syntax_error",
+        "absolute source path",
+        "exact original line/column/full attribute end position",
+        "exact message coordinates and got @",
+        "details.actual @",
+        "details.expected error text"
+      ]
+    },
+    {
+      "case": "BOM CRLF Unicode bool@unit with following default",
+      "source_lines": [
+        207,
+        214
+      ],
+      "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+      "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+      "helper": "assert_property_diagnostic",
+      "helper_lines": [
+        41,
+        63
+      ],
+      "assertions": [
+        "E-0001",
+        "syntax_error",
+        "absolute source path",
+        "exact original line/column/full attribute end position",
+        "exact message coordinates and got @",
+        "details.actual @",
+        "details.expected error text"
+      ]
+    }
+  ],
+  "atomic_predicate_bindings": [
+    {
+      "case_id": "DIR-TEST-0061-R06-V03-O01",
+      "status": "partial_predicate_evidence_only",
+      "evidence": {
+        "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+        "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+        "helper": "assert_property_diagnostic",
+        "helper_lines": [
+          41,
+          63
+        ],
+        "assertions": [
+          "E-0001",
+          "syntax_error",
+          "absolute source path",
+          "exact original line/column/full attribute end position",
+          "exact message coordinates and got @",
+          "details.actual @",
+          "details.expected error text"
+        ]
+      },
+      "limit": "Parser diagnostic coherence only; original profile/callback qualifiers not claimed."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R06-V03-O02",
+      "status": "partial_predicate_evidence_only",
+      "evidence": {
+        "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+        "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+        "helper": "assert_property_diagnostic",
+        "helper_lines": [
+          41,
+          63
+        ],
+        "assertions": [
+          "E-0001",
+          "syntax_error",
+          "absolute source path",
+          "exact original line/column/full attribute end position",
+          "exact message coordinates and got @",
+          "details.actual @",
+          "details.expected error text"
+        ]
+      },
+      "limit": "Parser diagnostic coherence only; original profile/callback qualifiers not claimed."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R06-V04-O01",
+      "status": "partial_predicate_evidence_only",
+      "evidence": {
+        "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+        "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+        "helper": "assert_property_diagnostic",
+        "helper_lines": [
+          41,
+          63
+        ],
+        "assertions": [
+          "E-0001",
+          "syntax_error",
+          "absolute source path",
+          "exact original line/column/full attribute end position",
+          "exact message coordinates and got @",
+          "details.actual @",
+          "details.expected error text"
+        ]
+      },
+      "limit": "Parser diagnostic coherence only; original profile/callback qualifiers not claimed."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R06-V04-O02",
+      "status": "partial_predicate_evidence_only",
+      "evidence": {
+        "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+        "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+        "helper": "assert_property_diagnostic",
+        "helper_lines": [
+          41,
+          63
+        ],
+        "assertions": [
+          "E-0001",
+          "syntax_error",
+          "absolute source path",
+          "exact original line/column/full attribute end position",
+          "exact message coordinates and got @",
+          "details.actual @",
+          "details.expected error text"
+        ]
+      },
+      "limit": "Parser diagnostic coherence only; original profile/callback qualifiers not claimed."
+    }
+  ],
+  "limits": [
+    "Prior attribute-case-bindings.json and logs retain the earlier source/test hashes and line references for ffe9c5e; this supplement identifies current helper/assertions.",
+    "Only focused checks run by worker; final integrated validation and commit remain parent-owned.",
+    "No blanket atomic acceptance claim."
+  ]
+}

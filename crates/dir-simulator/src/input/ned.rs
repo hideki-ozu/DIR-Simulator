@@ -13,6 +13,37 @@ struct Token {
     column: usize,
 }
 
+// Classify the wildcard at the lexer failure without accepting it as a token or
+// reclassifying failures elsewhere merely because the file contains an import.
+fn import_wildcard(tokens: &[Token]) -> bool {
+    let mut depth = 0usize;
+    let mut statement = 0;
+    for (index, token) in tokens.iter().enumerate() {
+        match token.text.as_str() {
+            "{" => depth += 1,
+            "}" => {
+                let Some(parent) = depth.checked_sub(1) else {
+                    return false;
+                };
+                depth = parent;
+                if depth == 0 {
+                    statement = index + 1;
+                }
+            }
+            ";" if depth == 0 => statement = index + 1,
+            _ => {}
+        }
+    }
+    let prefix = &tokens[statement..];
+    depth == 0
+        && prefix.first().is_some_and(|token| token.text == "import")
+        && prefix.len() >= 3
+        && prefix.len() % 2 == 1
+        && prefix[1..].chunks_exact(2).all(|pair| {
+            identifier(&pair[0].text) && !reserved(&pair[0].text) && pair[1].text == "."
+        })
+}
+
 fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
     let original = content;
     let content = content.strip_prefix('\u{feff}').unwrap_or(content);
@@ -97,7 +128,12 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
             } else if matches!(c, '{' | '}' | ':' | ';' | '.' | '@' | '(' | ')' | '=') {
                 cursor += 1;
             } else {
-                return Err(fail("unsupported NED token"));
+                let diagnostic = fail("unsupported NED token");
+                return Err(if c == '*' && import_wildcard(&tokens) {
+                    diagnostic.with_reason("unsupported_syntax")
+                } else {
+                    diagnostic
+                });
             }
             tokens.push(Token {
                 text: content[start..cursor].into(),
@@ -130,6 +166,36 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
     Ok(tokens)
 }
 
+/// Declaration identity for metadata; instance paths never replace this owner.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum AttributeOwner {
+    Type { qname: String },
+    Parameter { qname: String, parameter: String },
+}
+
+/// A decoded NED property and its original half-open source range (`@` through `)`).
+#[derive(Clone, Debug)]
+pub struct Attribute {
+    name: String,
+    value: String,
+    owner: AttributeOwner,
+    span: SourceSpan,
+}
+impl Attribute {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+    pub fn value(&self) -> &str {
+        &self.value
+    }
+    pub fn owner(&self) -> &AttributeOwner {
+        &self.owner
+    }
+    pub fn span(&self) -> &SourceSpan {
+        &self.span
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Parameter {
     scalar: String,
@@ -137,6 +203,7 @@ pub struct Parameter {
     default: Option<String>,
     span: SourceSpan,
     default_span: Option<SourceSpan>,
+    attributes: BTreeMap<String, Attribute>,
 }
 #[derive(Clone, Debug)]
 pub struct Connection {
@@ -152,6 +219,7 @@ pub struct Declaration {
     pub(crate) name: String,
     kind: String,
     implementation: Option<String>,
+    attributes: BTreeMap<String, Attribute>,
     parameters: BTreeMap<String, Parameter>,
     gates: BTreeMap<String, bool>, // true = output
     children: Vec<(String, String)>,
@@ -162,6 +230,9 @@ pub struct Declaration {
     child_spans: BTreeMap<String, SourceSpan>,
 }
 impl Parameter {
+    pub fn attributes(&self) -> &BTreeMap<String, Attribute> {
+        &self.attributes
+    }
     pub fn span(&self) -> &SourceSpan {
         &self.span
     }
@@ -190,6 +261,9 @@ impl Connection {
     }
 }
 impl Declaration {
+    pub fn attributes(&self) -> &BTreeMap<String, Attribute> {
+        &self.attributes
+    }
     pub fn span(&self) -> &SourceSpan {
         &self.span
     }
@@ -283,11 +357,36 @@ impl Parser<'_> {
     fn peek(&self) -> &str {
         &self.tokens[self.cursor].text
     }
+    // Look ahead only to recognize an unsupported clause; do not consume tokens
+    // or let incomplete names change the existing syntax-error diagnostic.
+    fn name_clause(&self, mut cursor: usize, terminator: &str) -> bool {
+        loop {
+            let Some(token) = self.tokens.get(cursor) else {
+                return false;
+            };
+            if !identifier(&token.text) || reserved(&token.text) {
+                return false;
+            }
+            match self.tokens.get(cursor + 1).map(|token| token.text.as_str()) {
+                Some(text) if text == terminator => return true,
+                Some(".") => cursor += 2,
+                _ => return false,
+            }
+        }
+    }
     fn fail(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
         self.fail_at(self.cursor, message)
     }
     fn fail_previous(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
         self.fail_at(self.last_taken, message)
+    }
+    fn fail_attribute(&self, attribute: &Attribute, message: impl AsRef<str>) -> Diagnostic {
+        let start = self
+            .tokens
+            .iter()
+            .position(|token| token.start == attribute.span.start_byte)
+            .expect("parsed attribute starts at a token");
+        attribute.span.apply(self.fail_at(start, message))
     }
     fn fail_at(&self, cursor: usize, message: impl AsRef<str>) -> crate::types::Diagnostic {
         let token = &self.tokens[cursor];
@@ -387,7 +486,9 @@ impl Parser<'_> {
         }
         Ok(value)
     }
-    fn property(&mut self, parameter: bool) -> Result<(String, String)> {
+    fn property(&mut self, owner: AttributeOwner) -> Result<Attribute> {
+        let start = self.cursor;
+        let parameter = matches!(owner, AttributeOwner::Parameter { .. });
         self.expect("@")?;
         let name = self.id()?;
         if (parameter && !matches!(name.as_str(), "unit" | "display" | "description"))
@@ -408,7 +509,12 @@ impl Parser<'_> {
             string_literal(&self.take()).map_err(|e| self.fail(e.message))?
         };
         self.expect(")")?;
-        Ok((name, value))
+        Ok(Attribute {
+            name,
+            value,
+            owner,
+            span: self.span(start, self.cursor),
+        })
     }
     fn declaration(&mut self, package: &str) -> Result<Declaration> {
         let declaration_start = self.cursor;
@@ -416,16 +522,28 @@ impl Parser<'_> {
         let source = format!("{}:{}:{}", self.path.display(), token.line, token.column);
         let kind = self.take();
         if !matches!(kind.as_str(), "simple" | "module" | "network" | "channel") {
-            return Err(self.fail_previous("unsupported declaration"));
+            let diagnostic = self.fail_previous("unsupported declaration");
+            return Err(if kind == "import" && self.name_clause(self.cursor, ";") {
+                diagnostic.with_reason("unsupported_syntax")
+            } else {
+                diagnostic
+            });
         }
         let name_start = self.cursor;
         let name = format!("{package}.{}", self.id()?);
         let name_span = self.span(name_start, self.cursor);
-        self.expect("{")?;
+        self.expect("{").map_err(|diagnostic| {
+            if self.peek() == "extends" && self.name_clause(self.cursor + 1, "{") {
+                diagnostic.with_reason("unsupported_syntax")
+            } else {
+                diagnostic
+            }
+        })?;
         let mut declaration = Declaration {
             name,
             kind,
             implementation: None,
+            attributes: BTreeMap::new(),
             parameters: BTreeMap::new(),
             gates: BTreeMap::new(),
             children: Vec::new(),
@@ -436,7 +554,6 @@ impl Parser<'_> {
             child_spans: BTreeMap::new(),
         };
         let mut last_section = 0;
-        let mut attributes = BTreeSet::new();
         while !self.eat("}") {
             let section = self.take();
             let order = match section.as_str() {
@@ -464,9 +581,15 @@ impl Parser<'_> {
                 match order {
                     1 => {
                         if self.peek() == "@" {
-                            let (name, value) = self.property(false)?;
-                            if !attributes.insert(name.clone()) {
-                                return Err(self.fail(format!("duplicate property {name}")));
+                            let attribute = self.property(AttributeOwner::Type {
+                                qname: declaration.name.clone(),
+                            })?;
+                            let name = &attribute.name;
+                            if declaration.attributes.contains_key(name) {
+                                return Err(self.fail_attribute(
+                                    &attribute,
+                                    format!("duplicate property {name}"),
+                                ));
                             }
                             if name == "class" {
                                 if declaration.compound() {
@@ -474,8 +597,9 @@ impl Parser<'_> {
                                         self.fail("@class is only supported on simple/channel")
                                     );
                                 }
-                                declaration.implementation = Some(value);
+                                declaration.implementation = Some(attribute.value.clone());
                             }
+                            declaration.attributes.insert(name.clone(), attribute);
                             self.expect(";")?;
                         } else {
                             let parameter_start = self.cursor;
@@ -485,18 +609,29 @@ impl Parser<'_> {
                             }
                             let name = self.id()?;
                             let mut unit = None;
-                            let mut properties = BTreeSet::new();
+                            let mut attributes = BTreeMap::new();
                             while self.peek() == "@" {
-                                let (property, value) = self.property(true)?;
-                                if !properties.insert(property.clone()) {
-                                    return Err(self.fail(format!("duplicate property {property}")));
+                                let attribute = self.property(AttributeOwner::Parameter {
+                                    qname: declaration.name.clone(),
+                                    parameter: name.clone(),
+                                })?;
+                                let property = &attribute.name;
+                                if attributes.contains_key(property) {
+                                    return Err(self.fail_attribute(
+                                        &attribute,
+                                        format!("duplicate property {property}"),
+                                    ));
                                 }
                                 if property == "unit" {
-                                    unit = Some(value);
+                                    unit = Some(attribute.value.clone());
                                 }
+                                attributes.insert(property.clone(), attribute);
                             }
                             if unit.is_some() && !matches!(scalar.as_str(), "int" | "double") {
-                                return Err(self.fail("unit on nonnumeric parameter"));
+                                return Err(self.fail_attribute(
+                                    &attributes["unit"],
+                                    "unit on nonnumeric parameter",
+                                ));
                             }
                             let mut default_span = None;
                             let default = if self.eat("=") {
@@ -521,6 +656,7 @@ impl Parser<'_> {
                                         default,
                                         span: self.span(parameter_start, self.cursor),
                                         default_span,
+                                        attributes,
                                     },
                                 )
                                 .is_some()

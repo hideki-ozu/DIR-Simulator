@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+  "baseline_commit": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "fixed_artifact_commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+  "role": "Current committed debug binary from focused test build; not fixed release artifact or release rebuild.",
+  "binary": {
+    "path": "<AUDIT_ROOT>/implementation/target/debug/dir-simulator",
+    "sha256": "0929fd31d168057caa520f6de3c097953aae9bbdb09aa03cfd06fc1689ad15a7",
+    "bytes": 142656872
+  },
+  "build_checks": {
+    "path": "<AUDIT_ROOT>/results/build-link-current-ddfa7bd91621/integrated-checks.json",
+    "sha256": "4a4a28256085c2335c838395412a282da9f9b895cc8944b6c3888076745afae0",
+    "bytes": 16655
+  },
+  "cargo_json": {
+    "path": "<AUDIT_ROOT>/results/build-link-current-ddfa7bd91621/cargo-build.stdout",
+    "sha256": "2058bf83daec887fffbe16da440266fd7f7a2c146407d8ae30afee798f67a4e9",
+    "bytes": 42315
+  },
+  "cargo_verbose": {
+    "path": "<AUDIT_ROOT>/results/build-link-current-ddfa7bd91621/cargo-build.stderr",
+    "sha256": "a4d42a4fdebd9561b5397764c68ba9b1acdf1aaaa2ceac7a863caee3c58af2ed",
+    "bytes": 18176
+  },
+  "compiler_artifacts": {
+    "path": "<AUDIT_ROOT>/results/build-link-current-ddfa7bd91621/compiler-artifacts.json",
+    "sha256": "c2784ba4c530d4adc6936bd5849c1d3ce9027a896405377a61e660825412ddaa",
+    "bytes": 61846
+  },
+  "fingerprints": {
+    "path": "<AUDIT_ROOT>/results/build-link-current-ddfa7bd91621/fingerprints.json",
+    "sha256": "a1ce4d988273c2922f8ce0be7b9455ae4ad12098f281a972ef186c9ba81c9b26",
+    "bytes": 157978
+  },
+  "metadata": {
+    "path": "<AUDIT_ROOT>/results/build-link-current-ddfa7bd91621/cargo-metadata.json",
+    "sha256": "7cdf16b416d28c3dbe432651dfef87e87d678bc8f9d06b1051ecf450627d506f",
+    "bytes": 216356
+  },
+  "actual_build_argv": [
+    "<HOME>/.cargo/bin/cargo",
+    "test",
+    "--locked",
+    "-p",
+    "dir-simulator",
+    "--test",
+    "ac0008_paths",
+    "--test",
+    "ac0008_ned_rejections",
+    "--test",
+    "ac0008_attributes",
+    "--no-run",
+    "--message-format=json",
+    "-vv"
+  ],
+  "build_environment": {
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "RUSTC": null,
+    "RUSTDOC": null,
+    "CARGO_BUILD_TARGET": null,
+    "CARGO_TARGET_DIR": null,
+    "CARGO_BUILD_RUSTFLAGS": null,
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "observed_rustc_invocations": [
+    "Running `CARGO=<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/cargo CARGO_CFG_FEATURE='' CARGO_CFG_PANIC=unwind CARGO_CFG_TARGET_ABI='' CARGO_CFG_TARGET_ARCH=x86_64 CARGO_CFG_TARGET_ENDIAN=little CARGO_CFG_TARGET_ENV=gnu CARGO_CFG_TARGET_FAMILY=unix CARGO_CFG_TARGET_FEATURE=fxsr,sse,sse2 CARGO_CFG_TARGET_HAS_ATOMIC=16,32,64,8,ptr CARGO_CFG_TARGET_OS=linux CARGO_CFG_TARGET_POINTER_WIDTH=64 CARGO_CFG_TARGET_VENDOR=unknown CARGO_CFG_UNIX='' CARGO_ENCODED_RUSTFLAGS='' CARGO_MANIFEST_DIR=<AUDIT_ROOT>/implementation/crates/dir-simulator CARGO_MANIFEST_PATH=<AUDIT_ROOT>/implementation/crates/dir-simulator/Cargo.toml CARGO_PKG_AUTHORS='' CARGO_PKG_DESCRIPTION='Deterministic Classical CAN discrete-event simulator' CARGO_PKG_HOMEPAGE='' CARGO_PKG_LICENSE='MIT OR Apache-2.0' CARGO_PKG_LICENSE_FILE='' CARGO_PKG_NAME=dir-simulator CARGO_PKG_README='' CARGO_PKG_REPOSITORY='' CARGO_PKG_RUST_VERSION=1.85 CARGO_PKG_VERSION=0.1.0 CARGO_PKG_VERSION_MAJOR=0 CARGO_PKG_VERSION_MINOR=1 CARGO_PKG_VERSION_PATCH=0 CARGO_PKG_VERSION_PRE='' DEBUG=true HOST=x86_64-unknown-linux-gnu LD_LIBRARY_PATH='<AUDIT_ROOT>/implementation/target/debug/deps:<AUDIT_ROOT>/implementation/target/debug:<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib:<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/lib' NUM_JOBS=20 OPT_LEVEL=0 OUT_DIR=<AUDIT_ROOT>/implementation/target/debug/build/dir-simulator-4a2f40664df45896/out PROFILE=debug RUSTC=<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/rustc RUSTDOC=<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/rustdoc TARGET=x86_64-unknown-linux-gnu <AUDIT_ROOT>/implementation/target/debug/build/dir-simulator-21b51bf026253b14/build-script-build`",
+    "Running `CARGO=<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/cargo CARGO_CRATE_NAME=dir_simulator CARGO_MANIFEST_DIR=<AUDIT_ROOT>/implementation/crates/dir-simulator CARGO_MANIFEST_PATH=<AUDIT_ROOT>/implementation/crates/dir-simulator/Cargo.toml CARGO_PKG_AUTHORS='' CARGO_PKG_DESCRIPTION='Deterministic Classical CAN discrete-event simulator' CARGO_PKG_HOMEPAGE='' CARGO_PKG_LICENSE='MIT OR Apache-2.0' CARGO_PKG_LICENSE_FILE='' CARGO_PKG_NAME=dir-simulator CARGO_PKG_README='' CARGO_PKG_REPOSITORY='' CARGO_PKG_RUST_VERSION=1.85 CARGO_PKG_VERSION=0.1.0 CARGO_PKG_VERSION_MAJOR=0 CARGO_PKG_VERSION_MINOR=1 CARGO_PKG_VERSION_PATCH=0 CARGO_PKG_VERSION_PRE='' CARGO_PRIMARY_PACKAGE=1 LD_LIBRARY_PATH='<AUDIT_ROOT>/implementation/target/debug/deps:<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/lib' OUT_DIR=<AUDIT_ROOT>/implementation/target/debug/build/dir-simulator-4a2f40664df45896/out <HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/rustc --crate-name dir_simulator --edition=2024 crates/dir-simulator/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=945e9da531b49520 -C extra-filename=-ba6416fcf3e44d87 --out-dir <AUDIT_ROOT>/implementation/target/debug/deps -C incremental=<AUDIT_ROOT>/implementation/target/debug/incremental -L dependency=<AUDIT_ROOT>/implementation/target/debug/deps --extern rustix=<AUDIT_ROOT>/implementation/target/debug/deps/librustix-0dd527968342fb89.rmeta --extern serde=<AUDIT_ROOT>/implementation/target/debug/deps/libserde-f9fd81fdee8000e4.rmeta --extern serde_json=<AUDIT_ROOT>/implementation/target/debug/deps/libserde_json-68afe402e6eeb0de.rmeta --extern sha2=<AUDIT_ROOT>/implementation/target/debug/deps/libsha2-31df3e5dd1798861.rmeta --extern tiny_http=<AUDIT_ROOT>/implementation/target/debug/deps/libtiny_http-8e8ae4bdfd841edc.rmeta`",
+    "Running `CARGO=<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/cargo CARGO_BIN_EXE_dir-simulator=<AUDIT_ROOT>/implementation/target/debug/dir-simulator CARGO_CRATE_NAME=ac0008_paths CARGO_MANIFEST_DIR=<AUDIT_ROOT>/implementation/crates/dir-simulator CARGO_MANIFEST_PATH=<AUDIT_ROOT>/implementation/crates/dir-simulator/Cargo.toml CARGO_PKG_AUTHORS='' CARGO_PKG_DESCRIPTION='Deterministic Classical CAN discrete-event simulator' CARGO_PKG_HOMEPAGE='' CARGO_PKG_LICENSE='MIT OR Apache-2.0' CARGO_PKG_LICENSE_FILE='' CARGO_PKG_NAME=dir-simulator CARGO_PKG_README='' CARGO_PKG_REPOSITORY='' CARGO_PKG_RUST_VERSION=1.85 CARGO_PKG_VERSION=0.1.0 CARGO_PKG_VERSION_MAJOR=0 CARGO_PKG_VERSION_MINOR=1 CARGO_PKG_VERSION_PATCH=0 CARGO_PKG_VERSION_PRE='' CARGO_PRIMARY_PACKAGE=1 CARGO_TARGET_TMPDIR=<AUDIT_ROOT>/implementation/target/tmp LD_LIBRARY_PATH='<AUDIT_ROOT>/implementation/target/debug/deps:<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/lib' OUT_DIR=<AUDIT_ROOT>/implementation/target/debug/build/dir-simulator-4a2f40664df45896/out <HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/rustc --crate-name ac0008_paths --edition=2024 crates/dir-simulator/tests/ac0008_paths.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=fcd39e79272186f3 -C extra-filename=-8cd11dd326e2edef --out-dir <AUDIT_ROOT>/implementation/target/debug/deps -C incremental=<AUDIT_ROOT>/implementation/target/debug/incremental -L dependency=<AUDIT_ROOT>/implementation/target/debug/deps --extern dir_simulator=<AUDIT_ROOT>/implementation/target/debug/deps/libdir_simulator-ba6416fcf3e44d87.rlib --extern rustix=<AUDIT_ROOT>/implementation/target/debug/deps/librustix-0dd527968342fb89.rlib --extern serde=<AUDIT_ROOT>/implementation/target/debug/deps/libserde-f9fd81fdee8000e4.rlib --extern serde_json=<AUDIT_ROOT>/implementation/target/debug/deps/libserde_json-68afe402e6eeb0de.rlib --extern sha2=<AUDIT_ROOT>/implementation/target/debug/deps/libsha2-31df3e5dd1798861.rlib --extern tiny_http=<AUDIT_ROOT>/implementation/target/debug/deps/libtiny_http-8e8ae4bdfd841edc.rlib`",
+    "Running `CARGO=<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/cargo CARGO_BIN_EXE_dir-simulator=<AUDIT_ROOT>/implementation/target/debug/dir-simulator CARGO_CRATE_NAME=ac0008_attributes CARGO_MANIFEST_DIR=<AUDIT_ROOT>/implementation/crates/dir-simulator CARGO_MANIFEST_PATH=<AUDIT_ROOT>/implementation/crates/dir-simulator/Cargo.toml CARGO_PKG_AUTHORS='' CARGO_PKG_DESCRIPTION='Deterministic Classical CAN discrete-event simulator' CARGO_PKG_HOMEPAGE='' CARGO_PKG_LICENSE='MIT OR Apache-2.0' CARGO_PKG_LICENSE_FILE='' CARGO_PKG_NAME=dir-simulator CARGO_PKG_README='' CARGO_PKG_REPOSITORY='' CARGO_PKG_RUST_VERSION=1.85 CARGO_PKG_VERSION=0.1.0 CARGO_PKG_VERSION_MAJOR=0 CARGO_PKG_VERSION_MINOR=1 CARGO_PKG_VERSION_PATCH=0 CARGO_PKG_VERSION_PRE='' CARGO_PRIMARY_PACKAGE=1 CARGO_TARGET_TMPDIR=<AUDIT_ROOT>/implementation/target/tmp LD_LIBRARY_PATH='<AUDIT_ROOT>/implementation/target/debug/deps:<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/lib' OUT_DIR=<AUDIT_ROOT>/implementation/target/debug/build/dir-simulator-4a2f40664df45896/out <HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/rustc --crate-name ac0008_attributes --edition=2024 crates/dir-simulator/tests/ac0008_attributes.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=aef71fff671ba9c3 -C extra-filename=-dd573f535eedffaf --out-dir <AUDIT_ROOT>/implementation/target/debug/deps -C incremental=<AUDIT_ROOT>/implementation/target/debug/incremental -L dependency=<AUDIT_ROOT>/implementation/target/debug/deps --extern dir_simulator=<AUDIT_ROOT>/implementation/target/debug/deps/libdir_simulator-ba6416fcf3e44d87.rlib --extern rustix=<AUDIT_ROOT>/implementation/target/debug/deps/librustix-0dd527968342fb89.rlib --extern serde=<AUDIT_ROOT>/implementation/target/debug/deps/libserde-f9fd81fdee8000e4.rlib --extern serde_json=<AUDIT_ROOT>/implementation/target/debug/deps/libserde_json-68afe402e6eeb0de.rlib --extern sha2=<AUDIT_ROOT>/implementation/target/debug/deps/libsha2-31df3e5dd1798861.rlib --extern tiny_http=<AUDIT_ROOT>/implementation/target/debug/deps/libtiny_http-8e8ae4bdfd841edc.rlib`",
+    "Running `CARGO=<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/cargo CARGO_BIN_NAME=dir-simulator CARGO_CRATE_NAME=dir_simulator CARGO_MANIFEST_DIR=<AUDIT_ROOT>/implementation/crates/dir-simulator CARGO_MANIFEST_PATH=<AUDIT_ROOT>/implementation/crates/dir-simulator/Cargo.toml CARGO_PKG_AUTHORS='' CARGO_PKG_DESCRIPTION='Deterministic Classical CAN discrete-event simulator' CARGO_PKG_HOMEPAGE='' CARGO_PKG_LICENSE='MIT OR Apache-2.0' CARGO_PKG_LICENSE_FILE='' CARGO_PKG_NAME=dir-simulator CARGO_PKG_README='' CARGO_PKG_REPOSITORY='' CARGO_PKG_RUST_VERSION=1.85 CARGO_PKG_VERSION=0.1.0 CARGO_PKG_VERSION_MAJOR=0 CARGO_PKG_VERSION_MINOR=1 CARGO_PKG_VERSION_PATCH=0 CARGO_PKG_VERSION_PRE='' CARGO_PRIMARY_PACKAGE=1 LD_LIBRARY_PATH='<AUDIT_ROOT>/implementation/target/debug/deps:<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/lib' OUT_DIR=<AUDIT_ROOT>/implementation/target/debug/build/dir-simulator-4a2f40664df45896/out <HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/rustc --crate-name dir_simulator --edition=2024 crates/dir-simulator/src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=812978d4e3c7c8cb -C extra-filename=-d7e00c9485fbcc22 --out-dir <AUDIT_ROOT>/implementation/target/debug/deps -C incremental=<AUDIT_ROOT>/implementation/target/debug/incremental -L dependency=<AUDIT_ROOT>/implementation/target/debug/deps --extern dir_simulator=<AUDIT_ROOT>/implementation/target/debug/deps/libdir_simulator-ba6416fcf3e44d87.rlib --extern rustix=<AUDIT_ROOT>/implementation/target/debug/deps/librustix-0dd527968342fb89.rlib --extern serde=<AUDIT_ROOT>/implementation/target/debug/deps/libserde-f9fd81fdee8000e4.rlib --extern serde_json=<AUDIT_ROOT>/implementation/target/debug/deps/libserde_json-68afe402e6eeb0de.rlib --extern sha2=<AUDIT_ROOT>/implementation/target/debug/deps/libsha2-31df3e5dd1798861.rlib --extern tiny_http=<AUDIT_ROOT>/implementation/target/debug/deps/libtiny_http-8e8ae4bdfd841edc.rlib`",
+    "Running `CARGO=<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/cargo CARGO_BIN_EXE_dir-simulator=<AUDIT_ROOT>/implementation/target/debug/dir-simulator CARGO_CRATE_NAME=ac0008_ned_rejections CARGO_MANIFEST_DIR=<AUDIT_ROOT>/implementation/crates/dir-simulator CARGO_MANIFEST_PATH=<AUDIT_ROOT>/implementation/crates/dir-simulator/Cargo.toml CARGO_PKG_AUTHORS='' CARGO_PKG_DESCRIPTION='Deterministic Classical CAN discrete-event simulator' CARGO_PKG_HOMEPAGE='' CARGO_PKG_LICENSE='MIT OR Apache-2.0' CARGO_PKG_LICENSE_FILE='' CARGO_PKG_NAME=dir-simulator CARGO_PKG_README='' CARGO_PKG_REPOSITORY='' CARGO_PKG_RUST_VERSION=1.85 CARGO_PKG_VERSION=0.1.0 CARGO_PKG_VERSION_MAJOR=0 CARGO_PKG_VERSION_MINOR=1 CARGO_PKG_VERSION_PATCH=0 CARGO_PKG_VERSION_PRE='' CARGO_PRIMARY_PACKAGE=1 CARGO_TARGET_TMPDIR=<AUDIT_ROOT>/implementation/target/tmp LD_LIBRARY_PATH='<AUDIT_ROOT>/implementation/target/debug/deps:<HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/lib' OUT_DIR=<AUDIT_ROOT>/implementation/target/debug/build/dir-simulator-4a2f40664df45896/out <HOME>/.rustup/toolchains/1.85.0-x86_64-unknown-linux-gnu/bin/rustc --crate-name ac0008_ned_rejections --edition=2024 crates/dir-simulator/tests/ac0008_ned_rejections.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=ff05e58cbc2b537f -C extra-filename=-f235601dcf411468 --out-dir <AUDIT_ROOT>/implementation/target/debug/deps -C incremental=<AUDIT_ROOT>/implementation/target/debug/incremental -L dependency=<AUDIT_ROOT>/implementation/target/debug/deps --extern dir_simulator=<AUDIT_ROOT>/implementation/target/debug/deps/libdir_simulator-ba6416fcf3e44d87.rlib --extern rustix=<AUDIT_ROOT>/implementation/target/debug/deps/librustix-0dd527968342fb89.rlib --extern serde=<AUDIT_ROOT>/implementation/target/debug/deps/libserde-f9fd81fdee8000e4.rlib --extern serde_json=<AUDIT_ROOT>/implementation/target/debug/deps/libserde_json-68afe402e6eeb0de.rlib --extern sha2=<AUDIT_ROOT>/implementation/target/debug/deps/libsha2-31df3e5dd1798861.rlib --extern tiny_http=<AUDIT_ROOT>/implementation/target/debug/deps/libtiny_http-8e8ae4bdfd841edc.rlib`"
+  ],
+  "build_script_records": [
+    {
+      "reason": "build-script-executed",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#generic-array@0.14.7",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [
+        "relaxed_coherence"
+      ],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/generic-array-3a9f7cd7c8cb982c/out"
+    },
+    {
+      "reason": "build-script-executed",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#proc-macro2@1.0.107",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [
+        "wrap_proc_macro"
+      ],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/proc-macro2-27b5b5afc5a1a444/out"
+    },
+    {
+      "reason": "build-script-executed",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#quote@1.0.47",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/quote-6b93f49deb7ab9e3/out"
+    },
+    {
+      "reason": "build-script-executed",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#serde_core@1.0.229",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/serde_core-52e3e2f00fad5b82/out"
+    },
+    {
+      "reason": "build-script-executed",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#zmij@1.0.23",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [
+        "zmij_no_select_unpredictable"
+      ],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/zmij-bfcfe9078bee4d1c/out"
+    },
+    {
+      "reason": "build-script-executed",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#rustix@0.38.44",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [
+        "static_assertions",
+        "linux_raw",
+        "linux_like",
+        "linux_kernel"
+      ],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/rustix-af47ab842fed9a25/out"
+    },
+    {
+      "reason": "build-script-executed",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#serde_json@1.0.151",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [
+        "fast_arithmetic=\"64\""
+      ],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/serde_json-3dca83b33287cc44/out"
+    },
+    {
+      "reason": "build-script-executed",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#serde@1.0.229",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [
+        "if_docsrs_then_no_serde_core"
+      ],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/serde-e3ef967c5644c8f3/out"
+    },
+    {
+      "reason": "build-script-executed",
+      "package_id": "path+file://<AUDIT_ROOT>/implementation/crates/dir-simulator#0.1.0",
+      "linked_libs": [],
+      "linked_paths": [],
+      "cfgs": [],
+      "env": [],
+      "out_dir": "<AUDIT_ROOT>/implementation/target/debug/build/dir-simulator-4a2f40664df45896/out"
+    }
+  ],
+  "build_finished_records": [
+    {
+      "reason": "build-finished",
+      "success": true
+    }
+  ],
+  "toolchain_reference": {
+    "path": "<AUDIT_ROOT>/environment/build-link-toolchain.json",
+    "sha256": "1eb564413be8cdd49e148381e424035167d0a5c78b868486aa71a6bec0d5c6b4",
+    "bytes": 1075
+  },
+  "artifact_count": 42,
+  "fresh_artifact_count": 37,
+  "fingerprint_count": 119,
+  "elf": {
+    "interpreter": "/lib64/ld-linux-x86-64.so.2",
+    "dt_needed": [
+      "libgcc_s.so.1",
+      "libc.so.6",
+      "ld-linux-x86-64.so.2"
+    ],
+    "host_libraries": [
+      {
+        "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+        "bytes": 183024
+      },
+      {
+        "path": "/lib/x86_64-linux-gnu/libc.so.6",
+        "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf",
+        "bytes": 2129424
+      },
+      {
+        "path": "/lib64/ld-linux-x86-64.so.2",
+        "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da",
+        "bytes": 236616
+      }
+    ]
+  },
+  "limits": [
+    "Fresh Cargo artifacts reuse caches: this invocation does not expose original compiler commands for every reused dependency.",
+    "Fingerprint data and compiler-artifact files identify built units/features/profiles; they do not prove exact linked static object members or retained sections.",
+    "No full static linker map or full legal/license acceptance. Host libraries are external system dependencies, not bundled population.",
+    "Fingerprint directory may contain units from prior focused builds; compiler-artifact records identify units reported by the recorded build."
+  ],
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/head.stdout",
+        "sha256": "761078615fb213f7c325ddce28787130bfb62f192882fca7bc18a69e1cef788e",
+        "bytes": 41
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/head.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain=v1"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/status.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "readelf",
+        "-lW",
+        "<AUDIT_ROOT>/implementation/target/debug/dir-simulator"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/elf-headers.stdout",
+        "sha256": "4d960265f39431eefbac72c4bae40c9b3722d56703bd86009f164fa00bc68106",
+        "bytes": 2275
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/elf-headers.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "readelf",
+        "-dW",
+        "<AUDIT_ROOT>/implementation/target/debug/dir-simulator"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/elf-dynamic.stdout",
+        "sha256": "0f329806d3b715b21ea9f71e40a7e8b299a6593c462954d60b896eb5788d5499",
+        "bytes": 1621
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/elf-dynamic.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "readelf",
+        "-nW",
+        "<AUDIT_ROOT>/implementation/target/debug/dir-simulator"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/elf-notes.stdout",
+        "sha256": "88e5aa1397ae67bea4794305d5c41585dea7f0bf34fac8ec84b2a44415fe73ed",
+        "bytes": 607
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/elf-notes.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "file",
+        "<AUDIT_ROOT>/implementation/target/debug/dir-simulator"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/file.stdout",
+        "sha256": "3a92854b0bc0d7cf507f9e4b0617f09cc5e5b6c54aa8c2ce6a7beaee701fa315",
+        "bytes": 333
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/file.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "/lib64/ld-linux-x86-64.so.2",
+        "--list",
+        "<AUDIT_ROOT>/implementation/target/debug/dir-simulator"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/loader-list.stdout",
+        "sha256": "ce7ef8a78db4d9067a27ae3dccf3b257d1e81c4d9848808ce591e38ac35d2a10",
+        "bytes": 230
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/loader-list.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "+1.85.0",
+        "metadata",
+        "--locked",
+        "--offline",
+        "--format-version",
+        "1",
+        "--filter-platform",
+        "x86_64-unknown-linux-gnu"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/cargo-metadata.stdout",
+        "sha256": "1813bf77ccfba48ec9e7a75a9fb56ac97a4f28b907ffe84814bee6c3cf7e55dc",
+        "bytes": 136672
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/cargo-metadata.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/head-after.stdout",
+        "sha256": "761078615fb213f7c325ddce28787130bfb62f192882fca7bc18a69e1cef788e",
+        "bytes": 41
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link-current/head-after.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    }
+  ],
+  "collector": {
+    "path": "<AUDIT_ROOT>/support/build-link-current.py",
+    "sha256": "6d2f252d8013c731b81f4a51ec25292b4f33161e4e156cf6924f55c23f8e8531",
+    "bytes": 6363
+  }
+}

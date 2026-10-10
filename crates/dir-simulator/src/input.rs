@@ -101,7 +101,7 @@ pub struct ProjectHeader {
     pub channels: BTreeMap<String, BTreeMap<String, String>>,
 }
 
-pub use ned::{Connection, Declaration, Parameter};
+pub use ned::{Attribute, AttributeOwner, Connection, Declaration, Parameter};
 
 /// Owned syntax result. Declaration data is available only through immutable getters.
 #[derive(Clone, Debug)]
