@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "review_method": "Assistant visually inspected each original generated PNG using view_image",
+  "images": [
+    {
+      "path": "viewer-evidence/short-desktop.png",
+      "width_px": 1440,
+      "height_px": 2860,
+      "sha256": "a1ddba6bca1aa8b5bf657c2de82c67a80781be61bff0fcf161bc9f74afcd1ff0",
+      "visually_inspected": true
+    },
+    {
+      "path": "viewer-evidence/short-mobile.png",
+      "width_px": 390,
+      "height_px": 844,
+      "sha256": "d86f969685f8acf49a634313f7722811cfb2523487aaea7e33dec8d83b8d1d8d",
+      "visually_inspected": true
+    },
+    {
+      "path": "viewer-evidence/equal-desktop.png",
+      "width_px": 1440,
+      "height_px": 2860,
+      "sha256": "3ed822d5b5d4a53dfba8a7043ef877f2c652bfca7001c293ebcff3d79bcdd67c",
+      "visually_inspected": true
+    },
+    {
+      "path": "viewer-evidence/equal-mobile.png",
+      "width_px": 390,
+      "height_px": 844,
+      "sha256": "1804aabebe348271cbd4d192d345c2ca28e7572a3c9d46c5ac8354a8431c6c2d",
+      "visually_inspected": true
+    }
+  ],
+  "observations": [
+    "Both desktop captures show 1.2 us / 1200000 ps, packet:0 and the same Main.a / Main.sw / Main.b topology",
+    "Both desktop and mobile details show Main.b received at 1156000 ps and delivery 1156000 ps",
+    "short shows relative deadline 1155999 ps and Deadline超過; equal shows 1156000 ps and Deadline内",
+    "Desktop flow rows show received 1 and miss/sample 1/1 for short, 0/1 for equal",
+    "390px captures show selected details; internal panels scroll horizontally, document overflow is zero"
+  ],
+  "public_guide_visual_review": "not_run; generated Viewers only"
+}
