@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-10",
+  "issue": 31,
+  "base_main": "dbd5e98217c8718f668e35b8e4161be2f724e363",
+  "scope": "Disabled design and mock tests; no live GITHUB_TOKEN or unauthenticated deployment probe",
+  "production_enabled": false,
+  "activation_record": null,
+  "static_locks_preserved": true,
+  "workflow_permissions_changed": false,
+  "auth_settings_changed": false,
+  "tokens_created": 0,
+  "real_merge_dispatch_deployment_writes": 0,
+  "protection_evidence": {
+    "standard_GITHUB_TOKEN": "unresolved; documented permissions have no Administration; live token not obtained",
+    "collector": "ruleset id/source checked; missing, malformed, nonempty bypass fail closed",
+    "connector_ruleset_list": "read succeeded, empty array; no active protection or empty bypass proof",
+    "prior_branch_rules_denial": "connector allowed-public-URL restriction; not retried via any other surface"
+  },
+  "deployment_evidence": {
+    "design": "separate credential-free GET client, public resources only; merge preflight requires base SHA deployment/status success; public failures stop with no authenticated fallback",
+    "standard_token_read": "not tested; declared deployments omitted -> none",
+    "connector_read": {
+      "requested_action": "GET",
+      "target": "/repos/hideki-ozu/DIR-Simulator/deployments?sha=dbd5e98217c8718f668e35b8e4161be2f724e363&environment=github-pages&per_page=100",
+      "result": "rejected by connector allowed-public-URL restriction, 400; not a GitHub API 403",
+      "alternate_access_attempted": false
+    },
+    "public_live_read": "not performed after connector rejection"
+  },
+  "connector_provenance": {
+    "current_installation_id": 83500803,
+    "account": "hideki-ozu",
+    "viewer_can_administer": null,
+    "current_permissions": "not exposed by installation listing",
+    "issue_creation_app_manifest": "historical snapshot only; not proof of current caller or GITHUB_TOKEN permissions"
+  },
+  "readonly_observations": {
+    "issue_open": true,
+    "issue_comments": 0,
+    "repository_public": true,
+    "allow_auto_merge": false,
+    "rulesets": []
+  },
+  "tests": {
+    "new_evidence_tests": 7,
+    "all_guide_tests": 40,
+    "legacy_policy_tests": 9,
+    "linux_existing_traceability_tests": "CI step retained; pending PR",
+    "local_result": "49 passed (40 guide + 9 policy); new seven evidence tests include stricter id/source regression"
+  },
+  "traceability": {
+    "requirements": 231,
+    "functions": 60,
+    "nodes": 274,
+    "structural_errors": 0,
+    "incomplete": 0,
+    "freshness": "passed"
+  },
+  "official_sources": [
+    "https://docs.github.com/en/rest/repos/rules#get-a-repository-ruleset",
+    "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions",
+    "https://docs.github.com/en/rest/deployments/deployments#list-deployments",
+    "https://docs.github.com/en/rest/deployments/statuses#list-deployment-statuses"
+  ],
+  "remaining_decisions": [
+    "authorized surface for deployment/status read after connector URL restriction",
+    "authoritative fresh bypass-empty evidence under approved permissions; standard-token method not established"
+  ],
+  "issue_completion": "not completed; remains open",
+  "mkdocs_strict": "passed",
+  "local_links_assets_anchors": 527
+}

@@ -61,7 +61,9 @@ def fixture(enabled=False):
              for t in ['deletion','non_fast_forward','required_status_checks']]
     rules[-1]['parameters'] = {'strict_required_status_checks_policy':True,'required_status_checks':checks}
     api.add('/rules/branches/main?per_page=100', rules)
-    api.add('/rulesets/1?includes_parents=true', {'enforcement':'active','target':'branch','bypass_actors':[],
+    api.add('/deployments?sha='+BASE+'&environment=github-pages&per_page=100',[{'id':4,'sha':BASE,'environment':'github-pages'}])
+    api.add('/deployments/4/statuses?per_page=100',[{'state':'success'}])
+    api.add('/rulesets/1?includes_parents=true', {'id':1,'source_type':'Repository','source':policy['repository'],'enforcement':'active','target':'branch','bypass_actors':[],
              'conditions':{'ref_name':{'include':['refs/heads/main'],'exclude':[]}}})
     api.add('/pulls/'+str(NUMBER)+'/files?per_page=100', [{'filename':path,'sha':head[0]['sha'],'status':'modified'}])
     for wid, (name, workflow) in enumerate(policy['required_checks'].items(),1):
@@ -149,18 +151,18 @@ class RuntimeTests(unittest.TestCase):
             runs=api.routes[('GET',api.prefix+'/actions/workflows/'+str(other_id//10)+'/runs?head_sha='+HEAD+'&event=pull_request&per_page=100')][0]
             runs['workflow_runs'][0]['status']='in_progress';runs['workflow_runs'][0]['conclusion']=None
             with self.subTest(trigger_id=trigger_id):
-                with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=trigger_id)
+                with self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=trigger_id)
                 self.assertEqual(api.writes,[])
                 # Second workflow's completion supplies the missing reevaluation.
                 runs['workflow_runs'][0]['status']='completed';runs['workflow_runs'][0]['conclusion']='success'
-                self.assertEqual(Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=other_id,poll=lambda:None)['publication'],'success')
+                self.assertEqual(Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=other_id,poll=lambda:None)['publication'],'success')
                 self.assertEqual(len(api.writes),2)
 
     def test_duplicate_completed_event_cannot_merge_twice(self):
         api,c,e=fixture(True);publication_routes(api)
-        Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=11,poll=lambda:None)
+        Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=11,poll=lambda:None)
         for trigger_id in [11,21]:
-            with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=trigger_id)
+            with self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=trigger_id)
         self.assertEqual(len([w for w in api.writes if w[0]=='PUT']),1)
 
     def test_rerun_attempt_or_new_run_during_prewrite_no_merge(self):
@@ -175,28 +177,28 @@ class RuntimeTests(unittest.TestCase):
                     result['checks'][0]['run_attempt' if mutation=='attempt' else 'run_id']+=1
                 return result
             c.collect=collect
-            with self.subTest(mutation=mutation),self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=11)
+            with self.subTest(mutation=mutation),self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=11)
             self.assertEqual(api.writes,[])
 
     def test_old_attempt_trigger_even_after_new_attempt_success_stops(self):
         api,c,e=fixture(True)
         api.routes[('GET',api.prefix+'/actions/runs/11')][0]['run_attempt']=1
-        with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=11)
+        with self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=11)
         self.assertEqual(api.writes,[])
 
     def test_complete_collector_and_default_dry_run(self):
-        api,c,e=fixture(); result=Writer(c,e).execute(NUMBER)
+        api,c,e=fixture(); result=Writer(c,e,publication_api=api).execute(NUMBER)
         self.assertTrue(result['dry_run']); self.assertFalse(result['merge_authorized']); self.assertEqual(api.writes,[])
 
     def test_mock_only_merge_and_exact_dispatch_run(self):
         api,c,e=fixture(True); publication_routes(api)
-        r=Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=21,poll=lambda:None)
+        r=Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=21,poll=lambda:None)
         self.assertEqual(r['publication'],'success'); self.assertEqual(r['merge_sha'],MERGED)
         self.assertEqual(len(api.writes),2); self.assertEqual(api.writes[1][2],{'ref':'main','inputs':{'expected_sha':MERGED}})
 
     def test_activation_and_context_fail_before_any_read_or_write(self):
         api,c,e=fixture(False)
-        with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=21)
+        with self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=21)
         self.assertEqual(api.calls,[])
         for key in e:
             api,c,env=fixture(True); env[key]='untrusted'
@@ -249,7 +251,7 @@ class RuntimeTests(unittest.TestCase):
             if len(reads)>=3: result[0]['head']['sha']='f'*40
             return result
         api.routes[key]=pr
-        with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=21)
+        with self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=21)
         self.assertEqual(api.writes,[])
 
     def test_both_allowlisted_rename_paths_and_old_symlink(self):
@@ -280,7 +282,7 @@ class RuntimeTests(unittest.TestCase):
 
     def test_ambiguous_trigger_no_write(self):
         api,c,e=fixture(True);api.routes[('GET',api.prefix+'/actions/runs/21')][0]['pull_requests'].append({'number':NUMBER+1})
-        with self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=21)
+        with self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=21)
         self.assertEqual(api.writes,[])
 
     def test_merge_denied_or_uncertain_is_never_retried(self):
@@ -288,7 +290,7 @@ class RuntimeTests(unittest.TestCase):
             api,c,e=fixture(True)
             def deny(_): raise Stop(reason)
             api.routes[('PUT',api.prefix+'/pulls/'+str(NUMBER)+'/merge')]=deny
-            with self.subTest(reason=reason),self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=21)
+            with self.subTest(reason=reason),self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=21)
             self.assertEqual(len(api.writes),1);self.assertEqual(api.writes[0][0],'PUT')
 
     def test_validation_can_collect_without_required_check_recursion(self):
@@ -301,7 +303,7 @@ class RuntimeTests(unittest.TestCase):
         with self.assertRaises(Stop): c.collect(NUMBER)
         api,c,e=fixture(True);publication_routes(api)
         api.add('/actions/workflows/guide-pages.yml/dispatches',None,method='POST')
-        writer=Writer(c,e)
+        writer=Writer(c,e,publication_api=api)
         with self.assertRaises(Stop): writer.execute(NUMBER,dry_run=False,trigger_run=21)
         self.assertEqual(writer.audit['merge_state'],'confirmed')
         self.assertEqual(writer.audit['merge_sha'],MERGED)
@@ -317,7 +319,7 @@ class RuntimeTests(unittest.TestCase):
             if mutation=='wrong_sha': run['head_sha']='f'*40
             if mutation=='wrong_deployment': api.routes[('GET',api.prefix+'/deployments/5/statuses?per_page=100')][0][0]['log_url']='https://github.com/other/run'
             if mutation=='timeout': run['status']='in_progress'
-            with self.subTest(mutation=mutation),self.assertRaises(Stop): Writer(c,e).execute(NUMBER,dry_run=False,trigger_run=21,poll=lambda:None,attempts=1)
+            with self.subTest(mutation=mutation),self.assertRaises(Stop): Writer(c,e,publication_api=api).execute(NUMBER,dry_run=False,trigger_run=21,poll=lambda:None,attempts=1)
             self.assertEqual(len(api.writes),2)
 
     def test_transport_never_writes_default_or_admin_endpoints(self):

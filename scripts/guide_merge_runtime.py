@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 import time
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode, urlsplit
+from urllib.parse import urlencode, urlsplit, parse_qsl
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 from guide_scope_policy import ALLOWLIST, safe_content, allowed_path, SHA, Stop, need
 from guide_scope_policy import GENERATED_REPORTS
@@ -95,6 +95,55 @@ def blob_digest(data):
     return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
 
 
+class PublicDeployments(GitHub):
+    """Credential-free GETs for public deployment evidence only; no fallback."""
+    def __init__(self, repository):
+        super().__init__(repository, token='', write_enabled=False)
+
+    def request(self, method, route, body=None):
+        need(method == 'GET' and body is None and not self.token and not self.write_enabled,
+             'public_deployment_transport_read_only')
+        parsed = urlsplit(route)
+        listing = parsed.path == self.prefix + '/deployments'
+        statuses = re.fullmatch(re.escape(self.prefix) + r'/deployments/[1-9][0-9]*/statuses', parsed.path)
+        need(not parsed.scheme and not parsed.netloc and not parsed.fragment and (listing or statuses),
+             'public_deployment_route_forbidden')
+        try:
+            pairs = parse_qsl(parsed.query, strict_parsing=True)
+        except ValueError:
+            raise Stop('public_deployment_query_forbidden') from None
+        params = dict(pairs)
+        required = {'sha', 'environment', 'per_page'} if listing else {'per_page'}
+        need(len(params) == len(pairs) and params.get('per_page') == '100' and
+             required <= set(params) <= required | {'page'}, 'public_deployment_query_forbidden')
+        if listing:
+            need(SHA.fullmatch(params['sha']) and params['environment'] == 'github-pages',
+                 'public_deployment_scope_forbidden')
+        if 'page' in params:
+            need(re.fullmatch(r'[1-9][0-9]*', params['page']) and int(params['page']) <= 100,
+                 'public_deployment_page_forbidden')
+        # No authenticated attempt or alternate credential is tried on failure.
+        return super().request(method, route, body)
+
+
+def deployment_rows(api, sha):
+    rows = api.pages('/deployments?' + urlencode({'sha': sha, 'environment': 'github-pages', 'per_page': 100}))
+    need(rows and all(type(d['id']) is int and d['id'] > 0 and d['sha'] == sha and
+                      d['environment'] == 'github-pages' for d in rows), 'deployment_missing_or_wrong_scope')
+    need(len({d['id'] for d in rows}) == len(rows), 'deployment_duplicate_ids')
+    return rows
+
+
+def deployment_preflight(api, sha):
+    """Prove both public read endpoints before a merge can be attempted."""
+    rows = deployment_rows(api, sha)
+    deployment = max(rows, key=lambda d: d['id'])
+    statuses = api.pages('/deployments/' + str(deployment['id']) + '/statuses?per_page=100')
+    need(statuses and statuses[0]['state'] == 'success', 'public_deployment_preflight_not_success')
+    return {'source': 'github_public_rest_no_credentials', 'base_sha': sha,
+            'deployment_id': deployment['id']}
+
+
 class Collector:
     def __init__(self, api, policy, trusted_sha):
         self.api, self.policy, self.trusted_sha = api, policy, trusted_sha
@@ -166,11 +215,16 @@ class Collector:
                 found |= {c[0] for c in pairs}
         need(required <= found, 'required_checks_missing')
         for ident in {r['ruleset_id'] for r in rules}:
+            need(type(ident) is int and ident > 0, 'ruleset_identity_mismatch')
             ruleset = self.api.get('/rulesets/' + str(ident) + '?includes_parents=true')
+            need(type(ruleset['id']) is int and ruleset['id'] == ident and ruleset['source_type'] == 'Repository' and
+                 ruleset['source'] == self.policy['repository'], 'ruleset_identity_mismatch')
             need(ruleset['enforcement'] == 'active' and ruleset['target'] == 'branch', 'ruleset_inactive')
             # GitHub hides bypass_actors from callers without ruleset write access.
             # Missing is NOT equivalent to empty; no additional credential is created.
-            need('bypass_actors' in ruleset and ruleset['bypass_actors'] == [], 'bypass_absent_or_unknown')
+            need('bypass_actors' in ruleset, 'bypass_evidence_not_visible')
+            need(isinstance(ruleset['bypass_actors'], list), 'bypass_evidence_malformed')
+            need(ruleset['bypass_actors'] == [], 'bypass_actors_present')
             refs = ruleset['conditions']['ref_name']
             need('refs/heads/main' in refs['include'] and refs['exclude'] == [], 'ruleset_scope_unknown')
         return rules
@@ -282,9 +336,10 @@ def load_policy(path):
 
 
 class Writer:
-    def __init__(self, collector, env=None):
+    def __init__(self, collector, env=None, publication_api=None):
         self.collector = collector
         self.api = collector.api
+        self.publication_api = publication_api if publication_api is not None else PublicDeployments(self.api.repository)
         self.env = os.environ if env is None else env
         self.audit = {'merge_state': 'not_attempted', 'dispatch_state': 'not_attempted'}
 
@@ -310,6 +365,7 @@ class Writer:
              any(c['name'] in trigger_names and c['run_id'] == trigger_run and
                  c['run_attempt'] == trigger['run_attempt'] for c in first['checks']),
              'trigger_run_ambiguous_or_stale')
+        self.audit['public_deployment_preflight'] = deployment_preflight(self.publication_api, first['base_sha'])
         # Repeat every read and every rule/file/check before the atomic SHA guard.
         last = self.collector.collect(number)
         need(last['head_sha'] == first['head_sha'] and last['base_sha'] == first['base_sha'] and
@@ -343,10 +399,8 @@ class Writer:
                 need(len(relevant) == 2 and {j['name'] for j in relevant} == needed and
                      all(j['conclusion'] == 'success' and j['status'] == 'completed' and
                          j['run_id'] == run_id and j['run_attempt'] == run['run_attempt'] for j in relevant), 'publication_jobs_not_success')
-                deployments = self.api.pages('/deployments?' + urlencode({'sha': merge_sha, 'environment': 'github-pages', 'per_page': 100}))
-                matching = [d for d in deployments if d['sha'] == merge_sha and d['environment'] == 'github-pages']
-                need(matching, 'deployment_missing')
-                statuses = self.api.pages('/deployments/' + str(max(matching, key=lambda d: d['id'])['id']) + '/statuses?per_page=100')
+                matching = deployment_rows(self.publication_api, merge_sha)
+                statuses = self.publication_api.pages('/deployments/' + str(max(matching, key=lambda d: d['id'])['id']) + '/statuses?per_page=100')
                 need(statuses and statuses[0]['state'] == 'success' and statuses[0]['log_url'].startswith(
                     'https://github.com/' + p['repository'] + '/actions/runs/' + str(run_id) + '/'), 'deployment_not_success_for_run')
                 need(self.api.get('/git/ref/heads/main')['object']['sha'] == merge_sha, 'main_moved_after_publication')
