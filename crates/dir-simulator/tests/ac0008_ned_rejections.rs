@@ -10,10 +10,16 @@ impl Fixture {
     fn new() -> Self {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
         let directory = std::env::temp_dir().join(format!(
-            "dir-ac0008-ned-{}-{}", std::process::id(), NEXT.fetch_add(1, Ordering::Relaxed)
+            "dir-ac0008-ned-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
         ));
         fs::create_dir_all(directory.join("models/demo")).unwrap();
-        fs::copy(root.join("docs/verification/fixtures/can/models/demo/Main.ned"), directory.join("models/demo/Main.ned")).unwrap();
+        fs::copy(
+            root.join("docs/verification/fixtures/can/models/demo/Main.ned"),
+            directory.join("models/demo/Main.ned"),
+        )
+        .unwrap();
         fs::write(directory.join("scenario.ini"), "[General]\nnetwork = demo.Main\nned-path = \"models\"\nsim-time-limit = 1ms\nMain.bus.bitrate = 500kbps\n").unwrap();
         Self(directory)
     }
@@ -35,7 +41,9 @@ impl Fixture {
     }
 }
 impl Drop for Fixture {
-    fn drop(&mut self) { let _ = fs::remove_dir_all(&self.0); }
+    fn drop(&mut self) {
+        let _ = fs::remove_dir_all(&self.0);
+    }
 }
 #[test]
 fn import_is_explicitly_rejected_with_ned_source() {

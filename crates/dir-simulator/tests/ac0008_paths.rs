@@ -57,7 +57,11 @@ fn classical_can_cli_run_matches_plain_observable_projection() {
         .arg(&destination)
         .output()
         .unwrap();
-    assert!(execution.status.success(), "{}", String::from_utf8_lossy(&execution.stderr));
+    assert!(
+        execution.status.success(),
+        "{}",
+        String::from_utf8_lossy(&execution.stderr)
+    );
     assert_eq!(projection(&destination), expected);
 }
 #[test]
