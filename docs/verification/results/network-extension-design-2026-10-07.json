@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "design_validation",
+  "design_date": "2026-10-07",
+  "base_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+  "worktree_state": "existing uncommitted implementation and documentation changes preserved",
+  "status": "detailed_design_reviewed",
+  "product_execution": false,
+  "planned_profiles": [
+    "can.ethernet.gateway.v1",
+    "ethernet.l2.dynamic.v1",
+    "ethernet.tsn.v1"
+  ],
+  "scope": {
+    "new_detailed_documents": 9,
+    "new_requirements": [
+      "DIR-REQ-0230",
+      "DIR-REQ-0231",
+      "DIR-REQ-0232",
+      "DIR-REQ-0233",
+      "DIR-REQ-0234",
+      "DIR-REQ-0235",
+      "DIR-REQ-0236",
+      "DIR-REQ-0237",
+      "DIR-REQ-0238",
+      "DIR-REQ-0239",
+      "DIR-REQ-0240",
+      "DIR-REQ-0241",
+      "DIR-REQ-0242",
+      "DIR-REQ-0243",
+      "DIR-REQ-0244",
+      "DIR-REQ-0245",
+      "DIR-REQ-0246",
+      "DIR-REQ-0247",
+      "DIR-REQ-0248",
+      "DIR-REQ-0249",
+      "DIR-REQ-0250",
+      "DIR-REQ-0251",
+      "DIR-REQ-0252",
+      "DIR-REQ-0253",
+      "DIR-REQ-0254",
+      "DIR-REQ-0255"
+    ],
+    "new_functions": [
+      "DIR-FUNC-0058",
+      "DIR-FUNC-0059",
+      "DIR-FUNC-0060",
+      "DIR-FUNC-0061",
+      "DIR-FUNC-0062",
+      "DIR-FUNC-0063"
+    ],
+    "new_acceptance_conditions": [
+      "DIR-AC-0059",
+      "DIR-AC-0060",
+      "DIR-AC-0061",
+      "DIR-AC-0062",
+      "DIR-AC-0063",
+      "DIR-AC-0064"
+    ],
+    "planned_verification_cases": [
+      "DIR-TEST-0105",
+      "DIR-TEST-0106",
+      "DIR-TEST-0107",
+      "DIR-TEST-0108",
+      "DIR-TEST-0109",
+      "DIR-TEST-0110",
+      "DIR-TEST-0111",
+      "DIR-TEST-0112",
+      "DIR-TEST-0113",
+      "DIR-TEST-0114",
+      "DIR-TEST-0115",
+      "DIR-TEST-0116"
+    ],
+    "implementation_status": "unimplemented",
+    "product_test_status": "not executed",
+    "publication_version": "unassigned"
+  },
+  "checks": {
+    "traceability": {
+      "command": "python3 scripts/check_traceability.py --strict",
+      "requirements": 231,
+      "functions": 60,
+      "nodes": 272,
+      "structural_errors": 0,
+      "incomplete_requirements": 0,
+      "incomplete_items": 0,
+      "passed": true
+    },
+    "generated_reports": {
+      "generate_command": "python3 scripts/generate_traceability.py",
+      "freshness_command": "python3 scripts/generate_traceability.py --check",
+      "passed": true
+    },
+    "traceability_tool_regression": {
+      "command": "python3 -m unittest discover -s tests -p 'test_*traceability*.py'",
+      "tests": 39,
+      "failures": 0,
+      "passed": true,
+      "scope": "documentation tooling, not the proposed profiles"
+    },
+    "document_structure": {
+      "new_design_documents": 9,
+      "local_links_checked": 397,
+      "json_example_and_trace_blocks_parsed": 29,
+      "new_document_trace_nodes": 24,
+      "requirement_hierarchy_ids": 231,
+      "source_files_unchanged_since_previous_task": 132
+    },
+    "independent_arithmetic": {
+      "vectors_file": "docs/verification/fixtures/network-extensions/design-vectors.json",
+      "grouped_vectors": 10,
+      "method": "independent integer recomputation without simulator libraries",
+      "covered": [
+        "standard and extended CAN codec",
+        "CRC-15 and bit stuffing",
+        "media serialization and IFG occupancy",
+        "bidirectional conversion timelines",
+        "dynamic three-hop timing",
+        "TAS exact fit and circular windows",
+        "CBS credit recovery and gate freeze",
+        "PSFP color/token rows",
+        "terminal tuple reception denominator"
+      ],
+      "passed": true,
+      "temporary_checker_sha256": "773eb8083dca8eedb5a8848c5cb6f28047a7dc42484a660abe8223aa8231f0b1"
+    },
+    "whitespace": {
+      "command": "git diff --check",
+      "passed": true
+    },
+    "source_preservation": {
+      "reference": "docs/verification/results/can-streaming-2026-10-06.json#/measurements/source_sha256",
+      "checked_source_files": 132,
+      "mismatches": 0
+    }
+  },
+  "review": {
+    "independent_architecture_review": "completed",
+    "material_findings_resolved": [
+      "queued-copy revalidation limited to link/STP/VID",
+      "TSN inherits dynamic result schemas and visit IDs",
+      "TSN accepts disconnected topology",
+      "peak vs committed burst outcome distinguished",
+      "end-to-end denominator freezes terminal tuples per started segment",
+      "shared staged adapter signature and allocation-free commit aligned"
+    ],
+    "open_design_findings": []
+  },
+  "document_sha256": {
+    "README.md": "afbdcc5babd20c393c37dba90705450c31911657446c144d95576bc80d11410f",
+    "docs/design/CAN・Ethernet変換詳細設計書.md": "1dfd9b12b0f06967c9fc91be3d9e394d42bb87b83bcb5feea052b1cb40ddcead",
+    "docs/design/EthernetTSN詳細設計書.md": "1ccc331cb8ff266fa1b6c229336821310115cae23db25647873c2a9966c55b45",
+    "docs/design/EthernetVLAN・マルチキャスト詳細設計書.md": "127436e3889daa4037d52c2866cd51df687c76ff6cf48d4f6b4414e4b6e20844",
+    "docs/design/Ethernet動的制御詳細設計書.md": "2a82f4d6781fb3a43e8816aeb6da60e1ec79026ac90cd75244c6f0e3a8d8b266",
+    "docs/design/複数モデル統合詳細設計書.md": "37885bc89d01e1a4c8f071b68205c693460b3fe6b39d1636694add892bbfc66a",
+    "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md": "2039cf21e9c42c87de9f0f87eb273120618390c3ebbe29e29aa66ba5c532c0fc",
+    "docs/specs/models/EthernetTSN詳細機能仕様書.md": "f16560ee3f214e919d4c79d8eab0b44e586d543913b379cbb7abba0a82c97879",
+    "docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md": "79e71a055e9d299ec5b665c458d1b4fd15c8f0383724676f654617d542ec629c",
+    "docs/specs/models/Ethernet動的制御詳細機能仕様書.md": "2e11dbc7ac75c638fceb39672df1f7a187aedfac57d45edf6eb79da593c53b74",
+    "docs/specs/拡張モデル共通詳細機能仕様書.md": "b0a3c8f6b5aaff49234d236befb8491c1e73215fc1a81aa7d68fc0c260ef9305",
+    "docs/verification/cases/CAN・Ethernet変換検証仕様書.md": "17e00074d83e974c993f01dc07fdd313bbe343cdb58192ad895f8ce83484b38e",
+    "docs/verification/cases/EthernetTSN検証仕様書.md": "ebec1f2979b02b151d2f7e9813215f05e6fa46d558c6ba701de1fd41c938f186",
+    "docs/verification/cases/Ethernet動的制御検証仕様書.md": "45034667b79b9087b41fbd0819228abbb72b646443ecf14840f0d852e61d13e5",
+    "docs/アーキテクチャ設計書.md": "bf46368177c86141cea8afd48a0660fa59f71fc79690b76681eb90d049c1d102",
+    "docs/ドキュメント作成・運用規約.md": "2f9b84e5b935564c167ca4d7335f232aacc8a6b0ce368a50f722a69ef645034f",
+    "docs/将来拡張計画.md": "623d7bc120f270a79a295a0e65d7899cd7fc88cf02b245576ca8b455fffe1bde",
+    "docs/機能仕様書.md": "9c668320bd6293de8f14592f20a8580b015a97513bfef33d6e09160f6785a380",
+    "docs/要件定義書.md": "a199246feca7d13d59d89a282f45a3f5fe1490d4f336be5c3d395b912a03d67d",
+    "docs/要件階層.json": "5df5be580faa7c03651747d6f3c6fe9b03ff26f7aeefb493461e6185eff90ad4"
+  },
+  "artifact_sha256": {
+    "docs/要件トレーサビリティ一覧.md": "87b9621da76aa84700199ac0677b40c1c3c4a820e645f33e5e0cfcbcf1f7803d",
+    "docs/要件トレーサビリティ一覧.html": "cf5aa59e07c311c92af2cb354ddfc7f4c4760524be4fe3c7b8a2f5d06926cb0b",
+    "docs/要件階層.html": "f389cfa1f2570e0b3bd03a66a1cbb726a823c337f42ee5d352e40dbbce95c514",
+    "docs/verification/fixtures/network-extensions/design-vectors.json": "69e0bb0a76354de0d74cd20f7c4328afc89c4b1bcc9c96675c7a2c61ed31a55f"
+  },
+  "remaining_work": [
+    "implement private staged coordinator adapter and profile-specific runtime/input/output",
+    "create runnable product input fixtures and examples",
+    "execute Rust/CLI/viewer profile tests against independent expectations",
+    "standards-wide conformance and later profiles remain outside initial design scope"
+  ]
+}

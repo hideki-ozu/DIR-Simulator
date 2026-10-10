@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "review_scope": "Issue41 narrow NED attribute retention; read-only source and focused evidence review",
+  "baseline_commit": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "reviewed_head": "ffe9c5ea75c93e6fe9ed7710c4f601b7ec0f7306",
+  "source_sha256": {
+    "crates/dir-simulator/src/input.rs": "b190c0e25bc0d9075cd9bc932753adf66f63e20e0b2fff6b5042fa11121b7d95",
+    "crates/dir-simulator/src/input/ned.rs": "95bc8ee3f506c16679bb440e6fde89eb7bc5dbcdd26e859ebd85b074622541f6",
+    "crates/dir-simulator/src/input/ned/tests.rs": "244a80dc42f28b26c0ab94df3c6a63f13a649f9fc1194f72475d732ebca2c93b",
+    "crates/dir-simulator/tests/ac0008_attributes.rs": "dd5e11b56f508b655e67d65a96aba581f7a979ae6b4d46593423aed461d589c0",
+    "crates/dir-simulator/tests/ac0008_ned_rejections.rs": "628b55396e88cfe2e558da515d7db8a48142693fd503cc8a7c228c33e620dc19",
+    "crates/dir-simulator/tests/ac0008_paths.rs": "452af8a2e4522d64bccbc1084fb8d37283583cee61337b8886d4da4d898edf3c",
+    "crates/dir-simulator/src/lib/types/common.rs": "0c30dd2ae55d11a98addccc2ffb1c44a695d6b3650bba685e3f4540e22c46d99",
+    "docs/specs/NED詳細機能仕様書.md": "03ac712fe248b6e3ad1c5f3919a042ff07671b49e38f159502b3a967b4ec9f13"
+  },
+  "evidence_sha256": {
+    "context/github-41.json": "0df15d45c6f503ca9626b36275a02901b62d2ba1929638fd9aa26c0d35610abf",
+    "results/attribute-case-bindings.json": "f61ec97da911df6b42b9bf72e238da4e00845e088657e84db5c4928c2f6d1ce7",
+    "results/attribute-regressions.log": "c43cc1ea1d7b0f4897783056811e65a9136ce3abf0b2dd3150a4ba384fb1433f",
+    "results/attribute-ned-unit-tests.log": "b5e86bf7c961b3969520506a69fcd2ae0a7691a98f54ecdf7124857197e4de9f"
+  },
+  "outcome": "No blocking metadata-retention correctness defect identified; one low-severity diagnostic consistency finding",
+  "findings": [
+    {
+      "id": "IMPL-REVIEW-001",
+      "severity": "P3",
+      "blocking": false,
+      "file": "crates/dir-simulator/src/input/ned.rs",
+      "lines": [
+        517,
+        519,
+        547,
+        549,
+        557,
+        559
+      ],
+      "title": "Rebased diagnostic span leaves textual location and actual token at following token",
+      "evidence": "self.fail builds message path:line:column and details.actual from self.cursor after property(); SourceSpan::apply in lib/types/common.rs:74 changes only structured source and coordinates. A duplicate type property therefore points structurally to the second @property(...) but message location and actual describe its trailing semicolon. Parameter diagnostics can describe = or ; instead.",
+      "correction": "Capture attribute-start token index and construct fail_at(start, ...) before applying full attribute span, or construct a consistent attribute diagnostic directly. Assert message and actual together with structured coordinates.",
+      "scope": "Diagnostic presentation consistency; duplicate rejection and retained valid metadata remain correct."
+    }
+  ],
+  "confirmed_interfaces": [
+    "Private Attribute fields with immutable name/value/owner/span getters; Declaration and Parameter BTreeMap attribute getters; public exports in input.rs",
+    "Typed owners distinguish Type qname and Parameter qname/name; same attributes retained for class/unit with legacy implementation/unit accessors preserved",
+    "Existing string_literal decoding is retained and exact BOM/CRLF byte and scalar coordinates are exercised by hard-coded assertions",
+    "Resolved declaration uses expanded instance type identity to reference one source Declaration; unit regression compares Declaration and Attribute pointer identities for Main.a/b",
+    "Schema/value paths are unchanged; focused TinyRules unit test retains five values and verifies existing defaults and quantity interpretation",
+    "Duplicate display/description on both owners reject with full second-property span; unknown property and invalid escapes reject through existing parse/lex machinery"
+  ],
+  "focused_execution_evidence": {
+    "attribute-regressions.log": "4 passed, 0 failed; read existing log, not rerun by reviewer",
+    "attribute-ned-unit-tests.log": "4 passed, 0 failed; includes shared declaration regression; read existing log, not rerun by reviewer"
+  },
+  "atomic_mapping": {
+    "attribute_plan_cases": 7,
+    "atomic_rows": 7,
+    "all_atomic_rows_partial": true,
+    "assessment": "Seven listed rows explicitly retain partial predicate status and concrete limits. Exact original Controller configuration, callbacks, and full preparation/execution are not claimed. No blanket AC0008 pass inferred."
+  },
+  "limitations": [
+    "Known import characterization mismatch is being corrected by root; this review does not accept that transient test as passing.",
+    "Broader integration gates belong to root; reviewer did not rerun or infer their outcomes.",
+    "Original supplied post-default property fixture is deliberately rejected; corrected fixture is explicit in tests.",
+    "No whole-artifact, legal, independent-origin, release, Windows, or full AC0008 acceptance review performed."
+  ],
+  "commands_run": [
+    "git rev-parse HEAD",
+    "git diff baseline..HEAD --stat and scoped six-file diff",
+    "git status --short",
+    "rg source/spec symbols and read scoped source/spec/test files",
+    "cat attribute-regressions.log attribute-ned-unit-tests.log attribute-case-bindings.json github-41.json",
+    "Python hashlib snapshot and report generation"
+  ],
+  "changed_paths": [
+    "results/implementation-review.json"
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "source": "docs/verification/fixtures/network-extensions/design-vectors.json",
+  "vectors": [
+    {
+      "id": "ethernet.tsn.tas.exact-fit-and-circular-window",
+      "domain": "ethernet_tsn",
+      "case_ref": "EthernetTSN\u691c\u8a3c\u4ed5\u69d8\u66f8 TAS-02, TAS-03, TAS-05",
+      "source_documents": [
+        "docs/specs/models/EthernetTSN\u8a73\u7d30\u6a5f\u80fd\u4ed5\u69d8\u66f8.md",
+        "docs/verification/cases/EthernetTSN\u691c\u8a3c\u4ed5\u69d8\u66f8.md"
+      ],
+      "input": {
+        "link_rate_bps": 1000000000,
+        "tas_base_time_ps": "0",
+        "tas_cycle_ps": "2000000",
+        "tas_open_window_ps": [
+          "0",
+          "1000000"
+        ],
+        "offer_ps": {
+          "untagged_exact": "328000",
+          "untagged_plus_1_ps": "328001",
+          "tagged_exact": "296000",
+          "tagged_plus_1_ps": "296001"
+        },
+        "mac_frame_bytes": {
+          "untagged": 64,
+          "tagged": 68
+        },
+        "circular_case": {
+          "base_time_ps": "0",
+          "cycle_ps": "1000000",
+          "open_windows_ps": [
+            [
+              "0",
+              "400000"
+            ],
+            [
+              "700000",
+              "1000000"
+            ]
+          ],
+          "offer_ps": "700000",
+          "mac_frame_bytes": 64
+        }
+      },
+      "expected": {
+        "untagged_occupancy_ps": "672000",
+        "untagged_exact": {
+          "sof_ps": "328000",
+          "release_ps": "1000000",
+          "fits": true
+        },
+        "untagged_plus_1_ps": {
+          "next_sof_ps": "2000000",
+          "next_release_ps": "2672000",
+          "fits_current_window": false
+        },
+        "tagged_occupancy_ps": "704000",
+        "tagged_exact": {
+          "sof_ps": "296000",
+          "release_ps": "1000000",
+          "fits": true
+        },
+        "tagged_plus_1_ps": {
+          "next_sof_ps": "2000000",
+          "next_release_ps": "2704000",
+          "fits_current_window": false
+        },
+        "circular_window_end_ps": "1400000",
+        "circular_release_ps": "1372000",
+        "circular_fits": true
+      },
+      "independent_calculation": "TAS admits iff SOF+ceil((MAC+8+12)*8*10^12/R) <= open-window end. The circular window joins the period tail ending at 1000000 ps to the next period head ending at 1400000 ps."
+    },
+    {
+      "id": "ethernet.tsn.cbs.recovery-and-gate-freeze",
+      "domain": "ethernet_tsn",
+      "case_ref": "EthernetTSN\u691c\u8a3c\u4ed5\u69d8\u66f8 DIR-TEST-0114 CBS",
+      "source_documents": [
+        "docs/specs/models/EthernetTSN\u8a73\u7d30\u6a5f\u80fd\u4ed5\u69d8\u66f8.md",
+        "docs/verification/cases/EthernetTSN\u691c\u8a3c\u4ed5\u69d8\u66f8.md"
+      ],
+      "input": {
+        "link_rate_bps": 1000000000,
+        "idle_slope_bps": 250000000,
+        "mac_frame_bytes": 64,
+        "q_per_bit": "1000000000000",
+        "continuous_open_case": {
+          "backlog_frames": 2,
+          "first_sof_ps": "0"
+        },
+        "gate_freeze_case": {
+          "backlog_frames": 2,
+          "first_sof_ps": "0",
+          "open_windows_ps": [
+            [
+              "0",
+              "1000000"
+            ],
+            [
+              "2000000",
+              "5000000"
+            ]
+          ]
+        }
+      },
+      "expected": {
+        "continuous_open": [
+          {
+            "time_ps": "576000",
+            "credit_negative": true,
+            "credit_magnitude_u128": "432000000000000",
+            "event": "first EOF"
+          },
+          {
+            "time_ps": "672000",
+            "credit_negative": true,
+            "credit_magnitude_u128": "504000000000000",
+            "event": "first release"
+          },
+          {
+            "time_ps": "2688000",
+            "credit_negative": false,
+            "credit_magnitude_u128": "0",
+            "event": "credit reaches zero; second SOF"
+          },
+          {
+            "time_ps": "3360000",
+            "credit_negative": true,
+            "credit_magnitude_u128": "504000000000000",
+            "event": "second release"
+          },
+          {
+            "time_ps": "5376000",
+            "credit_negative": false,
+            "credit_magnitude_u128": "0",
+            "event": "empty credit reaches zero"
+          }
+        ],
+        "gate_freeze": {
+          "credit_at_close_ps": "1000000",
+          "credit_at_close_negative": true,
+          "credit_at_close_magnitude_u128": "422000000000000",
+          "credit_while_closed": {
+            "time_ps": "2000000",
+            "credit_negative": true,
+            "credit_magnitude_u128": "422000000000000"
+          },
+          "stale_wake_ps": "2688000",
+          "stale_wake_effect": "no_op",
+          "zero_wake_ps": "3688000",
+          "next_sof_ps": "3688000"
+        }
+      },
+      "independent_calculation": "While this class sends, slope is 250000000-1000000000=-750000000 bit/s, producing -432 bits at EOF and -504 bits at release. Open non-sending recovery is 250000000 bit/s; 504 bits take 2016000 ps. In the gated case, recovery adds 82 bits before close (-422), freezes for 1000000 ps, then needs 1688000 ps after reopen."
+    },
+    {
+      "id": "ethernet.tsn.psfp.five-arrivals",
+      "domain": "ethernet_tsn",
+      "case_ref": "EthernetTSN\u691c\u8a3c\u4ed5\u69d8\u66f8 DIR-TEST-0115 PSFP",
+      "source_documents": [
+        "docs/specs/models/EthernetTSN\u8a73\u7d30\u6a5f\u80fd\u4ed5\u69d8\u66f8.md",
+        "docs/verification/cases/EthernetTSN\u691c\u8a3c\u4ed5\u69d8\u66f8.md"
+      ],
+      "input": {
+        "mac_frame_bytes": 64,
+        "frame_cost_bits": 512,
+        "committed_rate_bps": 8000000,
+        "peak_rate_bps": 16000000,
+        "committed_burst_bytes": 64,
+        "peak_burst_bytes": 128,
+        "q_per_bit": "1000000000000",
+        "initial_tokens": "full",
+        "yellow_action": "pass",
+        "same_time_arrival_order": "array_order",
+        "arrivals": [
+          {
+            "id": "a",
+            "time_ps": "0"
+          },
+          {
+            "id": "b",
+            "time_ps": "0"
+          },
+          {
+            "id": "c",
+            "time_ps": "0"
+          },
+          {
+            "id": "d",
+            "time_ps": "32000000"
+          },
+          {
+            "id": "e",
+            "time_ps": "96000000"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "a",
+          "refilled_committed_u128": "512000000000000",
+          "refilled_peak_u128": "1024000000000000",
+          "color": "green",
+          "after_committed_u128": "0",
+          "after_peak_u128": "512000000000000",
+          "consumed_bits": 1024,
+          "verdict": "pass"
+        },
+        {
+          "id": "b",
+          "refilled_committed_u128": "0",
+          "refilled_peak_u128": "512000000000000",
+          "color": "yellow",
+          "after_committed_u128": "0",
+          "after_peak_u128": "0",
+          "consumed_bits": 512,
+          "verdict": "pass"
+        },
+        {
+          "id": "c",
+          "refilled_committed_u128": "0",
+          "refilled_peak_u128": "0",
+          "color": "red",
+          "after_committed_u128": "0",
+          "after_peak_u128": "0",
+          "consumed_bits": 0,
+          "verdict": "drop"
+        },
+        {
+          "id": "d",
+          "refilled_committed_u128": "256000000000000",
+          "refilled_peak_u128": "512000000000000",
+          "color": "yellow",
+          "after_committed_u128": "256000000000000",
+          "after_peak_u128": "0",
+          "consumed_bits": 512,
+          "verdict": "pass"
+        },
+        {
+          "id": "e",
+          "refilled_committed_u128": "512000000000000",
+          "refilled_peak_u128": "1024000000000000",
+          "color": "green",
+          "after_committed_u128": "0",
+          "after_peak_u128": "512000000000000",
+          "consumed_bits": 1024,
+          "verdict": "pass"
+        }
+      ],
+      "independent_calculation": "Bucket cap is burst_bytes*8*Q and frame cost is 64*8*Q. Refill each bucket by min(cap-current, rate_bps*elapsed_ps). Green consumes one frame cost from both buckets; yellow consumes peak only; red consumes neither."
+    }
+  ]
+}

@@ -1,0 +1,575 @@
+{
+  "schema_version": 1,
+  "issue": 44,
+  "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+  "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+  "previous_head": "649dd8ac4fbb4b4abaa0224fee852d2ec467d7e0",
+  "base_pr42": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "cwd": "<AUDIT_ROOT>/publication",
+  "environment": {
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "RUSTC": null,
+    "RUSTDOC": null,
+    "CARGO_BUILD_TARGET": null,
+    "CARGO_TARGET_DIR": null,
+    "CARGO_BUILD_RUSTFLAGS": null,
+    "RUSTC_WRAPPER": null,
+    "RUSTC_WORKSPACE_WRAPPER": null,
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "commands": [
+    {
+      "name": "focused-tests",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_ned_rejections",
+        "--test",
+        "ac0008_attributes",
+        "--test",
+        "ac0008_paths",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "<AUDIT_ROOT>/publication",
+      "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+      "started_utc": "2026-10-10T05:47:29.338747+00:00",
+      "finished_utc": "2026-10-10T05:47:38.991821+00:00",
+      "exit_code": 0,
+      "stdout": "logs/focused-tests.stdout.log",
+      "stderr": "logs/focused-tests.stderr.log",
+      "stdout_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+      "stderr_sha256": "bbced081d56ef962ff9ea2283253b4b8288a86061c8298cb6c046d4a2c76b08a",
+      "named_tests": [
+        {
+          "name": "comments_inside_strings_are_data_and_class_unit_values_keep_existing_accessors",
+          "outcome": "ok"
+        },
+        {
+          "name": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+          "outcome": "ok"
+        },
+        {
+          "name": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "outcome": "ok"
+        },
+        {
+          "name": "supplied_fixture_keeps_grammar_rejection_and_valid_order_retains_quote_backslash",
+          "outcome": "ok"
+        },
+        {
+          "name": "allowunconnected_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "bare_extends_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "bare_import_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "complete_import_does_not_change_later_bad_expression_reason_or_priority",
+          "outcome": "ok"
+        },
+        {
+          "name": "complete_import_does_not_change_later_malformed_string_reason",
+          "outcome": "ok"
+        },
+        {
+          "name": "explicit_import_name_is_rejected_with_ned_keyword_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "extends_without_name_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "import_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "import_like_comment_does_not_change_lexical_failure_reason",
+          "outcome": "ok"
+        },
+        {
+          "name": "import_like_string_does_not_change_lexical_failure_reason",
+          "outcome": "ok"
+        },
+        {
+          "name": "import_without_name_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "incomplete_import_name_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "inheritance_does_not_change_later_lexical_failure_reason_or_priority",
+          "outcome": "ok"
+        },
+        {
+          "name": "inheritance_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "inout_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "malformed_import_path_wildcard_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "malformed_string_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "missing_closing_brace_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "missing_opening_brace_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "nested_import_wildcard_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "ordinary_bad_token_remains_syntax_error",
+          "outcome": "ok"
+        },
+        {
+          "name": "unknown_property_still_reports_unsupported_syntax",
+          "outcome": "ok"
+        },
+        {
+          "name": "unqualified_child_type_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "vector_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "classical_can_cli_run_matches_plain_observable_projection",
+          "outcome": "ok"
+        },
+        {
+          "name": "classical_can_prepare_and_run_preserve_analytic_competition",
+          "outcome": "ok"
+        },
+        {
+          "name": "classical_can_prepare_with_registry_and_run_uses_builtin_adapter",
+          "outcome": "ok"
+        },
+        {
+          "name": "classical_can_run_config_matches_plain_observable_projection",
+          "outcome": "ok"
+        }
+      ],
+      "test_summary_passed_counts": [
+        4,
+        24,
+        4
+      ],
+      "original_stdout_sha256": "3c1f06a972b36a32973d8db767df7c3a965e3005650b0a3915212910f454eded",
+      "original_stderr_sha256": "55d90331daa08cd80013125c67ebf46eca9fe33285fa357b12d4f930c3d07e1b"
+    },
+    {
+      "name": "input-unit-tests",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--lib",
+        "input::",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "<AUDIT_ROOT>/publication",
+      "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+      "started_utc": "2026-10-10T05:47:38.992282+00:00",
+      "finished_utc": "2026-10-10T05:48:01.836173+00:00",
+      "exit_code": 0,
+      "stdout": "logs/input-unit-tests.stdout.log",
+      "stderr": "logs/input-unit-tests.stderr.log",
+      "stdout_sha256": "88efe1184ad42b319b91a487ebcce7527cc4209e37be9aeae56dfd7b6b447501",
+      "stderr_sha256": "a3a826ecff27c2a66b3ed35be63331280feb7cf6d5ab5511e779fa26b7ef7ff8",
+      "named_tests": [
+        {
+          "name": "input::can::tests::can_instance_counts_precede_channel_override_validation",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::can::tests::selected_instance_profile_mismatch_precedes_later_instance_values",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::complete_native_r01_r02_inputs_validate",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::source_ownership_checked_for_zero_count_and_future_time",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::strict_rules_ownership_and_ranges_reject",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::crlf_line_comments_preserve_valid_ned_and_reject_bare_carriage_returns",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::deferred_directory_errors_keep_sorted_traversal_order",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::existing_profile_error_precedes_time_and_root_errors",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::filesystem_and_snapshot_match_can_gateway_success_and_failure_fixtures",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::inspect_is_structural_and_preserves_invalid_execution_values",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::semantic_invalid_values_are_parseable_but_fail_full_snapshot_prepare",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::snapshot_missing_paths_never_fall_back_to_disk",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::syntax_api_exposes_structure_without_model_value_validation",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::media_config_rejects_every_missing_physical_and_phy_field_without_panicking",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::media_profiles_keep_phy_allowlists_disjoint",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_burst_schedule_validates_last_offset_and_empty_count",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_config_canonicalizes_outputs_and_all_eight_queues",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_config_duplicate_json_key_is_rejected_before_overwrite",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_config_rejects_missing_duplicates_unknowns_and_noncanonical_capacities",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_fields_and_kinds_remain_rejected_by_v1",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_periodic_schedule_validates_nullable_bounds_and_exclusive_end",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_shared_flow_requires_consistent_contract_even_empty_future_inputs",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::vlan_config_rejects_invalid_memberships_tables_and_strict_fields",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::vlan_empty_future_workloads_still_validate_tag_and_source_contract",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::vlan_group_membership_is_static_and_old_profile_rejects_schema3",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tsn::tests::rejects_missing_unknown_numeric_bool_and_noncanonical_fields",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tsn::tests::rejects_output_and_cbs_combinations_and_accepts_zero_bounds",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tsn::tests::validates_every_future_update_and_normalizes_order",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tsn::tests::validates_stream_tuple_gate_and_meter",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ned::tests::metadata_instances_reference_one_declaration_without_affecting_schema_or_values",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ned::tests::non_can_rules_reject_payload_mismatch_through_compound_boundary",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ned::tests::non_can_rules_resolve_values_compound_paths_and_shared_channels",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ned::tests::non_can_rules_validate_unused_declarations_and_defaults_before_overrides",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::all_can_fixtures_load_and_preserve_snapshots",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::bus_gate_names_and_same_bus_output_permutations_are_valid",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::bus_requires_equal_input_output_counts_and_two_controllers",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::compound_boundary_channels_are_independent_and_sum",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::defaults_overrides_empty_workload_and_limits",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::exact_units_and_extreme_decimal_precision",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::ini_rejects_unknown_duplicate_and_malformed_inputs",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::invalid_ned_declarations_and_wiring_are_rejected",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::json_duplicate_unknown_fields_and_inactive_owner_conflicts",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::root_overlap_missing_files_and_symlinks_fail",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::truncated_ned_returns_diagnostics_without_panicking",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::workload_validates_schedule_and_frame_beyond_time_limit",
+          "outcome": "ok"
+        }
+      ],
+      "test_summary_passed_counts": [
+        45
+      ],
+      "original_stdout_sha256": "88efe1184ad42b319b91a487ebcce7527cc4209e37be9aeae56dfd7b6b447501",
+      "original_stderr_sha256": "ba5806bd167bb662829cf1b319f6c326b8a6c2dd3812ded1992ad911b5519341"
+    },
+    {
+      "name": "diagnostic-regressions",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "diagnostics",
+        "--test",
+        "registry_diagnostics",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "<AUDIT_ROOT>/publication",
+      "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+      "started_utc": "2026-10-10T05:48:01.836683+00:00",
+      "finished_utc": "2026-10-10T05:48:14.541728+00:00",
+      "exit_code": 0,
+      "stdout": "logs/diagnostic-regressions.stdout.log",
+      "stderr": "logs/diagnostic-regressions.stderr.log",
+      "stdout_sha256": "c06e8117689f70aacbf2a4777d352dc92cf4c219db49900cecda5790aa416c50",
+      "stderr_sha256": "aff8587a272b0bcef7245c97e0bba435930e0db2cc85fb9721c641e904d48547",
+      "named_tests": [
+        {
+          "name": "channel_errors_use_ini_section_reference_or_adopted_value",
+          "outcome": "ok"
+        },
+        {
+          "name": "duplicate_json_key_points_to_second_key_and_retains_related_location",
+          "outcome": "ok"
+        },
+        {
+          "name": "every_model_family_locates_semantic_json_field_by_identity",
+          "outcome": "ok"
+        },
+        {
+          "name": "ini_invalid_value_points_to_adopted_value_not_same_default",
+          "outcome": "ok"
+        },
+        {
+          "name": "ini_unknown_key_points_to_key_after_bom_crlf_and_unicode_comment",
+          "outcome": "ok"
+        },
+        {
+          "name": "ini_unknown_parameter_points_to_complete_assignment_key",
+          "outcome": "ok"
+        },
+        {
+          "name": "json_eof_is_a_zero_width_range_after_final_scalar_or_newline",
+          "outcome": "ok"
+        },
+        {
+          "name": "ned_eof_has_empty_range_and_correct_unicode_scalar_column",
+          "outcome": "ok"
+        },
+        {
+          "name": "ned_unknown_child_reference_points_to_type_token",
+          "outcome": "ok"
+        },
+        {
+          "name": "nested_json_error_uses_exact_value_despite_repeated_keys",
+          "outcome": "ok"
+        },
+        {
+          "name": "preparation_stderr_and_jsonl_share_primary_object",
+          "outcome": "ok"
+        },
+        {
+          "name": "runtime_guard_retains_candidate_time_and_reserved_sequence",
+          "outcome": "ok"
+        },
+        {
+          "name": "stderr_and_jsonl_use_same_control_character_escaping",
+          "outcome": "ok"
+        },
+        {
+          "name": "unreadable_input_has_path_and_null_positions",
+          "outcome": "ok"
+        },
+        {
+          "name": "wire_contract_is_complete_nullable_and_string_only",
+          "outcome": "ok"
+        },
+        {
+          "name": "generic_execution_settings_use_adopted_ini_token_and_stable_reason",
+          "outcome": "ok"
+        },
+        {
+          "name": "generic_parameter_bounds_select_default_and_override_sources",
+          "outcome": "ok"
+        },
+        {
+          "name": "generic_run_publishes_same_annotated_preparation_diagnostic",
+          "outcome": "ok"
+        },
+        {
+          "name": "generic_unknown_types_and_declaration_schema_retain_ned_sources",
+          "outcome": "ok"
+        },
+        {
+          "name": "static_input_callback_failure_does_not_invent_source_or_target",
+          "outcome": "ok"
+        },
+        {
+          "name": "structural_config_reference_errors_use_known_value_spans",
+          "outcome": "ok"
+        },
+        {
+          "name": "unused_registered_declaration_defaults_still_obey_registry_bounds",
+          "outcome": "ok"
+        },
+        {
+          "name": "unused_registered_double_and_channel_defaults_obey_bounds",
+          "outcome": "ok"
+        }
+      ],
+      "test_summary_passed_counts": [
+        15,
+        8
+      ],
+      "original_stdout_sha256": "c06e8117689f70aacbf2a4777d352dc92cf4c219db49900cecda5790aa416c50",
+      "original_stderr_sha256": "af01706dbeaae8214bfd0879bb38d950b575ebf4541188c61f10e5865e1d420c"
+    },
+    {
+      "name": "fmt-check",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "cwd": "<AUDIT_ROOT>/publication",
+      "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+      "started_utc": "2026-10-10T05:48:14.542270+00:00",
+      "finished_utc": "2026-10-10T05:48:15.161521+00:00",
+      "exit_code": 0,
+      "stdout": "logs/fmt-check.stdout.log",
+      "stderr": "logs/fmt-check.stderr.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "named_tests": [],
+      "test_summary_passed_counts": [],
+      "original_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "clippy",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "cwd": "<AUDIT_ROOT>/publication",
+      "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+      "started_utc": "2026-10-10T05:48:15.162029+00:00",
+      "finished_utc": "2026-10-10T05:48:28.325361+00:00",
+      "exit_code": 0,
+      "stdout": "logs/clippy.stdout.log",
+      "stderr": "logs/clippy.stderr.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "fbf413b7d1a10c7a1c06ebb0f4acf9688b7d7677f73b27eeef49420b558c173a",
+      "named_tests": [],
+      "test_summary_passed_counts": [],
+      "original_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_stderr_sha256": "bfe2d051d2e8e6fa7f72ff0746c599ea580de2e67d322416bb48c3089b5c1ceb"
+    }
+  ],
+  "status": "passed",
+  "hash_policy": "stdout/stderr_sha256 refer to published bytes; original_*_sha256 refer to local raw logs."
+}

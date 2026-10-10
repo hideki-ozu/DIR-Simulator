@@ -1,13 +1,14 @@
 # メモリ・IPC詳細設計書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`main @ 9ad16c4`
-予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`main @ 2f1e60b`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-08` | メモリ・IPCの公開Registry組込みアダプターと専用競合・台帳処理、共通APIと固有検証の境界を追記 |
 | `1.1.0` | `2026-10-05` | 本書の初期抽象profileの組込み実装・製品照合とv1.1.3向け提供範囲を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
@@ -193,8 +194,10 @@
 | 拡張 | resource service境界はOfferと一つのResponse、内容はbyte列、所有者はNodeHandle。新profileでAXI adapterやcache policyを追加するとき既存profile/codec/順序を保持する |
 | 検証 | [検証仕様](../verification/cases/メモリ・IPC検証仕様書.md)は独立整数解析・固定期待byte列と、実施した製品試験・内部codec／失敗prefix試験の範囲を区別する |
 
+公開Registryは`memory.ipc.transaction.v1`を組込みアダプターとして登録する。DDR／SRAM、共有領域、DMA、mailboxの競合と台帳は専用`runtime/memory_ipc.rs`に残る。外部登録モデルは`Context`のイベント・観測・ModelRecord効果を共通Engineで処理し、その検証範囲は[拡張runtime検証記録](../verification/results/extension-runtime-2026-10-05.json)を参照する。
+
 ## 現行の組込み実装
 
 `crates/dir-simulator/src/input/memory_ipc.rs`が構成・負荷を検証し、`lib/types/memory_ipc.rs`へ不変入力を保存する。`runtime/memory_ipc.rs`が資源と予約を所有し、`lib/snapshot/memory_ipc.rs`と共通観測列へ確定した状態を残す。`output/memory_ipc.rs`がschema2・指標・初期状態を公開する。既存の`prepare`／`run`とCLIの`validate`／`run`を共有する。
 
-製品実行の範囲は[検証記録](../verification/cases/メモリ・IPC検証仕様書.md#product-execution)を参照する。内部の版付きevent codecと状態所有の検査を実装したが、公開Registry/Context/Envelope APIを追加したという主張ではない。
+製品実行の範囲は[検証記録](../verification/cases/メモリ・IPC検証仕様書.md#product-execution)を参照する。内部の版付きevent codecと状態所有の検査は組込みprofile固有であり、公開Registry/Context/Envelope APIの検証とは区別する。

@@ -1,13 +1,14 @@
 # Ethernet媒体拡張検証仕様書
 
-文書バージョン：`1.1.2`
-対象GitHubバージョン：`main @ 7bb9bfc`
-予定公開版：`v1.1.2`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.3`
+対象GitHubバージョン：`main @ 2f1e60b`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.3` | `2026-10-08` | 媒体拡張の取得時点の準備拒否・未実行範囲と、後続の公開API・共通runtime検証を区別 |
 | `1.1.2` | `2026-10-04` | 20媒体fixtureの製品結果checker、内部・viewer回帰試験とソース／成果物hash付き実行記録を追加 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
@@ -257,11 +258,11 @@
 
 | 実施範囲 | 結果と証跡 |
 | --- | --- |
-| 媒体全20ケース | validate/runで17件を受理し、invalid-slot・invalid-t1-half・invalid-t1-rolesの3件を期待どおりprepare拒否。[製品結果checker](../fixtures/ethernet-media/verify_results.py)で時間・状態・保存則・5schema・9metric descriptor・診断ruleを照合。準備失敗はCLI診断のみで、schema2結果を公開しない |
+| 媒体全20ケース | validate/runで17件を受理し、invalid-slot・invalid-t1-half・invalid-t1-rolesの3件を期待どおりprepare拒否。[製品結果checker](../fixtures/ethernet-media/verify_results.py)で時間・状態・保存則・5schema・9metric descriptor・診断ruleを照合。この取得時点では準備失敗はCLI診断のみで、schema2結果を公開しない |
 | 半二重内部試験 | [Rust結合試験](../../../crates/dir-simulator/tests/ethernet_media.rs)でcarrier、同時刻、jam/BEB、retry容量、停止prefix、取消予約の残件数、IFG期限でのcarrier再検出を確認。[媒体単体試験](../../../crates/dir-simulator/src/runtime/ethernet/media.rs)で15固定BEB vector、16衝突の上限と余分な抽選の不在、同時刻取消の独立性を確認 |
 | T1と混在Switch | 双方向、旧attemptの遅延Arrival、最大frame、到達=T/T+1ps、Switch各対の独立性、100BASE-T1専用policyを照合。両方向SOF前のoverflowでいずれのSOFもcommitしない試験を実施 |
 | 互換性とCLI | 同じbuildで既存CAN/GW/L2/QoS/VLANを含む全17 exampleをvalidate/run/view。新規6例を含む。全Rust試験275件成功（媒体結合14件を含む） |
 | viewer | [モデル試験](../../../tests/media_fd_viewer_model.test.cjs)でjam・backoff/deferred・初回carrier待ち・FIFO・停止・巻き戻し・backoff期限のイベントステップを確認。[ブラウザ試験](../../../tests/media_fd_viewer_browser.cjs)と既存Ethernet/CAN/GWブラウザ試験が成功。全JavaScript試験108件中106件成功・2件skip |
 | 文書と解析 | 独立解析20ケース・15BEB vector・16試行境界、strict traceability（205要件・54機能・245node）、生成資料と11図の整合を確認。これは製品試験とは別の証拠 |
 
-公開Registry/Context/Envelope API全体、全callbackの予約失敗注入、全時刻のT±1ps・処理遅延の各成分を1ps変更する網羅試験、実機波形・規格全体適合・大規模性能測定は未実施。現在の内部エンジンと上表の実施範囲の合格を記録する。
+上表の取得時点では公開Registry/Context/Envelope API全体、全callbackの予約失敗注入、全時刻のT±1ps・処理遅延の各成分を1ps変更する網羅試験、実機波形・規格全体適合・大規模性能測定は未実施だった。開発中ソースに追加した共通runtimeの確認範囲は[拡張runtime検証記録](../results/extension-runtime-2026-10-05.json)に記録する。媒体固有の製品検証と区別する。

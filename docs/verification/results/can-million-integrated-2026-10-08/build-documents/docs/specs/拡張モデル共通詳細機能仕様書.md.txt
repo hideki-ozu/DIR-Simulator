@@ -1,0 +1,203 @@
+# 拡張モデル共通詳細機能仕様書
+
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`main @ 9ad16c4`
+予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.1.1` | `2026-10-05` | 五つのtransaction profileの共通入力・schema2・登録集合を組込み実装へ接続し、製品検証記録を追加 |
+| `1.1.0` | `2026-10-04` | Ethernet L2・QoSの組込み提供状態と版付きprofileを追加し、公開拡張APIとの境界を明示 |
+| `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
+| `0.1.0` | `2026-10-01` | 作業内容を集約：GW・AXI・Ethernet追加の選択・入力・結果・互換性契約を規定。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
+
+文書ID：`spec-model-extension`
+
+| 状態 | 内容 |
+| --- | --- |
+| 仕様 | 契約を規定済み。組込みCAN/GW/Ethernetに加え、AXI・SoC／AHB／NoC・メモリ／IPCの初期抽象profileを実装し製品照合を追加。公開Registry/Envelope/Contextと任意登録モデルの共通エンジンを開発中ソースに実装。組込みprofileの内部モデルを汎用エンジンへ移植したものではない |
+| 方針 | 単純な初期プロファイルと版付き登録を採用し、既存CANの意味を保持して機能を追加 |
+
+最初の0.1.0公開対象はClassical CANの`can.cc.ideal.v1`である。本書の追加profileは将来対応モデルの準備・実行・結果を接続する仕様契約であり、profile名や確定仕様の存在は製品での提供・実行検証完了を示すものではない。提供時期と対象範囲は[要件定義書](../要件定義書.md)の将来対応予定を管理元とする。
+
+[機能追加と契約の維持](../要件定義書.md#dir-req-0122)に対し、本書はprofile単位でvalidator・codec・metric・結果版を選択する責務を具体化する。各モデルは固有の入力、状態遷移、成功／破棄、観測点を担当し、共通基盤は[構造と値の解決](設定詳細機能仕様書.md#values)、[イベント順と成功コミット](実行詳細機能仕様書.md#event-order)、[停止と診断](診断詳細機能仕様書.md#lifecycle)、[保存](結果詳細機能仕様書.md#atomic-output)を担当する。モデルの親要件の充足は、子要件に対応する固有規則とこの共通処理が接続する振る舞いで確認する。
+
+## 1. 対象・選択・登録
+
+<a id="selection"></a>
+
+```trace
+{
+  "id": "spec-model-extension#selection",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0157",
+    "DIR-REQ-0158"
+  ],
+  "upstream": [
+    "DIR-FUNC-0037"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+
+| profile | 担当モデル・登録 | 規定する範囲 |
+| --- | --- | --- |
+| `can.cc.ideal.v1` | 既存Controller・Bus・FixedDelay | 0.1.0の単一共有CAN。省略時の既定値。入力・出力schema1を維持 |
+| `can.cc.multibus.v1` | MultibusController・MultibusBusとGW routing coordinator | 独立した複数CANバス、GWの出力別キュー、静的経路・同一ID転送。次のメジャー1.0.0対象 |
+| `axi4.transaction.v1` | Manager・Interconnect・Ram | 32bit整列INCRトランザクション、抽象5チャネル、静的アドレス範囲・READYと応答。1.0.0以後の追加モデル |
+| `ethernet.l2.store-forward.v1` | Endpoint・Switch・Link | 全二重L2、静的FDB・flood、有限出力FIFO、内容依存FCSとリンク時間。開発ソースで実装・製品試験済み |
+| `ethernet.l2.qos.v1` | Endpoint・Switch・Link | 開発実装：明示／周期／バースト負荷、8class FIFO／strict priority、frame／MAC byte容量、フロー遅延・期限・経路内訳。[追加仕様](models/Ethernet負荷・QoS詳細機能仕様書.md) |
+| `ethernet.l2.store-forward.v2` | EndpointV2・SwitchV2・LinkV2 | 媒体単位の10/100Mbps CSMA/CD半二重、抽象全二重、1000BASE-T1全二重1Gbpsを選択。v1のMAC・交換規則を再利用 |
+
+| profile | 正本 | 規定する範囲 |
+| --- | --- | --- |
+| `can.fd.precomputed.v1` | [CAN FD・100BASE-T1](models/CANFD・100BASE-T1詳細機能仕様書.md) | 単一FD専用バス、位相別事前計算bit数の二速度フレーム抽象 |
+| `ethernet.l2.100base-t1.v1` | [CAN FD・100BASE-T1](models/CANFD・100BASE-T1詳細機能仕様書.md) | 100BASE-T1全二重100Mbps、固定PHY pipeline |
+| `soc.shared.v1` | [SoC・AHB・NoC](models/SoC・AHB・NoC詳細機能仕様書.md) | 共有バス抽象transaction |
+| `ahb.transaction.v1` | [SoC・AHB・NoC](models/SoC・AHB・NoC詳細機能仕様書.md) | AHB-Lite相当単一managerと共有仲裁の抽象transaction |
+| `noc.xy.v1` | [SoC・AHB・NoC](models/SoC・AHB・NoC詳細機能仕様書.md) | 有限入力バッファを持つXY mesh packet transaction |
+| `memory.ipc.transaction.v1` | [メモリ・IPC](models/メモリ・IPC詳細機能仕様書.md) | DDR/SRAM、共有メモリIPC、DMA、mailboxの版付き抽象transaction。DMAとDDR/SRAMの競合・内容連携を同実行内で扱う。 |
+
+| 項目 | 契約 |
+| --- | --- |
+| 選択 | INI Generalの`model-profile`を二重引用文字列として受理。既定は`"can.cc.ideal.v1"`。入力の構造やmodule名からの暗黙選択は対象外という注釈を適用。未登録profileはE-0001 unsupported_profile |
+| モデル構成 | `model-config = "model.json"`を追加profileでは必須とする。configの親から相対解決し、通常UTF-8ファイルを一度読み切る。JSON重複・未知キーを準備失敗として扱い、具体的なschemaは選択profileを正とする |
+| 既定CAN | model-profile省略又は既定値は既存schema1と同じ動作。注：model-configは既定CANの提供キー集合には含まれず、指定はunsupported_profile_settingとして診断 |
+| ProfileDescriptor | 公開型はprofile名、実装版、許可module/channel/event、metric名、model record schema、出力schema版、構成validatorを保持する。event・metric・record descriptorとprofile入力validatorはRegistryへ個別に登録し、prepareで参照集合を照合・凍結する |
+| 初期化 | 共通の入力・値・接続検証後にprofile validatorを実行してPreparedModelを生成する。NED factoryとprofile coordinatorの構築順・所有関係は各モデル設計に従う |
+| NED | 既存scalar port、compound境界、完全修飾型名、名前付きchannelを使用する。新しい実装キー・ポート契約をRegistryへ追加し、パーサの文法は共通にする |
+| 実行 | u64 ps、(time,delta,phase,sequence)、phase0完了／解放、phase1入力／配送、phase2調停を共用する。AXIのサイクルはモデルのclock_periodからpsへ換算する |
+| 版の意味 | profileが受理する機能・範囲・既定値を固定する。追加方式は別profile又はschema版として登録し、既存シナリオは元のprofileで再実行可能とする |
+| 組合せ範囲 | 一実行は一つのprofileで検証する。GW profileは複数CANバス、メモリ・IPC profileは仕様で定めた転送元・先と共有領域を統合する。CAN FD、100BASE-T1、SoC／AHB／NoC、DDR／SRAM、IPC／DMAは下記の登録先で規定する。注：任意の異種プロトコル間の自動変換や全機能のSoC再現は初期profileの範囲外。追加の複合profileは変換モデルとcodecを登録して拡張する |
+
+開発中ソースの`Registry::new()`は13組込みprofileを登録し、`Registry::empty()`は独自登録だけを受け付ける。組込みprofileは専用入力／実行／出力アダプターを維持し、追加登録profileはNEDの`@class`実装キー、portの`Schema`、channel capability、event validator、model record validatorを凍結して共通エンジンへ渡す。外部profileの`model-config`／`workload`は`ProfileInput`として渡され、必要性と構造は登録validatorが決める。
+
+
+### 追加ネットワークprofile（開発実装済み）
+
+| profile | 詳細仕様 | 設計・実行の状態 |
+| --- | --- | --- |
+| `can.ethernet.gateway.v1` | [CAN↔Ethernet変換](../specs/models/CAN・Ethernet変換詳細機能仕様書.md) | 開発実装・製品試験を追加。実施範囲は[検証記録](../verification/results/network-extension-product-2026-10-07.json)。公開版未割当 |
+| `ethernet.l2.dynamic.v1` | [Ethernet動的制御](../specs/models/Ethernet動的制御詳細機能仕様書.md) | 開発実装・製品試験を追加。実施範囲は[検証記録](../verification/results/network-extension-product-2026-10-07.json)。公開版未割当 |
+| `ethernet.tsn.v1` | [Ethernet TSN](../specs/models/EthernetTSN詳細機能仕様書.md) | 開発実装・製品試験を追加。実施範囲は[検証記録](../verification/results/network-extension-product-2026-10-07.json)。公開版未割当 |
+
+Registry::new()は上記3 profileも登録する。従来13 profileのnativeアダプター集合と区別し、登録Engineの単一FESへprivate staged経路で接続する。1実行1profileを維持し、異種混在は変換codecと単一coordinatorを持つ明示的複合profileでのみ許す。TSNは動的Ethernet機能を自己のprofile内で利用し、profile名を同時指定して合成しない。
+
+## 2. 入力と準備診断
+
+<a id="inputs"></a>
+
+```trace
+{
+  "id": "spec-model-extension#inputs",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0158",
+    "DIR-REQ-0159"
+  ],
+  "upstream": [
+    "DIR-FUNC-0037"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+
+| 入力 | 書式・処理 |
+| --- | --- |
+| workload共通 | `{schema_version:2,generators:[Generator...]}`。UTF-8 JSON、ルートのこの2キーを必須とする。Generatorは共通id・kind・nodeとkind固有キーから成る |
+| id / kind / node | idは`[A-Za-z_][A-Za-z0-9_]*`で全体一意、kindは名前空間付き登録文字列、nodeはNED展開後の正規モデルパス。配列順と区別してgenerator IDのUTF-8辞書順を使用 |
+| 同時生成 | 同一時刻の全generator発火をdispatcherがまとめ、(generator ID,ordinal)順でphase1へ予約する。request_idの基本形は`generator_id:ordinal`。転送コピーとhopのIDはモデル仕様に従う |
+| GW | CANの既存periodic/explicit generatorのfieldsをschema2で受理。入力互換のためschema1も同じ生成意味で受理し、選択したGW profileの構成検証を適用する |
+| 追加モデル（GW以外） | schema2を必須とし、それぞれのモデル仕様のkind/fieldsを受理する。未知profile/kind/schemaは準備失敗 |
+| workload省略 | 空のgenerator配列を選択する。構造・model-configの完全検証と初期化は実施し、終了理由・初期計測は既存契約に従う |
+| 読込順 | CLI/INI→選択profileの存在→NED構文・descriptor・値・接続→model-config構文／schema→workload構文／schema→profile横断検証→factory/initialize。未取得ファイルは共通input_unreadable診断 |
+| 検証の優先 | 各入力はファイルsource位置順、重複の二つ目を対象。解決済み対象は正規パス順、設定配列の値違反は入力index順。複数違反は最初の確定primaryと、その時点までの診断を保存 |
+| profile診断 | E-0001の`unsupported_profile`、`unsupported_profile_setting`、`model_config_invalid`、`workload_invalid`、`topology_invalid`を追加し、詳細原因をdetails.rule/targetへ保持。既存のinput_unreadable/unknown_type等が直接該当する場合は既存理由を優先 |
+| 実行失敗 | codec/schema不正はE-0002 invalid_event、モデル状態不変条件はE-0002 model_failed、時刻・ID等の上限はE-0004。通常のqueue満杯やAXI応答エラーはモデル上の結果として記録 |
+| 再現情報 | sourcesへlogical_path=`model-config`としてmodel-config raw bytes・path・SHA256を追加し、configには確定model-profileとmodel-config参照を含める。モデル別初期状態と設定を各schemaのcanonical JSONで記録 |
+
+## 3. 結果schema2
+
+<a id="results"></a>
+
+```trace
+{
+  "id": "spec-model-extension#results",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0159",
+    "DIR-REQ-0160"
+  ],
+  "upstream": [
+    "DIR-FUNC-0038"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+
+| 項目 | 契約 |
+| --- | --- |
+| 版の選択 | 既定CANは出力schema1、本書に登録する追加profileはschema2。CLIのrun/validate要約schemaは既存版1を保持し、ファイル側の結果版はmanifest/resultsで識別 |
+| ファイル集合 | manifest.json、results.json、events.csv、summary.csv、diagnostics.jsonl。原子的公開・hash・文字・数値表記は既存結果仕様を適用。manifest/results/CSVのschema_versionは2。診断レコード自体のschema_versionは1を保持 |
+| results.json | `{schema_version:2,run_id:S,metadata:Metadata2,simulation:Simulation2}`。S/D/N等の型は既存結果仕様と同じ |
+| Simulation2 | `{termination:S,partial:boolean,start_ps:D,end_ps:D,last_event_time_ps:D?,committed_events:D,pending_events:D,records:Record[],summary:Record[],model_records:ModelRecord[]}`。共通のRecordと17列CSV・観測順は結果仕様を継承。注：CAN専用のrequests/receivers配列はschema2のキー集合の対象外 |
+| ModelRecord | `{schema_name:S,schema_version:N,record_id:S,subject:S,request_id:S?,origin_request_id:S?,time_ps:D,data:object}`。すべて必須。Nは登録済みの正整数JSON number。schema_name/版でdataを解釈する。各profileはschema_nameごとに版を一つ固定し、同じ名前の異なる版を一実行へ混在する方式は対象外（注） |
+| 保存意味 | ModelRecordはモデルが最後にコミットした状態のsnapshot。一意キーは(schema_name,record_id)、保存順は(schema_name,subject,record_id)のUTF-8辞書順。time_psは最後の成功更新時刻。初期値は0。時系列の履歴が必要な量は共通records又は独立した転送／handshakeレコードへ保存 |
+| 要求関係 | request_idは当該操作に対応する要求識別子、origin_request_idはモデルで定義する元要求又はnull。dataの各参照は同じrun内のrecord又は入力設定へ対応付ける |
+| Metadata2 | 既存Metadataの全必須キーに`model_profile:S`と`model_schemas:[{schema_name:S,schema_version:N}]`を追加する。Nは登録済み正整数JSON number。model_schemasは選択profileの全登録出力schemaを名前順に一度ずつ記録 |
+| 指標 | metadata.metricsは選択profileが登録した指標の一覧を名前順に保持する。CANの37指標は既定CANの集合であり、他profileはそのモデル仕様で定義した集合を使用。unit/value_kind/sampling/aggregationの意味は共通 |
+| GWレコード | can.request/1とcan.receiver/1のdataは旧Request/Receiverの外側キーを使用し、model_fieldsはGW仕様のMultibusFieldsへprofile別に分岐して、GW固有のforward履歴はgw.forward/1に置く。GWを通ってもCAN物理フレームの計算方式はcan.cc.ideal.v1の定義を使用 |
+| AXI・Ethernet | dataの型、ID、生成契機・最後の更新は各モデル仕様の出力契約を適用し、コアはopaque objectとして保存する |
+| 異常snapshot | 成功済みjournalだけを保存する。追加profile選択が確定した後の準備失敗はschema2と空のmodel_records/records/summaryを保存し、metrics/model_schemasは選択profileの登録集合とする。選択前のINI失敗又は未登録profileは既存schema1の準備失敗形式を使用する。Tで未完了のモデル状態はpending/active等の各モデルの列挙値で残す |
+| 未知データ | 読み戻し時に未知のschema_name/版又はdata型違反は不正出力として診断する。解析器が対応schemaだけを選ぶ場合は、未解釈のschema集合を解析結果へ明示する |
+
+## 4. 正本への参照
+
+統合の確認境界は、選択profileと構成・負荷の検証結果が同じ登録集合へ解決し、初期化されたモデルの成功更新が、そのprofileのレコード・指標・再現情報として読み戻せることである。既定CANのschema1と順序の回帰、追加profileの固有期待値、独立資源間の状態分離をそれぞれ確認する。共通工程へ接続することと、別モデルの固有条件を満たすことは別の分担として追跡する。
+
+| 分野 | 振る舞い・内部設計・検証 |
+| --- | --- |
+| Classical CAN（現行） | [仕様](models/CANモデル詳細機能仕様書.md)、[設計](../design/CANモデル詳細設計書.md)、[検証](../verification/cases/CANモデル検証仕様書.md) |
+| GW | [仕様](models/GWモデル詳細機能仕様書.md)、[設計](../design/GWモデル詳細設計書.md)、[検証](../verification/cases/GWモデル検証仕様書.md) |
+| AXI | [仕様](models/AXIモデル詳細機能仕様書.md)、[設計](../design/AXIモデル詳細設計書.md)、[検証](../verification/cases/AXIモデル検証仕様書.md) |
+| Ethernet | [仕様](models/Ethernetモデル詳細機能仕様書.md)、[設計](../design/Ethernetモデル詳細設計書.md)、[検証](../verification/cases/Ethernetモデル検証仕様書.md) |
+| Ethernet媒体拡張（CSMA/CD・1000BASE-T1） | [仕様](models/Ethernet媒体拡張詳細機能仕様書.md)、[設計](../design/Ethernet媒体拡張詳細設計書.md)、[検証](../verification/cases/Ethernet媒体拡張検証仕様書.md) |
+| CAN FD・100BASE-T1 | [仕様](models/CANFD・100BASE-T1詳細機能仕様書.md)、[設計](../design/CANFD・100BASE-T1詳細設計書.md)、[検証](../verification/cases/CANFD・100BASE-T1検証仕様書.md) |
+| SoC・AHB・NoC | [仕様](models/SoC・AHB・NoC詳細機能仕様書.md)、[設計](../design/SoC・AHB・NoC詳細設計書.md)、[検証](../verification/cases/SoC・AHB・NoC検証仕様書.md) |
+| DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC | [仕様](models/メモリ・IPC詳細機能仕様書.md)、[設計](../design/メモリ・IPC詳細設計書.md)、[検証](../verification/cases/メモリ・IPC検証仕様書.md) |
+| 共通 | [複数モデル統合詳細設計](../design/複数モデル統合詳細設計書.md)、[統合検証](../verification/cases/拡張モデル統合検証仕様書.md) |
+
+## Ethernet媒体拡張の共通境界
+
+| 項目 | 契約 |
+| --- | --- |
+| 媒体別選択 | Ethernet v2は一実行内でリンクごとに媒体とduplexを選択する。同じprofile内の半二重と全二重はSwitchで接続可能。異種プロトコル変換とは区別する |
+| 衝突領域 | 半二重の一つの物理リンクは一つの共有collision domain。共有contextが両端のcarrier・送信試行・jam・再試行時刻を一括評価し、同時開始は衝突として記録する |
+| 再現性 | CSMA/CDのbackoff乱数は明示seed・版付き決定的アルゴリズムから算出する。metadata.seedは正規十進文字列を保存。注：これは負荷生成の確率化とは別のMAC制御 |
+| schema互換 | Ethernet v1の型登録・入力・結果を維持し、v2のcodec・record版は[媒体仕様](models/Ethernet媒体拡張詳細機能仕様書.md)に登録。共通schema2の包絡・CSV列は継承 |
+
+## 将来対応モデルの登録条件
+
+上記のモデル別正本に従い、profile・型・schema・metricを登録する。準備検証と実行状態はモデル側が所有し、共通の時刻・確定journal・出力契約を適用する。
+
+| 共通条件 | 契約 |
+| --- | --- |
+| 入力・診断 | 各profileのmodel-configとworkloadを専用validatorへ渡す。型・必須キー・範囲・接続・参照を初期化前に照合し、違反を共通E-0001とdetails.rule/targetで示す |
+| 結果・互換性 | 各モデルの版付きModelRecordをschema2へ格納し、実際に使用した入力hash、descriptor、時間定数を保存する。指標の単位・標本・集計・母数は各正本の登録を適用する。既存profileのschemaと既定CAN入力は保持する |
+| モデル間の連携 | DDR/SRAMとDMAの同一実行内の連携はメモリ・IPC仕様のサービスを共有する。その他の将来profileは仕様で定めた構成を受理し、新しいプロトコル間変換は独立codecと複合profileで追加する |
+
+## 開発中ソースの追加profile
+
+`axi4.transaction.v1`、`soc.shared.v1`、`ahb.transaction.v1`、`noc.xy.v1`、`memory.ipc.transaction.v1`を既存の内部profile選択へ接続した。同じ`prepare`とCLIの`validate`／`run`が厳格なNED・model-config・workload検証を呼び、共通のmanifest-last公開へschema2を渡す。結果の`metadata.model_schemas`と`metadata.metrics`は選択profileの登録集合のみを名前順に保存する。公開Registry/Context/Envelope APIは追加済みだが、これらの組込みprofileは専用エンジンへのアダプターである。任意登録モデルの共通実行経路と製品照合は[拡張runtime検証記録](../verification/results/extension-runtime-2026-10-05.json)で別に確認する。
+
+[製品実行記録](../verification/results/soc-memory-product-2026-10-05.json)に独立fixture、追加境界、従来profile回帰、ビューアの確認範囲を保存する。

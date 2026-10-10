@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "tested_source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+  "publication_scope": "Existing source/tests and redacted evidence; product tests and full fixed-artifact audit not rerun.",
+  "evidence_projection_files": 166,
+  "source_content_identity": "Six changed source/test files match source-inventory; no product changes after tested commit.",
+  "privacy_review": {
+    "status": "passed",
+    "independent_review": "completed",
+    "findings": [],
+    "blockers": [],
+    "derived_original_public_pairs_verified": 166,
+    "staged_files_scanned": 175,
+    "readme_links_checked": 16,
+    "structured_stdout_author_metadata": "removed; original hashes preserved",
+    "tested_source_unchanged": true
+  },
+  "documentation_gates": [
+    {
+      "argv": [
+        "python3",
+        "scripts/generate_traceability.py"
+      ],
+      "exit_code": 0,
+      "stdout": "generated traceability Markdown/HTML and hierarchy HTML: 231 requirements, 274 trace nodes, 0 incomplete items\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "stdout": "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "evidence": "Executed in isolated publication worktree before document metadata repair; no source changes afterward."
+    }
+  ],
+  "baseline_documentation_defect": {
+    "commit": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+    "exit_code": 1,
+    "cause": "proposed-umd-MIT.md lacked required document ID",
+    "repair": "Document metadata header added; original license body bytes remain identical."
+  },
+  "existing_main_and_original_worktrees": "Preserved; clean at start.",
+  "actions_prohibited": [
+    "merge",
+    "tag",
+    "Release publication",
+    "deploy",
+    "settings/auth/permission changes",
+    "complete audit rerun"
+  ],
+  "publication_verifier": {
+    "argv": [
+      "python3",
+      "docs/verification/results/ac0008-vscode-execution-2026-10-10/verify_evidence.py"
+    ],
+    "status": "passed",
+    "public_files_verified": 170,
+    "derived_files": 166,
+    "source_files_verified": 6,
+    "product_tests_rerun": false
+  }
+}

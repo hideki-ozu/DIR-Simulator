@@ -1,0 +1,185 @@
+# 結果処理詳細設計書
+
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.0.0` | `2026-10-03` | 結果処理層の分割、schema2とGateway RX保持の出力を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
+| `0.1.0` | `2026-10-02` | 初版予定。成功journalの観測・集計、完全結果schema、実験条件と原子的公開の詳細設計を規定 |
+
+文書ID：`design-results`
+
+| 項目 | 内容 |
+| --- | --- |
+| 文書状態 | 設計規定済みの初版草案。現行CAN／Gatewayの結果処理は実装済み。以下に現行の内部責務を示す。登録モデルのschema2結果、取得済み入力・確定設定・採用元・構築環境の再現情報、準備失敗の5ファイル公開を開発中ソースに追加。全モデルの製品適合と大規模負荷目標は別に検証する |
+| 担当元 | [計測・結果](../アーキテクチャ設計書.md#arch-results)と[資源の観測](../アーキテクチャ設計書.md#arch-resources)を具体化する |
+| 外部契約の正本 | [結果仕様](../specs/結果詳細機能仕様書.md)、[終了・診断](../specs/診断詳細機能仕様書.md#termination)、[schema2](../specs/拡張モデル共通詳細機能仕様書.md#results)。本書は計算規則や出力キーを独立に変更する管理元ではない |
+| 接続 | runtimeの確定journal・凍結境界・有効予約数、prepareの確定条件、モデル登録descriptor、診断集合を入力とする。結果処理からモデルcallbackを呼び戻さない |
+| 検証 | [結果処理検証仕様](../verification/cases/結果処理検証仕様書.md)の独立計算、schema往復、I/O失敗注入を適用する |
+
+## 現行実装の責務境界
+
+`run.rs`の公開`run`は`runtime::simulate`の返す`Snapshot`を`output::export`へ渡す。runtimeは確定した要求・受信・観測・Gateway転送と終了状態を記録し、出力層はそのsnapshotを読み取って結果を構築する。公開`output::export`の引数と、既存schema1／schema2のファイル契約を維持し、内部を次の責務へ分割する。
+
+| ソース | 責務 |
+| --- | --- |
+| `crates/dir-simulator/src/output.rs` | run識別・集計・メタデータ・形式変換・保存の呼出しを統括する |
+| `output/reservation.rs` | 出力先・入力との重複・既存ファイルを検証し、実行前からexport完了まで排他予約を保持する |
+| `output/aggregate.rs` | 指標定義、件数・時間窓・遅延・使用率の集計、整列と連続採番を担当し、メモリ上Snapshotのrecords／summaryを構築し、CAN/Gatewayの逐次経路と比較する基準処理も保持する |
+| `output/model_records.rs` | CAN要求・受信とGateway転送のモデル固有schemaへの変換を担当する |
+| `output/metadata.rs` | 入力snapshot・確定設定・初期状態・実行環境の再現情報を構築する |
+| `output/json.rs` | 型付きレコードのJSON表現、schema1／schema2の結果構築、診断JSONL、正規JSON表記を担当する |
+| `output/csv.rs` | 同じ型付きレコードを既存の列順へ射影し、空セル・引用・改行を符号化する |
+| `output/publish.rs` | 一時ファイルの書込、バイト数・hash、manifestの構築と最終公開、既存ファイル保護、保存失敗処理を担当する |
+
+上表の`output/`は`crates/dir-simulator/src/output/`を指す。集計レコードは時刻・件数・採番を整数、欠落値を`Option`、指標値を整数／有限数／nullの区別で保持する。集計中にJSONのキーを操作したり、整列のために時刻文字列を数値へ戻したりしない。正確な整数比のbinary64への最近接偶数丸めは従来どおり集計時に一度だけ行い、overflowの検出順も維持する。JSONとCSVは共通の数値表記を使い、CSV側では再集計しない。
+
+モデル固有dataとメタデータのschema構築には引き続きJSON値を用いる。共有Snapshotの`common`・`can`・`gateway`から既存schemaへ射影し、Gatewayの元要求ID・親要求ID・ホップ数は要求ID別の`request_lineage`から取得する。schema2で系譜が欠落した場合は出力診断E-0003を返し、推測して補完しない。schema1の要求記録へ転送系譜を追加しない。組込みprofileの専用出力経路と、登録モデルを`output/registered.rs`でschema2へ射影する経路を区別する。型と公開APIの配置は[ソース配置](../アーキテクチャ設計書.md#source-layout)を参照する。
+
+分離時の[検証記録](../verification/results/output-layer-split-2026-10-03.json)には、Rust全63試験、既存28設定の変更前後比較、実行ID・日時・出力先パス・検証済み実行ファイルhashだけを除いたJSON／CSVの表記比較、manifestのraw bytes/hash照合を保存する。型付き値の境界試験では、大きな整数・nullとゼロ・数値表記・文字列引用・callback順を確認する。
+
+`output/metadata/reproduction.rs`は取得済み入力のsources、declarations、value_provenance、effective_value_provenance、確定した`@prepared-model`、initial_channel_state、ビルド／実行環境をmetadataへ追加する。取得不能な環境値は`unknown`とし、同条件の判定ではinput hashだけでなく設定・初期状態・実装版も照合する。`output/preparation.rs`は`prep_failed`時に空simulation、空CSV、診断JSONLを作り、`output/publish.rs`がmanifestを最後に公開する。通常実行のJSON／CSV／診断は`publish::stream`が一時ファイルへ順次書く。観測点の一時JSONLは`iter_points()`で順に読む。CAN/Gatewayの`run`は`runtime/can_archive.rs`へ完了台帳を退避し、`output/stream.rs`が時刻付き寄与から窓別に増分集計する。`output/disk_sort.rs`はチャンクとマージ幅を制限して既存の正規順序を保ち、全出力行をメモリへ戻さない。直接`runtime::simulate`のメモリ上Snapshotは従来経路で出力できる。他profileのモデル台帳まで同じ退避構成へ移したものではない。
+
+外部ソートのバイナリ化、recordsの2系列マージ、JSON／CSV同時出力、固定長寄与、Statsの添字参照については[CAN出力最適化詳細設計書](CAN出力最適化詳細設計書.md)で独立試作と比較測定の設計を定める。この5案は製品ソース未適用として管理し、[個別実測記録](../verification/results/can-output-candidates-2026-10-08.md)を採用判断の材料とする。
+
+## 1. 資源観測と終端台帳
+
+<a id="resource-observations"></a>
+
+```trace
+{
+  "id": "design-results#resource-observations",
+  "stage": "design",
+  "requirements": ["DIR-REQ-0042", "DIR-REQ-0043", "DIR-REQ-0083", "DIR-REQ-0084", "DIR-REQ-0085", "DIR-REQ-0086", "DIR-REQ-0087", "DIR-REQ-0088", "DIR-REQ-0089", "DIR-REQ-0090", "DIR-REQ-0091"],
+  "upstream": ["architecture#arch-resources", "architecture#arch-results"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 内部要素 | 所有・入力・処理 |
+| --- | --- |
+| `ObservationJournal` | エンジン所有。callbackの暫定batchに要求更新・受信更新・キュー変化・占有開始/終了・点標本を保持する。全効果の検証と容量確保に成功した時だけ、runtimeのcommitと同時に確定prefixへ追加する。失敗batchの効果とモデルの途中状態は読まない |
+| `RequestState` | request_idをキーに生成時のCANフレーム内訳とgを保持し、ready判定でq、SOFでsと予定EOF/release、EOFでe、解放でrelease到達を更新する。processing/pending/in_flight/success/droppedの遷移は[台帳整合性](../specs/結果詳細機能仕様書.md#result-schema)を検査する。予定時刻は到達時刻の代用にならない |
+| `ReceiverState` | EOF到達時だけ(request_id,receiver)を一意キーに作成する。観測oでfiltered又は受信処理継続、rでreceivedへ更新する。送信成功を受信件数分増やす処理は行わず、要求と受信機会の母数を独立に持つ |
+| `QueueTimeline` | queue_id、容量C、初期Q、確定変化列(time,event_seq,effect_seq,Q,request_id)を保持する。ローカル候補は待機数に含み、SOFの勝者は除く。満杯判定でも同値のQとbuffer_utilizationを記録する。SOF時の取出しと占有開始を同じ確定batchで観測する |
+| `OccupancyTimeline` | resource_id別にSOF、予定EOF/releaseと実到達点を保持する。完了量の台帳と占有区間を分ける。開始済区間の時間積分だけをHまでクリップし、EOF未到達のserialized_bitsや解放未到達のoccupied_bitsは加算しない |
+| 遅延標本 | SOFでs-g、s-q、EOFでe-s、受信完了でr-gを整数差として各一回追加する。負差・重複到達・不存在参照はmodel/codec境界の不正として実行失敗へ伝播する。未完了、filteredはdelivery標本から除く |
+| 観測出自 | event_seqは予約sequence、effect_seqはcallbackの観測効果だけの0始まり連番。一括効果はtarget/metric/request_id/receiver順で展開する。callback実行commit順を別途保持し、予約sequenceの大小から推定しない |
+| freeze | runtimeが成功prefixとH、終了理由、last_event_time_ps、committed_events、pending_eventsを凍結する。pending_eventsの算出はruntime所有であり、結果処理は未生成要求数から再計算しない。finishはsnapshot読取専用である |
+| 保存則の確認 | 各送信元・バス・$allでgenerated=processing+admitted+dropped、admitted=pending+in_flight+success、unfinished=processing+pending+in_flight、attempts=in_flight+successを確認する。受信先・バス・$allではreceiver_opportunities=received+filtered+rx_pending。dropはqueue_fullだけをキュー別にも出す |
+
+フレームbits・ACK/フィルタ・受信到達の生成側は[CAN設計](CANモデル詳細設計書.md#state-machine)、資源の選出・容量操作は[資源仕様](../specs/資源詳細機能仕様書.md)を正とする。本節はそれらの確定遷移から時系列と集計を接続する観測側の設計であり、仲裁を再実行しない。対象集合はprepare済の接続モデルから凍結し、無通信のキュー・送信元・受信先・バスにも契約上の0又はnull行を出す。
+
+## 2. 正確な集計と窓
+
+<a id="aggregation"></a>
+
+```trace
+{
+  "id": "design-results#aggregation",
+  "stage": "design",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0043", "DIR-REQ-0085", "DIR-REQ-0086", "DIR-REQ-0088", "DIR-REQ-0089", "DIR-REQ-0090", "DIR-REQ-0091", "DIR-REQ-0120"],
+  "upstream": ["architecture#arch-results"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 集計器 | データ構造・手順・不変条件 |
+| --- | --- |
+| `MetricDescriptor` | metric_id/version/unit/value_kind/sampling/aggregationをprepareで凍結する。既定CANは仕様の37指標を全件登録する。重複名は準備失敗。追加profileは専用集合を使い、CAN指標を無条件で追加しない |
+| 正確数 | 時刻はu64。件数・総bits・標本和・積分分子はchecked u128以上の正確整数。`ExactRatio(numerator,denominator)`で平均・比率を表し、出力直前にbinary64へ最近接偶数丸めで一回変換する。和・積・変換の上限/非有限はE-0004として診断系へ渡す。0分母は仕様で指定したnullにする |
+| キュー積分 | last_time、last_Q、area、max_Qをキューごとに持つ。変化時刻tまでlast_Q×(t-last_time)を加算してからQを更新する。同時刻更新はareaを増やさず、max_Qは個々の更新後の値で更新し、同時刻内のピークも保持する。freeze時にHまで定常値を積分する。queue_mean=area/H、buffer平均=area/(C×区間実長) |
+| 占有の和集合 | SOFで区間開始、EOF/release到達又はfreezeで区間終端を得る。バス別の重なる/接する区間を結合してから[窓開始,窓終了)との共通部分長を求める。busはintermission込み、frameはEOFまで。別バスの占有を合算して一つの使用率にしない |
+| 窓の構築 | kW<Hの各kについてend=min((k+1)W,H)とする。kW・加算は広い整数で計算しu64への適合を確認する。窓予約はschedulerへ投入せず、journalの走査と境界で論理的に分割する。最終短縮窓はその実長を分母にする |
+| 完了量とrate | payload/serializedはEOF、occupiedはrelease、received_payloadはrの完了点へ帰属する。bits×10^12/実窓長をrateへ変換する。全体rateは全量/Hで求め、短縮窓を含む各窓rateの単純平均を取らない |
+| 平均の母数 | tx_wait/仲裁待ちはSOF到達要求、transferはEOF到達要求、deliveryは受信完了の(要求,受信先)各一標本で、sample_countも保持する。対象ごとの分子/分母を合算して$allを求め、対象別平均を単純平均しない |
+| 件数 | freeze済の台帳から終端状態を数える。正長の窓へ終端状態件数を複製しない。dropped以外の件数reasonはnull、droppedはqueue_full。未完了をfailed/droppedへ改変しない。初期理想CANのretriesとfailedは0 |
+| 空と停止 | H=0の正常recordsは空、キュー最大0、通常件数/量0、時間平均・率・標本平均はnull。C=0のbuffer点と平均はnull、C>0・Q=0は0。正長アイドル窓は量/rate/使用率0。イベント枯渇でも正常H=Tまで積分する |
+| 異常prefix | 成功commit済の時刻Hの点/台帳はrecords/summaryへ保持し、半開窓には入れない。点数・完了量のsummaryと窓合計の差はHの成功点だけになる。失敗イベントの全暫定効果は除外。H=0でも成功点が存在し得る |
+
+結果構築は凍結snapshotに対する純粋な処理として行う。必要な数値更新の検査はcommit対象となる観測batchの検証時にも行い、失敗batchが確定journalを壊さないようにする。集計器内の容量・算術失敗が後から検出された場合も、架空の完全値を出さず診断系へ伝播する。公開には整合したsnapshotだけを渡す。
+
+## 3. 完全schemaと直列化
+
+<a id="schema"></a>
+
+```trace
+{
+  "id": "design-results#schema",
+  "stage": "design",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0044", "DIR-REQ-0054", "DIR-REQ-0092", "DIR-REQ-0093", "DIR-REQ-0094", "DIR-REQ-0095", "DIR-REQ-0096"],
+  "upstream": ["architecture#arch-results"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 段階 | 手順・検査 |
+| --- | --- |
+| `ResultSnapshot` | schema1ではMetadata、Simulationの全必須フィールド、Record/Request/ReceiverとCanFieldsを生成する。型・nullable・全キーは[ファイルschema](../specs/結果詳細機能仕様書.md#result-schema)を正とし、値が無いキーを省略しない |
+| Record構築 | metric descriptorと対象種別を照合しunit/value_kindを付与する。点はtime_psのみ、集計はstart/endのみ。request_id/receiver/reason/sample_countは出力集合ごとの指定を適用する。完全インスタンスパスと予約名$allを区別し、実時間をtime_psへ入れない |
+| 安定sort | recordsは有効時刻→窓/初期点/callback点→commit順→effect_seq。窓/初期点の同順位はtarget/metric/reason/receiverのUTF-8辞書順。summaryは同じ辞書順、requestsはrequest_id、receiversはrequest_id/receiver順。nullは文字列より先。sort後にrecords/summary別にseqを0から連続採番 |
+| 整数・文字 | 時刻/件数/整数valueを先頭0なしのDへ変換しJSON文字列で保存する。キーをUTF-8辞書順に並べ、制御文字・quote/backslashを仕様どおり逃がし、Unicode正規化を行わない。UTF-8 BOMなし、compact JSON＋末尾LF |
+| 数値 | 有限binary64だけを仕様の十進有効17桁、指数表記へ変換し、負0を正0にする。nullと0を別値で保持する。CSVにも同じ数値文字列を射影する |
+| CSV | results.jsonのrecords→events.csv、summary→summary.csvを同順に17列へ射影し、schema_version/run_idを追加する。CSV nullは空セル。comma/quote/LFを含む文字列は引用し内部quoteを二重化する。独立CSV生成用の再集計は行わない |
+| 読み戻し | manifestの実バイト数/hash/run_id/schemaの一致を先に確認する。schema、全キー、D、有限number、seq連続性、metric/unit/type、対象参照、台帳状態/時刻/保存則を照合し、CSVを型付きRecordへ復元してJSON配列と比較する。未知版・不正値を有効結果として補正しない |
+| schema2 | prepareで凍結したprofile descriptorの版を選ぶ。Simulation2はrequests/receiversを持たずmodel_recordsを持つ。ModelRecordの一意キー(schema_name,record_id)、登録版、subject/request参照、最後の成功更新timeを確認して(schema_name,subject,record_id)順に保存する。固有dataの意味は登録codecが検証する |
+| schema2互換 | Metadata2へmodel_profile/model_schemasを追加する。manifest/results/CSVの版2と診断レコードの版1を混同しない。対応schemaだけを解析する方式では未解釈schema集合を明示する。既定CANはschema1、37指標、CanFieldsを維持する |
+
+## 4. 実験条件のsnapshot
+
+<a id="metadata"></a>
+
+```trace
+{
+  "id": "design-results#metadata",
+  "stage": "design",
+  "requirements": ["DIR-REQ-0114", "DIR-REQ-0117"],
+  "upstream": ["architecture#arch-results", "architecture#arch-domain-models"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 要素 | 処理・所有境界 |
+| --- | --- |
+| 入力snapshot | prepareの実読込時にraw UTF-8 bytes・logical_path・canonical_pathを取得しhash化して保持する。結果保存時にファイルを再読込して置換しない。sourcesはlogical_path順、input_sha256はlogical_path/sha256だけのcanonical配列から計算する |
+| 確定値 | 型解決済み設定を単位ps/bit/s/byte/countへ正規化したkey/value文字列ペアとし、既定値も含めkey順に保持する。config_sha256はcanonical JSON bytes（末尾LFなし）から計算し、パス・実時間を入力hashへ追加しない |
+| モデル前提 | modelsの版付きtypeとassumptionsに理想ACK、再送/エラー注入の範囲、フレーム内容依存時間、固定伝搬、自己配送なし、フィルタ/ACK独立を保存する。初期状態はモデルが定義したcanonical JSON文字列をinstance順に保持する。参照規格/採用範囲は[CAN仕様](../specs/models/CANモデル詳細機能仕様書.md#profile)と採用台帳版へ結び付ける |
+| 版と環境 | runtime/git/binary/model-registry/compiler/target/OS/CPUに加えCargo.lock hash、完全toolchain、adoption_ledger_versionを保持する。取得不能はunknownと明示する。環境変数や認証情報の収集処理は設けない |
+| run識別 | 実行開始ごとにUUIDv4を採番し全形式へ共通設定する。started/finished実時間、run_id、パス/環境値はmetadataへ置く。決定性照合はsimulation、CSVはrun_id列を除いて比較する |
+| 準備失敗 | 全件成功前のconfig/initial_stateは空配列。取得済の有効UTF-8 sourcesと照合済modelsを保持し未取得値はunknown。空配列のhashも計算する。metricsとwindowは仕様の準備進行に従う。追加profile確定後ならschema2登録集合を保持する |
+| 再現判定 | 入力hashだけで同条件としない。確定設定・初期状態・runtime/model/metric版・環境を照合してからsimulationを比較する。別計算機の比較は固定版の整数時間/順序/丸めに従うsimulationだけを対象とし、unknown版では保証条件未同定と表示する |
+
+## 5. 公開と失敗境界
+
+<a id="publication"></a>
+
+```trace
+{
+  "id": "design-results#publication",
+  "stage": "design",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0044", "DIR-REQ-0056", "DIR-REQ-0120"],
+  "upstream": ["architecture#arch-results"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 状態 | 処理・失敗伝播 |
+| --- | --- |
+| `PreparedOutput` | 準備時にoutputが新規又は空で書込可能であることを確認する。非空/書込不可ならE-0003、exit4。既存成果を保持して拒否する。実際のI/Oでも各操作の失敗を検出する |
+| `Writing` | 同一filesystemのoutput内.tmp-run_idへresults.json、events.csv、summary.csv、diagnostics.jsonlを書き、flush/close成功後のraw bytes数とSHA256を求める。書込/flush/close/hashの失敗はE-0003、operation/対象/原因を診断へ渡す |
+| `PublishingData` | 4ファイルを最終名へrenameする。manifestはまだ公開しない。途中失敗の既公開データを調査用に残し一時物はbest-effort削除する。自動retry/既存物の上書きへ進まない |
+| `PublishingManifest` | 完成4ファイルをname順に列挙したmanifestを一時名へ書きflush/close後、最後にrenameする。metadata_ref=results.json#/metadata。manifest自身はfilesへ入れない |
+| `Published` | manifest status=completeは5ファイル集合の完成を示す。execution_failed/partial=trueも保存に成功すればcomplete。正常time_limit/events_exhaustedは未完了があってもpartial=false。prep_failedは空simulationとpartial=true |
+| `Failed` | manifestが無い集合は不完全。output_failed/exit4でstderrへE-0003を通知する。diagnostics.jsonlを保存できなくてもstderr通知を試みる。失敗保存を公開済simulationのterminationへ書き足さない。実行失敗に出力失敗が重なる場合のprimary/secondaryは診断仕様を適用する |
+| 読者側 | manifest有無だけで受理せず4ファイルのbytes/hash、run_id/版、metadata参照を検証する。電源断に対する耐久性は仕様の保証範囲外でありflush/closeをfsync耐久保証と読み替えない |
+
+初期化・runtime・finishで決まる終了理由と凍結区間は[実行設計](実行詳細設計書.md)と診断仕様を正とする。出力失敗をキュー破棄や送信失敗件数に足さず、E-0003の段階・対象へ結び付ける。

@@ -1,0 +1,2030 @@
+{
+  "schema_version": 1,
+  "started_at_utc": "2026-10-05T21:43:12.789821+00:00",
+  "specification": "docs/品質・配布方針.md section 1",
+  "series": "WSL2 separate environment",
+  "binary_sha256": "40f24849b421d65dcf38e4383e2965e105501926b0c18daa040b6089c2d9a122",
+  "cargo_lock_sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+  "git_head": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+  "git_dirty": true,
+  "environment": {
+    "uname": [
+      "Linux",
+      "OMEN35L",
+      "6.18.33.2-microsoft-standard-WSL2",
+      "#1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026",
+      "x86_64"
+    ],
+    "cpuinfo": "processor\t: 0\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 0\ncpu cores\t: 20\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 1\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 1\ncpu cores\t: 20\napicid\t\t: 1\ninitial apicid\t: 1\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 2\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 2\ncpu cores\t: 20\napicid\t\t: 2\ninitial apicid\t: 2\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 3\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 3\ncpu cores\t: 20\napicid\t\t: 3\ninitial apicid\t: 3\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 4\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 4\ncpu cores\t: 20\napicid\t\t: 4\ninitial apicid\t: 4\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 5\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 5\ncpu cores\t: 20\napicid\t\t: 5\ninitial apicid\t: 5\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 6\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 6\ncpu cores\t: 20\napicid\t\t: 6\ninitial apicid\t: 6\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 7\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 7\ncpu cores\t: 20\napicid\t\t: 7\ninitial apicid\t: 7\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 8\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 8\ncpu cores\t: 20\napicid\t\t: 8\ninitial apicid\t: 8\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 9\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 9\ncpu cores\t: 20\napicid\t\t: 9\ninitial apicid\t: 9\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 10\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 10\ncpu cores\t: 20\napicid\t\t: 10\ninitial apicid\t: 10\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 11\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 11\ncpu cores\t: 20\napicid\t\t: 11\ninitial apicid\t: 11\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 12\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 12\ncpu cores\t: 20\napicid\t\t: 12\ninitial apicid\t: 12\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 13\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 13\ncpu cores\t: 20\napicid\t\t: 13\ninitial apicid\t: 13\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 14\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 14\ncpu cores\t: 20\napicid\t\t: 14\ninitial apicid\t: 14\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 15\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 15\ncpu cores\t: 20\napicid\t\t: 15\ninitial apicid\t: 15\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 16\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 16\ncpu cores\t: 20\napicid\t\t: 16\ninitial apicid\t: 16\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 17\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 17\ncpu cores\t: 20\napicid\t\t: 17\ninitial apicid\t: 17\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 18\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 18\ncpu cores\t: 20\napicid\t\t: 18\ninitial apicid\t: 18\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 19\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 19\ncpu cores\t: 20\napicid\t\t: 19\ninitial apicid\t: 19\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\n",
+    "os_release": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "meminfo": "MemTotal:       32549540 kB\nMemFree:        27606440 kB\nMemAvailable:   29382532 kB\nBuffers:          877828 kB\nCached:           875172 kB\nSwapCached:            4 kB\nActive:          1654648 kB\nInactive:        2049992 kB\nActive(anon):       2796 kB\nInactive(anon):  1952540 kB\nActive(file):    1651852 kB\nInactive(file):    97452 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:       8388608 kB\nSwapFree:        8388588 kB\nDirty:               760 kB\nWriteback:             0 kB\nAnonPages:       1952236 kB\nMapped:           467524 kB\nShmem:              3684 kB\nKReclaimable:     403880 kB\nSlab:             617512 kB\nSReclaimable:     403880 kB\nSUnreclaim:       213632 kB\nKernelStack:        9200 kB\nPageTables:        32772 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    24663376 kB\nCommitted_AS:    3543316 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      180792 kB\nVmallocChunk:          0 kB\nPercpu:            10176 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:     18432 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:       58368 kB\nDirectMap2M:    10106880 kB\nDirectMap1G:    31457280 kB\n",
+    "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7\n"
+  },
+  "resource_guard": {
+    "address_space_limit_bytes": 27917287424,
+    "rss_stop_bytes": 25769803776,
+    "minimum_available_bytes": 3221225472,
+    "core_file_limit_bytes": 1,
+    "note": "Incomplete guarded/aborted runs do not establish unconstrained peak RSS or completion time."
+  },
+  "targets": {
+    "wall_seconds": 120,
+    "max_rss_bytes": 2147483648
+  },
+  "generation": {
+    "bit_time_ps": 2000000,
+    "bitrate_bps": 500000,
+    "calculation": {
+      "C_i_definition": "(frame_bits_including_sof_to_eof + 3) * bit_time_ps",
+      "T_definition": "count_per_sender * P",
+      "crc_input": "SOF through data field, before CRC sequence",
+      "crc_polynomial_hex": "0x4599",
+      "dynamic_stuffing": "SOF through CRC sequence inclusive",
+      "intermission_bits": 3,
+      "period_rounding": "ceil(sum(C_i) / rho), using exact rational arithmetic",
+      "phase_definition": "floor(sender_index * P / 32), with zero-based index",
+      "rho_definition": "sum(C_i) / P",
+      "unstuffed_trailing_bits": 10
+    },
+    "channel_delay_ps": 0,
+    "count_per_sender": 31250,
+    "frame": {
+      "can_id_first": 256,
+      "can_id_last": 287,
+      "data_hex": "0000000000000000",
+      "format": "standard"
+    },
+    "generator": "scripts/performance/generate_can_million.py",
+    "input_sha256": {
+      "models/canmillion/Main.ned": "a5c6b07aed7c5b36f3f4743fd3221f928b4ab5745719ea434075626a313ac364",
+      "rho-0.30.ini": "7d2077885ceca232b29c4e959916e043e9e271eba54874a845251519252f00f3",
+      "rho-0.30.workload.json": "74319bb54e97c12da0700a7e7db6967543ae109d6b274f1343b9a208d00d9bce",
+      "rho-0.90.ini": "977389feb148f844f36529de40ed3edcf5f7fdc57424d2fee4e6bbf1eb52081f",
+      "rho-0.90.workload.json": "994135f73152af21b7886cdc1817649f880f4e3d4d256e3d449c08988c4d4a41",
+      "rho-1.20.ini": "e748c96a2fb451b5c05afb4a0ff210d0550ebb2216b9fd46d5f6c46c7a54e25f",
+      "rho-1.20.workload.json": "abc143b433a8a5ca314c31be3356aec86f51407ccb8199614802ede560f7de14"
+    },
+    "metrics_window": "1ms",
+    "provenance": "Deterministic analytic Classical CAN timing inputs; CRC-15 register and polynomial-division calculations agree. This does not claim simulator execution, performance, hardware capture, or ISO conformance.",
+    "queue_capacity": 64,
+    "request_count_per_configuration": 1000000,
+    "rx_filter": "*",
+    "rx_processing_delay_ps": 0,
+    "scenarios": [
+      {
+        "P_ps": 26660000000,
+        "T_ps": 833125000000000,
+        "ini": "rho-0.30.ini",
+        "request_count_per_sender": 31250,
+        "request_count_total": 1000000,
+        "rho": "0.30",
+        "rho_exact": {
+          "denominator": 10,
+          "numerator": 3
+        },
+        "senders": [
+          {
+            "last_start_ps": 833098340000000,
+            "node": "Main.n00",
+            "phase_ps": 0,
+            "sender_index": 0
+          },
+          {
+            "last_start_ps": 833099173125000,
+            "node": "Main.n01",
+            "phase_ps": 833125000,
+            "sender_index": 1
+          },
+          {
+            "last_start_ps": 833100006250000,
+            "node": "Main.n02",
+            "phase_ps": 1666250000,
+            "sender_index": 2
+          },
+          {
+            "last_start_ps": 833100839375000,
+            "node": "Main.n03",
+            "phase_ps": 2499375000,
+            "sender_index": 3
+          },
+          {
+            "last_start_ps": 833101672500000,
+            "node": "Main.n04",
+            "phase_ps": 3332500000,
+            "sender_index": 4
+          },
+          {
+            "last_start_ps": 833102505625000,
+            "node": "Main.n05",
+            "phase_ps": 4165625000,
+            "sender_index": 5
+          },
+          {
+            "last_start_ps": 833103338750000,
+            "node": "Main.n06",
+            "phase_ps": 4998750000,
+            "sender_index": 6
+          },
+          {
+            "last_start_ps": 833104171875000,
+            "node": "Main.n07",
+            "phase_ps": 5831875000,
+            "sender_index": 7
+          },
+          {
+            "last_start_ps": 833105005000000,
+            "node": "Main.n08",
+            "phase_ps": 6665000000,
+            "sender_index": 8
+          },
+          {
+            "last_start_ps": 833105838125000,
+            "node": "Main.n09",
+            "phase_ps": 7498125000,
+            "sender_index": 9
+          },
+          {
+            "last_start_ps": 833106671250000,
+            "node": "Main.n10",
+            "phase_ps": 8331250000,
+            "sender_index": 10
+          },
+          {
+            "last_start_ps": 833107504375000,
+            "node": "Main.n11",
+            "phase_ps": 9164375000,
+            "sender_index": 11
+          },
+          {
+            "last_start_ps": 833108337500000,
+            "node": "Main.n12",
+            "phase_ps": 9997500000,
+            "sender_index": 12
+          },
+          {
+            "last_start_ps": 833109170625000,
+            "node": "Main.n13",
+            "phase_ps": 10830625000,
+            "sender_index": 13
+          },
+          {
+            "last_start_ps": 833110003750000,
+            "node": "Main.n14",
+            "phase_ps": 11663750000,
+            "sender_index": 14
+          },
+          {
+            "last_start_ps": 833110836875000,
+            "node": "Main.n15",
+            "phase_ps": 12496875000,
+            "sender_index": 15
+          },
+          {
+            "last_start_ps": 833111670000000,
+            "node": "Main.n16",
+            "phase_ps": 13330000000,
+            "sender_index": 16
+          },
+          {
+            "last_start_ps": 833112503125000,
+            "node": "Main.n17",
+            "phase_ps": 14163125000,
+            "sender_index": 17
+          },
+          {
+            "last_start_ps": 833113336250000,
+            "node": "Main.n18",
+            "phase_ps": 14996250000,
+            "sender_index": 18
+          },
+          {
+            "last_start_ps": 833114169375000,
+            "node": "Main.n19",
+            "phase_ps": 15829375000,
+            "sender_index": 19
+          },
+          {
+            "last_start_ps": 833115002500000,
+            "node": "Main.n20",
+            "phase_ps": 16662500000,
+            "sender_index": 20
+          },
+          {
+            "last_start_ps": 833115835625000,
+            "node": "Main.n21",
+            "phase_ps": 17495625000,
+            "sender_index": 21
+          },
+          {
+            "last_start_ps": 833116668750000,
+            "node": "Main.n22",
+            "phase_ps": 18328750000,
+            "sender_index": 22
+          },
+          {
+            "last_start_ps": 833117501875000,
+            "node": "Main.n23",
+            "phase_ps": 19161875000,
+            "sender_index": 23
+          },
+          {
+            "last_start_ps": 833118335000000,
+            "node": "Main.n24",
+            "phase_ps": 19995000000,
+            "sender_index": 24
+          },
+          {
+            "last_start_ps": 833119168125000,
+            "node": "Main.n25",
+            "phase_ps": 20828125000,
+            "sender_index": 25
+          },
+          {
+            "last_start_ps": 833120001250000,
+            "node": "Main.n26",
+            "phase_ps": 21661250000,
+            "sender_index": 26
+          },
+          {
+            "last_start_ps": 833120834375000,
+            "node": "Main.n27",
+            "phase_ps": 22494375000,
+            "sender_index": 27
+          },
+          {
+            "last_start_ps": 833121667500000,
+            "node": "Main.n28",
+            "phase_ps": 23327500000,
+            "sender_index": 28
+          },
+          {
+            "last_start_ps": 833122500625000,
+            "node": "Main.n29",
+            "phase_ps": 24160625000,
+            "sender_index": 29
+          },
+          {
+            "last_start_ps": 833123333750000,
+            "node": "Main.n30",
+            "phase_ps": 24993750000,
+            "sender_index": 30
+          },
+          {
+            "last_start_ps": 833124166875000,
+            "node": "Main.n31",
+            "phase_ps": 25826875000,
+            "sender_index": 31
+          }
+        ],
+        "total_C_i_ps": 7998000000,
+        "workload": "rho-0.30.workload.json"
+      },
+      {
+        "P_ps": 8886666667,
+        "T_ps": 277708333343750,
+        "ini": "rho-0.90.ini",
+        "request_count_per_sender": 31250,
+        "request_count_total": 1000000,
+        "rho": "0.90",
+        "rho_exact": {
+          "denominator": 10,
+          "numerator": 9
+        },
+        "senders": [
+          {
+            "last_start_ps": 277699446677083,
+            "node": "Main.n00",
+            "phase_ps": 0,
+            "sender_index": 0
+          },
+          {
+            "last_start_ps": 277699724385416,
+            "node": "Main.n01",
+            "phase_ps": 277708333,
+            "sender_index": 1
+          },
+          {
+            "last_start_ps": 277700002093749,
+            "node": "Main.n02",
+            "phase_ps": 555416666,
+            "sender_index": 2
+          },
+          {
+            "last_start_ps": 277700279802083,
+            "node": "Main.n03",
+            "phase_ps": 833125000,
+            "sender_index": 3
+          },
+          {
+            "last_start_ps": 277700557510416,
+            "node": "Main.n04",
+            "phase_ps": 1110833333,
+            "sender_index": 4
+          },
+          {
+            "last_start_ps": 277700835218749,
+            "node": "Main.n05",
+            "phase_ps": 1388541666,
+            "sender_index": 5
+          },
+          {
+            "last_start_ps": 277701112927083,
+            "node": "Main.n06",
+            "phase_ps": 1666250000,
+            "sender_index": 6
+          },
+          {
+            "last_start_ps": 277701390635416,
+            "node": "Main.n07",
+            "phase_ps": 1943958333,
+            "sender_index": 7
+          },
+          {
+            "last_start_ps": 277701668343749,
+            "node": "Main.n08",
+            "phase_ps": 2221666666,
+            "sender_index": 8
+          },
+          {
+            "last_start_ps": 277701946052083,
+            "node": "Main.n09",
+            "phase_ps": 2499375000,
+            "sender_index": 9
+          },
+          {
+            "last_start_ps": 277702223760416,
+            "node": "Main.n10",
+            "phase_ps": 2777083333,
+            "sender_index": 10
+          },
+          {
+            "last_start_ps": 277702501468749,
+            "node": "Main.n11",
+            "phase_ps": 3054791666,
+            "sender_index": 11
+          },
+          {
+            "last_start_ps": 277702779177083,
+            "node": "Main.n12",
+            "phase_ps": 3332500000,
+            "sender_index": 12
+          },
+          {
+            "last_start_ps": 277703056885416,
+            "node": "Main.n13",
+            "phase_ps": 3610208333,
+            "sender_index": 13
+          },
+          {
+            "last_start_ps": 277703334593749,
+            "node": "Main.n14",
+            "phase_ps": 3887916666,
+            "sender_index": 14
+          },
+          {
+            "last_start_ps": 277703612302083,
+            "node": "Main.n15",
+            "phase_ps": 4165625000,
+            "sender_index": 15
+          },
+          {
+            "last_start_ps": 277703890010416,
+            "node": "Main.n16",
+            "phase_ps": 4443333333,
+            "sender_index": 16
+          },
+          {
+            "last_start_ps": 277704167718749,
+            "node": "Main.n17",
+            "phase_ps": 4721041666,
+            "sender_index": 17
+          },
+          {
+            "last_start_ps": 277704445427083,
+            "node": "Main.n18",
+            "phase_ps": 4998750000,
+            "sender_index": 18
+          },
+          {
+            "last_start_ps": 277704723135416,
+            "node": "Main.n19",
+            "phase_ps": 5276458333,
+            "sender_index": 19
+          },
+          {
+            "last_start_ps": 277705000843749,
+            "node": "Main.n20",
+            "phase_ps": 5554166666,
+            "sender_index": 20
+          },
+          {
+            "last_start_ps": 277705278552083,
+            "node": "Main.n21",
+            "phase_ps": 5831875000,
+            "sender_index": 21
+          },
+          {
+            "last_start_ps": 277705556260416,
+            "node": "Main.n22",
+            "phase_ps": 6109583333,
+            "sender_index": 22
+          },
+          {
+            "last_start_ps": 277705833968749,
+            "node": "Main.n23",
+            "phase_ps": 6387291666,
+            "sender_index": 23
+          },
+          {
+            "last_start_ps": 277706111677083,
+            "node": "Main.n24",
+            "phase_ps": 6665000000,
+            "sender_index": 24
+          },
+          {
+            "last_start_ps": 277706389385416,
+            "node": "Main.n25",
+            "phase_ps": 6942708333,
+            "sender_index": 25
+          },
+          {
+            "last_start_ps": 277706667093749,
+            "node": "Main.n26",
+            "phase_ps": 7220416666,
+            "sender_index": 26
+          },
+          {
+            "last_start_ps": 277706944802083,
+            "node": "Main.n27",
+            "phase_ps": 7498125000,
+            "sender_index": 27
+          },
+          {
+            "last_start_ps": 277707222510416,
+            "node": "Main.n28",
+            "phase_ps": 7775833333,
+            "sender_index": 28
+          },
+          {
+            "last_start_ps": 277707500218749,
+            "node": "Main.n29",
+            "phase_ps": 8053541666,
+            "sender_index": 29
+          },
+          {
+            "last_start_ps": 277707777927083,
+            "node": "Main.n30",
+            "phase_ps": 8331250000,
+            "sender_index": 30
+          },
+          {
+            "last_start_ps": 277708055635416,
+            "node": "Main.n31",
+            "phase_ps": 8608958333,
+            "sender_index": 31
+          }
+        ],
+        "total_C_i_ps": 7998000000,
+        "workload": "rho-0.90.workload.json"
+      },
+      {
+        "P_ps": 6665000000,
+        "T_ps": 208281250000000,
+        "ini": "rho-1.20.ini",
+        "request_count_per_sender": 31250,
+        "request_count_total": 1000000,
+        "rho": "1.20",
+        "rho_exact": {
+          "denominator": 5,
+          "numerator": 6
+        },
+        "senders": [
+          {
+            "last_start_ps": 208274585000000,
+            "node": "Main.n00",
+            "phase_ps": 0,
+            "sender_index": 0
+          },
+          {
+            "last_start_ps": 208274793281250,
+            "node": "Main.n01",
+            "phase_ps": 208281250,
+            "sender_index": 1
+          },
+          {
+            "last_start_ps": 208275001562500,
+            "node": "Main.n02",
+            "phase_ps": 416562500,
+            "sender_index": 2
+          },
+          {
+            "last_start_ps": 208275209843750,
+            "node": "Main.n03",
+            "phase_ps": 624843750,
+            "sender_index": 3
+          },
+          {
+            "last_start_ps": 208275418125000,
+            "node": "Main.n04",
+            "phase_ps": 833125000,
+            "sender_index": 4
+          },
+          {
+            "last_start_ps": 208275626406250,
+            "node": "Main.n05",
+            "phase_ps": 1041406250,
+            "sender_index": 5
+          },
+          {
+            "last_start_ps": 208275834687500,
+            "node": "Main.n06",
+            "phase_ps": 1249687500,
+            "sender_index": 6
+          },
+          {
+            "last_start_ps": 208276042968750,
+            "node": "Main.n07",
+            "phase_ps": 1457968750,
+            "sender_index": 7
+          },
+          {
+            "last_start_ps": 208276251250000,
+            "node": "Main.n08",
+            "phase_ps": 1666250000,
+            "sender_index": 8
+          },
+          {
+            "last_start_ps": 208276459531250,
+            "node": "Main.n09",
+            "phase_ps": 1874531250,
+            "sender_index": 9
+          },
+          {
+            "last_start_ps": 208276667812500,
+            "node": "Main.n10",
+            "phase_ps": 2082812500,
+            "sender_index": 10
+          },
+          {
+            "last_start_ps": 208276876093750,
+            "node": "Main.n11",
+            "phase_ps": 2291093750,
+            "sender_index": 11
+          },
+          {
+            "last_start_ps": 208277084375000,
+            "node": "Main.n12",
+            "phase_ps": 2499375000,
+            "sender_index": 12
+          },
+          {
+            "last_start_ps": 208277292656250,
+            "node": "Main.n13",
+            "phase_ps": 2707656250,
+            "sender_index": 13
+          },
+          {
+            "last_start_ps": 208277500937500,
+            "node": "Main.n14",
+            "phase_ps": 2915937500,
+            "sender_index": 14
+          },
+          {
+            "last_start_ps": 208277709218750,
+            "node": "Main.n15",
+            "phase_ps": 3124218750,
+            "sender_index": 15
+          },
+          {
+            "last_start_ps": 208277917500000,
+            "node": "Main.n16",
+            "phase_ps": 3332500000,
+            "sender_index": 16
+          },
+          {
+            "last_start_ps": 208278125781250,
+            "node": "Main.n17",
+            "phase_ps": 3540781250,
+            "sender_index": 17
+          },
+          {
+            "last_start_ps": 208278334062500,
+            "node": "Main.n18",
+            "phase_ps": 3749062500,
+            "sender_index": 18
+          },
+          {
+            "last_start_ps": 208278542343750,
+            "node": "Main.n19",
+            "phase_ps": 3957343750,
+            "sender_index": 19
+          },
+          {
+            "last_start_ps": 208278750625000,
+            "node": "Main.n20",
+            "phase_ps": 4165625000,
+            "sender_index": 20
+          },
+          {
+            "last_start_ps": 208278958906250,
+            "node": "Main.n21",
+            "phase_ps": 4373906250,
+            "sender_index": 21
+          },
+          {
+            "last_start_ps": 208279167187500,
+            "node": "Main.n22",
+            "phase_ps": 4582187500,
+            "sender_index": 22
+          },
+          {
+            "last_start_ps": 208279375468750,
+            "node": "Main.n23",
+            "phase_ps": 4790468750,
+            "sender_index": 23
+          },
+          {
+            "last_start_ps": 208279583750000,
+            "node": "Main.n24",
+            "phase_ps": 4998750000,
+            "sender_index": 24
+          },
+          {
+            "last_start_ps": 208279792031250,
+            "node": "Main.n25",
+            "phase_ps": 5207031250,
+            "sender_index": 25
+          },
+          {
+            "last_start_ps": 208280000312500,
+            "node": "Main.n26",
+            "phase_ps": 5415312500,
+            "sender_index": 26
+          },
+          {
+            "last_start_ps": 208280208593750,
+            "node": "Main.n27",
+            "phase_ps": 5623593750,
+            "sender_index": 27
+          },
+          {
+            "last_start_ps": 208280416875000,
+            "node": "Main.n28",
+            "phase_ps": 5831875000,
+            "sender_index": 28
+          },
+          {
+            "last_start_ps": 208280625156250,
+            "node": "Main.n29",
+            "phase_ps": 6040156250,
+            "sender_index": 29
+          },
+          {
+            "last_start_ps": 208280833437500,
+            "node": "Main.n30",
+            "phase_ps": 6248437500,
+            "sender_index": 30
+          },
+          {
+            "last_start_ps": 208281041718750,
+            "node": "Main.n31",
+            "phase_ps": 6456718750,
+            "sender_index": 31
+          }
+        ],
+        "total_C_i_ps": 7998000000,
+        "workload": "rho-1.20.workload.json"
+      }
+    ],
+    "schema_version": 1,
+    "sender_count": 32,
+    "senders": [
+      {
+        "C_i_ps": 252000000,
+        "can_id": 256,
+        "crc15": 13480,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n00",
+        "intermission_bits": 3,
+        "node": "Main.n00",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 0,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 257,
+        "crc15": 16307,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n01",
+        "intermission_bits": 3,
+        "node": "Main.n01",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 1,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 258,
+        "crc15": 8862,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n02",
+        "intermission_bits": 3,
+        "node": "Main.n02",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 2,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 259,
+        "crc15": 10629,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n03",
+        "intermission_bits": 3,
+        "node": "Main.n03",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 3,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 260,
+        "crc15": 6340,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n04",
+        "intermission_bits": 3,
+        "node": "Main.n04",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 4,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 261,
+        "crc15": 5087,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n05",
+        "intermission_bits": 3,
+        "node": "Main.n05",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 5,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 262,
+        "crc15": 3826,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n06",
+        "intermission_bits": 3,
+        "node": "Main.n06",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 6,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 263,
+        "crc15": 1513,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n07",
+        "intermission_bits": 3,
+        "node": "Main.n07",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 7,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 264,
+        "crc15": 27760,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n08",
+        "intermission_bits": 3,
+        "node": "Main.n08",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 8,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 265,
+        "crc15": 26475,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n09",
+        "intermission_bits": 3,
+        "node": "Main.n09",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 9,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 266,
+        "crc15": 31302,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n10",
+        "intermission_bits": 3,
+        "node": "Main.n10",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 10,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 267,
+        "crc15": 29021,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n11",
+        "intermission_bits": 3,
+        "node": "Main.n11",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 11,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 268,
+        "crc15": 16412,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n12",
+        "intermission_bits": 3,
+        "node": "Main.n12",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 12,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 269,
+        "crc15": 19207,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n13",
+        "intermission_bits": 3,
+        "node": "Main.n13",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 13,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 270,
+        "crc15": 22058,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n14",
+        "intermission_bits": 3,
+        "node": "Main.n14",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 14,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 271,
+        "crc15": 23857,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n15",
+        "intermission_bits": 3,
+        "node": "Main.n15",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 15,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 254000000,
+        "can_id": 272,
+        "crc15": 16513,
+        "frame_bits_including_sof_to_eof": 124,
+        "generator_id": "n16",
+        "intermission_bits": 3,
+        "node": "Main.n16",
+        "occupied_bits_including_intermission": 127,
+        "sender_index": 16,
+        "stuff_bits": 16
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 273,
+        "crc15": 19354,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n17",
+        "intermission_bits": 3,
+        "node": "Main.n17",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 17,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 274,
+        "crc15": 22199,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n18",
+        "intermission_bits": 3,
+        "node": "Main.n18",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 18,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 275,
+        "crc15": 23980,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n19",
+        "intermission_bits": 3,
+        "node": "Main.n19",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 19,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 276,
+        "crc15": 27885,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n20",
+        "intermission_bits": 3,
+        "node": "Main.n20",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 20,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 277,
+        "crc15": 26614,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n21",
+        "intermission_bits": 3,
+        "node": "Main.n21",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 21,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 278,
+        "crc15": 31451,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n22",
+        "intermission_bits": 3,
+        "node": "Main.n22",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 22,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 279,
+        "crc15": 29120,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n23",
+        "intermission_bits": 3,
+        "node": "Main.n23",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 23,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 280,
+        "crc15": 6233,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n24",
+        "intermission_bits": 3,
+        "node": "Main.n24",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 24,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 281,
+        "crc15": 4930,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n25",
+        "intermission_bits": 3,
+        "node": "Main.n25",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 25,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 282,
+        "crc15": 3695,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n26",
+        "intermission_bits": 3,
+        "node": "Main.n26",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 26,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 283,
+        "crc15": 1396,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n27",
+        "intermission_bits": 3,
+        "node": "Main.n27",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 27,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 284,
+        "crc15": 13365,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n28",
+        "intermission_bits": 3,
+        "node": "Main.n28",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 28,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 285,
+        "crc15": 16174,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n29",
+        "intermission_bits": 3,
+        "node": "Main.n29",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 29,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 286,
+        "crc15": 8707,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n30",
+        "intermission_bits": 3,
+        "node": "Main.n30",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 30,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 287,
+        "crc15": 10520,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n31",
+        "intermission_bits": 3,
+        "node": "Main.n31",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 31,
+        "stuff_bits": 14
+      }
+    ],
+    "tx_processing_delay_ps": 0
+  },
+  "conditions": [
+    {
+      "config": "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+      "input_sha256": "7d2077885ceca232b29c4e959916e043e9e271eba54874a845251519252f00f3",
+      "attempts": [
+        {
+          "started_at_utc": "2026-10-05T21:43:12.840932+00:00",
+          "finished_at_utc": "2026-10-05T21:43:53.194959+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-0/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-0/output"
+          ],
+          "returncode": 134,
+          "measurements": {
+            "wall_seconds": 40.3,
+            "max_rss_kib": 22189552,
+            "user_seconds": 26.27,
+            "system_seconds": 13.66,
+            "exit_status": 0,
+            "termination_signal": 6
+          },
+          "max_rss_bytes": 22722101248,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "allocation_failure_with_address_space_guard",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-0",
+          "stderr_tail": "memory allocation of 23622320128 bytes failed\n",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-333382-0",
+              "bytes": 6635608057
+            }
+          ],
+          "kind": "warmup",
+          "repeat": 0,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "allocator_abort",
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "43b6828984889a6b5ced6ffc56f1e794ea46f80de7280bcb6d12647375e0eb64",
+            "stderr.txt": "f69287a220777faab1f843d6099b088ed0a50f7587dcb644c5f79e300cf95079",
+            "attempt-started.json": "bc4552177e4eb120037df42940de3fad6d94a48977eda6d6815d49c933b6a5a7",
+            "gnu-time.txt": "f51b85b6effd28a4eba50c53c00fdc2339c8d5100e3d5572ad87e134795aaafb",
+            "attempt.json": "1607c0c1b45b5921ed8d70a9a9f696a523ed67c946ba5848529c311073f7a274"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:43:53.350474+00:00",
+          "finished_at_utc": "2026-10-05T21:44:35.185036+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-1/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-1/output"
+          ],
+          "returncode": 134,
+          "measurements": {
+            "wall_seconds": 41.63,
+            "max_rss_kib": 22188344,
+            "user_seconds": 26.79,
+            "system_seconds": 14.49,
+            "exit_status": 0,
+            "termination_signal": 6
+          },
+          "max_rss_bytes": 22720864256,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "allocation_failure_with_address_space_guard",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-1",
+          "stderr_tail": "memory allocation of 23622320128 bytes failed\n",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-333548-0",
+              "bytes": 6635608057
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 1,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "allocator_abort",
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "963f9894f76c4049244051634be3754f145845462b5a757e042247f24b361b1f",
+            "stderr.txt": "f69287a220777faab1f843d6099b088ed0a50f7587dcb644c5f79e300cf95079",
+            "attempt-started.json": "4535a04ac237dc46a40fe80840e3fb0bd9ebf7f346bcb7ae1a7f7f9be4aef7b3",
+            "gnu-time.txt": "16fc83e1aca30b9b74a643f1297c1d84665316e2b18a28e6048248a8fb18a42f",
+            "attempt.json": "aa15e3fef339fc6f7cf8c03a6f1d872b7b8d90ea20fd20b9b7dd769aeca3917b"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:44:35.318183+00:00",
+          "finished_at_utc": "2026-10-05T21:45:17.805505+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-2/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-2/output"
+          ],
+          "returncode": 134,
+          "measurements": {
+            "wall_seconds": 42.29,
+            "max_rss_kib": 22189328,
+            "user_seconds": 26.52,
+            "system_seconds": 15.22,
+            "exit_status": 0,
+            "termination_signal": 6
+          },
+          "max_rss_bytes": 22721871872,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "allocation_failure_with_address_space_guard",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-2",
+          "stderr_tail": "memory allocation of 23622320128 bytes failed\n",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-333759-0",
+              "bytes": 6635608057
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 2,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "allocator_abort",
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "7f04fbde899ec1237596ad2d625bf8fcc64e075b9012531f15457c253e0732d0",
+            "stderr.txt": "f69287a220777faab1f843d6099b088ed0a50f7587dcb644c5f79e300cf95079",
+            "attempt-started.json": "7c6f6a35fe66dc669c73406dfda1b705932967c99313db511ffd6b6bd37d1351",
+            "gnu-time.txt": "a4593514c24fd72e7f55cada4d4637aab37393e1c1ce20b956e6e8095e08c23f",
+            "attempt.json": "94754590ae2b89e4bde9c2e2a9f249326e3072f76a302261cc400464302ee3e8"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:45:17.937477+00:00",
+          "finished_at_utc": "2026-10-05T21:45:59.311493+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-3/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-3/output"
+          ],
+          "returncode": 134,
+          "measurements": {
+            "wall_seconds": 41.3,
+            "max_rss_kib": 22188608,
+            "user_seconds": 25.86,
+            "system_seconds": 15.18,
+            "exit_status": 0,
+            "termination_signal": 6
+          },
+          "max_rss_bytes": 22721134592,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "allocation_failure_with_address_space_guard",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.30-3",
+          "stderr_tail": "memory allocation of 23622320128 bytes failed\n",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-334244-0",
+              "bytes": 6635608057
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 3,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "allocator_abort",
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "eef9ed6b4ae209464e00f1ddb68534f38dcae74d393e6645376088092edcf2e5",
+            "stderr.txt": "f69287a220777faab1f843d6099b088ed0a50f7587dcb644c5f79e300cf95079",
+            "attempt-started.json": "b6ce9d44cb885005f539f8524383f10e2d9af8a2475a3cba7c9cd6ad701c87b5",
+            "gnu-time.txt": "081b40e7f2c615e31c6602d67605a4d54ccae7709e153a8f9b72a71a981c9012",
+            "attempt.json": "3e200514368dcb1c54bf538f76dcc69d3220b674c2cc4173e07a20b1743d71c0"
+          }
+        }
+      ],
+      "evaluation": {
+        "complete_measurement_count": 0,
+        "median_completion_wall_seconds": null,
+        "maximum_observed_rss_bytes": 22721871872,
+        "median_attempt_wall_seconds": 41.63,
+        "performance_target_passed": null,
+        "memory_target_passed": false,
+        "deterministic_results_equal": null,
+        "verdict": "failed",
+        "maximum_observed_rss_gib": 21.161392211914062,
+        "unconstrained_peak_rss_bytes": null,
+        "memory_target_status": "failed_observed_rss_exceeds_2_gib",
+        "median_completion_wall_seconds_lower_bound": null,
+        "performance_target_status": "completion_duration_unestablished_due_to_allocator_abort"
+      }
+    },
+    {
+      "config": "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+      "input_sha256": "977389feb148f844f36529de40ed3edcf5f7fdc57424d2fee4e6bbf1eb52081f",
+      "attempts": [
+        {
+          "started_at_utc": "2026-10-05T21:45:59.449939+00:00",
+          "finished_at_utc": "2026-10-05T21:46:41.072655+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-0/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-0/output"
+          ],
+          "returncode": 134,
+          "measurements": {
+            "wall_seconds": 41.4,
+            "max_rss_kib": 22189276,
+            "user_seconds": 25.81,
+            "system_seconds": 15.02,
+            "exit_status": 0,
+            "termination_signal": 6
+          },
+          "max_rss_bytes": 22721818624,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "allocation_failure_with_address_space_guard",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-0",
+          "stderr_tail": "memory allocation of 23622320128 bytes failed\n",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-observations-334408-0",
+              "bytes": 6626005705
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            }
+          ],
+          "kind": "warmup",
+          "repeat": 0,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "allocator_abort",
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "d0fcf0ba72375bdce52776e0fc9a68ef379e5054b4a556b86d40d736728b83d3",
+            "stderr.txt": "f69287a220777faab1f843d6099b088ed0a50f7587dcb644c5f79e300cf95079",
+            "attempt-started.json": "9a2b0afe027e117294dbfa537bb1ef71577e6fb8d3bf09bc06f4b69d056389e2",
+            "gnu-time.txt": "24f069392b8e160f24698ef63bcc900c5c67001b4be9110137aa6147d2cf58b7",
+            "attempt.json": "a72d510d3a2b9039d5c5df254060fc3f9f0bba9b3a09f00b99058aba8a0fce09"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:46:41.211744+00:00",
+          "finished_at_utc": "2026-10-05T21:47:21.897364+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-1/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-1/output"
+          ],
+          "returncode": 134,
+          "measurements": {
+            "wall_seconds": 40.67,
+            "max_rss_kib": 22188988,
+            "user_seconds": 25.68,
+            "system_seconds": 14.74,
+            "exit_status": 0,
+            "termination_signal": 6
+          },
+          "max_rss_bytes": 22721523712,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "allocation_failure_with_address_space_guard",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-1",
+          "stderr_tail": "memory allocation of 23622320128 bytes failed\n",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-334583-0",
+              "bytes": 6626005705
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 1,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "allocator_abort",
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "a8b5d1e922f76b9308fadfd8b2316c80fe276a86b3063d353e01b3d85a00140c",
+            "stderr.txt": "f69287a220777faab1f843d6099b088ed0a50f7587dcb644c5f79e300cf95079",
+            "attempt-started.json": "5ad81d41832e7ea7a088ad823ac1f783e0c62d7ba2070ce6b3b046a699e642cc",
+            "gnu-time.txt": "a80970c9a33b9f68f5793964742841744e65a731e171aa87828da0845c56243e",
+            "attempt.json": "fabaa6fcf4fd2fca635a165e972013f65affca684582c1fa6aaf4f0927cf8988"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:47:22.023304+00:00",
+          "finished_at_utc": "2026-10-05T21:48:02.096280+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-2/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-2/output"
+          ],
+          "returncode": 134,
+          "measurements": {
+            "wall_seconds": 40.01,
+            "max_rss_kib": 22188836,
+            "user_seconds": 26.1,
+            "system_seconds": 13.73,
+            "exit_status": 0,
+            "termination_signal": 6
+          },
+          "max_rss_bytes": 22721368064,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "allocation_failure_with_address_space_guard",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-2",
+          "stderr_tail": "memory allocation of 23622320128 bytes failed\n",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-334742-0",
+              "bytes": 6626005705
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 2,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "allocator_abort",
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "c279331bde38be7507b0679fb2412169df998a3034e995c1ea7a7df0dee84efb",
+            "stderr.txt": "f69287a220777faab1f843d6099b088ed0a50f7587dcb644c5f79e300cf95079",
+            "attempt-started.json": "6b7446908e05ce87a492e82e0d04811cfe3fcde497fad9bc5db0708cff2c260d",
+            "gnu-time.txt": "31b7d0f24f343468f07583b2a5984467c4ed527b7f5555ea04523dd8332bb6d1",
+            "attempt.json": "d1ae975deb837c25d1a54ed37930202ddac2e40437cee5c6dc1c8be19cd83feb"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:48:02.217093+00:00",
+          "finished_at_utc": "2026-10-05T21:48:43.795473+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-3/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-3/output"
+          ],
+          "returncode": 134,
+          "measurements": {
+            "wall_seconds": 41.41,
+            "max_rss_kib": 22188540,
+            "user_seconds": 26.14,
+            "system_seconds": 14.81,
+            "exit_status": 0,
+            "termination_signal": 6
+          },
+          "max_rss_bytes": 22721064960,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "allocation_failure_with_address_space_guard",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-0.90-3",
+          "stderr_tail": "memory allocation of 23622320128 bytes failed\n",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-observations-335072-0",
+              "bytes": 6626005705
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 3,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "allocator_abort",
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "05b8f528c93cc56d74c04c11f2c681923a62a23c3b035115aeb8c649604eabf3",
+            "stderr.txt": "f69287a220777faab1f843d6099b088ed0a50f7587dcb644c5f79e300cf95079",
+            "attempt-started.json": "be07a7b83e2dc3c7659347ce465517a225bdbb96900c774132b46d227e00b672",
+            "gnu-time.txt": "2d87729d6582acdd298a84ee191ceaa7c3d66195cae66a51a17a62f60de00341",
+            "attempt.json": "a3c822a9be5483be0b9d264a4bc4af7f713633c9b53472eec48656a5256b850e"
+          }
+        }
+      ],
+      "evaluation": {
+        "complete_measurement_count": 0,
+        "median_completion_wall_seconds": null,
+        "maximum_observed_rss_bytes": 22721523712,
+        "median_attempt_wall_seconds": 40.67,
+        "performance_target_passed": null,
+        "memory_target_passed": false,
+        "deterministic_results_equal": null,
+        "verdict": "failed",
+        "maximum_observed_rss_gib": 21.161067962646484,
+        "unconstrained_peak_rss_bytes": null,
+        "memory_target_status": "failed_observed_rss_exceeds_2_gib",
+        "median_completion_wall_seconds_lower_bound": null,
+        "performance_target_status": "completion_duration_unestablished_due_to_allocator_abort"
+      }
+    },
+    {
+      "config": "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+      "input_sha256": "e748c96a2fb451b5c05afb4a0ff210d0550ebb2216b9fd46d5f6c46c7a54e25f",
+      "attempts": [
+        {
+          "started_at_utc": "2026-10-05T21:48:43.940004+00:00",
+          "finished_at_utc": "2026-10-05T21:51:44.767262+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-0/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-0/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.67,
+            "max_rss_kib": 20516080,
+            "user_seconds": 157.8,
+            "system_seconds": 22.74,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 21008465920,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-0",
+          "stderr_tail": "",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-observations-335273-0",
+              "bytes": 5573039696
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            }
+          ],
+          "kind": "warmup",
+          "repeat": 0,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "wall_observation_limit",
+          "external_wall_limit_record": {
+            "reason": "external_wall_observation_limit",
+            "limit_seconds": 180.0,
+            "timestamp_utc": "2026-10-05T21:51:44.264250+00:00",
+            "sample": {
+              "elapsed_seconds": 180.076,
+              "available_memory_bytes": 9052811264,
+              "child": {
+                "pid": 335273,
+                "VmSize": 22246944768,
+                "VmHWM": 21008465920,
+                "VmRSS": 20983808000
+              }
+            },
+            "signal": 15
+          },
+          "completion_wall_seconds_lower_bound": 180.076,
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "9fd682eea3334ccff264bfa53d0c3ec1d5c0128935a0860e00f2defcd7885388",
+            "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "journal-tail-observation.json": "2e310a144d7c2cea04ddf67fadeddff25f7e16c02271140543bfb50eeb7e027b",
+            "attempt-started.json": "0287bd7450477ac415c573d5a8a077954cf66f36cd2a5266a7028aa7aa0288e7",
+            "wall-limit-stop.json": "13e32e4cfa4372b8e2c0ff01b5c009a9ba8219ccd6215f87b5d19b572ece7bcb",
+            "gnu-time.txt": "a7fdf6018abc7366446b95ee8216a1a429b5cbabe381e23f6accc09eb7a0b87e",
+            "attempt.json": "a11ff88d101034f365d8682fb56630f2da24cf6350f800dc3b083970b0df30fd"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:51:44.918781+00:00",
+          "finished_at_utc": "2026-10-05T21:54:45.999502+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-1/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-1/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.88,
+            "max_rss_kib": 20515996,
+            "user_seconds": 159.84,
+            "system_seconds": 20.92,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 21008379904,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-1",
+          "stderr_tail": "",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-335994-0",
+              "bytes": 5573039696
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 1,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "wall_observation_limit",
+          "external_wall_limit_record": {
+            "reason": "external_wall_observation_limit",
+            "limit_seconds": 180.0,
+            "timestamp_utc": "2026-10-05T21:54:45.459776+00:00",
+            "sample": {
+              "elapsed_seconds": 180.329,
+              "available_memory_bytes": 9041592320,
+              "child": {
+                "pid": 335994,
+                "VmSize": 22246944768,
+                "VmHWM": 21008379904,
+                "VmRSS": 20983803904
+              }
+            },
+            "signal": 15
+          },
+          "completion_wall_seconds_lower_bound": 180.329,
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "3c910655dbd695a43a69484ae9beff63eb1cb8386747b783ba6790561a3beef3",
+            "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "attempt-started.json": "62a8cbfcf3e3ddf9591ac699cbb022f11a47b6f543c4f18b4947c3bf77194947",
+            "wall-limit-stop.json": "38ba1ca24660fc9bcea613d4d55ba511bba6c23fca76a6e38db07cb980c05b83",
+            "gnu-time.txt": "573f61034f3575369a90f567b42b9dc21c16ecb8d53eae07621a68d9228d1b8a",
+            "attempt.json": "876f78c51ef2dd29f44b9ff4a0d7f20977502a34b7ad5a93e516affb639a2340"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:54:46.142110+00:00",
+          "finished_at_utc": "2026-10-05T21:57:47.224684+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-2/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-2/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.86,
+            "max_rss_kib": 20516336,
+            "user_seconds": 159.62,
+            "system_seconds": 21.16,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 21008728064,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-2",
+          "stderr_tail": "",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-336707-0",
+              "bytes": 5573039696
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 2,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "wall_observation_limit",
+          "external_wall_limit_record": {
+            "reason": "external_wall_observation_limit",
+            "limit_seconds": 180.0,
+            "timestamp_utc": "2026-10-05T21:57:46.657326+00:00",
+            "sample": {
+              "elapsed_seconds": 180.331,
+              "available_memory_bytes": 9058619392,
+              "child": {
+                "pid": 336707,
+                "VmSize": 22246944768,
+                "VmHWM": 21008728064,
+                "VmRSS": 20984176640
+              }
+            },
+            "signal": 15
+          },
+          "completion_wall_seconds_lower_bound": 180.331,
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "4996fcf9ba0afa828a25b852a62b45bd91f57499a3a0c7fcb50e44dbb7f1e729",
+            "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "attempt-started.json": "5327de10408d5858ef6059a9d824d407ac154a1c38eccd392282ac6bfd471aff",
+            "wall-limit-stop.json": "4c6d85fad5f0af273525685e420bf4bb16e4707dfe6eecc88b48143ec4e6635d",
+            "gnu-time.txt": "13f205c3e0a153555ac29c6368b00570c8d07206d14831b3f91a70810db74134",
+            "attempt.json": "b40e99bd1af24dfa5cca2a80c0327745f947b59da00549b85ab5eaf118c94576"
+          }
+        },
+        {
+          "started_at_utc": "2026-10-05T21:57:47.367946+00:00",
+          "finished_at_utc": "2026-10-05T22:00:48.600427+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-3/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-3/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 181.22,
+            "max_rss_kib": 20516436,
+            "user_seconds": 159.62,
+            "system_seconds": 21.42,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 21008830464,
+          "event_processing_wall_seconds": null,
+          "event_processing_wall_note": "The production CLI does not expose phase timings.",
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements-final/rho-1.20-3",
+          "stderr_tail": "",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-337396-0",
+              "bytes": 5573039696
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 3,
+          "large_outputs_removed_after_recording": true,
+          "termination_class": "wall_observation_limit",
+          "external_wall_limit_record": {
+            "reason": "external_wall_observation_limit",
+            "limit_seconds": 180.0,
+            "timestamp_utc": "2026-10-05T22:00:48.243465+00:00",
+            "sample": {
+              "elapsed_seconds": 180.731,
+              "available_memory_bytes": 9059885056,
+              "child": {
+                "pid": 337396,
+                "VmSize": 22246944768,
+                "VmHWM": 21008830464,
+                "VmRSS": 20984201216
+              }
+            },
+            "signal": 15
+          },
+          "completion_wall_seconds_lower_bound": 180.731,
+          "completed_request_count": null,
+          "published_output_bytes": null,
+          "peak_rss_scope": "observed process maximum under the documented guards; unconstrained peak not measured",
+          "evidence_file_sha256": {
+            "stdout.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "samples.jsonl": "e2344ed88831de4c441283f4a9725bd2a8bbfba741246ec25f747af036a1097f",
+            "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "attempt-started.json": "7e49dad52405da8b508ee47709b8a40ee4868becbb0c02b28632a1cd880da860",
+            "wall-limit-stop.json": "f91b97aa1f3d37aa09d84d42c6e9e3096f458ddfe7555cd54317e5954342a56a",
+            "gnu-time.txt": "03978e937b3c8cc865c851387120ed9f29cda6911bdd34f4e4f50bf03f1a6cae",
+            "attempt.json": "ec48c9d4e18c0e8af9645a8f24b86ea5f9275d06682f0bd94221ddef9e4a62ce"
+          }
+        }
+      ],
+      "evaluation": {
+        "complete_measurement_count": 0,
+        "median_completion_wall_seconds": null,
+        "maximum_observed_rss_bytes": 21008830464,
+        "median_attempt_wall_seconds": 180.88,
+        "performance_target_passed": false,
+        "memory_target_passed": false,
+        "deterministic_results_equal": null,
+        "verdict": "failed",
+        "maximum_observed_rss_gib": 19.565998077392578,
+        "unconstrained_peak_rss_bytes": null,
+        "memory_target_status": "failed_observed_rss_exceeds_2_gib",
+        "median_completion_wall_seconds_lower_bound": 180.331,
+        "performance_target_status": "failed_all_three_unpublished_beyond_120_seconds"
+      }
+    }
+  ],
+  "finished_at_utc": "2026-10-05T22:00:48.737264+00:00",
+  "report_id": "can-million-performance-2026-10-06",
+  "verification_case": "docs/verification/cases/利用フロー・品質検証仕様書.md#dir-test-0084",
+  "measurement_matrix_completed": true,
+  "product_runs_completed": 0,
+  "overall_verdict": "failed",
+  "native_baseline_verdict": null,
+  "protocol_notes": [
+    "Each offered-load condition used one warmup and three measured attempts, sequentially, with the same release CLI binary and SHA-256-checked inputs.",
+    "Generation, compilation, resource monitoring and post-run verification are outside the GNU time child scope. Simulator preparation, simulation and standard output publication are inside it.",
+    "The process address-space cap is 26 GiB, RSS protection is 24 GiB, minimum host available memory is 3 GiB; incomplete runs never establish an unconstrained peak RSS or completion duration.",
+    "A separate monitor terminates still-running attempts after an observed 180 seconds. Its per-attempt record establishes a lower bound on completion time; termination is not successful publication.",
+    "Per-process core-file limit1 suppresses the WSL crash-capture pipe. Preliminary trials with core limit0 were excluded because crash capture stalled after allocator failure.",
+    "This is a WSL2 environment series. Native baseline and cross-environment equivalence were not tested."
+  ],
+  "build_identity": {
+    "binary_sha256": "40f24849b421d65dcf38e4383e2965e105501926b0c18daa040b6089c2d9a122",
+    "build_source_sha256": "ef105b9c092a64be33303948d4688a8bca6a9e25ee1414ebf3c2705a1dca065a",
+    "cargo_lock_sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+    "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "git_commit": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+    "git_dirty": "true",
+    "runtime_version": "0.1.0",
+    "model_registry_version": "1",
+    "target_triple": "x86_64-unknown-linux-gnu",
+    "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7",
+    "source_fingerprint_matches_current_source": true,
+    "provenance_note": "Extracted from a completed baseline smoke run with this pinned binary. Benchmark effective inputs are generation and per-attempt input hashes."
+  },
+  "evidence_sha256": {
+    "measurement.json": "89bef73d5fe409fb834becc5ed40421aac9ab4afced1b2f6745d214dfa3298a4",
+    "measurement-harness.py": "1cf668677f21ebf5b78f16b9de6b03d2a687f07ed59425f78a4ea6042a53e14a",
+    "input-generator.py": "8270d50ba0f384db8a044917755385a0eee85af7c746331626f2f84d35ba7dbe",
+    "wall-limit-monitor.py": "a373ec86bcaf25dc13abcbd5aa7cf610758a776b76cda7f8f07fb35773c8303b"
+  },
+  "excluded_pilot_record": "/home/hideki/DIR-Simulator/results/performance/can-million-2026-10-06/measurements/pilot-interruption.json",
+  "unavailable_measurements": {
+    "event_processing_wall_seconds": null,
+    "actual_committed_event_count": null,
+    "actual_generated_request_count": null,
+    "published_output_bytes": null,
+    "bus_utilization": null,
+    "wait_counts": null,
+    "drop_counts": null,
+    "completed_output_reproducibility": null
+  },
+  "unavailable_measurements_note": "All benchmark runs ended before manifest/results/CSV publication. The input schedules specify 1,000,000 requests; actual final product counters and event-only timings were not published.",
+  "source_analysis": {
+    "kind": "source-based explanation; phase boundaries were not timed",
+    "resident_ledgers": [
+      "crates/dir-simulator/src/lib/snapshot/can.rs:4",
+      "crates/dir-simulator/src/lib/snapshot/can.rs:30"
+    ],
+    "all_points_rematerialized_as_records": "crates/dir-simulator/src/output/aggregate.rs:245",
+    "all_interval_records_accumulated": "crates/dir-simulator/src/output/aggregate.rs:508",
+    "full_spool_rescanned_per_controller_per_window": "crates/dir-simulator/src/output/aggregate.rs:693",
+    "x86_64_rust185_struct_size_bytes": {
+      "Request": 256,
+      "Receiver": 104,
+      "Point": 168,
+      "Record": 352
+    },
+    "allocation_failure_bytes": 23622320128,
+    "allocation_failure_record_capacity": 67108864,
+    "allocation_failure_interpretation": "The observed allocation size equals 2^26 * sizeof(Record), consistent with aggregate Vec<Record> growth. Observation spooling does not bound request/receiver ledgers or final aggregation."
+  },
+  "functional_input_validation": {
+    "purpose": "reduced 32-request functional input/codec smoke check, excluded from million-request performance evaluation",
+    "directory": "/tmp/dir-million-codec-check-ijfmsscd",
+    "binary_sha256": "40f24849b421d65dcf38e4383e2965e105501926b0c18daa040b6089c2d9a122",
+    "checks": [
+      {
+        "configuration": "rho-0.30.ini",
+        "requests": 32,
+        "all_32_frame_crc_bit_length_and_occupancy_checks_passed": true,
+        "manifest_verified": true,
+        "deterministic": {
+          "simulation_sha256": "d3d77d780af4891ea39c4f1c40382de2dd95c4aa8607bef5347c8477ff592799",
+          "events.csv_normalized_sha256": "94f44eb170257aa7376df00fcb36097771ab2a3d3af96096907c250ccb4cf453",
+          "summary.csv_normalized_sha256": "16817b960fc56dfd9c9907e6f83eeac7cbd0718704b05584417209d49098a910"
+        }
+      },
+      {
+        "configuration": "rho-0.90.ini",
+        "requests": 32,
+        "all_32_frame_crc_bit_length_and_occupancy_checks_passed": true,
+        "manifest_verified": true,
+        "deterministic": {
+          "simulation_sha256": "dc72c9aa2d6c5d0c2cc0b5608951abb173581ab738b8f953c62b460531689dac",
+          "events.csv_normalized_sha256": "d9ad37f6b32a7d8b69d93f592fde1ee21095969efa067b87d50a8171499da822",
+          "summary.csv_normalized_sha256": "0e129415605fcfc26160ed145259d43c94fbc64b1d7f7a9615c09385011a220d"
+        }
+      },
+      {
+        "configuration": "rho-1.20.ini",
+        "requests": 32,
+        "all_32_frame_crc_bit_length_and_occupancy_checks_passed": true,
+        "manifest_verified": true,
+        "deterministic": {
+          "simulation_sha256": "fa77f9cd74cafed9beb8b0028f36a3bcc3cababe69c473f0c956bda3912f4b2c",
+          "events.csv_normalized_sha256": "2d41b14e96220495e2bb4d8697677a264a051448f4e8f5942608759f6c04988b",
+          "summary.csv_normalized_sha256": "357cd92e8d34248aec3fc1428bdc5500323b48bd9c364538ae9e7d3d6426a204"
+        }
+      }
+    ],
+    "not_a_million_request_performance_result": true
+  }
+}

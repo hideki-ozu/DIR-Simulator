@@ -1,0 +1,43 @@
+{
+  "worktree": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+  "runner": {
+    "python3": "/usr/bin/python3",
+    "version": "Python 3.12.3"
+  },
+  "environment_whitelist": {
+    "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "PYTHONPATH": null,
+    "NODE_PATH": null,
+    "CARGO": null,
+    "DIR_SIMULATOR_BIN": null,
+    "TMPDIR": null
+  },
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "exit_code": 0,
+      "log": "python-unittest.log",
+      "log_sha256": "fc2ef6691be6088799e1c8d57095da1459158705f7e78a4964415ddf34461314",
+      "tests": 39
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/test_guide_scope_policy.py"
+      ],
+      "exit_code": 0,
+      "log": "guide-scope-policy.log",
+      "log_sha256": "55df81c03b1fc09a739803668e8b10b1a1cd87ac7e716666dddb1c968f87bb76",
+      "tests": 9
+    }
+  ]
+}

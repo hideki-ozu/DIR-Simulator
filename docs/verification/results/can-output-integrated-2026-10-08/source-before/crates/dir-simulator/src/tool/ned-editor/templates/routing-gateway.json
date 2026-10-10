@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "gateways": [
+    {
+      "node": "Main.gw",
+      "ports": ["Main.gw.a", "Main.gw.b"],
+      "processing_delay": "10us",
+      "hop_limit": 16,
+      "rx_queue_capacity": 64,
+      "routes": [
+        {
+          "id": "forward",
+          "ingress": "Main.gw.a",
+          "egress": ["Main.gw.b"],
+          "format": "standard",
+          "id_min": 256,
+          "id_max": 271
+        }
+      ]
+    }
+  ]
+}

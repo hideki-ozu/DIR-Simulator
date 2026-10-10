@@ -1,0 +1,43 @@
+Diff in <AUDIT_ROOT>/baseline/crates/dir-simulator/tests/ac0008_ned_rejections.rs:10:
+     fn new() -> Self {
+         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+         let directory = std::env::temp_dir().join(format!(
+[31m-            "dir-ac0008-ned-{}-{}", std::process::id(), NEXT.fetch_add(1, Ordering::Relaxed)
+(B[m[32m+            "dir-ac0008-ned-{}-{}",
+(B[m[32m+            std::process::id(),
+(B[m[32m+            NEXT.fetch_add(1, Ordering::Relaxed)
+(B[m         ));
+         fs::create_dir_all(directory.join("models/demo")).unwrap();
+[31m-        fs::copy(root.join("docs/verification/fixtures/can/models/demo/Main.ned"), directory.join("models/demo/Main.ned")).unwrap();
+(B[m[32m+        fs::copy(
+(B[m[32m+            root.join("docs/verification/fixtures/can/models/demo/Main.ned"),
+(B[m[32m+            directory.join("models/demo/Main.ned"),
+(B[m[32m+        )
+(B[m[32m+        .unwrap();
+(B[m         fs::write(directory.join("scenario.ini"), "[General]\nnetwork = demo.Main\nned-path = \"models\"\nsim-time-limit = 1ms\nMain.bus.bitrate = 500kbps\n").unwrap();
+         Self(directory)
+     }
+Diff in <AUDIT_ROOT>/baseline/crates/dir-simulator/tests/ac0008_ned_rejections.rs:35:
+     }
+ }
+ impl Drop for Fixture {
+[31m-    fn drop(&mut self) { let _ = fs::remove_dir_all(&self.0); }
+(B[m[32m+    fn drop(&mut self) {
+(B[m[32m+        let _ = fs::remove_dir_all(&self.0);
+(B[m[32m+    }
+(B[m }
+ #[test]
+ fn import_is_explicitly_rejected_with_ned_source() {
+Diff in <AUDIT_ROOT>/baseline/crates/dir-simulator/tests/ac0008_paths.rs:57:
+         .arg(&destination)
+         .output()
+         .unwrap();
+[31m-    assert!(execution.status.success(), "{}", String::from_utf8_lossy(&execution.stderr));
+(B[m[32m+    assert!(
+(B[m[32m+        execution.status.success(),
+(B[m[32m+        "{}",
+(B[m[32m+        String::from_utf8_lossy(&execution.stderr)
+(B[m[32m+    );
+(B[m     assert_eq!(projection(&destination), expected);
+ }
+ #[test]

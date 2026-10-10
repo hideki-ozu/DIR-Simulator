@@ -1,0 +1,62 @@
+--- v1.1.3-dd619950-flow.rs
++++ v1.1.4-b455156-flow.rs
+@@ -43,6 +43,20 @@
+         .collect();
+     let mut deliveries = Vec::new();
+     let mut points = Vec::new();
++    let mut delivery_points = Vec::new();
++    let mut event_effects = BTreeMap::new();
++    for (order, point) in snapshot.common.iter_points()?.enumerate() {
++        let point = point?;
++        if let Some(effect) = point.effect_seq {
++            event_effects
++                .entry(point.event_seq)
++                .and_modify(|max: &mut u64| *max = (*max).max(effect))
++                .or_insert(effect);
++        }
++        if point.metric == "ethernet.delivery_ps" {
++            delivery_points.push((order, point));
++        }
++    }
+     for reception in state
+         .receptions
+         .iter()
+@@ -107,11 +121,8 @@
+         }
+         let components = components
+             .map(|value| u64::try_from(value).expect("component bounded by checked u64 latency"));
+-        let (order, observation) = snapshot
+-            .common
+-            .points
++        let (order, observation) = delivery_points
+             .iter()
+-            .enumerate()
+             .find(|(_, point)| {
+                 point.metric == "ethernet.delivery_ps"
+                     && point.request_id.as_deref() == Some(frame.frame_id.as_str())
+@@ -119,13 +130,9 @@
+                     && Some(point.time_ps) == reception.ready_ps
+             })
+             .ok_or_else(|| invalid("missing committed delivery observation"))?;
+-        let effect_base = snapshot
+-            .common
+-            .points
+-            .iter()
+-            .filter(|point| point.event_seq == observation.event_seq)
+-            .filter_map(|point| point.effect_seq)
+-            .max()
++        let effect_base = event_effects
++            .get(&observation.event_seq)
++            .copied()
+             .unwrap_or(0);
+         for (index, metric) in [
+             "ethernet.queue_wait_ps",
+@@ -137,7 +144,7 @@
+         .enumerate()
+         {
+             points.push((
+-                order,
++                *order,
+                 Point {
+                     event_seq: observation.event_seq,
+                     effect_seq: Some(

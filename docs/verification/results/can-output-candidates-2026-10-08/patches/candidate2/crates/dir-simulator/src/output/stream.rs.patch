@@ -1,0 +1,199 @@
+--- a/crates/dir-simulator/src/output/stream.rs
++++ b/crates/dir-simulator/src/output/stream.rs
+@@ -2,7 +2,7 @@
+ use super::{
+     PROFILE,
+     aggregate::{self, MetricValue, Record},
+-    disk_sort::{Sorted, Sorter},
++    disk_sort::{MergedRecords, OrderedWriter, Sorted, Sorter},
+     json, model_records,
+ };
+ use crate::{
+@@ -71,7 +71,7 @@
+ }
+ 
+ pub(super) struct Prepared {
+-    pub records: Sorted,
++    pub records: MergedRecords,
+     pub models: Option<Sorted>,
+     pub requests: Option<Sorted>,
+     pub receivers: Option<Sorted>,
+@@ -113,11 +113,27 @@
+     key
+ }
+ fn put_record(
+-    sorter: &mut Sorter,
++    sorter: &mut OrderedWriter,
+     row: &Record,
+     callback_group: Option<(u64, usize)>,
+ ) -> Result<(), Diagnostic> {
+     sorter.push(record_key(row, callback_group), json::record_value(row))
++}
++fn record_order(row: &Record) -> (u64, u8, &str, &str, Option<&str>, Option<&str>) {
++    (
++        row.time_ps.or(row.end_ps).unwrap(),
++        if row.time_ps.is_none() {
++            0
++        } else if row.event_seq.is_none() {
++            1
++        } else {
++            2
++        },
++        &row.target,
++        &row.metric,
++        row.reason.as_deref(),
++        row.receiver.as_deref(),
++    )
+ }
+ fn contribution(
+     sorter: &mut Sorter,
+@@ -298,7 +314,7 @@
+ }
+ 
+ fn emit_point_group(
+-    sorter: &mut Sorter,
++    sorter: &mut OrderedWriter,
+     group: &mut Vec<Record>,
+     callback: u64,
+ ) -> Result<(), Diagnostic> {
+@@ -325,6 +341,7 @@
+             put_record(sorter, row, Some((callback, effect)))?;
+         }
+     } else {
++        group.sort_by(|a, b| record_order(a).cmp(&record_order(b)));
+         for row in group.iter() {
+             put_record(sorter, row, None)?;
+         }
+@@ -336,7 +353,7 @@
+ fn points(
+     prepared: &PreparedSimulation,
+     snapshot: &Snapshot,
+-    sorter: &mut Sorter,
++    sorter: &mut OrderedWriter,
+     contributions: &mut Sorter,
+     queue_max: &mut BTreeMap<String, u64>,
+ ) -> Result<(), Diagnostic> {
+@@ -538,7 +555,7 @@
+     prepared: &PreparedSimulation,
+     snapshot: &Snapshot,
+     contributions: Sorted,
+-    records: &mut Sorter,
++    records: &mut OrderedWriter,
+     stats: &BTreeMap<String, Stats>,
+ ) -> Result<BTreeMap<String, Timeline>, Diagnostic> {
+     let h = snapshot.common.end_ps;
+@@ -618,7 +635,9 @@
+         for value in state.values_mut() {
+             value.advance(end)?;
+         }
+-        for row in window_rows(prepared, &state, stats, start, end, false)? {
++        let mut rows = window_rows(prepared, &state, stats, start, end, false)?;
++        rows.sort_by(|a, b| record_order(a).cmp(&record_order(b)));
++        for row in rows {
+             put_record(records, &row, None)?;
+         }
+         for value in state.values_mut() {
+@@ -813,7 +832,8 @@
+         None
+     };
+     let mut contributions = Sorter::new_in(output)?;
+-    let mut records = Sorter::new_in(output)?;
++    let mut point_records = OrderedWriter::new_in(output)?;
++    let mut window_records = OrderedWriter::new_in(output)?;
+     let mut stats = BTreeMap::new();
+     for c in &prepared.can.controllers {
+         stats.insert(c.id.clone(), Stats::default());
+@@ -843,7 +863,7 @@
+     points(
+         prepared,
+         snapshot,
+-        &mut records,
++        &mut point_records,
+         &mut contributions,
+         &mut queue_max,
+     )?;
+@@ -851,7 +871,7 @@
+         prepared,
+         snapshot,
+         contributions.finish()?,
+-        &mut records,
++        &mut window_records,
+         &stats,
+     )?;
+     let summary = summaries(
+@@ -863,7 +883,10 @@
+         &state,
+     )?;
+     Ok(Prepared {
+-        records: records.finish()?,
++        records: MergedRecords {
++            points: point_records.finish()?,
++            windows: window_records.finish()?,
++        },
+         models: models.map(Sorter::finish).transpose()?,
+         requests: requests.map(Sorter::finish).transpose()?,
+         receivers: receivers.map(Sorter::finish).transpose()?,
+@@ -893,6 +916,63 @@
+         let config =
+             PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/can/baseline.ini");
+         crate::prepare(&config).unwrap()
++    }
++    #[test]
++    fn borrowed_non_callback_order_matches_wire_key() {
++        let mut rows = Vec::new();
++        for time in [0, 1, u64::MAX] {
++            for target in ["A", "a"] {
++                for metric in ["buffer_utilization", "queue_length"] {
++                    for reason in [None, Some("x")] {
++                        for receiver in [None, Some("R")] {
++                            let mut row =
++                                Record::aggregate(target, metric, MetricValue::Integer(0), 0, time);
++                            row.reason = reason.map(str::to_owned);
++                            row.receiver = receiver.map(str::to_owned);
++                            rows.push(row.clone());
++                            row.time_ps = Some(time);
++                            row.end_ps = None;
++                            rows.push(row);
++                        }
++                    }
++                }
++            }
++        }
++        for a in &rows {
++            for b in &rows {
++                assert_eq!(
++                    record_order(a).cmp(&record_order(b)),
++                    record_key(a, None).cmp(&record_key(b, None))
++                );
++            }
++        }
++    }
++    #[test]
++    fn baseline_records_use_two_ordered_streams() {
++        for config in ["examples/can/baseline.ini", "examples/gateway/fanout.ini"] {
++            let output = directory();
++            let config = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
++                .join("../../")
++                .join(config);
++            let prepared = crate::prepare(&config).unwrap();
++            let snapshot = crate::runtime::spool::with_spooling(&output, || {
++                crate::runtime::simulate(&prepared)
++            })
++            .unwrap();
++            let stream = super::prepare(&prepared, &snapshot, &output).unwrap();
++            assert!(stream.records.points.is_direct_ordered());
++            assert!(stream.records.windows.is_direct_ordered());
++            let keys: Vec<_> = stream
++                .records
++                .iter()
++                .unwrap()
++                .map(|row| row.unwrap().key)
++                .collect();
++            assert!(keys.windows(2).all(|pair| pair[0] <= pair[1]));
++            drop(stream);
++            drop(snapshot);
++            fs::remove_dir_all(output).unwrap();
++        }
+     }
+     #[test]
+     fn failed_sort_reservation_cleans_runs_without_publishing_manifest() {

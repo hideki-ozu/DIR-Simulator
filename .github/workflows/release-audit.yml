@@ -1,0 +1,74 @@
+name: Release audit regression
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'crates/**'
+      - 'docs/third-party/**'
+      - 'docs/guide/assets/licenses/**'
+      - 'scripts/check_third_party_notices.py'
+      - 'docs/verification/results/release-native-distribution-audit-2026-10-08/**'
+      - '.github/workflows/release-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Rust ledger identity regression
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          set-safe-directory: false
+      - name: Install fixed toolchain
+        run: rustup toolchain install 1.85.0 --profile minimal --component rustfmt --component clippy
+      - name: Format and regression
+        run: |
+          uname -a
+          cat /etc/os-release
+          rustc -Vv
+          cargo --version
+          git rev-parse HEAD
+          git status --short
+          sha256sum Cargo.lock crates/dir-simulator/tests/registry.rs crates/dir-simulator/src/lib.rs crates/dir-simulator/src/main.rs crates/dir-simulator/src/runtime.rs crates/dir-simulator/src/runtime/engine.rs crates/dir-simulator/src/cli_runtime_boundary_tests.rs
+          cargo fmt --all -- --check
+          cargo test --locked -p dir-simulator --test registry generic_channel_factories_receive_frozen_inputs_in_stable_order -- --exact --nocapture
+          cargo test --locked -p dir-simulator --test registry generic_invalid_channel_parameter_never_reaches_factories -- --exact --nocapture
+          cargo test --locked -p dir-simulator --test registry generic_channel_factory_failure_releases_only_constructed_prefix -- --exact --nocapture
+          cargo test --locked -p dir-simulator --lib cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does -- --exact --nocapture
+          cargo test --locked -p dir-simulator --test ac0008_paths classical_can_cli_validate_accepts_fixture_and_rejects_missing_config -- --exact --nocapture
+          cargo test --locked --workspace
+          cargo clippy --locked --workspace --all-targets -- -D warnings
+      - name: Verify actual product ledger reference
+        run: |
+          cargo build --locked -p dir-simulator
+          target/debug/dir-simulator run --config docs/verification/fixtures/can/competition.ini --output "$RUNNER_TEMP/ledger-metadata"
+          python3 - <<'PY'
+          import hashlib, json, os, re
+          from pathlib import Path
+          output = Path(os.environ['RUNNER_TEMP']) / 'ledger-metadata'
+          result = json.loads((output / 'results.json').read_text())
+          manifest = json.loads((output / 'manifest.json').read_text())
+          ledger = Path('docs/third-party/採用物台帳.md').read_bytes()
+          metadata = result['metadata']
+          assert metadata['adoption_ledger_sha256'] == hashlib.sha256(ledger).hexdigest()
+          assert metadata['adoption_ledger_version'] == re.search(r'文書バージョン：`([^`]+)`', ledger.decode('utf-8')).group(1)
+          assert metadata['implementation_coverage']['reproduction_conditions'] == 'identified'
+          assert manifest['metadata_ref'] == 'results.json#/metadata'
+          for entry in manifest['files']:
+              data = (output / entry['name']).read_bytes()
+              assert len(data) == int(entry['bytes'])
+              assert hashlib.sha256(data).hexdigest() == entry['sha256']
+          print('PASS: actual ledger hash/document version, metadata reference and manifest files')
+          PY
+      - name: Audit checker and comparison selftests
+        run: |
+          python3 scripts/check_third_party_notices.py
+          cd docs/verification/results/release-native-distribution-audit-2026-10-08
+          python3 verify_release_audit.py
+          python3 native_correctness.py selftest

@@ -1,0 +1,36 @@
+{
+  "schema_version": 4,
+  "generators": [
+    {
+      "id": "unicast",
+      "node": "Net.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "0"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 0,
+          "dei": 0
+        },
+        "ip_multicast": null
+      },
+      "flow_id": "unicast",
+      "priority": 0,
+      "deadline_ps": null
+    }
+  ],
+  "controls": [
+    {
+      "id": "down",
+      "at_ps": "800000",
+      "kind": "link_set",
+      "link": "L12",
+      "up": false
+    }
+  ]
+}

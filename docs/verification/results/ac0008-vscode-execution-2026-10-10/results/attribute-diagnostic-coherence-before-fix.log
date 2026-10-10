@@ -1,0 +1,24 @@
+   Compiling dir-simulator v0.1.0 (<AUDIT_ROOT>/implementation/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.56s
+     Running tests/ac0008_attributes.rs (target/debug/deps/ac0008_attributes-dd573f535eedffaf)
+
+running 1 test
+test duplicate_metadata_unknown_property_and_invalid_escape_are_rejected ... FAILED
+
+failures:
+
+---- duplicate_metadata_unknown_property_and_invalid_escape_are_rejected stdout ----
+
+thread 'duplicate_metadata_unknown_property_and_invalid_escape_are_rejected' panicked at crates/dir-simulator/tests/ac0008_attributes.rs:58:5:
+assertion `left == right` failed
+  left: "/attributecheck/Endpoint.ned:1:87: duplicate property display (got ;)"
+ right: "/attributecheck/Endpoint.ned:1:72: duplicate property display (got @)"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    duplicate_metadata_unknown_property_and_invalid_escape_are_rejected
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p dir-simulator --test ac0008_attributes`

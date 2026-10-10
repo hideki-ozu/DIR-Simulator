@@ -1,0 +1,45 @@
+{
+  "schema_version": 4,
+  "generators": [
+    {
+      "id": "unicast",
+      "node": "Net.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "0"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 0,
+          "dei": 0
+        },
+        "ip_multicast": null
+      },
+      "flow_id": "unicast",
+      "priority": 0,
+      "deadline_ps": null
+    }
+  ],
+  "controls": [
+    {
+      "id": "register",
+      "at_ps": "100",
+      "kind": "vlan_register",
+      "port": "Net.s1.tx_c",
+      "vid": 20,
+      "lifetime_ps": "1000"
+    },
+    {
+      "id": "refresh",
+      "at_ps": "1100",
+      "kind": "vlan_register",
+      "port": "Net.s1.tx_c",
+      "vid": 20,
+      "lifetime_ps": "1000"
+    }
+  ]
+}

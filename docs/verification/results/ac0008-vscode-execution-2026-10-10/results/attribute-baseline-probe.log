@@ -1,0 +1,50 @@
+   Compiling version_check v0.9.5
+   Compiling typenum v1.20.1
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling cpufeatures v0.2.17
+   Compiling zmij v1.0.23
+   Compiling cfg-if v1.0.5
+   Compiling serde v1.0.229
+   Compiling rustix v0.38.44
+   Compiling serde_json v1.0.151
+   Compiling linux-raw-sys v0.4.15
+   Compiling httpdate v1.0.3
+   Compiling bitflags v2.13.2
+   Compiling chunked_transfer v1.5.0
+   Compiling memchr v2.8.3
+   Compiling ascii v1.1.0
+   Compiling log v0.4.34
+   Compiling itoa v1.0.18
+   Compiling generic-array v0.14.7
+   Compiling tiny_http v0.12.0
+   Compiling syn v3.0.6
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling digest v0.10.7
+   Compiling sha2 v0.10.9
+   Compiling dir-simulator v0.1.0 (<AUDIT_ROOT>/implementation/crates/dir-simulator)
+   Compiling serde_derive v1.0.229
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 25.02s
+     Running tests/ac0008_attribute_baseline_probe.rs (target/debug/deps/ac0008_attribute_baseline_probe-0a3c7aee3e45869b)
+
+running 1 test
+test baseline_parser_retains_display_unicode_value ... FAILED
+
+failures:
+
+---- baseline_parser_retains_display_unicode_value stdout ----
+
+thread 'baseline_parser_retains_display_unicode_value' panicked at crates/dir-simulator/tests/ac0008_attribute_baseline_probe.rs:8:5:
+parsed declaration has discarded the display Unicode value: ParsedNed { declarations: [Declaration { name: "attributecheck.Endpoint", kind: "simple", implementation: Some("dir.ethernet.Endpoint"), parameters: {}, gates: {}, children: [], connections: [], source: "attributecheck/Endpoint.ned:1:25", span: SourceSpan { source: "<AUDIT_ROOT>/implementation/crates/dir-simulator/attributecheck/Endpoint.ned", line: 1, column: 25, end_line: 1, end_column: 106, start_byte: 24, end_byte: 111 }, name_span: SourceSpan { source: "<AUDIT_ROOT>/implementation/crates/dir-simulator/attributecheck/Endpoint.ned", line: 1, column: 32, end_line: 1, end_column: 40, start_byte: 31, end_byte: 39 }, child_spans: {} }] }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    baseline_parser_retains_display_unicode_value
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p dir-simulator --test ac0008_attribute_baseline_probe`

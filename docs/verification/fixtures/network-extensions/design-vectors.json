@@ -1,0 +1,613 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "independent_design_vectors",
+  "design_date": "2026-10-07",
+  "product_execution": false,
+  "source_documents_relative_to": "repository_root",
+  "source_documents": [
+    "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md",
+    "docs/design/CAN・Ethernet変換詳細設計書.md",
+    "docs/verification/cases/CAN・Ethernet変換検証仕様書.md",
+    "docs/specs/models/Ethernet動的制御詳細機能仕様書.md",
+    "docs/design/Ethernet動的制御詳細設計書.md",
+    "docs/verification/cases/Ethernet動的制御検証仕様書.md",
+    "docs/specs/models/EthernetTSN詳細機能仕様書.md",
+    "docs/design/EthernetTSN詳細設計書.md",
+    "docs/verification/cases/EthernetTSN検証仕様書.md"
+  ],
+  "vectors": [
+    {
+      "id": "can.codec.supplied",
+      "domain": "can_ethernet",
+      "case_ref": "CAN・Ethernet変換検証仕様書 C01-C03E",
+      "source_documents": [
+        "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md",
+        "docs/verification/cases/CAN・Ethernet変換検証仕様書.md"
+      ],
+      "input": {
+        "header_bytes": 11,
+        "magic_hex": "44495243",
+        "version": 1,
+        "frames": [
+          {
+            "format": "standard",
+            "can_id": 0,
+            "data_hex": ""
+          },
+          {
+            "format": "standard",
+            "can_id": 291,
+            "data_hex": "aabb"
+          },
+          {
+            "format": "standard",
+            "can_id": 2047,
+            "data_hex": "ffffffffffffffff"
+          },
+          {
+            "format": "extended",
+            "can_id": 536870911,
+            "data_hex": "ffffffffffffffff"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "codec_hex": "4449524301000000000000",
+          "codec_bytes": 11,
+          "zero_padding_to_46_bytes": 35
+        },
+        {
+          "codec_hex": "4449524301000000012302aabb",
+          "codec_bytes": 13,
+          "zero_padding_to_46_bytes": 33
+        },
+        {
+          "codec_hex": "444952430100000007ff08ffffffffffffffff",
+          "codec_bytes": 19,
+          "zero_padding_to_46_bytes": 27
+        },
+        {
+          "codec_hex": "4449524301011fffffff08ffffffffffffffff",
+          "codec_bytes": 19,
+          "zero_padding_to_46_bytes": 27
+        }
+      ],
+      "independent_calculation": "Encode DIRC, version, format flag, four-byte big-endian CAN ID, DLC, then data; flags bit 0 is 1 only for extended format. Codec length is 11+DLC and padding is 46-codec_length."
+    },
+    {
+      "id": "can.crc15.stuff.empty.standard",
+      "domain": "can_ethernet",
+      "case_ref": "CAN・Ethernet変換検証仕様書 C05, R01-R02",
+      "source_documents": [
+        "docs/design/CAN・Ethernet変換詳細設計書.md",
+        "docs/verification/cases/CAN・Ethernet変換検証仕様書.md"
+      ],
+      "input": {
+        "format": "standard",
+        "can_ids": [
+          0,
+          1
+        ],
+        "data_hex": "",
+        "rtr": 0,
+        "ide": 0,
+        "r0": 0,
+        "dlc": 0,
+        "crc_polynomial_hex": "4599",
+        "crc_initial": 0,
+        "stuffing_region": "SOF through CRC sequence",
+        "base_frame_bits_through_eof": 44,
+        "intermission_bits": 3
+      },
+      "expected": [
+        {
+          "can_id": 0,
+          "crc15_hex": "0000",
+          "stuff_bits": 6,
+          "frame_bits_through_eof": 50,
+          "bits_through_intermission": 53
+        },
+        {
+          "can_id": 1,
+          "crc15_hex": "2213",
+          "stuff_bits": 3,
+          "frame_bits_through_eof": 47,
+          "bits_through_intermission": 50
+        }
+      ],
+      "independent_calculation": "Feed SOF, 11-bit ID MSB-first, RTR/IDE/r0, DLC and data through a zero-initialized 15-bit LFSR using polynomial 0x4599; append CRC MSB-first and independently count inserted bits after runs of five equal transmitted bits through CRC. Add that count to the 44 unstuffed bits from SOF through EOF. Intermission is outside the frame."
+    },
+    {
+      "id": "ethernet.minimum-frame.timing",
+      "domain": "can_ethernet",
+      "case_ref": "CAN・Ethernet変換検証仕様書 R01-R02",
+      "source_documents": [
+        "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md",
+        "docs/verification/cases/CAN・Ethernet変換検証仕様書.md"
+      ],
+      "input": {
+        "link_rate_bps": 1000000000,
+        "preamble_sfd_bytes": 8,
+        "ifg_bytes": 12,
+        "mac_frame_bytes": {
+          "untagged": 64,
+          "tagged": 68
+        }
+      },
+      "expected": {
+        "untagged": {
+          "wire_bits_including_preamble_sfd": 576,
+          "serialization_ps": "576000",
+          "occupancy_bits_including_ifg": 672,
+          "occupancy_ps": "672000"
+        },
+        "tagged": {
+          "wire_bits_including_preamble_sfd": 608,
+          "serialization_ps": "608000",
+          "occupancy_bits_including_ifg": 704,
+          "occupancy_ps": "704000"
+        }
+      },
+      "independent_calculation": "At 1 Gbit/s each bit takes 1000 ps. Serialization is (MAC bytes+8)*8 bits; transmitter occupancy adds 12*8 IFG bits."
+    },
+    {
+      "id": "can_ethernet.conversion.R01",
+      "domain": "can_ethernet",
+      "case_ref": "CAN・Ethernet変換検証仕様書 R01",
+      "source_documents": [
+        "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md",
+        "docs/verification/cases/CAN・Ethernet変換検証仕様書.md"
+      ],
+      "input": {
+        "can": {
+          "format": "standard",
+          "can_id": 0,
+          "dlc": 0,
+          "bitrate_bps": 500000,
+          "sof_ps": "0",
+          "eof_ps": "100000000",
+          "propagation_ps": "0"
+        },
+        "gateway": {
+          "rx_processing_ps": "1000000",
+          "conversion_ps": "2000000",
+          "ethernet_tx_processing_ps": "3000000"
+        },
+        "ethernet": {
+          "tagged": false,
+          "mac_frame_bytes": 64,
+          "link_rate_bps": 1000000000,
+          "link_propagation_ps": "4000000"
+        },
+        "sink_rx_processing_ps": "5000000"
+      },
+      "expected": {
+        "gateway_observed_ps": "100000000",
+        "ready_ps": "103000000",
+        "ethernet_offer_and_sof_ps": "106000000",
+        "ethernet_eof_ps": "106576000",
+        "ethernet_release_ps": "106672000",
+        "gateway_rx_slot_release_ps": "106000000",
+        "sink_observed_ps": "110576000",
+        "sink_received_ps": "115576000",
+        "end_to_end_latency_ps": "115576000"
+      },
+      "independent_calculation": "CAN ID 0 empty is 50 bits through EOF at 500 kbit/s (100000000 ps). Add gateway delays in sequence; untagged Ethernet serialization is 576000 ps and occupancy is 672000 ps. Sink observation adds link propagation to EOF; completion adds sink processing."
+    },
+    {
+      "id": "can_ethernet.conversion.R02",
+      "domain": "can_ethernet",
+      "case_ref": "CAN・Ethernet変換検証仕様書 R02",
+      "source_documents": [
+        "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md",
+        "docs/verification/cases/CAN・Ethernet変換検証仕様書.md"
+      ],
+      "input": {
+        "ethernet": {
+          "tagged": true,
+          "mac_frame_bytes": 68,
+          "link_rate_bps": 1000000000,
+          "sof_ps": "0",
+          "link_propagation_ps": "1000000"
+        },
+        "gateway": {
+          "rx_processing_ps": "2000000",
+          "conversion_ps": "3000000",
+          "can_tx_processing_ps": "4000000"
+        },
+        "can": {
+          "format": "standard",
+          "can_id": 0,
+          "dlc": 0,
+          "bitrate_bps": 500000,
+          "intermission_bits": 3,
+          "propagation_ps": "0"
+        },
+        "sink_rx_processing_ps": "5000000"
+      },
+      "expected": {
+        "ethernet_eof_ps": "608000",
+        "gateway_observed_ps": "1608000",
+        "ready_ps": "6608000",
+        "can_sof_ps": "10608000",
+        "can_eof_ps": "110608000",
+        "can_release_ps": "116608000",
+        "sink_received_ps": "115608000"
+      },
+      "independent_calculation": "Tagged Ethernet serialization is 608000 ps. Add propagation and gateway delays before CAN SOF; 50 CAN bits take 100000000 ps through EOF and three intermission bits add 6000000 ps to release. Sink completion is EOF plus 5000000 ps."
+    },
+    {
+      "id": "ethernet.dynamic.three-hop",
+      "domain": "dynamic_ethernet",
+      "case_ref": "Ethernet動的制御検証仕様書 DIR-TEST-0111 numeric timing",
+      "source_documents": [
+        "docs/specs/models/Ethernet動的制御詳細機能仕様書.md",
+        "docs/verification/cases/Ethernet動的制御検証仕様書.md"
+      ],
+      "input": {
+        "path": [
+          "A",
+          "S1",
+          "S2",
+          "B"
+        ],
+        "mac_frame_bytes": 68,
+        "link_rate_bps": 1000000000,
+        "link_propagation_each_ps": "1000",
+        "switch_processing_each_ps": "2000",
+        "endpoint_tx_rx_processing_ps": "0",
+        "competition": false
+      },
+      "expected": {
+        "wire_bits_each_hop_including_preamble_sfd": 608,
+        "ifg_bits_each_hop": 96,
+        "hops": [
+          {
+            "from": "A",
+            "to": "S1",
+            "sof_ps": "0",
+            "eof_ps": "608000",
+            "release_ps": "704000",
+            "arrival_ps": "609000"
+          },
+          {
+            "from": "S1",
+            "to": "S2",
+            "sof_ps": "611000",
+            "eof_ps": "1219000",
+            "release_ps": "1315000",
+            "arrival_ps": "1220000"
+          },
+          {
+            "from": "S2",
+            "to": "B",
+            "sof_ps": "1222000",
+            "eof_ps": "1830000",
+            "release_ps": "1926000",
+            "arrival_ps": "1831000"
+          }
+        ],
+        "terminal_completion_ps": "1831000"
+      },
+      "independent_calculation": "Each hop serializes 608 bits at 1000 ps/bit. Arrival excludes IFG and adds 1000 ps propagation; the next hop adds 2000 ps switch processing. Terminal arrival is 3*608000 + 3*1000 + 2*2000 = 1831000 ps."
+    },
+    {
+      "id": "ethernet.tsn.tas.exact-fit-and-circular-window",
+      "domain": "ethernet_tsn",
+      "case_ref": "EthernetTSN検証仕様書 TAS-02, TAS-03, TAS-05",
+      "source_documents": [
+        "docs/specs/models/EthernetTSN詳細機能仕様書.md",
+        "docs/verification/cases/EthernetTSN検証仕様書.md"
+      ],
+      "input": {
+        "link_rate_bps": 1000000000,
+        "tas_base_time_ps": "0",
+        "tas_cycle_ps": "2000000",
+        "tas_open_window_ps": [
+          "0",
+          "1000000"
+        ],
+        "offer_ps": {
+          "untagged_exact": "328000",
+          "untagged_plus_1_ps": "328001",
+          "tagged_exact": "296000",
+          "tagged_plus_1_ps": "296001"
+        },
+        "mac_frame_bytes": {
+          "untagged": 64,
+          "tagged": 68
+        },
+        "circular_case": {
+          "base_time_ps": "0",
+          "cycle_ps": "1000000",
+          "open_windows_ps": [
+            [
+              "0",
+              "400000"
+            ],
+            [
+              "700000",
+              "1000000"
+            ]
+          ],
+          "offer_ps": "700000",
+          "mac_frame_bytes": 64
+        }
+      },
+      "expected": {
+        "untagged_occupancy_ps": "672000",
+        "untagged_exact": {
+          "sof_ps": "328000",
+          "release_ps": "1000000",
+          "fits": true
+        },
+        "untagged_plus_1_ps": {
+          "next_sof_ps": "2000000",
+          "next_release_ps": "2672000",
+          "fits_current_window": false
+        },
+        "tagged_occupancy_ps": "704000",
+        "tagged_exact": {
+          "sof_ps": "296000",
+          "release_ps": "1000000",
+          "fits": true
+        },
+        "tagged_plus_1_ps": {
+          "next_sof_ps": "2000000",
+          "next_release_ps": "2704000",
+          "fits_current_window": false
+        },
+        "circular_window_end_ps": "1400000",
+        "circular_release_ps": "1372000",
+        "circular_fits": true
+      },
+      "independent_calculation": "TAS admits iff SOF+ceil((MAC+8+12)*8*10^12/R) <= open-window end. The circular window joins the period tail ending at 1000000 ps to the next period head ending at 1400000 ps."
+    },
+    {
+      "id": "ethernet.tsn.cbs.recovery-and-gate-freeze",
+      "domain": "ethernet_tsn",
+      "case_ref": "EthernetTSN検証仕様書 DIR-TEST-0114 CBS",
+      "source_documents": [
+        "docs/specs/models/EthernetTSN詳細機能仕様書.md",
+        "docs/verification/cases/EthernetTSN検証仕様書.md"
+      ],
+      "input": {
+        "link_rate_bps": 1000000000,
+        "idle_slope_bps": 250000000,
+        "mac_frame_bytes": 64,
+        "q_per_bit": "1000000000000",
+        "continuous_open_case": {
+          "backlog_frames": 2,
+          "first_sof_ps": "0"
+        },
+        "gate_freeze_case": {
+          "backlog_frames": 2,
+          "first_sof_ps": "0",
+          "open_windows_ps": [
+            [
+              "0",
+              "1000000"
+            ],
+            [
+              "2000000",
+              "5000000"
+            ]
+          ]
+        }
+      },
+      "expected": {
+        "continuous_open": [
+          {
+            "time_ps": "576000",
+            "credit_negative": true,
+            "credit_magnitude_u128": "432000000000000",
+            "event": "first EOF"
+          },
+          {
+            "time_ps": "672000",
+            "credit_negative": true,
+            "credit_magnitude_u128": "504000000000000",
+            "event": "first release"
+          },
+          {
+            "time_ps": "2688000",
+            "credit_negative": false,
+            "credit_magnitude_u128": "0",
+            "event": "credit reaches zero; second SOF"
+          },
+          {
+            "time_ps": "3360000",
+            "credit_negative": true,
+            "credit_magnitude_u128": "504000000000000",
+            "event": "second release"
+          },
+          {
+            "time_ps": "5376000",
+            "credit_negative": false,
+            "credit_magnitude_u128": "0",
+            "event": "empty credit reaches zero"
+          }
+        ],
+        "gate_freeze": {
+          "credit_at_close_ps": "1000000",
+          "credit_at_close_negative": true,
+          "credit_at_close_magnitude_u128": "422000000000000",
+          "credit_while_closed": {
+            "time_ps": "2000000",
+            "credit_negative": true,
+            "credit_magnitude_u128": "422000000000000"
+          },
+          "stale_wake_ps": "2688000",
+          "stale_wake_effect": "no_op",
+          "zero_wake_ps": "3688000",
+          "next_sof_ps": "3688000"
+        }
+      },
+      "independent_calculation": "While this class sends, slope is 250000000-1000000000=-750000000 bit/s, producing -432 bits at EOF and -504 bits at release. Open non-sending recovery is 250000000 bit/s; 504 bits take 2016000 ps. In the gated case, recovery adds 82 bits before close (-422), freezes for 1000000 ps, then needs 1688000 ps after reopen."
+    },
+    {
+      "id": "ethernet.tsn.psfp.five-arrivals",
+      "domain": "ethernet_tsn",
+      "case_ref": "EthernetTSN検証仕様書 DIR-TEST-0115 PSFP",
+      "source_documents": [
+        "docs/specs/models/EthernetTSN詳細機能仕様書.md",
+        "docs/verification/cases/EthernetTSN検証仕様書.md"
+      ],
+      "input": {
+        "mac_frame_bytes": 64,
+        "frame_cost_bits": 512,
+        "committed_rate_bps": 8000000,
+        "peak_rate_bps": 16000000,
+        "committed_burst_bytes": 64,
+        "peak_burst_bytes": 128,
+        "q_per_bit": "1000000000000",
+        "initial_tokens": "full",
+        "yellow_action": "pass",
+        "same_time_arrival_order": "array_order",
+        "arrivals": [
+          {
+            "id": "a",
+            "time_ps": "0"
+          },
+          {
+            "id": "b",
+            "time_ps": "0"
+          },
+          {
+            "id": "c",
+            "time_ps": "0"
+          },
+          {
+            "id": "d",
+            "time_ps": "32000000"
+          },
+          {
+            "id": "e",
+            "time_ps": "96000000"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "a",
+          "refilled_committed_u128": "512000000000000",
+          "refilled_peak_u128": "1024000000000000",
+          "color": "green",
+          "after_committed_u128": "0",
+          "after_peak_u128": "512000000000000",
+          "consumed_bits": 1024,
+          "verdict": "pass"
+        },
+        {
+          "id": "b",
+          "refilled_committed_u128": "0",
+          "refilled_peak_u128": "512000000000000",
+          "color": "yellow",
+          "after_committed_u128": "0",
+          "after_peak_u128": "0",
+          "consumed_bits": 512,
+          "verdict": "pass"
+        },
+        {
+          "id": "c",
+          "refilled_committed_u128": "0",
+          "refilled_peak_u128": "0",
+          "color": "red",
+          "after_committed_u128": "0",
+          "after_peak_u128": "0",
+          "consumed_bits": 0,
+          "verdict": "drop"
+        },
+        {
+          "id": "d",
+          "refilled_committed_u128": "256000000000000",
+          "refilled_peak_u128": "512000000000000",
+          "color": "yellow",
+          "after_committed_u128": "256000000000000",
+          "after_peak_u128": "0",
+          "consumed_bits": 512,
+          "verdict": "pass"
+        },
+        {
+          "id": "e",
+          "refilled_committed_u128": "512000000000000",
+          "refilled_peak_u128": "1024000000000000",
+          "color": "green",
+          "after_committed_u128": "0",
+          "after_peak_u128": "512000000000000",
+          "consumed_bits": 1024,
+          "verdict": "pass"
+        }
+      ],
+      "independent_calculation": "Bucket cap is burst_bytes*8*Q and frame cost is 64*8*Q. Refill each bucket by min(cap-current, rate_bps*elapsed_ps). Green consumes one frame cost from both buckets; yellow consumes peak only; red consumes neither."
+    },
+    {
+      "id": "can_ethernet.end-to-end.terminal-targets",
+      "domain": "can_ethernet",
+      "case_ref": "CAN・Ethernet変換検証仕様書 R10, P12E",
+      "source_documents": [
+        "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md",
+        "docs/verification/cases/CAN・Ethernet変換検証仕様書.md"
+      ],
+      "input": {
+        "segment": "one transmitted CAN child segment",
+        "sof_started": true,
+        "terminal_targets_frozen_at_sof": [
+          {
+            "origin_id": "origin-1",
+            "segment_id": "child-segment-1",
+            "branch_lineage": [
+              "branch-1"
+            ],
+            "terminal_id": "sinkA"
+          },
+          {
+            "origin_id": "origin-1",
+            "segment_id": "child-segment-1",
+            "branch_lineage": [
+              "branch-1"
+            ],
+            "terminal_id": "sinkB"
+          }
+        ],
+        "snapshots": [
+          {
+            "name": "complete",
+            "completed_terminal_ids": [
+              "sinkA",
+              "sinkB"
+            ]
+          },
+          {
+            "name": "partial",
+            "completed_terminal_ids": [
+              "sinkA"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "target_count": 2,
+        "complete": {
+          "completed": 2,
+          "rate": "2/2",
+          "completed_terminal_ids": [
+            "sinkA",
+            "sinkB"
+          ]
+        },
+        "partial": {
+          "completed": 1,
+          "rate": "1/2",
+          "completed_terminal_ids": [
+            "sinkA"
+          ],
+          "sinkB_completed_ps": null
+        },
+        "denominator_basis": "SOF-frozen terminal target tuples; one branch can target multiple terminals"
+      },
+      "independent_calculation": "Count the two distinct (origin_id, segment_id, branch_lineage, terminal_id) tuples frozen at SOF. Count completed tuples once; an uncompleted tuple contributes to the denominator but not the numerator."
+    }
+  ]
+}

@@ -1,12 +1,14 @@
 # GWモデル詳細設計書
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 2f1e60b`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-08` | GWの公開Registry接続、専用エンジン・schema2結果・系譜の配置と、外部登録モデルの検証境界を反映 |
 | `1.0.0` | `2026-10-03` | RX保持、出力別のTX受理待ち、分岐、コピー・出典管理と実装配置を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
 | `0.1.0` | `2026-10-01` | 作業内容を集約：初版。独立CANバス・静的GWの契約と検証を具体化 |
@@ -15,11 +17,11 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 状態 | 設計確定。RX保持・TX満杯待ちを内部実装し、[改訂後の実行記録](../verification/results/gateway-rx-buffer-2026-10-03.json)で改訂fixtureと境界・分岐・順序・終了/表示を確認した。従来16 fixture照合の証跡とは取得時のソースを区別する。公開Registry/Envelope API・外部codec・内部journal API直接注入を含む設計全体の適合は未完了 |
+| 状態 | 設計確定。RX保持・TX満杯待ちを内部実装し、[改訂後の実行記録](../verification/results/gateway-rx-buffer-2026-10-03.json)で改訂fixtureと境界・分岐・順序・終了/表示を確認した。従来16 fixture照合の証跡とは取得時のソースを区別する。公開Registry/Envelope/Context APIを開発中ソースへ追加。GWは専用エンジンの組込みアダプターとして動作し、外部登録GWの製品適合は未確認 |
 | 担当元 | [architecture#arch-gateway](../アーキテクチャ設計書.md#arch-gateway)。GW coordinatorと既存CAN contextを結合する |
 | 正本 | [GW仕様](../specs/models/GWモデル詳細機能仕様書.md)と[CAN設計](CANモデル詳細設計書.md)。共通scheduler・journal・結果のcommit境界を再利用する |
 
-現行ソースでは、[types.rs](../../crates/dir-simulator/src/lib/types.rs)のPreparedSimulationの`can`へバス・Controller所属、`gateway`へGateway・Routeを格納し、[input/gateway.rs](../../crates/dir-simulator/src/input/gateway.rs)でJSON、所有区間と閉路を検証する。[runtime/gateway.rs](../../crates/dir-simulator/src/runtime/gateway.rs)はEngineが所有する一つのschedulerにバス別active/dirty状態を持ち、受信完了→経路照合→GW処理→コピー生成→CAN Readyを実行する。[snapshot.rs](../../crates/dir-simulator/src/lib/snapshot.rs)は`can`に確定したRequest/Receiver、`gateway`にForwardと要求ID別の系譜、`common`に計測点・終了状態を保持し、[output.rs](../../crates/dir-simulator/src/output.rs)がschema2へ変換する。これは内部実装であり、以下の公開Registry/Envelope・codec・ライフサイクルAPIをすべて提供した状態ではない。
+現行ソースでは、[types.rs](../../crates/dir-simulator/src/lib/types.rs)のPreparedSimulationの`can`へバス・Controller所属、`gateway`へGateway・Routeを格納し、[input/gateway.rs](../../crates/dir-simulator/src/input/gateway.rs)でJSON、所有区間と閉路を検証する。[runtime/gateway.rs](../../crates/dir-simulator/src/runtime/gateway.rs)はEngineが所有する一つのschedulerにバス別active/dirty状態を持ち、受信完了→経路照合→GW処理→コピー生成→CAN Readyを実行する。[snapshot.rs](../../crates/dir-simulator/src/lib/snapshot.rs)は`can`に確定したRequest/Receiver、`gateway`にForwardと要求ID別の系譜、`common`に計測点・終了状態を保持し、[output.rs](../../crates/dir-simulator/src/output.rs)がschema2へ変換する。これはGWの専用実装であり、公開Registryには組込みアダプターとして接続する。外部登録モデル用のRegistry/Envelope/Contextは別の共通エンジンで提供する。
 
 <a id="validation"></a>
 

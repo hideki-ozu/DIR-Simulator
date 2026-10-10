@@ -1,0 +1,7 @@
+# Candidate 5: indexed statistics updates
+
+StatsTable stores a topology-sized Vec<Stats>, a borrowed-name index map and a fixed $all slot. Initialize all controller/bus/$all subjects, including idle ones. Each request resolves source and bus once; each receiver resolves its name once. Reuse those numeric slots for status, delays and bit sums rather than allocating cloned names and looking up maps repeatedly. All checked u128 arithmetic and original duplicate-target update semantics remain.
+
+Existing summaries retain their target/metric/reason/receiver sort order and output format. Their small topology reads can use the index map; the hot update loop performs numeric indexing. Unknown archived names produce output diagnostics before indexing, and owned sort files are removed on failure. The map is built once per export and uses no global registry or changes to runtime/public input.
+
+Validate the semantic-corrupt archived source diagnostic and all existing memory-versus-spooled output tests, then isolate effects with the same pinned binary/input/hash methodology. Contribution/record sorting and JSON/CSV output passes are unchanged. No production adoption is implied.

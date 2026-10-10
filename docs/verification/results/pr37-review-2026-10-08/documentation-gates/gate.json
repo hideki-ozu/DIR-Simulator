@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "log": "0.log",
+      "sha256": "915e2ace5ba386c4e2fe574b6d52f309649fff3941c8694fbe1025b22ce43f39"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "1.log",
+      "sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/render_diagrams.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "2.log",
+      "sha256": "c2e412d018b20b9e2615110db631aaca7323765055e392092c17063d7858d774"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "3.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "4.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "issue": 41,
+  "baseline_source_commit": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "implementation_source_state": "uncommitted isolated checkout; exact scoped file hashes below",
+  "source_sha256": {
+    "crates/dir-simulator/src/input.rs": "b190c0e25bc0d9075cd9bc932753adf66f63e20e0b2fff6b5042fa11121b7d95",
+    "crates/dir-simulator/src/input/ned.rs": "95bc8ee3f506c16679bb440e6fde89eb7bc5dbcdd26e859ebd85b074622541f6",
+    "crates/dir-simulator/src/input/ned/tests.rs": "244a80dc42f28b26c0ab94df3c6a63f13a649f9fc1194f72475d732ebca2c93b",
+    "crates/dir-simulator/tests/ac0008_attributes.rs": "dd5e11b56f508b655e67d65a96aba581f7a979ae6b4d46593423aed461d589c0",
+    "crates/dir-simulator/tests/ac0008_paths.rs": "452af8a2e4522d64bccbc1084fb8d37283583cee61337b8886d4da4d898edf3c"
+  },
+  "attribute_plan_bindings": [
+    {
+      "case_id": "ATTR-001",
+      "status": "focused_assertions_passed",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_attribute",
+          "line_start": 17,
+          "line_end": 31,
+          "asserted_observable": "immutable accessor name/value/typed owner/original absolute source path"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_span",
+          "line_start": 33,
+          "line_end": 38,
+          "asserted_observable": "exact independent byte start/end and Unicode scalar line/column/end coordinates"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "line_start": 43,
+          "line_end": 61,
+          "asserted_observable": "type display 日本語; type description one decoded newline; queueCapacity display 容量 and description 件数; defaults/scalar/unit unchanged; hard-coded BOM/CRLF exact spans"
+        }
+      ],
+      "execution_log": "attribute-regressions.log"
+    },
+    {
+      "case_id": "ATTR-002",
+      "status": "focused_assertions_passed",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_attribute",
+          "line_start": 17,
+          "line_end": 31,
+          "asserted_observable": "immutable accessor name/value/typed owner/original absolute source path"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_span",
+          "line_start": 33,
+          "line_end": 38,
+          "asserted_observable": "exact independent byte start/end and Unicode scalar line/column/end coordinates"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "supplied_fixture_keeps_grammar_rejection_and_valid_order_retains_quote_backslash",
+          "line_start": 102,
+          "line_end": 109,
+          "asserted_observable": "description quote/backslash decoded value and original hard-coded full attribute span"
+        }
+      ],
+      "execution_log": "attribute-regressions.log"
+    },
+    {
+      "case_id": "ATTR-003",
+      "status": "focused_assertions_passed",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_attribute",
+          "line_start": 17,
+          "line_end": 31,
+          "asserted_observable": "immutable accessor name/value/typed owner/original absolute source path"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_span",
+          "line_start": 33,
+          "line_end": 38,
+          "asserted_observable": "exact independent byte start/end and Unicode scalar line/column/end coordinates"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "line_start": 43,
+          "line_end": 61,
+          "asserted_observable": "type display 日本語; type description one decoded newline; queueCapacity display 容量 and description 件数; defaults/scalar/unit unchanged; hard-coded BOM/CRLF exact spans"
+        }
+      ],
+      "execution_log": "attribute-regressions.log"
+    },
+    {
+      "case_id": "ATTR-004",
+      "status": "focused_assertions_passed",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_attribute",
+          "line_start": 17,
+          "line_end": 31,
+          "asserted_observable": "immutable accessor name/value/typed owner/original absolute source path"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_span",
+          "line_start": 33,
+          "line_end": 38,
+          "asserted_observable": "exact independent byte start/end and Unicode scalar line/column/end coordinates"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "line_start": 43,
+          "line_end": 61,
+          "asserted_observable": "type display 日本語; type description one decoded newline; queueCapacity display 容量 and description 件数; defaults/scalar/unit unchanged; hard-coded BOM/CRLF exact spans"
+        }
+      ],
+      "execution_log": "attribute-regressions.log"
+    },
+    {
+      "case_id": "ATTR-005",
+      "status": "focused_assertions_passed",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/src/input/ned/tests.rs",
+          "test": "metadata_instances_reference_one_declaration_without_affecting_schema_or_values",
+          "line_start": 85,
+          "line_end": 115,
+          "asserted_observable": "Main.a and Main.b point to same Declaration and same display Attribute; type owner tiny.Source and parameter owner tiny.Source/count; five execution values with count64 and size1024"
+        }
+      ],
+      "execution_log": "attribute-ned-unit-tests.log"
+    },
+    {
+      "case_id": "ATTR-006",
+      "status": "focused_assertions_passed",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_attribute",
+          "line_start": 17,
+          "line_end": 31,
+          "asserted_observable": "immutable accessor name/value/typed owner/original absolute source path"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_span",
+          "line_start": 33,
+          "line_end": 38,
+          "asserted_observable": "exact independent byte start/end and Unicode scalar line/column/end coordinates"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "comments_inside_strings_are_data_and_class_unit_values_keep_existing_accessors",
+          "line_start": 122,
+          "line_end": 149,
+          "asserted_observable": "comments inside description preserved; @class and @unit getter values preserved; exact class/unit spans, typed owners, comment-separated default0ps"
+        }
+      ],
+      "execution_log": "attribute-regressions.log"
+    },
+    {
+      "case_id": "ATTR-007",
+      "status": "focused_assertions_passed",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+          "line_start": 177,
+          "line_end": 184,
+          "asserted_observable": "unknown property E-0001/unsupported_syntax at original name-token line1 columns56..63"
+        }
+      ],
+      "execution_log": "attribute-regressions.log"
+    }
+  ],
+  "atomic_predicate_bindings": [
+    {
+      "case_id": "DIR-TEST-0061-R01-V01-O01",
+      "status": "partial_predicate_evidence_only",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "line_start": 43,
+          "line_end": 61,
+          "asserted_observable": "type display 日本語; type description one decoded newline; queueCapacity display 容量 and description 件数; defaults/scalar/unit unchanged; hard-coded BOM/CRLF exact spans"
+        },
+        {
+          "source": "crates/dir-simulator/src/input/ned/tests.rs",
+          "test": "metadata_instances_reference_one_declaration_without_affecting_schema_or_values",
+          "line_start": 85,
+          "line_end": 115,
+          "asserted_observable": "Main.a and Main.b point to same Declaration and same display Attribute; type owner tiny.Source and parameter owner tiny.Source/count; five execution values with count64 and size1024"
+        }
+      ],
+      "limit": "Equivalent retained attributes exercised on Endpoint/Source; exact Controller row/config is not reproduced."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R01-V01-O02",
+      "status": "partial_predicate_evidence_only",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/src/input/ned/tests.rs",
+          "test": "metadata_instances_reference_one_declaration_without_affecting_schema_or_values",
+          "line_start": 85,
+          "line_end": 115,
+          "asserted_observable": "Main.a and Main.b point to same Declaration and same display Attribute; type owner tiny.Source and parameter owner tiny.Source/count; five execution values with count64 and size1024"
+        }
+      ],
+      "limit": "Main.a/b pointer identity exercised using common TinyRules Source declaration; exact Controller config not reproduced."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R02-V01-O02",
+      "status": "partial_predicate_evidence_only",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "line_start": 43,
+          "line_end": 61,
+          "asserted_observable": "type display 日本語; type description one decoded newline; queueCapacity display 容量 and description 件数; defaults/scalar/unit unchanged; hard-coded BOM/CRLF exact spans"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_span",
+          "line_start": 33,
+          "line_end": 38,
+          "asserted_observable": "exact independent byte start/end and Unicode scalar line/column/end coordinates"
+        }
+      ],
+      "limit": "Hard-coded BOM/CRLF coordinates exercised; full Controller row and preparation not reproduced."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R02-V01-O04",
+      "status": "partial_predicate_evidence_only",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "line_start": 43,
+          "line_end": 61,
+          "asserted_observable": "type display 日本語; type description one decoded newline; queueCapacity display 容量 and description 件数; defaults/scalar/unit unchanged; hard-coded BOM/CRLF exact spans"
+        },
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "assert_span",
+          "line_start": 33,
+          "line_end": 38,
+          "asserted_observable": "exact independent byte start/end and Unicode scalar line/column/end coordinates"
+        }
+      ],
+      "limit": "Byte offsets independently compared with scalar display coordinates; full row not reproduced."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R03-V01-O01",
+      "status": "partial_predicate_evidence_only",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "comments_inside_strings_are_data_and_class_unit_values_keep_existing_accessors",
+          "line_start": 122,
+          "line_end": 149,
+          "asserted_observable": "comments inside description preserved; @class and @unit getter values preserved; exact class/unit spans, typed owners, comment-separated default0ps"
+        }
+      ],
+      "limit": "Exact string // /* = ; # */ retained through public parser; execution of original config not exercised."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R06-V02-O01",
+      "status": "partial_predicate_evidence_only",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+          "line_start": 177,
+          "line_end": 184,
+          "asserted_observable": "unknown property E-0001/unsupported_syntax at original name-token line1 columns56..63"
+        }
+      ],
+      "limit": "Unknown property public parser diagnostic asserted; no execution/callback claim."
+    },
+    {
+      "case_id": "DIR-TEST-0061-R06-V02-O02",
+      "status": "partial_predicate_evidence_only",
+      "evidence": [
+        {
+          "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+          "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+          "line_start": 177,
+          "line_end": 184,
+          "asserted_observable": "unknown property E-0001/unsupported_syntax at original name-token line1 columns56..63"
+        }
+      ],
+      "limit": "Original unknown-property name-token span asserted; rejected properties do not produce metadata."
+    }
+  ],
+  "additional_exercised_assertions": [
+    {
+      "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+      "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+      "line_start": 154,
+      "line_end": 175,
+      "asserted_observable": "duplicate type/parameter display/description E-0001 syntax_error and entire original second-property span"
+    },
+    {
+      "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+      "test": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+      "line_start": 185,
+      "line_end": 195,
+      "asserted_observable": "invalid q and u1234 escapes E-0001 syntax_error at opening quote"
+    },
+    {
+      "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+      "test": "supplied_fixture_keeps_grammar_rejection_and_valid_order_retains_quote_backslash",
+      "line_start": 65,
+      "line_end": 74,
+      "asserted_observable": "unchanged supplied fixture rejected for post-default property; valid-order correction used explicitly"
+    }
+  ],
+  "coverage_claim": "Only listed focused assertions are verified. Atomic rows remain partial predicate navigation; this file does not rewrite static statuses, 569/29 aggregates, or grant AC0008/specification/license/origin approval."
+}

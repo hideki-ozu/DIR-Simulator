@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "source_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+  "release_tag": "v1.1.4",
+  "original_checker_sha256": "ce7a5439e18d987e00d35eca63ad747c4f9dd401d0bdd480ea4b5f6fe2d1c018",
+  "adjusted_checker_sha256": "1d0193b06cc5ca40df20a11602e80f8fdf09edaa2492bba869e11a19f9d51592",
+  "only_assertion_change": "meta['runtime_version'] expected 1.1.4 -> 0.1.0",
+  "reason": "runtime_version is Cargo package version via env!(CARGO_PKG_VERSION), distinct from Git release v1.1.4; retain release and source_commit checks",
+  "original_exit_codes": {
+    "prepared": 1,
+    "zip": 1
+  },
+  "adjusted_exit_codes": {
+    "prepared": 0,
+    "zip": 0
+  },
+  "runtime_output_evidence": [
+    {
+      "execution": "prepared",
+      "condition": "short",
+      "runtime_version": "0.1.0",
+      "model_profile": "ethernet.l2.qos.v1",
+      "git_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+      "binary_sha256": "9996ab4f0a8f0435b39d06e6be0fe7b9afc001ae89b20beffa7bf3027d7b1de4",
+      "execution_release": "v1.1.4"
+    },
+    {
+      "execution": "prepared",
+      "condition": "equal",
+      "runtime_version": "0.1.0",
+      "model_profile": "ethernet.l2.qos.v1",
+      "git_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+      "binary_sha256": "9996ab4f0a8f0435b39d06e6be0fe7b9afc001ae89b20beffa7bf3027d7b1de4",
+      "execution_release": "v1.1.4"
+    },
+    {
+      "execution": "prepared",
+      "condition": "long",
+      "runtime_version": "0.1.0",
+      "model_profile": "ethernet.l2.qos.v1",
+      "git_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+      "binary_sha256": "9996ab4f0a8f0435b39d06e6be0fe7b9afc001ae89b20beffa7bf3027d7b1de4",
+      "execution_release": "v1.1.4"
+    },
+    {
+      "execution": "zip",
+      "condition": "short",
+      "runtime_version": "0.1.0",
+      "model_profile": "ethernet.l2.qos.v1",
+      "git_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+      "binary_sha256": "9996ab4f0a8f0435b39d06e6be0fe7b9afc001ae89b20beffa7bf3027d7b1de4",
+      "execution_release": "v1.1.4"
+    },
+    {
+      "execution": "zip",
+      "condition": "equal",
+      "runtime_version": "0.1.0",
+      "model_profile": "ethernet.l2.qos.v1",
+      "git_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+      "binary_sha256": "9996ab4f0a8f0435b39d06e6be0fe7b9afc001ae89b20beffa7bf3027d7b1de4",
+      "execution_release": "v1.1.4"
+    },
+    {
+      "execution": "zip",
+      "condition": "long",
+      "runtime_version": "0.1.0",
+      "model_profile": "ethernet.l2.qos.v1",
+      "git_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+      "binary_sha256": "9996ab4f0a8f0435b39d06e6be0fe7b9afc001ae89b20beffa7bf3027d7b1de4",
+      "execution_release": "v1.1.4"
+    }
+  ],
+  "source_evidence": [
+    {
+      "path": "crates/dir-simulator/Cargo.toml",
+      "sha256": "f3e47338d3831c315c6e0d9ed8c6d4c552f5ec5df8697d231c7b0ee265653fd4",
+      "excerpts": [
+        {
+          "start_line": 1,
+          "end_line": 6,
+          "text": "[package]\nname = \"dir-simulator\"\nversion = \"0.1.0\"\nedition.workspace = true\nlicense.workspace = true\nrust-version = \"1.85\""
+        }
+      ]
+    },
+    {
+      "path": "crates/dir-simulator/src/output/metadata.rs",
+      "sha256": "b2f5469838c40d691ad0e6e740d11b50042be9695b55e2a6f6ea9b0fde8d8fac",
+      "excerpts": [
+        {
+          "start_line": 166,
+          "end_line": 170,
+          "text": "    }\n    initial_state.sort_by(|a, b| a[\"instance\"].as_str().cmp(&b[\"instance\"].as_str()));\n    let mut result = json!({\"started_at_utc\":timestamp,\"finished_at_utc\":utc_now(),\"sources\":sources,\"input_sha256\":digest(canonical(&json!(source_hashes)).as_bytes()),\"config_sha256\":digest(canonical(&json!(config)).as_bytes()),\"config\":config,\"runtime_version\":env!(\"CARGO_PKG_VERSION\"),\"model_registry_version\":\"1\",\"models\":[{\"type\":prepared.common.profile,\"version\":\"1\",\"assumptions\":[\"ideal ACK\",\"no retransmission\",\"no error injection\",\"content-dependent frame duration\",\"fixed propagation delay\",\"no source self-delivery\",\"filter independent of ACK\"]}],\"initial_state\":initial_state,\"metrics\":metrics,\"time_resolution_ps\":\"1\",\"window_ps\":prepared.common.metrics_window_ps.to_string(),\"seed\":null});\n    for key in [\n        \"git_commit\","
+        }
+      ]
+    },
+    {
+      "path": "crates/dir-simulator/src/output/ethernet.rs",
+      "sha256": "b07a46f7e2ab7645e47b186a22952f8f0e30cf9bba799b86e2ef1396941e5d5c",
+      "excerpts": [
+        {
+          "start_line": 744,
+          "end_line": 752,
+          "text": "    }\n    let mut result = json!({\"started_at_utc\":timestamp,\"finished_at_utc\":super::metadata::utc_now(),\"sources\":sources,\"input_sha256\":digest(canonical(&json!(source_hashes)).as_bytes()),\"config_sha256\":digest(canonical(&json!(config)).as_bytes()),\"config\":config,\n        \"runtime_version\":env!(\"CARGO_PKG_VERSION\"),\"model_registry_version\":\"1\",\"model_profile\":prepared.common.profile,\n        \"model_schemas\":[{\"schema_name\":\"ethernet.frame\",\"schema_version\":1},{\"schema_name\":\"ethernet.reception\",\"schema_version\":1},{\"schema_name\":\"ethernet.transfer\",\"schema_version\":1}],\n        \"models\":[{\"type\":prepared.common.profile,\"version\":\"1\",\"assumptions\":[\"Ethernet II untagged\",\"full duplex\",\"static FDB\",\"store and forward\",\"error-free fixed-delay links\",\"one FIFO per output\",\"fixed independent processing delays\"]}],\n        \"initial_state\":initial_state,\"metrics\":metrics,\"time_resolution_ps\":\"1\",\"window_ps\":prepared.common.metrics_window_ps.to_string(),\"seed\":null,\"topology\":topology,\"ethernet_topology\":topology,\n        \"implementation_coverage\":{\"profile\":prepared.common.profile,\"reproduction_conditions\":\"partially_identified\",\"limitations\":[\"start timestamp and run_id collected at export rather than execution start\",\"source logical roots inferred from filename\",\"public Registry/Envelope event codec API unavailable\",\"build provenance compiler/toolchain/commit/lock unavailable\",\"OS release and CPU model unavailable\"]}});\n    if qos {\n        result[\"model_schemas\"] = json!([{\"schema_name\":\"ethernet.frame\",\"schema_version\":2},{\"schema_name\":\"ethernet.reception\",\"schema_version\":1},{\"schema_name\":\"ethernet.transfer\",\"schema_version\":2}]);"
+        }
+      ]
+    },
+    {
+      "path": "crates/dir-simulator/src/output/ethernet/flow.rs",
+      "sha256": "32a4d71d548fd8cd5cf950948cbc4c4cf9de2ee7d7e235d04c95b8a14a496fb8",
+      "excerpts": [
+        {
+          "start_line": 255,
+          "end_line": 268,
+          "text": "                .collect();\n            let deadlines: Vec<_> = samples\n                .iter()\n                .filter(|sample| sample.frame.deadline_ps.is_some())\n                .collect();\n            let missed = deadlines\n                .iter()\n                .filter(|sample| sample.delay > sample.frame.deadline_ps.unwrap())\n                .count();\n            summary.push(count_row(\n                \"ethernet.flow.deadline_sample_count\",\n                deadlines.len(),\n            ));\n            summary.push(count_row(\"ethernet.flow.deadline_missed\", missed));"
+        }
+      ]
+    }
+  ],
+  "substantive_behavior_mismatches": [],
+  "full_simulation_prepared_zip_equal": true,
+  "binary_file_current_hash_verified": true,
+  "limitations": [
+    "Viewer images and visual correctness are checked separately by parent",
+    "This checker verifies explicit expected records and numerical metrics, and compares all remaining simulation fields after only documented deadline normalization",
+    "No claim of full Ethernet standards conformance"
+  ]
+}

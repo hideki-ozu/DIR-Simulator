@@ -2,20 +2,25 @@
 //! NED resolution and model-specific validation are delegated to the input adapters.
 mod axi;
 mod can;
+pub(crate) mod can_ethernet;
 mod canfd;
-mod ethernet;
+pub(crate) mod ethernet;
 mod gateway;
+mod json_diagnostics;
 mod memory_ipc;
-mod ned;
+mod network;
+mod provenance;
+use json_diagnostics::JsonDocument;
+pub(crate) use json_diagnostics::parse_json;
+pub(crate) use provenance::effective_value_provenance;
+pub use provenance::{PreparedProvenance, RunIdentity, capture_provenance};
+pub(crate) mod ned;
 mod soc;
 
-use crate::types::{Diagnostic, InputSnapshot, PreparedSimulation};
-use serde::de::{self, MapAccess, SeqAccess, Visitor};
-use serde::{Deserialize, Deserializer};
+use crate::types::{Diagnostic, InputSnapshot, PreparedSimulation, SourceSpan};
 use serde_json::{Map, Value};
 use std::collections::BTreeMap;
 use std::ffi::OsString;
-use std::fmt;
 use std::fs;
 use std::io;
 use std::path::{Component, Path, PathBuf};
@@ -96,7 +101,7 @@ pub struct ProjectHeader {
     pub channels: BTreeMap<String, BTreeMap<String, String>>,
 }
 
-pub use ned::{Connection, Declaration, Parameter};
+pub use ned::{Attribute, AttributeOwner, Connection, Declaration, Parameter};
 
 /// Owned syntax result. Declaration data is available only through immutable getters.
 #[derive(Clone, Debug)]
@@ -122,10 +127,14 @@ pub(crate) fn validate_parameter_literal(
         "ethernet.l2.store-forward.v1"
             | "ethernet.l2.qos.v1"
             | "ethernet.l2.vlan.v1"
+            | "ethernet.l2.dynamic.v1"
+            | "ethernet.tsn.v1"
             | "ethernet.l2.store-forward.v2"
             | "ethernet.l2.100base-t1.v1"
     ) {
         ethernet::validate_parameter_literal(declaration, name, value)
+    } else if profile == "can.ethernet.gateway.v1" {
+        network::topology::validate_parameter_literal(declaration, name, value)
     } else if profile == "can.fd.precomputed.v1" {
         canfd::validate_parameter_literal(declaration, name, value)
     } else if profile == "axi4.transaction.v1" {
@@ -144,7 +153,7 @@ pub(crate) fn validate_parameter_literal(
 
 type Result<T> = std::result::Result<T, Diagnostic>;
 fn error(message: impl Into<String>) -> Diagnostic {
-    Diagnostic::prepare(message)
+    json_diagnostics::contextual(Diagnostic::prepare(message))
 }
 
 pub(crate) fn identifier(s: &str) -> bool {
@@ -208,18 +217,27 @@ fn decimal_parts(value: &str, negative_allowed: bool) -> Result<(&str, &str, boo
         (value, false)
     };
     if negative && !negative_allowed {
-        return Err(error(format!("negative quantity: {value}")));
+        return Err(error(format!("negative quantity: {value}"))
+            .with_reason("invalid_range")
+            .with_detail("actual", value)
+            .with_detail("expected", "representable positive integer or quantity"));
     }
     let integer_end = number.bytes().take_while(u8::is_ascii_digit).count();
     let integer = &number[..integer_end];
     if integer.is_empty() || (integer.len() > 1 && integer.starts_with('0')) {
-        return Err(error(format!("invalid decimal literal: {value}")));
+        return Err(error(format!("invalid decimal literal: {value}"))
+            .with_reason("invalid_type")
+            .with_detail("actual", value)
+            .with_detail("expected", "declared scalar type"));
     }
     let mut remainder = &number[integer_end..];
     let fraction = if let Some(rest) = remainder.strip_prefix('.') {
         let n = rest.bytes().take_while(u8::is_ascii_digit).count();
         if n == 0 {
-            return Err(error(format!("invalid decimal literal: {value}")));
+            return Err(error(format!("invalid decimal literal: {value}"))
+                .with_reason("invalid_type")
+                .with_detail("actual", value)
+                .with_detail("expected", "declared scalar type"));
         }
         remainder = &rest[n..];
         &rest[..n]
@@ -258,7 +276,12 @@ pub(crate) fn quantity(value: &str, unit: &str) -> Result<u64> {
         ("B", "KiB") => 1_024,
         ("B", "MiB") => 1_048_576,
         ("B", "GiB") => 1_073_741_824,
-        _ => return Err(error(format!("expected a {unit} quantity, got {value}"))),
+        _ => {
+            return Err(error(format!("expected a {unit} quantity, got {value}"))
+                .with_reason("invalid_unit")
+                .with_detail("actual", value)
+                .with_detail("expected", format!("{unit} quantity")));
+        }
     };
     // Multiplication of a decimal digit string avoids intermediate range limits.
     let mut digits: Vec<u8> = integer
@@ -281,27 +304,44 @@ pub(crate) fn quantity(value: &str, unit: &str) -> Result<u64> {
     prefix.extend(digits);
     let split = prefix.len() - fraction.len();
     if prefix[split..].iter().any(|&digit| digit != 0) {
-        return Err(error(format!("quantity requires rounding: {value}")));
+        return Err(error(format!("quantity requires rounding: {value}"))
+            .with_reason("invalid_range")
+            .with_detail("actual", value)
+            .with_detail("expected", "representable positive integer or quantity"));
     }
     prefix[..split].iter().try_fold(0u64, |n, &digit| {
         n.checked_mul(10)
             .and_then(|n| n.checked_add(digit as u64))
-            .ok_or_else(|| error(format!("quantity exceeds u64: {value}")))
+            .ok_or_else(|| {
+                error(format!("quantity exceeds u64: {value}"))
+                    .with_reason("invalid_range")
+                    .with_detail("actual", value)
+                    .with_detail("expected", "representable positive integer or quantity")
+            })
     })
 }
 
-fn unsigned(value: &str, positive: bool) -> Result<u64> {
+pub(crate) fn unsigned(value: &str, positive: bool) -> Result<u64> {
     if value.is_empty()
         || !value.bytes().all(|c| c.is_ascii_digit())
         || (value.len() > 1 && value.starts_with('0'))
     {
-        return Err(error(format!("expected decimal integer: {value}")));
+        return Err(error(format!("expected decimal integer: {value}"))
+            .with_reason("invalid_type")
+            .with_detail("actual", value)
+            .with_detail("expected", "declared scalar type"));
     }
-    let n: u64 = value
-        .parse()
-        .map_err(|_| error(format!("integer exceeds u64: {value}")))?;
+    let n: u64 = value.parse().map_err(|_| {
+        error(format!("integer exceeds u64: {value}"))
+            .with_reason("invalid_range")
+            .with_detail("actual", value)
+            .with_detail("expected", "representable positive integer or quantity")
+    })?;
     if positive && n == 0 {
-        return Err(error(format!("expected positive integer: {value}")));
+        return Err(error(format!("expected positive integer: {value}"))
+            .with_reason("invalid_range")
+            .with_detail("actual", value)
+            .with_detail("expected", "representable positive integer or quantity"));
     }
     Ok(n)
 }
@@ -309,14 +349,20 @@ fn unsigned(value: &str, positive: bool) -> Result<u64> {
 pub(crate) fn string_literal(value: &str) -> Result<String> {
     let mut chars = value.chars();
     if chars.next() != Some('"') {
-        return Err(error(format!("expected quoted string: {value}")));
+        return Err(error(format!("expected quoted string: {value}"))
+            .with_reason("invalid_type")
+            .with_detail("actual", value)
+            .with_detail("expected", "declared scalar type"));
     }
     let mut out = String::new();
     while let Some(c) = chars.next() {
         match c {
             '"' => {
                 if chars.next().is_some() {
-                    return Err(error(format!("trailing string input: {value}")));
+                    return Err(error(format!("trailing string input: {value}"))
+                        .with_reason("invalid_type")
+                        .with_detail("actual", value)
+                        .with_detail("expected", "declared scalar type"));
                 }
                 return Ok(out);
             }
@@ -326,15 +372,17 @@ pub(crate) fn string_literal(value: &str) -> Result<String> {
                 Some('n') => '\n',
                 Some('r') => '\r',
                 Some('t') => '\t',
-                _ => return Err(error("invalid string escape")),
+                _ => return Err(error("invalid string escape").with_reason("invalid_type")),
             }),
             c if c <= '\u{1f}' || c == '\u{7f}' => {
-                return Err(error("unescaped control character in string"));
+                return Err(
+                    error("unescaped control character in string").with_reason("invalid_type")
+                );
             }
             c => out.push(c),
         }
     }
-    Err(error("unterminated quoted string"))
+    Err(error("unterminated quoted string").with_reason("syntax_error"))
 }
 
 fn quoted_paths(value: &str) -> Result<Vec<String>> {
@@ -342,7 +390,9 @@ fn quoted_paths(value: &str) -> Result<Vec<String>> {
     let mut rest = value.trim_matches([' ', '\t']);
     loop {
         if !rest.starts_with('"') {
-            return Err(error("ned-path requires quoted nonempty paths"));
+            return Err(
+                error("ned-path requires quoted nonempty paths").with_reason("invalid_type")
+            );
         }
         let mut escaped = false;
         let mut end = None;
@@ -353,7 +403,8 @@ fn quoted_paths(value: &str) -> Result<Vec<String>> {
             }
             escaped = !escaped && c == '\\';
         }
-        let end = end.ok_or_else(|| error("unterminated ned-path string"))?;
+        let end =
+            end.ok_or_else(|| error("unterminated ned-path string").with_reason("syntax_error"))?;
         let path = string_literal(&rest[..end])?;
         valid_file_path(&path)?;
         paths.push(path);
@@ -363,13 +414,15 @@ fn quoted_paths(value: &str) -> Result<Vec<String>> {
         }
         rest = rest
             .strip_prefix(';')
-            .ok_or_else(|| error("invalid ned-path separator"))?
+            .ok_or_else(|| error("invalid ned-path separator").with_reason("syntax_error"))?
             .trim_start_matches([' ', '\t']);
     }
 }
 fn valid_file_path(path: &str) -> Result<()> {
     if path.is_empty() || path.chars().any(|c| c <= '\u{1f}' || c == '\u{7f}') {
-        return Err(error("path is empty or contains control characters"));
+        return Err(
+            error("path is empty or contains control characters").with_reason("invalid_type")
+        );
     }
     Ok(())
 }
@@ -386,20 +439,24 @@ fn normalize(path: &Path) -> PathBuf {
     }
     out
 }
-fn absolute(path: &Path, base: &Path) -> PathBuf {
+pub(crate) fn absolute(path: &Path, base: &Path) -> PathBuf {
     normalize(&if path.is_absolute() {
         path.to_path_buf()
     } else {
         base.join(path)
     })
 }
-fn no_symlinks(path: &Path, source: &dyn InputSource) -> Result<()> {
+pub(crate) fn no_symlinks(path: &Path, source: &dyn InputSource) -> Result<()> {
     let mut current = PathBuf::new();
     for component in path.components() {
         current.push(component.as_os_str());
-        let metadata = source
-            .metadata(&current)
-            .map_err(|e| error(format!("{}: {e}", current.display())))?;
+        let metadata = source.metadata(&current).map_err(|e| {
+            error(format!("{}: {e}", current.display()))
+                .with_reason("input_unreadable")
+                .with_source(path)
+                .with_detail("operation", "metadata")
+                .with_detail("os_error", e)
+        })?;
         if metadata.kind == InputKind::Symlink {
             return Err(error(format!(
                 "symlink input is unsupported: {}",
@@ -409,7 +466,7 @@ fn no_symlinks(path: &Path, source: &dyn InputSource) -> Result<()> {
     }
     Ok(())
 }
-fn read_file(
+pub(crate) fn read_file(
     path: &Path,
     snapshots: &mut Vec<InputSnapshot>,
     source: &dyn InputSource,
@@ -417,7 +474,13 @@ fn read_file(
     no_symlinks(path, source)?;
     if source
         .metadata(path)
-        .map_err(|e| error(format!("{}: {e}", path.display())))?
+        .map_err(|e| {
+            error(format!("{}: {e}", path.display()))
+                .with_reason("input_unreadable")
+                .with_source(path)
+                .with_detail("operation", "metadata")
+                .with_detail("os_error", e)
+        })?
         .kind
         != InputKind::File
     {
@@ -426,9 +489,17 @@ fn read_file(
             path.display()
         )));
     }
-    let content = source
-        .read_utf8(path)
-        .map_err(|e| error(format!("{}: {e}", path.display())))?;
+    let content = source.read_utf8(path).map_err(|e| {
+        error(format!("{}: {e}", path.display()))
+            .with_reason(if e.kind() == io::ErrorKind::InvalidData {
+                "invalid_utf8"
+            } else {
+                "input_unreadable"
+            })
+            .with_source(path)
+            .with_detail("operation", "read")
+            .with_detail("os_error", e)
+    })?;
     snapshots.push(InputSnapshot {
         path: path.to_path_buf(),
         content: content.clone(),
@@ -440,26 +511,44 @@ fn read_file(
 struct Ini {
     general: BTreeMap<String, String>,
     channels: BTreeMap<String, BTreeMap<String, String>>,
+    spans: BTreeMap<String, (SourceSpan, SourceSpan)>,
+    section_spans: BTreeMap<String, SourceSpan>,
+    eof: Option<SourceSpan>,
 }
 impl Ini {
     fn parse(content: &str, path: &Path) -> Result<Self> {
-        let mut ini = Self::default();
+        let mut ini = Self {
+            eof: Some(SourceSpan::new(path, content, content.len(), content.len())),
+            ..Self::default()
+        };
         let mut section: Option<String> = None;
         let mut saw_general = false;
-        for (line_number, original) in content
-            .trim_start_matches('\u{feff}')
-            .split_inclusive('\n')
-            .enumerate()
-        {
-            let original = if let Some(rest) = original.strip_suffix('\n') {
-                rest.strip_suffix('\r').unwrap_or(rest)
-            } else {
-                original
-            };
+        let bom = if content.starts_with('\u{feff}') {
+            '\u{feff}'.len_utf8()
+        } else {
+            0
+        };
+        let mut offset = bom;
+        for original_line in content[bom..].split_inclusive('\n') {
+            let original = original_line
+                .strip_suffix('\n')
+                .map(|s| s.strip_suffix('\r').unwrap_or(s))
+                .unwrap_or(original_line);
             let line = original.trim_matches([' ', '\t']);
-            let fail = |m: String| error(format!("{}:{}: {m}", path.display(), line_number + 1));
-            if line.contains('\r') {
-                return Err(fail("bare carriage return".into()));
+            let start = offset + original.len() - original.trim_start_matches([' ', '\t']).len();
+            offset += original_line.len();
+            let fail = |message: String, reason: &str, token_start: usize, token_end: usize| {
+                error(format!("{}: {message}", path.display()))
+                    .with_reason(reason)
+                    .with_span(path, content, token_start, token_end)
+            };
+            if let Some(position) = line.find('\r') {
+                return Err(fail(
+                    "bare carriage return".into(),
+                    "syntax_error",
+                    start + position,
+                    start + position + 1,
+                ));
             }
             if line.is_empty() || line.starts_with(['#', ';']) {
                 continue;
@@ -474,31 +563,72 @@ impl Ini {
                         path_name(parent) && path_name(endpoint) && endpoint.split('.').count() <= 2
                     });
                     if !valid {
-                        return Err(fail(format!("invalid channel identifier: {id}")));
+                        return Err(fail(
+                            format!("invalid channel identifier: {id}"),
+                            "invalid_connection",
+                            start + 9,
+                            start + line.len() - 1,
+                        )
+                        .with_target(id));
                     }
-                    if ini
-                        .channels
-                        .insert(id.to_string(), BTreeMap::new())
-                        .is_some()
-                    {
-                        return Err(fail(format!("duplicate channel section: {id}")));
+                    if ini.channels.insert(id.into(), BTreeMap::new()).is_some() {
+                        return Err(fail(
+                            format!("duplicate channel section: {id}"),
+                            "duplicate_definition",
+                            start + 9,
+                            start + line.len() - 1,
+                        )
+                        .with_target(id));
                     }
+                    ini.section_spans.insert(
+                        id.into(),
+                        SourceSpan::new(path, content, start + 9, start + line.len() - 1),
+                    );
                     section = Some(id.into());
                 } else {
-                    return Err(fail(format!("unknown or duplicate section: {line}")));
+                    return Err(fail(
+                        format!("unknown or duplicate section: {line}"),
+                        "syntax_error",
+                        start,
+                        start + line.len(),
+                    ));
                 }
                 continue;
             }
-            let section = section
-                .as_ref()
-                .ok_or_else(|| fail("key before [General]".into()))?;
-            let (key, value) = line
-                .split_once('=')
-                .ok_or_else(|| fail("expected key = value".into()))?;
-            let key = key.trim_matches([' ', '\t']);
-            let value = value.trim_matches([' ', '\t']);
+            let section = section.as_ref().ok_or_else(|| {
+                fail(
+                    "key before [General]".into(),
+                    "syntax_error",
+                    start,
+                    start + line.len(),
+                )
+            })?;
+            let (raw_key, raw_value) = line.split_once('=').ok_or_else(|| {
+                fail(
+                    "expected key = value".into(),
+                    "syntax_error",
+                    start,
+                    start + line.len(),
+                )
+            })?;
+            let key = raw_key.trim_matches([' ', '\t']);
+            let value = raw_value.trim_matches([' ', '\t']);
+            let key_start = start + raw_key.len() - raw_key.trim_start_matches([' ', '\t']).len();
+            let value_start = start + raw_key.len() + 1 + raw_value.len()
+                - raw_value.trim_start_matches([' ', '\t']).len();
+            let target = if section.is_empty() {
+                key.to_owned()
+            } else {
+                format!("{section}.{key}")
+            };
             if value.is_empty() {
-                return Err(fail(format!("empty value for {key}")));
+                return Err(fail(
+                    format!("empty value for {key}"),
+                    "missing_value",
+                    value_start,
+                    value_start,
+                )
+                .with_target(target));
             }
             let execution = matches!(
                 key,
@@ -515,7 +645,15 @@ impl Ini {
             if (section.is_empty() && !execution && !(key.contains('.') && path_name(key)))
                 || (!section.is_empty() && (!identifier(key) || reserved(key)))
             {
-                return Err(fail(format!("unknown or invalid key: {key}")));
+                return Err(fail(
+                    format!("unknown or invalid key: {key}"),
+                    "unknown_parameter",
+                    key_start,
+                    key_start + key.len(),
+                )
+                .with_target(target)
+                .with_detail("actual", key)
+                .with_detail("expected", "registered parameter"));
             }
             let entries = if section.is_empty() {
                 &mut ini.general
@@ -523,19 +661,77 @@ impl Ini {
                 ini.channels.get_mut(section).unwrap()
             };
             if entries.insert(key.into(), value.into()).is_some() {
-                return Err(fail(format!("duplicate key: {key}")));
+                let mut diagnostic = fail(
+                    format!("duplicate key: {key}"),
+                    "duplicate_definition",
+                    key_start,
+                    key_start + key.len(),
+                )
+                .with_target(&target);
+                if let Some((previous, _)) = ini.spans.get(&target) {
+                    diagnostic = diagnostic
+                        .with_detail("related_source", &previous.source)
+                        .with_detail("related_line", previous.line)
+                        .with_detail("related_column", previous.column);
+                }
+                return Err(diagnostic);
             }
+            ini.spans.insert(
+                target,
+                (
+                    SourceSpan::new(path, content, key_start, key_start + key.len()),
+                    SourceSpan::new(path, content, value_start, value_start + value.len()),
+                ),
+            );
         }
         if !saw_general {
-            return Err(error(format!("{}: missing [General]", path.display())));
+            return Err(ini.eof.as_ref().unwrap().apply(
+                error(format!("{}: missing [General]", path.display()))
+                    .with_reason("missing_value"),
+            ));
         }
         Ok(ini)
     }
+    fn annotate(&self, key: &str, diagnostic: Diagnostic) -> Diagnostic {
+        let key_span = matches!(
+            diagnostic.reason.as_str(),
+            "unknown_parameter" | "unknown_instance" | "duplicate_definition"
+        );
+        let diagnostic = diagnostic.with_target(key);
+        if let Some((key, value)) = self.spans.get(key) {
+            (if key_span { key } else { value }).apply(diagnostic)
+        } else if let Some(span) = self.section_spans.get(key) {
+            span.apply(diagnostic)
+        } else {
+            self.eof.as_ref().unwrap().apply(diagnostic)
+        }
+    }
+    fn value<T>(&self, key: &str, result: Result<T>) -> Result<T> {
+        result.map_err(|diagnostic| self.annotate(key, diagnostic))
+    }
     fn required(&self, key: &str) -> Result<&str> {
-        self.general
-            .get(key)
-            .map(String::as_str)
-            .ok_or_else(|| error(format!("missing General key: {key}")))
+        self.general.get(key).map(String::as_str).ok_or_else(|| {
+            self.annotate(
+                key,
+                error(format!("missing General key: {key}"))
+                    .with_reason("missing_value")
+                    .with_detail("actual", "missing")
+                    .with_detail("expected", "General value"),
+            )
+        })
+    }
+}
+
+/// Attach a known configuration key using the same validated INI parser as preparation.
+pub(crate) fn annotate_config_key(
+    text: &str,
+    path: &Path,
+    key: &str,
+    diagnostic: Diagnostic,
+) -> Diagnostic {
+    match Ini::parse(text, path) {
+        Ok(ini) => ini.annotate(key, diagnostic),
+        Err(_) => diagnostic.with_source(path),
     }
 }
 
@@ -546,7 +742,8 @@ pub fn inspect_config(text: &str, path: &Path, cwd: &Path) -> Result<ProjectHead
         .parent()
         .ok_or_else(|| error("config has no parent"))?;
     let ini = Ini::parse(text, &config)?;
-    let roots = quoted_paths(ini.required("ned-path")?)?
+    let roots = ini
+        .value("ned-path", quoted_paths(ini.required("ned-path")?))?
         .into_iter()
         .map(|path| absolute(Path::new(&path), base))
         .collect();
@@ -559,6 +756,7 @@ pub fn inspect_config(text: &str, path: &Path, cwd: &Path) -> Result<ProjectHead
                 Ok(absolute(Path::new(&value), base))
             })
             .transpose()
+            .map_err(|diagnostic| ini.annotate(key, diagnostic))
     };
     let workload = reference("workload")?;
     let model_config = reference("model-config")?;
@@ -566,7 +764,8 @@ pub fn inspect_config(text: &str, path: &Path, cwd: &Path) -> Result<ProjectHead
         .general
         .get("model-profile")
         .map(|value| string_literal(value))
-        .transpose()?;
+        .transpose()
+        .map_err(|diagnostic| ini.annotate("model-profile", diagnostic))?;
     Ok(ProjectHeader {
         config,
         cwd: normalize(cwd),
@@ -580,15 +779,19 @@ pub fn inspect_config(text: &str, path: &Path, cwd: &Path) -> Result<ProjectHead
     })
 }
 
-fn collect_ned(
+pub(crate) fn collect_ned(
     root: &Path,
     current: &Path,
     files: &mut Vec<PathBuf>,
     source: &dyn InputSource,
 ) -> Result<()> {
-    let mut entries = source
-        .read_dir(current)
-        .map_err(|e| error(format!("{}: {e}", current.display())))?;
+    let mut entries = source.read_dir(current).map_err(|e| {
+        error(format!("{}: {e}", current.display()))
+            .with_reason("input_unreadable")
+            .with_source(current)
+            .with_detail("operation", "read_dir")
+            .with_detail("os_error", e)
+    })?;
     entries.sort_by(|a, b| a.name.cmp(&b.name));
     for entry in entries {
         let path = current.join(entry.name);
@@ -621,44 +824,78 @@ pub fn prepare_with_source(
     cwd: &Path,
     source: &dyn InputSource,
 ) -> Result<PreparedSimulation> {
+    let mut prepared = prepare_with_source_inner(config_path, cwd, source)?;
+    prepared.common.provenance = capture_provenance(&prepared)?;
+    Ok(prepared)
+}
+fn prepare_with_source_inner(
+    config_path: &Path,
+    cwd: &Path,
+    source: &dyn InputSource,
+) -> Result<PreparedSimulation> {
     let config = absolute(config_path, cwd);
     let base = config
         .parent()
         .ok_or_else(|| error("config has no parent"))?;
     let mut snapshots = Vec::new();
     let config_text = read_file(&config, &mut snapshots, source)?;
+    let ini = Ini::parse(&config_text, &config)?;
     let result = (|| {
-        let ini = Ini::parse(&config_text, &config)?;
         let network = ini.required("network")?;
         if !network.contains('.') || !path_name(network) {
-            return Err(error(format!("invalid fully qualified network: {network}")));
+            return Err(ini.annotate(
+                "network",
+                error(format!("invalid fully qualified network: {network}"))
+                    .with_reason("invalid_type")
+                    .with_detail("actual", network)
+                    .with_detail("expected", "fully qualified network type"),
+            ));
         }
-        let profile = can::profile(&ini.general)?;
-        let time_limit_ps = parse_time(ini.required("sim-time-limit")?)?;
-        let metrics_window_ps = parse_time(
-            ini.general
-                .get("metrics-window")
-                .map(String::as_str)
-                .unwrap_or("1ms"),
+        let profile = ini.value("model-profile", can::profile(&ini.general))?;
+        let time_limit_ps = ini.value(
+            "sim-time-limit",
+            parse_time(ini.required("sim-time-limit")?),
+        )?;
+        let metrics_window_ps = ini.value(
+            "metrics-window",
+            parse_time(
+                ini.general
+                    .get("metrics-window")
+                    .map(String::as_str)
+                    .unwrap_or("1ms"),
+            ),
         )?;
         if metrics_window_ps == 0 {
-            return Err(error("metrics-window must be positive"));
+            return Err(ini.annotate(
+                "metrics-window",
+                error("metrics-window must be positive")
+                    .with_reason("invalid_range")
+                    .with_detail("actual", "0")
+                    .with_detail("expected", "positive duration"),
+            ));
         }
-        let max_events = unsigned(
-            ini.general
-                .get("max-events")
-                .map(String::as_str)
-                .unwrap_or("100000000"),
-            true,
+        let max_events = ini.value(
+            "max-events",
+            unsigned(
+                ini.general
+                    .get("max-events")
+                    .map(String::as_str)
+                    .unwrap_or("100000000"),
+                true,
+            ),
         )?;
-        let max_delta_cycles = unsigned(
-            ini.general
-                .get("max-delta-cycles")
-                .map(String::as_str)
-                .unwrap_or("1000000"),
-            true,
+        let max_delta_cycles = ini.value(
+            "max-delta-cycles",
+            unsigned(
+                ini.general
+                    .get("max-delta-cycles")
+                    .map(String::as_str)
+                    .unwrap_or("1000000"),
+                true,
+            ),
         )?;
-        let roots: Vec<PathBuf> = quoted_paths(ini.required("ned-path")?)?
+        let roots: Vec<PathBuf> = ini
+            .value("ned-path", quoted_paths(ini.required("ned-path")?))?
             .into_iter()
             .map(|s| absolute(Path::new(&s), base))
             .collect();
@@ -706,12 +943,20 @@ pub fn prepare_with_source(
                 let package = package_components.join(".");
                 for declaration in ned::parse(&content, &file, &package)? {
                     let name = declaration.name().to_string();
-                    if declarations.insert(name.clone(), declaration).is_some() {
-                        return Err(error(format!(
-                            "{}: duplicate NED type: {name}",
-                            file.display()
-                        )));
+                    if let Some(previous) = declarations.get(&name) {
+                        let previous: &Declaration = previous;
+                        return Err(declaration.name_span().apply(
+                            error(format!("{}: duplicate NED type: {name}", file.display()))
+                                .with_reason("duplicate_definition")
+                                .with_target(&name)
+                                .with_detail("actual", &name)
+                                .with_detail("expected", "unique NED type")
+                                .with_detail("related_source", &previous.name_span().source)
+                                .with_detail("related_line", previous.name_span().line)
+                                .with_detail("related_column", previous.name_span().column),
+                        ));
                     }
+                    declarations.insert(name, declaration);
                 }
             }
         }
@@ -782,7 +1027,7 @@ pub fn prepare_with_source(
             };
             configured.map_err(|mut diagnostic| {
                 diagnostic.message = format!("{}: {}", model_path.display(), diagnostic.message);
-                diagnostic
+                diagnostic.with_source(&model_path)
             })?;
             let mut workload_path = None;
             if let Some(path) = ini.general.get("workload") {
@@ -803,12 +1048,15 @@ pub fn prepare_with_source(
                 };
                 loaded.map_err(|mut diagnostic| {
                     diagnostic.message = format!("{}: {}", path.display(), diagnostic.message);
-                    diagnostic
+                    diagnostic.with_source(&path)
                 })?;
                 workload_path = Some(path);
             }
             return Ok(PreparedSimulation {
+                registered: None,
                 common: crate::types::PreparedCommon {
+                    provenance: Default::default(),
+                    run_identity: None,
                     profile,
                     module_paths,
                     network: network.into(),
@@ -850,7 +1098,7 @@ pub fn prepare_with_source(
             let content = read_file(&model_path, &mut snapshots, source)?;
             canfd::configure(&content, &mut canfd, &profile).map_err(|mut e| {
                 e.message = format!("{}: {}", model_path.display(), e.message);
-                e
+                e.with_source(&model_path)
             })?;
             let mut workload_path = None;
             if let Some(path) = ini.general.get("workload") {
@@ -860,12 +1108,15 @@ pub fn prepare_with_source(
                 let content = read_file(&path, &mut snapshots, source)?;
                 canfd::workload(&content, &mut canfd, &profile).map_err(|mut e| {
                     e.message = format!("{}: {}", path.display(), e.message);
-                    e
+                    e.with_source(&path)
                 })?;
                 workload_path = Some(path);
             }
             return Ok(PreparedSimulation {
+                registered: None,
                 common: crate::types::PreparedCommon {
+                    provenance: Default::default(),
+                    run_identity: None,
                     profile,
                     module_paths,
                     network: network.into(),
@@ -898,11 +1149,80 @@ pub fn prepare_with_source(
                 memory_ipc: None,
             });
         }
+        if profile == "can.ethernet.gateway.v1" {
+            let (can_base, mut ethernet, module_paths, channel_count) =
+                network::topology::resolve(&declarations, network, &overrides, &ini.channels)?;
+            let model_path = string_literal(ini.required("model-config")?)?;
+            valid_file_path(&model_path)?;
+            let model_path = absolute(Path::new(&model_path), base);
+            let content = read_file(&model_path, &mut snapshots, source)?;
+            let mut bridge =
+                can_ethernet::configure(&content, &can_base, &mut ethernet, &module_paths)
+                    .map_err(|diagnostic| diagnostic.with_source(&model_path))?;
+            let config_value = parse_json(&content)?;
+            let mut workload_path = None;
+            let mut workload_value = serde_json::json!({"schema_version":1,"can":{"schema_version":2,"generators":[]},"ethernet":{"schema_version":3,"generators":[]}});
+            if let Some(path) = ini.general.get("workload") {
+                let path = string_literal(path)?;
+                valid_file_path(&path)?;
+                let path = absolute(Path::new(&path), base);
+                let content = read_file(&path, &mut snapshots, source)?;
+                can_ethernet::workload(&content, &mut bridge)
+                    .map_err(|diagnostic| diagnostic.with_source(&path))?;
+                workload_value = parse_json(&content)?;
+                workload_path = Some(path);
+            }
+            let can = bridge.can.clone();
+            let ethernet = bridge.ethernet.clone();
+            let payload = crate::types::network::PreparedNetwork {
+                ethernet: ethernet.clone(),
+                dynamic: None,
+                tsn: None,
+                bridge: Some(bridge),
+                config: config_value,
+                workload: workload_value,
+            };
+            return Ok(PreparedSimulation {
+                registered: Some(crate::registry::PreparedRegistered::network(
+                    payload,
+                    &profile,
+                    crate::registry::Registry::default(),
+                )),
+                common: crate::types::PreparedCommon {
+                    provenance: Default::default(),
+                    run_identity: None,
+                    profile,
+                    module_paths,
+                    network: network.into(),
+                    time_limit_ps,
+                    metrics_window_ps,
+                    max_events,
+                    max_delta_cycles,
+                    channel_count,
+                    config_path: config.clone(),
+                    model_config_path: Some(model_path),
+                    workload_path,
+                    inputs: snapshots,
+                },
+                can,
+                gateway: crate::types::PreparedGateway {
+                    gateways: Vec::new(),
+                    controller_gateways: Vec::new(),
+                },
+                ethernet: Some(ethernet),
+                canfd: None,
+                axi: None,
+                soc: None,
+                memory_ipc: None,
+            });
+        }
         if matches!(
             profile.as_str(),
             "ethernet.l2.store-forward.v1"
                 | "ethernet.l2.qos.v1"
                 | "ethernet.l2.vlan.v1"
+                | "ethernet.l2.dynamic.v1"
+                | "ethernet.tsn.v1"
                 | "ethernet.l2.store-forward.v2"
                 | "ethernet.l2.100base-t1.v1"
         ) {
@@ -917,24 +1237,66 @@ pub fn prepare_with_source(
             valid_file_path(&model_path)?;
             let model_path = absolute(Path::new(&model_path), base);
             let content = read_file(&model_path, &mut snapshots, source)?;
-            ethernet::configure(&content, &mut ethernet, &profile).map_err(|mut e| {
-                e.message = format!("{}: {}", model_path.display(), e.message);
-                e
-            })?;
+            let extension = matches!(
+                profile.as_str(),
+                "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1"
+            );
+            let extension_config = extension
+                .then(|| {
+                    parse_json(&content).map_err(|diagnostic| diagnostic.with_source(&model_path))
+                })
+                .transpose()?;
+            if !extension {
+                ethernet::configure(&content, &mut ethernet, &profile).map_err(|mut e| {
+                    e.message = format!("{}: {}", model_path.display(), e.message);
+                    e.with_source(&model_path)
+                })?;
+            }
             let mut workload_path = None;
+            let mut extension_workload = network::empty_workload();
+            let mut extension_workload_content = None;
             if let Some(path) = ini.general.get("workload") {
                 let path = string_literal(path)?;
                 valid_file_path(&path)?;
                 let path = absolute(Path::new(&path), base);
                 let content = read_file(&path, &mut snapshots, source)?;
-                ethernet::workload(&content, &mut ethernet, &profile).map_err(|mut e| {
-                    e.message = format!("{}: {}", path.display(), e.message);
-                    e
-                })?;
+                if extension {
+                    extension_workload =
+                        parse_json(&content).map_err(|diagnostic| diagnostic.with_source(&path))?;
+                    extension_workload_content = Some(content);
+                } else {
+                    ethernet::workload(&content, &mut ethernet, &profile).map_err(|mut e| {
+                        e.message = format!("{}: {}", path.display(), e.message);
+                        e.with_source(&path)
+                    })?;
+                }
                 workload_path = Some(path);
             }
+            let registered = if extension {
+                let network = network::prepare(
+                    ethernet,
+                    extension_config.unwrap(),
+                    extension_workload,
+                    &profile,
+                    (&content, &model_path),
+                    extension_workload_content
+                        .as_deref()
+                        .zip(workload_path.as_deref()),
+                )?;
+                ethernet = network.ethernet.clone();
+                Some(crate::registry::PreparedRegistered::network(
+                    network,
+                    &profile,
+                    crate::registry::Registry::default(),
+                ))
+            } else {
+                None
+            };
             return Ok(PreparedSimulation {
+                registered,
                 common: crate::types::PreparedCommon {
+                    provenance: Default::default(),
+                    run_identity: None,
                     profile,
                     module_paths,
                     network: network.into(),
@@ -981,7 +1343,10 @@ pub fn prepare_with_source(
                 &resolved.controller_buses,
                 &resolved.module_paths,
             )
-            .map_err(|e| error(format!("{}: {}", path.display(), e.message)))?
+            .map_err(|mut e| {
+                e.message = format!("{}: {}", path.display(), e.message);
+                e.with_source(&path)
+            })?
         } else {
             Vec::new()
         };
@@ -998,7 +1363,10 @@ pub fn prepare_with_source(
                 &resolved.controller_buses,
                 &profile,
             )
-            .map_err(|e| error(format!("{}: {}", path.display(), e.message)))?
+            .map_err(|mut e| {
+                e.message = format!("{}: {}", path.display(), e.message);
+                e.with_source(&path)
+            })?
         } else {
             Vec::new()
         };
@@ -1010,12 +1378,15 @@ pub fn prepare_with_source(
             &resolved.buses,
         )?;
         Ok(PreparedSimulation {
+            registered: None,
             ethernet: None,
             canfd: None,
             axi: None,
             soc: None,
             memory_ipc: None,
             common: crate::types::PreparedCommon {
+                provenance: Default::default(),
+                run_identity: None,
                 profile,
                 module_paths: resolved.module_paths,
                 network: network.into(),
@@ -1043,92 +1414,59 @@ pub fn prepare_with_source(
             },
         })
     })();
-    result.map_err(|mut e: Diagnostic| {
-        e.message = format!("{}: {}", config.display(), e.message);
-        e
+    result.map_err(|mut diagnostic: Diagnostic| {
+        if let Some(target) = diagnostic.target.clone() {
+            if ini.spans.contains_key(&target) || ini.section_spans.contains_key(&target) {
+                diagnostic = ini.annotate(&target, diagnostic);
+            }
+        }
+        diagnostic.message = format!("{}: {}", config.display(), diagnostic.message);
+        diagnostic
     })
 }
 
-// Deserialize recursively so duplicate keys are rejected before a JSON object can overwrite them.
-struct StrictJson(Value);
-impl<'de> Deserialize<'de> for StrictJson {
-    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> std::result::Result<Self, D::Error> {
-        struct StrictVisitor;
-        impl<'de> Visitor<'de> for StrictVisitor {
-            type Value = StrictJson;
-            fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.write_str("JSON value with unique object keys")
-            }
-            fn visit_bool<E: de::Error>(self, v: bool) -> std::result::Result<Self::Value, E> {
-                Ok(StrictJson(Value::Bool(v)))
-            }
-            fn visit_i64<E: de::Error>(self, v: i64) -> std::result::Result<Self::Value, E> {
-                Ok(StrictJson(Value::from(v)))
-            }
-            fn visit_u64<E: de::Error>(self, v: u64) -> std::result::Result<Self::Value, E> {
-                Ok(StrictJson(Value::from(v)))
-            }
-            fn visit_f64<E: de::Error>(self, v: f64) -> std::result::Result<Self::Value, E> {
-                Ok(StrictJson(Value::from(v)))
-            }
-            fn visit_str<E: de::Error>(self, v: &str) -> std::result::Result<Self::Value, E> {
-                Ok(StrictJson(Value::String(v.into())))
-            }
-            fn visit_string<E: de::Error>(self, v: String) -> std::result::Result<Self::Value, E> {
-                Ok(StrictJson(Value::String(v)))
-            }
-            fn visit_unit<E: de::Error>(self) -> std::result::Result<Self::Value, E> {
-                Ok(StrictJson(Value::Null))
-            }
-            fn visit_none<E: de::Error>(self) -> std::result::Result<Self::Value, E> {
-                Ok(StrictJson(Value::Null))
-            }
-            fn visit_seq<A: SeqAccess<'de>>(
-                self,
-                mut sequence: A,
-            ) -> std::result::Result<Self::Value, A::Error> {
-                let mut out = Vec::new();
-                while let Some(StrictJson(value)) = sequence.next_element()? {
-                    out.push(value);
-                }
-                Ok(StrictJson(Value::Array(out)))
-            }
-            fn visit_map<A: MapAccess<'de>>(
-                self,
-                mut map: A,
-            ) -> std::result::Result<Self::Value, A::Error> {
-                let mut out = Map::new();
-                while let Some(key) = map.next_key::<String>()? {
-                    if out.contains_key(&key) {
-                        return Err(de::Error::custom(format!("duplicate JSON key: {key}")));
-                    }
-                    let StrictJson(value) = map.next_value()?;
-                    out.insert(key, value);
-                }
-                Ok(StrictJson(Value::Object(out)))
-            }
-        }
-        deserializer.deserialize_any(StrictVisitor)
-    }
-}
-
 fn object<'a>(value: &'a Value, allowed: &[&str], target: &str) -> Result<&'a Map<String, Value>> {
-    let object = value
-        .as_object()
-        .ok_or_else(|| error(format!("{target} must be an object")))?;
+    json_diagnostics::select_object(value);
+    let object = value.as_object().ok_or_else(|| {
+        error(format!("{target} must be an object"))
+            .with_reason("invalid_type")
+            .with_detail("actual", json_diagnostics::actual(value))
+            .with_detail("expected", "object")
+    })?;
     if let Some(key) = object.keys().find(|key| !allowed.contains(&key.as_str())) {
-        return Err(error(format!("unknown {target} field: {key}")));
+        return json_diagnostics::field_result(
+            object,
+            key,
+            Err(error(format!("unknown {target} field: {key}"))
+                .with_reason("unknown_parameter")
+                .with_detail("actual", key)
+                .with_detail("expected", "registered field")),
+        );
     }
     Ok(object)
 }
 fn required_string<'a>(object: &'a Map<String, Value>, key: &str) -> Result<&'a str> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .ok_or_else(|| error(format!("missing or non-string field: {key}")))
+    json_diagnostics::field_check(object, key, || {
+        object.get(key).and_then(Value::as_str).ok_or_else(|| {
+            error(format!("missing or non-string field: {key}"))
+                .with_reason(if object.contains_key(key) {
+                    "invalid_type"
+                } else {
+                    "missing_value"
+                })
+                .with_detail(
+                    "actual",
+                    object
+                        .get(key)
+                        .map(json_diagnostics::actual)
+                        .unwrap_or_else(|| "missing".into()),
+                )
+                .with_detail("expected", "string")
+        })
+    })
 }
 fn json_time(object: &Map<String, Value>, key: &str) -> Result<u64> {
-    parse_time(required_string(object, key)?)
+    json_diagnostics::field_check(object, key, || parse_time(required_string(object, key)?))
 }
 #[cfg(test)]
 mod tests;

@@ -1,0 +1,945 @@
+{
+  "scenarios": {
+    "minimal": {
+      "success": 3,
+      "received": 6,
+      "filtered": 0,
+      "c_received": 2,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "manifest_files_verified": 4
+    },
+    "filter-id": {
+      "success": 3,
+      "received": 5,
+      "filtered": 1,
+      "c_received": 1,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": null,
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "filtered"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "manifest_files_verified": 4
+    },
+    "filter-none": {
+      "success": 3,
+      "received": 4,
+      "filtered": 2,
+      "c_received": 0,
+      "timings_ps": {
+        "a:0": [
+          0,
+          238000000,
+          244000000
+        ],
+        "b:0": [
+          244000000,
+          400000000,
+          406000000
+        ],
+        "c:0": [
+          406000000,
+          530000000,
+          536000000
+        ]
+      },
+      "receivers": [
+        {
+          "observed_ps": "238000000",
+          "received_ps": "238000000",
+          "receiver": "Main.b",
+          "request_id": "a:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "238000000",
+          "received_ps": null,
+          "receiver": "Main.c",
+          "request_id": "a:0",
+          "status": "filtered"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": "400000000",
+          "receiver": "Main.a",
+          "request_id": "b:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "400000000",
+          "received_ps": null,
+          "receiver": "Main.c",
+          "request_id": "b:0",
+          "status": "filtered"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.a",
+          "request_id": "c:0",
+          "status": "received"
+        },
+        {
+          "observed_ps": "530000000",
+          "received_ps": "530000000",
+          "receiver": "Main.b",
+          "request_id": "c:0",
+          "status": "received"
+        }
+      ],
+      "manifest_files_verified": 4
+    }
+  },
+  "commands": [
+    {
+      "operation": "validate",
+      "scenario": "minimal",
+      "exit_code": 0
+    },
+    {
+      "operation": "run",
+      "scenario": "minimal",
+      "exit_code": 0
+    },
+    {
+      "operation": "view",
+      "scenario": "minimal",
+      "exit_code": 0
+    },
+    {
+      "operation": "validate",
+      "scenario": "filter-id",
+      "exit_code": 0
+    },
+    {
+      "operation": "run",
+      "scenario": "filter-id",
+      "exit_code": 0
+    },
+    {
+      "operation": "view",
+      "scenario": "filter-id",
+      "exit_code": 0
+    },
+    {
+      "operation": "validate",
+      "scenario": "filter-none",
+      "exit_code": 0
+    },
+    {
+      "operation": "run",
+      "scenario": "filter-none",
+      "exit_code": 0
+    },
+    {
+      "operation": "view",
+      "scenario": "filter-none",
+      "exit_code": 0
+    }
+  ],
+  "status": "passed",
+  "one_changed_setting": "Main.c.rxFilter",
+  "source_commit": "07c50425a7488a37984be1fadcfe6be9fa86127a",
+  "target_release": "v1.1.3",
+  "binary": "v1.1.3 Rust implementation; current main has documentation-only changes",
+  "scope": {
+    "remote_writes": false,
+    "qiita_posting": false,
+    "deployment": false,
+    "windows_native_rust_tested": false
+  },
+  "screenshot": {
+    "path": "docs/guide/assets/guide-filter-id-viewer.png",
+    "sha256": "677f5fbc83a8a925cbd499b8e3979a0c3045d79e38dda916c99b353682df2a24",
+    "viewer_selected_request": "b:0",
+    "viewer_status": "送信成功",
+    "viewer_c_receiver": "フィルタ拒否"
+  },
+  "browser": {
+    "status": "passed",
+    "pages": [
+      "CANの受信フィルタ.html",
+      "CANの調停.html",
+      "Viewerで結果を読む.html",
+      "index.html",
+      "初めてのCAN実行.html",
+      "設定・用語・FAQ.html"
+    ],
+    "searches": {
+      "CAN": [
+        "CANの調停",
+        "CANの調停",
+        "初めてのCAN実行",
+        "初めてのCAN実行",
+        "CANの受信フィルタ",
+        "CANの受信フィルタ",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "制約と関連機能",
+        "ここから始める",
+        "現在使える範囲",
+        "ガイドの入口",
+        "制約と関連機能",
+        "制約と関連機能",
+        "制約と関連機能",
+        "最小実行例と設定",
+        "構成と責務",
+        "目的",
+        "結果と実画面",
+        "更新履歴",
+        "Viewerで結果を読む",
+        "最小実行例と設定",
+        "実験：1設定を変える — 全受入・ID指定・全拒否",
+        "目的：必要なセンサデータだけを受け取る",
+        "用語",
+        "最小実行例と設定",
+        "構成と責務",
+        "最小実行例と設定",
+        "構成と責務",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "結果と実画面：238µsを読む",
+        "結果と実画面",
+        "設定・用語・FAQ"
+      ],
+      "調停": [
+        "CANの調停",
+        "接続と処理フロー",
+        "構成と責務",
+        "接続と処理フロー",
+        "結果と実画面",
+        "接続と処理フロー",
+        "実装とREADMEの予定表記が違う",
+        "制約と関連機能",
+        "用語",
+        "CANの調停",
+        "制約と関連機能",
+        "ここから始める",
+        "構成と責務",
+        "制約と関連機能",
+        "設定・用語・FAQ",
+        "CANの受信フィルタ",
+        "ガイドの入口",
+        "初めてのCAN実行",
+        "Viewerで結果を読む"
+      ],
+      "Viewer": [
+        "Viewerで結果を読む",
+        "Viewerで結果を読む",
+        "最小実行例と設定",
+        "Windowsで同じコマンドを使えるか",
+        "runやviewが既存出力を拒否する",
+        "実装とREADMEの予定表記が違う",
+        "制約と関連機能",
+        "設定・用語・FAQ",
+        "構成と責務",
+        "現在使える範囲",
+        "制約と関連機能",
+        "最小実行例と設定",
+        "ここから始める",
+        "最小実行例と設定",
+        "制約と関連機能",
+        "実験：1設定を変える — 表示単位をµsからnsへ",
+        "最小実行例と設定",
+        "ガイドの入口",
+        "結果と実画面：bの送信成功とcの選別",
+        "実験：1設定を変える — 500kbpsから1Mbpsへ",
+        "初めてのCAN実行",
+        "CANの受信フィルタ",
+        "実験：1設定を変える — 全受入・ID指定・全拒否",
+        "結果と実画面",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "CANの調停",
+        "Viewerの検索・省略で結果件数が変わるか"
+      ],
+      "ビットレート": [
+        "目的",
+        "ここから始める",
+        "実験：1設定を変える — 表示単位をµsからnsへ",
+        "実験：1設定を変える — cのCAN IDだけを128へ",
+        "ガイドの入口",
+        "Viewerで結果を読む",
+        "CANの調停",
+        "初めてのCAN実行"
+      ],
+      "フィルタ": [
+        "CANの受信フィルタ",
+        "フレームは3つなのに受信が6件ある",
+        "結果と実画面：bの送信成功とcの選別",
+        "用語",
+        "接続と処理フロー",
+        "ここから始める",
+        "制約と関連機能",
+        "CANの受信フィルタ",
+        "構成と責務",
+        "更新履歴",
+        "接続と処理フロー",
+        "ガイドの入口",
+        "実験：1設定を変える — 全受入・ID指定・全拒否",
+        "設定・用語・FAQ",
+        "最小実行例と設定",
+        "初めてのCAN実行"
+      ]
+    },
+    "viewport_mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow": false,
+    "page_errors": [],
+    "http_failures": [],
+    "external_requests": [],
+    "viewer_unit_conversion": "238us = 238000ns = 238000000ps",
+    "viewer_step": "238us -> 244us -> 238us",
+    "mobile_checked_pages": [
+      "CANの受信フィルタ.html",
+      "CANの調停.html",
+      "Viewerで結果を読む.html",
+      "index.html",
+      "初めてのCAN実行.html",
+      "設定・用語・FAQ.html"
+    ],
+    "search_limitation": "Exact compound query 受信フィルタ returned no results; フィルタ reaches the new page."
+  },
+  "links": {
+    "status": "passed",
+    "html_files": 7,
+    "local_links_and_assets": 284,
+    "site_prefix": "/DIR-Simulator/",
+    "public_assets_checked": 55
+  },
+  "build": {
+    "mkdocs": "1.6.1",
+    "strict": true,
+    "download_matches_public_input_files": 8,
+    "authoring_memo_excluded": true
+  },
+  "integration_recheck": {
+    "status": "passed",
+    "base_main": "f031b4cc676236c325b80afa8ad8b8703b344251",
+    "method": "normal merge; historical evidence preserved; independent CLI rerun and merged-site validation",
+    "runtime": "WSL binary built from c152840; Rust source, Cargo.toml and Cargo.lock unchanged at merged main",
+    "binary_sha256": "ec897605e70fa23fbd9cb1f1a431edc0660c54c454855c57d0dc855f3a10ae97",
+    "filter": {
+      "scenarios": {
+        "minimal": {
+          "success": 3,
+          "received": 6,
+          "filtered": 0,
+          "c_received": 2,
+          "timings_ps": {
+            "a:0": [
+              0,
+              238000000,
+              244000000
+            ],
+            "b:0": [
+              244000000,
+              400000000,
+              406000000
+            ],
+            "c:0": [
+              406000000,
+              530000000,
+              536000000
+            ]
+          },
+          "receivers": [
+            {
+              "observed_ps": "238000000",
+              "received_ps": "238000000",
+              "receiver": "Main.b",
+              "request_id": "a:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "238000000",
+              "received_ps": "238000000",
+              "receiver": "Main.c",
+              "request_id": "a:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "400000000",
+              "received_ps": "400000000",
+              "receiver": "Main.a",
+              "request_id": "b:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "400000000",
+              "received_ps": "400000000",
+              "receiver": "Main.c",
+              "request_id": "b:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "530000000",
+              "received_ps": "530000000",
+              "receiver": "Main.a",
+              "request_id": "c:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "530000000",
+              "received_ps": "530000000",
+              "receiver": "Main.b",
+              "request_id": "c:0",
+              "status": "received"
+            }
+          ],
+          "manifest_files_verified": 4
+        },
+        "filter-id": {
+          "success": 3,
+          "received": 5,
+          "filtered": 1,
+          "c_received": 1,
+          "timings_ps": {
+            "a:0": [
+              0,
+              238000000,
+              244000000
+            ],
+            "b:0": [
+              244000000,
+              400000000,
+              406000000
+            ],
+            "c:0": [
+              406000000,
+              530000000,
+              536000000
+            ]
+          },
+          "receivers": [
+            {
+              "observed_ps": "238000000",
+              "received_ps": "238000000",
+              "receiver": "Main.b",
+              "request_id": "a:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "238000000",
+              "received_ps": "238000000",
+              "receiver": "Main.c",
+              "request_id": "a:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "400000000",
+              "received_ps": "400000000",
+              "receiver": "Main.a",
+              "request_id": "b:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "400000000",
+              "received_ps": null,
+              "receiver": "Main.c",
+              "request_id": "b:0",
+              "status": "filtered"
+            },
+            {
+              "observed_ps": "530000000",
+              "received_ps": "530000000",
+              "receiver": "Main.a",
+              "request_id": "c:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "530000000",
+              "received_ps": "530000000",
+              "receiver": "Main.b",
+              "request_id": "c:0",
+              "status": "received"
+            }
+          ],
+          "manifest_files_verified": 4
+        },
+        "filter-none": {
+          "success": 3,
+          "received": 4,
+          "filtered": 2,
+          "c_received": 0,
+          "timings_ps": {
+            "a:0": [
+              0,
+              238000000,
+              244000000
+            ],
+            "b:0": [
+              244000000,
+              400000000,
+              406000000
+            ],
+            "c:0": [
+              406000000,
+              530000000,
+              536000000
+            ]
+          },
+          "receivers": [
+            {
+              "observed_ps": "238000000",
+              "received_ps": "238000000",
+              "receiver": "Main.b",
+              "request_id": "a:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "238000000",
+              "received_ps": null,
+              "receiver": "Main.c",
+              "request_id": "a:0",
+              "status": "filtered"
+            },
+            {
+              "observed_ps": "400000000",
+              "received_ps": "400000000",
+              "receiver": "Main.a",
+              "request_id": "b:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "400000000",
+              "received_ps": null,
+              "receiver": "Main.c",
+              "request_id": "b:0",
+              "status": "filtered"
+            },
+            {
+              "observed_ps": "530000000",
+              "received_ps": "530000000",
+              "receiver": "Main.a",
+              "request_id": "c:0",
+              "status": "received"
+            },
+            {
+              "observed_ps": "530000000",
+              "received_ps": "530000000",
+              "receiver": "Main.b",
+              "request_id": "c:0",
+              "status": "received"
+            }
+          ],
+          "manifest_files_verified": 4
+        }
+      },
+      "commands": [
+        {
+          "operation": "validate",
+          "scenario": "minimal",
+          "exit_code": 0
+        },
+        {
+          "operation": "run",
+          "scenario": "minimal",
+          "exit_code": 0
+        },
+        {
+          "operation": "view",
+          "scenario": "minimal",
+          "exit_code": 0
+        },
+        {
+          "operation": "validate",
+          "scenario": "filter-id",
+          "exit_code": 0
+        },
+        {
+          "operation": "run",
+          "scenario": "filter-id",
+          "exit_code": 0
+        },
+        {
+          "operation": "view",
+          "scenario": "filter-id",
+          "exit_code": 0
+        },
+        {
+          "operation": "validate",
+          "scenario": "filter-none",
+          "exit_code": 0
+        },
+        {
+          "operation": "run",
+          "scenario": "filter-none",
+          "exit_code": 0
+        },
+        {
+          "operation": "view",
+          "scenario": "filter-none",
+          "exit_code": 0
+        }
+      ],
+      "status": "passed",
+      "one_changed_setting": "Main.c.rxFilter"
+    },
+    "delay_regression": {
+      "commands_passed": 9,
+      "scenarios": 3,
+      "manifest_hashes_verified": 12,
+      "received": [
+        6,
+        6,
+        4
+      ],
+      "pending": [
+        0,
+        0,
+        2
+      ],
+      "timings_and_states": "passed"
+    },
+    "links": {
+      "status": "passed",
+      "html_files": 8,
+      "local_links_and_assets": 349,
+      "site_prefix": "/DIR-Simulator/",
+      "public_assets_checked": 58
+    },
+    "browser": {
+      "status": "passed",
+      "pages": [
+        "CANの受信フィルタ.html",
+        "CANの調停.html",
+        "CAN受信処理遅延の比較.html",
+        "index.html",
+        "Viewerで結果を読む.html",
+        "初めてのCAN実行.html",
+        "設定・用語・FAQ.html"
+      ],
+      "searches": {
+        "CAN": [
+          "CANの調停",
+          "CANの調停",
+          "初めてのCAN実行",
+          "初めてのCAN実行",
+          "CANの受信フィルタ",
+          "CANの受信フィルタ",
+          "CAN受信処理遅延の比較",
+          "実験：1設定を変える — cのCAN IDだけを128へ",
+          "CAN受信処理遅延の比較",
+          "ここから始める",
+          "制約と関連機能",
+          "現在使える範囲",
+          "ガイドの入口",
+          "制約と関連機能",
+          "制約と関連機能",
+          "制約と関連機能",
+          "最小実行例と設定",
+          "構成と責務",
+          "更新履歴",
+          "目的",
+          "結果と実画面",
+          "目的：送信成功と受信完了を分けて読む",
+          "Viewerで結果を読む",
+          "最小実行手順",
+          "最小実行例と設定",
+          "実験：1設定を変える — 全受入・ID指定・全拒否",
+          "実測：Busの送信は3条件とも同じ",
+          "用語",
+          "目的：必要なセンサデータだけを受け取る",
+          "最小実行例と設定",
+          "最小実行例と設定",
+          "構成と責務",
+          "構成と責務",
+          "実験：1設定を変える — 500kbpsから1Mbpsへ",
+          "結果と実画面：238µsを読む",
+          "結果と実画面",
+          "設定・用語・FAQ"
+        ],
+        "調停": [
+          "CANの調停",
+          "接続と処理フロー",
+          "構成と責務",
+          "接続と処理フロー",
+          "結果と実画面",
+          "接続と処理フロー",
+          "実装とREADMEの予定表記が違う",
+          "制約と関連機能",
+          "用語",
+          "CANの調停",
+          "制約と関連機能",
+          "構成と責務",
+          "制約と関連機能",
+          "ここから始める",
+          "構成と責務",
+          "この実習で分かることと制約",
+          "設定・用語・FAQ",
+          "CANの受信フィルタ",
+          "初めてのCAN実行",
+          "ガイドの入口",
+          "Viewerで結果を読む",
+          "CAN受信処理遅延の比較"
+        ],
+        "Viewer": [
+          "Viewerで結果を読む",
+          "Viewerで結果を読む",
+          "最小実行例と設定",
+          "Windowsで同じコマンドを使えるか",
+          "runやviewが既存出力を拒否する",
+          "更新履歴",
+          "実装とREADMEの予定表記が違う",
+          "最小実行手順",
+          "制約と関連機能",
+          "設定・用語・FAQ",
+          "構成と責務",
+          "現在使える範囲",
+          "制約と関連機能",
+          "実Viewerで観測と完了を見分ける",
+          "最小実行例と設定",
+          "終了時のpendingを欠落や破棄と混同しない",
+          "最小実行例と設定",
+          "制約と関連機能",
+          "最小実行例と設定",
+          "実験：1設定を変える — 表示単位をµsからnsへ",
+          "ここから始める",
+          "目的：送信成功と受信完了を分けて読む",
+          "結果と実画面：bの送信成功とcの選別",
+          "実験：1設定を変える — 500kbpsから1Mbpsへ",
+          "初めてのCAN実行",
+          "CANの受信フィルタ",
+          "CAN受信処理遅延の比較",
+          "ガイドの入口",
+          "実験：1設定を変える — 全受入・ID指定・全拒否",
+          "結果と実画面",
+          "CANの調停",
+          "実験：1設定を変える — cのCAN IDだけを128へ",
+          "Viewerの検索・省略で結果件数が変わるか"
+        ],
+        "フィルタ": [
+          "CANの受信フィルタ",
+          "この実習で分かることと制約",
+          "フレームは3つなのに受信が6件ある",
+          "接続と受信までの流れ",
+          "結果と実画面：bの送信成功とcの選別",
+          "更新履歴",
+          "用語",
+          "接続と処理フロー",
+          "目的：必要なセンサデータだけを受け取る",
+          "終了時のpendingを欠落や破棄と混同しない",
+          "ガイドの入口",
+          "制約と関連機能",
+          "構成と責務",
+          "接続と処理フロー",
+          "CANの受信フィルタ",
+          "CAN受信処理遅延の比較",
+          "ここから始める",
+          "目的：送信成功と受信完了を分けて読む",
+          "構成と責務",
+          "実験：1設定を変える — 全受入・ID指定・全拒否",
+          "設定・用語・FAQ",
+          "実測：cの受信完了だけが変わる",
+          "最小実行例と設定",
+          "初めてのCAN実行"
+        ],
+        "受信": [
+          "接続と受信までの流れ",
+          "CANの受信フィルタ",
+          "CAN受信処理遅延の比較",
+          "フレームは3つなのに受信が6件ある",
+          "実測：cの受信完了だけが変わる",
+          "目的：送信成功と受信完了を分けて読む",
+          "ここから始める",
+          "制約と関連機能",
+          "接続と処理フロー",
+          "構成と責務",
+          "結果と実画面：bの送信成功とcの選別",
+          "接続と処理フロー",
+          "ガイドの入口",
+          "1変数だけを変える設定",
+          "更新履歴",
+          "この実習で分かることと制約",
+          "終了時のpendingを欠落や破棄と混同しない",
+          "実Viewerで観測と完了を見分ける",
+          "更新履歴",
+          "構成と責務",
+          "構成と責務",
+          "目的",
+          "設定・用語・FAQ",
+          "更新履歴",
+          "制約と関連機能",
+          "初めてのCAN実行",
+          "構成と責務",
+          "用語",
+          "結果と実画面",
+          "目的：必要なセンサデータだけを受け取る",
+          "制約と関連機能",
+          "Viewerで結果を読む",
+          "制約と関連機能",
+          "実験：1設定を変える — 表示単位をµsからnsへ",
+          "CANの受信フィルタ",
+          "実験：1設定を変える — 全受入・ID指定・全拒否",
+          "結果と実画面：238µsを読む",
+          "CAN受信処理遅延の比較",
+          "実験：1設定を変える — cのCAN IDだけを128へ",
+          "最小実行例と設定",
+          "CANの調停"
+        ],
+        "遅延": [
+          "CAN受信処理遅延の比較",
+          "この実習で分かることと制約",
+          "構成と責務",
+          "実験：1設定を変える — 500kbpsから1Mbpsへ",
+          "接続と処理フロー",
+          "構成と責務",
+          "接続と受信までの流れ",
+          "更新履歴",
+          "更新履歴",
+          "制約と関連機能",
+          "最小実行例と設定",
+          "ガイドの入口",
+          "結果と実画面",
+          "ここから始める",
+          "構成と責務",
+          "初めてのCAN実行",
+          "CAN受信処理遅延の比較",
+          "CANの受信フィルタ",
+          "CANの調停",
+          "実測：cの受信完了だけが変わる"
+        ]
+      },
+      "viewport_mobile": [
+        390,
+        844
+      ],
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "http_failures": [],
+      "external_requests": []
+    },
+    "build": {
+      "strict": true,
+      "zip_inputs": 11,
+      "zip_bytes_match": true
+    },
+    "scope": {
+      "merge": false,
+      "deploy": false,
+      "settings_changed": false,
+      "windows_native_rust_tested": false
+    },
+    "followup_review": {
+      "status": "passed",
+      "history_restored": "guide-build-integration 1.1.1: 5 pages, exact public-main wording",
+      "browser_log": "PASS: 7 guide pages/images/390px layout, 6 Japanese searches; filter and delay guides reached; no JS/HTTP/external errors.",
+      "browser_log_counts": "derived from checked pages and search results"
+    }
+  }
+}

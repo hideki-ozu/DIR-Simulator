@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "argv": [
+        "python3",
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "output": "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "All traceability reports and the hierarchy annex are up to date\n"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "source_files_unchanged_since_fresh_rust_gates": 184,
+  "build_document_files_unchanged_since_fresh_rust_gates": 21
+}

@@ -1,0 +1,13 @@
+Finding: positive-delay ConversionReady executed admission/RX release inside phase0 instead of scheduling phase1 as required by CAN・Ethernet変換詳細機能仕様書.md:148 and design:67.
+Reproduction: existing R01 fixture; RX capacity1; gateway Ethernet TX delay0; native Ethernet from sink starts98.424us, serialization576ns+link4us gives arrival103us; existing CAN EOF100us+RX1us+conversion2us also gives completion103us. Arrival reserved before completion must see RX occupied until newly scheduled phase1 conversion offer. Before reason=null (incorrect acceptance); after reason=rx_full. Original converted branch offer/SOF remains103us.
+Changed: crates/dir-simulator/src/runtime/network.rs (6 lines), crates/dir-simulator/tests/acceptance_bridge.rs (regression plus R01 event budget17 to18).
+Verification commands (cwd /tmp/dir-v1.1.4-preparation-2026-10-08/worktree):
+CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test -p dir-simulator --test acceptance_bridge positive_conversion_delay -- --nocapture
+before.log: intentional failing expected rx_full, actual null.
+after.log: passing regression before final zero-delay assertion extension.
+CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target /home/hideki/.cargo/bin/cargo test -p dir-simulator --test acceptance_bridge
+acceptance.log: final17/17 pass, includes zero-delay offer/SOF100us, deterministic repeat, [0,T) boundary at103us, all callback event-budget prefixes0..18, existing milestone/permutation tests.
+/home/hideki/.cargo/bin/rustfmt --check --edition 2024 crates/dir-simulator/src/runtime/network.rs crates/dir-simulator/tests/acceptance_bridge.rs
+ git diff --check -- crates/dir-simulator/src/runtime/network.rs crates/dir-simulator/tests/acceptance_bridge.rs
+Both formatting/diff checks passed.
+Parent docs follow-up: fixture expected.json ordering text event budget17 should become18. No native CanReady changes, no broad gates/commits/pushes.

@@ -1,0 +1,36 @@
+    Blocking waiting for file lock on build directory
+   Compiling dir-simulator v0.1.0 (/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.88s
+     Running tests/registry.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/registry-686ebde1ef88a2aa)
+
+running 9 tests
+
+thread 'custom_dynamic_builtin_name_uses_custom_registry' panicked at crates/dir-simulator/tests/registry.rs:867:6:
+called `Result::unwrap()` on an `Err` value: Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "implementation_missing", message: "/tmp/dir-registry-1417637-0/scenario.ini: /tmp/dir-registry-1417637-0/ned/demo/model.ned:4:13: demo.Delay: unknown or wrong-kind Ethernet implementation", source: Some("/tmp/dir-registry-1417637-0/ned/demo/model.ned"), line: Some(4), column: Some(13), end_line: Some(4), end_column: Some(102), target: Some("demo.Delay"), time_ps: None, event_seq: None, details: None }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'custom_gateway_builtin_name_uses_custom_registry' panicked at crates/dir-simulator/tests/registry.rs:867:6:
+called `Result::unwrap()` on an `Err` value: Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "implementation_missing", message: "/tmp/dir-registry-1417637-3/scenario.ini: /tmp/dir-registry-1417637-3/ned/demo/model.ned:4:13: demo.Delay: unsupported composite implementation", source: Some("/tmp/dir-registry-1417637-3/ned/demo/model.ned"), line: Some(4), column: Some(13), end_line: Some(4), end_column: Some(102), target: Some("demo.Delay"), time_ps: None, event_seq: None, details: None }
+
+thread 'custom_tsn_builtin_name_uses_custom_registry' panicked at crates/dir-simulator/tests/registry.rs:867:6:
+called `Result::unwrap()` on an `Err` value: Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "implementation_missing", message: "/tmp/dir-registry-1417637-8/scenario.ini: /tmp/dir-registry-1417637-8/ned/demo/model.ned:4:13: demo.Delay: unknown or wrong-kind Ethernet implementation", source: Some("/tmp/dir-registry-1417637-8/ned/demo/model.ned"), line: Some(4), column: Some(13), end_line: Some(4), end_column: Some(102), target: Some("demo.Delay"), time_ps: None, event_seq: None, details: None }
+test custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically ... ok
+test custom_profile_cannot_publish_schema_two_layout_under_schema_one ... ok
+test custom_dynamic_builtin_name_uses_custom_registry ... FAILED
+test custom_profile_validates_owned_json_and_factory_receives_it ... ok
+test custom_gateway_builtin_name_uses_custom_registry ... FAILED
+test custom_tsn_builtin_name_uses_custom_registry ... FAILED
+test custom_preparation_failure_uses_registered_implementation_versions ... ok
+test custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog ... ok
+test custom_run_publishes_registered_records_and_metrics ... ok
+
+failures:
+
+failures:
+    custom_dynamic_builtin_name_uses_custom_registry
+    custom_gateway_builtin_name_uses_custom_registry
+    custom_tsn_builtin_name_uses_custom_registry
+
+test result: FAILED. 6 passed; 3 failed; 0 ignored; 0 measured; 20 filtered out; finished in 2.64s
+
+error: test failed, to rerun pass `--test registry`

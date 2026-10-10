@@ -1,0 +1,211 @@
+# 診断詳細機能仕様書
+
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
+| `0.1.0` | `2026-10-01` | 作業内容を集約：初期化・停止・後処理・診断・終了状態と部分結果を確定。確定ジャーナルによる部分結果、検証順、失敗イベントと後処理の契約を具体化。モデル選択・構成入力の準備診断とprofile固有の通常応答を接続。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
+
+文書ID：`spec-diagnostics`
+文書状態：仕様確定。開発中ソースでE-0001～E-0004の構造化診断、入力source span、準備失敗の5ファイル公開、成功prefixを実装した。[拡張runtime検証記録](../verification/results/extension-runtime-2026-10-05.json)に今回の共通境界の実施範囲を記録する。仕様全体の製品適合はモデル別検証と分けて判定する。
+
+本書は構造、設定、初期化、実行、結果取得を横断する終了・失敗の責務を定める。[入力失敗の診断の親要件](../要件定義書.md#dir-req-0053)では、各入力仕様が不正を判定し、本書が原因・対象・元位置を共通診断へ対応付けて準備停止を確定する。[異常終了の識別](../要件定義書.md#dir-req-0056)では、実行・finish・保存の失敗を検出した段階と最終終了状態を通知する。モデル固有の受理規則と計測式はそれぞれの仕様を正とする。
+
+準備失敗の共同判定は、子要件ごとの不正原因に合う診断と、初期イベントを含む実行callback数0の両方で行う。実行失敗では[成功コミットprefix](実行詳細機能仕様書.md#event-order)を凍結し、[部分結果の保存](結果詳細機能仕様書.md#atomic-output)と終了コードを照合する。正常な時間打切り、モデル上の破棄・応答エラー、実行器の異常は、それぞれ終了状態・モデル結果・診断で区別する。
+
+## 1. ライフサイクル
+
+<a id="lifecycle"></a>
+
+```trace
+{
+  "id": "spec-diagnostics#lifecycle",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0030"
+  ],
+  "upstream": [
+    "DIR-FUNC-0011",
+    "DIR-FUNC-0003",
+    "DIR-FUNC-0005",
+    "DIR-FUNC-0009"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 段階 | 正常時と失敗時の契約 |
+| --- | --- |
+| prepare | CLI引数・ファイル取得・字句/構文・型解決と実装/schema登録照合・設定値解決・接続とモデル固有トポロジーをこの順に検証。値検証に必要な実装schemaを型段階で確定する。段階内は入力論理パスのUTF-8辞書順、開始行/列の数値順、インスタンス完全パスとパラメータ名のUTF-8辞書順で走査する。ファイル探索順の正本はNED仕様とする。最初の不正をprimary診断として準備を停止する。必須値・型・単位・値域・未対応構文・読取不能は入力失敗として拒否する。 |
+| allocate | 検証済構造の全インスタンスと接続を確保し、各完全パスのUTF-8辞書順で安定IDを0から与える。資源確保失敗はprepare失敗。イベント実行開始はinitialize全件成功後とする。 |
+| initialize | 全allocate成功後に安定ID昇順で一回ずつ初期化する。接続先は既に存在し、初期化中のsend/scheduleはイベントの登録として受理し、callbackの呼出しはrun開始後とする。全initialize成功後にだけ時刻0の処理を始める。 |
+| 初期化失敗 | initialize呼出しを失敗時点で終了し、登録済イベントを全て取り消し、prepare失敗とする。allocate成功済の全オブジェクトを逆安定ID順に解放する。initialize成功済にだけfinish通知を逆順で一回送り、失敗オブジェクトの確保資源は通常の解放で回収する。 |
+| run | runtimeの順序に従いイベントを処理する。callbackが要求する予約・取消・配送・資源通知と結果観測はイベント内の暫定効果として保持し、callback成功かつ全効果の検証/容量確認成功で一括コミットする。結果用要求台帳・受信台帳・計測・有効予約集合はエンジン管理の確定ジャーナルを正本とし、snapshotはそこから構成する。モデル内部の変更はモデル自身が保持する。注：任意モデルの内部状態の複製・巻戻しは要求しない。 |
+| イベント失敗 | 暫定効果を破棄して全体を停止する。失敗した候補は未コミットの予約としてpending_eventsへ含め、committed_eventsとlast_event_time_psは最後に成功したcallbackの値を保持する。モデル内部が途中変更されていても結果作成は確定ジャーナルのみを読み、モデルcallbackの再実行・継続は停止後の操作対象外とする（注）。初期化も全件成功後に基底ジャーナルを公開し、途中失敗なら空の準備失敗snapshotとする。 |
+| stop / snapshot | time_limitまたはevents_exhaustedでは新規イベント実行を停止し、未完了要求・受信を含む状態と計測を凍結する。runtimeエラーでは全体を停止し、全ノードを停止状態にする。注：失敗イベントの自動再試行は提供範囲外。 |
+| finish | 初期化成功済に逆安定ID順で一回ずつfinishを通知し、その後全割当資源を逆順で解放する。finishでは終了通知の凍結snapshotを読取専用とし、send/schedule/cancel/計測記録/資源通知はfinish_failedとして拒否。失敗モデルの途中状態を結果台帳へ転記する操作も拒否する。解放だけを目的としたモデル自身の内部状態変更は受理する。finishの一件が失敗しても残りの解放は継続する。 |
+| 出力 | snapshotと診断を[結果仕様](結果詳細機能仕様書.md#atomic-output)で保存する。正常実行後のfinish失敗はexecution_failed/partial=trueへ変更する。先行失敗があればそのprimaryを保持しfinish失敗はsecondary診断にする。 |
+| 通知の内容 | initializeは解決済値、安定ID、接続、時刻0の実行contextを受ける。finishは終了状態、最終時刻、primary診断参照を受ける。finishの通知対象はinitialize成功済みのモデルに限定する。ライブラリ戻り値でこの状態と診断を利用者へ返す。 |
+
+## 2. 終了状態とコード
+
+<a id="termination"></a>
+
+```trace
+{
+  "id": "spec-diagnostics#termination",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0053",
+    "DIR-REQ-0055",
+    "DIR-REQ-0120",
+    "DIR-REQ-0118",
+    "DIR-REQ-0056"
+  ],
+  "upstream": [
+    "DIR-FUNC-0021",
+    "DIR-FUNC-0014",
+    "DIR-FUNC-0020",
+    "DIR-FUNC-0001",
+    "DIR-FUNC-0022",
+    "DIR-FUNC-0012"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| termination | CLI exit | 条件・通知 |
+| --- | --- | --- |
+| `time_limit` | 0 | 次イベント時刻がT以上、T以後に有効な発火候補を持つ遅延生成generatorがある、またはT=0。処理対象はT未満のイベントとする。finish=T、partial=false。送信待ち/中でも正常の時間打切り。 |
+| `events_exhausted` | 0 | イベント集合が空かつ全generatorが有限列を使い切った状態。観測を[0,T)まで定常状態で積分しfinish=Tとする。注：積分区間の延長は処理イベント数へ加算しない。最後に処理したイベント時刻はlast_event_time_ps、処理なしならnull。partial=false。 |
+| `prep_failed` | 2 | 入力・値解決・構造検証・allocate・initialize失敗。イベントcallback実行数は0とする。E-0001。finish_ps=0、partial=true。 |
+| `execution_failed` | 3 | イベント処理・時刻予約・数値演算・finish失敗、または資源ガード到達。E-0002またはE-0004。partial=true。 |
+| `output_failed` | 4 | 出力先検証・作成・write・flush・close・rename・hash計算の失敗。E-0003。元のterminationとprimary診断は保持してstderrに通知し、CLI/ライブラリの最終状態のみoutput_failed。manifest未公開は不完全。 |
+| 複合失敗 | 4優先 | 実行失敗後に保存も失敗した場合、exit4、stderrのprimaryは最初の実行失敗、次にoutput失敗を通知。出力成功後も実行失敗のexit3を保持する。 |
+| ライブラリ | 対応enum | [インタフェース仕様](インタフェース詳細機能仕様書.md)の`RunReport { termination, exit_code, partial, output_path, primary_diagnostic, committed_events, finish_ps, last_event_time_ps, diagnostics, output_manifest }`を返す。primary_diagnosticはDiagnostic?、diagnosticsは順序付き配列、output_pathは指定出力先、output_manifestは公開済manifestのパスまたはnull。初期化でOS processを終了させない。 |
+| 異常区間 | prefix | runtime失敗時はH=失敗イベントの時刻（finish失敗時H=T）。時間積分は[0,H)、点記録と件数は失敗より前にコミット済のイベント連番prefixであり同時刻Hの成功イベントを含み得る。注：このprefixは完全な[0,H)標本と通常runの無条件比較の対象外。 |
+| 制御不能な終了 | manifestなし | 強制kill、OS abort、回復不能なallocator abort、電源断についてfinishやJSON診断は保証範囲外。公開済manifestのhash検証だけを完成判定とする。Rust panicがunwind可能ならモデル境界で下表のphase別診断へ変換、process abortは異常終了として扱う。 |
+
+## 3. 診断の構造・位置・分類
+
+<a id="diagnostic-schema"></a>
+
+```trace
+{
+  "id": "spec-diagnostics#diagnostic-schema",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0053",
+    "DIR-REQ-0077",
+    "DIR-REQ-0078",
+    "DIR-REQ-0079",
+    "DIR-REQ-0080",
+    "DIR-REQ-0081",
+    "DIR-REQ-0082",
+    "DIR-REQ-0119",
+    "DIR-REQ-0121"
+  ],
+  "upstream": [
+    "DIR-FUNC-0021",
+    "DIR-FUNC-0002",
+    "DIR-FUNC-0003",
+    "DIR-FUNC-0004",
+    "DIR-FUNC-0005",
+    "DIR-FUNC-0006",
+    "DIR-FUNC-0007",
+    "DIR-FUNC-0008",
+    "DIR-FUNC-0009",
+    "DIR-FUNC-0010"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| フィールド | 型・意味 |
+| --- | --- |
+| `schema_version`, `seq` | 整数1、非負10進文字列。seqは0から連番、最初に観測したprimaryを0、cleanup/outputのsecondaryを発生順に続ける。 |
+| `severity`, `primary`, `code` | `error`固定、boolean、`E-0001`/`E-0002`/`E-0003`/`E-0004`。現行版に警告で入力を黙認する経路はない。 |
+| `phase`, `reason`, `message` | S。phaseは`prepare`/`allocate`/`initialize`/`run`/`finish`/`output`。reasonは安定したsnake_case、messageは人向け原因説明。機械判定キーはcodeとreasonとする。 |
+| `source`, `line`, `column`, `end_line`, `end_column` | 正規絶対パス文字列?、行・列は正の10進文字列?。UTF-8のUnicode scalarを1列としTABも1列。受理する先頭BOMは列に含めず、CRLFは一つの改行、LFも一つの改行とする。改行後は行を1増やし列1へ戻す。EOF位置は最後のscalar直後（末尾改行ありなら次行1列目）とする。始点含む終点含まない範囲。ファイルを開けない場合sourceだけ設定し位置null、実行エラーなど入力に対応しない場合すべてnull。 |
+| `target`, `time_ps`, `event_seq` | 完全インスタンス/設定キー/出力ファイルの文字列?、u64 psの10進文字列?、u64予約連番の非負10進文字列?。入力段階のtime/eventはnull。実行時は失敗時刻と対象候補の予約sequence（成功イベント件数とは別）。finishではtime_ps=凍結終了時刻、event_seq=null。実行前ガードで候補が分かる場合もそのsequenceを保持する。dirty封鎖中の失敗はphase=run、time_ps=対象dirty時刻、event_seq=null、details.operation=seal_arbitration。未実体化dirtyを残件へ含める。 |
+| `details` | key/valueとも文字列のobject。keyをUTF-8辞書順に保存。検証値には`actual`と`expected`、型参照は`type`、入出力は`operation`と`os_error`、ガードは`limit`と`observed`を含める。未知/該当なしは空object。注：入力全文・環境変数・認証情報は自動複写対象外。 |
+| 完全形 | `Diagnostic={schema_version,seq,severity,primary,code,phase,reason,message,source,line,column,end_line,end_column,target,time_ps,event_seq,details}`。すべて必須、該当しない値はnull。JSONLは結果仕様の文字エスケープとUTF-8辞書順キーによるcompact JSONとLF、非有限値なし。例中の表示キー順は説明用で、実ファイルは正規順に整列する。 |
+| stderr | 各DiagnosticをJSONLと同一objectで即時stderrへ出す。正常runはstderr空。stderr自体の書込失敗でもexitは異常状態を保持する。診断の出力先はstderrとdiagnostics.jsonlに限定する。 |
+| primaryと二次失敗 | 最初の診断だけprimary=true、後続はfalse。同じ失敗のstderrとJSONLへの複製は一つのseqを共有する。正常実行後の最初のfinish/output失敗もprimaryとなる。finishは初期化の逆順（simpleのみなら逆安定ID順）、出力は保存手順順で最初の失敗時に止めるため、二次診断順も固定できる。OS由来message/os_errorは環境依存としてsimulation比較から除外する。 |
+| 例外変換 | unwind可能なpanicはprepareのモデル登録照合中はE-0001 initialize_failed、allocate中はE-0001 allocation_failed、initialize中はE-0001 initialize_failed、run中はE-0002 model_panic、finish中はE-0002 finish_failedへ変換する。detailsのoperationに発生処理を残す。モデル境界の通常errorもphaseに応じ同じ分類を使い、runはmodel_failedとする。 |
+| 複数不正 | 準備段階は決定的検証順で最初の一件で停止。注：同じ準備失敗からの派生診断は生成対象外。診断に関連位置が複数ある場合は最初の位置をsource、追加位置をdetailsの`related_source/related_line/related_column`へ文字列として記す。 |
+
+| code | reason一覧と境界 |
+| --- | --- |
+| `E-0001` | `input_unreadable`, `invalid_utf8`, `syntax_error`, `unsupported_syntax`, `duplicate_definition`, `unknown_type`, `unknown_instance`, `unknown_parameter`, `missing_value`, `invalid_type`, `invalid_unit`, `invalid_range`, `invalid_connection`, `implementation_missing`, `allocation_failed`, `initialize_failed`, `invalid_argument`, `duplicate_metric`, `unsupported_profile`, `unsupported_profile_setting`, `model_config_invalid`, `workload_invalid`, `topology_invalid`。入力サブ仕様はこの分類とdetailsで対象を区別する。 |
+| `E-0002` | `model_failed`, `past_event`, `invalid_event`, `model_panic`, `finish_failed`。過去への予約は拒否しglobal stop、既に実行した時刻を巻き戻さない。 |
+| `E-0003` | `output_not_empty`, `output_unwritable`, `output_create_failed`, `output_write_failed`, `output_flush_failed`, `output_close_failed`, `output_rename_failed`, `output_hash_failed`。出力先アクセスの失敗は準備段階でもexit4。 |
+| `E-0004` | `event_limit`, `delta_cycle_limit`, `arithmetic_overflow`, `allocation_limit`。イベント上限100000000、同時刻delta cycle上限1000000を既定とし設定解決値を使用。許容した上限ちょうどまで処理し、次の処理が超過する前に停止する。時刻/連番/指標のあふれもwrapさせない。 |
+| 拡張 | codeは失敗大分類として保持し、reasonの追加を同じobject schemaの登録集合へ追加する。既存reasonの意味・必須field・型を変更する場合は診断schemaを改版する。モデルごとの分類も共通code/reason体系へ登録する。未登録reasonの生成はmodel_failedとして扱いdetailsに元の種別を残す。 |
+
+## 4. 具体例と検証先
+
+<a id="failure-examples"></a>
+
+```trace
+{
+  "id": "spec-diagnostics#failure-examples",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0053",
+    "DIR-REQ-0055",
+    "DIR-REQ-0044",
+    "DIR-REQ-0030",
+    "DIR-REQ-0120",
+    "DIR-REQ-0056"
+  ],
+  "upstream": [
+    "DIR-FUNC-0021",
+    "DIR-FUNC-0014",
+    "DIR-FUNC-0020",
+    "DIR-FUNC-0011",
+    "DIR-FUNC-0022"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 入力・状態 | 期待する結果 |
+| --- | --- |
+| T=10、イベント時刻2の後に予定なし | events_exhausted、exit0、finish_ps=`10`、last_event_time_ps=`2`、partial=false。時刻2から10は定常状態の積分のみ。 |
+| T=10、次イベント10 | time_limit、exit0。イベント10を未処理として保持し、送信中要求はin_flightとして記録。 |
+| T=0、初期イベント0 | time_limit、exit0、finish_ps=`0`、last_event_time_ps=null、イベントcallbackなし。 |
+| `demo.ini`の未知キー | prep_failed、exit2、event callback数0。診断例：`{"schema_version":1,"seq":"0","severity":"error","primary":true,"code":"E-0001","phase":"prepare","reason":"unknown_parameter","message":"Unknown parameter: Net.a.typo","source":"/work/demo.ini","line":"3","column":"1","end_line":"3","end_column":"11","target":"Net.a.typo","time_ps":null,"event_seq":null,"details":{"actual":"typo","expected":"registered parameter"}}`。 |
+| ID0,1初期化成功、ID2失敗 | E-0001 initialize_failed、exit2。ID3以後のinitializeなし。finishは1,0の順、全割当を逆順解放、初期イベント実行なし。 |
+| 時刻5で過去4へ予約 | E-0002 past_event、execution_failed、exit3。全体停止、最後の整合prefixをpartial=trueで保存。計測対象はコミット成功済イベントに限定する。 |
+| event上限1、二つのイベント | 一つ目だけコミット、二つ目実行前にE-0004 event_limit、exit3。上限ちょうどの1件目は正常に受理する。 |
+| 結果rename不可 | E-0003 output_rename_failed、exit4、manifestなし。stderrへ出力失敗を通知、既存ファイルを保持する。 |
+| 実行失敗後にfinishと出力も失敗 | primaryのE-0002をseq0、finishのE-0002をseq1、outputのE-0003をseq2で通知、exit4。元の失敗が隠れず、他のfinish/資源解放は試行する。 |
+| 正常実行後finish失敗 | execution_failed、exit3、partial=true。モデル計測snapshotを保持し、終了処理未完了の状態を記録する。 |
+| 判断・検証 | DIR-TBD-0009は本書で解消。DIR-AC-0002/0014/0016/0017/0024へ検証を割当てる。順序を記録する偽モデル、I/O失敗注入、同時刻prefix、initialize途中失敗、二次失敗を下流で検証する。詳細設計と開発中ソースの共通診断実装を追加した。今回の実施範囲は[拡張runtime検証記録](../verification/results/extension-runtime-2026-10-05.json)に記録し、全境界の製品適合は別に判定する。 |
+
+## 拡張モデルの診断
+
+この節は将来profileを共通ライフサイクルへ接続する契約である。現行0.1.0のClassical CANと同じ停止・解放・部分結果の境界を使い、モデル固有の通常結果の意味は選択した[profile仕様](拡張モデル共通詳細機能仕様書.md#selection)で確認する。
+
+| 対象 | 統一する規則 |
+| --- | --- |
+| 準備順 | [拡張共通仕様](拡張モデル共通詳細機能仕様書.md#inputs)のprofile選択→共通構造→model-config→workload→横断検証を適用。各処理の失敗はイベント開始前に返す |
+| E-0001追加理由 | unsupported_profile、unsupported_profile_setting、model_config_invalid、workload_invalid、topology_invalid。details.ruleとtargetでモデル固有条件を示す |
+| 通常の結果 | GWのno_route/hop上限、Ethernetのfilter/queue満杯・半二重の衝突/再試行上限、AXIのDECERR/SLVERRはモデルの結果として記録。実行器全体の失敗とは別にstatusと理由を保持 |
+| 内部不正 | codec不適合、モデル状態の矛盾、未登録結果schemaはE-0002。検査付き算術・ガード上限はE-0004 |
+| profile coordinator | simple初期化後に対象パス順で初期化し、終了はその逆順からsimpleの逆順へ解放。snapshotは確定journalを正とする |
+| schema2 | 診断レコードのschema1・exit codeは維持し、結果ファイルは選択profileのschema2で部分結果を保存 |
+
+| 項目 | 契約 |
+| --- | --- |
+| 媒体設定 | 1000BASE-T1はfull・1000000000bpsと有効なMASTER/SLAVE対を受理し、組合せ不正はE-0001のprofile検証で診断する。半二重の試行上限は通常drop、物理条件の入力不正とモデル不変条件違反は準備失敗／実行失敗へ区別する |

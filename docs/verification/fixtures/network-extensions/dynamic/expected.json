@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "profile": "ethernet.l2.dynamic.v1",
+  "fixture": "examples/ethernet/dynamic/unicast.ini",
+  "wire_bits": "608",
+  "occupied_bits": "704",
+  "hops": [
+    {
+      "from": "Net.a.tx",
+      "sof_ps": "0",
+      "eof_ps": "608000",
+      "release_ps": "704000",
+      "arrival_ps": "609000"
+    },
+    {
+      "from": "Net.s1.tx_b",
+      "sof_ps": "611000",
+      "eof_ps": "1219000",
+      "release_ps": "1315000",
+      "arrival_ps": "1220000"
+    },
+    {
+      "from": "Net.s2.tx_a",
+      "sof_ps": "1222000",
+      "eof_ps": "1830000",
+      "release_ps": "1926000",
+      "arrival_ps": "1831000"
+    }
+  ],
+  "initial_roles": {
+    "Net.s2.tx_b": "root",
+    "Net.s3.tx_b": "root",
+    "Net.s2.tx_c": "designated",
+    "Net.s3.tx_c": "alternate"
+  },
+  "registration_intervals": [
+    {
+      "port": "Net.s1.tx_c",
+      "vid": 20,
+      "start_ps": "100",
+      "end_ps": "2100"
+    }
+  ],
+  "boundaries_ps": [
+    "0",
+    "100",
+    "1100",
+    "2100",
+    "609000",
+    "611000",
+    "800000",
+    "900000",
+    "1000000",
+    "1220000",
+    "1831000",
+    "5000000"
+  ]
+}

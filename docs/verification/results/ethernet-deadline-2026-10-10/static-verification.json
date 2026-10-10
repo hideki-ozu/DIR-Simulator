@@ -1,0 +1,64 @@
+{
+  "checked_at_utc": "2026-10-10T14:25:00.349360+00:00",
+  "status": "passed_checks_with_environment_blocked_hook_tests",
+  "checks": [
+    {
+      "command": [
+        "scripts/verification/check_deadline_guide.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: eight one-variable inputs/ZIP, exact checker copy, six complete record/metric sets, input snapshots and four original PNG hashes\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "stdout": "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "All traceability reports and the hierarchy annex are up to date\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*traceability*.py"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "..................................FFFFFF\n======================================================================\nFAIL: test_document_version_change_updates_all_reports_from_index (test_traceability_hook.TestTraceabilityHook.test_document_version_change_updates_all_reports_from_index)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 54, in test_document_version_change_updates_all_reports_from_index\n    root = self.repository()\n           ^^^^^^^^^^^^^^^^^\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 41, in repository\n    self.command(root, \"git\", \"init\", \"--quiet\")\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 24, in command\n    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)\nAssertionError: 128 != 0 : error: could not write config file <sandbox-temp>/tmpmj6znfsp/.git/config: Permission denied\nfatal: could not set 'core.repositoryformatversion' to '0'\n\n\n======================================================================\nFAIL: test_invalid_staged_hierarchy_leaves_worktree_and_index_reports_unchanged (test_traceability_hook.TestTraceabilityHook.test_invalid_staged_hierarchy_leaves_worktree_and_index_reports_unchanged)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 129, in test_invalid_staged_hierarchy_leaves_worktree_and_index_reports_unchanged\n    root = self.repository()\n           ^^^^^^^^^^^^^^^^^\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 41, in repository\n    self.command(root, \"git\", \"init\", \"--quiet\")\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 24, in command\n    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)\nAssertionError: 128 != 0 : error: could not write config file <sandbox-temp>/tmpbocqx2vx/.git/config: Permission denied\nfatal: could not set 'core.repositoryformatversion' to '0'\n\n\n======================================================================\nFAIL: test_staged_hierarchy_json_change_uses_index_only (test_traceability_hook.TestTraceabilityHook.test_staged_hierarchy_json_change_uses_index_only)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 75, in test_staged_hierarchy_json_change_uses_index_only\n    root = self.repository()\n           ^^^^^^^^^^^^^^^^^\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 41, in repository\n    self.command(root, \"git\", \"init\", \"--quiet\")\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 24, in command\n    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)\nAssertionError: 128 != 0 : error: could not write config file <sandbox-temp>/tmpsnkbpmzo/.git/config: Permission denied\nfatal: could not set 'core.repositoryformatversion' to '0'\n\n\n======================================================================\nFAIL: test_staged_hierarchy_module_change_regenerates_hierarchy_html (test_traceability_hook.TestTraceabilityHook.test_staged_hierarchy_module_change_regenerates_hierarchy_html)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 114, in test_staged_hierarchy_module_change_regenerates_hierarchy_html\n    root = self.repository()\n           ^^^^^^^^^^^^^^^^^\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 41, in repository\n    self.command(root, \"git\", \"init\", \"--quiet\")\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 24, in command\n    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)\nAssertionError: 128 != 0 : error: could not write config file <sandbox-temp>/tmpvlzzkvzn/.git/config: Permission denied\nfatal: could not set 'core.repositoryformatversion' to '0'\n\n\n======================================================================\nFAIL: test_staged_html_deletions_regenerate_and_stage_each_html_report (test_traceability_hook.TestTraceabilityHook.test_staged_html_deletions_regenerate_and_stage_each_html_report) (name='docs/要件トレーサビリティ一覧.html')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 102, in test_staged_html_deletions_regenerate_and_stage_each_html_report\n    root = self.repository()\n           ^^^^^^^^^^^^^^^^^\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 41, in repository\n    self.command(root, \"git\", \"init\", \"--quiet\")\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 24, in command\n    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)\nAssertionError: 128 != 0 : error: could not write config file <sandbox-temp>/tmpshldd6z2/.git/config: Permission denied\nfatal: could not set 'core.repositoryformatversion' to '0'\n\n\n======================================================================\nFAIL: test_staged_html_deletions_regenerate_and_stage_each_html_report (test_traceability_hook.TestTraceabilityHook.test_staged_html_deletions_regenerate_and_stage_each_html_report) (name='docs/要件階層.html')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 102, in test_staged_html_deletions_regenerate_and_stage_each_html_report\n    root = self.repository()\n           ^^^^^^^^^^^^^^^^^\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 41, in repository\n    self.command(root, \"git\", \"init\", \"--quiet\")\n  File \"<workspace>/deadline-guide-work\\tests\\test_traceability_hook.py\", line 24, in command\n    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)\nAssertionError: 128 != 0 : error: could not write config file <sandbox-temp>/tmpk9ninvbi/.git/config: Permission denied\nfatal: could not set 'core.repositoryformatversion' to '0'\n\n\n----------------------------------------------------------------------\nRan 39 tests in 8.018s\n\nFAILED (failures=6)\n",
+      "classification": "environment_blocked: git init --quiet exits 128 while writing temporary .git/config; no settings or permission workaround attempted",
+      "test_summary": "39 tests attempted; six reported failures in temporary Git fixture initialization (including two subtests). Remaining tests completed without a reported failure."
+    },
+    {
+      "command": [
+        "build_guide_inputs.build",
+        "deadline inputs only",
+        "check=True"
+      ],
+      "exit_code": 0,
+      "scope": "Existing CAN/CANFD samples remain unchanged and are checked by ordinary Guide CI"
+    }
+  ],
+  "not_run": [
+    "local MkDocs strict: module absent; no tool install or sandbox setting change",
+    "guide browser Japanese search and 390px: CUA HRESULT 0x80070003",
+    "Project registration: no callable Project tool; browser launcher unavailable"
+  ],
+  "nav": "unchanged until completed guide integration checks",
+  "CLI": "Existing 18 operations already confirmed; no rerun"
+}

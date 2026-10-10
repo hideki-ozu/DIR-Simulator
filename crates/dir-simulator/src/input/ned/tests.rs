@@ -71,6 +71,52 @@ fn declarations(model: &str) -> BTreeMap<String, Declaration> {
 }
 
 #[test]
+fn metadata_instances_reference_one_declaration_without_affecting_schema_or_values() {
+    let text = r#"package tiny;
+simple Source {
+ parameters:
+  @class("tiny.Source"); @display("端点"); @description("送信\n受信");
+  int count @display("容量") @description("件数") = default(64);
+  string label = default("hello"); bool enabled = default(true);
+  double ratio = default(-0.5); int size @unit(B) = default(1KiB);
+}
+network Main { submodules: a: tiny.Source; b: tiny.Source; }
+"#;
+    let types = declarations(text);
+    let resolved = resolve(&types, "tiny.Main", &BTreeMap::new(), &TinyRules).unwrap();
+    let a = resolved.declaration("Main.a");
+    let b = resolved.declaration("Main.b");
+    assert!(std::ptr::eq(a, b));
+    assert!(std::ptr::eq(a, &types["tiny.Source"]));
+    assert!(std::ptr::eq(
+        &a.attributes()["display"],
+        &b.attributes()["display"]
+    ));
+    assert_eq!(a.attributes()["display"].value(), "端点");
+    assert_eq!(a.attributes()["description"].value(), "送信\n受信");
+    assert_eq!(
+        a.attributes()["display"].owner(),
+        &AttributeOwner::Type {
+            qname: "tiny.Source".into()
+        }
+    );
+    assert_eq!(
+        a.parameters()["count"].attributes()["display"].owner(),
+        &AttributeOwner::Parameter {
+            qname: "tiny.Source".into(),
+            parameter: "count".into()
+        }
+    );
+    for instance in ["Main.a", "Main.b"] {
+        let values = resolved.values(instance);
+        assert_eq!(values.len(), 5);
+        assert!(matches!(values["count"], TypedValue::Integer(64)));
+        assert!(matches!(&values["label"], TypedValue::String(s) if s == "hello"));
+        assert!(matches!(values["size"], TypedValue::Quantity(1024)));
+    }
+}
+
+#[test]
 fn non_can_rules_resolve_values_compound_paths_and_shared_channels() {
     let types = declarations(MODEL);
     let overrides = BTreeMap::from([

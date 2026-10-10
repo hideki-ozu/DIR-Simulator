@@ -1,0 +1,28 @@
+   Compiling dir-simulator v0.1.0 (/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.99s
+     Running tests/provenance.rs (/tmp/dir-v1.1.4-preparation-2026-10-08/target/debug/deps/provenance-cbf4ddabcd2d03a9)
+
+running 2 tests
+
+thread 'composed_registered_parameters_and_channels_remain_in_effective_configuration' panicked at crates/dir-simulator/tests/provenance.rs:353:5:
+assertion `left != right` failed
+  left: String("5e9254732dbfbb64a1d34756da6bb0a072ab4c62c22a645b8b275d34d27fb4ac")
+ right: String("5e9254732dbfbb64a1d34756da6bb0a072ab4c62c22a645b8b275d34d27fb4ac")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test composed_registered_parameters_and_channels_remain_in_effective_configuration ... FAILED
+
+thread 'composed_registered_subject_changes_execution_and_effective_configuration_hash' panicked at crates/dir-simulator/tests/provenance.rs:406:5:
+assertion `left != right` failed
+  left: String("9e6a320f531d098fc57b0172dd65492a1800819fad2de74cd1a42f5703818d82")
+ right: String("9e6a320f531d098fc57b0172dd65492a1800819fad2de74cd1a42f5703818d82")
+test composed_registered_subject_changes_execution_and_effective_configuration_hash ... FAILED
+
+failures:
+
+failures:
+    composed_registered_parameters_and_channels_remain_in_effective_configuration
+    composed_registered_subject_changes_execution_and_effective_configuration_hash
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 10 filtered out; finished in 3.74s
+
+error: test failed, to rerun pass `--test provenance`

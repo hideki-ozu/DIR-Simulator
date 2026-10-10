@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "issue": 41,
+  "goal": "Retain NED declaration and parameter attributes with decoded values, typed declaration owners, and original spans",
+  "architecture": "Common Attribute maps on existing Declaration/Parameter; existing Resolved maps instance names to same declaration object",
+  "files": [
+    "crates/dir-simulator/src/input.rs",
+    "crates/dir-simulator/src/input/ned.rs",
+    "crates/dir-simulator/src/input/ned/tests.rs",
+    "crates/dir-simulator/tests/ac0008_attributes.rs",
+    "crates/dir-simulator/tests/ac0008_paths.rs"
+  ],
+  "interfaces": "Public input::Attribute and input::AttributeOwner re-exports, immutable attributes/name/value/owner/span accessors",
+  "constraints": "No grammar relaxation; supplied post-default property input preserved/rejected; no factory, settings, Windows, tag, release, deploy, merge, push, commit changes by worker",
+  "acceptance_criteria": "4 public parser tests and new shared-declaration unit regression pass; original 3 common NED unit tests pass",
+  "verification": [
+    {
+      "command": "<HOME>/.cargo/bin/cargo test --locked -p dir-simulator --test ac0008_attribute_baseline_probe",
+      "exit_code": 101,
+      "log": "attribute-baseline-probe.log",
+      "scope": "valid parse discards Japanese display value before production fix; exact temporary probe source retained separately"
+    },
+    {
+      "command": "<HOME>/.cargo/bin/cargo test --locked -p dir-simulator --test ac0008_attributes",
+      "exit_code": 0,
+      "log": "attribute-regressions.log",
+      "passed": 4
+    },
+    {
+      "command": "<HOME>/.cargo/bin/cargo test --locked -p dir-simulator --lib input::ned::tests",
+      "exit_code": 0,
+      "log": "attribute-ned-unit-tests.log",
+      "passed": 4
+    },
+    {
+      "command": "<HOME>/.cargo/bin/rustfmt --edition 2024 <changed Rust files>",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "unresolved_uncertainty": [
+    "Full integrated gates and exact local source/test commit are parent-owned.",
+    "Atomic predicate mappings intentionally do not claim all original row qualifiers or profile-specific callbacks.",
+    "Original fixture places parameter description after default against formal grammar; legal correction is explicit in test without altering fixture."
+  ],
+  "source_sha256": {
+    "crates/dir-simulator/src/input.rs": "b190c0e25bc0d9075cd9bc932753adf66f63e20e0b2fff6b5042fa11121b7d95",
+    "crates/dir-simulator/src/input/ned.rs": "95bc8ee3f506c16679bb440e6fde89eb7bc5dbcdd26e859ebd85b074622541f6",
+    "crates/dir-simulator/src/input/ned/tests.rs": "244a80dc42f28b26c0ab94df3c6a63f13a649f9fc1194f72475d732ebca2c93b",
+    "crates/dir-simulator/tests/ac0008_attributes.rs": "dd5e11b56f508b655e67d65a96aba581f7a979ae6b4d46593423aed461d589c0",
+    "crates/dir-simulator/tests/ac0008_paths.rs": "452af8a2e4522d64bccbc1084fb8d37283583cee61337b8886d4da4d898edf3c"
+  },
+  "cargo_target_dir": "<AUDIT_ROOT>/implementation/target"
+}

@@ -1,0 +1,468 @@
+{
+  "worktree": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+  "head_commit": "2f1e60b4c644844f08c8bd609078c139a65d4e45",
+  "binary": {
+    "path": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+    "sha256": "f55320b3faa212e4e870399aac815dc87412d3d5a3a0d5b55be5f149f4d32195"
+  },
+  "constraints": {
+    "cargo_build_or_tests_run_by_worker": false,
+    "performance_or_million_runs": false,
+    "full_acceptance_inventory": false,
+    "source_or_test_edits": false
+  },
+  "python_tests": [
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "exit_code": 0,
+      "log": "python-unittest.log",
+      "log_sha256": "fc2ef6691be6088799e1c8d57095da1459158705f7e78a4964415ddf34461314",
+      "tests": 39
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/test_guide_scope_policy.py"
+      ],
+      "exit_code": 0,
+      "log": "guide-scope-policy.log",
+      "log_sha256": "55df81c03b1fc09a739803668e8b10b1a1cd87ac7e716666dddb1c968f87bb76",
+      "tests": 9
+    }
+  ],
+  "javascript_tests": {
+    "argv": [
+      "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+      "--test",
+      "tests/ethernet_viewer_model.test.cjs",
+      "tests/media_fd_viewer_model.test.cjs",
+      "tests/ned_editor_browser.test.cjs",
+      "tests/ned_editor_composition_browser.test.cjs",
+      "tests/ned_editor_recovery.test.cjs",
+      "tests/ned_editor_ui.test.cjs",
+      "tests/network_viewer_model.test.cjs",
+      "tests/simulator_binary.test.cjs",
+      "tests/transaction_viewer_model.test.cjs",
+      "tests/viewer_model.test.cjs"
+    ],
+    "exit_code": 0,
+    "counts": {
+      "tests": "167",
+      "pass": "167",
+      "fail": "0",
+      "skipped": "0",
+      "duration_ms": "25602.058901"
+    },
+    "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-node-test.log",
+    "log_sha256": "78c345596f5cb5b8d27505413cd7f3a93e9cf2e6b87347773df95b6add05891f",
+    "enabled_optional_product_case": "current CLI queued-membership-leave result loads declared subscriptions and source VLANs",
+    "product_result": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run/results.json"
+  },
+  "browser_gates": {
+    "network": {
+      "exit_code": 0,
+      "passed_cases": 6,
+      "expected_cases": 6,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/network-viewer-browser.log",
+      "log_sha256": "93661c28eae7dae6f55a8b29e848f0eaaf730e8f8964fe30af3be67f90de5fe9",
+      "complete_and_partial_profiles": [
+        "can.ethernet.gateway.v1",
+        "ethernet.l2.dynamic.v1",
+        "ethernet.tsn.v1"
+      ]
+    },
+    "can_gateway": {
+      "argv": [
+        "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+        "tests/viewer_browser.cjs"
+      ],
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/viewer-browser.log",
+      "log_sha256": "f5185b1bfcbccf3d75d583d6fbe38decb8a3835babb577825785d6e9a8c16588",
+      "summary_lines": [
+        "PASS: sequential step TX/RX animation, directional blue/orange/gray lines, cancellation/resize/rewind; viewer playback, seek, filters/details, responsive layout, validation, exact times, topology animation, schema2 independent buses/Gateway processing/copy/origin/boundary, RX capacity/fanout/TX wait/rewind, zero horizon; no network or browser errors"
+      ]
+    },
+    "transactions": {
+      "exit_code": 0,
+      "passed_cases": 5,
+      "expected_cases": 5,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/transaction-viewer-browser.log",
+      "log_sha256": "7324662e3dc183123476fb55074b72f3dccdf1bc95cf8d898449bb520e0644b9",
+      "zero_ps_rejection": [
+        {
+          "reason": "address_error",
+          "generated_ps": "0",
+          "started_ps": null,
+          "completed_ps": "0",
+          "record_id": "b:0"
+        }
+      ]
+    },
+    "capability_product_exported_html": {
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-network-browser.log",
+      "log_sha256": "2b2b5c8f83794726b3dcc9e37b041cf5c020d19e315662fc9235ff39d63ac452",
+      "result_sha256": "0c164ee67df5d501bdc1664b145e91fff0b4c806e643d840bb3f12ace235cd60",
+      "html_sha256": "9039f9621f111cba94a9897fd4a7f0d5ddc99af626d9cc032ed2353f1a575cc0"
+    }
+  },
+  "generated_simulations": [
+    {
+      "name": "bridge-complete",
+      "exit_code": 0,
+      "profile": "can.ethernet.gateway.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "model_records": 13,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-bridge-complete.log",
+      "log_sha256": "1e77d9565be7c318a00e31c751a4346b5c990793e92c8da68123260f06396dc9",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/bridge-complete/results.json",
+      "output_sha256": "ba85fe596d47cd82495637582140bfee3a333605b20685c6face6886f77b4248",
+      "rejections": []
+    },
+    {
+      "name": "dynamic-complete",
+      "exit_code": 0,
+      "profile": "ethernet.l2.dynamic.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "model_records": 22,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-dynamic-complete.log",
+      "log_sha256": "31eafa08caf3176cc4523352b821df17a4222127ecbe851d6685caae28f6fb11",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/dynamic-complete/results.json",
+      "output_sha256": "47d99b32daf96af4fbbe538d94f12848e779a282c6c475a17b92400c9784c292",
+      "rejections": []
+    },
+    {
+      "name": "tsn-complete",
+      "exit_code": 0,
+      "profile": "ethernet.tsn.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "model_records": 29,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-tsn-complete.log",
+      "log_sha256": "579e8d767b0b76c61eb98982d64730658fb142b44d472547e2edf84c7018ac6b",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-complete/results.json",
+      "output_sha256": "e486a3f36eecbda8014f993dff9cb70a3b2dcbe39c8769f91885babc2eb7bbd2",
+      "rejections": []
+    },
+    {
+      "name": "bridge-partial",
+      "exit_code": 3,
+      "profile": "can.ethernet.gateway.v1",
+      "partial": true,
+      "termination": "execution_failed",
+      "model_records": 12,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-bridge-partial.log",
+      "log_sha256": "0d166c857929238774b1bc08c7d5cade8683f16bd1e1c5662561fa45bda2fe73",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/bridge-partial/results.json",
+      "output_sha256": "8dda40e4690c6005888fe016b3a0e8c15aab23cc9c7906754eaadf5fa94e89f9",
+      "rejections": []
+    },
+    {
+      "name": "dynamic-partial",
+      "exit_code": 3,
+      "profile": "ethernet.l2.dynamic.v1",
+      "partial": true,
+      "termination": "execution_failed",
+      "model_records": 17,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-dynamic-partial.log",
+      "log_sha256": "1341a6f24657ad7bd7af7273f7e201aa70ceba9842eeef0b74d839b8218f4100",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/dynamic-partial/results.json",
+      "output_sha256": "625cd456adeb7351c7e7d6e921137ecf3c60f9e394d568d311fc2bc3dcf4b12e",
+      "rejections": []
+    },
+    {
+      "name": "tsn-cap20-calibration",
+      "exit_code": 0,
+      "profile": "ethernet.tsn.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "model_records": 29,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-tsn-partial.log",
+      "log_sha256": "66beeeeb899708f9d26a60a106487e77b52a87e7027f8c216fc2bf6a37f66346",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-partial/results.json",
+      "output_sha256": "f7878496e377a1bde3685f4270d0473fe801efd0a1f3ef6d347703a3d9cd2b05",
+      "rejections": []
+    },
+    {
+      "name": "axi-complete",
+      "exit_code": 0,
+      "profile": "axi4.transaction.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "model_records": 10,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-axi-complete.log",
+      "log_sha256": "c312a6c256abca92536c86b69b1dac73c7826413ef3570b782ab0c24b30805e7",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/axi-complete/results.json",
+      "output_sha256": "ca3a70dfa103a85b7879d4d5076e8186525e814eb637a6c9edda70c1785e18fa",
+      "rejections": []
+    },
+    {
+      "name": "soc-complete",
+      "exit_code": 0,
+      "profile": "soc.shared.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "model_records": 6,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-soc-complete.log",
+      "log_sha256": "66c33431679542e79ec7469871b1fc1799793f5fd4a6b8b18242018ad5a7f408",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/soc-complete/results.json",
+      "output_sha256": "4fcb214d1463485fbb6aa9ed9c5fa96d6e6c21e41b6f7016e983129890d43d16",
+      "rejections": []
+    },
+    {
+      "name": "memory-complete",
+      "exit_code": 0,
+      "profile": "memory.ipc.transaction.v1",
+      "partial": false,
+      "termination": "time_limit",
+      "model_records": 11,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-memory-complete.log",
+      "log_sha256": "4c6bd4b2ab75ac6394a874d9795f0ed14e084164a61f07980eb8c279fca15c73",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/memory-complete/results.json",
+      "output_sha256": "830fe789dfb6a2340f0a1f3c1974834a8d7ad49e9821fef2e46d7e860495b1ff",
+      "rejections": []
+    },
+    {
+      "name": "ahb-rejection",
+      "exit_code": 0,
+      "profile": "ahb.transaction.v1",
+      "partial": false,
+      "termination": "events_exhausted",
+      "model_records": 4,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-ahb-rejection.log",
+      "log_sha256": "4a2edd5a40c96666868c776a3c48a43da8148c3fcaddb4d7aed7898154ab6290",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/ahb-rejection/results.json",
+      "output_sha256": "df5700ed2dbddd9a524adfc95b8b4ee2487c469ff3eb37edfcd0819e32cd351a",
+      "rejections": []
+    },
+    {
+      "name": "memory-zero-rejection",
+      "exit_code": 0,
+      "profile": "memory.ipc.transaction.v1",
+      "partial": false,
+      "termination": "time_limit",
+      "model_records": 11,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-memory-zero-rejection.log",
+      "log_sha256": "b8641c24c63be68b771948ce71f9d11de163d0d9997e4726db1dbff398d62c3f",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/memory-zero-rejection/results.json",
+      "output_sha256": "f1b791d56cd3e17c08f8d6610c509dc4cb292026117e00e68a7a9d07ccf1c1c9",
+      "rejections": [
+        {
+          "reason": "address_error",
+          "generated_ps": "0",
+          "started_ps": null,
+          "completed_ps": "0",
+          "record_id": "b:0"
+        }
+      ]
+    },
+    {
+      "name": "tsn-partial-tight",
+      "exit_code": 3,
+      "profile": "ethernet.tsn.v1",
+      "partial": true,
+      "termination": "execution_failed",
+      "model_records": 14,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/verified-sim-tsn-partial-tight.log",
+      "log_sha256": "17a8ed2ca7f3843ff6f08d10d68b1c68a7e5c51813096b7b3b3e173ea656ad51",
+      "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/results/verified/tsn-partial-tight/results.json",
+      "output_sha256": "bef268bd373fe3045fcad4241c09dcbd9604de5ece6c6dc7be8d1c3efb3b00e9",
+      "rejections": null
+    }
+  ],
+  "artifacts_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates",
+  "initial_javascript_tests": {
+    "argv": [
+      "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+      "--test",
+      "tests/ethernet_viewer_model.test.cjs",
+      "tests/media_fd_viewer_model.test.cjs",
+      "tests/ned_editor_browser.test.cjs",
+      "tests/ned_editor_composition_browser.test.cjs",
+      "tests/ned_editor_recovery.test.cjs",
+      "tests/ned_editor_ui.test.cjs",
+      "tests/network_viewer_model.test.cjs",
+      "tests/simulator_binary.test.cjs",
+      "tests/transaction_viewer_model.test.cjs",
+      "tests/viewer_model.test.cjs"
+    ],
+    "exit_code": 0,
+    "counts": {
+      "tests": 167,
+      "suites": 0,
+      "pass": 166,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 1,
+      "todo": 0
+    },
+    "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/node-test.log",
+    "log_sha256": "1201fc029a80373937c926c49cbe1a9af190386718630ad2446a4c0fc24bfcf8",
+    "skipped_case": "current CLI queued-membership-leave result loads declared subscriptions and source VLANs",
+    "skip_condition": "DIR_VIEWER_CAPABILITY_RESULT was unset"
+  },
+  "capability_product": {
+    "fixture_config": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+    "fixture_sha256": {
+      "psfp-queued-membership-leave.ini": "5011a3e0c07e7d7887001010ec76150cf71a2ea527b4d24a13a7acfc0b9acff8",
+      "psfp-queued-membership-leave.model.json": "3c23aa8e59f813a685da637a10802fbf579f8fd5250def2886cbc1ca7ebe76b6",
+      "psfp-queued-membership-leave.workload.json": "34b914b48075d94becc0f755a1a5fc7cf56120684d3548c3c5bbeb6126429482"
+    },
+    "binary": {
+      "path": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+      "sha256": "f55320b3faa212e4e870399aac815dc87412d3d5a3a0d5b55be5f149f4d32195"
+    },
+    "commands": [
+      {
+        "name": "validate",
+        "argv": [
+          "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+          "validate",
+          "--config",
+          "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini"
+        ],
+        "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "environment_whitelist": {
+          "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+          "LANG": "C.UTF-8",
+          "LC_ALL": "C.UTF-8",
+          "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+          "CARGO": "/home/hideki/.cargo/bin/cargo",
+          "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+        },
+        "exit_code": 0,
+        "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-validate.log",
+        "log_sha256": "a7e851cdd2312ecdd1eb2b7eba565b8bc20070f4572052f0908aa774aba53d06"
+      },
+      {
+        "name": "run",
+        "argv": [
+          "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+          "run",
+          "--config",
+          "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+          "--output",
+          "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run"
+        ],
+        "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "environment_whitelist": {
+          "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+          "LANG": "C.UTF-8",
+          "LC_ALL": "C.UTF-8",
+          "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+          "CARGO": "/home/hideki/.cargo/bin/cargo",
+          "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+        },
+        "exit_code": 0,
+        "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-run.log",
+        "log_sha256": "6b110976dd10088bc6bf09457172a96f0cb15233eeef7ac6a8481a370d96490a",
+        "output_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run/results.json",
+        "output_sha256": "0c164ee67df5d501bdc1664b145e91fff0b4c806e643d840bb3f12ace235cd60",
+        "profile": null,
+        "partial": false,
+        "termination": "events_exhausted",
+        "end_ps": "200000000000",
+        "model_records_count": 202,
+        "model_records_type": "list"
+      },
+      {
+        "name": "view",
+        "argv": [
+          "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+          "view",
+          "--input",
+          "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run/results.json",
+          "--output",
+          "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/viewer.html"
+        ],
+        "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "environment_whitelist": {
+          "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+          "LANG": "C.UTF-8",
+          "LC_ALL": "C.UTF-8",
+          "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+          "CARGO": "/home/hideki/.cargo/bin/cargo",
+          "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+        },
+        "exit_code": 0,
+        "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-view.log",
+        "log_sha256": "4193fd279af197d9eaf6e1708fcbeff685d757aaab4aa60abc0af2d3b7ad05f1",
+        "output_html": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/viewer.html",
+        "output_sha256": "9039f9621f111cba94a9897fd4a7f0d5ddc99af626d9cc032ed2353f1a575cc0",
+        "output_bytes": 841174
+      }
+    ],
+    "result_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run/results.json",
+    "result_sha256": "0c164ee67df5d501bdc1664b145e91fff0b4c806e643d840bb3f12ace235cd60",
+    "exported_viewer_html": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/viewer.html",
+    "viewer_sha256": "9039f9621f111cba94a9897fd4a7f0d5ddc99af626d9cc032ed2353f1a575cc0",
+    "network_viewer_browser": {
+      "argv": [
+        "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+        "tests/network_viewer_browser.cjs",
+        "--exported-html",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run/results.json",
+        "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/viewer.html"
+      ],
+      "working_directory": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+      "environment_whitelist": {
+        "PWD": "/tmp/dir-v1.1.4-preparation-2026-10-08/worktree",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "DIR_SIMULATOR_BIN": "/tmp/dir-v1.1.4-preparation-2026-10-08/target/release/dir-simulator",
+        "CARGO": "/home/hideki/.cargo/bin/cargo",
+        "NODE_PATH": "/home/hideki/.npm/_npx/705bc6b22212b352/node_modules",
+        "TMPDIR": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/tmp"
+      },
+      "exit_code": 0,
+      "log": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/logs/capability-network-browser.log",
+      "log_sha256": "2b2b5c8f83794726b3dcc9e37b041cf5c020d19e315662fc9235ff39d63ac452",
+      "result_json": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/run/results.json",
+      "result_sha256": "0c164ee67df5d501bdc1664b145e91fff0b4c806e643d840bb3f12ace235cd60",
+      "exported_html": "/tmp/dir-v1.1.4-preparation-2026-10-08/non-rust-gates/capability-product/viewer.html",
+      "html_sha256": "9039f9621f111cba94a9897fd4a7f0d5ddc99af626d9cc032ed2353f1a575cc0"
+    }
+  },
+  "final_counts": {
+    "python_unittest": {
+      "passed": 39,
+      "failed": 0
+    },
+    "guide_scope_policy": {
+      "passed": 9,
+      "failed": 0
+    },
+    "node_tests": {
+      "tests": 167,
+      "passed": 167,
+      "failed": 0,
+      "skipped": 0
+    },
+    "network_browser_product_export": {
+      "passed": 1,
+      "failed": 0
+    },
+    "existing_network_browser_matrix": {
+      "passed": 6,
+      "failed": 0
+    },
+    "existing_transaction_browser_matrix": {
+      "passed": 5,
+      "failed": 0
+    },
+    "can_gateway_browser": {
+      "exit_code": 0
+    }
+  },
+  "status": "complete"
+}

@@ -1,0 +1,744 @@
+{
+  "schema_version": 1,
+  "can": {},
+  "ethernet": {
+    "schema_version": 3,
+    "endpoints": [
+      {
+        "instance": "Loop.g1.eth",
+        "mac": "02:00:00:00:00:01",
+        "multicast": [
+          {
+            "vid": 10,
+            "dst_mac": "01:00:5e:00:00:01"
+          }
+        ]
+      },
+      {
+        "instance": "Loop.g2.eth",
+        "mac": "02:00:00:00:00:02",
+        "multicast": [
+          {
+            "vid": 10,
+            "dst_mac": "01:00:5e:00:00:01"
+          }
+        ]
+      },
+      {
+        "instance": "Loop.a",
+        "mac": "02:00:00:00:00:03",
+        "multicast": [
+          {
+            "vid": 10,
+            "dst_mac": "01:00:5e:00:00:01"
+          }
+        ]
+      },
+      {
+        "instance": "Loop.b",
+        "mac": "02:00:00:00:00:04",
+        "multicast": [
+          {
+            "vid": 10,
+            "dst_mac": "01:00:5e:00:00:01"
+          }
+        ]
+      },
+      {
+        "instance": "Loop.x",
+        "mac": "02:00:00:00:00:05",
+        "multicast": []
+      }
+    ],
+    "switches": [
+      {
+        "instance": "Loop.s",
+        "forward_delay_ps": "2000",
+        "fdb": [],
+        "multicast": [],
+        "unknown_multicast": "flood"
+      }
+    ],
+    "ports": [
+      {
+        "port": "Loop.g1.eth.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.g2.eth.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.a.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.b.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.x.tx",
+        "pvid": 20,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 20,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_g1",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_g2",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_a",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_b",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_x",
+        "pvid": 20,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 20,
+            "tagged": true
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "port": "Loop.g1.eth.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.g2.eth.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.a.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.b.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.x.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_g1",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_g2",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_a",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_b",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Loop.s.tx_x",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      }
+    ]
+  },
+  "gateways": [
+    {
+      "instance": "Loop.g1",
+      "can_ports": [
+        "Loop.g1.a",
+        "Loop.g1.b"
+      ],
+      "ethernet_endpoint": "Loop.g1.eth",
+      "rx_capacity": 2,
+      "conversion_delay_ps": "0",
+      "max_hops": 8,
+      "rules": [
+        {
+          "id": "a_to_eth",
+          "direction": "can_to_ethernet",
+          "ingress": "Loop.g1.a",
+          "match": {
+            "format": "standard",
+            "can_id": 0
+          },
+          "egresses": [
+            {
+              "port": "Loop.g1.eth.tx",
+              "dst_mac": "ff:ff:ff:ff:ff:ff",
+              "vid": 10,
+              "pcp": 3
+            }
+          ]
+        },
+        {
+          "id": "b_to_eth",
+          "direction": "can_to_ethernet",
+          "ingress": "Loop.g1.b",
+          "match": {
+            "format": "standard",
+            "can_id": 0
+          },
+          "egresses": [
+            {
+              "port": "Loop.g1.eth.tx",
+              "dst_mac": "ff:ff:ff:ff:ff:ff",
+              "vid": 10,
+              "pcp": 3
+            }
+          ]
+        },
+        {
+          "id": "eth_to_b",
+          "direction": "ethernet_to_can",
+          "ingress": "Loop.g1.eth",
+          "match": {
+            "format": "standard",
+            "can_id": 0,
+            "vid": 10,
+            "pcp": 3
+          },
+          "egresses": [
+            {
+              "port": "Loop.g1.b.tx",
+              "format": "standard",
+              "can_id": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "instance": "Loop.g2",
+      "can_ports": [
+        "Loop.g2.can"
+      ],
+      "ethernet_endpoint": "Loop.g2.eth",
+      "rx_capacity": 2,
+      "conversion_delay_ps": "0",
+      "max_hops": 8,
+      "rules": [
+        {
+          "id": "eth_to_can",
+          "direction": "ethernet_to_can",
+          "ingress": "Loop.g2.eth",
+          "match": {
+            "format": "standard",
+            "can_id": 0,
+            "vid": 10,
+            "pcp": 3
+          },
+          "egresses": [
+            {
+              "port": "Loop.g2.can.tx",
+              "format": "standard",
+              "can_id": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

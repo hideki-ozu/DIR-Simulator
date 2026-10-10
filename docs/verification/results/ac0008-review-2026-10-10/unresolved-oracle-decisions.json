@@ -1,0 +1,84 @@
+{
+  "document_version": "1.1.1",
+  "items": [
+    {
+      "key": "metadata-owner-span",
+      "case_refs": [
+        "NED-S2-T01-R07",
+        "NED-S2-T01-R09",
+        "DIR-TEST-0061-R01",
+        "DIR-TEST-0061-R02",
+        "DIR-TEST-0061-R03"
+      ],
+      "reason": "Declaration/Parameter storage/accessors absent. Values/owner/shared-type/span oracle defined, implementation absent; Issue41",
+      "decision": "mismatch"
+    },
+    {
+      "key": "can-factory-literal",
+      "case_refs": [
+        "DIR-TEST-0062-R01",
+        "DIR-TEST-0062-R02",
+        "DIR-TEST-0068-R01"
+      ],
+      "reason": "Classical CAN uses BuiltinAdapter/legacy Engine; literal factories/recording hooks not demonstrated. Generic harness must be separated; wording approval pending",
+      "decision": "mismatch"
+    },
+    {
+      "key": "two-controller-fixture",
+      "case_refs": [
+        "DIR-TEST-0060-R01",
+        "DIR-TEST-0063",
+        "DIR-TEST-0069"
+      ],
+      "reason": "Existing competition fixture has3Controllers and6channels, while specified baseline has2 and4. Cannot substitute counts or hook outputs",
+      "decision": "not_tested"
+    },
+    {
+      "key": "diagnostic-stage-order",
+      "case_refs": [
+        "DIR-TEST-0064-R09",
+        "DIR-TEST-0068-R02",
+        "DIR-TEST-0068-R03",
+        "DIR-TEST-0068-R04"
+      ],
+      "reason": "Mixed invalid inputs need primary/stop-order stage harness. Existing unnamed is_err mutations do not bind exact reason/related/callback0",
+      "decision": "not_tested"
+    },
+    {
+      "key": "filesystem-hooks",
+      "case_refs": [
+        "DIR-TEST-0065-R09",
+        "DIR-TEST-0065-R10",
+        "DIR-TEST-0065-R12"
+      ],
+      "reason": "Acquisition-after-enumeration deletion hook, normal-user unreadability and root/config/non-NED symlinks need environment-specific harness and operation/OS evidence",
+      "decision": "not_tested"
+    },
+    {
+      "key": "snapshot-after-prepare",
+      "case_refs": [
+        "DIR-TEST-0069-R04"
+      ],
+      "reason": "Channel live settings test exists but no exact source-file replacement-after-prepare hash/adoptedbytes oracle found",
+      "decision": "not_tested"
+    },
+    {
+      "key": "public-section-mapping",
+      "case_refs": [
+        "public_tag_section in legacy matrices"
+      ],
+      "reason": "Public labels are navigation candidates; not every clause has one-to-one upstream equivalent. DIR-specific grammar/profile rules remain DIR contracts",
+      "decision": "not_tested"
+    },
+    {
+      "key": "diagnostic-alternative-reason",
+      "case_refs": [
+        "DIR-TEST-0067-R02",
+        "DIR-TEST-0067-R11"
+      ],
+      "reason": "Spec says invalid_range等/invalid_unit等. Do not invent unique reason; freeze exact oracle only with diagnosis正本 and isolated-source/test binding",
+      "decision": "not_tested"
+    }
+  ],
+  "all_conformance_claim": false
+}

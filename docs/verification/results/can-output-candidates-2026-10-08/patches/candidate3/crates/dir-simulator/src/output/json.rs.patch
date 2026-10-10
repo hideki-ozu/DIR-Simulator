@@ -1,0 +1,50 @@
+--- a/crates/dir-simulator/src/output/json.rs
++++ b/crates/dir-simulator/src/output/json.rs
+@@ -7,7 +7,6 @@
+ use crate::snapshot::Snapshot;
+ use crate::types::{Diagnostic, PreparedSimulation};
+ use serde_json::{Value, json};
+-use std::collections::BTreeMap;
+ 
+ pub(super) fn opt_d(n: Option<u64>) -> Value {
+     n.map(|n| Value::String(n.to_string()))
+@@ -65,9 +64,8 @@
+                 result.push(']');
+             }
+             Value::Object(o) => {
+-                let sorted: BTreeMap<_, _> = o.iter().collect();
+                 result.push('{');
+-                for (i, (key, value)) in sorted.into_iter().enumerate() {
++                for (i, (key, value)) in o.iter().enumerate() {
+                     if i != 0 {
+                         result.push(',');
+                     }
+@@ -137,6 +135,7 @@
+ 
+ pub(super) fn write_stream_result(
+     writer: &mut dyn std::io::Write,
++    csv_writer: &mut dyn std::io::Write,
+     prepared: &PreparedSimulation,
+     snapshot: &Snapshot,
+     run_id: &str,
+@@ -190,15 +189,15 @@
+                 .map(|row| row.map(|row| row.value)),
+         )?;
+     }
++    super::csv::write_stream_header(csv_writer)?;
+     write_bytes(writer, b",\"records\":")?;
+     write_array_fallible(
+         writer,
+         stream.records.iter()?.enumerate().map(|(i, row)| {
+-            row.map(|row| {
+-                let mut value = row.value;
+-                value["seq"] = json!(i.to_string());
+-                value
+-            })
++            let mut value = row?.value;
++            value["seq"] = json!(i.to_string());
++            super::csv::write_stream_row(csv_writer, &value, run_id, version)?;
++            Ok(value)
+         }),
+     )?;
+     if version == 1 {

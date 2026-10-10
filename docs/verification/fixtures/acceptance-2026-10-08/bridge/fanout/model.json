@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "can": {},
+  "ethernet": {
+    "schema_version": 3,
+    "endpoints": [
+      {
+        "instance": "Fanout.gw.eth",
+        "mac": "02:00:00:00:00:01",
+        "multicast": []
+      },
+      {
+        "instance": "Fanout.sink",
+        "mac": "02:00:00:00:00:02",
+        "multicast": []
+      }
+    ],
+    "switches": [],
+    "ports": [
+      {
+        "port": "Fanout.gw.eth.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      },
+      {
+        "port": "Fanout.sink.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": true
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "port": "Fanout.gw.eth.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "Fanout.sink.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      }
+    ]
+  },
+  "gateways": [
+    {
+      "instance": "Fanout.gw",
+      "can_ports": [
+        "Fanout.gw.can_a",
+        "Fanout.gw.can_b"
+      ],
+      "ethernet_endpoint": "Fanout.gw.eth",
+      "rx_capacity": 2,
+      "conversion_delay_ps": "3000000",
+      "max_hops": 8,
+      "rules": [
+        {
+          "id": "to_can",
+          "direction": "ethernet_to_can",
+          "ingress": "Fanout.gw.eth",
+          "match": {
+            "vid": 10,
+            "pcp": 3,
+            "format": "standard",
+            "can_id": 0
+          },
+          "egresses": [
+            {
+              "port": "Fanout.gw.can_a.tx",
+              "format": "standard",
+              "can_id": 0
+            },
+            {
+              "port": "Fanout.gw.can_b.tx",
+              "format": "standard",
+              "can_id": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

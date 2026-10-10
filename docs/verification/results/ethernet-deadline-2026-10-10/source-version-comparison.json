@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "static_source_comparison_only",
+  "baseline_release": "v1.1.3",
+  "baseline_commit": "dd6199503913db24729f04bcca7e9e4f856fd71c",
+  "requested_measurement_release": "v1.1.4",
+  "requested_measurement_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+  "files": [
+    {
+      "path": "examples/ethernet/qos-priority.ini",
+      "v1_1_3_git_blob": "f0c32045a21cc0a67b6c637c7aa431197e10fa7e",
+      "v1_1_4_git_blob": "f0c32045a21cc0a67b6c637c7aa431197e10fa7e",
+      "byte_identical": true
+    },
+    {
+      "path": "examples/ethernet/qos-priority.json",
+      "v1_1_3_git_blob": "c438841b227d5d8a3e3abc60b147f2cc1efca66a",
+      "v1_1_4_git_blob": "c438841b227d5d8a3e3abc60b147f2cc1efca66a",
+      "byte_identical": true
+    },
+    {
+      "path": "examples/ethernet/model-qos.json",
+      "v1_1_3_git_blob": "84a03b71bad7da63e2c75c39492312bf7f4aa9b7",
+      "v1_1_4_git_blob": "84a03b71bad7da63e2c75c39492312bf7f4aa9b7",
+      "byte_identical": true
+    },
+    {
+      "path": "examples/ethernet/models/ethdemo/Main.ned",
+      "v1_1_3_git_blob": "b1425dd9c1f690b44e79c41d3825df8422d06e97",
+      "v1_1_4_git_blob": "b1425dd9c1f690b44e79c41d3825df8422d06e97",
+      "byte_identical": true
+    },
+    {
+      "path": "crates/dir-simulator/src/output/ethernet/flow.rs",
+      "v1_1_3_git_blob": "f6f17fd50f4c6a75cab82ffb97dfcfd8553284c1",
+      "v1_1_4_git_blob": "2ec732ae4ad52ad48e171ee1bfc5da8581f12e1c",
+      "byte_identical": false
+    }
+  ],
+  "flow_difference": "Point collection uses iter_points and indexed delivery/event_effects; deadline predicate and aggregation are unchanged in this one-file diff. No whole-runtime equivalence or measured v1.1.3 claimed.",
+  "binary_sha256": "pending actual execution.json and metadata",
+  "CLI_measurement": "not_received",
+  "whole_source_build_hash": "pending",
+  "patch": "flow-version-difference.patch"
+}

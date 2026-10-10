@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "document_version": "1.1.0",
+  "document_history": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-10",
+      "change": "Add four concrete regressions and bind existing named lifecycle/effect CI evidence separately"
+    }
+  ],
+  "baseline_release": "v1.1.4",
+  "baseline_commit": "b45515644dfc65c205216d564d5bf7ef00280622",
+  "documentation_dependency": {
+    "pr": 46,
+    "head": "31193599cdeb8eeb8b68820fb63bbf0fe358e205"
+  },
+  "product_executed_in_local_executor": false,
+  "local_rust_status": "not_run",
+  "local_blocker": "cargo unavailable; known WSL access denial not retried",
+  "prior_CI": {
+    "run": 38032483390,
+    "job": 114156143216,
+    "source_commit": "473d87ce67cf3a433a0ffd563bb12b692d968131",
+    "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38032483390/job/114156143216",
+    "source_blob_comparison": {
+      "baseline": "b45515644dfc65c205216d564d5bf7ef00280622",
+      "inputs": 932,
+      "differences": 0
+    },
+    "named_lines": [
+      "2026-10-10T07:01:12.6877334Z test callback_failure_discards_every_effect_and_preserves_pending_current ... ok",
+      "2026-10-10T07:01:12.7419225Z test acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix ... ok",
+      "2026-10-10T07:01:12.7576859Z test custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically ... ok",
+      "2026-10-10T07:01:19.9866527Z test custom_run_publishes_registered_records_and_metrics ... ok",
+      "2026-10-10T07:01:20.0002032Z test initialization_error_discards_effects_and_finishes_successful_initializations ... ok",
+      "2026-10-10T07:01:20.0389754Z test registered_builtin_adapter_preserves_builtin_result ... ok"
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "CAN-VALIDATE-DIRECT",
+      "tests": [
+        "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config"
+      ],
+      "assertions": [
+        "valid configuration exits0",
+        "missing configuration exits nonzero and emits diagnostic",
+        "fresh working directory has zero entries after both calls"
+      ],
+      "status": "passed_limited_CI",
+      "limits": [
+        "No-output assertion is not a runtime/factory counter; source main validate branch calls prepare and returns without run"
+      ],
+      "execution_source": "831ef221200670c79d5bfa8ccc9d1f7d7efdbbca"
+    },
+    {
+      "case_id": "CAN-EXPLICIT-RUN-CONFIG",
+      "tests": [
+        "classical_can_explicit_run_config_preserves_plain_projection",
+        "explicit_run_config_selects_custom_registry_instead_of_default"
+      ],
+      "assertions": [
+        "Classical CAN explicit default Registry exact simulation projection equals plain, metadata excluded",
+        "Default Registry rejects custom profile with prep_failed/exit2/committed0",
+        "Custom Registry finishes with exit0 and one model record byte7"
+      ],
+      "status": "passed_limited_CI",
+      "limits": [
+        "Two concrete profiles only; not every Registry/profile combination"
+      ],
+      "execution_source": "831ef221200670c79d5bfa8ccc9d1f7d7efdbbca"
+    },
+    {
+      "case_id": "GENERIC-PREPARE",
+      "tests": [
+        "generic_prepare_defers_model_factories_until_runtime"
+      ],
+      "assertions": [
+        "successful generic prepare calls execution model factories0",
+        "runtime positive control calls both model factories exactly2 and commits3",
+        "unknown-profile prepare rejects and calls model factories0 after reset"
+      ],
+      "status": "passed_limited_CI",
+      "limits": [
+        "Execution model factories only; no channel-factory counter or arbitrary extension guarantee"
+      ],
+      "execution_source": "831ef221200670c79d5bfa8ccc9d1f7d7efdbbca"
+    },
+    {
+      "case_id": "GENERIC-FACTORY-LIFECYCLE",
+      "tests": [
+        "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix",
+        "initialization_error_discards_effects_and_finishes_successful_initializations"
+      ],
+      "status": "passed_limited_CI",
+      "assertions": [
+        "allocation/initialize/callback/finish failure modes and CALLS order, reverse cleanup and frozen prefix in existing fixture",
+        "initialize rejection commits0 and finishes only the previously successful model"
+      ],
+      "limits": [
+        "Existing named CI at stated source, not new local execution"
+      ],
+      "execution_source": "831ef221200670c79d5bfa8ccc9d1f7d7efdbbca"
+    },
+    {
+      "case_id": "GENERIC-CALLBACK-EFFECTS",
+      "tests": [
+        "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically",
+        "callback_failure_discards_every_effect_and_preserves_pending_current"
+      ],
+      "status": "passed_limited_CI",
+      "assertions": [
+        "delivery times2/5ps, committed3, repeated simulation deterministic, record byte7",
+        "failure partial/committed2/pending1/points1 and no model records"
+      ],
+      "limits": [
+        "Concrete public custom Registry fixture only"
+      ],
+      "execution_source": "831ef221200670c79d5bfa8ccc9d1f7d7efdbbca"
+    }
+  ],
+  "spec_regression_scope": [
+    {
+      "acceptance": "DIR-TEST-0085",
+      "conditions": "Explicit CAN/default/custom selection, prepare/factory boundary, CLI positive/negative",
+      "limits": "No universal API or full-AC0008 acceptance"
+    },
+    {
+      "acceptance": "DIR-TEST-0081",
+      "conditions": "Existing lifecycle failure positive/negative assertions bound to named CI",
+      "limits": "Only existing custom fixture"
+    },
+    {
+      "acceptance": "DIR-TEST-0080",
+      "conditions": "Existing callback committed prefix and effect rollback",
+      "limits": "No blanket conformance inferred from traceability rows"
+    }
+  ],
+  "historical_matrix_and_verification_json_unchanged": true,
+  "remaining": [
+    "Channel factory input/order counter beyond execution-model fixture",
+    "CLI validate runtime absence not directly instrumented",
+    "Full specification acceptance is not inferred from zero structural traceability errors",
+    "License origin/adoption/author decisions remain separate"
+  ],
+  "normal_VSCode": "python scripts/verification/run_extension_acceptance.py --output /absolute/new/extension-output",
+  "document_id": "extension-acceptance-followup",
+  "CI_execution": {
+    "source_commit": "831ef221200670c79d5bfa8ccc9d1f7d7efdbbca",
+    "environment": "GitHub Actions ubuntu-24.04; Rust/Cargo1.85.0; x86_64-unknown-linux-gnu",
+    "run": 38049639642,
+    "job": 114205999006,
+    "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38049639642/job/114205999006",
+    "fmt": "passed",
+    "workspace_test_groups": 32,
+    "workspace_tests_passed": 606,
+    "failed": 0,
+    "clippy": "passed",
+    "named_lines": [
+      "2026-10-10T11:48:44.2225225Z test classical_can_explicit_run_config_preserves_plain_projection ... ok",
+      "2026-10-10T11:48:40.7380522Z test classical_can_cli_validate_accepts_fixture_and_rejects_missing_config ... ok",
+      "2026-10-10T11:52:33.1428851Z test generic_prepare_defers_model_factories_until_runtime ... ok",
+      "2026-10-10T11:52:33.1490129Z test explicit_run_config_selects_custom_registry_instead_of_default ... ok",
+      "2026-10-10T11:52:29.6640372Z test acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix ... ok",
+      "2026-10-10T11:52:33.1491126Z test initialization_error_discards_effects_and_finishes_successful_initializations ... ok",
+      "2026-10-10T11:52:29.6840632Z test custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically ... ok",
+      "2026-10-10T11:52:29.6321473Z test callback_failure_discards_every_effect_and_preserves_pending_current ... ok"
+    ],
+    "log": "ci-rust-831ef221.log",
+    "log_bytes": 108069,
+    "log_sha256": "bdb54625e597f4ec10f0af01ba3e927fd3c44d169e80ed3186055eac83ed5fee",
+    "test_blobs": [
+      {
+        "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+        "type": "blob",
+        "mode": "100644",
+        "sha": "1a6d5b22eba0c4601b99c95dfa383f20547daa94"
+      },
+      {
+        "path": "crates/dir-simulator/tests/registry.rs",
+        "sha": "b28c4443b22259bfa78af7d17a0217b12270d7c7"
+      }
+    ],
+    "workflow_blob": "3edb225a05cbaa49404d1d7bd40f7d2d01e7a193"
+  },
+  "normal_VSCode_local_execution": "local-execution-not-run.json",
+  "normal_VSCode_runner_guards": "Exact named test and one executed test required; rejects zero executions, wrong names and failures; local Python guard checks passed",
+  "generated_reports": "No Markdown metadata changed after PR46; generate_traceability.py --check passed on PR46-equivalent metadata"
+}

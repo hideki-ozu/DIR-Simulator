@@ -1,0 +1,292 @@
+--- a/crates/dir-simulator/src/output/disk_sort.rs
++++ b/crates/dir-simulator/src/output/disk_sort.rs
+@@ -223,6 +223,12 @@
+     pub fn iter(&self) -> Result<Rows, Diagnostic> {
+         Ok(Rows(self.path.as_ref().map(RunReader::open).transpose()?))
+     }
++    #[cfg(test)]
++    pub fn is_direct_ordered(&self) -> bool {
++        self.path
++            .as_ref()
++            .is_some_and(|path| path.file_name().is_some_and(|name| name == "rows"))
++    }
+ }
+ impl Drop for Sorted {
+     fn drop(&mut self) {
+@@ -236,6 +242,156 @@
+         self.0
+             .as_mut()
+             .and_then(|reader| reader.next_row().transpose())
++    }
++}
++
++/// Records are normally generated in wire order. Keep the complete original
++/// stream until order has been checked, so a late violation can be replayed
++/// into the stable external sorter without rerunning aggregation.
++pub(super) struct OrderedWriter {
++    directory: PathBuf,
++    path: PathBuf,
++    writer: Option<BufWriter<File>>,
++    previous: Option<Vec<String>>,
++    disordered: bool,
++    next: u64,
++}
++impl OrderedWriter {
++    pub fn new_in(base: &Path) -> Result<Self, Diagnostic> {
++        for _ in 0..32 {
++            let directory = base.join(format!(
++                ".dir-result-ordered-{}-{}",
++                std::process::id(),
++                NEXT.fetch_add(1, AtomicOrdering::Relaxed)
++            ));
++            match fs::create_dir(&directory) {
++                Ok(()) => {
++                    let path = directory.join("rows");
++                    let file = OpenOptions::new()
++                        .create_new(true)
++                        .write(true)
++                        .open(&path)
++                        .map_err(|e| error("create", e));
++                    return match file {
++                        Ok(file) => Ok(Self {
++                            directory,
++                            path,
++                            writer: Some(BufWriter::with_capacity(1024 * 1024, file)),
++                            previous: None,
++                            disordered: false,
++                            next: 0,
++                        }),
++                        Err(e) => {
++                            let _ = fs::remove_dir_all(&directory);
++                            Err(e)
++                        }
++                    };
++                }
++                Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => continue,
++                Err(e) => return Err(error("create", e)),
++            }
++        }
++        Err(error("create", "temporary names exhausted"))
++    }
++    pub fn push(&mut self, key: Vec<String>, value: Value) -> Result<(), Diagnostic> {
++        let tie = self.next;
++        let next = tie
++            .checked_add(1)
++            .ok_or_else(|| error("count", "overflow"))?;
++        let row = Row { key, tie, value };
++        Sorter::write_row(
++            self.writer.as_mut().expect("unfinished ordered writer"),
++            &row,
++        )?;
++        if self
++            .previous
++            .as_ref()
++            .is_some_and(|previous| previous > &row.key)
++        {
++            self.disordered = true;
++        }
++        self.previous = Some(row.key);
++        self.next = next;
++        Ok(())
++    }
++    pub fn finish(mut self) -> Result<Sorted, Diagnostic> {
++        self.writer
++            .as_mut()
++            .unwrap()
++            .flush()
++            .map_err(|e| error("flush", e))?;
++        self.writer.take();
++        if self.disordered {
++            let mut sorter = Sorter::new_in(self.directory.parent().unwrap())?;
++            let mut reader = RunReader::open(&self.path)?;
++            while let Some(row) = reader.next_row()? {
++                sorter.push(row.key, row.value)?;
++            }
++            return sorter.finish();
++        }
++        let directory = std::mem::take(&mut self.directory);
++        let path = std::mem::take(&mut self.path);
++        Ok(Sorted {
++            directory,
++            path: Some(path),
++        })
++    }
++}
++impl Drop for OrderedWriter {
++    fn drop(&mut self) {
++        if !self.directory.as_os_str().is_empty() {
++            let _ = fs::remove_dir_all(&self.directory);
++        }
++    }
++}
++
++/// Stable merge of the original point stream followed by the window stream.
++pub(super) struct MergedRecords {
++    pub points: Sorted,
++    pub windows: Sorted,
++}
++impl MergedRecords {
++    pub fn iter(&self) -> Result<MergedRows, Diagnostic> {
++        let mut points = self.points.iter()?;
++        let mut windows = self.windows.iter()?;
++        let point = points.next().transpose()?;
++        let window = windows.next().transpose()?;
++        Ok(MergedRows {
++            points,
++            windows,
++            point,
++            window,
++        })
++    }
++}
++pub(super) struct MergedRows {
++    points: Rows,
++    windows: Rows,
++    point: Option<Row>,
++    window: Option<Row>,
++}
++impl Iterator for MergedRows {
++    type Item = Result<Row, Diagnostic>;
++    fn next(&mut self) -> Option<Self::Item> {
++        let choose_point = match (&self.point, &self.window) {
++            (Some(point), Some(window)) => point.key <= window.key,
++            (Some(_), None) => true,
++            (None, Some(_)) => false,
++            (None, None) => return None,
++        };
++        let (head, stream) = if choose_point {
++            (&mut self.point, &mut self.points)
++        } else {
++            (&mut self.window, &mut self.windows)
++        };
++        let row = head.take().expect("selected merge head");
++        match stream.next().transpose() {
++            Ok(next) => {
++                *head = next;
++                Some(Ok(row))
++            }
++            Err(error) => Some(Err(error)),
++        }
+     }
+ }
+ struct RunReader {
+@@ -324,4 +480,118 @@
+         assert!(!path.exists());
+         fs::remove_dir(&base).unwrap();
+     }
+-}
++    #[test]
++    fn ordered_records_take_direct_path_and_merge_point_ties_first() {
++        let base = std::env::temp_dir().join(format!(
++            "dir-ordered-test-{}-{}",
++            std::process::id(),
++            NEXT.fetch_add(1, AtomicOrdering::Relaxed)
++        ));
++        fs::create_dir(&base).unwrap();
++        let mut points = OrderedWriter::new_in(&base).unwrap();
++        points
++            .push(vec!["a".into()], serde_json::json!("point-a"))
++            .unwrap();
++        points
++            .push(vec!["b".into()], serde_json::json!("point-b1"))
++            .unwrap();
++        points
++            .push(vec!["b".into()], serde_json::json!("point-b2"))
++            .unwrap();
++        let mut windows = OrderedWriter::new_in(&base).unwrap();
++        windows
++            .push(vec!["b".into()], serde_json::json!("window-b"))
++            .unwrap();
++        windows
++            .push(vec!["c".into()], serde_json::json!("window-c"))
++            .unwrap();
++        assert!(!points.disordered && !windows.disordered);
++        let records = MergedRecords {
++            points: points.finish().unwrap(),
++            windows: windows.finish().unwrap(),
++        };
++        assert_eq!(
++            records.points.path.as_ref().unwrap().file_name().unwrap(),
++            "rows"
++        );
++        let values: Vec<_> = records
++            .iter()
++            .unwrap()
++            .map(|row| row.unwrap().value)
++            .collect();
++        assert_eq!(
++            values,
++            vec![
++                serde_json::json!("point-a"),
++                serde_json::json!("point-b1"),
++                serde_json::json!("point-b2"),
++                serde_json::json!("window-b"),
++                serde_json::json!("window-c"),
++            ]
++        );
++        drop(records);
++        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
++        fs::remove_dir(&base).unwrap();
++    }
++    #[test]
++    fn late_violation_replays_entire_prefix_with_stable_duplicates() {
++        let base = std::env::temp_dir().join(format!(
++            "dir-ordered-test-{}-{}",
++            std::process::id(),
++            NEXT.fetch_add(1, AtomicOrdering::Relaxed)
++        ));
++        fs::create_dir(&base).unwrap();
++        let mut writer = OrderedWriter::new_in(&base).unwrap();
++        for i in 0..200 {
++            writer
++                .push(vec![format!("{:03}", i / 2)], serde_json::json!(i))
++                .unwrap();
++        }
++        let raw_path = writer.path.clone();
++        writer
++            .push(vec!["000".into()], serde_json::json!(200))
++            .unwrap();
++        writer
++            .push(vec!["050".into()], serde_json::json!(201))
++            .unwrap();
++        assert!(writer.disordered);
++        let sorted = writer.finish().unwrap();
++        assert!(!raw_path.exists());
++        let values: Vec<_> = sorted
++            .iter()
++            .unwrap()
++            .map(|row| row.unwrap().value.as_u64().unwrap())
++            .collect();
++        let mut expected: Vec<_> = (0..202u64).collect();
++        expected.sort_by_key(|i| {
++            if *i == 200 {
++                0
++            } else if *i == 201 {
++                50
++            } else {
++                i / 2
++            }
++        });
++        assert_eq!(values, expected);
++        drop(sorted);
++        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
++        fs::remove_dir(&base).unwrap();
++    }
++    #[test]
++    fn corrupt_fallback_input_cleans_both_owned_directories() {
++        let base = std::env::temp_dir().join(format!(
++            "dir-ordered-test-{}-{}",
++            std::process::id(),
++            NEXT.fetch_add(1, AtomicOrdering::Relaxed)
++        ));
++        fs::create_dir(&base).unwrap();
++        let mut writer = OrderedWriter::new_in(&base).unwrap();
++        writer.push(vec!["b".into()], serde_json::json!(1)).unwrap();
++        writer.push(vec!["a".into()], serde_json::json!(2)).unwrap();
++        writer.writer.as_mut().unwrap().flush().unwrap();
++        fs::write(&writer.path, b"{broken\n").unwrap();
++        assert!(writer.finish().is_err());
++        assert_eq!(fs::read_dir(&base).unwrap().count(), 0);
++        fs::remove_dir(&base).unwrap();
++    }
++}

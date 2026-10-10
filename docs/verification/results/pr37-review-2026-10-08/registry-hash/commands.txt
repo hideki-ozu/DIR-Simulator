@@ -1,0 +1,33 @@
+cwd: /tmp/dir-v1.1.4-preparation-2026-10-08/worktree
+CARGO_TARGET_DIR=/tmp/dir-v1.1.4-preparation-2026-10-08/target
+cargo: /home/hideki/.cargo/bin/cargo
+
+Before production fixes:
+cargo test --locked --test registry custom_ -- --nocapture
+exit: 101; log: before-registry.log; 6 pass, 3 fail (all 3 custom composed profile names)
+cargo test --locked --test provenance composed_ -- --nocapture
+exit: 101; log: before-hash.log; 0 pass, 3 fail (dynamic age, TAS base time, CAN bridge matching ID)
+Input sha256 changed and one retained config source existed in all 3 cases before the failing config_sha256 assertion.
+
+After production fixes:
+cargo test --locked --test registry --test provenance
+exit: 0; log: after.log; 29 registry and 7 provenance pass
+
+Final focused validation including controls and full-width TSN parameters:
+cargo test --locked --test registry --test provenance --test network_extensions
+exit: 0; log: after-final.log; 29 registry, 10 provenance, 11 network_extensions pass
+
+Formatting: rustfmt --edition 2024 applied only to owned paths.
+git diff --check
+exit: 0
+
+No commits, pushes, docs edits, run.rs changes, or original workspace modifications.
+
+Final review correction: preserve generic registered models/channels as additive composed snapshot.
+Before correction: cargo test --locked --test provenance composed_registered_ -- --nocapture
+exit: 101; log: before-additive.log; 2 failures: coordinator typed parameters and execution-consumed coordinator subject did not affect config_sha256 despite unchanged input_sha256.
+After correction: cargo test --locked --test provenance --test registry
+exit: 0; log: after-additive.log; 12 provenance + 29 registry pass.
+Final added existing channel parameter 3->4 assertion: cargo test --locked --test provenance composed_registered_ -- --nocapture
+exit: 0; log: after-additive-final.log; 2 pass.
+Formatting and git diff --check passed; production source and tests frozen.
