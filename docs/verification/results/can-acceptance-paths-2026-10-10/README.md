@@ -1,6 +1,6 @@
 # CANのAPI別受入条件と保存証拠
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`codex/ac0008-attributes-evidence-2026-10-10 @ f86268956e876ed1f528a45ce6cb21219d6451a5`  
 文書ID：`can-acceptance-paths`  
 状態：受入構成の変更を承認済み。個別確認と未試験を分け、AC0008全体は未充足。
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-10` | 第2push。0080の残存genericライフサイクル条件と、連続する0081のfixture指定を整理。残存検索・回帰検査を追加 |
 | `1.1.0` | `2026-10-10` | 初回push。06:09 UTCの利用者承認に従い、組み込みCANと汎用拡張を分けた受入条件・API別source/実測対応を保存 |
 
 ## 承認内容と責務
@@ -49,5 +50,7 @@
 依存順は #40 → #42 → #43 → 本文書PR。#43のbranchを編集せず、head f862689から独立branchで文書のみ更新する。main/worktree/製品source/保存実測は変更しない。既存CIのbase main限定条件のためstacked PRは対象外。CI0件を合格とは扱わない。
 
 ## 文書検証
+
+第2pushでは0080のライフサイクルをCAN Engineの初期状態構築へ修正し、0081のfactory/initialize/callback/finish失敗注入はcustom Registry fixture、出力/I/O失敗は0080入力を使用可能と明示した。受入責務を削除せず、適用経路を区別する。5つの変更した正本文書で同種のfactory/CAN/全初期化条件を検索し、残るgeneric条件は明示custom経路として保持する。過去の実施記録は変更しない。
 
 `python scripts/verification/can_acceptance_matrix.py --check`で保存証拠bindingと生成鮮度を検査する。`python scripts/verification/test_can_acceptance_matrix.py`は未試験状態・同値性とfactory証拠の分離・source/log結合を検査する。strict traceabilityと生成一覧、適用Python回帰、変更文書のリンク/anchorを別途検証する。これらは新たな製品実行ではない。

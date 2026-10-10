@@ -20,4 +20,10 @@ class AcceptanceBindings(unittest.TestCase):
         for c in r:
             if c['case_id'].startswith('GENERIC-REJECTION'):
                 self.assertEqual(c['execution']['positive_callback_count'],1);self.assertEqual(c['execution']['callback_count'],0)
+    def test_builtin_workflow_does_not_inherit_generic_lifecycle(self):
+        text=(m.ROOT/'docs/verification/cases/利用フロー・品質検証仕様書.md').read_text(encoding='utf-8')
+        section=text.split('<a id="dir-test-0080"></a>',1)[1].split('<a id="dir-test-0081"></a>',1)[0]
+        self.assertNotIn('runは全factory/initialize成功後',section)
+        self.assertIn('CAN Engineの初期状態',section)
+        self.assertIn('custom Registryと実記録hookを持つ独立fixture',text)
 if __name__=='__main__': unittest.main()
