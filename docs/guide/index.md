@@ -1,6 +1,6 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.5`  
+文書バージョン：`1.1.6`  
 対象GitHubバージョン：CAN記事は`v1.1.3`、Ethernet期限記事は`v1.1.4`  
 文書ID：`guide-index`  
 文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
@@ -9,6 +9,8 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.6` | `2026-10-10` | PR #36第2push。最新mainのEthernet入口を保持し、Classical CAN/FDの独立ZIPとFD profile・制約を明記。両分岐の1.1.5履歴を保持 |
+| `1.1.5` | `2026-10-07` | Classical CANとCAN FDの実習profile・配布入力を区別し、ガイド全体の対象範囲説明を修正（PR #36の分岐履歴） |
 | `1.1.5` | `2026-10-10` | Ethernet期限の実測比較を追加し、CAN記事の基準版と実測版を区別 |
 | `1.1.4` | `2026-10-07` | CAN FDのデータ速度比較と独立配布入力を追加 |
 | `1.1.3` | `2026-10-06` | 公開済みmainを統合し、受信フィルタと受信処理遅延の両ガイド・配布入力への入口を維持 |
@@ -21,7 +23,7 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信を実行し、
 
 ## ここから始める
 
-[実習入力ZIP](downloads/can-guide-inputs.zip)の導入手順は「初めてのCAN実行」に記載しています。
+[Classical CAN実習入力ZIP](downloads/can-guide-inputs.zip)の導入手順は「初めてのCAN実行」に記載しています。CAN FDは別の[FD実習入力ZIP](downloads/canfd-guide-inputs.zip)を使い、「CAN FDのデータ速度比較」の手順で実行します。
 
 | 読みたいこと | 完成しているページ | 得られること |
 | --- | --- | --- |
@@ -38,6 +40,6 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信を実行し、
 
 ## 現在使える範囲
 
-Classical CANの実習は`can.cc.ideal.v1`、CAN FDは当該記事のprofileを使います。Ethernet配送期限の実習は`ethernet.l2.qos.v1`です。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、外部計算位相bit数を使うCAN FD、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。READMEの古い「予定」表記だけでは実装有無を判定しません。[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)と対象タグの実装を基準にします。
+入門・Viewer・調停・受信フィルタ・受信処理遅延の実習はClassical CANの`can.cc.ideal.v1`です。「CAN FDのデータ速度比較」は、外部から与える位相bit数を使う`can.fd.precomputed.v1`の実習です。Ethernet配送期限の実習は`ethernet.l2.qos.v1`です。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、外部計算位相bit数を使うCAN FD、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。READMEの古い「予定」表記だけでは実装有無を判定しません。[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)と対象タグの実装を基準にします。
 
-規格全体への適合や100万要求の性能受入は、この実習が証明する範囲に含みません。CAN FDは任意フレームの完全wire codecではありません。
+規格全体への適合や100万要求の性能受入は、この実習が証明する範囲に含みません。CAN FDは外部算定位相bit数を用いる`structural-only`の時間評価で、任意フレームの完全wire codecや完全ISO波形適合を保証しません。
