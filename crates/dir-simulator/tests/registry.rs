@@ -1483,13 +1483,12 @@ fn generic_prepare_defers_model_factories_until_runtime() {
 #[test]
 fn explicit_run_config_selects_custom_registry_instead_of_default() {
     let f = Fixture::new();
-    let default =
-        dir_simulator::run_config_with_registry(
-            &f.config(),
-            &f.0.join("default-results"),
-            Registry::default(),
-        )
-        .unwrap();
+    let default = dir_simulator::run_config_with_registry(
+        &f.config(),
+        &f.0.join("default-results"),
+        Registry::default(),
+    )
+    .unwrap();
     assert_eq!(default.exit_code, 2);
     assert_eq!(default.termination, "prep_failed");
     assert_eq!(default.committed_events, "0");
@@ -1500,7 +1499,10 @@ fn explicit_run_config_selects_custom_registry_instead_of_default() {
     let result: serde_json::Value =
         serde_json::from_slice(&std::fs::read(output.join("results.json")).unwrap()).unwrap();
     assert_eq!(
-        result["simulation"]["model_records"].as_array().unwrap().len(),
+        result["simulation"]["model_records"]
+            .as_array()
+            .unwrap()
+            .len(),
         1
     );
     assert_eq!(result["simulation"]["model_records"][0]["data"]["byte"], 7);
