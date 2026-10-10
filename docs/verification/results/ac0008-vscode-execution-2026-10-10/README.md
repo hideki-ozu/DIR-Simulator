@@ -1,6 +1,6 @@
 # AC0008 引渡し実行・属性修正の公開証拠
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 文書ID：`ac0008-vscode-execution-public`
 状態：Draft PR向けの限定修正と検証記録。AC0008は未充足。
 
@@ -8,7 +8,10 @@
 
 | 文書版 | 日付 | 内容 |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-10 | Issue #44の最新実測への入口を追加。旧ログを保持し、旧source検証を保存commitへ固定 |
 | 1.1.0 | 2026-10-10 | WSLでの限定修正・実測結果を、個人情報を除外した公開証拠として初回保存 |
+
+このpacketは`ddfa7bd`の過去実測を保持する。[Issue #44の修正後実測](../ac0008-issue44-2026-10-10/README.md)を最新の診断reason確認に用いる。以下の不一致・未実施状態は旧sourceで観測した当時の状態である。
 
 ## 修正と依存関係
 
@@ -25,7 +28,7 @@
 | 属性保存の最初の修正 | `ffe9c5ea75c93e6fe9ed7710c4f601b7ec0f7306` |
 | 最終修正／実際にcompile・testしたsourceとtest | `ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401` |
 
-公開記録のcommitは上記ddfa7bdを祖先として保持する。公開時に製品試験を再実行したとはしない。[source-inventory.json](results/source-inventory.json)と公開検証scriptで、公開branch上の6変更ファイルが試験時sourceと同一であることを確認する。
+初回公開記録のcommitは上記ddfa7bdを祖先として保持した。初回公開時に製品試験を再実行したとはしない。[source-inventory.json](results/source-inventory.json)と公開検証scriptで、保存commit内の6変更ファイルが当時の試験sourceと同一であることを確認する。後続sourceをこの過去結果に当てはめない。
 
 ## 実行環境と結果
 

@@ -2,6 +2,7 @@
 import hashlib
 import json
 import re
+import subprocess
 from pathlib import Path
 
 PACKET = Path(__file__).resolve().parent
@@ -43,9 +44,9 @@ def main():
     source = read("results/source-inventory.json")
     assert source["source_commit"] == TESTED and len(source["files"]) == 6
     for record in source["files"]:
-        candidate = REPOSITORY / record["path"]
-        assert candidate.resolve().is_relative_to(REPOSITORY.resolve())
-        assert candidate.stat().st_size == record["bytes"] and sha(candidate) == record["sha256"], record["path"]
+        # This packet is historical after later fixes; verify its immutable source.
+        content = subprocess.check_output(["git", "show", TESTED + ":" + record["path"]], cwd=REPOSITORY)
+        assert len(content) == record["bytes"] and hashlib.sha256(content).hexdigest() == record["sha256"], record["path"]
     gates = read("results/integrated-checks.json")
     assert gates["source_commit"] == gates["test_commit"] == TESTED and gates["status"] == "passed"
     counts = {}
