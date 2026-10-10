@@ -1,6 +1,6 @@
 # AC0008 出自・配布人口の限定追補
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`main @ b45515644dfc65c205216d564d5bf7ef00280622`  
 文書ID：`ac0008-origin-followup`  
 状態：既存証跡と固定上流URLの照合。採用承認・作者申告・全静的包含は未確定。
@@ -9,6 +9,7 @@
 
 | 文書版 | 日付 | push単位の内容 |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-10 | 第2push。六つの公開履歴・通知sourceの限定追補、利用者承認40件のMIT選択一覧を追加。旧JSON・生成器と取得時未承認記録を保持 |
 | 1.1.0 | 2026-10-10 | 初回push。保存済み集計と固定上流ソースを別取得して照合し、旧packetを保持した限定追補と再生成checkerを追加 |
 
 ## 追補の対象と証拠の境界
@@ -53,3 +54,7 @@ Amongは原典のprototype helperから比較先のconstructor内instance helper
 `python scripts/verification/ac0008_origin_followup.py`でscoped-reconciliation.jsonを再生成し、`--check`で確認する。事前取得した固定ソースをinput-8.txtからinput-13.txtとして保持した場合のみ`--upstream-cache <directory>`で本体比較を再計算できる。checkerは外部通信・原典再取得を行わない。通常のcheckは保存資料と受領記録の整合確認であり、上流ソース再取得とは区別する。
 
 **50行のadoption、40行のOR選択、作者申告は未承認のまま。** rustix CC0の以前のHTTP403は不足として保持し、再取得・別経路・迂回は行わない。完全な静的包含・全AC0008・全仕様適合の合格証明でもなく、main/Release/Siteへ公開反映する判断は行っていない。
+
+## 現在の限定追補
+
+[公開履歴・通知レビュー](public-history-notice-review.md)と[用途・ライセンス選択一覧](../../../third-party/外部部品ライセンス選択一覧.md)を追加した。利用者の2026-10-10 13:08:40 UTCの承認は固定Cargo40件のMIT経路選択に限定し、[新記録](license-selection-2026-10-10.json)へ保存する。上記の旧JSONにある取得時点の未選択／未承認は書き換えない。著者申告・全配布適合・UMD公開通知統合は別の残件である。
