@@ -38,6 +38,31 @@ fn assert_span(attribute: &Attribute, expected: (usize, usize, usize, usize, usi
     assert_eq!((span.end_line, span.end_column), (line, end_column));
 }
 
+fn assert_property_diagnostic(text: &str, property: &str, message: &str) {
+    let diagnostic = parse_ned(text, Path::new(PATH), "attributecheck").unwrap_err();
+    let start = text.rfind(property).unwrap();
+    let prefix = text[..start].trim_start_matches('\u{feff}');
+    let line = prefix.matches('\n').count() + 1;
+    let column = prefix.rsplit('\n').next().unwrap().chars().count() + 1;
+    assert_eq!(diagnostic.code, "E-0001");
+    assert_eq!(diagnostic.reason, "syntax_error");
+    assert_eq!(diagnostic.source.as_deref(), Some(PATH));
+    assert_eq!(
+        (diagnostic.line, diagnostic.column),
+        (Some(line), Some(column))
+    );
+    assert_eq!(
+        (diagnostic.end_line, diagnostic.end_column),
+        (Some(line), Some(column + property.chars().count()))
+    );
+    assert_eq!(
+        diagnostic.message,
+        format!("{PATH}:{line}:{column}: {message} (got @)")
+    );
+    assert_eq!(diagnostic.details.as_ref().unwrap()["actual"], "@");
+    assert_eq!(diagnostic.details.as_ref().unwrap()["expected"], message);
+}
+
 #[test]
 fn public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans() {
     let parsed = parse_ned(POSITIONED, Path::new(PATH), "attributecheck").unwrap();
@@ -160,20 +185,33 @@ fn duplicate_metadata_unknown_property_and_invalid_escape_are_rejected() {
                 format!("@{property}(\"one\"); @{property}(\"two\");")
             };
             let text = format!("package attributecheck; simple Endpoint {{ parameters: {body} }}");
-            let diagnostic = parse_ned(&text, Path::new(PATH), "attributecheck").unwrap_err();
-            assert_eq!(diagnostic.code, "E-0001");
-            assert_eq!(diagnostic.reason, "syntax_error");
-            assert!(
-                diagnostic
-                    .message
-                    .contains(&format!("duplicate property {property}"))
-            );
             let token = format!("@{property}(\"two\")");
-            let start = text.find(&token).unwrap();
-            assert_eq!(diagnostic.column, Some(start + 1));
-            assert_eq!(diagnostic.end_column, Some(start + token.len() + 1));
+            assert_property_diagnostic(&text, &token, &format!("duplicate property {property}"));
         }
     }
+    for (body, token, message) in [
+        (
+            r#"@class("one"); @class("two");"#,
+            r#"@class("two")"#,
+            "duplicate property class",
+        ),
+        (
+            "int count @unit(s) @unit(s);",
+            "@unit(s)",
+            "duplicate property unit",
+        ),
+    ] {
+        let text = format!("package attributecheck; simple Endpoint {{ parameters: {body} }}");
+        assert_property_diagnostic(&text, token, message);
+    }
+    let text = concat!(
+        "\u{feff}package attributecheck;\r\n",
+        "simple Endpoint {\r\n",
+        " parameters:\r\n",
+        "  bool enabled @display(\"日本語\") @unit(s) = default(true);\r\n",
+        "}\r\n",
+    );
+    assert_property_diagnostic(text, "@unit(s)", "unit on nonnumeric parameter");
     let text = "package attributecheck; simple Endpoint { parameters: @unknown(\"x\"); }";
     let diagnostic = parse_ned(text, Path::new(PATH), "attributecheck").unwrap_err();
     assert_eq!(diagnostic.code, "E-0001");

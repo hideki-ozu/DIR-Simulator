@@ -90,10 +90,22 @@ fn import_is_explicitly_rejected_with_ned_source() {
     Fixture::new().reject(
         "NED-S1-T01-R09-O001",
         "import demo.*;",
+        "import demo.".len(),
+        "*",
+        "unsupported NED token",
+        |s| s.replacen("package demo;", "package demo;\nimport demo.*;", 1),
+    );
+}
+#[test]
+fn explicit_import_name_is_rejected_with_ned_keyword_source() {
+    // Separate the import keyword rejection from the wildcard lexical error.
+    Fixture::new().reject(
+        "NED-S1-T01-R09-O001",
+        "import demo.Controller;",
         0,
         "import",
         "unsupported declaration",
-        |s| s.replacen("package demo;", "package demo;\nimport demo.*;", 1),
+        |s| s.replacen("package demo;", "package demo;\nimport demo.Controller;", 1),
     );
 }
 #[test]

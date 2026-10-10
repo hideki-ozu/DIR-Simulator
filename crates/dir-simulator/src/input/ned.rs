@@ -327,6 +327,14 @@ impl Parser<'_> {
     fn fail_previous(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
         self.fail_at(self.last_taken, message)
     }
+    fn fail_attribute(&self, attribute: &Attribute, message: impl AsRef<str>) -> Diagnostic {
+        let start = self
+            .tokens
+            .iter()
+            .position(|token| token.start == attribute.span.start_byte)
+            .expect("parsed attribute starts at a token");
+        attribute.span.apply(self.fail_at(start, message))
+    }
     fn fail_at(&self, cursor: usize, message: impl AsRef<str>) -> crate::types::Diagnostic {
         let token = &self.tokens[cursor];
         error(format!(
@@ -514,9 +522,10 @@ impl Parser<'_> {
                             })?;
                             let name = &attribute.name;
                             if declaration.attributes.contains_key(name) {
-                                return Err(attribute
-                                    .span
-                                    .apply(self.fail(format!("duplicate property {name}"))));
+                                return Err(self.fail_attribute(
+                                    &attribute,
+                                    format!("duplicate property {name}"),
+                                ));
                             }
                             if name == "class" {
                                 if declaration.compound() {
@@ -544,8 +553,9 @@ impl Parser<'_> {
                                 })?;
                                 let property = &attribute.name;
                                 if attributes.contains_key(property) {
-                                    return Err(attribute.span.apply(
-                                        self.fail(format!("duplicate property {property}")),
+                                    return Err(self.fail_attribute(
+                                        &attribute,
+                                        format!("duplicate property {property}"),
                                     ));
                                 }
                                 if property == "unit" {
@@ -554,9 +564,10 @@ impl Parser<'_> {
                                 attributes.insert(property.clone(), attribute);
                             }
                             if unit.is_some() && !matches!(scalar.as_str(), "int" | "double") {
-                                return Err(attributes["unit"]
-                                    .span
-                                    .apply(self.fail("unit on nonnumeric parameter")));
+                                return Err(self.fail_attribute(
+                                    &attributes["unit"],
+                                    "unit on nonnumeric parameter",
+                                ));
                             }
                             let mut default_span = None;
                             let default = if self.eat("=") {
