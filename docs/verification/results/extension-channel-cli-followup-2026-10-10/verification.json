@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "document_version": "1.1.0",
+  "document_history": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-10",
+      "change": "Initial bounded patch record; actual WSL/CI results pending"
+    }
+  ],
+  "parent_commit": "17b5faf1e67cfb93abf87493657e1a5f70c9c0f3",
+  "four_new_named_tests": [
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_channel_factories_receive_frozen_inputs_in_stable_order"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_invalid_channel_parameter_never_reaches_factories"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_channel_factory_failure_releases_only_constructed_prefix"
+    },
+    {
+      "kind": "--lib",
+      "target": null,
+      "named_test": "cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does"
+    }
+  ],
+  "target_WSL": {
+    "status": "not_run",
+    "record": "local-execution-not-run.json"
+  },
+  "ordinary_GitHub_Actions": {
+    "status": "pending",
+    "reason": "Branch push and exact-head normal CI planned; no target WSL equivalence"
+  },
+  "source_inputs": [
+    {
+      "path": "Cargo.toml",
+      "bytes": 130,
+      "sha256": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc"
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 9577,
+      "sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+      "bytes": 5400,
+      "sha256": "13988b13add493d8dde202521878c271ca32f2e633c71c54df6a12a669d6c8f8"
+    },
+    {
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "bytes": 65160,
+      "sha256": "76287a87a78b8f13f09676babf4e679866e6ce0c7acb87cad191023a82f8ab4c"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib.rs",
+      "bytes": 996,
+      "sha256": "b89701ad6132b7fafdcd275aa79a3291e9ecbf32ae6a3fec16d6daf2255939d8"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime.rs",
+      "bytes": 2900,
+      "sha256": "851ae0678d7d015566f6a72db5e40d4c59ffde2cb902f54ea470c87e837d6a62"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/engine.rs",
+      "bytes": 16080,
+      "sha256": "50e889dcfe0f7d32328f9828201b281ab83e4a58da19d6a2baf9fe110af228a8"
+    },
+    {
+      "path": "crates/dir-simulator/src/main.rs",
+      "bytes": 6180,
+      "sha256": "9c07a7e7e4737409e2d6140dd927d569e9a44426b467e606a7e4b5851899ed66"
+    },
+    {
+      "path": "crates/dir-simulator/src/cli_runtime_boundary_tests.rs",
+      "bytes": 2568,
+      "sha256": "03f8f511550af6e8b731057538f04614fbba1846e7f5a0187e48d829ec836018"
+    }
+  ],
+  "local_static_checks": {
+    "python_syntax": "passed",
+    "strict_traceability": "passed: 231 requirements / 274 nodes / 0 structural errors / 0 incomplete",
+    "generated_reports": "passed",
+    "runner_exact_matching": "passed: 12 cases, one lib target, exact-positive match and zero-selected rejection"
+  },
+  "scope": "Bounded helper/test-only instrumentation patch. No Rust compilation, WSL acceptance, CI success, complete channel conformance, full AC0008 or adoption approval",
+  "historical_PR47_records_modified": false
+}

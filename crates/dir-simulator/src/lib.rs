@@ -26,3 +26,7 @@ pub use run::{
 pub use runtime::can::protocol as can;
 pub use tool::viewer;
 pub use types::{Diagnostic, PreparedSimulation};
+
+#[cfg(test)]
+#[allow(dead_code)] // The included binary main is deliberately not called.
+mod cli_runtime_boundary_tests;
