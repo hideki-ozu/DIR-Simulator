@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "issue": 41,
+  "status": "not_run",
+  "production_fix": "blocked pending verifiable WSL regression and retained metadata accessors",
+  "cases": [
+    {
+      "case_id": "ATTR-001",
+      "oracle": "declaration display Unicode value",
+      "status": "not_run",
+      "required_assertions": [
+        "exact decoded value",
+        "owner kind and qualified declaration/parameter name",
+        "original path/line/column/range",
+        "public immutable accessor"
+      ],
+      "fixture": "attribute-metadata.ned"
+    },
+    {
+      "case_id": "ATTR-002",
+      "oracle": "declaration description escaped quote/backslash",
+      "status": "not_run",
+      "required_assertions": [
+        "exact decoded value",
+        "owner kind and qualified declaration/parameter name",
+        "original path/line/column/range",
+        "public immutable accessor"
+      ],
+      "fixture": "attribute-metadata.ned"
+    },
+    {
+      "case_id": "ATTR-003",
+      "oracle": "parameter display/description distinct from declaration owner",
+      "status": "not_run",
+      "required_assertions": [
+        "exact decoded value",
+        "owner kind and qualified declaration/parameter name",
+        "original path/line/column/range",
+        "public immutable accessor"
+      ],
+      "fixture": "attribute-metadata.ned"
+    },
+    {
+      "case_id": "ATTR-004",
+      "oracle": "BOM prefix and CRLF exact unicode scalar span",
+      "status": "not_run",
+      "required_assertions": [
+        "exact decoded value",
+        "owner kind and qualified declaration/parameter name",
+        "original path/line/column/range",
+        "public immutable accessor"
+      ],
+      "fixture": "attribute-metadata.ned"
+    },
+    {
+      "case_id": "ATTR-005",
+      "oracle": "same declaration type used by two instances retaining declaration owner",
+      "status": "not_run",
+      "required_assertions": [
+        "exact decoded value",
+        "owner kind and qualified declaration/parameter name",
+        "original path/line/column/range",
+        "public immutable accessor"
+      ],
+      "fixture": "attribute-metadata.ned"
+    },
+    {
+      "case_id": "ATTR-006",
+      "oracle": "@class/@unit typed values remain unchanged",
+      "status": "not_run",
+      "required_assertions": [
+        "exact decoded value",
+        "owner kind and qualified declaration/parameter name",
+        "original path/line/column/range",
+        "public immutable accessor"
+      ],
+      "fixture": "attribute-metadata.ned"
+    },
+    {
+      "case_id": "ATTR-007",
+      "oracle": "rejected unknown property retains name source span",
+      "status": "not_run",
+      "required_assertions": [
+        "exact decoded value",
+        "owner kind and qualified declaration/parameter name",
+        "original path/line/column/range",
+        "public immutable accessor"
+      ],
+      "fixture": "attribute-metadata.ned"
+    }
+  ]
+}
