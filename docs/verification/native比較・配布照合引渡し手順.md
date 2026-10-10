@@ -1,13 +1,14 @@
 # native比較・配布照合引渡し手順
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ d7cb386`
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`main @ 0b7b23d8`
 予定公開版：`v1.1.4`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-10` | 動作確認・受入範囲をWSL上のUbuntu 24.04 LTS x86_64へ統一。Ubuntu native比較・Windows native単独確認を現在の必須条件から除外し、同一環境の検証と過去証跡を維持 |
 | `1.1.1` | `2026-10-08` | 添付監査ZIPの受領・Cargo原文とPopper通知の収録・出典固定を引継ぎ済みへ更新。native比較と正式配布照合の残件を維持 |
 | `1.1.0` | `2026-10-08` | 固定commit・入力・反復・比較・証跡手順と配布残件を作成。ZIP v2の取得障害と台帳識別判定の修正・回帰検証を反映 |
 
@@ -15,15 +16,17 @@
 
 文書状態：レビュー中。これは実行手順であり、native実行の完了記録ではない。初回監査のWindows環境ではWSLのE_ACCESSDENIED、Git所有者不一致、native toolchain不足で製品実行0回。その記録を今回の添付反映で変更しない。性能wall/RSSは[品質・配布方針](../品質・配布方針.md)どおり参考計測で、必須合否へ用いない。
 
-## 1. 対象と前提
+## 1. 現行範囲と過去計画の位置づけ
 
-対象製品commitは`d7cb3861f9ac56646ac2dbacf6f324b12f7fcb1b`、Rustはrust-toolchain.tomlの1.85.0、依存は同commitのCargo.lockで固定する。native Ubuntu 24.04 x86_64とUbuntu 24.04/WSL2を別環境として記録し、同じfixture・Registry・初期条件で両方を新規実行する。歴史的WSL結果は開発中ソース・違うbinaryも含むため、同じ入力名だけで新native結果と比較しない。
+現在の動作確認・受入・公開必須検証の範囲はWSL上のUbuntu 24.04 LTS x86_64とする。Ubuntu nativeとの比較とWindows native単独確認は現在の要件に含めない。同一環境内の正しさ・再現性・整数時刻・順序・件数・成果物整合の検証は維持する。過去のnative比較計画や未実施・失敗記録は歴史証跡であり、現在の阻害条件とは区別する。
+
+以下の第2〜4節は固定製品commit `d7cb3861f9ac56646ac2dbacf6f324b12f7fcb1b` を対象にした過去のnative比較計画として保存する。2026-10-10から現行の実行指示・受入・公開必須条件の対象外とし、両環境の新規実行を要求しない。過去計画のRust1.85.0・Cargo.lock・入力固定条件と手順内容は履歴として保持する。現行の同一WSL環境内の検証は[品質・配布方針](../品質・配布方針.md)と[DIR-TEST-0083](cases/利用フロー・品質検証仕様書.md#dir-test-0083)による。第5節の配布物・ライセンス照合とAC0008残件は維持する。
 
 台帳・手順・比較スクリプトはPR #39に収録するが、製品は上記固定commitをcleanな別checkoutで構築する。手順スクリプトと証跡はcheckout外へ置く。今後別commitの製品を比較する場合は、同一完全SHAで両環境のbaselineを取り直し、スクリプトのTARGET・手順・版を一改訂として更新する。
 
 通常Codex環境でリポジトリのAGENTS.md、.agents/skills、現行規約を最初に再確認する。Git/WSL/Libraryが権限拒否を返した場合は中止して障害を記録し、safe.directory一括解除・管理者化・認証／権限変更・別経路による拒否対象の取得をしない。
 
-## 2. 同一入力と独立期待値
+## 2. 過去計画：同一入力と独立期待値（現在対象外）
 
 両環境で`docs/verification/fixtures/can/competition.ini`と`release-arrival.ini`をそれぞれ3回実行する。INIから参照するJSON、models/demo/Main.nedを含めfixture/can全ファイルのbyte数・SHA-256を保存する。binary・Cargo.lock・rustc -Vv・git commit/dirty状態も保存する。
 
@@ -34,7 +37,7 @@
 
 期待値は[DIR-TEST-0083](cases/利用フロー・品質検証仕様書.md#dir-test-0083)と[CAN解析期待値](fixtures/can/scenarios.json)による。イベント列をソートして比較しない。期待値へ照合するSOF projectionの並べ替えと、保存された全simulation/CSVの順序比較を区別する。
 
-## 3. nativeとWSLでの実行
+## 3. 過去計画：nativeとWSLでの実行（現在対象外）
 
 以下を各環境の適切なcheckoutで実行する。`AUDIT`はPR #39のsupportディレクトリからcheckout外へコピーしたスクリプトの場所、`EVIDENCE`は存在しないcheckout外の証跡ディレクトリ、`REPO`は固定commitのcheckout。各値は実際の環境で決め、他環境の絶対パスを流用しない。
 
@@ -54,7 +57,7 @@ WSL側では最後の`--environment`のみ`wsl2-ubuntu`とし、同じcommit/loc
 
 各環境で`uname -a`、`cat /etc/os-release`、`lscpu`、RAM/SSD、実行時刻とthread/同時実行数を保存する。nativeはWSL/VMでないことを運用担当者が確認し、仮想化状況を記録する。captureのenvironmentラベルだけでnativeを証明しない。参考RSSは必要なら`/usr/bin/time -v`で別記録し、採否閾値を設けない。
 
-## 4. 正規化・比較・合否
+## 4. 過去計画：正規化・比較・合否（現在対象外）
 
 native/WSLの証跡を読み取り可能な場所へ通常の方法で集める。元の結果とmanifestは編集しない。
 
@@ -86,6 +89,7 @@ requirements-guide.txtだけではMkDocsの推移版が固定されない。実�
 
 ## 6. 証跡と保存
 
-取得環境ごとに生出力6組、capture.json、binary/lock/input hash、OS/CPU/toolchain/仮想化確認、テスト・CLIログを保存し、compare結果・条件不一致／未実施／合格を分ける。採用物では監査ZIP hash・全ライセンス原本・台帳版・配布archive inventoryと確認者／日を保存する。検証記録の実測値と結論を独立ブランチ・Draft PRで通常pushし、remote内容と正確なheadのCIを確認する。文書版・履歴・生成一覧はpush単位で一改訂にまとめる。
+第2〜4節の過去計画で取得した証跡は履歴として保持する。現行のWSL環境内の検証でも生出力6組、capture.json、binary/lock/input hash、OS/CPU/toolchain/仮想化確認、テスト・CLIログを保存し、compare結果・条件不一致／未実施／合格を分ける。採用物では監査ZIP hash・全ライセンス原本・台帳版・配布archive inventoryと確認者／日を保存する。検証記録の実測値と結論を独立ブランチ・Draft PRで通常pushし、remote内容と正確なheadのCIを確認する。文書版・履歴・生成一覧はpush単位で一改訂にまとめる。
 
 タグ・Release作成、マージ、デプロイ、Issueクローズ、OMNeT++比較、削除済み成果物の復活、CodeRabbit操作、外部エージェントへの新規依頼は本手順の対象外。
+
