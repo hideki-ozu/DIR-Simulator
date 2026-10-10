@@ -10,3 +10,14 @@ Lunr 2.3.9: MkDocs changes one comment spelling (enviroments -> environments); s
 Font Awesome Free 6.5.1: CSS MIT; TTF/WOFF2 OFL-1.1. Fonts match the official npm package. SVG/JS icon CC-BY-4.0 assets are not selected by this theme.
 Japanese search sources: lunr-languages 1.12.0, commit f313734d145048be2f3681b756f9bf925aa299a1; lunr.ja.js, lunr.stemmer.support.js and tinyseg.js are retained as source.
 All bundled asset headers and original source files are retained.
+
+Snowball stemmer helper origin (fixed public references; upstream changes, not DIR changes):
+Snowball JavaScript Library v0.3; Copyright 2010, Oleg Mazko; Urim header retained.
+https://github.com/fortnightlabs/snowball-js/tree/f7cdf98e5be76f77f64ecf4cf17acc2d907f6e60
+Among helper is instance-local in lunr-languages first public support.js; SnowballProgram body comparison is scoped, not whole-file identity.
+https://github.com/MihaiValentin/lunr-languages/commit/8894a6ebc81faf6e7e713c0a8f51098ec1ab562b
+AMD/CommonJS/browser export wrapper refers to umdjs/umd returnExports.js; exact import revision remains unconfirmed.
+https://github.com/MihaiValentin/lunr-languages/commit/504557d1bcfa9f5120eb587c122e5e00c8e2868e
+trimmerSupport addition and Lunr 2 token.update compatibility:
+https://github.com/MihaiValentin/lunr-languages/commit/7965e9674a8e5299d9f9e9150b3883acfd13d2c9
+https://github.com/MihaiValentin/lunr-languages/commit/4c64ac618e5c89868c0755761cb6f510d0a74d91

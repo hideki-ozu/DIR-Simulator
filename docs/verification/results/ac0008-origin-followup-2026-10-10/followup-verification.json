@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "document_version": "1.1.0",
+  "document_history": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-10",
+      "change": "Scoped selection/history/links verification for second PR48 push"
+    }
+  ],
+  "base_commit": "d79c036fd20c8ba203190739335b7cf1f4d44c65",
+  "checks": [
+    {
+      "argv": [
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "stdout": "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)\r\n",
+      "stderr": "",
+      "interpretation": "current local check"
+    },
+    {
+      "argv": [
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "All traceability reports and the hierarchy annex are up to date\r\n",
+      "stderr": "",
+      "interpretation": "current local check"
+    },
+    {
+      "argv": [
+        "scripts/verification/ac0008_origin_followup.py",
+        "--check",
+        "--upstream-cache",
+        "source-cache"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: pinned upstream bytes and 3743-character body comparison; no JavaScript execution\r\nPASS: 30 metadata / 28 observed / 12 other ledger packages; 17 wheels / 27 assets; 50 unapproved / 40 OR unselected; no new build/audit\r\n",
+      "stderr": "",
+      "interpretation": "Original checker/9 tests validate historical unselected records, not current 2026-10-10 MIT decision"
+    },
+    {
+      "argv": [
+        "scripts/verification/test_ac0008_packet.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_all_ten_case_groups_and_unique_ids (__main__.PacketTests.test_all_ten_case_groups_and_unique_ids) ... ok\r\ntest_all_unbound_predicates_have_named_gaps (__main__.PacketTests.test_all_unbound_predicates_have_named_gaps) ... ok\r\ntest_atomic_oracle_ids_and_37_groups (__main__.PacketTests.test_atomic_oracle_ids_and_37_groups) ... ok\r\ntest_every_static_binding_names_a_real_assertion_catalogue_test (__main__.PacketTests.test_every_static_binding_names_a_real_assertion_catalogue_test) ... ok\r\ntest_no_bulk_approval_or_or_selection (__main__.PacketTests.test_no_bulk_approval_or_or_selection) ... ok\r\ntest_numeric_variants_have_specific_oracles (__main__.PacketTests.test_numeric_variants_have_specific_oracles) ... ok\r\ntest_origins_require_attestation (__main__.PacketTests.test_origins_require_attestation) ... ok\r\ntest_rule_ids_unique (__main__.PacketTests.test_rule_ids_unique) ... ok\r\ntest_source_subcase_rows_are_all_retained (__main__.PacketTests.test_source_subcase_rows_are_all_retained) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 9 tests in 0.061s\r\n\r\nOK\r\n",
+      "interpretation": "Original checker/9 tests validate historical unselected records, not current 2026-10-10 MIT decision"
+    }
+  ],
+  "cargo_rows": 42,
+  "scoped_MIT_choices": 40,
+  "original_expressions_retained": true,
+  "historical_unselected_records_retained": true,
+  "local_links_checked": 16629,
+  "existing_generated_search_links_not_built_locally": [
+    "docs/guide/search/lunr.ja.js",
+    "docs/guide/search/lunr.stemmer.support.js",
+    "docs/guide/search/tinyseg.js"
+  ],
+  "actual_site_build": "not run locally; ordinary CI pending",
+  "legal_or_whole_source_attestation": false,
+  "deadline_product_execution": false
+}
