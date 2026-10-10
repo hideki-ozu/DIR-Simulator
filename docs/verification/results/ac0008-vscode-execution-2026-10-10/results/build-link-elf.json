@@ -1,0 +1,172 @@
+{
+  "artifacts": [
+    {
+      "label": "fixed-artifact",
+      "source_commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "origin": {
+        "archive": {
+          "path": "<PRIOR_AUDIT_ROOT>/distribution/DIR-Simulator-v1.1.4-rc-0b7b23d-linux-x86_64.zip",
+          "sha256": "d6ff7c7df26aed238d725fc661a4f9ebbe4469acce30342f30619ece84ca201e",
+          "bytes": 24561334
+        },
+        "member": "DIR-Simulator-v1.1.4-rc-0b7b23d/bin/dir-simulator"
+      },
+      "binary": {
+        "path": "<AUDIT_ROOT>/results/prior-audit/fixed-artifact-dir-simulator",
+        "sha256": "d29b180dd7b46a46a52a18bf62ba3f5628d87e3303efaf398e0bf09c7a3e7129",
+        "bytes": 11637648
+      },
+      "unchanged_during_read": true,
+      "file_description": "<AUDIT_ROOT>/results/prior-audit/fixed-artifact-dir-simulator: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=8bdded763b99102d72354ea2492bfb0ce2db98e9, for GNU/Linux 3.2.0, not stripped",
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "current_host_resolved_libraries": [
+        {
+          "resolved": {
+            "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+            "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+            "bytes": 183024
+          },
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "role": "External host library resolved now; not proof library bytes shipped inside archive."
+        },
+        {
+          "resolved": {
+            "path": "/lib/x86_64-linux-gnu/libc.so.6",
+            "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf",
+            "bytes": 2129424
+          },
+          "realpath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "role": "External host library resolved now; not proof library bytes shipped inside archive."
+        },
+        {
+          "resolved": {
+            "path": "/lib64/ld-linux-x86-64.so.2",
+            "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da",
+            "bytes": 236616
+          },
+          "realpath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "role": "External host library resolved now; not proof library bytes shipped inside archive."
+        }
+      ],
+      "static_population": "Not complete: ELF dynamic table proves DT_NEEDED entries, not all static Rust/native object members. No linker map retained. Symbols/archive availability cannot establish complete member inclusion."
+    }
+  ],
+  "prior_linux_graph_reference": {
+    "path": "<PRIOR_AUDIT_ROOT>/ac0008/cargo-metadata-linux.json",
+    "sha256": "a91221615940a43e3bbee8e9d2e30d916942b20fdc2194da25d7ebd8a61e1888",
+    "bytes": 135843
+  },
+  "prior_linux_graph_node_count": 31,
+  "current_binary_available": false,
+  "limits": [
+    "Current host loader resolution is not historical host library identity.",
+    "No release rebuild, binary execution, or complete archive audit performed.",
+    "Old 569/29 aggregate remains historical aggregate only."
+  ],
+  "commands": [
+    {
+      "argv": [
+        "file",
+        "<AUDIT_ROOT>/results/prior-audit/fixed-artifact-dir-simulator"
+      ],
+      "exit_code": 0,
+      "cwd": "<REPO_ROOT>",
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-file.stdout",
+        "sha256": "5f57e76e6ad2a0f47d69524551381351858930b18638d49491d419990ee19586",
+        "bytes": 323
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-file.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "readelf",
+        "-lW",
+        "<AUDIT_ROOT>/results/prior-audit/fixed-artifact-dir-simulator"
+      ],
+      "exit_code": 0,
+      "cwd": "<REPO_ROOT>",
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-headers.stdout",
+        "sha256": "63346759e5de9f0d68e68e10efecd47742aacf18d648a7092b620670d73e44e6",
+        "bytes": 2248
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-headers.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "readelf",
+        "-dW",
+        "<AUDIT_ROOT>/results/prior-audit/fixed-artifact-dir-simulator"
+      ],
+      "exit_code": 0,
+      "cwd": "<REPO_ROOT>",
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-dynamic.stdout",
+        "sha256": "8f45757b9b23f55797ad2057c9d7f64d800cff15715670f3820a6a56875a0f0d",
+        "bytes": 1615
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-dynamic.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "readelf",
+        "-nW",
+        "<AUDIT_ROOT>/results/prior-audit/fixed-artifact-dir-simulator"
+      ],
+      "exit_code": 0,
+      "cwd": "<REPO_ROOT>",
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-notes.stdout",
+        "sha256": "7fdbd068056fcd64e4bcc4598ed1c48bd850631b2040cf562c053c2fb5e73304",
+        "bytes": 607
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-notes.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "/lib64/ld-linux-x86-64.so.2",
+        "--list",
+        "<AUDIT_ROOT>/results/prior-audit/fixed-artifact-dir-simulator"
+      ],
+      "exit_code": 0,
+      "cwd": "<REPO_ROOT>",
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-loader-list.stdout",
+        "sha256": "1e30badec3f905c84407110bf2b2897769054840797629850c9258992945722b",
+        "bytes": 230
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/fixed-artifact-loader-list.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    }
+  ],
+  "collector": {
+    "path": "<AUDIT_ROOT>/support/build-link-elf.py",
+    "sha256": "abc690c7b9ddf2e284b3af2c43446f03a113742802930d674c203a6059a39e90",
+    "bytes": 3554
+  }
+}

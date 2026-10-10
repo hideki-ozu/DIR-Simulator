@@ -1,0 +1,384 @@
+{
+  "commands": [
+    {
+      "name": "source-commit",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.946064+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/source-commit.stdout",
+        "sha256": "96586d9d372c0a19c6caff5e66b3ff9266764ee9d7e15fe8f5c61e449d28fdfd",
+        "bytes": 41
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/source-commit.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "status",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain=v1"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.948039+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/status.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "rustc-version",
+      "argv": [
+        "<HOME>/.cargo/bin/rustc",
+        "+1.85.0",
+        "-vV"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.956514+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/rustc-version.stdout",
+        "sha256": "be9e105cd61ce407c0e06d80a25240f93cc48de72942117e1886f09aa08f9a2a",
+        "bytes": 196
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/rustc-version.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "cargo-version",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "+1.85.0",
+        "-vV"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.967728+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/cargo-version.stdout",
+        "sha256": "a798d333621b0131f34efb586247fc3eda498578f47569aaabfdb33654a3feb7",
+        "bytes": 337
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/cargo-version.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "uname",
+      "argv": [
+        "uname",
+        "-a"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.981015+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/uname.stdout",
+        "sha256": "145fa369ea7a66d8e18e832e7460c0fe0f4a76c04818ffeb48227278c6712312",
+        "bytes": 131
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/uname.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "os-release",
+      "argv": [
+        "cat",
+        "/etc/os-release"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.981806+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/os-release.stdout",
+        "sha256": "01af466feb100306498c86aa6bad1815e33036019aa34d4362c20f374ea5c829",
+        "bytes": 400
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/os-release.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "cc-version",
+      "argv": [
+        "cc",
+        "--version"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.982533+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/cc-version.stdout",
+        "sha256": "3e8cc208c40f60832f67377aa1b03c3e7e858f20cd5d365464944700c0bd7ad1",
+        "bytes": 245
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/cc-version.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "linker-version",
+      "argv": [
+        "ld",
+        "--version"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.983511+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/linker-version.stdout",
+        "sha256": "cbb0374a4d23f91537f8588348c460085a38ba5af336bed511060b72a1e76bf7",
+        "bytes": 281
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/linker-version.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "libc-version",
+      "argv": [
+        "getconf",
+        "GNU_LIBC_VERSION"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.984707+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/libc-version.stdout",
+        "sha256": "e78219876cbb3a4271b8644a89d469ccdd95b82433f72784c61a9dd2f88b1192",
+        "bytes": 11
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/libc-version.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "system-package-versions",
+      "argv": [
+        "dpkg-query",
+        "-W",
+        "-f=${Package}\t${Version}\t${Architecture}\n",
+        "libc6",
+        "libgcc-s1",
+        "libstdc++6",
+        "binutils",
+        "gcc"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.985375+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/system-package-versions.stdout",
+        "sha256": "31a2e4b2d74a7998e0a2faceb95071515ac8efd0616a583ca256f7062d9ccb8b",
+        "bytes": 169
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/system-package-versions.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "rustc-sysroot",
+      "argv": [
+        "<HOME>/.cargo/bin/rustc",
+        "+1.85.0",
+        "--print",
+        "sysroot"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:35.990621+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/rustc-sysroot.stdout",
+        "sha256": "7eb755a66162047d2b5fffa5e30b3bbabaaf7dbb1c0dcad10208b4b083c4243f",
+        "bytes": 64
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/rustc-sysroot.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "target-cfg",
+      "argv": [
+        "<HOME>/.cargo/bin/rustc",
+        "+1.85.0",
+        "--print",
+        "cfg",
+        "--target",
+        "x86_64-unknown-linux-gnu"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:36.003561+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/target-cfg.stdout",
+        "sha256": "fc10eb20a7d7b72645bb1bca51c110fe8af01944a91935dfac9a9cc6a8fb53a5",
+        "bytes": 381
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/target-cfg.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "cargo-metadata",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "+1.85.0",
+        "metadata",
+        "--offline",
+        "--locked",
+        "--format-version",
+        "1",
+        "--filter-platform",
+        "x86_64-unknown-linux-gnu"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:36.016182+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/cargo-metadata.stdout",
+        "sha256": "b8b5d947b26081a607222e71f4f4615b6292ae06009e95379dafd95cbefda73a",
+        "bytes": 136179
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/cargo-metadata.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "cargo-tree",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "+1.85.0",
+        "tree",
+        "--offline",
+        "--locked",
+        "--target",
+        "x86_64-unknown-linux-gnu",
+        "--edges",
+        "normal,build,dev,features",
+        "--no-dedupe"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:36.065914+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/cargo-tree.stdout",
+        "sha256": "049045ed9436198eb0e54942a4526854ea00d8cd67daf459b4db03fc4aac3944",
+        "bytes": 66228
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/cargo-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "generator-installed",
+      "argv": [
+        "<REPO_ROOT>-audits/native-distribution-0b7b23d-20261008T142910Z/guide-environment/venv/bin/python",
+        "-c",
+        "import importlib.metadata,json;print(json.dumps(sorted([{\"name\":d.metadata[\"Name\"],\"version\":d.version} for d in importlib.metadata.distributions()],key=lambda x:x[\"name\"].lower())))"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:36.171988+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/generator-installed.stdout",
+        "sha256": "7f1f522067569127f6b77a6815dc26bb776a5b7366b1f76e58ff7789fd0f5e77",
+        "bytes": 729
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/generator-installed.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "generator-python",
+      "argv": [
+        "<REPO_ROOT>-audits/native-distribution-0b7b23d-20261008T142910Z/guide-environment/venv/bin/python",
+        "--version"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:36.216303+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/generator-python.stdout",
+        "sha256": "5b3e43dc38ca01e3f5a7854ba50d4330864b0c1e0f646650b2c78cf072acc366",
+        "bytes": 14
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/generator-python.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "generator-pip-freeze",
+      "argv": [
+        "<REPO_ROOT>-audits/native-distribution-0b7b23d-20261008T142910Z/guide-environment/venv/bin/python",
+        "-m",
+        "pip",
+        "freeze",
+        "--all"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:51:36.217663+00:00",
+      "exit_code": 0,
+      "stdout": {
+        "path": "<AUDIT_ROOT>/logs/build-link/generator-pip-freeze.stdout",
+        "sha256": "18ee80e12b8d4e0f8cd7a02c1d6178dd3e507d2e16658a7727606d96f963c426",
+        "bytes": 286
+      },
+      "stderr": {
+        "path": "<AUDIT_ROOT>/logs/build-link/generator-pip-freeze.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    }
+  ],
+  "collector": {
+    "path": "<AUDIT_ROOT>/support/build-link-evidence.py",
+    "sha256": "0d5d1bd57e0aa8840ae2f1c5eac62d3a93191821d5bd8140ded478cb6b66f94f",
+    "bytes": 11047
+  }
+}

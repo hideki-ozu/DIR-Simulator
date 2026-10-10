@@ -1,0 +1,475 @@
+{
+  "schema_version": 1,
+  "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+  "test_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+  "baseline_head": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "original_test_source_commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+  "cwd": "<AUDIT_ROOT>/implementation",
+  "environment": {
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "RUSTC": null,
+    "RUSTDOC": null,
+    "CARGO_BUILD_TARGET": null,
+    "CARGO_TARGET_DIR": null,
+    "CARGO_BUILD_RUSTFLAGS": null,
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "commands": [
+    {
+      "name": "focused-no-run",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_paths",
+        "--test",
+        "ac0008_ned_rejections",
+        "--test",
+        "ac0008_attributes",
+        "--no-run",
+        "--message-format=json",
+        "-vv"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+      "started_utc": "2026-10-10T05:00:23.217287+00:00",
+      "finished_utc": "2026-10-10T05:00:27.458042+00:00",
+      "exit_code": 0,
+      "stdout": "logs/integrated-focused-no-run.stdout.log",
+      "stdout_sha256": "2058bf83daec887fffbe16da440266fd7f7a2c146407d8ae30afee798f67a4e9",
+      "stderr": "logs/integrated-focused-no-run.stderr.log",
+      "stderr_sha256": "a4d42a4fdebd9561b5397764c68ba9b1acdf1aaaa2ceac7a863caee3c58af2ed",
+      "named_tests": []
+    },
+    {
+      "name": "fmt-check",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+      "started_utc": "2026-10-10T05:00:27.458838+00:00",
+      "finished_utc": "2026-10-10T05:00:28.096932+00:00",
+      "exit_code": 0,
+      "stdout": "logs/integrated-fmt-check.stdout.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "logs/integrated-fmt-check.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "named_tests": []
+    },
+    {
+      "name": "focused-tests",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_paths",
+        "--test",
+        "ac0008_ned_rejections",
+        "--test",
+        "ac0008_attributes",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+      "started_utc": "2026-10-10T05:00:28.097351+00:00",
+      "finished_utc": "2026-10-10T05:00:33.624770+00:00",
+      "exit_code": 0,
+      "stdout": "logs/integrated-focused-tests.stdout.log",
+      "stdout_sha256": "7d8016a9900c6ee1618e78815301be7996a71fe64c78ef736df82ac02f0d1211",
+      "stderr": "logs/integrated-focused-tests.stderr.log",
+      "stderr_sha256": "65d57b56532706b02c080d1ecbe28b3babc532abc91341afc5a522f72c78138b",
+      "named_tests": [
+        {
+          "name": "comments_inside_strings_are_data_and_class_unit_values_keep_existing_accessors",
+          "outcome": "ok"
+        },
+        {
+          "name": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+          "outcome": "ok"
+        },
+        {
+          "name": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "outcome": "ok"
+        },
+        {
+          "name": "supplied_fixture_keeps_grammar_rejection_and_valid_order_retains_quote_backslash",
+          "outcome": "ok"
+        },
+        {
+          "name": "allowunconnected_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "explicit_import_name_is_rejected_with_ned_keyword_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "import_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "inheritance_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "inout_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "unqualified_child_type_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "vector_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "classical_can_cli_run_matches_plain_observable_projection",
+          "outcome": "ok"
+        },
+        {
+          "name": "classical_can_prepare_and_run_preserve_analytic_competition",
+          "outcome": "ok"
+        },
+        {
+          "name": "classical_can_prepare_with_registry_and_run_uses_builtin_adapter",
+          "outcome": "ok"
+        },
+        {
+          "name": "classical_can_run_config_matches_plain_observable_projection",
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "name": "input-unit-tests",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--lib",
+        "input::",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+      "started_utc": "2026-10-10T05:00:33.625280+00:00",
+      "finished_utc": "2026-10-10T05:00:38.614766+00:00",
+      "exit_code": 0,
+      "stdout": "logs/integrated-input-unit-tests.stdout.log",
+      "stdout_sha256": "ff41440d6c543f06680507bfaf0ce560cbfb01fefcf3cf65ea25f76172800da6",
+      "stderr": "logs/integrated-input-unit-tests.stderr.log",
+      "stderr_sha256": "80d273cd5ae9718389725f6f3c8834ede85a94481aab7011bca5e3bdc15ad3b9",
+      "named_tests": [
+        {
+          "name": "input::can::tests::can_instance_counts_precede_channel_override_validation",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::can::tests::selected_instance_profile_mismatch_precedes_later_instance_values",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::complete_native_r01_r02_inputs_validate",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::source_ownership_checked_for_zero_count_and_future_time",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::strict_rules_ownership_and_ranges_reject",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::crlf_line_comments_preserve_valid_ned_and_reject_bare_carriage_returns",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::deferred_directory_errors_keep_sorted_traversal_order",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::existing_profile_error_precedes_time_and_root_errors",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::filesystem_and_snapshot_match_can_gateway_success_and_failure_fixtures",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::inspect_is_structural_and_preserves_invalid_execution_values",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::semantic_invalid_values_are_parseable_but_fail_full_snapshot_prepare",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::snapshot_missing_paths_never_fall_back_to_disk",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::editor_api_tests::syntax_api_exposes_structure_without_model_value_validation",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::media_config_rejects_every_missing_physical_and_phy_field_without_panicking",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::media_profiles_keep_phy_allowlists_disjoint",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_burst_schedule_validates_last_offset_and_empty_count",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_config_canonicalizes_outputs_and_all_eight_queues",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_config_duplicate_json_key_is_rejected_before_overwrite",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_config_rejects_missing_duplicates_unknowns_and_noncanonical_capacities",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_fields_and_kinds_remain_rejected_by_v1",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_periodic_schedule_validates_nullable_bounds_and_exclusive_end",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::qos_shared_flow_requires_consistent_contract_even_empty_future_inputs",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::vlan_config_rejects_invalid_memberships_tables_and_strict_fields",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::vlan_empty_future_workloads_still_validate_tag_and_source_contract",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tests::vlan_group_membership_is_static_and_old_profile_rejects_schema3",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tsn::tests::rejects_missing_unknown_numeric_bool_and_noncanonical_fields",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tsn::tests::rejects_output_and_cbs_combinations_and_accepts_zero_bounds",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tsn::tests::validates_every_future_update_and_normalizes_order",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ethernet::tsn::tests::validates_stream_tuple_gate_and_meter",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ned::tests::metadata_instances_reference_one_declaration_without_affecting_schema_or_values",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ned::tests::non_can_rules_reject_payload_mismatch_through_compound_boundary",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ned::tests::non_can_rules_resolve_values_compound_paths_and_shared_channels",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::ned::tests::non_can_rules_validate_unused_declarations_and_defaults_before_overrides",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::all_can_fixtures_load_and_preserve_snapshots",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::bus_gate_names_and_same_bus_output_permutations_are_valid",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::bus_requires_equal_input_output_counts_and_two_controllers",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::compound_boundary_channels_are_independent_and_sum",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::defaults_overrides_empty_workload_and_limits",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::exact_units_and_extreme_decimal_precision",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::ini_rejects_unknown_duplicate_and_malformed_inputs",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::invalid_ned_declarations_and_wiring_are_rejected",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::json_duplicate_unknown_fields_and_inactive_owner_conflicts",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::root_overlap_missing_files_and_symlinks_fail",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::truncated_ned_returns_diagnostics_without_panicking",
+          "outcome": "ok"
+        },
+        {
+          "name": "input::tests::workload_validates_schedule_and_frame_beyond_time_limit",
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "name": "diagnostic-regressions",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "diagnostics",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+      "started_utc": "2026-10-10T05:00:38.615400+00:00",
+      "finished_utc": "2026-10-10T05:00:48.536587+00:00",
+      "exit_code": 0,
+      "stdout": "logs/integrated-diagnostic-regressions.stdout.log",
+      "stdout_sha256": "863809f961e8f141357c63f9fd81209023132850685b2f360754b779f95e1cc0",
+      "stderr": "logs/integrated-diagnostic-regressions.stderr.log",
+      "stderr_sha256": "0bb3fcefb24bb2dd8bb17ad7ed8c78762285b41e29612654e2f77a9fc5d99f1e",
+      "named_tests": [
+        {
+          "name": "channel_errors_use_ini_section_reference_or_adopted_value",
+          "outcome": "ok"
+        },
+        {
+          "name": "duplicate_json_key_points_to_second_key_and_retains_related_location",
+          "outcome": "ok"
+        },
+        {
+          "name": "every_model_family_locates_semantic_json_field_by_identity",
+          "outcome": "ok"
+        },
+        {
+          "name": "ini_invalid_value_points_to_adopted_value_not_same_default",
+          "outcome": "ok"
+        },
+        {
+          "name": "ini_unknown_key_points_to_key_after_bom_crlf_and_unicode_comment",
+          "outcome": "ok"
+        },
+        {
+          "name": "ini_unknown_parameter_points_to_complete_assignment_key",
+          "outcome": "ok"
+        },
+        {
+          "name": "json_eof_is_a_zero_width_range_after_final_scalar_or_newline",
+          "outcome": "ok"
+        },
+        {
+          "name": "ned_eof_has_empty_range_and_correct_unicode_scalar_column",
+          "outcome": "ok"
+        },
+        {
+          "name": "ned_unknown_child_reference_points_to_type_token",
+          "outcome": "ok"
+        },
+        {
+          "name": "nested_json_error_uses_exact_value_despite_repeated_keys",
+          "outcome": "ok"
+        },
+        {
+          "name": "preparation_stderr_and_jsonl_share_primary_object",
+          "outcome": "ok"
+        },
+        {
+          "name": "runtime_guard_retains_candidate_time_and_reserved_sequence",
+          "outcome": "ok"
+        },
+        {
+          "name": "stderr_and_jsonl_use_same_control_character_escaping",
+          "outcome": "ok"
+        },
+        {
+          "name": "unreadable_input_has_path_and_null_positions",
+          "outcome": "ok"
+        },
+        {
+          "name": "wire_contract_is_complete_nullable_and_string_only",
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "name": "clippy",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+      "started_utc": "2026-10-10T05:00:48.537109+00:00",
+      "finished_utc": "2026-10-10T05:01:02.279162+00:00",
+      "exit_code": 0,
+      "stdout": "logs/integrated-clippy.stdout.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "logs/integrated-clippy.stderr.log",
+      "stderr_sha256": "ecfbb526521bf889f9009acc8dfc1cf84a079afb959903af207448f9fa21f249",
+      "named_tests": []
+    }
+  ],
+  "status": "passed",
+  "source_clean_after": true
+}

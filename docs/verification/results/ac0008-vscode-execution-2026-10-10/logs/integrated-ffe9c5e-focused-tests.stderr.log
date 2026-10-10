@@ -1,0 +1,10 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running tests/ac0008_attributes.rs (target/debug/deps/ac0008_attributes-dd573f535eedffaf)
+     Running tests/ac0008_ned_rejections.rs (target/debug/deps/ac0008_ned_rejections-f235601dcf411468)
+
+thread 'import_is_explicitly_rejected_with_ned_source' panicked at crates/dir-simulator/tests/ac0008_ned_rejections.rs:64:9:
+assertion `left == right` failed
+  left: (Some(2), Some(13), Some(2), Some(14))
+ right: (Some(2), Some(1), Some(2), Some(7))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p dir-simulator --test ac0008_ned_rejections`

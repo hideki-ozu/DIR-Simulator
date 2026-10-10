@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "current_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+  "current_debug_binary": {
+    "path": "<AUDIT_ROOT>/implementation/target/debug/dir-simulator",
+    "sha256": "0929fd31d168057caa520f6de3c097953aae9bbdb09aa03cfd06fc1689ad15a7",
+    "bytes": 142656872
+  },
+  "current_build_evidence": {
+    "path": "<AUDIT_ROOT>/results/build-link-current.json",
+    "sha256": "982fd937e2849e2489f38d0dff79e92546a3f70160ab1ab6409c4ac7ca075db0",
+    "bytes": 32652
+  },
+  "current_binding_reconciliation": {
+    "path": "<AUDIT_ROOT>/results/build-link-current-bindings.json",
+    "sha256": "3217bac0a43f98f0a396a65b9f6490704a01591fbfbad7dd3073879b6dc0b922",
+    "bytes": 4687
+  },
+  "prior_fixed_evidence": {
+    "path": "<AUDIT_ROOT>/results/build-link-summary.json",
+    "sha256": "92c27290fe834fe89e08f5de6c56e3037c68c0c19560236320adbe99f373f394",
+    "bytes": 4239
+  },
+  "population_separation": {
+    "fixed_release_artifact_commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+    "pr42_original_baseline_commit": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+    "current_local_implementation_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+    "current_cargo_compiler_artifact_records": 42,
+    "current_distinct_cargo_package_ids": 29,
+    "warning": "42 compiler-artifact records are build units, not the 42-crate all-target license ledger; do not equate these counts."
+  },
+  "current_scoped_source_hash_changes_from_historical_binding_file": [
+    {
+      "source": "crates/dir-simulator/src/input/ned.rs",
+      "recorded_sha256": "95bc8ee3f506c16679bb440e6fde89eb7bc5dbcdd26e859ebd85b074622541f6",
+      "current": {
+        "path": "<AUDIT_ROOT>/implementation/crates/dir-simulator/src/input/ned.rs",
+        "sha256": "aa050a998e47abdde045e76789aa4136312c4b6fcd2480427f9d1fcb261f70ec",
+        "bytes": 50793
+      },
+      "matches_recorded": false
+    },
+    {
+      "source": "crates/dir-simulator/tests/ac0008_attributes.rs",
+      "recorded_sha256": "dd5e11b56f508b655e67d65a96aba581f7a979ae6b4d46593423aed461d589c0",
+      "current": {
+        "path": "<AUDIT_ROOT>/implementation/crates/dir-simulator/tests/ac0008_attributes.rs",
+        "sha256": "cafb00704e1a35876274b4bd8423160d3c8447a5d5e410c912c68f7283a3ceda",
+        "bytes": 9786
+      },
+      "matches_recorded": false
+    }
+  ],
+  "historical_binding_policy": "Original attribute-case-bindings.json remains unchanged; changed-file historical assertions need current tests/review reconciliation, not silent promotion. All seven atomic statuses remain partial.",
+  "limitations": [
+    "Fresh Cargo artifacts reuse caches: this invocation does not expose original compiler commands for every reused dependency.",
+    "Fingerprint data and compiler-artifact files identify built units/features/profiles; they do not prove exact linked static object members or retained sections.",
+    "No full static linker map or full legal/license acceptance. Host libraries are external system dependencies, not bundled population.",
+    "Fingerprint directory may contain units from prior focused builds; compiler-artifact records identify units reported by the recorded build."
+  ]
+}

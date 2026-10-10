@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "source_commit": "ffe9c5ea75c93e6fe9ed7710c4f601b7ec0f7306",
+  "test_commit": "ffe9c5ea75c93e6fe9ed7710c4f601b7ec0f7306",
+  "baseline_head": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "original_test_source_commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+  "cwd": "<AUDIT_ROOT>/implementation",
+  "environment": {
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "RUSTC": null,
+    "RUSTDOC": null,
+    "CARGO_BUILD_TARGET": null,
+    "CARGO_TARGET_DIR": null,
+    "CARGO_BUILD_RUSTFLAGS": null,
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "commands": [
+    {
+      "name": "focused-no-run",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_paths",
+        "--test",
+        "ac0008_ned_rejections",
+        "--test",
+        "ac0008_attributes",
+        "--no-run",
+        "--message-format=json",
+        "-vv"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ffe9c5ea75c93e6fe9ed7710c4f601b7ec0f7306",
+      "started_utc": "2026-10-10T04:56:13.530456+00:00",
+      "finished_utc": "2026-10-10T04:56:18.006685+00:00",
+      "exit_code": 0,
+      "stdout": "logs/integrated-ffe9c5e-focused-no-run.stdout.log",
+      "stdout_sha256": "8cd8000ea60bfa2afd2a0fe9d43adbe693cf341f9f514852cf0b09c916b71f36",
+      "stderr": "logs/integrated-ffe9c5e-focused-no-run.stderr.log",
+      "stderr_sha256": "f39f7e21a995e0a1db7bc1eceb15ed520f95c0c85781746723c2290828d3211f",
+      "named_tests": []
+    },
+    {
+      "name": "fmt-check",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ffe9c5ea75c93e6fe9ed7710c4f601b7ec0f7306",
+      "started_utc": "2026-10-10T04:56:18.007332+00:00",
+      "finished_utc": "2026-10-10T04:56:18.635408+00:00",
+      "exit_code": 0,
+      "stdout": "logs/integrated-ffe9c5e-fmt-check.stdout.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "logs/integrated-ffe9c5e-fmt-check.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "named_tests": []
+    },
+    {
+      "name": "focused-tests",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_paths",
+        "--test",
+        "ac0008_ned_rejections",
+        "--test",
+        "ac0008_attributes",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "<AUDIT_ROOT>/implementation",
+      "source_commit": "ffe9c5ea75c93e6fe9ed7710c4f601b7ec0f7306",
+      "started_utc": "2026-10-10T04:56:18.635790+00:00",
+      "finished_utc": "2026-10-10T04:56:18.685401+00:00",
+      "exit_code": 101,
+      "stdout": "logs/integrated-ffe9c5e-focused-tests.stdout.log",
+      "stdout_sha256": "30a0594d8e0098b12ebc06eb93a7a4ef2d8230032bb134499331ae53d9d0a9a6",
+      "stderr": "logs/integrated-ffe9c5e-focused-tests.stderr.log",
+      "stderr_sha256": "05e3fa661356f342722a2d56d3133a6af03f87beefdbf90c08631a71f6f95277",
+      "named_tests": [
+        {
+          "name": "comments_inside_strings_are_data_and_class_unit_values_keep_existing_accessors",
+          "outcome": "ok"
+        },
+        {
+          "name": "duplicate_metadata_unknown_property_and_invalid_escape_are_rejected",
+          "outcome": "ok"
+        },
+        {
+          "name": "public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans",
+          "outcome": "ok"
+        },
+        {
+          "name": "supplied_fixture_keeps_grammar_rejection_and_valid_order_retains_quote_backslash",
+          "outcome": "ok"
+        },
+        {
+          "name": "allowunconnected_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "import_is_explicitly_rejected_with_ned_source",
+          "outcome": "FAILED"
+        },
+        {
+          "name": "inheritance_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "inout_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "unqualified_child_type_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "name": "vector_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        }
+      ]
+    }
+  ],
+  "status": "failed",
+  "source_clean_after": true,
+  "preserved_attempt": "Initial integrated gates at ffe9c5e; diagnostic characterization asserted import keyword, but wildcard fixture is lexically rejected at star. Production acceptance is not inferred."
+}
