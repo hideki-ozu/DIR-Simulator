@@ -130,6 +130,36 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
     Ok(tokens)
 }
 
+/// Declaration identity for metadata; instance paths never replace this owner.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum AttributeOwner {
+    Type { qname: String },
+    Parameter { qname: String, parameter: String },
+}
+
+/// A decoded NED property and its original half-open source range (`@` through `)`).
+#[derive(Clone, Debug)]
+pub struct Attribute {
+    name: String,
+    value: String,
+    owner: AttributeOwner,
+    span: SourceSpan,
+}
+impl Attribute {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+    pub fn value(&self) -> &str {
+        &self.value
+    }
+    pub fn owner(&self) -> &AttributeOwner {
+        &self.owner
+    }
+    pub fn span(&self) -> &SourceSpan {
+        &self.span
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Parameter {
     scalar: String,
@@ -137,6 +167,7 @@ pub struct Parameter {
     default: Option<String>,
     span: SourceSpan,
     default_span: Option<SourceSpan>,
+    attributes: BTreeMap<String, Attribute>,
 }
 #[derive(Clone, Debug)]
 pub struct Connection {
@@ -152,6 +183,7 @@ pub struct Declaration {
     pub(crate) name: String,
     kind: String,
     implementation: Option<String>,
+    attributes: BTreeMap<String, Attribute>,
     parameters: BTreeMap<String, Parameter>,
     gates: BTreeMap<String, bool>, // true = output
     children: Vec<(String, String)>,
@@ -162,6 +194,9 @@ pub struct Declaration {
     child_spans: BTreeMap<String, SourceSpan>,
 }
 impl Parameter {
+    pub fn attributes(&self) -> &BTreeMap<String, Attribute> {
+        &self.attributes
+    }
     pub fn span(&self) -> &SourceSpan {
         &self.span
     }
@@ -190,6 +225,9 @@ impl Connection {
     }
 }
 impl Declaration {
+    pub fn attributes(&self) -> &BTreeMap<String, Attribute> {
+        &self.attributes
+    }
     pub fn span(&self) -> &SourceSpan {
         &self.span
     }
@@ -387,7 +425,9 @@ impl Parser<'_> {
         }
         Ok(value)
     }
-    fn property(&mut self, parameter: bool) -> Result<(String, String)> {
+    fn property(&mut self, owner: AttributeOwner) -> Result<Attribute> {
+        let start = self.cursor;
+        let parameter = matches!(owner, AttributeOwner::Parameter { .. });
         self.expect("@")?;
         let name = self.id()?;
         if (parameter && !matches!(name.as_str(), "unit" | "display" | "description"))
@@ -408,7 +448,12 @@ impl Parser<'_> {
             string_literal(&self.take()).map_err(|e| self.fail(e.message))?
         };
         self.expect(")")?;
-        Ok((name, value))
+        Ok(Attribute {
+            name,
+            value,
+            owner,
+            span: self.span(start, self.cursor),
+        })
     }
     fn declaration(&mut self, package: &str) -> Result<Declaration> {
         let declaration_start = self.cursor;
@@ -426,6 +471,7 @@ impl Parser<'_> {
             name,
             kind,
             implementation: None,
+            attributes: BTreeMap::new(),
             parameters: BTreeMap::new(),
             gates: BTreeMap::new(),
             children: Vec::new(),
@@ -436,7 +482,6 @@ impl Parser<'_> {
             child_spans: BTreeMap::new(),
         };
         let mut last_section = 0;
-        let mut attributes = BTreeSet::new();
         while !self.eat("}") {
             let section = self.take();
             let order = match section.as_str() {
@@ -464,9 +509,14 @@ impl Parser<'_> {
                 match order {
                     1 => {
                         if self.peek() == "@" {
-                            let (name, value) = self.property(false)?;
-                            if !attributes.insert(name.clone()) {
-                                return Err(self.fail(format!("duplicate property {name}")));
+                            let attribute = self.property(AttributeOwner::Type {
+                                qname: declaration.name.clone(),
+                            })?;
+                            let name = &attribute.name;
+                            if declaration.attributes.contains_key(name) {
+                                return Err(attribute
+                                    .span
+                                    .apply(self.fail(format!("duplicate property {name}"))));
                             }
                             if name == "class" {
                                 if declaration.compound() {
@@ -474,8 +524,9 @@ impl Parser<'_> {
                                         self.fail("@class is only supported on simple/channel")
                                     );
                                 }
-                                declaration.implementation = Some(value);
+                                declaration.implementation = Some(attribute.value.clone());
                             }
+                            declaration.attributes.insert(name.clone(), attribute);
                             self.expect(";")?;
                         } else {
                             let parameter_start = self.cursor;
@@ -485,18 +536,27 @@ impl Parser<'_> {
                             }
                             let name = self.id()?;
                             let mut unit = None;
-                            let mut properties = BTreeSet::new();
+                            let mut attributes = BTreeMap::new();
                             while self.peek() == "@" {
-                                let (property, value) = self.property(true)?;
-                                if !properties.insert(property.clone()) {
-                                    return Err(self.fail(format!("duplicate property {property}")));
+                                let attribute = self.property(AttributeOwner::Parameter {
+                                    qname: declaration.name.clone(),
+                                    parameter: name.clone(),
+                                })?;
+                                let property = &attribute.name;
+                                if attributes.contains_key(property) {
+                                    return Err(attribute.span.apply(
+                                        self.fail(format!("duplicate property {property}")),
+                                    ));
                                 }
                                 if property == "unit" {
-                                    unit = Some(value);
+                                    unit = Some(attribute.value.clone());
                                 }
+                                attributes.insert(property.clone(), attribute);
                             }
                             if unit.is_some() && !matches!(scalar.as_str(), "int" | "double") {
-                                return Err(self.fail("unit on nonnumeric parameter"));
+                                return Err(attributes["unit"]
+                                    .span
+                                    .apply(self.fail("unit on nonnumeric parameter")));
                             }
                             let mut default_span = None;
                             let default = if self.eat("=") {
@@ -521,6 +581,7 @@ impl Parser<'_> {
                                         default,
                                         span: self.span(parameter_start, self.cursor),
                                         default_span,
+                                        attributes,
                                     },
                                 )
                                 .is_some()
