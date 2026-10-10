@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "exit_code": 0,
+  "source_zip": "<workspace>/ethernet-deadline-guide-QA-source-f5ef3cb0.zip",
+  "source_zip_sha256": "339805c3a69c3a16caf0649d0be3acadf661908256e2dc672ad09f87741e9d70",
+  "bundle_declared_source_head": "f5ef3cb08b7b6218a061deade085ae6dd7b264de",
+  "result_root": "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z",
+  "extracted_source": "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/extracted",
+  "generated_site": "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/extracted/build/guide",
+  "browser_evidence": "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/browser-evidence",
+  "commands": [
+    {
+      "name": "mkdocs-strict",
+      "exit_code": 0,
+      "argv": [
+        "<existing-user-home>/DIR-Simulator-audits/native-distribution-0b7b23d-20261008T142910Z/guide-environment/venv/bin/python",
+        "-m",
+        "mkdocs",
+        "build",
+        "--strict"
+      ]
+    },
+    {
+      "name": "guide-links",
+      "exit_code": 0,
+      "argv": [
+        "<existing-user-home>/DIR-Simulator-audits/native-distribution-0b7b23d-20261008T142910Z/guide-environment/venv/bin/python",
+        "scripts/check_guide_links.py"
+      ]
+    },
+    {
+      "name": "guide-browser",
+      "exit_code": 0,
+      "argv": [
+        "node",
+        "scripts/verify_deadline_guide_browser.cjs",
+        ".",
+        "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/browser-evidence"
+      ]
+    }
+  ],
+  "mkdocs_version": "1.6.1",
+  "browser": "151.0.7922.34",
+  "article_images_loaded": 4,
+  "mobile_width": {
+    "viewport": 390,
+    "document": 390
+  },
+  "japanese_search_terms": [
+    "期限",
+    "配送"
+  ],
+  "japanese_search_article_found": true,
+  "html_files_checked": 11,
+  "local_links_assets_anchors_checked": 526,
+  "page_console_errors": 0,
+  "request_failures": 0,
+  "external_requests": 0,
+  "visual_review_status": "passed",
+  "screenshots": [
+    {
+      "path": "browser-evidence/deadline-guide-390px.png",
+      "bytes": 1376237,
+      "sha256": "0a874c79271fe46ff02d8dc0357e5a8aff434c864e5818f200eaf7e65ee18583",
+      "dimensions_px": [
+        390,
+        11762
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "browser-evidence/deadline-guide-desktop.png",
+      "bytes": 2052060,
+      "sha256": "9c72ffee85b217df257c272c87e255029da066cfdfd55334f1ab3618d87eca9f",
+      "dimensions_px": [
+        1440,
+        11306
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "browser-evidence/deadline-search-期限.png",
+      "bytes": 284840,
+      "sha256": "5efe6b7f855bfb78c006dc8a7fd707e3c268d2b1c41c64b481462ba52129e188",
+      "dimensions_px": [
+        1440,
+        1100
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "browser-evidence/deadline-search-配送.png",
+      "bytes": 289577,
+      "sha256": "33ee523f7b39169dac1efb9e58487614c2a86daece208316f670810c09077e0d",
+      "dimensions_px": [
+        1440,
+        1100
+      ],
+      "visually_inspected": true
+    }
+  ],
+  "source_inputs_unchanged": true,
+  "existing_repository_unchanged": {
+    "head": true,
+    "status": true,
+    "refs": true,
+    "worktrees": true
+  },
+  "product_builds_tests_manual_measurements_rerun": false,
+  "installations_configuration_changes": false,
+  "finished_jst": "2026-10-10T23:52:52.011396+09:00"
+}

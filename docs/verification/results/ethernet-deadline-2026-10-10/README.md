@@ -1,14 +1,15 @@
 # Ethernet配送期限の実測証跡
 
-文書バージョン：`1.1.1`  
+文書バージョン：`1.1.2`  
 対象GitHubバージョン：`v1.1.4`  
 文書ID：`evidence-ethernet-deadline`  
-文書状態：実測・実Viewer確認済み。公開ガイドの表示・検索・Project登録は別途確認
+文書状態：実測・実Viewer・公開ガイド表示と検索を確認済み。Project登録は親タスク確認済み
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-10` | 第3push。ガイド表示QAの実測証跡とProject登録結果を追補。第2headの公開記事・入力・画像を保持 |
 | `1.1.1` | `2026-10-10` | 第2push。第1headのGuide/Policy CI成功、公開入口、本文表示/検索/Project未確認を別記 |
 | `1.1.0` | `2026-10-10` | 初回push。実測原本のhash確認、全record・指標・入力snapshot、実Viewer画像の根拠を保存 |
 
@@ -51,3 +52,7 @@ Chromium 151.0.7922.34でshort/equalを共に1,200,000ps、packet:0選択で撮�
 第1head `5b13385d9f8d20b3f11b8d6beea4b126a92ddd40` の[Guide CI](https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38059877332/job/114235775224)と[policy CI](https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38059877377)が成功。MkDocs strict、3種類のZIP、11 HTMLと512リンク・画像・anchorが合格。Pages upload/deployはskipped。Rust CIはこのheadに新しいrunを作成していない。
 
 第2pushで実測済み記事へのnav/index/README入口を追加し、記事から統合作業の状況を移した。全体の完了判定はまだ保留する。ガイド本文の390px、検索「期限」「配送」、その4画像の目視、Project登録は未完了。Viewer自体の390px検証と区別する。CUAブラウザlauncherはHRESULT 0x80070003、ローカルMkDocs moduleは存在せず、Project toolもなく、設定/権限変更や追加tool導入による回避をしない。未実施分だけを通常環境で検証し、18操作の実測をやり直さない。
+
+## 第3pushの完了確認
+
+[ガイド表示QAの実測](ガイド表示QAの実測.md)で第2headのMkDocs strict、11 HTML・526リンク、本文390px、日本語検索「期限」「配送」、元PNG4枚の目視を確認。Project登録は親タスクのUIで確認済み。上記の未完了記述は第2push時点の履歴であり、今回の追補で解消した。既存Git fixtureのsandbox失敗を合格へ変更したものではない。公開記事自体の版1.1.1と実測対象headを保持する。

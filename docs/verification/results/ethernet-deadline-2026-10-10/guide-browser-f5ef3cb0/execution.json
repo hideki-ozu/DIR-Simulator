@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "status": "passed_automated_visual_review_pending",
+  "scope": "Guide generation and browser QA only; no product build, tests, or CLI/Viewer remeasurement",
+  "source_zip": "ethernet-deadline-guide-QA-source-f5ef3cb0.zip",
+  "cwd": "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/extracted",
+  "python": "<existing-user-home>/DIR-Simulator-audits/native-distribution-0b7b23d-20261008T142910Z/guide-environment/venv/bin/python",
+  "playwright": "<existing-user-home>/.npm/_npx/705bc6b22212b352/node_modules/playwright",
+  "started_utc": "2026-10-10T14:51:02.058145+00:00",
+  "commands": [
+    {
+      "name": "mkdocs-strict",
+      "argv": [
+        "<existing-user-home>/DIR-Simulator-audits/native-distribution-0b7b23d-20261008T142910Z/guide-environment/venv/bin/python",
+        "-m",
+        "mkdocs",
+        "build",
+        "--strict"
+      ],
+      "cwd": "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/extracted",
+      "started_utc": "2026-10-10T14:51:02.062809+00:00",
+      "exit_code": 0,
+      "finished_utc": "2026-10-10T14:51:03.072644+00:00",
+      "streams": {
+        "stdout": {
+          "path": "mkdocs-strict.stdout.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "mkdocs-strict.stderr.log",
+          "bytes": 257,
+          "sha256": "32814575e823a254bf559c89689f24e81caa144ee7ea7b3309c62ef87dda7f0b"
+        }
+      }
+    },
+    {
+      "name": "guide-links",
+      "argv": [
+        "<existing-user-home>/DIR-Simulator-audits/native-distribution-0b7b23d-20261008T142910Z/guide-environment/venv/bin/python",
+        "scripts/check_guide_links.py"
+      ],
+      "cwd": "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/extracted",
+      "started_utc": "2026-10-10T14:51:03.082515+00:00",
+      "exit_code": 0,
+      "finished_utc": "2026-10-10T14:51:06.973043+00:00",
+      "streams": {
+        "stdout": {
+          "path": "guide-links.stdout.log",
+          "bytes": 138,
+          "sha256": "1bdb248d88613d26cf9b673b839ebdd6d784b4d5510ce45c9d1d7206d51797bf"
+        },
+        "stderr": {
+          "path": "guide-links.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "guide-browser",
+      "argv": [
+        "node",
+        "scripts/verify_deadline_guide_browser.cjs",
+        ".",
+        "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/browser-evidence"
+      ],
+      "cwd": "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/extracted",
+      "started_utc": "2026-10-10T14:51:06.981712+00:00",
+      "exit_code": 0,
+      "finished_utc": "2026-10-10T14:51:09.542117+00:00",
+      "streams": {
+        "stdout": {
+          "path": "guide-browser.stdout.log",
+          "bytes": 105,
+          "sha256": "a70f2d6e5bdb7ce0f1b3ba7d52092f0e50511c1dbd091344fbfeff5c0d0371ea"
+        },
+        "stderr": {
+          "path": "guide-browser.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "exit_code": 0,
+  "finished_utc": "2026-10-10T14:51:09.551717+00:00"
+}

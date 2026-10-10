@@ -1,0 +1,45 @@
+Ethernet配送期限ガイド Browser QA 実行結果
+
+終了コード: 0。検証・目視確認とも成功。
+保存先（Windows）: C:\Users\rxg03\Documents\Codex\2026-10-10\task-2\deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z
+保存先（WSL）: <workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z
+展開先: <workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/extracted
+スクリーンショットとブラウザ結果: <workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/browser-evidence
+
+使用ZIP: ethernet-deadline-guide-QA-source-f5ef3cb0.zip
+ZIP SHA256: 339805c3a69c3a16caf0649d0be3acadf661908256e2dc672ad09f87741e9d70
+同梱manifestのsource head: f5ef3cb08b7b6218a061deade085ae6dd7b264de（ZIP宣言値）
+新規空フォルダへ96ファイルを展開し、manifest対象95ファイルのsize/SHA256を確認。
+
+同梱QA-README.txtの3工程を、既存環境で実行。新規インストール・設定変更なし。
+1. 既存MkDocs 1.6.1のPythonで -m mkdocs build --strict: 成功。
+2. scripts/check_guide_links.py: 成功。11 HTML、526リンク・画像・anchor。
+3. GUIDE_PLAYWRIGHTに既存モジュールの絶対パスを指定し、node scripts/verify_deadline_guide_browser.cjs . "<workspace>/deadline-guide-browser-QA-f5ef3cb0-20261010T145030Z/browser-evidence": 成功。
+
+390px表示: viewport=390px、document=390px、ページ全体の横方向overflow=0px。
+日本語検索「期限」「配送」: いずれもEthernet配送期限と遅延判定の比較を検出。
+本文画像: 同梱の既存Viewer画像4枚を正常に読み込み。
+ブラウザ: Chromium 151.0.7922.34。
+page/console errors=0、request failures=0、external requests=0。
+
+次の4PNGを開いて目視した:
+- browser-evidence/deadline-guide-desktop.png: 1440x11306、1440x1100 viewportの全ページ。
+- browser-evidence/deadline-guide-390px.png: 390x11762、390x844 viewportの全ページ。
+- browser-evidence/deadline-search-期限.png: 1440x1100。
+- browser-evidence/deadline-search-配送.png: 1440x1100。
+本文・見出し・表・4画像の表示と日本語検索結果を確認。
+390pxの幅広い表は同梱CSSに従って表の内部を横スクロールする構成。
+
+主な保存物:
+- browser-evidence/report.json: 同梱スクリプトの自動検証結果（原本）。
+- browser-evidence/visual-review.json: 上記4画像の目視記録、dimensions/size/SHA256。
+- verification-summary.json: 自動検証と目視の最終状態。
+- execution.json / exit-code.txt: 実行argv、cwd、各工程の開始終了時刻・終了コード。
+- mkdocs-strict、guide-links、guide-browserのstdout/stderr全6ログ。
+- extracted/build/guide/: 生成済みガイドサイト一式。
+- extraction-verification.json / preservation-after.json: ZIP・入力・既存repoの保全記録。
+- files.sha256: 保存ファイルのSHA256一覧。
+
+ZIP原本、同梱95ファイルとmanifest、既存リポジトリのHEAD・refs・status・worktree一覧は変更なし。
+製品ビルド・製品テスト・取説実測・Viewer再撮影は実行していない。
+ガイド生成とブラウザQAだけを実施。公開・PR・Project等の変更なし。
