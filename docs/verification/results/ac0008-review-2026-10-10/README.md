@@ -1,6 +1,6 @@
 # AC0008 残余証拠・レビュー提案
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 文書ID：`ac0008-review-evidence`  
 対象：固定製品 `0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c`  
 状態：未承認・未完了。合格証明ではない。
@@ -9,6 +9,7 @@
 
 | 文書版 | 日付 | push単位の内容 |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-10 | 第2push：37群の個別predicate、0060–0069の期待oracle、assertion対応と全未対応case索引、通常VSCodeへの実行依頼を追加。CI対象外条件を確認 |
 | 1.1.0 | 2026-10-10 | WSL方針PR #40を基礎に、独立した残余レビュー資料・未実行テストを初回保存 |
 
 ## 固定証拠と実行境界
@@ -47,6 +48,14 @@ WSLのrustc/Cargo/host/target/features/flags、実build graph、ELF interpreter/
 
 ## 再生成・レビュー
 
-`python scripts/verification/ac0008_matrix.py`、`python scripts/verification/ac0008_packet.py` でJSONを再生成する。`ac0008_matrix.py --check` と `test_ac0008_packet.py` は索引の再現・一意key・50行/37群・未承認状態を検査する。製品のWSL試験とは別。
+第2pushの静的oracleは `atomic-oracles.json` を正とする。37群430predicate、0060–0069の全原稿行を318個のcontext付き期待oracleへ整理した。予約語は各語ごと、0067の実行key・数値境界は値ごとにcase IDを割り当て、受理/拒否と正規値を固定した。原稿の複合シナリオでは元行の条件を必須として残す。初回の395/201索引は履歴・検索用であり、個別oracle判定には使わない。
+
+`test-assertion-catalogue.json` は実在するnamed testとassertion抜粋を記録する。実入力とassertionを照合できた限定的な対応は `exact_static_test_bindings`、同じ群の参考testは `partial_navigation` と区別する。単なる `is_err` はreason/target/span/related/callback0の証明ではない。実行statusは変更しない。
+
+個別assertion対応が未確立の全predicateと全subcase IDを `predicate-binding-gaps.json` に列挙し、特に不足する判断材料を `unresolved-oracle-decisions.json` に記載した。静的期待動作とcase分割は保存済みだが、全caseの具象fixture/完全assertion対応、製品適合判定は未完成。全網羅・全合格とは主張しない。通常VSCodeへの短い依頼文は `vscode-handoff.md`。
+
+CI0件は第2push前のheadをread-onlyで再確認した。guide-pages/guide-policy-proposal/release-auditの3workflowは全て `pull_request.branches: [main]`、前2件のpushもmain限定。#42のbaseは#40 branchなので対象外。#40はDraft・未merge、head36eeaa4。依存は維持し、設定変更・base変更・workflow dispatchを行わない。
+
+`python scripts/verification/ac0008_matrix.py`、`python scripts/verification/ac0008_packet.py`、`python scripts/verification/ac0008_atomic.py` でJSONを再生成する。matrix/atomicの `--check` と `test_ac0008_packet.py` の9件は索引の再現・一意key・50行/37群・全95原稿行の保持・未承認状態を検査する。具体的限定対応24predicate、未対応406predicateと全318subcaseは個別gap索引へ記録した。製品のWSL試験とは別。
 
 独立PRはPR #40 branchをbaseにするため、mainのみを対象とするCIは自動起動対象外になり得る。remote exact headと実際のchecksを確認し、CI未実施を成功と書かない。merge/tag/release/deploy、設定変更、外部レビュー依頼は行わない。Ethernet期限完成稿は停止状態を維持する。

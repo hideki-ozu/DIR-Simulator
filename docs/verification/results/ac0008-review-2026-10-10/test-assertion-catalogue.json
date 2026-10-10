@@ -1,0 +1,2280 @@
+{
+  "document_version": "1.1.1",
+  "tests": [
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::exact_units_and_extreme_decimal_precision",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "exact_units_and_extreme_decimal_precision",
+      "line": 39,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 48,
+          "excerpt": "        assert_eq!(parse_time(literal).unwrap(), expected, \"{literal}\");\n    }\n    for literal in [\n        \"0.1ps\",\n        \"18446744073709551616ps\",\n        \"-0ps\",\n        \"-1ps\",\n        \"01ps\","
+        },
+        {
+          "line": 65,
+          "excerpt": "        assert!(parse_time(literal).is_err(), \"{literal}\");\n    }\n    assert_eq!(quantity(\"0.5Mbps\", \"bps\").unwrap(), 500_000);\n    assert_eq!(quantity(\"1KiB\", \"B\").unwrap(), 1_024);\n    assert!(quantity(\"0.5bps\", \"bps\").is_err());\n}\n\n#[test]"
+        },
+        {
+          "line": 67,
+          "excerpt": "    assert_eq!(quantity(\"0.5Mbps\", \"bps\").unwrap(), 500_000);\n    assert_eq!(quantity(\"1KiB\", \"B\").unwrap(), 1_024);\n    assert!(quantity(\"0.5bps\", \"bps\").is_err());\n}\n\n#[test]"
+        },
+        {
+          "line": 68,
+          "excerpt": "    assert_eq!(quantity(\"1KiB\", \"B\").unwrap(), 1_024);\n    assert!(quantity(\"0.5bps\", \"bps\").is_err());\n}\n\n#[test]"
+        },
+        {
+          "line": 69,
+          "excerpt": "    assert!(quantity(\"0.5bps\", \"bps\").is_err());\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::all_can_fixtures_load_and_preserve_snapshots",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "all_can_fixtures_load_and_preserve_snapshots",
+      "line": 73,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 86,
+          "excerpt": "        assert_eq!(prepared.can.bitrate, 500_000);\n        assert_eq!(prepared.can.controllers.len(), 3);\n        assert_eq!(prepared.common.channel_count, 6);\n        assert_eq!(prepared.common.inputs.len(), 3);\n        assert_eq!(prepared.can.controllers[0].id, \"Main.a\");\n        assert_eq!(prepared.can.bus_id, \"Main.bus\");\n    }\n    let prepared = prepare(&root.join(\"delay-filter.ini\")).unwrap();"
+        },
+        {
+          "line": 87,
+          "excerpt": "        assert_eq!(prepared.can.controllers.len(), 3);\n        assert_eq!(prepared.common.channel_count, 6);\n        assert_eq!(prepared.common.inputs.len(), 3);\n        assert_eq!(prepared.can.controllers[0].id, \"Main.a\");\n        assert_eq!(prepared.can.bus_id, \"Main.bus\");\n    }\n    let prepared = prepare(&root.join(\"delay-filter.ini\")).unwrap();\n    assert_eq!(prepared.can.controllers[0].tx_processing_ps, 3_000_000);"
+        },
+        {
+          "line": 88,
+          "excerpt": "        assert_eq!(prepared.common.channel_count, 6);\n        assert_eq!(prepared.common.inputs.len(), 3);\n        assert_eq!(prepared.can.controllers[0].id, \"Main.a\");\n        assert_eq!(prepared.can.bus_id, \"Main.bus\");\n    }\n    let prepared = prepare(&root.join(\"delay-filter.ini\")).unwrap();\n    assert_eq!(prepared.can.controllers[0].tx_processing_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[0].tx_channel_ps, 2_000_000);"
+        },
+        {
+          "line": 89,
+          "excerpt": "        assert_eq!(prepared.common.inputs.len(), 3);\n        assert_eq!(prepared.can.controllers[0].id, \"Main.a\");\n        assert_eq!(prepared.can.bus_id, \"Main.bus\");\n    }\n    let prepared = prepare(&root.join(\"delay-filter.ini\")).unwrap();\n    assert_eq!(prepared.can.controllers[0].tx_processing_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[0].tx_channel_ps, 2_000_000);\n    assert_eq!(prepared.can.controllers[1].rx_channel_ps, 3_000_000);"
+        },
+        {
+          "line": 90,
+          "excerpt": "        assert_eq!(prepared.can.controllers[0].id, \"Main.a\");\n        assert_eq!(prepared.can.bus_id, \"Main.bus\");\n    }\n    let prepared = prepare(&root.join(\"delay-filter.ini\")).unwrap();\n    assert_eq!(prepared.can.controllers[0].tx_processing_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[0].tx_channel_ps, 2_000_000);\n    assert_eq!(prepared.can.controllers[1].rx_channel_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[2].rx_filter, \"none\");"
+        },
+        {
+          "line": 91,
+          "excerpt": "        assert_eq!(prepared.can.bus_id, \"Main.bus\");\n    }\n    let prepared = prepare(&root.join(\"delay-filter.ini\")).unwrap();\n    assert_eq!(prepared.can.controllers[0].tx_processing_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[0].tx_channel_ps, 2_000_000);\n    assert_eq!(prepared.can.controllers[1].rx_channel_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[2].rx_filter, \"none\");\n}"
+        },
+        {
+          "line": 94,
+          "excerpt": "    assert_eq!(prepared.can.controllers[0].tx_processing_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[0].tx_channel_ps, 2_000_000);\n    assert_eq!(prepared.can.controllers[1].rx_channel_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[2].rx_filter, \"none\");\n}\n\n#[test]"
+        },
+        {
+          "line": 95,
+          "excerpt": "    assert_eq!(prepared.can.controllers[0].tx_channel_ps, 2_000_000);\n    assert_eq!(prepared.can.controllers[1].rx_channel_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[2].rx_filter, \"none\");\n}\n\n#[test]"
+        },
+        {
+          "line": 96,
+          "excerpt": "    assert_eq!(prepared.can.controllers[1].rx_channel_ps, 3_000_000);\n    assert_eq!(prepared.can.controllers[2].rx_filter, \"none\");\n}\n\n#[test]"
+        },
+        {
+          "line": 97,
+          "excerpt": "    assert_eq!(prepared.can.controllers[2].rx_filter, \"none\");\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::defaults_overrides_empty_workload_and_limits",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "defaults_overrides_empty_workload_and_limits",
+      "line": 101,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 108,
+          "excerpt": "    assert!(fixture.prepare().is_err());\n    fs::write(\n        fixture.0.join(\"scenario.ini\"),\n        format!(\"{INI}Main.a.queueCapacity = 32\\nmax-events = 18446744073709551615\\n\"),\n    )\n    .unwrap();\n    let prepared = fixture.prepare().unwrap();\n    assert_eq!(prepared.can.controllers[0].queue_capacity, 32);"
+        },
+        {
+          "line": 115,
+          "excerpt": "    assert_eq!(prepared.can.controllers[0].queue_capacity, 32);\n    assert_eq!(prepared.can.controllers[1].queue_capacity, 64);\n    assert_eq!(prepared.common.max_events, u64::MAX);\n    assert_eq!(prepared.common.metrics_window_ps, 1_000_000_000);\n    assert!(prepared.can.generators.is_empty());\n    assert_eq!(prepared.common.inputs.len(), 2);\n}\n"
+        },
+        {
+          "line": 116,
+          "excerpt": "    assert_eq!(prepared.can.controllers[1].queue_capacity, 64);\n    assert_eq!(prepared.common.max_events, u64::MAX);\n    assert_eq!(prepared.common.metrics_window_ps, 1_000_000_000);\n    assert!(prepared.can.generators.is_empty());\n    assert_eq!(prepared.common.inputs.len(), 2);\n}\n\n#[test]"
+        },
+        {
+          "line": 117,
+          "excerpt": "    assert_eq!(prepared.common.max_events, u64::MAX);\n    assert_eq!(prepared.common.metrics_window_ps, 1_000_000_000);\n    assert!(prepared.can.generators.is_empty());\n    assert_eq!(prepared.common.inputs.len(), 2);\n}\n\n#[test]"
+        },
+        {
+          "line": 118,
+          "excerpt": "    assert_eq!(prepared.common.metrics_window_ps, 1_000_000_000);\n    assert!(prepared.can.generators.is_empty());\n    assert_eq!(prepared.common.inputs.len(), 2);\n}\n\n#[test]"
+        },
+        {
+          "line": 119,
+          "excerpt": "    assert!(prepared.can.generators.is_empty());\n    assert_eq!(prepared.common.inputs.len(), 2);\n}\n\n#[test]"
+        },
+        {
+          "line": 120,
+          "excerpt": "    assert_eq!(prepared.common.inputs.len(), 2);\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::bus_gate_names_and_same_bus_output_permutations_are_valid",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "bus_gate_names_and_same_bus_output_permutations_are_valid",
+      "line": 124,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 139,
+          "excerpt": "        assert_eq!(\n            serde_json::to_value(&prepared.can.controllers).unwrap(),\n            serde_json::to_value(&baseline.can.controllers).unwrap()\n        );\n        assert_eq!(prepared.can.controller_buses, baseline.can.controller_buses);\n        assert_eq!(prepared.common.channel_count, baseline.common.channel_count);\n    }\n    let swapped = NED"
+        },
+        {
+          "line": 143,
+          "excerpt": "        assert_eq!(prepared.can.controller_buses, baseline.can.controller_buses);\n        assert_eq!(prepared.common.channel_count, baseline.common.channel_count);\n    }\n    let swapped = NED\n        .replace(\"bus.tx_a -->\", \"bus.swap -->\")\n        .replace(\"bus.tx_b -->\", \"bus.tx_a -->\")\n        .replace(\"bus.swap -->\", \"bus.tx_b -->\");\n    let prepared = Fixture::new("
+        },
+        {
+          "line": 144,
+          "excerpt": "        assert_eq!(prepared.common.channel_count, baseline.common.channel_count);\n    }\n    let swapped = NED\n        .replace(\"bus.tx_a -->\", \"bus.swap -->\")\n        .replace(\"bus.tx_b -->\", \"bus.tx_a -->\")\n        .replace(\"bus.swap -->\", \"bus.tx_b -->\");\n    let prepared = Fixture::new(\n        &swapped,"
+        },
+        {
+          "line": 158,
+          "excerpt": "    assert_eq!(prepared.can.controllers[0].rx_channel_ps, 11_000);\n    assert_eq!(prepared.can.controllers[1].rx_channel_ps, 7_000);\n}\n\n#[test]"
+        },
+        {
+          "line": 159,
+          "excerpt": "    assert_eq!(prepared.can.controllers[1].rx_channel_ps, 7_000);\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::bus_requires_equal_input_output_counts_and_two_controllers",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "bus_requires_equal_input_output_counts_and_two_controllers",
+      "line": 163,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 169,
+          "excerpt": "        assert!(\n            Fixture::new(&model, INI)\n                .prepare()\n                .unwrap_err()\n                .message\n                .contains(\"equal counts of input/output scalar gates\")\n        );\n    }"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::compound_boundary_channels_are_independent_and_sum",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "compound_boundary_channels_are_independent_and_sum",
+      "line": 180,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 195,
+          "excerpt": "    assert_eq!(prepared.can.controllers[0].id, \"Main.a.c\");\n    assert_eq!(prepared.can.controllers[0].tx_channel_ps, 5_000);\n    assert_eq!(prepared.can.controllers[0].rx_channel_ps, 18_000);\n    assert_eq!(prepared.can.controllers[1].tx_channel_ps, 0);\n    assert_eq!(prepared.common.channel_count, 8);\n    fs::write(fixture.0.join(\"scenario.ini\"), format!(\"{INI}[Channel Main::a.out]\\ndelay = 18446744073709551615ps\\n[Channel Main.a::c.tx]\\ndelay = 1ps\\n\")).unwrap();\n    assert!(fixture.prepare().unwrap_err().message.contains(\"overflow\"));\n}"
+        },
+        {
+          "line": 196,
+          "excerpt": "    assert_eq!(prepared.can.controllers[0].tx_channel_ps, 5_000);\n    assert_eq!(prepared.can.controllers[0].rx_channel_ps, 18_000);\n    assert_eq!(prepared.can.controllers[1].tx_channel_ps, 0);\n    assert_eq!(prepared.common.channel_count, 8);\n    fs::write(fixture.0.join(\"scenario.ini\"), format!(\"{INI}[Channel Main::a.out]\\ndelay = 18446744073709551615ps\\n[Channel Main.a::c.tx]\\ndelay = 1ps\\n\")).unwrap();\n    assert!(fixture.prepare().unwrap_err().message.contains(\"overflow\"));\n}\n"
+        },
+        {
+          "line": 197,
+          "excerpt": "    assert_eq!(prepared.can.controllers[0].rx_channel_ps, 18_000);\n    assert_eq!(prepared.can.controllers[1].tx_channel_ps, 0);\n    assert_eq!(prepared.common.channel_count, 8);\n    fs::write(fixture.0.join(\"scenario.ini\"), format!(\"{INI}[Channel Main::a.out]\\ndelay = 18446744073709551615ps\\n[Channel Main.a::c.tx]\\ndelay = 1ps\\n\")).unwrap();\n    assert!(fixture.prepare().unwrap_err().message.contains(\"overflow\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 198,
+          "excerpt": "    assert_eq!(prepared.can.controllers[1].tx_channel_ps, 0);\n    assert_eq!(prepared.common.channel_count, 8);\n    fs::write(fixture.0.join(\"scenario.ini\"), format!(\"{INI}[Channel Main::a.out]\\ndelay = 18446744073709551615ps\\n[Channel Main.a::c.tx]\\ndelay = 1ps\\n\")).unwrap();\n    assert!(fixture.prepare().unwrap_err().message.contains(\"overflow\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 199,
+          "excerpt": "    assert_eq!(prepared.common.channel_count, 8);\n    fs::write(fixture.0.join(\"scenario.ini\"), format!(\"{INI}[Channel Main::a.out]\\ndelay = 18446744073709551615ps\\n[Channel Main.a::c.tx]\\ndelay = 1ps\\n\")).unwrap();\n    assert!(fixture.prepare().unwrap_err().message.contains(\"overflow\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 201,
+          "excerpt": "    assert!(fixture.prepare().unwrap_err().message.contains(\"overflow\"));\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::invalid_ned_declarations_and_wiring_are_rejected",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "invalid_ned_declarations_and_wiring_are_rejected",
+      "line": 205,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 243,
+          "excerpt": "        assert!(fixture.prepare().is_err(), \"accepted {model}\");\n    }\n    let fixture = Fixture::new(\n        &NED.replace(\"default(64)\", \"default(-1)\"),\n        &format!(\n            \"{INI}Main.a.queueCapacity = 64\\nMain.b.queueCapacity = 64\\nMain.c.queueCapacity = 64\\n\"\n        ),\n    );"
+        },
+        {
+          "line": 251,
+          "excerpt": "    assert!(\n        fixture.prepare().is_err(),\n        \"INI must not hide invalid defaults\"\n    );\n    let fixture = Fixture::new(\n        &NED.replace(\"default(64)\", \"default(4294967296)\"),\n        &format!(\n            \"{INI}Main.a.queueCapacity = 64\\nMain.b.queueCapacity = 64\\nMain.c.queueCapacity = 64\\n\""
+        },
+        {
+          "line": 261,
+          "excerpt": "    assert!(\n        fixture.prepare().is_err(),\n        \"INI must not hide an excessive queue default\"\n    );\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::truncated_ned_returns_diagnostics_without_panicking",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "truncated_ned_returns_diagnostics_without_panicking",
+      "line": 268,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn truncated_ned_returns_diagnostics_without_panicking() {\n    for (end, _) in NED.char_indices() {\n        let _ = ned::parse(&NED[..end], Path::new(\"models/demo/Main.ned\"), \"demo\");\n    }\n}\n\n#[test]\n",
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::ini_rejects_unknown_duplicate_and_malformed_inputs",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "ini_rejects_unknown_duplicate_and_malformed_inputs",
+      "line": 275,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 300,
+          "excerpt": "        assert!(fixture.prepare().is_err(), \"accepted {addition}\");\n    }\n    for ini in [\n        \"network = demo.Main\\n\",\n        \"[General]\\r\",\n        \"[General]\\nnetwork = demo.Main\\rsim-time-limit = 1ps\",\n    ] {\n        assert!(Ini::parse(ini, Path::new(\"scenario.ini\")).is_err());"
+        },
+        {
+          "line": 307,
+          "excerpt": "        assert!(Ini::parse(ini, Path::new(\"scenario.ini\")).is_err());\n    }\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::json_duplicate_unknown_fields_and_inactive_owner_conflicts",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "json_duplicate_unknown_fields_and_inactive_owner_conflicts",
+      "line": 312,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 322,
+          "excerpt": "        assert!(fixture.prepare().is_err(), \"accepted {text}\");\n    }\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::workload_validates_schedule_and_frame_beyond_time_limit",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "workload_validates_schedule_and_frame_beyond_time_limit",
+      "line": 327,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 332,
+          "excerpt": "    assert_eq!(prepared.can.generators[0].frame.data, \"00ff\");\n    assert_eq!(\n        prepared.can.generators[0].schedule.time(2),\n        Some(2_000_000_000)\n    );\n    for (field, value) in [\n        (\"times\", serde_json::json!([\"2ms\", \"1ms\"])),\n        (\"times\", serde_json::json!([\"2ms\", \"-1ps\"])),"
+        },
+        {
+          "line": 333,
+          "excerpt": "    assert_eq!(\n        prepared.can.generators[0].schedule.time(2),\n        Some(2_000_000_000)\n    );\n    for (field, value) in [\n        (\"times\", serde_json::json!([\"2ms\", \"1ms\"])),\n        (\"times\", serde_json::json!([\"2ms\", \"-1ps\"])),\n        (\"node\", serde_json::json!(\"Main.bus\")),"
+        },
+        {
+          "line": 363,
+          "excerpt": "        assert!(fixture.prepare().is_err(), \"accepted {changed}\");\n    }\n    let periodic = serde_json::json!({\"schema_version\":1,\"generators\":[{\"id\":\"p\",\"kind\":\"can.periodic.v1\",\"node\":\"Main.a\",\"start\":\"1ms\",\"period\":\"2ms\",\"phase\":\"1ms\",\"end\":\"8ms\",\"count\":3,\"frame\":{\"format\":\"extended\",\"id\":291,\"data\":\"\"}}]});\n    fixture.workload(&periodic.to_string());\n    let prepared = fixture.prepare().unwrap();\n    assert_eq!(\n        prepared.can.generators[0].schedule.time(0),\n        Some(2_000_000_000)"
+        },
+        {
+          "line": 368,
+          "excerpt": "    assert_eq!(\n        prepared.can.generators[0].schedule.time(0),\n        Some(2_000_000_000)\n    );\n    assert_eq!(\n        prepared.can.generators[0].schedule.time(2),\n        Some(6_000_000_000)\n    );"
+        },
+        {
+          "line": 372,
+          "excerpt": "    assert_eq!(\n        prepared.can.generators[0].schedule.time(2),\n        Some(6_000_000_000)\n    );\n    assert_eq!(prepared.can.generators[0].schedule.time(3), None);\n    for (field, value) in [\n        (\"period\", serde_json::json!(\"0ps\")),\n        (\"phase\", serde_json::json!(\"2ms\")),"
+        },
+        {
+          "line": 376,
+          "excerpt": "    assert_eq!(prepared.can.generators[0].schedule.time(3), None);\n    for (field, value) in [\n        (\"period\", serde_json::json!(\"0ps\")),\n        (\"phase\", serde_json::json!(\"2ms\")),\n        (\"end\", serde_json::json!(\"0ps\")),\n        (\"count\", serde_json::json!(0.5)),\n    ] {\n        let mut changed = periodic.clone();"
+        },
+        {
+          "line": 386,
+          "excerpt": "        assert!(fixture.prepare().is_err(), \"accepted {changed}\");\n    }\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/tests.rs::root_overlap_missing_files_and_symlinks_fail",
+      "path": "crates/dir-simulator/src/input/tests.rs",
+      "symbol": "root_overlap_missing_files_and_symlinks_fail",
+      "line": 391,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 396,
+          "excerpt": "    assert!(\n        fixture\n            .prepare()\n            .unwrap_err()\n            .message\n            .contains(\"overlapping\")\n    );\n    fs::write("
+        },
+        {
+          "line": 408,
+          "excerpt": "    assert!(fixture.prepare().is_err());\n    #[cfg(unix)]\n    {\n        fs::write(fixture.0.join(\"scenario.ini\"), INI).unwrap();\n        std::os::unix::fs::symlink(\"Main.ned\", fixture.0.join(\"models/demo/symlink.txt\")).unwrap();\n        assert!(fixture.prepare().unwrap_err().message.contains(\"symlink\"));\n    }\n}"
+        },
+        {
+          "line": 413,
+          "excerpt": "        assert!(fixture.prepare().unwrap_err().message.contains(\"symlink\"));\n    }\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/ned/tests.rs::non_can_rules_resolve_values_compound_paths_and_shared_channels",
+      "path": "crates/dir-simulator/src/input/ned/tests.rs",
+      "symbol": "non_can_rules_resolve_values_compound_paths_and_shared_channels",
+      "line": 74,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 81,
+          "excerpt": "    assert_eq!(\n        resolved.instances().map(|(id, _)| id).collect::<Vec<_>>(),\n        [\"Main\", \"Main.box\", \"Main.box.source\", \"Main.sink\"]\n    );\n    assert_eq!(resolved.module_paths(), [\"Main.box\"]);\n    assert!(matches!(\n        resolved.values(\"Main.box\")[\"index\"],\n        TypedValue::Integer(-2)"
+        },
+        {
+          "line": 85,
+          "excerpt": "    assert_eq!(resolved.module_paths(), [\"Main.box\"]);\n    assert!(matches!(\n        resolved.values(\"Main.box\")[\"index\"],\n        TypedValue::Integer(-2)\n    ));\n    let values = resolved.values(\"Main.box.source\");\n    assert!(matches!(values[\"count\"], TypedValue::Integer(7)));\n    assert!(matches!(&values[\"label\"], TypedValue::String(s) if s == \"override\"));"
+        },
+        {
+          "line": 86,
+          "excerpt": "    assert!(matches!(\n        resolved.values(\"Main.box\")[\"index\"],\n        TypedValue::Integer(-2)\n    ));\n    let values = resolved.values(\"Main.box.source\");\n    assert!(matches!(values[\"count\"], TypedValue::Integer(7)));\n    assert!(matches!(&values[\"label\"], TypedValue::String(s) if s == \"override\"));\n    assert!(matches!(values[\"enabled\"], TypedValue::Boolean));"
+        },
+        {
+          "line": 91,
+          "excerpt": "    assert!(matches!(values[\"count\"], TypedValue::Integer(7)));\n    assert!(matches!(&values[\"label\"], TypedValue::String(s) if s == \"override\"));\n    assert!(matches!(values[\"enabled\"], TypedValue::Boolean));\n    assert!(matches!(values[\"ratio\"], TypedValue::Double));\n    assert!(matches!(values[\"size\"], TypedValue::Quantity(1024)));\n    let overrides = BTreeMap::from([(\n        \"Main::box.out\".into(),\n        BTreeMap::from([(\"delay\".into(), \"3ns\".into())]),"
+        },
+        {
+          "line": 92,
+          "excerpt": "    assert!(matches!(&values[\"label\"], TypedValue::String(s) if s == \"override\"));\n    assert!(matches!(values[\"enabled\"], TypedValue::Boolean));\n    assert!(matches!(values[\"ratio\"], TypedValue::Double));\n    assert!(matches!(values[\"size\"], TypedValue::Quantity(1024)));\n    let overrides = BTreeMap::from([(\n        \"Main::box.out\".into(),\n        BTreeMap::from([(\"delay\".into(), \"3ns\".into())]),\n    )]);"
+        },
+        {
+          "line": 93,
+          "excerpt": "    assert!(matches!(values[\"enabled\"], TypedValue::Boolean));\n    assert!(matches!(values[\"ratio\"], TypedValue::Double));\n    assert!(matches!(values[\"size\"], TypedValue::Quantity(1024)));\n    let overrides = BTreeMap::from([(\n        \"Main::box.out\".into(),\n        BTreeMap::from([(\"delay\".into(), \"3ns\".into())]),\n    )]);\n    let channels = resolved.resolve_channels(&overrides, &TinyRules).unwrap();"
+        },
+        {
+          "line": 94,
+          "excerpt": "    assert!(matches!(values[\"ratio\"], TypedValue::Double));\n    assert!(matches!(values[\"size\"], TypedValue::Quantity(1024)));\n    let overrides = BTreeMap::from([(\n        \"Main::box.out\".into(),\n        BTreeMap::from([(\"delay\".into(), \"3ns\".into())]),\n    )]);\n    let channels = resolved.resolve_channels(&overrides, &TinyRules).unwrap();\n    assert_eq!(channels.len(), 2);"
+        },
+        {
+          "line": 95,
+          "excerpt": "    assert!(matches!(values[\"size\"], TypedValue::Quantity(1024)));\n    let overrides = BTreeMap::from([(\n        \"Main::box.out\".into(),\n        BTreeMap::from([(\"delay\".into(), \"3ns\".into())]),\n    )]);\n    let channels = resolved.resolve_channels(&overrides, &TinyRules).unwrap();\n    assert_eq!(channels.len(), 2);\n    let path = resolved.trace(\"Main.box.source.emit\").unwrap();"
+        },
+        {
+          "line": 101,
+          "excerpt": "    assert_eq!(channels.len(), 2);\n    let path = resolved.trace(\"Main.box.source.emit\").unwrap();\n    assert_eq!(path.end, \"Main.sink.accept\");\n    assert_eq!(path.delay(&channels).unwrap(), 4000);\n    let overrides = BTreeMap::from([(\n        \"Main::box.out\".into(),\n        BTreeMap::from([(\"delay\".into(), \"18446744073709551615ps\".into())]),\n    )]);"
+        },
+        {
+          "line": 103,
+          "excerpt": "    assert_eq!(path.end, \"Main.sink.accept\");\n    assert_eq!(path.delay(&channels).unwrap(), 4000);\n    let overrides = BTreeMap::from([(\n        \"Main::box.out\".into(),\n        BTreeMap::from([(\"delay\".into(), \"18446744073709551615ps\".into())]),\n    )]);\n    let channels = resolved.resolve_channels(&overrides, &TinyRules).unwrap();\n    assert!("
+        },
+        {
+          "line": 104,
+          "excerpt": "    assert_eq!(path.delay(&channels).unwrap(), 4000);\n    let overrides = BTreeMap::from([(\n        \"Main::box.out\".into(),\n        BTreeMap::from([(\"delay\".into(), \"18446744073709551615ps\".into())]),\n    )]);\n    let channels = resolved.resolve_channels(&overrides, &TinyRules).unwrap();\n    assert!(\n        path.delay(&channels)"
+        },
+        {
+          "line": 110,
+          "excerpt": "    assert!(\n        path.delay(&channels)\n            .unwrap_err()\n            .message\n            .contains(\"channel path delay overflow\")\n    );\n}\n"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/ned/tests.rs::non_can_rules_reject_payload_mismatch_through_compound_boundary",
+      "path": "crates/dir-simulator/src/input/ned/tests.rs",
+      "symbol": "non_can_rules_reject_payload_mismatch_through_compound_boundary",
+      "line": 119,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 124,
+          "excerpt": "    assert!(\n        error\n            .message\n            .contains(\"incompatible payload path: Main.box.source.emit --> Main.sink.accept\"),\n        \"{}\",\n        error.message\n    );\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/src/input/ned/tests.rs::non_can_rules_validate_unused_declarations_and_defaults_before_overrides",
+      "path": "crates/dir-simulator/src/input/ned/tests.rs",
+      "symbol": "non_can_rules_validate_unused_declarations_and_defaults_before_overrides",
+      "line": 134,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 143,
+          "excerpt": "    assert!(error.message.contains(\"tiny.Unused\"));\n    assert!(error.message.contains(\"tiny count must be nonnegative\"));\n\n    let types = declarations(&MODEL.replace(\"default(1)\", \"default(-1)\"));\n    let overrides = BTreeMap::from([(\"Main.box.source.count\".into(), \"1\".into())]);\n    assert!(\n        resolve(&types, \"tiny.Main\", &overrides, &TinyRules)\n            .err()"
+        },
+        {
+          "line": 144,
+          "excerpt": "    assert!(error.message.contains(\"tiny count must be nonnegative\"));\n\n    let types = declarations(&MODEL.replace(\"default(1)\", \"default(-1)\"));\n    let overrides = BTreeMap::from([(\"Main.box.source.count\".into(), \"1\".into())]);\n    assert!(\n        resolve(&types, \"tiny.Main\", &overrides, &TinyRules)\n            .err()\n            .unwrap()"
+        },
+        {
+          "line": 148,
+          "excerpt": "    assert!(\n        resolve(&types, \"tiny.Main\", &overrides, &TinyRules)\n            .err()\n            .unwrap()\n            .message\n            .contains(\"tiny count must be nonnegative\")\n    );\n"
+        },
+        {
+          "line": 157,
+          "excerpt": "    assert!(\n        resolve(&types, \"tiny.Main\", &overrides, &TinyRules)\n            .err()\n            .unwrap()\n            .message\n            .contains(\"parameter schema mismatch: count\")\n    );\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::wire_contract_is_complete_nullable_and_string_only",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "wire_contract_is_complete_nullable_and_string_only",
+      "line": 67,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 91,
+          "excerpt": "    assert_eq!(value.as_object().unwrap().len(), fields.len());\n    for field in fields {\n        assert!(value.get(field).is_some(), \"missing {field}\");\n    }\n    assert_eq!(value[\"seq\"], \"1\");\n    assert_eq!(value[\"primary\"], false);\n    assert_eq!(value[\"phase\"], \"finish\");\n    assert_eq!(value[\"time_ps\"], \"27\");"
+        },
+        {
+          "line": 93,
+          "excerpt": "        assert!(value.get(field).is_some(), \"missing {field}\");\n    }\n    assert_eq!(value[\"seq\"], \"1\");\n    assert_eq!(value[\"primary\"], false);\n    assert_eq!(value[\"phase\"], \"finish\");\n    assert_eq!(value[\"time_ps\"], \"27\");\n    assert!(value[\"source\"].is_null());\n    assert!(value[\"line\"].is_null());"
+        },
+        {
+          "line": 95,
+          "excerpt": "    assert_eq!(value[\"seq\"], \"1\");\n    assert_eq!(value[\"primary\"], false);\n    assert_eq!(value[\"phase\"], \"finish\");\n    assert_eq!(value[\"time_ps\"], \"27\");\n    assert!(value[\"source\"].is_null());\n    assert!(value[\"line\"].is_null());\n    assert!(value[\"event_seq\"].is_null());\n    assert_eq!("
+        },
+        {
+          "line": 96,
+          "excerpt": "    assert_eq!(value[\"primary\"], false);\n    assert_eq!(value[\"phase\"], \"finish\");\n    assert_eq!(value[\"time_ps\"], \"27\");\n    assert!(value[\"source\"].is_null());\n    assert!(value[\"line\"].is_null());\n    assert!(value[\"event_seq\"].is_null());\n    assert_eq!(\n        value[\"details\"],"
+        },
+        {
+          "line": 97,
+          "excerpt": "    assert_eq!(value[\"phase\"], \"finish\");\n    assert_eq!(value[\"time_ps\"], \"27\");\n    assert!(value[\"source\"].is_null());\n    assert!(value[\"line\"].is_null());\n    assert!(value[\"event_seq\"].is_null());\n    assert_eq!(\n        value[\"details\"],\n        json!({\"number\":\"7\",\"boolean\":\"true\",\"text\":\"same\"})"
+        },
+        {
+          "line": 98,
+          "excerpt": "    assert_eq!(value[\"time_ps\"], \"27\");\n    assert!(value[\"source\"].is_null());\n    assert!(value[\"line\"].is_null());\n    assert!(value[\"event_seq\"].is_null());\n    assert_eq!(\n        value[\"details\"],\n        json!({\"number\":\"7\",\"boolean\":\"true\",\"text\":\"same\"})\n    );"
+        },
+        {
+          "line": 99,
+          "excerpt": "    assert!(value[\"source\"].is_null());\n    assert!(value[\"line\"].is_null());\n    assert!(value[\"event_seq\"].is_null());\n    assert_eq!(\n        value[\"details\"],\n        json!({\"number\":\"7\",\"boolean\":\"true\",\"text\":\"same\"})\n    );\n    assert!(value.get(\"stage\").is_none());"
+        },
+        {
+          "line": 100,
+          "excerpt": "    assert!(value[\"line\"].is_null());\n    assert!(value[\"event_seq\"].is_null());\n    assert_eq!(\n        value[\"details\"],\n        json!({\"number\":\"7\",\"boolean\":\"true\",\"text\":\"same\"})\n    );\n    assert!(value.get(\"stage\").is_none());\n    let unknown = serde_json::to_value("
+        },
+        {
+          "line": 101,
+          "excerpt": "    assert!(value[\"event_seq\"].is_null());\n    assert_eq!(\n        value[\"details\"],\n        json!({\"number\":\"7\",\"boolean\":\"true\",\"text\":\"same\"})\n    );\n    assert!(value.get(\"stage\").is_none());\n    let unknown = serde_json::to_value(\n        Diagnostic::execution(\"custom failure\").with_reason(\"private_plugin_kind\"),"
+        },
+        {
+          "line": 102,
+          "excerpt": "    assert_eq!(\n        value[\"details\"],\n        json!({\"number\":\"7\",\"boolean\":\"true\",\"text\":\"same\"})\n    );\n    assert!(value.get(\"stage\").is_none());\n    let unknown = serde_json::to_value(\n        Diagnostic::execution(\"custom failure\").with_reason(\"private_plugin_kind\"),\n    )"
+        },
+        {
+          "line": 106,
+          "excerpt": "    assert!(value.get(\"stage\").is_none());\n    let unknown = serde_json::to_value(\n        Diagnostic::execution(\"custom failure\").with_reason(\"private_plugin_kind\"),\n    )\n    .unwrap();\n    assert_eq!(unknown[\"reason\"], \"model_failed\");\n    assert_eq!(unknown[\"details\"][\"original_reason\"], \"private_plugin_kind\");\n}"
+        },
+        {
+          "line": 111,
+          "excerpt": "    assert_eq!(unknown[\"reason\"], \"model_failed\");\n    assert_eq!(unknown[\"details\"][\"original_reason\"], \"private_plugin_kind\");\n}\n\n#[test]"
+        },
+        {
+          "line": 112,
+          "excerpt": "    assert_eq!(unknown[\"details\"][\"original_reason\"], \"private_plugin_kind\");\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::ini_unknown_key_points_to_key_after_bom_crlf_and_unicode_comment",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "ini_unknown_key_points_to_key_after_bom_crlf_and_unicode_comment",
+      "line": 116,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 120,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"unknown_parameter\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"typo\"));\n    assert_eq!(diagnostic.source.as_deref(), Some(\"/virtual/設定.ini\"));\n    assert_range(&diagnostic, text, text.find(\"typo\").unwrap(), \"typo\");\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"actual\"], \"typo\");\n}\n\n#[test]"
+        },
+        {
+          "line": 121,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"typo\"));\n    assert_eq!(diagnostic.source.as_deref(), Some(\"/virtual/設定.ini\"));\n    assert_range(&diagnostic, text, text.find(\"typo\").unwrap(), \"typo\");\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"actual\"], \"typo\");\n}\n\n#[test]"
+        },
+        {
+          "line": 122,
+          "excerpt": "    assert_eq!(diagnostic.source.as_deref(), Some(\"/virtual/設定.ini\"));\n    assert_range(&diagnostic, text, text.find(\"typo\").unwrap(), \"typo\");\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"actual\"], \"typo\");\n}\n\n#[test]"
+        },
+        {
+          "line": 123,
+          "excerpt": "    assert_range(&diagnostic, text, text.find(\"typo\").unwrap(), \"typo\");\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"actual\"], \"typo\");\n}\n\n#[test]"
+        },
+        {
+          "line": 124,
+          "excerpt": "    assert_eq!(diagnostic.details.as_ref().unwrap()[\"actual\"], \"typo\");\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::ini_invalid_value_points_to_adopted_value_not_same_default",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "ini_invalid_value_points_to_adopted_value_not_same_default",
+      "line": 128,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 135,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_type\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Main.a.queueCapacity\"));\n    assert_eq!(\n        diagnostic.source,\n        Some(fixture.0.join(\"run.ini\").to_string_lossy().into_owned())\n    );\n    assert_range(\n        &diagnostic,"
+        },
+        {
+          "line": 136,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"Main.a.queueCapacity\"));\n    assert_eq!(\n        diagnostic.source,\n        Some(fixture.0.join(\"run.ini\").to_string_lossy().into_owned())\n    );\n    assert_range(\n        &diagnostic,\n        &text,"
+        },
+        {
+          "line": 137,
+          "excerpt": "    assert_eq!(\n        diagnostic.source,\n        Some(fixture.0.join(\"run.ini\").to_string_lossy().into_owned())\n    );\n    assert_range(\n        &diagnostic,\n        &text,\n        text.find(\"\\\"wrong\\\"\").unwrap(),"
+        },
+        {
+          "line": 141,
+          "excerpt": "    assert_range(\n        &diagnostic,\n        &text,\n        text.find(\"\\\"wrong\\\"\").unwrap(),\n        \"\\\"wrong\\\"\",\n    );\n}\n"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::ini_unknown_parameter_points_to_complete_assignment_key",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "ini_unknown_parameter_points_to_complete_assignment_key",
+      "line": 150,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 154,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"unknown_parameter\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Main.a.typo\"));\n    assert_range(\n        &diagnostic,\n        &text,\n        text.find(\"Main.a.typo\").unwrap(),\n        \"Main.a.typo\",\n    );"
+        },
+        {
+          "line": 155,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"Main.a.typo\"));\n    assert_range(\n        &diagnostic,\n        &text,\n        text.find(\"Main.a.typo\").unwrap(),\n        \"Main.a.typo\",\n    );\n}"
+        },
+        {
+          "line": 156,
+          "excerpt": "    assert_range(\n        &diagnostic,\n        &text,\n        text.find(\"Main.a.typo\").unwrap(),\n        \"Main.a.typo\",\n    );\n}\n"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::ned_eof_has_empty_range_and_correct_unicode_scalar_column",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "ned_eof_has_empty_range_and_correct_unicode_scalar_column",
+      "line": 165,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 168,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"syntax_error\");\n    assert_range(&diagnostic, text, text.len(), \"\");\n    let with_newline = format!(\"{text}\\r\\n\");\n    let diagnostic =\n        parse_ned(&with_newline, Path::new(\"/virtual/example.ned\"), \"demo\").unwrap_err();\n    assert_range(&diagnostic, &with_newline, with_newline.len(), \"\");\n}\n"
+        },
+        {
+          "line": 169,
+          "excerpt": "    assert_range(&diagnostic, text, text.len(), \"\");\n    let with_newline = format!(\"{text}\\r\\n\");\n    let diagnostic =\n        parse_ned(&with_newline, Path::new(\"/virtual/example.ned\"), \"demo\").unwrap_err();\n    assert_range(&diagnostic, &with_newline, with_newline.len(), \"\");\n}\n\n#[test]"
+        },
+        {
+          "line": 173,
+          "excerpt": "    assert_range(&diagnostic, &with_newline, with_newline.len(), \"\");\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::ned_unknown_child_reference_points_to_type_token",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "ned_unknown_child_reference_points_to_type_token",
+      "line": 177,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 181,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"unknown_type\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"demo.Missing\"));\n    assert_range(\n        &diagnostic,\n        &ned,\n        ned.find(\"demo.Missing\").unwrap(),\n        \"demo.Missing\",\n    );"
+        },
+        {
+          "line": 182,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"demo.Missing\"));\n    assert_range(\n        &diagnostic,\n        &ned,\n        ned.find(\"demo.Missing\").unwrap(),\n        \"demo.Missing\",\n    );\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"type\"], \"demo.Missing\");"
+        },
+        {
+          "line": 183,
+          "excerpt": "    assert_range(\n        &diagnostic,\n        &ned,\n        ned.find(\"demo.Missing\").unwrap(),\n        \"demo.Missing\",\n    );\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"type\"], \"demo.Missing\");\n}"
+        },
+        {
+          "line": 189,
+          "excerpt": "    assert_eq!(diagnostic.details.as_ref().unwrap()[\"type\"], \"demo.Missing\");\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::nested_json_error_uses_exact_value_despite_repeated_keys",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "nested_json_error_uses_exact_value_despite_repeated_keys",
+      "line": 193,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 197,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_type\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"/generators/0/frame/id\"));\n    assert_eq!(\n        diagnostic.source,\n        Some(\n            fixture\n                .0\n                .join(\"workload.json\")"
+        },
+        {
+          "line": 198,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"/generators/0/frame/id\"));\n    assert_eq!(\n        diagnostic.source,\n        Some(\n            fixture\n                .0\n                .join(\"workload.json\")\n                .to_string_lossy()"
+        },
+        {
+          "line": 199,
+          "excerpt": "    assert_eq!(\n        diagnostic.source,\n        Some(\n            fixture\n                .0\n                .join(\"workload.json\")\n                .to_string_lossy()\n                .into_owned()"
+        },
+        {
+          "line": 209,
+          "excerpt": "    assert_range(\n        &diagnostic,\n        text,\n        text.find(\"\\\"日本語\\\"\").unwrap(),\n        \"\\\"日本語\\\"\",\n    );\n}\n"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::duplicate_json_key_points_to_second_key_and_retains_related_location",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "duplicate_json_key_points_to_second_key_and_retains_related_location",
+      "line": 218,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 222,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"duplicate_definition\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"/schema_version\"));\n    assert_range(\n        &diagnostic,\n        text,\n        text.rfind(\"\\\"schema_version\\\"\").unwrap(),\n        \"\\\"schema_version\\\"\",\n    );"
+        },
+        {
+          "line": 223,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"/schema_version\"));\n    assert_range(\n        &diagnostic,\n        text,\n        text.rfind(\"\\\"schema_version\\\"\").unwrap(),\n        \"\\\"schema_version\\\"\",\n    );\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"related_line\"], \"1\");"
+        },
+        {
+          "line": 224,
+          "excerpt": "    assert_range(\n        &diagnostic,\n        text,\n        text.rfind(\"\\\"schema_version\\\"\").unwrap(),\n        \"\\\"schema_version\\\"\",\n    );\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"related_line\"], \"1\");\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"related_column\"], \"2\");"
+        },
+        {
+          "line": 230,
+          "excerpt": "    assert_eq!(diagnostic.details.as_ref().unwrap()[\"related_line\"], \"1\");\n    assert_eq!(diagnostic.details.as_ref().unwrap()[\"related_column\"], \"2\");\n}\n\n#[test]"
+        },
+        {
+          "line": 231,
+          "excerpt": "    assert_eq!(diagnostic.details.as_ref().unwrap()[\"related_column\"], \"2\");\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::unreadable_input_has_path_and_null_positions",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "unreadable_input_has_path_and_null_positions",
+      "line": 235,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 239,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"input_unreadable\");\n    assert_eq!(diagnostic.source, Some(path.to_string_lossy().into_owned()));\n    assert_eq!(\n        (\n            diagnostic.line,\n            diagnostic.column,\n            diagnostic.end_line,\n            diagnostic.end_column"
+        },
+        {
+          "line": 240,
+          "excerpt": "    assert_eq!(diagnostic.source, Some(path.to_string_lossy().into_owned()));\n    assert_eq!(\n        (\n            diagnostic.line,\n            diagnostic.column,\n            diagnostic.end_line,\n            diagnostic.end_column\n        ),"
+        },
+        {
+          "line": 241,
+          "excerpt": "    assert_eq!(\n        (\n            diagnostic.line,\n            diagnostic.column,\n            diagnostic.end_line,\n            diagnostic.end_column\n        ),\n        (None, None, None, None)"
+        },
+        {
+          "line": 250,
+          "excerpt": "    assert!(diagnostic.time_ps.is_none());\n    assert!(diagnostic.event_seq.is_none());\n    assert!(diagnostic.details.as_ref().unwrap()[\"os_error\"].is_string());\n}\n\n#[test]"
+        },
+        {
+          "line": 251,
+          "excerpt": "    assert!(diagnostic.event_seq.is_none());\n    assert!(diagnostic.details.as_ref().unwrap()[\"os_error\"].is_string());\n}\n\n#[test]"
+        },
+        {
+          "line": 252,
+          "excerpt": "    assert!(diagnostic.details.as_ref().unwrap()[\"os_error\"].is_string());\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::preparation_stderr_and_jsonl_share_primary_object",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "preparation_stderr_and_jsonl_share_primary_object",
+      "line": 256,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 266,
+          "excerpt": "    assert_eq!(process.status.code(), Some(2));\n    let stderr: Value = serde_json::from_slice(&process.stderr).unwrap();\n    let persisted: Value =\n        serde_json::from_slice(&fs::read(output.join(\"diagnostics.jsonl\")).unwrap()).unwrap();\n    assert_eq!(stderr, persisted);\n    assert_eq!(stderr[\"seq\"], \"0\");\n    assert_eq!(stderr[\"primary\"], true);\n    assert_eq!(stderr[\"phase\"], \"prepare\");"
+        },
+        {
+          "line": 270,
+          "excerpt": "    assert_eq!(stderr, persisted);\n    assert_eq!(stderr[\"seq\"], \"0\");\n    assert_eq!(stderr[\"primary\"], true);\n    assert_eq!(stderr[\"phase\"], \"prepare\");\n    assert!(stderr[\"time_ps\"].is_null());\n    assert!(stderr[\"event_seq\"].is_null());\n}\n"
+        },
+        {
+          "line": 271,
+          "excerpt": "    assert_eq!(stderr[\"seq\"], \"0\");\n    assert_eq!(stderr[\"primary\"], true);\n    assert_eq!(stderr[\"phase\"], \"prepare\");\n    assert!(stderr[\"time_ps\"].is_null());\n    assert!(stderr[\"event_seq\"].is_null());\n}\n\n#[test]"
+        },
+        {
+          "line": 272,
+          "excerpt": "    assert_eq!(stderr[\"primary\"], true);\n    assert_eq!(stderr[\"phase\"], \"prepare\");\n    assert!(stderr[\"time_ps\"].is_null());\n    assert!(stderr[\"event_seq\"].is_null());\n}\n\n#[test]"
+        },
+        {
+          "line": 273,
+          "excerpt": "    assert_eq!(stderr[\"phase\"], \"prepare\");\n    assert!(stderr[\"time_ps\"].is_null());\n    assert!(stderr[\"event_seq\"].is_null());\n}\n\n#[test]"
+        },
+        {
+          "line": 274,
+          "excerpt": "    assert!(stderr[\"time_ps\"].is_null());\n    assert!(stderr[\"event_seq\"].is_null());\n}\n\n#[test]"
+        },
+        {
+          "line": 275,
+          "excerpt": "    assert!(stderr[\"event_seq\"].is_null());\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::runtime_guard_retains_candidate_time_and_reserved_sequence",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "runtime_guard_retains_candidate_time_and_reserved_sequence",
+      "line": 279,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 290,
+          "excerpt": "    assert_eq!(report.committed_events, \"1\");\n    let diagnostic = report.primary_diagnostic.unwrap();\n    assert_eq!(diagnostic.code, \"E-0004\");\n    assert_eq!(diagnostic.reason, \"event_limit\");\n    assert_eq!(diagnostic.stage, \"run\");\n    assert_eq!(diagnostic.time_ps, Some(report.finish_ps.parse().unwrap()));\n    assert!(diagnostic.event_seq.is_some());\n    assert!(diagnostic.source.is_none());"
+        },
+        {
+          "line": 292,
+          "excerpt": "    assert_eq!(diagnostic.code, \"E-0004\");\n    assert_eq!(diagnostic.reason, \"event_limit\");\n    assert_eq!(diagnostic.stage, \"run\");\n    assert_eq!(diagnostic.time_ps, Some(report.finish_ps.parse().unwrap()));\n    assert!(diagnostic.event_seq.is_some());\n    assert!(diagnostic.source.is_none());\n    assert!(diagnostic.line.is_none());\n    let persisted: Value ="
+        },
+        {
+          "line": 293,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"event_limit\");\n    assert_eq!(diagnostic.stage, \"run\");\n    assert_eq!(diagnostic.time_ps, Some(report.finish_ps.parse().unwrap()));\n    assert!(diagnostic.event_seq.is_some());\n    assert!(diagnostic.source.is_none());\n    assert!(diagnostic.line.is_none());\n    let persisted: Value =\n        serde_json::from_slice(&fs::read(output.join(\"diagnostics.jsonl\")).unwrap()).unwrap();"
+        },
+        {
+          "line": 294,
+          "excerpt": "    assert_eq!(diagnostic.stage, \"run\");\n    assert_eq!(diagnostic.time_ps, Some(report.finish_ps.parse().unwrap()));\n    assert!(diagnostic.event_seq.is_some());\n    assert!(diagnostic.source.is_none());\n    assert!(diagnostic.line.is_none());\n    let persisted: Value =\n        serde_json::from_slice(&fs::read(output.join(\"diagnostics.jsonl\")).unwrap()).unwrap();\n    assert_eq!(persisted, serde_json::to_value(diagnostic).unwrap());"
+        },
+        {
+          "line": 295,
+          "excerpt": "    assert_eq!(diagnostic.time_ps, Some(report.finish_ps.parse().unwrap()));\n    assert!(diagnostic.event_seq.is_some());\n    assert!(diagnostic.source.is_none());\n    assert!(diagnostic.line.is_none());\n    let persisted: Value =\n        serde_json::from_slice(&fs::read(output.join(\"diagnostics.jsonl\")).unwrap()).unwrap();\n    assert_eq!(persisted, serde_json::to_value(diagnostic).unwrap());\n}"
+        },
+        {
+          "line": 296,
+          "excerpt": "    assert!(diagnostic.event_seq.is_some());\n    assert!(diagnostic.source.is_none());\n    assert!(diagnostic.line.is_none());\n    let persisted: Value =\n        serde_json::from_slice(&fs::read(output.join(\"diagnostics.jsonl\")).unwrap()).unwrap();\n    assert_eq!(persisted, serde_json::to_value(diagnostic).unwrap());\n}\n"
+        },
+        {
+          "line": 297,
+          "excerpt": "    assert!(diagnostic.source.is_none());\n    assert!(diagnostic.line.is_none());\n    let persisted: Value =\n        serde_json::from_slice(&fs::read(output.join(\"diagnostics.jsonl\")).unwrap()).unwrap();\n    assert_eq!(persisted, serde_json::to_value(diagnostic).unwrap());\n}\n\n#[test]"
+        },
+        {
+          "line": 298,
+          "excerpt": "    assert!(diagnostic.line.is_none());\n    let persisted: Value =\n        serde_json::from_slice(&fs::read(output.join(\"diagnostics.jsonl\")).unwrap()).unwrap();\n    assert_eq!(persisted, serde_json::to_value(diagnostic).unwrap());\n}\n\n#[test]"
+        },
+        {
+          "line": 301,
+          "excerpt": "    assert_eq!(persisted, serde_json::to_value(diagnostic).unwrap());\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::stderr_and_jsonl_use_same_control_character_escaping",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "stderr_and_jsonl_use_same_control_character_escaping",
+      "line": 305,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 315,
+          "excerpt": "    assert_eq!(process.status.code(), Some(2));\n    let persisted = fs::read(output.join(\"diagnostics.jsonl\")).unwrap();\n    assert_eq!(process.stderr, persisted);\n    assert!(String::from_utf8(persisted).unwrap().contains(\"\\\\u0009\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 317,
+          "excerpt": "    assert_eq!(process.stderr, persisted);\n    assert!(String::from_utf8(persisted).unwrap().contains(\"\\\\u0009\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 318,
+          "excerpt": "    assert!(String::from_utf8(persisted).unwrap().contains(\"\\\\u0009\"));\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::every_model_family_locates_semantic_json_field_by_identity",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "every_model_family_locates_semantic_json_field_by_identity",
+      "line": 322,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 389,
+          "excerpt": "        assert_eq!(\n            diagnostic.reason, \"invalid_type\",\n            \"{family}: {diagnostic:?}\"\n        );\n        assert_eq!(\n            diagnostic.target.as_deref(),\n            Some(pointer),\n            \"{family}: {diagnostic:?}\""
+        },
+        {
+          "line": 393,
+          "excerpt": "        assert_eq!(\n            diagnostic.target.as_deref(),\n            Some(pointer),\n            \"{family}: {diagnostic:?}\"\n        );\n        assert_eq!(\n            diagnostic.source,\n            Some(path.to_string_lossy().into_owned()),"
+        },
+        {
+          "line": 398,
+          "excerpt": "        assert_eq!(\n            diagnostic.source,\n            Some(path.to_string_lossy().into_owned()),\n            \"{family}: {diagnostic:?}\"\n        );\n        assert_range(\n            &diagnostic,\n            &text,"
+        },
+        {
+          "line": 403,
+          "excerpt": "        assert_range(\n            &diagnostic,\n            &text,\n            text.find(\"\\\"日本語\\\"\").unwrap(),\n            \"\\\"日本語\\\"\",\n        );\n        assert!(diagnostic.details.as_ref().unwrap()[\"actual\"].is_string());\n        assert!(diagnostic.details.as_ref().unwrap()[\"expected\"].is_string());"
+        },
+        {
+          "line": 409,
+          "excerpt": "        assert!(diagnostic.details.as_ref().unwrap()[\"actual\"].is_string());\n        assert!(diagnostic.details.as_ref().unwrap()[\"expected\"].is_string());\n        if family == \"axi\" {\n            *json.pointer_mut(pointer).unwrap() = json!(2);\n            json[\"managers\"].as_array_mut().unwrap().pop();\n            let text = serde_json::to_string_pretty(&json).unwrap();\n            fs::write(&path, &text).unwrap();\n            let diagnostic = prepare(&fixture.0.join(config)).unwrap_err();"
+        },
+        {
+          "line": 410,
+          "excerpt": "        assert!(diagnostic.details.as_ref().unwrap()[\"expected\"].is_string());\n        if family == \"axi\" {\n            *json.pointer_mut(pointer).unwrap() = json!(2);\n            json[\"managers\"].as_array_mut().unwrap().pop();\n            let text = serde_json::to_string_pretty(&json).unwrap();\n            fs::write(&path, &text).unwrap();\n            let diagnostic = prepare(&fixture.0.join(config)).unwrap_err();\n            assert_eq!(diagnostic.target.as_deref(), Some(\"/\"));"
+        },
+        {
+          "line": 417,
+          "excerpt": "            assert_eq!(diagnostic.target.as_deref(), Some(\"/\"));\n            assert_range(&diagnostic, &text, 0, &text);\n        }\n    }\n}\n\n#[test]"
+        },
+        {
+          "line": 418,
+          "excerpt": "            assert_range(&diagnostic, &text, 0, &text);\n        }\n    }\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::json_eof_is_a_zero_width_range_after_final_scalar_or_newline",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "json_eof_is_a_zero_width_range_after_final_scalar_or_newline",
+      "line": 424,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 431,
+          "excerpt": "        assert_eq!(diagnostic.reason, \"syntax_error\");\n        assert_range(&diagnostic, text, text.len(), \"\");\n    }\n}\n\n#[test]"
+        },
+        {
+          "line": 432,
+          "excerpt": "        assert_range(&diagnostic, text, text.len(), \"\");\n    }\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/diagnostics.rs::channel_errors_use_ini_section_reference_or_adopted_value",
+      "path": "crates/dir-simulator/tests/diagnostics.rs",
+      "symbol": "channel_errors_use_ini_section_reference_or_adopted_value",
+      "line": 437,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 441,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_connection\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Main::missing\"));\n    assert_range(\n        &diagnostic,\n        &text,\n        text.find(\"Main::missing\").unwrap(),\n        \"Main::missing\",\n    );"
+        },
+        {
+          "line": 442,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"Main::missing\"));\n    assert_range(\n        &diagnostic,\n        &text,\n        text.find(\"Main::missing\").unwrap(),\n        \"Main::missing\",\n    );\n    let text = format!(\"{INI}[Channel Main::a.tx]\\ndelay = 1bad\\n\");"
+        },
+        {
+          "line": 443,
+          "excerpt": "    assert_range(\n        &diagnostic,\n        &text,\n        text.find(\"Main::missing\").unwrap(),\n        \"Main::missing\",\n    );\n    let text = format!(\"{INI}[Channel Main::a.tx]\\ndelay = 1bad\\n\");\n    fs::write(fixture.0.join(\"run.ini\"), &text).unwrap();"
+        },
+        {
+          "line": 452,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_unit\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Main::a.tx.delay\"));\n    assert_range(&diagnostic, &text, text.find(\"1bad\").unwrap(), \"1bad\");\n}"
+        },
+        {
+          "line": 453,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"Main::a.tx.delay\"));\n    assert_range(&diagnostic, &text, text.find(\"1bad\").unwrap(), \"1bad\");\n}"
+        },
+        {
+          "line": 454,
+          "excerpt": "    assert_range(&diagnostic, &text, text.find(\"1bad\").unwrap(), \"1bad\");\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry_diagnostics.rs::generic_execution_settings_use_adopted_ini_token_and_stable_reason",
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "symbol": "generic_execution_settings_use_adopted_ini_token_and_stable_reason",
+      "line": 153,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 174,
+          "excerpt": "        assert_eq!(diagnostic.reason, reason, \"{key}: {diagnostic:?}\");\n        assert_eq!(diagnostic.target.as_deref(), Some(key));\n        assert_span(\n            &diagnostic,\n            &fixture.config(),\n            &ini,\n            value,\n            ini.rfind(value).unwrap(),"
+        },
+        {
+          "line": 175,
+          "excerpt": "        assert_eq!(diagnostic.target.as_deref(), Some(key));\n        assert_span(\n            &diagnostic,\n            &fixture.config(),\n            &ini,\n            value,\n            ini.rfind(value).unwrap(),\n        );"
+        },
+        {
+          "line": 176,
+          "excerpt": "        assert_span(\n            &diagnostic,\n            &fixture.config(),\n            &ini,\n            value,\n            ini.rfind(value).unwrap(),\n        );\n        assert!(diagnostic.details.as_ref().unwrap()[\"actual\"].is_string());"
+        },
+        {
+          "line": 183,
+          "excerpt": "        assert!(diagnostic.details.as_ref().unwrap()[\"actual\"].is_string());\n        assert!(diagnostic.details.as_ref().unwrap()[\"expected\"].is_string());\n    }\n}\n\n#[test]"
+        },
+        {
+          "line": 184,
+          "excerpt": "        assert!(diagnostic.details.as_ref().unwrap()[\"expected\"].is_string());\n    }\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry_diagnostics.rs::generic_parameter_bounds_select_default_and_override_sources",
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "symbol": "generic_parameter_bounds_select_default_and_override_sources",
+      "line": 189,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 193,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_range\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"demo.Sender.count\"));\n    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        \"19\",\n        ned.find(\"19\").unwrap(),"
+        },
+        {
+          "line": 194,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"demo.Sender.count\"));\n    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        \"19\",\n        ned.find(\"19\").unwrap(),\n    );"
+        },
+        {
+          "line": 195,
+          "excerpt": "    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        \"19\",\n        ned.find(\"19\").unwrap(),\n    );\n    let ini = format!(\"{INI}Demo.a.count = 19\\r\\n\");"
+        },
+        {
+          "line": 205,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_range\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a.count\"));\n    assert_span(\n        &diagnostic,\n        &fixture.config(),\n        &ini,\n        \"19\",\n        ini.find(\"19\").unwrap(),"
+        },
+        {
+          "line": 206,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a.count\"));\n    assert_span(\n        &diagnostic,\n        &fixture.config(),\n        &ini,\n        \"19\",\n        ini.find(\"19\").unwrap(),\n    );"
+        },
+        {
+          "line": 207,
+          "excerpt": "    assert_span(\n        &diagnostic,\n        &fixture.config(),\n        &ini,\n        \"19\",\n        ini.find(\"19\").unwrap(),\n    );\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry_diagnostics.rs::unused_registered_declaration_defaults_still_obey_registry_bounds",
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "symbol": "unused_registered_declaration_defaults_still_obey_registry_bounds",
+      "line": 217,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 222,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_range\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"demo.Unused.count\"));\n    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        \"19\",\n        ned.rfind(\"19\").unwrap(),"
+        },
+        {
+          "line": 223,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"demo.Unused.count\"));\n    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        \"19\",\n        ned.rfind(\"19\").unwrap(),\n    );"
+        },
+        {
+          "line": 224,
+          "excerpt": "    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        \"19\",\n        ned.rfind(\"19\").unwrap(),\n    );\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry_diagnostics.rs::generic_unknown_types_and_declaration_schema_retain_ned_sources",
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "symbol": "generic_unknown_types_and_declaration_schema_retain_ned_sources",
+      "line": 234,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 238,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"unknown_type\");\n    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        \"demo.Missing\",\n        ned.find(\"demo.Missing\").unwrap(),\n    );"
+        },
+        {
+          "line": 239,
+          "excerpt": "    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        \"demo.Missing\",\n        ned.find(\"demo.Missing\").unwrap(),\n    );\n    let ned = NED.replace(\"int count\", \"double count\");"
+        },
+        {
+          "line": 249,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_type\");\n    assert_eq!(diagnostic.target.as_deref(), Some(\"demo.Sender.count\"));\n    let token = \"double count = default(2);\";\n    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        token,"
+        },
+        {
+          "line": 250,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"demo.Sender.count\"));\n    let token = \"double count = default(2);\";\n    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        token,\n        ned.find(token).unwrap(),"
+        },
+        {
+          "line": 252,
+          "excerpt": "    assert_span(\n        &diagnostic,\n        &fixture.0.join(\"ned/demo/model.ned\"),\n        &ned,\n        token,\n        ned.find(token).unwrap(),\n    );\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry_diagnostics.rs::structural_config_reference_errors_use_known_value_spans",
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "symbol": "structural_config_reference_errors_use_known_value_spans",
+      "line": 262,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 278,
+          "excerpt": "        assert_eq!(diagnostic.reason, \"invalid_type\");\n        assert_eq!(diagnostic.target.as_deref(), Some(key));\n        assert_span(&diagnostic, path, &text, value, text.find(value).unwrap());\n    }\n}\n\n#[test]"
+        },
+        {
+          "line": 279,
+          "excerpt": "        assert_eq!(diagnostic.target.as_deref(), Some(key));\n        assert_span(&diagnostic, path, &text, value, text.find(value).unwrap());\n    }\n}\n\n#[test]"
+        },
+        {
+          "line": 280,
+          "excerpt": "        assert_span(&diagnostic, path, &text, value, text.find(value).unwrap());\n    }\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry_diagnostics.rs::generic_run_publishes_same_annotated_preparation_diagnostic",
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "symbol": "generic_run_publishes_same_annotated_preparation_diagnostic",
+      "line": 285,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 290,
+          "excerpt": "    assert_eq!(report.exit_code, 2);\n    let diagnostic = report.primary_diagnostic.unwrap();\n    assert_eq!(diagnostic.reason, \"invalid_range\");\n    assert_span(\n        &diagnostic,\n        &fixture.config(),\n        &ini,\n        \"19\","
+        },
+        {
+          "line": 292,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"invalid_range\");\n    assert_span(\n        &diagnostic,\n        &fixture.config(),\n        &ini,\n        \"19\",\n        ini.find(\"19\").unwrap(),\n    );"
+        },
+        {
+          "line": 293,
+          "excerpt": "    assert_span(\n        &diagnostic,\n        &fixture.config(),\n        &ini,\n        \"19\",\n        ini.find(\"19\").unwrap(),\n    );\n    let persisted: Value ="
+        },
+        {
+          "line": 302,
+          "excerpt": "    assert_eq!(persisted, serde_json::to_value(diagnostic).unwrap());\n    assert_eq!(persisted[\"seq\"], \"0\");\n    assert_eq!(persisted[\"primary\"], true);\n}\n\n#[test]"
+        },
+        {
+          "line": 303,
+          "excerpt": "    assert_eq!(persisted[\"seq\"], \"0\");\n    assert_eq!(persisted[\"primary\"], true);\n}\n\n#[test]"
+        },
+        {
+          "line": 304,
+          "excerpt": "    assert_eq!(persisted[\"primary\"], true);\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry_diagnostics.rs::unused_registered_double_and_channel_defaults_obey_bounds",
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "symbol": "unused_registered_double_and_channel_defaults_obey_bounds",
+      "line": 308,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 369,
+          "excerpt": "        assert_eq!(diagnostic.reason, \"invalid_range\");\n        assert_eq!(diagnostic.target.as_deref(), Some(key));\n        assert_span(\n            &diagnostic,\n            &fixture.0.join(\"ned/demo/model.ned\"),\n            &ned,\n            token,\n            ned.rfind(token).unwrap(),"
+        },
+        {
+          "line": 370,
+          "excerpt": "        assert_eq!(diagnostic.target.as_deref(), Some(key));\n        assert_span(\n            &diagnostic,\n            &fixture.0.join(\"ned/demo/model.ned\"),\n            &ned,\n            token,\n            ned.rfind(token).unwrap(),\n        );"
+        },
+        {
+          "line": 371,
+          "excerpt": "        assert_span(\n            &diagnostic,\n            &fixture.0.join(\"ned/demo/model.ned\"),\n            &ned,\n            token,\n            ned.rfind(token).unwrap(),\n        );\n    }"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry_diagnostics.rs::static_input_callback_failure_does_not_invent_source_or_target",
+      "path": "crates/dir-simulator/tests/registry_diagnostics.rs",
+      "symbol": "static_input_callback_failure_does_not_invent_source_or_target",
+      "line": 382,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 391,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"model_config_invalid\");\n    assert!(diagnostic.source.is_none());\n    assert!(diagnostic.line.is_none());\n    assert!(diagnostic.column.is_none());\n    assert!(diagnostic.target.is_none());\n    assert_eq!(\n        diagnostic.details.as_ref().unwrap()[\"operation\"],\n        \"validate_profile_input\""
+        },
+        {
+          "line": 392,
+          "excerpt": "    assert!(diagnostic.source.is_none());\n    assert!(diagnostic.line.is_none());\n    assert!(diagnostic.column.is_none());\n    assert!(diagnostic.target.is_none());\n    assert_eq!(\n        diagnostic.details.as_ref().unwrap()[\"operation\"],\n        \"validate_profile_input\"\n    );"
+        },
+        {
+          "line": 393,
+          "excerpt": "    assert!(diagnostic.line.is_none());\n    assert!(diagnostic.column.is_none());\n    assert!(diagnostic.target.is_none());\n    assert_eq!(\n        diagnostic.details.as_ref().unwrap()[\"operation\"],\n        \"validate_profile_input\"\n    );\n}"
+        },
+        {
+          "line": 394,
+          "excerpt": "    assert!(diagnostic.column.is_none());\n    assert!(diagnostic.target.is_none());\n    assert_eq!(\n        diagnostic.details.as_ref().unwrap()[\"operation\"],\n        \"validate_profile_input\"\n    );\n}"
+        },
+        {
+          "line": 395,
+          "excerpt": "    assert!(diagnostic.target.is_none());\n    assert_eq!(\n        diagnostic.details.as_ref().unwrap()[\"operation\"],\n        \"validate_profile_input\"\n    );\n}"
+        },
+        {
+          "line": 396,
+          "excerpt": "    assert_eq!(\n        diagnostic.details.as_ref().unwrap()[\"operation\"],\n        \"validate_profile_input\"\n    );\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically",
+      "line": 223,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 226,
+          "excerpt": "    assert_eq!(prepared.node_count(), 2);\n    let first = runtime::simulate(&prepared).unwrap();\n    let second = runtime::simulate(&prepared).unwrap();\n    assert_eq!(first.common.termination, \"events_exhausted\");\n    assert_eq!(first.common.committed_events, 3); // sender, one merged arbitration, receiver\n    assert_eq!(first.common.points.len(), 2);\n    assert_eq!(\n        first"
+        },
+        {
+          "line": 229,
+          "excerpt": "    assert_eq!(first.common.termination, \"events_exhausted\");\n    assert_eq!(first.common.committed_events, 3); // sender, one merged arbitration, receiver\n    assert_eq!(first.common.points.len(), 2);\n    assert_eq!(\n        first\n            .registered\n            .as_ref()\n            .unwrap()"
+        },
+        {
+          "line": 230,
+          "excerpt": "    assert_eq!(first.common.committed_events, 3); // sender, one merged arbitration, receiver\n    assert_eq!(first.common.points.len(), 2);\n    assert_eq!(\n        first\n            .registered\n            .as_ref()\n            .unwrap()\n            .deliveries"
+        },
+        {
+          "line": 231,
+          "excerpt": "    assert_eq!(first.common.points.len(), 2);\n    assert_eq!(\n        first\n            .registered\n            .as_ref()\n            .unwrap()\n            .deliveries\n            .iter()"
+        },
+        {
+          "line": 232,
+          "excerpt": "    assert_eq!(\n        first\n            .registered\n            .as_ref()\n            .unwrap()\n            .deliveries\n            .iter()\n            .map(|e| e.time_ps)"
+        },
+        {
+          "line": 243,
+          "excerpt": "    assert_eq!(\n        serde_json::to_value(&first.registered).unwrap(),\n        serde_json::to_value(&second.registered).unwrap()\n    );\n    assert_eq!(\n        first\n            .registered\n            .unwrap()"
+        },
+        {
+          "line": 247,
+          "excerpt": "    assert_eq!(\n        first\n            .registered\n            .unwrap()\n            .model_record(\"test.Record\", \"request1\")\n            .unwrap()\n            .data[\"byte\"],\n        7"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::callback_failure_discards_every_effect_and_preserves_pending_current",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "callback_failure_discards_every_effect_and_preserves_pending_current",
+      "line": 258,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 262,
+          "excerpt": "    assert_eq!(snapshot.common.termination, \"execution_failed\");\n    assert!(snapshot.common.partial);\n    assert_eq!(snapshot.common.committed_events, 2);\n    assert_eq!(snapshot.common.pending_events, 1);\n    assert_eq!(snapshot.common.points.len(), 1);\n    assert!(snapshot.registered.unwrap().model_records.is_empty());\n}\n#[test]"
+        },
+        {
+          "line": 263,
+          "excerpt": "    assert!(snapshot.common.partial);\n    assert_eq!(snapshot.common.committed_events, 2);\n    assert_eq!(snapshot.common.pending_events, 1);\n    assert_eq!(snapshot.common.points.len(), 1);\n    assert!(snapshot.registered.unwrap().model_records.is_empty());\n}\n#[test]"
+        },
+        {
+          "line": 264,
+          "excerpt": "    assert_eq!(snapshot.common.committed_events, 2);\n    assert_eq!(snapshot.common.pending_events, 1);\n    assert_eq!(snapshot.common.points.len(), 1);\n    assert!(snapshot.registered.unwrap().model_records.is_empty());\n}\n#[test]"
+        },
+        {
+          "line": 265,
+          "excerpt": "    assert_eq!(snapshot.common.pending_events, 1);\n    assert_eq!(snapshot.common.points.len(), 1);\n    assert!(snapshot.registered.unwrap().model_records.is_empty());\n}\n#[test]"
+        },
+        {
+          "line": 266,
+          "excerpt": "    assert_eq!(snapshot.common.points.len(), 1);\n    assert!(snapshot.registered.unwrap().model_records.is_empty());\n}\n#[test]"
+        },
+        {
+          "line": 267,
+          "excerpt": "    assert!(snapshot.registered.unwrap().model_records.is_empty());\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::duplicate_registration_does_not_replace_original",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "duplicate_registration_does_not_replace_original",
+      "line": 270,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 272,
+          "excerpt": "    assert!(\n        registry\n            .register_event(EventDescriptor {\n                schema: schema(),\n                phase: 0,\n                validate\n            })\n            .is_err()"
+        },
+        {
+          "line": 281,
+          "excerpt": "    assert_eq!(registry.event(&schema()).unwrap().phase, 1);\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::unknown_schema_and_port_version_are_prepare_errors",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "unknown_schema_and_port_version_are_prepare_errors",
+      "line": 284,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 300,
+          "excerpt": "    assert!(\n        prepare_with_registry(&f.config(), r)\n            .unwrap_err()\n            .message\n            .contains(\"unregistered module event\")\n    );\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::strategy_registrations_are_executable",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "strategy_registrations_are_executable",
+      "line": 308,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 330,
+          "excerpt": "    assert_eq!(\n        r.arbitrate(\"test.first\", std::slice::from_ref(&event))\n            .unwrap(),\n        Some(0)\n    );\n    assert!(\n        !r.queue_accepts(\"test.bounded\", std::slice::from_ref(&event), &event, 1)\n            .unwrap()"
+        },
+        {
+          "line": 335,
+          "excerpt": "    assert!(\n        !r.queue_accepts(\"test.bounded\", std::slice::from_ref(&event), &event, 1)\n            .unwrap()\n    );\n    assert_eq!(r.generate(\"test.once\", &BTreeMap::new()).unwrap()[0].0, 1);\n    assert!(\n        !r.encode_output(\"test.json\", &RegisteredSnapshot::default())\n            .unwrap()"
+        },
+        {
+          "line": 339,
+          "excerpt": "    assert_eq!(r.generate(\"test.once\", &BTreeMap::new()).unwrap()[0].0, 1);\n    assert!(\n        !r.encode_output(\"test.json\", &RegisteredSnapshot::default())\n            .unwrap()\n            .is_empty()\n    );\n}\n"
+        },
+        {
+          "line": 340,
+          "excerpt": "    assert!(\n        !r.encode_output(\"test.json\", &RegisteredSnapshot::default())\n            .unwrap()\n            .is_empty()\n    );\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::initialization_error_discards_effects_and_finishes_successful_initializations",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "initialization_error_discards_effects_and_finishes_successful_initializations",
+      "line": 348,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 366,
+          "excerpt": "            assert_eq!(c.snapshot.common.termination, \"prep_failed\");\n            assert!(c.snapshot.common.points.is_empty());\n            FINISH_COUNT.fetch_add(1, Ordering::Relaxed);\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let r = registry_factories(|_| Ok(Box::new(Initializer)), |_| Ok(Box::new(Initializer)));"
+        },
+        {
+          "line": 367,
+          "excerpt": "            assert!(c.snapshot.common.points.is_empty());\n            FINISH_COUNT.fetch_add(1, Ordering::Relaxed);\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let r = registry_factories(|_| Ok(Box::new(Initializer)), |_| Ok(Box::new(Initializer)));\n    let snapshot = runtime::simulate(&prepare_with_registry(&f.config(), r).unwrap()).unwrap();"
+        },
+        {
+          "line": 375,
+          "excerpt": "    assert_eq!(snapshot.common.termination, \"prep_failed\");\n    assert_eq!(snapshot.common.committed_events, 0);\n    assert_eq!(\n        snapshot.common.diagnostics[0].target.as_deref(),\n        Some(\"Demo.b\")\n    );\n    assert_eq!(FINISH_COUNT.load(Ordering::Relaxed), 1);\n}"
+        },
+        {
+          "line": 376,
+          "excerpt": "    assert_eq!(snapshot.common.committed_events, 0);\n    assert_eq!(\n        snapshot.common.diagnostics[0].target.as_deref(),\n        Some(\"Demo.b\")\n    );\n    assert_eq!(FINISH_COUNT.load(Ordering::Relaxed), 1);\n}\n"
+        },
+        {
+          "line": 377,
+          "excerpt": "    assert_eq!(\n        snapshot.common.diagnostics[0].target.as_deref(),\n        Some(\"Demo.b\")\n    );\n    assert_eq!(FINISH_COUNT.load(Ordering::Relaxed), 1);\n}\n\n/// DIR-TEST-0081: allocation, initialization, and cleanup are observed through"
+        },
+        {
+          "line": 381,
+          "excerpt": "    assert_eq!(FINISH_COUNT.load(Ordering::Relaxed), 1);\n}\n\n/// DIR-TEST-0081: allocation, initialization, and cleanup are observed through\n/// public factories; cleanup must continue against one frozen snapshot.\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix",
+      "line": 387,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 438,
+          "excerpt": "            assert_eq!(c.snapshot.common.committed_events, expected);\n            assert_eq!(c.snapshot.common.points.len(), expected as usize);\n            assert_eq!(\n                c.snapshot.common.last_event_time_ps,\n                if expected == 0 {\n                    None\n                } else if expected == 1 {\n                    Some(10)"
+        },
+        {
+          "line": 439,
+          "excerpt": "            assert_eq!(c.snapshot.common.points.len(), expected as usize);\n            assert_eq!(\n                c.snapshot.common.last_event_time_ps,\n                if expected == 0 {\n                    None\n                } else if expected == 1 {\n                    Some(10)\n                } else {"
+        },
+        {
+          "line": 440,
+          "excerpt": "            assert_eq!(\n                c.snapshot.common.last_event_time_ps,\n                if expected == 0 {\n                    None\n                } else if expected == 1 {\n                    Some(10)\n                } else {\n                    Some(20)"
+        },
+        {
+          "line": 475,
+          "excerpt": "        assert!(calls.ends_with(&if mode == 0 {\n            vec![\"drop:Demo.a\".into()]\n        } else {\n            vec![\"drop:Demo.b\".into(), \"drop:Demo.a\".into()]\n        }));\n        let finishes: Vec<_> = calls\n            .iter()\n            .filter(|x| x.starts_with(\"finish:\"))"
+        },
+        {
+          "line": 485,
+          "excerpt": "        assert_eq!(\n            finishes,\n            if mode == 0 {\n                vec![]\n            } else if mode == 1 {\n                vec![\"finish:Demo.a\"]\n            } else {\n                vec![\"finish:Demo.b\", \"finish:Demo.a\"]"
+        },
+        {
+          "line": 496,
+          "excerpt": "            assert_eq!(s.common.termination, \"prep_failed\");\n            assert_eq!(s.common.committed_events, 0);\n            assert_eq!(s.common.pending_events, 0);\n            assert!(s.common.points.is_empty());\n            assert_eq!(\n                s.common.diagnostics[0].reason,\n                if mode == 0 {\n                    \"allocation_failed\""
+        },
+        {
+          "line": 497,
+          "excerpt": "            assert_eq!(s.common.committed_events, 0);\n            assert_eq!(s.common.pending_events, 0);\n            assert!(s.common.points.is_empty());\n            assert_eq!(\n                s.common.diagnostics[0].reason,\n                if mode == 0 {\n                    \"allocation_failed\"\n                } else {"
+        },
+        {
+          "line": 498,
+          "excerpt": "            assert_eq!(s.common.pending_events, 0);\n            assert!(s.common.points.is_empty());\n            assert_eq!(\n                s.common.diagnostics[0].reason,\n                if mode == 0 {\n                    \"allocation_failed\"\n                } else {\n                    \"initialize_failed\""
+        },
+        {
+          "line": 499,
+          "excerpt": "            assert!(s.common.points.is_empty());\n            assert_eq!(\n                s.common.diagnostics[0].reason,\n                if mode == 0 {\n                    \"allocation_failed\"\n                } else {\n                    \"initialize_failed\"\n                }"
+        },
+        {
+          "line": 500,
+          "excerpt": "            assert_eq!(\n                s.common.diagnostics[0].reason,\n                if mode == 0 {\n                    \"allocation_failed\"\n                } else {\n                    \"initialize_failed\"\n                }\n            );"
+        },
+        {
+          "line": 509,
+          "excerpt": "            assert_eq!(s.common.termination, \"execution_failed\");\n            assert!(s.common.partial);\n            let records = &s.registered.as_ref().unwrap().model_records;\n            if mode <= 3 {\n                assert_eq!(s.common.committed_events, 1);\n                assert_eq!(s.common.pending_events, 1);\n                assert_eq!(records.len(), 1);\n                assert_eq!(s.common.diagnostics[0].time_ps, Some(20));"
+        },
+        {
+          "line": 510,
+          "excerpt": "            assert!(s.common.partial);\n            let records = &s.registered.as_ref().unwrap().model_records;\n            if mode <= 3 {\n                assert_eq!(s.common.committed_events, 1);\n                assert_eq!(s.common.pending_events, 1);\n                assert_eq!(records.len(), 1);\n                assert_eq!(s.common.diagnostics[0].time_ps, Some(20));\n                assert!(s.common.diagnostics[0].message.contains(\"runtime failure\"));"
+        },
+        {
+          "line": 513,
+          "excerpt": "                assert_eq!(s.common.committed_events, 1);\n                assert_eq!(s.common.pending_events, 1);\n                assert_eq!(records.len(), 1);\n                assert_eq!(s.common.diagnostics[0].time_ps, Some(20));\n                assert!(s.common.diagnostics[0].message.contains(\"runtime failure\"));\n            } else {\n                assert_eq!(s.common.committed_events, 2);\n                assert_eq!(records.len(), 2);"
+        },
+        {
+          "line": 514,
+          "excerpt": "                assert_eq!(s.common.pending_events, 1);\n                assert_eq!(records.len(), 1);\n                assert_eq!(s.common.diagnostics[0].time_ps, Some(20));\n                assert!(s.common.diagnostics[0].message.contains(\"runtime failure\"));\n            } else {\n                assert_eq!(s.common.committed_events, 2);\n                assert_eq!(records.len(), 2);\n            }"
+        },
+        {
+          "line": 515,
+          "excerpt": "                assert_eq!(records.len(), 1);\n                assert_eq!(s.common.diagnostics[0].time_ps, Some(20));\n                assert!(s.common.diagnostics[0].message.contains(\"runtime failure\"));\n            } else {\n                assert_eq!(s.common.committed_events, 2);\n                assert_eq!(records.len(), 2);\n            }\n            assert_eq!(s.common.diagnostics.len(), if mode == 3 { 2 } else { 1 });"
+        },
+        {
+          "line": 516,
+          "excerpt": "                assert_eq!(s.common.diagnostics[0].time_ps, Some(20));\n                assert!(s.common.diagnostics[0].message.contains(\"runtime failure\"));\n            } else {\n                assert_eq!(s.common.committed_events, 2);\n                assert_eq!(records.len(), 2);\n            }\n            assert_eq!(s.common.diagnostics.len(), if mode == 3 { 2 } else { 1 });\n            if mode >= 3 {"
+        },
+        {
+          "line": 517,
+          "excerpt": "                assert!(s.common.diagnostics[0].message.contains(\"runtime failure\"));\n            } else {\n                assert_eq!(s.common.committed_events, 2);\n                assert_eq!(records.len(), 2);\n            }\n            assert_eq!(s.common.diagnostics.len(), if mode == 3 { 2 } else { 1 });\n            if mode >= 3 {\n                assert_eq!(s.common.diagnostics.last().unwrap().reason, \"finish_failed\");"
+        },
+        {
+          "line": 519,
+          "excerpt": "                assert_eq!(s.common.committed_events, 2);\n                assert_eq!(records.len(), 2);\n            }\n            assert_eq!(s.common.diagnostics.len(), if mode == 3 { 2 } else { 1 });\n            if mode >= 3 {\n                assert_eq!(s.common.diagnostics.last().unwrap().reason, \"finish_failed\");\n            }\n        }"
+        },
+        {
+          "line": 520,
+          "excerpt": "                assert_eq!(records.len(), 2);\n            }\n            assert_eq!(s.common.diagnostics.len(), if mode == 3 { 2 } else { 1 });\n            if mode >= 3 {\n                assert_eq!(s.common.diagnostics.last().unwrap().reason, \"finish_failed\");\n            }\n        }\n    }"
+        },
+        {
+          "line": 522,
+          "excerpt": "            assert_eq!(s.common.diagnostics.len(), if mode == 3 { 2 } else { 1 });\n            if mode >= 3 {\n                assert_eq!(s.common.diagnostics.last().unwrap().reason, \"finish_failed\");\n            }\n        }\n    }\n}\n"
+        },
+        {
+          "line": 524,
+          "excerpt": "                assert_eq!(s.common.diagnostics.last().unwrap().reason, \"finish_failed\");\n            }\n        }\n    }\n}\n\n/// DIR-TEST-0008/0083: release, arrival fixed point, sorted resources and\n/// backwards-phase work use the actual public registered scheduler."
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::acceptance_phase_fixed_point_resource_order_and_next_delta_repeat",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "acceptance_phase_fixed_point_resource_order_and_next_delta_repeat",
+      "line": 533,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 616,
+          "excerpt": "            assert_eq!(snapshot.common.termination, \"events_exhausted\");\n            let points = &snapshot.common.points;\n            assert_eq!(\n                points.iter().map(|p| p.value).collect::<Vec<_>>(),\n                [0, 1, 11, 2, 4, 5, 3, 5]\n            );\n            assert!(points.iter().all(|p| p.time_ps == 10));\n            assert_eq!("
+        },
+        {
+          "line": 618,
+          "excerpt": "            assert_eq!(\n                points.iter().map(|p| p.value).collect::<Vec<_>>(),\n                [0, 1, 11, 2, 4, 5, 3, 5]\n            );\n            assert!(points.iter().all(|p| p.time_ps == 10));\n            assert_eq!(\n                points\n                    .iter()"
+        },
+        {
+          "line": 622,
+          "excerpt": "            assert!(points.iter().all(|p| p.time_ps == 10));\n            assert_eq!(\n                points\n                    .iter()\n                    .map(|p| p.event_seq.unwrap())\n                    .collect::<Vec<_>>(),\n                (0..8).collect::<Vec<_>>()\n            );"
+        },
+        {
+          "line": 623,
+          "excerpt": "            assert_eq!(\n                points\n                    .iter()\n                    .map(|p| p.event_seq.unwrap())\n                    .collect::<Vec<_>>(),\n                (0..8).collect::<Vec<_>>()\n            );\n            let typed = serde_json::to_value(&snapshot.registered).unwrap();"
+        },
+        {
+          "line": 632,
+          "excerpt": "                assert_eq!(&typed, expected);\n            } else {\n                reference = Some(typed);\n            }\n        }\n    }\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::panic_is_diagnostic_and_cleanup_receives_committed_prefix",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "panic_is_diagnostic_and_cleanup_receives_committed_prefix",
+      "line": 640,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 650,
+          "excerpt": "            assert_eq!(c.snapshot.common.committed_events, 2);\n            assert_eq!(c.snapshot.common.points.len(), 1);\n            FINISH_COUNT.fetch_add(1, Ordering::Relaxed);\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let r = registry_factories(|_| Ok(Box::new(Sender)), |_| Ok(Box::new(Panics)));"
+        },
+        {
+          "line": 651,
+          "excerpt": "            assert_eq!(c.snapshot.common.points.len(), 1);\n            FINISH_COUNT.fetch_add(1, Ordering::Relaxed);\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let r = registry_factories(|_| Ok(Box::new(Sender)), |_| Ok(Box::new(Panics)));\n    let snapshot = runtime::simulate(&prepare_with_registry(&f.config(), r).unwrap()).unwrap();"
+        },
+        {
+          "line": 659,
+          "excerpt": "    assert_eq!(snapshot.common.termination, \"execution_failed\");\n    assert!(snapshot.common.diagnostics[0].message.contains(\"panicked\"));\n    assert_eq!(FINISH_COUNT.load(Ordering::Relaxed), 1);\n}\n#[test]"
+        },
+        {
+          "line": 660,
+          "excerpt": "    assert!(snapshot.common.diagnostics[0].message.contains(\"panicked\"));\n    assert_eq!(FINISH_COUNT.load(Ordering::Relaxed), 1);\n}\n#[test]"
+        },
+        {
+          "line": 661,
+          "excerpt": "    assert_eq!(FINISH_COUNT.load(Ordering::Relaxed), 1);\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::event_limit_and_half_open_time_boundary_are_enforced",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "event_limit_and_half_open_time_boundary_are_enforced",
+      "line": 664,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 669,
+          "excerpt": "    assert_eq!(failed.common.committed_events, 1);\n    assert_eq!(failed.common.pending_events, 2);\n    assert_eq!(failed.common.diagnostics[0].code, \"E-0004\");\n    prepared.common.max_events = 100;\n    prepared.common.time_limit_ps = 5;\n    let stopped = runtime::simulate(&prepared).unwrap();\n    assert_eq!(stopped.common.termination, \"time_limit\");\n    assert_eq!(stopped.common.pending_events, 1);"
+        },
+        {
+          "line": 670,
+          "excerpt": "    assert_eq!(failed.common.pending_events, 2);\n    assert_eq!(failed.common.diagnostics[0].code, \"E-0004\");\n    prepared.common.max_events = 100;\n    prepared.common.time_limit_ps = 5;\n    let stopped = runtime::simulate(&prepared).unwrap();\n    assert_eq!(stopped.common.termination, \"time_limit\");\n    assert_eq!(stopped.common.pending_events, 1);\n    assert_eq!(stopped.common.committed_events, 2);"
+        },
+        {
+          "line": 671,
+          "excerpt": "    assert_eq!(failed.common.diagnostics[0].code, \"E-0004\");\n    prepared.common.max_events = 100;\n    prepared.common.time_limit_ps = 5;\n    let stopped = runtime::simulate(&prepared).unwrap();\n    assert_eq!(stopped.common.termination, \"time_limit\");\n    assert_eq!(stopped.common.pending_events, 1);\n    assert_eq!(stopped.common.committed_events, 2);\n}"
+        },
+        {
+          "line": 675,
+          "excerpt": "    assert_eq!(stopped.common.termination, \"time_limit\");\n    assert_eq!(stopped.common.pending_events, 1);\n    assert_eq!(stopped.common.committed_events, 2);\n}\n#[test]"
+        },
+        {
+          "line": 676,
+          "excerpt": "    assert_eq!(stopped.common.pending_events, 1);\n    assert_eq!(stopped.common.committed_events, 2);\n}\n#[test]"
+        },
+        {
+          "line": 677,
+          "excerpt": "    assert_eq!(stopped.common.committed_events, 2);\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_profile_validates_owned_json_and_factory_receives_it",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_profile_validates_owned_json_and_factory_receives_it",
+      "line": 680,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 700,
+          "excerpt": "    assert_eq!(\n        prepared.registered.unwrap().models[0]\n            .profile_input\n            .model_config\n            .as_ref()\n            .unwrap()[\"answer\"],\n        42\n    );"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::registered_builtin_adapter_preserves_builtin_result",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "registered_builtin_adapter_preserves_builtin_result",
+      "line": 710,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 715,
+          "excerpt": "    assert!(!registered.registered.as_ref().unwrap().is_generic());\n    assert_eq!(plain.node_count(), registered.node_count());\n    let a = runtime::simulate(&plain).unwrap();\n    let b = runtime::simulate(&registered).unwrap();\n    assert_eq!(a.common.committed_events, b.common.committed_events);\n    assert_eq!(format!(\"{:?}\", a.can), format!(\"{:?}\", b.can));\n}\n#[test]"
+        },
+        {
+          "line": 716,
+          "excerpt": "    assert_eq!(plain.node_count(), registered.node_count());\n    let a = runtime::simulate(&plain).unwrap();\n    let b = runtime::simulate(&registered).unwrap();\n    assert_eq!(a.common.committed_events, b.common.committed_events);\n    assert_eq!(format!(\"{:?}\", a.can), format!(\"{:?}\", b.can));\n}\n#[test]"
+        },
+        {
+          "line": 719,
+          "excerpt": "    assert_eq!(a.common.committed_events, b.common.committed_events);\n    assert_eq!(format!(\"{:?}\", a.can), format!(\"{:?}\", b.can));\n}\n#[test]"
+        },
+        {
+          "line": 720,
+          "excerpt": "    assert_eq!(format!(\"{:?}\", a.can), format!(\"{:?}\", b.can));\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_run_publishes_registered_records_and_metrics",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_run_publishes_registered_records_and_metrics",
+      "line": 723,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 727,
+          "excerpt": "    assert_eq!(report.exit_code, 0);\n    let result: serde_json::Value =\n        serde_json::from_str(&std::fs::read_to_string(f.0.join(\"results/results.json\")).unwrap())\n            .unwrap();\n    assert_eq!(result[\"schema_version\"], 2);\n    assert_eq!(\n        result[\"metadata\"][\"models\"],\n        serde_json::json!(["
+        },
+        {
+          "line": 731,
+          "excerpt": "    assert_eq!(result[\"schema_version\"], 2);\n    assert_eq!(\n        result[\"metadata\"][\"models\"],\n        serde_json::json!([\n            {\"type\":\"test.Receiver\",\"version\":\"1\",\"assumptions\":[]},\n            {\"type\":\"test.Sender\",\"version\":\"1\",\"assumptions\":[]}\n        ])\n    );"
+        },
+        {
+          "line": 732,
+          "excerpt": "    assert_eq!(\n        result[\"metadata\"][\"models\"],\n        serde_json::json!([\n            {\"type\":\"test.Receiver\",\"version\":\"1\",\"assumptions\":[]},\n            {\"type\":\"test.Sender\",\"version\":\"1\",\"assumptions\":[]}\n        ])\n    );\n    assert_eq!("
+        },
+        {
+          "line": 739,
+          "excerpt": "    assert_eq!(\n        result[\"simulation\"][\"model_records\"]\n            .as_array()\n            .unwrap()\n            .len(),\n        1\n    );\n    assert!(f.0.join(\"results/manifest.json\").is_file());"
+        },
+        {
+          "line": 746,
+          "excerpt": "    assert!(f.0.join(\"results/manifest.json\").is_file());\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::live_channel_settings_override_captured_initial_state_after_prepare",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "live_channel_settings_override_captured_initial_state_after_prepare",
+      "line": 750,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 771,
+          "excerpt": "        assert_eq!(state[\"settings\"][\"delay\"], \"9ps\");\n    }\n    let provenance = result[\"metadata\"][\"value_provenance\"]\n        .as_array()\n        .unwrap()\n        .iter()\n        .find(|r| r[\"key\"] == format!(\"{channel_id}.delay\"))\n        .unwrap();"
+        },
+        {
+          "line": 779,
+          "excerpt": "    assert_eq!(provenance[\"normalized_value\"], \"3ps\");\n    let config = result[\"metadata\"][\"config\"]\n        .as_array()\n        .unwrap()\n        .iter()\n        .find(|r| r[\"key\"] == format!(\"{channel_id}.delay\"))\n        .unwrap();\n    assert_eq!(config[\"value\"], \"9ps\");"
+        },
+        {
+          "line": 786,
+          "excerpt": "    assert_eq!(config[\"value\"], \"9ps\");\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_preparation_failure_uses_registered_implementation_versions",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_preparation_failure_uses_registered_implementation_versions",
+      "line": 790,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 797,
+          "excerpt": "    assert_eq!(report.exit_code, 2);\n    let result: serde_json::Value =\n        serde_json::from_slice(&std::fs::read(output.join(\"results.json\")).unwrap()).unwrap();\n    assert_eq!(result[\"schema_version\"], 2);\n    assert_eq!(\n        result[\"metadata\"][\"models\"],\n        serde_json::json!([\n            {\"type\":\"test.Receiver\",\"version\":\"1\",\"assumptions\":[]},"
+        },
+        {
+          "line": 800,
+          "excerpt": "    assert_eq!(result[\"schema_version\"], 2);\n    assert_eq!(\n        result[\"metadata\"][\"models\"],\n        serde_json::json!([\n            {\"type\":\"test.Receiver\",\"version\":\"1\",\"assumptions\":[]},\n            {\"type\":\"test.Sender\",\"version\":\"1\",\"assumptions\":[]}\n        ])\n    );"
+        },
+        {
+          "line": 801,
+          "excerpt": "    assert_eq!(\n        result[\"metadata\"][\"models\"],\n        serde_json::json!([\n            {\"type\":\"test.Receiver\",\"version\":\"1\",\"assumptions\":[]},\n            {\"type\":\"test.Sender\",\"version\":\"1\",\"assumptions\":[]}\n        ])\n    );\n    assert_eq!(result[\"simulation\"][\"model_records\"], serde_json::json!([]));"
+        },
+        {
+          "line": 808,
+          "excerpt": "    assert_eq!(result[\"simulation\"][\"model_records\"], serde_json::json!([]));\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog",
+      "line": 812,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 828,
+          "excerpt": "    assert_eq!(report.exit_code, 2);\n    let result: serde_json::Value =\n        serde_json::from_slice(&std::fs::read(output.join(\"results.json\")).unwrap()).unwrap();\n    assert_eq!(result[\"schema_version\"], 2);\n    assert_eq!(\n        result[\"metadata\"][\"metrics\"]\n            .as_array()\n            .unwrap()"
+        },
+        {
+          "line": 831,
+          "excerpt": "    assert_eq!(result[\"schema_version\"], 2);\n    assert_eq!(\n        result[\"metadata\"][\"metrics\"]\n            .as_array()\n            .unwrap()\n            .iter()\n            .map(|m| m[\"metric_id\"].as_str().unwrap())\n            .collect::<Vec<_>>(),"
+        },
+        {
+          "line": 832,
+          "excerpt": "    assert_eq!(\n        result[\"metadata\"][\"metrics\"]\n            .as_array()\n            .unwrap()\n            .iter()\n            .map(|m| m[\"metric_id\"].as_str().unwrap())\n            .collect::<Vec<_>>(),\n        [\"test.arbitrations\", \"test.received\"]"
+        },
+        {
+          "line": 841,
+          "excerpt": "    assert_eq!(\n        result[\"metadata\"][\"model_schemas\"],\n        serde_json::json!([{\"schema_name\":\"test.Record\",\"schema_version\":1}])\n    );\n}\n"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_dynamic_builtin_name_uses_custom_registry",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_dynamic_builtin_name_uses_custom_registry",
+      "line": 921,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn custom_dynamic_builtin_name_uses_custom_registry() {\n    custom_composed_name_uses_registered_models_and_catalog(\"ethernet.l2.dynamic.v1\");\n}\n#[test]\n",
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_tsn_builtin_name_uses_custom_registry",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_tsn_builtin_name_uses_custom_registry",
+      "line": 925,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn custom_tsn_builtin_name_uses_custom_registry() {\n    custom_composed_name_uses_registered_models_and_catalog(\"ethernet.tsn.v1\");\n}\n#[test]\n",
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_gateway_builtin_name_uses_custom_registry",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_gateway_builtin_name_uses_custom_registry",
+      "line": 929,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn custom_gateway_builtin_name_uses_custom_registry() {\n    custom_composed_name_uses_registered_models_and_catalog(\"can.ethernet.gateway.v1\");\n}\n\n#[test]\n",
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::profile_rejects_module_schemas_outside_its_allowlist",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "profile_rejects_module_schemas_outside_its_allowlist",
+      "line": 934,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 946,
+          "excerpt": "    assert!(error.message.contains(\"module event excluded by profile\"));\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::channel_capability_checks_descriptor_even_when_implementation_is_permissive",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "channel_capability_checks_descriptor_even_when_implementation_is_permissive",
+      "line": 950,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 955,
+          "excerpt": "            assert!(\n                c.channel_capability(&channel, &Schema::new(\"test.propagation\", 2), &[])\n                    .is_err()\n            );\n            assert!(\n                c.channel_capability(&channel, &Schema::new(\"test.other\", 1), &[])\n                    .is_err()\n            );"
+        },
+        {
+          "line": 959,
+          "excerpt": "            assert!(\n                c.channel_capability(&channel, &Schema::new(\"test.other\", 1), &[])\n                    .is_err()\n            );\n            assert_eq!(\n                c.channel_capability(&channel, &Schema::new(\"test.propagation\", 1), &[])?,\n                ParameterValue::Quantity(3)\n            );"
+        },
+        {
+          "line": 963,
+          "excerpt": "            assert_eq!(\n                c.channel_capability(&channel, &Schema::new(\"test.propagation\", 1), &[])?,\n                ParameterValue::Quantity(3)\n            );\n            Ok(())\n        }\n        fn on_event(&mut self, _: &Envelope, _: &mut Context<'_>) -> ModelResult {\n            Ok(())"
+        },
+        {
+          "line": 1022,
+          "excerpt": "    assert_eq!(snapshot.common.termination, \"events_exhausted\");\n    assert!(snapshot.common.diagnostics.is_empty());\n}\n\n#[test]"
+        },
+        {
+          "line": 1023,
+          "excerpt": "    assert!(snapshot.common.diagnostics.is_empty());\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::zero_time_limit_without_initial_events_still_reports_time_limit",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "zero_time_limit_without_initial_events_still_reports_time_limit",
+      "line": 1027,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 1039,
+          "excerpt": "    assert_eq!(snapshot.common.termination, \"time_limit\");\n    assert_eq!(snapshot.common.committed_events, 0);\n    assert_eq!(snapshot.common.pending_events, 0);\n}\n\n#[test]"
+        },
+        {
+          "line": 1040,
+          "excerpt": "    assert_eq!(snapshot.common.committed_events, 0);\n    assert_eq!(snapshot.common.pending_events, 0);\n}\n\n#[test]"
+        },
+        {
+          "line": 1041,
+          "excerpt": "    assert_eq!(snapshot.common.pending_events, 0);\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::cancellation_excludes_current_timer_and_removes_future_tombstones_from_pending",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "cancellation_excludes_current_timer_and_removes_future_tombstones_from_pending",
+      "line": 1045,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 1057,
+          "excerpt": "            assert!(!c.cancel(self.current.as_ref().unwrap()));\n            assert!(c.cancel(self.future.as_ref().unwrap()));\n            assert!(!c.cancel(self.future.as_ref().unwrap()));\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let r = registry_factories("
+        },
+        {
+          "line": 1058,
+          "excerpt": "            assert!(c.cancel(self.future.as_ref().unwrap()));\n            assert!(!c.cancel(self.future.as_ref().unwrap()));\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let r = registry_factories(\n        |_| {"
+        },
+        {
+          "line": 1059,
+          "excerpt": "            assert!(!c.cancel(self.future.as_ref().unwrap()));\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let r = registry_factories(\n        |_| {\n            Ok(Box::new(Cancels {"
+        },
+        {
+          "line": 1074,
+          "excerpt": "    assert_eq!(snapshot.common.termination, \"events_exhausted\");\n    assert_eq!(snapshot.common.committed_events, 1);\n    assert_eq!(snapshot.common.pending_events, 0);\n}\n\n#[test]"
+        },
+        {
+          "line": 1075,
+          "excerpt": "    assert_eq!(snapshot.common.committed_events, 1);\n    assert_eq!(snapshot.common.pending_events, 0);\n}\n\n#[test]"
+        },
+        {
+          "line": 1076,
+          "excerpt": "    assert_eq!(snapshot.common.pending_events, 0);\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::custom_profile_cannot_publish_schema_two_layout_under_schema_one",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "custom_profile_cannot_publish_schema_two_layout_under_schema_one",
+      "line": 1080,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 1094,
+          "excerpt": "    assert!(\n        prepare_with_registry(&f.config(), r)\n            .unwrap_err()\n            .message\n            .contains(\"require output schema version 2\")\n    );\n}\n"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::coordinator_borrows_frozen_output_preserves_lineage_and_finishes_before_simples",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "coordinator_borrows_frozen_output_preserves_lineage_and_finishes_before_simples",
+      "line": 1143,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 1152,
+          "excerpt": "                assert_eq!(c.subject(), \"Demo\");\n                // A model cannot turn an external path into a newly granted handle.\n                assert!(c.send_at(\"Demo.a.out\", 1, schema(), vec![7]).is_err());\n                c.send_request_at(\"out\", 1, schema(), vec![7], Some(\"root-request\".into()))?;\n                c.upsert_model_record(ModelRecord {\n                    schema: Schema::new(\"test.Record\", 1),\n                    id: \"coordinator\".into(),\n                    subject: c.subject().into(),"
+        },
+        {
+          "line": 1154,
+          "excerpt": "                assert!(c.send_at(\"Demo.a.out\", 1, schema(), vec![7]).is_err());\n                c.send_request_at(\"out\", 1, schema(), vec![7], Some(\"root-request\".into()))?;\n                c.upsert_model_record(ModelRecord {\n                    schema: Schema::new(\"test.Record\", 1),\n                    id: \"coordinator\".into(),\n                    subject: c.subject().into(),\n                    time_ps: 0,\n                    data: serde_json::json!({\"byte\": 7}),"
+        },
+        {
+          "line": 1169,
+          "excerpt": "            assert_eq!(c.self_id(), \"Demo.b\");\n            assert_eq!(e.source, \"Demo.a\");\n            assert_eq!(e.request_id.as_deref(), Some(\"root-request\"));\n            assert_eq!(e.input_port.as_deref(), Some(\"in\"));\n            Ok(())\n        }\n        fn finish(&mut self, _: &FinishContext<'_>) -> ModelResult {\n            ORDER.lock().unwrap().push(format!(\"finish:{}\", self.id));"
+        },
+        {
+          "line": 1170,
+          "excerpt": "            assert_eq!(e.source, \"Demo.a\");\n            assert_eq!(e.request_id.as_deref(), Some(\"root-request\"));\n            assert_eq!(e.input_port.as_deref(), Some(\"in\"));\n            Ok(())\n        }\n        fn finish(&mut self, _: &FinishContext<'_>) -> ModelResult {\n            ORDER.lock().unwrap().push(format!(\"finish:{}\", self.id));\n            Ok(())"
+        },
+        {
+          "line": 1171,
+          "excerpt": "            assert_eq!(e.request_id.as_deref(), Some(\"root-request\"));\n            assert_eq!(e.input_port.as_deref(), Some(\"in\"));\n            Ok(())\n        }\n        fn finish(&mut self, _: &FinishContext<'_>) -> ModelResult {\n            ORDER.lock().unwrap().push(format!(\"finish:{}\", self.id));\n            Ok(())\n        }"
+        },
+        {
+          "line": 1172,
+          "excerpt": "            assert_eq!(e.input_port.as_deref(), Some(\"in\"));\n            Ok(())\n        }\n        fn finish(&mut self, _: &FinishContext<'_>) -> ModelResult {\n            ORDER.lock().unwrap().push(format!(\"finish:{}\", self.id));\n            Ok(())\n        }\n    }"
+        },
+        {
+          "line": 1198,
+          "excerpt": "    assert_eq!(prepared.node_count(), 2);\n    let snapshot = runtime::simulate(&prepared).unwrap();\n    assert_eq!(snapshot.common.termination, \"events_exhausted\");\n    assert_eq!(snapshot.common.committed_events, 1);\n    assert_eq!(snapshot.common.points[0].target, \"Demo\");\n    assert_eq!(snapshot.common.points[0].event_seq, None);\n    assert_eq!(snapshot.common.points[0].effect_seq, None);\n    assert_eq!("
+        },
+        {
+          "line": 1200,
+          "excerpt": "    assert_eq!(snapshot.common.termination, \"events_exhausted\");\n    assert_eq!(snapshot.common.committed_events, 1);\n    assert_eq!(snapshot.common.points[0].target, \"Demo\");\n    assert_eq!(snapshot.common.points[0].event_seq, None);\n    assert_eq!(snapshot.common.points[0].effect_seq, None);\n    assert_eq!(\n        snapshot\n            .registered"
+        },
+        {
+          "line": 1201,
+          "excerpt": "    assert_eq!(snapshot.common.committed_events, 1);\n    assert_eq!(snapshot.common.points[0].target, \"Demo\");\n    assert_eq!(snapshot.common.points[0].event_seq, None);\n    assert_eq!(snapshot.common.points[0].effect_seq, None);\n    assert_eq!(\n        snapshot\n            .registered\n            .unwrap()"
+        },
+        {
+          "line": 1202,
+          "excerpt": "    assert_eq!(snapshot.common.points[0].target, \"Demo\");\n    assert_eq!(snapshot.common.points[0].event_seq, None);\n    assert_eq!(snapshot.common.points[0].effect_seq, None);\n    assert_eq!(\n        snapshot\n            .registered\n            .unwrap()\n            .model_record(\"test.Record\", \"coordinator\")"
+        },
+        {
+          "line": 1203,
+          "excerpt": "    assert_eq!(snapshot.common.points[0].event_seq, None);\n    assert_eq!(snapshot.common.points[0].effect_seq, None);\n    assert_eq!(\n        snapshot\n            .registered\n            .unwrap()\n            .model_record(\"test.Record\", \"coordinator\")\n            .unwrap()"
+        },
+        {
+          "line": 1204,
+          "excerpt": "    assert_eq!(snapshot.common.points[0].effect_seq, None);\n    assert_eq!(\n        snapshot\n            .registered\n            .unwrap()\n            .model_record(\"test.Record\", \"coordinator\")\n            .unwrap()\n            .subject,"
+        },
+        {
+          "line": 1205,
+          "excerpt": "    assert_eq!(\n        snapshot\n            .registered\n            .unwrap()\n            .model_record(\"test.Record\", \"coordinator\")\n            .unwrap()\n            .subject,\n        \"Demo\""
+        },
+        {
+          "line": 1214,
+          "excerpt": "    assert_eq!(\n        *ORDER.lock().unwrap(),\n        vec![\n            \"init:Demo.a\",\n            \"init:Demo.b\",\n            \"init:@profile:test.coordinated.v1:Demo\",\n            \"finish:@profile:test.coordinated.v1:Demo\",\n            \"finish:Demo.b\","
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::coordinator_rejects_noncompound_targets_and_unowned_or_incompatible_outputs",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "coordinator_rejects_noncompound_targets_and_unowned_or_incompatible_outputs",
+      "line": 1228,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 1260,
+          "excerpt": "        assert!(error.message.contains(expected), \"{}\", error.message);\n    }\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::failed_callback_does_not_commit_cancellation_of_an_existing_timer",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "failed_callback_does_not_commit_cancellation_of_an_existing_timer",
+      "line": 1265,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 1276,
+          "excerpt": "            assert!(c.cancel(self.future.as_ref().unwrap()));\n            let subject = c.subject().to_owned();\n            c.observe(\"test.received\", &subject, 10)?;\n            Err(\"rollback cancellation\".into())\n        }\n    }\n    let f = Fixture::new();\n    let r = registry_factories("
+        },
+        {
+          "line": 1288,
+          "excerpt": "    assert_eq!(snapshot.common.termination, \"execution_failed\");\n    assert_eq!(snapshot.common.committed_events, 0);\n    assert_eq!(snapshot.common.pending_events, 2);\n    assert!(snapshot.common.points.is_empty());\n}\n\n#[test]"
+        },
+        {
+          "line": 1289,
+          "excerpt": "    assert_eq!(snapshot.common.committed_events, 0);\n    assert_eq!(snapshot.common.pending_events, 2);\n    assert!(snapshot.common.points.is_empty());\n}\n\n#[test]"
+        },
+        {
+          "line": 1290,
+          "excerpt": "    assert_eq!(snapshot.common.pending_events, 2);\n    assert!(snapshot.common.points.is_empty());\n}\n\n#[test]"
+        },
+        {
+          "line": 1291,
+          "excerpt": "    assert!(snapshot.common.points.is_empty());\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::backwards_phase_runs_after_current_arbitration_and_hits_delta_guard_with_context",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "backwards_phase_runs_after_current_arbitration_and_hits_delta_guard_with_context",
+      "line": 1295,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 1358,
+          "excerpt": "    assert_eq!(\n        snapshot\n            .common\n            .points\n            .iter()\n            .map(|point| point.value)\n            .collect::<Vec<_>>(),\n        vec![1, 4, 2, 3]"
+        },
+        {
+          "line": 1367,
+          "excerpt": "    assert_eq!(\n        snapshot\n            .common\n            .points\n            .iter()\n            .map(|point| point.event_seq)\n            .collect::<Vec<_>>(),\n        vec![Some(0), Some(0), Some(2), Some(1)]"
+        },
+        {
+          "line": 1376,
+          "excerpt": "    assert_eq!(\n        snapshot\n            .common\n            .points\n            .iter()\n            .map(|point| point.effect_seq)\n            .collect::<Vec<_>>(),\n        vec![Some(0), Some(1), Some(0), Some(0)]"
+        },
+        {
+          "line": 1387,
+          "excerpt": "    assert_eq!(failed.common.committed_events, 2);\n    assert_eq!(failed.common.pending_events, 1);\n    let diagnostic = &failed.common.diagnostics[0];\n    assert_eq!(diagnostic.code, \"E-0004\");\n    assert_eq!(diagnostic.reason, \"delta_cycle_limit\");\n    assert_eq!(diagnostic.time_ps, Some(1));\n    assert_eq!(diagnostic.event_seq, Some(1));\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a\"));"
+        },
+        {
+          "line": 1388,
+          "excerpt": "    assert_eq!(failed.common.pending_events, 1);\n    let diagnostic = &failed.common.diagnostics[0];\n    assert_eq!(diagnostic.code, \"E-0004\");\n    assert_eq!(diagnostic.reason, \"delta_cycle_limit\");\n    assert_eq!(diagnostic.time_ps, Some(1));\n    assert_eq!(diagnostic.event_seq, Some(1));\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a\"));\n}"
+        },
+        {
+          "line": 1390,
+          "excerpt": "    assert_eq!(diagnostic.code, \"E-0004\");\n    assert_eq!(diagnostic.reason, \"delta_cycle_limit\");\n    assert_eq!(diagnostic.time_ps, Some(1));\n    assert_eq!(diagnostic.event_seq, Some(1));\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 1391,
+          "excerpt": "    assert_eq!(diagnostic.reason, \"delta_cycle_limit\");\n    assert_eq!(diagnostic.time_ps, Some(1));\n    assert_eq!(diagnostic.event_seq, Some(1));\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 1392,
+          "excerpt": "    assert_eq!(diagnostic.time_ps, Some(1));\n    assert_eq!(diagnostic.event_seq, Some(1));\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 1393,
+          "excerpt": "    assert_eq!(diagnostic.event_seq, Some(1));\n    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a\"));\n}\n\n#[test]"
+        },
+        {
+          "line": 1394,
+          "excerpt": "    assert_eq!(diagnostic.target.as_deref(), Some(\"Demo.a\"));\n}\n\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/registry.rs::finish_can_retain_frozen_spool_after_full_buffer_and_tail_are_committed",
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "symbol": "finish_can_retain_frozen_spool_after_full_buffer_and_tail_are_committed",
+      "line": 1398,
+      "commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+      "assertions": [
+        {
+          "line": 1418,
+          "excerpt": "            assert!(c.snapshot.common.spool_error.is_none());\n            assert!(c.snapshot.common.points.is_empty());\n            assert_eq!(c.snapshot.common.iter_points().unwrap().count(), 4097);\n            *RETAINED.lock().unwrap() = c.snapshot.common.point_spool.clone();\n            Ok(())\n        }\n    }\n    let f = Fixture::new();"
+        },
+        {
+          "line": 1419,
+          "excerpt": "            assert!(c.snapshot.common.points.is_empty());\n            assert_eq!(c.snapshot.common.iter_points().unwrap().count(), 4097);\n            *RETAINED.lock().unwrap() = c.snapshot.common.point_spool.clone();\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let registry = registry_factories("
+        },
+        {
+          "line": 1420,
+          "excerpt": "            assert_eq!(c.snapshot.common.iter_points().unwrap().count(), 4097);\n            *RETAINED.lock().unwrap() = c.snapshot.common.point_spool.clone();\n            Ok(())\n        }\n    }\n    let f = Fixture::new();\n    let registry = registry_factories(\n        |_| Ok(Box::new(Observes)),"
+        },
+        {
+          "line": 1433,
+          "excerpt": "    assert_eq!(report.termination, \"events_exhausted\");\n    assert_eq!(report.exit_code, 0);\n    let result: serde_json::Value =\n        serde_json::from_slice(&std::fs::read(output.join(\"results.json\")).unwrap()).unwrap();\n    assert_eq!(\n        result[\"simulation\"][\"records\"].as_array().unwrap().len(),\n        4097\n    );"
+        },
+        {
+          "line": 1434,
+          "excerpt": "    assert_eq!(report.exit_code, 0);\n    let result: serde_json::Value =\n        serde_json::from_slice(&std::fs::read(output.join(\"results.json\")).unwrap()).unwrap();\n    assert_eq!(\n        result[\"simulation\"][\"records\"].as_array().unwrap().len(),\n        4097\n    );\n    *RETAINED.lock().unwrap() = None;"
+        },
+        {
+          "line": 1437,
+          "excerpt": "    assert_eq!(\n        result[\"simulation\"][\"records\"].as_array().unwrap().len(),\n        4097\n    );\n    *RETAINED.lock().unwrap() = None;\n    assert!(!std::fs::read_dir(&output).unwrap().any(|entry| {\n        entry\n            .unwrap()"
+        },
+        {
+          "line": 1442,
+          "excerpt": "    assert!(!std::fs::read_dir(&output).unwrap().any(|entry| {\n        entry\n            .unwrap()\n            .file_name()\n            .to_string_lossy()\n            .starts_with(\".dir-observations-\")\n    }));\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_bound_to_atomic_WSL_log"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_ned_rejections.rs::import_is_explicitly_rejected_with_ned_source",
+      "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+      "symbol": "import_is_explicitly_rejected_with_ned_source",
+      "line": 41,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn import_is_explicitly_rejected_with_ned_source() {\n    Fixture::new().reject(|s| s.replacen(\"package demo;\", \"package demo;\\nimport demo.*;\", 1));\n}\n#[test]\n",
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_ned_rejections.rs::inheritance_is_explicitly_rejected_with_ned_source",
+      "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+      "symbol": "inheritance_is_explicitly_rejected_with_ned_source",
+      "line": 45,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn inheritance_is_explicitly_rejected_with_ned_source() {\n    Fixture::new().reject(|s| s.replacen(\"network Main\", \"network Main extends demo.Base\", 1));\n}\n#[test]\n",
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_ned_rejections.rs::vector_is_explicitly_rejected_with_ned_source",
+      "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+      "symbol": "vector_is_explicitly_rejected_with_ned_source",
+      "line": 49,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn vector_is_explicitly_rejected_with_ned_source() {\n    Fixture::new().reject(|s| s.replacen(\"a: demo.Controller\", \"a[2]: demo.Controller\", 1));\n}\n#[test]\n",
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_ned_rejections.rs::unqualified_child_type_is_explicitly_rejected_with_ned_source",
+      "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+      "symbol": "unqualified_child_type_is_explicitly_rejected_with_ned_source",
+      "line": 53,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn unqualified_child_type_is_explicitly_rejected_with_ned_source() {\n    Fixture::new().reject(|s| s.replacen(\"a: demo.Controller\", \"a: Controller\", 1));\n}\n#[test]\n",
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_ned_rejections.rs::inout_is_explicitly_rejected_with_ned_source",
+      "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+      "symbol": "inout_is_explicitly_rejected_with_ned_source",
+      "line": 57,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn inout_is_explicitly_rejected_with_ned_source() {\n    Fixture::new().reject(|s| s.replacen(\"output tx;\", \"inout tx;\", 1));\n}\n#[test]\n",
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_ned_rejections.rs::allowunconnected_is_explicitly_rejected_with_ned_source",
+      "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+      "symbol": "allowunconnected_is_explicitly_rejected_with_ned_source",
+      "line": 61,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [],
+      "assertion_status": "no_direct_assertion; helper invocation or no-panic loop only",
+      "test_body_excerpt": "fn allowunconnected_is_explicitly_rejected_with_ned_source() {\n    Fixture::new().reject(|s| s.replacen(\"connections:\", \"connections allowunconnected:\", 1));\n}\n",
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_paths.rs::classical_can_cli_run_matches_plain_observable_projection",
+      "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+      "symbol": "classical_can_cli_run_matches_plain_observable_projection",
+      "line": 48,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [
+        {
+          "line": 60,
+          "excerpt": "    assert!(execution.status.success(), \"{}\", String::from_utf8_lossy(&execution.stderr));\n    assert_eq!(projection(&destination), expected);\n}\n#[test]"
+        },
+        {
+          "line": 61,
+          "excerpt": "    assert_eq!(projection(&destination), expected);\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_paths.rs::classical_can_run_config_matches_plain_observable_projection",
+      "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+      "symbol": "classical_can_run_config_matches_plain_observable_projection",
+      "line": 64,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [
+        {
+          "line": 68,
+          "excerpt": "    assert_eq!(run_config(&fixture(), &destination).unwrap().exit_code, 0);\n    assert_eq!(projection(&destination), expected);\n}\n#[test]"
+        },
+        {
+          "line": 69,
+          "excerpt": "    assert_eq!(projection(&destination), expected);\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_paths.rs::classical_can_prepare_and_run_preserve_analytic_competition",
+      "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+      "symbol": "classical_can_prepare_and_run_preserve_analytic_competition",
+      "line": 72,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [
+        {
+          "line": 75,
+          "excerpt": "    assert!(prepared.registered.is_none());\n    let snapshot = dir_simulator::runtime::simulate(&prepared).unwrap();\n    // Independent 500kbps CAN expectation, not copied from the reference run.\n    let mut sent: Vec<_> = snapshot.can.requests.iter().collect();\n    sent.sort_by_key(|r| r.sof_ps);\n    assert_eq!(sent.len(), 2);\n    assert_eq!(sent[0].request_id, \"a:0\");\n    assert_eq!(sent[1].request_id, \"b:0\");"
+        },
+        {
+          "line": 80,
+          "excerpt": "    assert_eq!(sent.len(), 2);\n    assert_eq!(sent[0].request_id, \"a:0\");\n    assert_eq!(sent[1].request_id, \"b:0\");\n    assert_eq!(sent[0].sof_ps, Some(0));\n    assert_eq!(sent[1].sof_ps, Some(106_000_000));\n    assert_eq!(sent[0].eof_ps, Some(100_000_000));\n    assert_eq!(sent[1].eof_ps, Some(200_000_000));\n    let destination = output.0.join(\"prepare-run\");"
+        },
+        {
+          "line": 81,
+          "excerpt": "    assert_eq!(sent[0].request_id, \"a:0\");\n    assert_eq!(sent[1].request_id, \"b:0\");\n    assert_eq!(sent[0].sof_ps, Some(0));\n    assert_eq!(sent[1].sof_ps, Some(106_000_000));\n    assert_eq!(sent[0].eof_ps, Some(100_000_000));\n    assert_eq!(sent[1].eof_ps, Some(200_000_000));\n    let destination = output.0.join(\"prepare-run\");\n    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);"
+        },
+        {
+          "line": 82,
+          "excerpt": "    assert_eq!(sent[1].request_id, \"b:0\");\n    assert_eq!(sent[0].sof_ps, Some(0));\n    assert_eq!(sent[1].sof_ps, Some(106_000_000));\n    assert_eq!(sent[0].eof_ps, Some(100_000_000));\n    assert_eq!(sent[1].eof_ps, Some(200_000_000));\n    let destination = output.0.join(\"prepare-run\");\n    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);\n    let expected = plain_reference(&output.0.join(\"reference\"));"
+        },
+        {
+          "line": 83,
+          "excerpt": "    assert_eq!(sent[0].sof_ps, Some(0));\n    assert_eq!(sent[1].sof_ps, Some(106_000_000));\n    assert_eq!(sent[0].eof_ps, Some(100_000_000));\n    assert_eq!(sent[1].eof_ps, Some(200_000_000));\n    let destination = output.0.join(\"prepare-run\");\n    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);\n    let expected = plain_reference(&output.0.join(\"reference\"));\n    assert_eq!(projection(&destination), expected);"
+        },
+        {
+          "line": 84,
+          "excerpt": "    assert_eq!(sent[1].sof_ps, Some(106_000_000));\n    assert_eq!(sent[0].eof_ps, Some(100_000_000));\n    assert_eq!(sent[1].eof_ps, Some(200_000_000));\n    let destination = output.0.join(\"prepare-run\");\n    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);\n    let expected = plain_reference(&output.0.join(\"reference\"));\n    assert_eq!(projection(&destination), expected);\n}"
+        },
+        {
+          "line": 85,
+          "excerpt": "    assert_eq!(sent[0].eof_ps, Some(100_000_000));\n    assert_eq!(sent[1].eof_ps, Some(200_000_000));\n    let destination = output.0.join(\"prepare-run\");\n    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);\n    let expected = plain_reference(&output.0.join(\"reference\"));\n    assert_eq!(projection(&destination), expected);\n}\n#[test]"
+        },
+        {
+          "line": 86,
+          "excerpt": "    assert_eq!(sent[1].eof_ps, Some(200_000_000));\n    let destination = output.0.join(\"prepare-run\");\n    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);\n    let expected = plain_reference(&output.0.join(\"reference\"));\n    assert_eq!(projection(&destination), expected);\n}\n#[test]"
+        },
+        {
+          "line": 88,
+          "excerpt": "    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);\n    let expected = plain_reference(&output.0.join(\"reference\"));\n    assert_eq!(projection(&destination), expected);\n}\n#[test]"
+        },
+        {
+          "line": 90,
+          "excerpt": "    assert_eq!(projection(&destination), expected);\n}\n#[test]"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_run"
+    },
+    {
+      "test_id": "crates/dir-simulator/tests/ac0008_paths.rs::classical_can_prepare_with_registry_and_run_uses_builtin_adapter",
+      "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+      "symbol": "classical_can_prepare_with_registry_and_run_uses_builtin_adapter",
+      "line": 93,
+      "commit": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+      "assertions": [
+        {
+          "line": 97,
+          "excerpt": "    assert!(!prepared.registered.as_ref().unwrap().is_generic());\n    let destination = output.0.join(\"registry-run\");\n    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);\n    assert_eq!(projection(&destination), expected);\n}"
+        },
+        {
+          "line": 99,
+          "excerpt": "    assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);\n    assert_eq!(projection(&destination), expected);\n}"
+        },
+        {
+          "line": 100,
+          "excerpt": "    assert_eq!(projection(&destination), expected);\n}"
+        }
+      ],
+      "assertion_status": "direct_assertion_excerpt",
+      "test_body_excerpt": null,
+      "execution_status": "not_run"
+    }
+  ],
+  "assertion_excerpts_are_navigation": true
+}
