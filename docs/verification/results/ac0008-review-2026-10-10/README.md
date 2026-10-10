@@ -1,6 +1,6 @@
 # AC0008 残余証拠・レビュー提案
 
-文書バージョン：`1.1.2`  
+文書バージョン：`1.1.3`  
 文書ID：`ac0008-review-evidence`  
 対象：固定製品 `0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c`  
 状態：未承認・未完了。合格証明ではない。
@@ -9,6 +9,7 @@
 
 | 文書版 | 日付 | push単位の内容 |
 | --- | --- | --- |
+| 1.1.3 | 2026-10-10 | 保存済み人口・固定Snowball出典の別追補を追加。旧packet/当時のnot_runと未承認状態を保持し、対象・集合別の追加根拠を参照 |
 | 1.1.2 | 2026-10-10 | 公開準備の証拠整合修正：初回4件の実行記録を保持し、第2pushの9件構成をmerge済みsourceとbyte照合して再実行。別の名前付きログ・JSONへ9件成功を記録 |
 | 1.1.1 | 2026-10-10 | 第2push：37群の個別predicate、0060–0069の期待oracle、assertion対応と全未対応case索引、通常VSCodeへの実行依頼を追加。CI対象外条件を確認 |
 | 1.1.0 | 2026-10-10 | WSL方針PR #40を基礎に、独立した残余レビュー資料・未実行テストを初回保存 |
@@ -64,3 +65,12 @@ CI0件は第2push前のheadをread-onlyで再確認した。guide-pages/guide-po
 ## 初回4件と第2pushの9件構成の記録
 
 [execution-status.json](execution-status.json) の `packet_unit_tests=4` は初回の歴史記録として保持する。第2pushで追加した9件の構成は、2026-10-10 06:57 UTCに[merge commit 528cf4a2](https://github.com/hideki-ozu/DIR-Simulator/commit/528cf4a2caaa54c5b65c3299fa67e171cf43152e)のscript・入力10ファイルとbyte照合し、Windows Python 3.11で改めて実行した。[新規実行JSON](packet-tests-rerun-2026-10-10.json)と[名前付き9件のログ](packet-tests-rerun-2026-10-10.log)を別に保存する。これは今回の再実行の証拠であり、第2push当時の実行時刻を復元した記録ではない。Python packetの構造検査の成功をRust製品試験、全atomic・AC0008適合、採用承認・作者申告へ転用しない。
+
+
+## 2026-10-10 出自・配布人口の限定追補
+
+上記の出自・採用・配布人口の欠落記述は当時のpacketの範囲として保持する。後から保存された証跡と公開固定URLによる確認範囲は[別の限定追補](../ac0008-origin-followup-2026-10-10/README.md)および[scoped-reconciliation.json](../ac0008-origin-followup-2026-10-10/scoped-reconciliation.json)を参照する。
+
+Linux metadata30と観測compiler外部28、再利用環境17 wheels、固定ガイド27 assets、固定0b7b23d ELFの動的依存には、それぞれ限定された保存根拠がある。完全な静的包含や現在のb455156 binaryを新規測定した結果とは区別する。Snowball v0.3は固定gitlink・2011 fork・MPL1.1原典・関数本体3,743文字対応を確認し、Among/wrapper変更、日本語identity stemmer、元Urim archive/import履歴の未確認を分ける。
+
+旧ledger-review-proposals.jsonとac0008_packet.pyは変更せず、今回の追補を別checkerで検査する。旧一律欠落欄を再生成しても本追補の参照を外さない。UMD原典情報は保存済みとして維持し、最終統合・採用判断を残す。50行のadoption、40行のOR選択、作者申告、rustix CC0不足は未承認・未解決のままである。Library原JSONの転送成功や新規WSL実行を主張しない。

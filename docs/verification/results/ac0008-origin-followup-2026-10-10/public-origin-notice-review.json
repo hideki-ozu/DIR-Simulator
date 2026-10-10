@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "document_version": "1.1.0",
+  "document_id": "ac0008-public-origin-notice-review",
+  "document_history": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-10",
+      "change": "Six fixed public history observations, notice/source integration and bounded rustix cfg reasoning"
+    }
+  ],
+  "history": [
+    {
+      "sha": "f7cdf98e5be76f77f64ecf4cf17acc2d907f6e60",
+      "url": "https://github.com/fortnightlabs/snowball-js/commit/f7cdf98e5be76f77f64ecf4cf17acc2d907f6e60",
+      "date": "2011-03-09T23:17:04Z",
+      "parents": [],
+      "message": "fork from svn; add npm support",
+      "relevant_files": [
+        {
+          "path": "stemmer/src/Among.js",
+          "blob": "25eb4a104ae5fc5d5c9af57e2bcbe5573461b12a",
+          "patch_sha256": "b38ddfb5756b51beea584b1218be8f0a6029e080f8602731af92f11dac6c5c3d"
+        },
+        {
+          "path": "stemmer/src/SnowballProgram.js",
+          "blob": "9979ec994a215372cfb1c13f28b653eb8aeaa937",
+          "patch_sha256": "b093addf6d27add22212897bef8be4d57a63a28ffae50cf66b060876e54cf8e3"
+        }
+      ],
+      "observation": "公開Git root。commit messageはSVN由来を述べるが、そのSVN履歴は再構成していない"
+    },
+    {
+      "sha": "8894a6ebc81faf6e7e713c0a8f51098ec1ab562b",
+      "url": "https://github.com/MihaiValentin/lunr-languages/commit/8894a6ebc81faf6e7e713c0a8f51098ec1ab562b",
+      "date": "2014-04-20T15:40:49Z",
+      "parents": [],
+      "message": "lunr languages - first commit",
+      "relevant_files": [
+        {
+          "path": "lunr.stemmer.support.js",
+          "blob": "8e4e50b368b7aab946334cf21411404587bdada8",
+          "patch_sha256": "12f3edf9c31af82f916081611a29adb131af9d10af399f76bfbc0b961a7c2050"
+        }
+      ],
+      "observation": "公開Git rootでsupport.jsにOleg Mazko 2010/Urim/MPLの表示とAmongのinstance helperが既にある"
+    },
+    {
+      "sha": "504557d1bcfa9f5120eb587c122e5e00c8e2868e",
+      "url": "https://github.com/MihaiValentin/lunr-languages/commit/504557d1bcfa9f5120eb587c122e5e00c8e2868e",
+      "date": "2014-07-26T23:21:32Z",
+      "parents": [
+        "170d0fd48b3ff4a6ed1cb0323dbb3d4d010c28be"
+      ],
+      "message": "add support for AMD/CommonJS",
+      "relevant_files": [
+        {
+          "path": "lunr.stemmer.support.js",
+          "blob": "eac508aa3550806d3d4bff45aaaab9762d1f8b40",
+          "patch_sha256": "ffc91b3a4b3b9f6fa79bfaadc72f2fd37e85626b3fbb1c6454f785facdef1443"
+        }
+      ],
+      "observation": "support.jsへAMD/CommonJS/browser wrapperを追加。returnExports.js参照を含む。exact import revisionは未確定"
+    },
+    {
+      "sha": "3cb5ebfde3c541f84089d06736ef4baccb812bb0",
+      "url": "https://github.com/MihaiValentin/lunr-languages/commit/3cb5ebfde3c541f84089d06736ef4baccb812bb0",
+      "date": "2014-07-27T11:44:04Z",
+      "parents": [
+        "73799f4413074bfca0b8876ac5d8091b2fbdd61f"
+      ],
+      "message": "add build support for lunr-languages",
+      "relevant_files": [
+        {
+          "path": ".gitmodules",
+          "blob": "460b6f86e1821c0a35216ede06346a1f4280c636",
+          "patch_sha256": "21661c69614e0bb627c1ac93d4ef73d7fac99bad743a7ea1abae04b5888185f2"
+        },
+        {
+          "path": "build/snowball-js",
+          "blob": "f7cdf98e5be76f77f64ecf4cf17acc2d907f6e60",
+          "patch_sha256": "06a32d931d593f2cae240f1574d4a2f07558fb53218ebc3940c1ea1530bbd31f"
+        }
+      ],
+      "observation": "build/snowball-js gitlinkをf7cdf98へ固定し、.gitmodulesにfortnightlabs URLを追加"
+    },
+    {
+      "sha": "7965e9674a8e5299d9f9e9150b3883acfd13d2c9",
+      "url": "https://github.com/MihaiValentin/lunr-languages/commit/7965e9674a8e5299d9f9e9150b3883acfd13d2c9",
+      "date": "2015-10-29T19:23:42Z",
+      "parents": [
+        "75b03cb89c9b93f92b6abfe9d942a560776723ec"
+      ],
+      "message": "Multi-language support",
+      "relevant_files": [
+        {
+          "path": "lunr.stemmer.support.js",
+          "blob": "abfd3003755bca0303222530f8ab9bbc4a63253d",
+          "patch_sha256": "e10ded1a490d09211815bd0466717845e611a1e7e36d4f60c12308241c6f4b14"
+        }
+      ],
+      "observation": "trimmerSupport.generateTrimmerを追加"
+    },
+    {
+      "sha": "4c64ac618e5c89868c0755761cb6f510d0a74d91",
+      "url": "https://github.com/MihaiValentin/lunr-languages/commit/4c64ac618e5c89868c0755761cb6f510d0a74d91",
+      "date": "2017-04-03T19:49:40Z",
+      "parents": [
+        "0a852ec84073a98ab2d0ba4b7a5a7cb56793df74"
+      ],
+      "message": "made compatible with all versions of Lunr, added integration tests with all versions * all languages, updated README.md and added CONTRIBUTING.md",
+      "relevant_files": [
+        {
+          "path": "lunr.stemmer.support.js",
+          "blob": "896476a1812214c0d3527ff1764bd6729a80bc04",
+          "patch_sha256": "a2f68423577fd3df6f156b8fc630f16deda3fcd94edc366976cad80f8ea839c6"
+        }
+      ],
+      "observation": "Lunr 2 token.updateと従来文字列の分岐を追加"
+    }
+  ],
+  "rustix": {
+    "upstream_sources": [
+      {
+        "path": "src/backend/linux_raw/mod.rs",
+        "url": "https://github.com/bytecodealliance/rustix/blob/acf4a284ea893efa93953e1ff2f2f0ab00be1cdc/src/backend/linux_raw/mod.rs",
+        "bytes": 3293,
+        "sha256": "f849feea0a83df69fb9288ecfe07992cbdaee7e55d29b5662043a3fdf00e4700"
+      },
+      {
+        "path": "src/backend/linux_raw/vdso.rs",
+        "url": "https://github.com/bytecodealliance/rustix/blob/acf4a284ea893efa93953e1ff2f2f0ab00be1cdc/src/backend/linux_raw/vdso.rs",
+        "bytes": 13135,
+        "sha256": "b4426970b93d708dca00185c069ad51c011c1505ffeb4d4d76c41fe90a90e2ff"
+      }
+    ],
+    "compiler_source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+    "compiler_features": [
+      "alloc",
+      "default",
+      "fs",
+      "libc-extra-traits",
+      "rand",
+      "std",
+      "use-libc-auxv"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "vdso_gate": "any(feature=\"time\", feature=\"process\", target_arch=\"x86\")",
+    "gate_for_this_combination": false,
+    "scope": "Static predicate only; not all rustc argv, binary/map, all target/source inclusion or new build",
+    "CC0_text": "not obtained; prior HTTP403 remains; no retry",
+    "source_archive": "parent previously reviewed archive not received locally; current observations use two public fixed raw source files"
+  },
+  "author_attestation": "pending",
+  "original_Urim_SVN_history": "unconfirmed",
+  "UMD_import_revision": "unconfirmed",
+  "new_distribution": false,
+  "Library_original_JSON_received": false
+}

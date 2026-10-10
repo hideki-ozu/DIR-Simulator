@@ -16,7 +16,7 @@
 
 配送期限を短く設定しても、このモデルのフレームが自動的に速く送られるわけではありません。`deadline_ps`だけを1psずつ変えると、配送遅延は3条件とも1,156,000psのまま、期限超過の判定が変わりました。期限と等しい場合は達成です。
 
-本記事の数値はCLI実測です。解析の基礎にした公開版v1.1.3のQoS入力を派生させ、実行にはv1.1.4の固定source `b45515644dfc65c205216d564d5bf7ef00280622`を使いました。v1.1.3自体を実行した結果ではありません。版と実測の根拠は[検証資料](https://github.com/hideki-ozu/DIR-Simulator/tree/codex/guide-ethernet-deadline-2026-10-10/docs/verification/results/ethernet-deadline-2026-10-10)に保存しています。
+本記事の数値はCLI実測です。解析の基礎にした公開版v1.1.3のQoS入力を派生させ、実行にはv1.1.4の固定source `b45515644dfc65c205216d564d5bf7ef00280622`を使いました。v1.1.3自体を実行した結果ではありません。版と実測の根拠は[検証資料](https://github.com/hideki-ozu/DIR-Simulator/tree/b6d3ccf6443fda45aabf1c6c23bfd8331797fe0e/docs/verification/results/ethernet-deadline-2026-10-10)に保存しています。
 
 ## 構成と責務
 

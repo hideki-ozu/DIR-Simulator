@@ -267,6 +267,8 @@ impl Engine<'_> {
             // Keep the candidate in the heap until the complete callback succeeds.
             // New reservations sort after it, so the candidate remains the minimum.
             let request = self.event_request(&event);
+            #[cfg(test)]
+            super::test_probe::can_event_callback();
             if let Err(d) = self.handle(event) {
                 self.fail(d, key.0);
                 break;
@@ -346,6 +348,8 @@ impl Engine<'_> {
 /// Execute a prepared CAN model with independent buses and optional Gateways.
 /// All input is snapshotted before this call.
 pub fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot, Diagnostic> {
+    #[cfg(test)]
+    super::test_probe::can_engine();
     let wires = super::can::wires(prepared)?;
     let mut engine = Engine {
         prepared,

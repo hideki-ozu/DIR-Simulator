@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "document_version": "1.1.0",
+  "document_id": "owner-origin-followup-verification",
+  "document_history": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-10",
+      "change": "Scoped receipt and historical-preservation checks for third PR48 push"
+    }
+  ],
+  "checked_at": "2026-10-10T13:45:26.691365+00:00",
+  "base_commit": "90acb043819d8d1c53287b44c29c3b7b95dea686",
+  "checks": [
+    {
+      "argv": [
+        "scripts/verification/check_owner_origin_statement.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: project-wide owner explanation received; 50 fixed component references; 40 MIT choices kept separate.\r\nSCOPE: receipt consistency only; no file-level authorship, model/tool attribution or complete rights clearance.\r\n",
+      "stderr": "",
+      "scope": "Current owner receipt and preserved historical records; no file-by-file authorship or rights clearance"
+    },
+    {
+      "argv": [
+        "scripts/verification/ac0008_origin_followup.py",
+        "--check",
+        "--upstream-cache",
+        "source-cache"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: pinned upstream bytes and 3743-character body comparison; no JavaScript execution\r\nPASS: 30 metadata / 28 observed / 12 other ledger packages; 17 wheels / 27 assets; 50 unapproved / 40 OR unselected; no new build/audit\r\n",
+      "stderr": "",
+      "scope": "Current owner receipt and preserved historical records; no file-by-file authorship or rights clearance"
+    },
+    {
+      "argv": [
+        "scripts/verification/test_ac0008_packet.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_all_ten_case_groups_and_unique_ids (__main__.PacketTests.test_all_ten_case_groups_and_unique_ids) ... ok\r\ntest_all_unbound_predicates_have_named_gaps (__main__.PacketTests.test_all_unbound_predicates_have_named_gaps) ... ok\r\ntest_atomic_oracle_ids_and_37_groups (__main__.PacketTests.test_atomic_oracle_ids_and_37_groups) ... ok\r\ntest_every_static_binding_names_a_real_assertion_catalogue_test (__main__.PacketTests.test_every_static_binding_names_a_real_assertion_catalogue_test) ... ok\r\ntest_no_bulk_approval_or_or_selection (__main__.PacketTests.test_no_bulk_approval_or_or_selection) ... ok\r\ntest_numeric_variants_have_specific_oracles (__main__.PacketTests.test_numeric_variants_have_specific_oracles) ... ok\r\ntest_origins_require_attestation (__main__.PacketTests.test_origins_require_attestation) ... ok\r\ntest_rule_ids_unique (__main__.PacketTests.test_rule_ids_unique) ... ok\r\ntest_source_subcase_rows_are_all_retained (__main__.PacketTests.test_source_subcase_rows_are_all_retained) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 9 tests in 0.062s\r\n\r\nOK\r\n",
+      "scope": "Current owner receipt and preserved historical records; no file-by-file authorship or rights clearance"
+    },
+    {
+      "argv": [
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "stdout": "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)\r\n",
+      "stderr": "",
+      "scope": "Current owner receipt and preserved historical records; no file-by-file authorship or rights clearance"
+    },
+    {
+      "argv": [
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "All traceability reports and the hierarchy annex are up to date\r\n",
+      "stderr": "",
+      "scope": "Current owner receipt and preserved historical records; no file-by-file authorship or rights clearance"
+    }
+  ],
+  "local_links_checked": 16378,
+  "preserved_historical_and_MIT_records": [
+    {
+      "path": "docs/verification/results/ac0008-review-2026-10-10/origin-attestation-packet.json",
+      "bytes": 742479,
+      "sha256": "2c5d6c5480f90f481e0451e93fab584ddd200ccbfc2ded7bb4ec2f98ac1c8c63",
+      "git_blob": "73139bf1a87bf8b4133b9885af97014ea399f768"
+    },
+    {
+      "path": "docs/verification/results/ac0008-review-2026-10-10/ledger-review-proposals.json",
+      "bytes": 95009,
+      "sha256": "7f34a11243c90d8056e2eecd22608119951ce1bb2aa2a3728a30715cce6bd36b",
+      "git_blob": "96610d315d807bd8f456abbf49c5d977d33a2ba1"
+    },
+    {
+      "path": "scripts/verification/ac0008_packet.py",
+      "bytes": 5975,
+      "sha256": "ad7443235561519f89a79801bbe07fcce97bcd4522c0564d0982e9337df2bb32",
+      "git_blob": "cf36623bc4d61e317509613d755b16cc9d281d76"
+    },
+    {
+      "path": "docs/verification/results/ac0008-origin-followup-2026-10-10/scoped-reconciliation.json",
+      "bytes": 43613,
+      "sha256": "b6deb2eac5e9e9c6645b32c39285717bef9f334a409127f8f2eda724bf96a7ec",
+      "git_blob": "c096ac992a864720bf7029d40dd7b0364626e337"
+    },
+    {
+      "path": "docs/verification/results/ac0008-origin-followup-2026-10-10/public-origin-notice-review.json",
+      "bytes": 6622,
+      "sha256": "a4192811c906a0c96d7378154f6764c578d42edd4c35e60a8e6c18fb477f3f69",
+      "git_blob": "a5845b6c9c449b365f3a55e62a07fa1642f2a06b"
+    },
+    {
+      "path": "docs/verification/results/ac0008-origin-followup-2026-10-10/license-selection-2026-10-10.json",
+      "bytes": 35445,
+      "sha256": "bc19185470bf92e858c4d8dfbb557b47581df92d7188ab793b7c061f0afe3e82",
+      "git_blob": "a966488109f6244e4c684f6f8d61cc25687bde76"
+    }
+  ],
+  "current_owner_explanation": "received",
+  "individual_AI_file_categories": "unknown",
+  "models_tools": "unknown",
+  "complete_rights_clearance": false,
+  "deadline_actual_execution": false,
+  "CI": "pending for this push; ordinary workflows only"
+}

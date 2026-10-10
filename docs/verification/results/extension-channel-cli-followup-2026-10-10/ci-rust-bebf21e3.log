@@ -1,0 +1,1204 @@
+2026-10-10T13:01:57.9580491Z Current runner version: '2.337.0'
+2026-10-10T13:01:57.9605327Z ##[group]Runner Image Provisioner
+2026-10-10T13:01:57.9606181Z Hosted Compute Agent
+2026-10-10T13:01:57.9606826Z Version: 20261002.596
+2026-10-10T13:01:57.9607494Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-10T13:01:57.9608217Z Build Date: 2026-10-02T22:28:27Z
+2026-10-10T13:01:57.9608960Z Worker ID: {8057a8df-d838-435f-b9fc-0afe1c331514}
+2026-10-10T13:01:57.9609673Z Region: eastus
+2026-10-10T13:01:57.9610416Z Cloud: Azure
+2026-10-10T13:01:57.9611049Z ##[endgroup]
+2026-10-10T13:01:57.9612498Z ##[group]Operating System
+2026-10-10T13:01:57.9613190Z Ubuntu
+2026-10-10T13:01:57.9613764Z 24.04.5
+2026-10-10T13:01:57.9614252Z LTS
+2026-10-10T13:01:57.9614853Z ##[endgroup]
+2026-10-10T13:01:57.9615407Z ##[group]Runner Image
+2026-10-10T13:01:57.9616036Z Image: ubuntu-24.04
+2026-10-10T13:01:57.9616656Z Version: 20261004.327.1
+2026-10-10T13:01:57.9618002Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-10T13:01:57.9619568Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-10T13:01:57.9620798Z ##[endgroup]
+2026-10-10T13:01:57.9621921Z ##[group]GITHUB_TOKEN Permissions
+2026-10-10T13:01:57.9624168Z Contents: read
+2026-10-10T13:01:57.9624760Z Metadata: read
+2026-10-10T13:01:57.9625308Z ##[endgroup]
+2026-10-10T13:01:57.9627380Z Secret source: Actions
+2026-10-10T13:01:57.9628451Z Cache mode: write
+2026-10-10T13:01:57.9629453Z Prepare workflow directory
+2026-10-10T13:01:57.9953892Z Prepare all required actions
+2026-10-10T13:01:58.0001695Z Getting action download info
+2026-10-10T13:01:58.2105092Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-10-10T13:01:58.4026505Z Complete job name: Rust ledger identity regression
+2026-10-10T13:01:58.4864280Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-10T13:01:58.4865404Z with:
+2026-10-10T13:01:58.4865887Z   ref: bebf21e3cba331f3efaeac792f8143c5e619cddf
+2026-10-10T13:01:58.4866513Z   persist-credentials: false
+2026-10-10T13:01:58.4867033Z   set-safe-directory: false
+2026-10-10T13:01:58.4867559Z   repository: hideki-ozu/DIR-Simulator
+2026-10-10T13:01:58.4872236Z   token: ***
+2026-10-10T13:01:58.4872686Z   ssh-strict: true
+2026-10-10T13:01:58.4873266Z   ssh-user: git
+2026-10-10T13:01:58.4873974Z   clean: true
+2026-10-10T13:01:58.4874606Z   sparse-checkout-cone-mode: true
+2026-10-10T13:01:58.4875157Z   fetch-depth: 1
+2026-10-10T13:01:58.4875621Z   fetch-tags: false
+2026-10-10T13:01:58.4876094Z   show-progress: true
+2026-10-10T13:01:58.4876555Z   lfs: false
+2026-10-10T13:01:58.4876987Z   submodules: false
+2026-10-10T13:01:58.4877465Z   allow-unsafe-pr-checkout: false
+2026-10-10T13:01:58.4878393Z ##[endgroup]
+2026-10-10T13:01:58.5893561Z Syncing repository: hideki-ozu/DIR-Simulator
+2026-10-10T13:01:58.5896344Z ##[group]Getting Git version info
+2026-10-10T13:01:58.5897590Z Working directory is '/home/runner/work/DIR-Simulator/DIR-Simulator'
+2026-10-10T13:01:58.5899523Z [command]/usr/bin/git version
+2026-10-10T13:01:58.5973812Z git version 2.55.0
+2026-10-10T13:01:58.5999698Z ##[endgroup]
+2026-10-10T13:01:58.6005656Z Deleting the contents of '/home/runner/work/DIR-Simulator/DIR-Simulator'
+2026-10-10T13:01:58.6011982Z ##[group]Determining repository object format
+2026-10-10T13:01:58.6013959Z ##[endgroup]
+2026-10-10T13:01:58.6014981Z ##[group]Initializing the repository
+2026-10-10T13:01:58.6037509Z [command]/usr/bin/git init /home/runner/work/DIR-Simulator/DIR-Simulator
+2026-10-10T13:01:58.6161767Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-10T13:01:58.6163027Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-10T13:01:58.6164068Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-10T13:01:58.6164900Z hint: call:
+2026-10-10T13:01:58.6165550Z hint:
+2026-10-10T13:01:58.6166409Z hint: 	git config --global init.defaultBranch <name>
+2026-10-10T13:01:58.6167077Z hint:
+2026-10-10T13:01:58.6167711Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-10T13:01:58.6168730Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-10T13:01:58.6169540Z hint:
+2026-10-10T13:01:58.6170342Z hint: 	git branch -m <name>
+2026-10-10T13:01:58.6171142Z hint:
+2026-10-10T13:01:58.6171846Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-10T13:01:58.6173852Z Initialized empty Git repository in /home/runner/work/DIR-Simulator/DIR-Simulator/.git/
+2026-10-10T13:01:58.6185641Z [command]/usr/bin/git remote add origin https://github.com/hideki-ozu/DIR-Simulator
+2026-10-10T13:01:58.6240972Z ##[endgroup]
+2026-10-10T13:01:58.6242314Z ##[group]Disabling automatic garbage collection
+2026-10-10T13:01:58.6244176Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-10T13:01:58.6282889Z ##[endgroup]
+2026-10-10T13:01:58.6284213Z ##[group]Setting up auth
+2026-10-10T13:01:58.6285207Z Removing SSH command configuration
+2026-10-10T13:01:58.6291177Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T13:01:58.6326478Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T13:01:58.6720203Z Removing HTTP extra header
+2026-10-10T13:01:58.6727858Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T13:01:58.6767438Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T13:01:58.6991270Z Removing includeIf entries pointing to credentials config files
+2026-10-10T13:01:58.6999024Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T13:01:58.7035877Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T13:01:58.7262152Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-10T13:01:58.7304273Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git.path /home/runner/work/_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:01:58.7339125Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:01:58.7376896Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:01:58.7411105Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:01:58.7448611Z ##[endgroup]
+2026-10-10T13:01:58.7449365Z ##[group]Fetching the repository
+2026-10-10T13:01:58.7457906Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin bebf21e3cba331f3efaeac792f8143c5e619cddf
+2026-10-10T13:01:59.8646928Z From https://github.com/hideki-ozu/DIR-Simulator
+2026-10-10T13:01:59.8648738Z  * branch            bebf21e3cba331f3efaeac792f8143c5e619cddf -> FETCH_HEAD
+2026-10-10T13:01:59.8658396Z [command]/usr/bin/git rev-parse --verify --quiet bebf21e3cba331f3efaeac792f8143c5e619cddf^{object}
+2026-10-10T13:01:59.8688235Z bebf21e3cba331f3efaeac792f8143c5e619cddf
+2026-10-10T13:01:59.8695019Z ##[endgroup]
+2026-10-10T13:01:59.8696340Z ##[group]Determining the checkout info
+2026-10-10T13:01:59.8697958Z ##[endgroup]
+2026-10-10T13:01:59.8700427Z [command]/usr/bin/git sparse-checkout disable
+2026-10-10T13:01:59.8753454Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-10T13:01:59.8787243Z ##[group]Checking out the ref
+2026-10-10T13:01:59.8791038Z [command]/usr/bin/git checkout --progress --force bebf21e3cba331f3efaeac792f8143c5e619cddf
+2026-10-10T13:02:00.2298659Z Note: switching to 'bebf21e3cba331f3efaeac792f8143c5e619cddf'.
+2026-10-10T13:02:00.2301030Z 
+2026-10-10T13:02:00.2301933Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-10T13:02:00.2303108Z changes and commit them, and you can discard any commits you make in this
+2026-10-10T13:02:00.2303789Z state without impacting any branches by switching back to a branch.
+2026-10-10T13:02:00.2304130Z 
+2026-10-10T13:02:00.2304437Z If you want to create a new branch to retain commits you create, you may
+2026-10-10T13:02:00.2304995Z do so (now or later) by using -c with the switch command. Example:
+2026-10-10T13:02:00.2305318Z 
+2026-10-10T13:02:00.2305464Z   git switch -c <new-branch-name>
+2026-10-10T13:02:00.2305699Z 
+2026-10-10T13:02:00.2305973Z Or undo this operation with:
+2026-10-10T13:02:00.2306177Z 
+2026-10-10T13:02:00.2306294Z   git switch -
+2026-10-10T13:02:00.2306487Z 
+2026-10-10T13:02:00.2306772Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-10T13:02:00.2307145Z 
+2026-10-10T13:02:00.2307453Z HEAD is now at bebf21e test: apply CI format feedback and record exact bounded regressions
+2026-10-10T13:02:00.2328702Z ##[endgroup]
+2026-10-10T13:02:00.2376190Z [command]/usr/bin/git log -1 --format=%H
+2026-10-10T13:02:00.2402571Z bebf21e3cba331f3efaeac792f8143c5e619cddf
+2026-10-10T13:02:00.2416910Z ##[group]Removing auth
+2026-10-10T13:02:00.2417333Z Removing SSH command configuration
+2026-10-10T13:02:00.2418133Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T13:02:00.2453020Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T13:02:00.2679560Z Removing HTTP extra header
+2026-10-10T13:02:00.2684579Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T13:02:00.2721953Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T13:02:00.2956429Z Removing includeIf entries pointing to credentials config files
+2026-10-10T13:02:00.2961368Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T13:02:00.2990628Z includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git.path
+2026-10-10T13:02:00.2991859Z includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git/worktrees/*.path
+2026-10-10T13:02:00.2992906Z includeif.gitdir:/github/workspace/.git.path
+2026-10-10T13:02:00.2993421Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-10T13:02:00.3001136Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git.path
+2026-10-10T13:02:00.3026163Z /home/runner/work/_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:02:00.3045569Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git.path /home/runner/work/_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:02:00.3074372Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git/worktrees/*.path
+2026-10-10T13:02:00.3098955Z /home/runner/work/_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:02:00.3108387Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:02:00.3147075Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-10T13:02:00.3171553Z /github/runner_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:02:00.3219882Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:02:00.3256320Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-10T13:02:00.3281851Z /github/runner_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:02:00.3293602Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config
+2026-10-10T13:02:00.3329619Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T13:02:00.3551085Z Removing credentials config '/home/runner/work/_temp/git-credentials-ebb4e274-c69a-4fff-8fcc-e045fc8b4ae7.config'
+2026-10-10T13:02:00.3559338Z ##[endgroup]
+2026-10-10T13:02:00.3758815Z ##[group]Run rustup toolchain install 1.85.0 --profile minimal --component rustfmt --component clippy
+2026-10-10T13:02:00.3759717Z [36;1mrustup toolchain install 1.85.0 --profile minimal --component rustfmt --component clippy[0m
+2026-10-10T13:02:00.4036591Z shell: /usr/bin/bash -e {0}
+2026-10-10T13:02:00.4037095Z ##[endgroup]
+2026-10-10T13:02:00.4636152Z info: syncing channel updates for 1.85.0-x86_64-unknown-linux-gnu
+2026-10-10T13:02:00.6414306Z info: latest update on 2025-02-20 for version 1.85.0 (4d91de4e4 2025-02-17)
+2026-10-10T13:02:00.6415114Z info: downloading 5 components
+2026-10-10T13:02:07.7658076Z 
+2026-10-10T13:02:07.7761232Z   1.85.0-x86_64-unknown-linux-gnu installed - rustc 1.85.0 (4d91de4e4 2025-02-17)
+2026-10-10T13:02:07.7761796Z 
+2026-10-10T13:02:07.7937379Z ##[group]Run uname -a
+2026-10-10T13:02:07.7937707Z [36;1muname -a[0m
+2026-10-10T13:02:07.7937933Z [36;1mcat /etc/os-release[0m
+2026-10-10T13:02:07.7938174Z [36;1mrustc -Vv[0m
+2026-10-10T13:02:07.7938401Z [36;1mcargo --version[0m
+2026-10-10T13:02:07.7938638Z [36;1mgit rev-parse HEAD[0m
+2026-10-10T13:02:07.7938885Z [36;1mgit status --short[0m
+2026-10-10T13:02:07.7939898Z [36;1msha256sum Cargo.lock crates/dir-simulator/tests/registry.rs crates/dir-simulator/src/lib.rs crates/dir-simulator/src/main.rs crates/dir-simulator/src/runtime.rs crates/dir-simulator/src/runtime/engine.rs crates/dir-simulator/src/cli_runtime_boundary_tests.rs[0m
+2026-10-10T13:02:07.7941270Z [36;1mcargo fmt --all -- --check[0m
+2026-10-10T13:02:07.7941932Z [36;1mcargo test --locked -p dir-simulator --test registry generic_channel_factories_receive_frozen_inputs_in_stable_order -- --exact --nocapture[0m
+2026-10-10T13:02:07.7942953Z [36;1mcargo test --locked -p dir-simulator --test registry generic_invalid_channel_parameter_never_reaches_factories -- --exact --nocapture[0m
+2026-10-10T13:02:07.7943927Z [36;1mcargo test --locked -p dir-simulator --test registry generic_channel_factory_failure_releases_only_constructed_prefix -- --exact --nocapture[0m
+2026-10-10T13:02:07.7944985Z [36;1mcargo test --locked -p dir-simulator --lib cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does -- --exact --nocapture[0m
+2026-10-10T13:02:07.7946042Z [36;1mcargo test --locked -p dir-simulator --test ac0008_paths classical_can_cli_validate_accepts_fixture_and_rejects_missing_config -- --exact --nocapture[0m
+2026-10-10T13:02:07.7946749Z [36;1mcargo test --locked --workspace[0m
+2026-10-10T13:02:07.7947136Z [36;1mcargo clippy --locked --workspace --all-targets -- -D warnings[0m
+2026-10-10T13:02:07.8013182Z shell: /usr/bin/bash -e {0}
+2026-10-10T13:02:07.8013455Z ##[endgroup]
+2026-10-10T13:02:07.8102537Z Linux runnervmmprz5 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+2026-10-10T13:02:07.8112513Z PRETTY_NAME="Ubuntu 24.04.5 LTS"
+2026-10-10T13:02:07.8113110Z NAME="Ubuntu"
+2026-10-10T13:02:07.8113404Z VERSION_ID="24.04"
+2026-10-10T13:02:07.8113649Z VERSION="24.04.5 LTS (Noble Numbat)"
+2026-10-10T13:02:07.8113925Z VERSION_CODENAME=noble
+2026-10-10T13:02:07.8114350Z ID=ubuntu
+2026-10-10T13:02:07.8114709Z ID_LIKE=debian
+2026-10-10T13:02:07.8115194Z HOME_URL="https://www.ubuntu.com/"
+2026-10-10T13:02:07.8115757Z SUPPORT_URL="https://help.ubuntu.com/"
+2026-10-10T13:02:07.8116364Z BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+2026-10-10T13:02:07.8117289Z PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+2026-10-10T13:02:07.8118073Z UBUNTU_CODENAME=noble
+2026-10-10T13:02:07.8118452Z LOGO=ubuntu-logo
+2026-10-10T13:02:07.8403565Z rustc 1.85.0 (4d91de4e4 2025-02-17)
+2026-10-10T13:02:07.8403976Z binary: rustc
+2026-10-10T13:02:07.8404540Z commit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688
+2026-10-10T13:02:07.8405427Z commit-date: 2025-02-17
+2026-10-10T13:02:07.8406106Z host: x86_64-unknown-linux-gnu
+2026-10-10T13:02:07.8406779Z release: 1.85.0
+2026-10-10T13:02:07.8407071Z LLVM version: 19.1.7
+2026-10-10T13:02:07.8672896Z cargo 1.85.0 (d73d2caf9 2024-12-31)
+2026-10-10T13:02:07.8689916Z bebf21e3cba331f3efaeac792f8143c5e619cddf
+2026-10-10T13:02:08.0813137Z d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca  Cargo.lock
+2026-10-10T13:02:08.0814369Z c56997742b4ec5c37703beddc5c33fea2f3be29944acc4dda1dc5bd736af4160  crates/dir-simulator/tests/registry.rs
+2026-10-10T13:02:08.0815690Z b89701ad6132b7fafdcd275aa79a3291e9ecbf32ae6a3fec16d6daf2255939d8  crates/dir-simulator/src/lib.rs
+2026-10-10T13:02:08.0816943Z 9c07a7e7e4737409e2d6140dd927d569e9a44426b467e606a7e4b5851899ed66  crates/dir-simulator/src/main.rs
+2026-10-10T13:02:08.0818517Z 851ae0678d7d015566f6a72db5e40d4c59ffde2cb902f54ea470c87e837d6a62  crates/dir-simulator/src/runtime.rs
+2026-10-10T13:02:08.0820385Z 50e889dcfe0f7d32328f9828201b281ab83e4a58da19d6a2baf9fe110af228a8  crates/dir-simulator/src/runtime/engine.rs
+2026-10-10T13:02:08.0821340Z 03f8f511550af6e8b731057538f04614fbba1846e7f5a0187e48d829ec836018  crates/dir-simulator/src/cli_runtime_boundary_tests.rs
+2026-10-10T13:02:09.2660933Z     Updating crates.io index
+2026-10-10T13:02:09.3921444Z  Downloading crates ...
+2026-10-10T13:02:09.4422959Z   Downloaded itoa v1.0.18
+2026-10-10T13:02:09.4443035Z   Downloaded chunked_transfer v1.5.0
+2026-10-10T13:02:09.4456681Z   Downloaded block-buffer v0.10.4
+2026-10-10T13:02:09.4485811Z   Downloaded crypto-common v0.1.7
+2026-10-10T13:02:09.4499934Z   Downloaded cpufeatures v0.2.17
+2026-10-10T13:02:09.4518763Z   Downloaded proc-macro2 v1.0.107
+2026-10-10T13:02:09.4555544Z   Downloaded serde_derive v1.0.229
+2026-10-10T13:02:09.4593180Z   Downloaded typenum v1.20.1
+2026-10-10T13:02:09.4637158Z   Downloaded errno v0.3.14
+2026-10-10T13:02:09.4655616Z   Downloaded bitflags v2.13.2
+2026-10-10T13:02:09.4706231Z   Downloaded version_check v0.9.5
+2026-10-10T13:02:09.4720814Z   Downloaded quote v1.0.47
+2026-10-10T13:02:09.4753926Z   Downloaded generic-array v0.14.7
+2026-10-10T13:02:09.4798918Z   Downloaded httpdate v1.0.3
+2026-10-10T13:02:09.4824967Z   Downloaded zmij v1.0.23
+2026-10-10T13:02:09.4858166Z   Downloaded unicode-ident v1.0.26
+2026-10-10T13:02:09.4912848Z   Downloaded tiny_http v0.12.0
+2026-10-10T13:02:09.4974269Z   Downloaded serde_core v1.0.229
+2026-10-10T13:02:09.5019370Z   Downloaded serde v1.0.229
+2026-10-10T13:02:09.5062377Z   Downloaded ascii v1.1.0
+2026-10-10T13:02:09.5086304Z   Downloaded log v0.4.34
+2026-10-10T13:02:09.5116753Z   Downloaded memchr v2.8.3
+2026-10-10T13:02:09.5180637Z   Downloaded serde_json v1.0.151
+2026-10-10T13:02:09.5265485Z   Downloaded digest v0.10.7
+2026-10-10T13:02:09.5286426Z   Downloaded sha2 v0.10.9
+2026-10-10T13:02:09.5317868Z   Downloaded cfg-if v1.0.5
+2026-10-10T13:02:09.5364072Z   Downloaded syn v3.0.6
+2026-10-10T13:02:09.5512379Z   Downloaded rustix v0.38.44
+2026-10-10T13:02:09.5807689Z   Downloaded libc v0.2.189
+2026-10-10T13:02:09.6356756Z   Downloaded linux-raw-sys v0.4.15
+2026-10-10T13:02:09.7183358Z    Compiling version_check v0.9.5
+2026-10-10T13:02:09.7183921Z    Compiling typenum v1.20.1
+2026-10-10T13:02:09.7191556Z    Compiling proc-macro2 v1.0.107
+2026-10-10T13:02:09.7230965Z    Compiling quote v1.0.47
+2026-10-10T13:02:09.9638501Z    Compiling generic-array v0.14.7
+2026-10-10T13:02:09.9779762Z    Compiling unicode-ident v1.0.26
+2026-10-10T13:02:10.0571180Z    Compiling serde_core v1.0.229
+2026-10-10T13:02:10.1451123Z    Compiling zmij v1.0.23
+2026-10-10T13:02:10.3270961Z    Compiling cfg-if v1.0.5
+2026-10-10T13:02:10.3541475Z    Compiling cpufeatures v0.2.17
+2026-10-10T13:02:10.5731371Z    Compiling syn v3.0.6
+2026-10-10T13:02:10.6211723Z    Compiling serde_json v1.0.151
+2026-10-10T13:02:10.7781087Z    Compiling serde v1.0.229
+2026-10-10T13:02:10.9151302Z    Compiling crypto-common v0.1.7
+2026-10-10T13:02:10.9691107Z    Compiling block-buffer v0.10.4
+2026-10-10T13:02:11.0201704Z    Compiling rustix v0.38.44
+2026-10-10T13:02:11.0343052Z    Compiling digest v0.10.7
+2026-10-10T13:02:11.1623197Z    Compiling sha2 v0.10.9
+2026-10-10T13:02:11.5371773Z    Compiling dir-simulator v0.1.0 (/home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator)
+2026-10-10T13:02:11.6771080Z    Compiling ascii v1.1.0
+2026-10-10T13:02:12.0546865Z    Compiling chunked_transfer v1.5.0
+2026-10-10T13:02:12.1225520Z    Compiling itoa v1.0.18
+2026-10-10T13:02:12.2371039Z    Compiling memchr v2.8.3
+2026-10-10T13:02:12.2410839Z    Compiling log v0.4.34
+2026-10-10T13:02:12.3641570Z    Compiling bitflags v2.13.2
+2026-10-10T13:02:12.5311072Z    Compiling linux-raw-sys v0.4.15
+2026-10-10T13:02:12.7881306Z    Compiling httpdate v1.0.3
+2026-10-10T13:02:12.9484550Z    Compiling tiny_http v0.12.0
+2026-10-10T13:02:13.2967886Z    Compiling serde_derive v1.0.229
+2026-10-10T13:02:41.6663575Z     Finished `test` profile [unoptimized + debuginfo] target(s) in 32.42s
+2026-10-10T13:02:41.6802782Z      Running tests/registry.rs (target/debug/deps/registry-686ebde1ef88a2aa)
+2026-10-10T13:02:41.6823120Z 
+2026-10-10T13:02:41.6823548Z running 1 test
+2026-10-10T13:02:41.6921813Z test generic_channel_factories_receive_frozen_inputs_in_stable_order ... ok
+2026-10-10T13:02:41.6922529Z 
+2026-10-10T13:02:41.6923124Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.01s
+2026-10-10T13:02:41.6923668Z 
+2026-10-10T13:02:41.7468940Z    Compiling dir-simulator v0.1.0 (/home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator)
+2026-10-10T13:02:46.5317171Z     Finished `test` profile [unoptimized + debuginfo] target(s) in 4.81s
+2026-10-10T13:02:46.5346849Z      Running tests/registry.rs (target/debug/deps/registry-686ebde1ef88a2aa)
+2026-10-10T13:02:46.5362270Z 
+2026-10-10T13:02:46.5362473Z running 1 test
+2026-10-10T13:02:46.5458939Z test generic_invalid_channel_parameter_never_reaches_factories ... ok
+2026-10-10T13:02:46.5459281Z 
+2026-10-10T13:02:46.5459600Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.01s
+2026-10-10T13:02:46.5460208Z 
+2026-10-10T13:02:46.5996716Z    Compiling dir-simulator v0.1.0 (/home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator)
+2026-10-10T13:02:51.3272106Z     Finished `test` profile [unoptimized + debuginfo] target(s) in 4.75s
+2026-10-10T13:02:51.3299419Z      Running tests/registry.rs (target/debug/deps/registry-686ebde1ef88a2aa)
+2026-10-10T13:02:51.3315305Z 
+2026-10-10T13:02:51.3315459Z running 1 test
+2026-10-10T13:02:51.3414373Z test generic_channel_factory_failure_releases_only_constructed_prefix ... ok
+2026-10-10T13:02:51.3414740Z 
+2026-10-10T13:02:51.3415215Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.01s
+2026-10-10T13:02:51.3415820Z 
+2026-10-10T13:02:51.3939281Z    Compiling dir-simulator v0.1.0 (/home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator)
+2026-10-10T13:03:20.6659775Z     Finished `test` profile [unoptimized + debuginfo] target(s) in 29.29s
+2026-10-10T13:03:20.6690294Z      Running unittests src/lib.rs (target/debug/deps/dir_simulator-9b09ac6eb469f515)
+2026-10-10T13:03:20.6706794Z 
+2026-10-10T13:03:20.6707062Z running 1 test
+2026-10-10T13:03:20.6750916Z {"channel_count":"6","network":"demo.Main","node_count":"4","schema_version":1,"status":"valid"}
+2026-10-10T13:03:29.1365309Z {"schema_version":1,"termination":"events_exhausted","exit_code":0,"partial":false,"output_path":"/tmp/dir-cli-runtime-boundary-4743-0/run","manifest_path":"/tmp/dir-cli-runtime-boundary-4743-0/run/manifest.json","primary_diagnostic":null,"committed_events":"20","finish_ps":"300000000","last_event_time_ps":"206000000","event_processing_wall_seconds":0.000263058}
+2026-10-10T13:03:29.1427505Z test cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does ... ok
+2026-10-10T13:03:29.1428734Z 
+2026-10-10T13:03:29.1429379Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 322 filtered out; finished in 8.47s
+2026-10-10T13:03:29.1430502Z 
+2026-10-10T13:03:29.1976495Z    Compiling dir-simulator v0.1.0 (/home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator)
+2026-10-10T13:03:34.0639716Z     Finished `test` profile [unoptimized + debuginfo] target(s) in 4.89s
+2026-10-10T13:03:34.0677660Z      Running tests/ac0008_paths.rs (target/debug/deps/ac0008_paths-8cd11dd326e2edef)
+2026-10-10T13:03:34.0694839Z 
+2026-10-10T13:03:34.0695092Z running 1 test
+2026-10-10T13:03:34.0784168Z test classical_can_cli_validate_accepts_fixture_and_rejects_missing_config ... ok
+2026-10-10T13:03:34.0784848Z 
+2026-10-10T13:03:34.0785318Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.01s
+2026-10-10T13:03:34.0786055Z 
+2026-10-10T13:03:34.1375290Z    Compiling dir-simulator v0.1.0 (/home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator)
+2026-10-10T13:04:05.5739620Z     Finished `test` profile [unoptimized + debuginfo] target(s) in 31.46s
+2026-10-10T13:04:05.5866933Z      Running unittests src/lib.rs (target/debug/deps/dir_simulator-9b09ac6eb469f515)
+2026-10-10T13:04:05.5884386Z 
+2026-10-10T13:04:05.5884672Z running 323 tests
+2026-10-10T13:04:05.5895629Z test allocation::tests::capacity_overflow_is_structured_and_keeps_vector_intact ... ok
+2026-10-10T13:04:05.5911682Z test input::can::tests::can_instance_counts_precede_channel_override_validation ... ok
+2026-10-10T13:04:05.5913100Z test input::can::tests::selected_instance_profile_mismatch_precedes_later_instance_values ... ok
+2026-10-10T13:04:05.6230980Z test input::can_ethernet::tests::source_ownership_checked_for_zero_count_and_future_time ... ok
+2026-10-10T13:04:05.6260992Z test input::editor_api_tests::crlf_line_comments_preserve_valid_ned_and_reject_bare_carriage_returns ... ok
+2026-10-10T13:04:05.6330424Z test input::editor_api_tests::deferred_directory_errors_keep_sorted_traversal_order ... ok
+2026-10-10T13:04:05.6350939Z test input::editor_api_tests::existing_profile_error_precedes_time_and_root_errors ... ok
+2026-10-10T13:04:05.6441080Z test input::can_ethernet::tests::complete_native_r01_r02_inputs_validate ... ok
+2026-10-10T13:04:05.6470893Z test input::editor_api_tests::inspect_is_structural_and_preserves_invalid_execution_values ... ok
+2026-10-10T13:04:05.6500861Z test input::editor_api_tests::semantic_invalid_values_are_parseable_but_fail_full_snapshot_prepare ... ok
+2026-10-10T13:04:05.6530920Z test input::editor_api_tests::snapshot_missing_paths_never_fall_back_to_disk ... ok
+2026-10-10T13:04:05.6560821Z test input::editor_api_tests::syntax_api_exposes_structure_without_model_value_validation ... ok
+2026-10-10T13:04:05.6651150Z test input::ethernet::tests::media_config_rejects_every_missing_physical_and_phy_field_without_panicking ... ok
+2026-10-10T13:04:05.6710960Z test input::ethernet::tests::media_profiles_keep_phy_allowlists_disjoint ... ok
+2026-10-10T13:04:05.6822007Z test input::can_ethernet::tests::strict_rules_ownership_and_ranges_reject ... ok
+2026-10-10T13:04:05.6889956Z test input::ethernet::tests::qos_burst_schedule_validates_last_offset_and_empty_count ... ok
+2026-10-10T13:04:05.6930715Z test input::ethernet::tests::qos_config_canonicalizes_outputs_and_all_eight_queues ... ok
+2026-10-10T13:04:05.6960667Z test input::ethernet::tests::qos_config_duplicate_json_key_is_rejected_before_overwrite ... ok
+2026-10-10T13:04:05.7102276Z test input::ethernet::tests::qos_fields_and_kinds_remain_rejected_by_v1 ... ok
+2026-10-10T13:04:05.7677880Z test input::ethernet::tests::qos_config_rejects_missing_duplicates_unknowns_and_noncanonical_capacities ... ok
+2026-10-10T13:04:05.7716473Z test input::ethernet::tests::qos_periodic_schedule_validates_nullable_bounds_and_exclusive_end ... ok
+2026-10-10T13:04:05.7905316Z test input::ethernet::tests::qos_shared_flow_requires_consistent_contract_even_empty_future_inputs ... ok
+2026-10-10T13:04:05.9469497Z test input::ethernet::tests::vlan_empty_future_workloads_still_validate_tag_and_source_contract ... ok
+2026-10-10T13:04:05.9929241Z test input::ethernet::tests::vlan_config_rejects_invalid_memberships_tables_and_strict_fields ... ok
+2026-10-10T13:04:05.9931174Z test input::ethernet::tsn::tests::rejects_missing_unknown_numeric_bool_and_noncanonical_fields ... ok
+2026-10-10T13:04:05.9941199Z test input::ethernet::tsn::tests::rejects_output_and_cbs_combinations_and_accepts_zero_bounds ... ok
+2026-10-10T13:04:05.9942478Z test input::ethernet::tsn::tests::validates_every_future_update_and_normalizes_order ... ok
+2026-10-10T13:04:05.9943716Z test input::ethernet::tests::vlan_group_membership_is_static_and_old_profile_rejects_schema3 ... ok
+2026-10-10T13:04:05.9945131Z test input::ned::tests::metadata_instances_reference_one_declaration_without_affecting_schema_or_values ... ok
+2026-10-10T13:04:05.9951066Z test input::ethernet::tsn::tests::validates_stream_tuple_gate_and_meter ... ok
+2026-10-10T13:04:05.9952200Z test input::ned::tests::non_can_rules_reject_payload_mismatch_through_compound_boundary ... ok
+2026-10-10T13:04:05.9981408Z test input::ned::tests::non_can_rules_resolve_values_compound_paths_and_shared_channels ... ok
+2026-10-10T13:04:06.0031231Z test input::ned::tests::non_can_rules_validate_unused_declarations_and_defaults_before_overrides ... ok
+2026-10-10T13:04:06.0220854Z test input::tests::bus_gate_names_and_same_bus_output_permutations_are_valid ... ok
+2026-10-10T13:04:06.0271039Z test input::tests::bus_requires_equal_input_output_counts_and_two_controllers ... ok
+2026-10-10T13:04:06.0320797Z test input::tests::compound_boundary_channels_are_independent_and_sum ... ok
+2026-10-10T13:04:06.0370655Z test input::tests::defaults_overrides_empty_workload_and_limits ... ok
+2026-10-10T13:04:06.0390991Z test input::tests::exact_units_and_extreme_decimal_precision ... ok
+2026-10-10T13:04:06.0480717Z test input::tests::all_can_fixtures_load_and_preserve_snapshots ... ok
+2026-10-10T13:04:06.0629556Z test input::tests::ini_rejects_unknown_duplicate_and_malformed_inputs ... ok
+2026-10-10T13:04:06.0751049Z test input::tests::json_duplicate_unknown_fields_and_inactive_owner_conflicts ... ok
+2026-10-10T13:04:06.0800761Z test input::tests::invalid_ned_declarations_and_wiring_are_rejected ... ok
+2026-10-10T13:04:06.0802785Z test input::tests::root_overlap_missing_files_and_symlinks_fail ... ok
+2026-10-10T13:04:06.1230573Z test input::tests::workload_validates_schedule_and_frame_beyond_time_limit ... ok
+2026-10-10T13:04:06.1232016Z test output::contribution_sort::tests::codec_is_fixed_and_rejects_invalid_kind ... ok
+2026-10-10T13:04:06.1390893Z test output::contribution_sort::tests::pr37_contribution_reader_rejects_truncation_after_open ... ok
+2026-10-10T13:04:06.1411111Z test output::contribution_sort::tests::pr37_finalized_contribution_producer_rejects_whole_row_loss ... ok
+2026-10-10T13:04:06.1611148Z test output::contribution_sort::tests::pr37_fixed_rows_reject_every_partial_record_in_reader_and_merge ... ok
+2026-10-10T13:04:06.1640975Z test output::contribution_sort::tests::pr37_intermediate_contribution_merge_rejects_whole_row_loss ... ok
+2026-10-10T13:04:06.1647230Z test output::contribution_sort::tests::same_time_order_survives_multiple_runs_and_truncation_is_reported ... ok
+2026-10-10T13:04:06.1671099Z test output::disk_sort::tests::a_single_row_larger_than_chunk_has_no_new_row_size_limit ... ok
+2026-10-10T13:04:06.1923928Z test output::disk_sort::tests::binary_multi_pass_sort_preserves_special_keys_full_values_and_stable_ties ... ok
+2026-10-10T13:04:06.2541069Z test output::disk_sort::tests::binary_ordered_late_fallback_and_merge_reopen_preserve_special_values ... ok
+2026-10-10T13:04:06.2542548Z test output::disk_sort::tests::binary_value_tags_and_numeric_bits_match_authored_vectors ... ok
+2026-10-10T13:04:06.2562914Z test output::disk_sort::tests::corrupt_fallback_input_cleans_both_owned_directories ... ok
+2026-10-10T13:04:06.2600774Z test output::disk_sort::tests::direct_and_fallback_binary_lengths_use_the_producers_bound ... ok
+2026-10-10T13:04:06.2630938Z test output::disk_sort::tests::escaped_byte_keys_preserve_vector_string_order_and_roundtrip ... ok
+2026-10-10T13:04:06.4061171Z test input::tests::truncated_ned_returns_diagnostics_without_panicking ... ok
+2026-10-10T13:04:06.4101406Z test output::disk_sort::tests::late_violation_replays_entire_prefix_with_stable_duplicates ... ok
+2026-10-10T13:04:06.4113895Z test output::disk_sort::tests::malformed_payload_tags_counts_utf8_depth_and_trailing_bytes_reject ... ok
+2026-10-10T13:04:06.4131234Z test output::disk_sort::tests::merge_keeps_payload_opaque_and_failure_cleans_owned_files ... ok
+2026-10-10T13:04:06.4157905Z test output::disk_sort::tests::multi_pass_sort_is_stable_and_cleans_owned_files ... ok
+2026-10-10T13:04:06.4166310Z test output::disk_sort::tests::ordered_records_take_direct_path_and_merge_point_ties_first ... ok
+2026-10-10T13:04:06.4197430Z test output::disk_sort::tests::oversized_truncated_and_inconsistent_frames_reject_before_allocation ... ok
+2026-10-10T13:04:06.5311167Z test output::disk_sort::tests::pr37_binary_fallback_and_merge_reject_partial_headers_lengths_and_bodies ... ok
+2026-10-10T13:04:06.5410523Z test output::disk_sort::tests::pr37_binary_reader_rejects_late_shrink_beyond_prefetched_rows ... ok
+2026-10-10T13:04:06.6366959Z test output::disk_sort::tests::pr37_every_partial_binary_frame_rejects_in_sorted_and_ordered_streams ... ok
+2026-10-10T13:04:06.6377983Z test output::disk_sort::tests::pr37_finalized_general_and_ordered_producers_reject_whole_row_loss ... ok
+2026-10-10T13:04:06.6380254Z test output::disk_sort::tests::pr37_intermediate_general_merge_rejects_whole_row_loss ... ok
+2026-10-10T13:04:06.6383002Z test output::disk_sort::tests::pr37_retained_fallback_producer_rejects_whole_row_loss ... ok
+2026-10-10T13:04:06.6402186Z test output::disk_sort::tests::pr37_valid_empty_and_record_boundary_eof_remain_accepted ... ok
+2026-10-10T13:04:06.6407402Z test output::disk_sort::tests::truncated_run_is_reported_and_removed ... ok
+2026-10-10T13:04:06.6409376Z test output::metadata::reproduction::adoption_tests::ledger_version_and_other_build_fields_must_be_identified ... ok
+2026-10-10T13:04:06.6411579Z test output::metadata::reproduction::adoption_tests::missing_ledger_never_identifies_reproduction ... ok
+2026-10-10T13:04:06.6471938Z test output::publish::acceptance_tests::failed_data_and_manifest_publication_preserve_external_paths ... ok
+2026-10-10T13:04:06.6515400Z test output::publish::acceptance_tests::paired_writer_failure_never_publishes_either_output ... ok
+2026-10-10T13:04:06.7177337Z test input::editor_api_tests::filesystem_and_snapshot_match_can_gateway_success_and_failure_fixtures ... ok
+2026-10-10T13:04:06.7500935Z test output::stream::tests::borrowed_non_callback_order_matches_wire_key ... ok
+2026-10-10T13:04:06.7672433Z test output::stream::tests::corrupt_archive_fails_before_manifest_publication ... ok
+2026-10-10T13:04:06.7895266Z test output::stream::tests::failed_sort_reservation_cleans_runs_without_publishing_manifest ... ok
+2026-10-10T13:04:06.8461038Z test output::stream::tests::baseline_records_use_two_ordered_streams ... ok
+2026-10-10T13:04:06.8497917Z test output::stream::tests::topology_ids_cover_queues_and_unknown_targets_are_diagnostic ... ok
+2026-10-10T13:04:06.8640909Z test output::stream::tests::unknown_archived_statistics_target_is_a_diagnostic ... ok
+2026-10-10T13:04:06.8651183Z test output::tests::abnormal_boundary_points_are_summary_only ... ok
+2026-10-10T13:04:06.8690876Z test output::tests::analytic_summary_and_conservation ... ok
+2026-10-10T13:04:06.8704124Z test output::tests::callback_order_is_not_reservation_order_and_effects_are_unique ... ok
+2026-10-10T13:04:06.8705878Z test output::tests::canonical_nested_values_preserve_exact_wire_bytes ... ok
+2026-10-10T13:04:14.2961327Z test output::tests::diagnostic_time_is_failed_boundary_not_last_successful_event ... ok
+2026-10-10T13:04:14.3101109Z test cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does ... ok
+2026-10-10T13:04:14.3122636Z test output::tests::direct_export_numbers_primary_and_secondary_diagnostics ... ok
+2026-10-10T13:04:14.3160795Z test output::tests::in_flight_and_intermission_are_clipped ... ok
+2026-10-10T13:04:14.3161672Z test output::tests::missing_gateway_lineage_is_an_output_error ... ok
+2026-10-10T13:04:14.3162548Z test output::tests::metadata_hashes_raw_input_and_canonical_configuration ... ok
+2026-10-10T13:04:14.3340975Z test output::tests::publication_collision_keeps_existing_file_and_omits_manifest ... ok
+2026-10-10T13:04:14.3370587Z test output::tests::rational_conversion_is_single_rounding_and_checked ... ok
+2026-10-10T13:04:14.3400762Z test output::tests::typed_csv_quotes_commas_quotes_cr_lf_and_preserves_unicode ... ok
+2026-10-10T13:04:14.3410985Z test output::tests::typed_sort_preserves_numeric_effects_callback_groups_and_option_order ... ok
+2026-10-10T13:04:14.3440858Z test output::tests::typed_writers_distinguish_zero_null_and_exact_float_spelling ... ok
+2026-10-10T13:04:14.3470948Z test output::tests::typed_writers_preserve_large_integers_and_nullable_cells ... ok
+2026-10-10T13:04:14.3490763Z test output::tests::windows_are_half_open_and_short_window_uses_actual_length ... ok
+2026-10-10T13:04:14.3501068Z test output::tests::zero_duration_and_capacity_have_null_ratios ... ok
+2026-10-10T13:04:14.3530850Z test output::tests::zero_time_peak_and_overlapping_occupancy_are_preserved ... ok
+2026-10-10T13:04:14.3620924Z test run::tests::publication_failure_preserves_execution_diagnostics_without_duplicates ... ok
+2026-10-10T13:04:14.3650976Z test runtime::axi::protocol::tests::strict_payload_keys_types_and_canonical_decimal ... ok
+2026-10-10T13:04:14.3677449Z test output::tests::publication_hashes_and_csv_match_json_and_existing_files_survive ... ok
+2026-10-10T13:04:14.3678375Z test runtime::can::tests::independent_bit_vectors ... ok
+2026-10-10T13:04:14.3679090Z test runtime::can::tests::priority_uses_arbitration_bits ... ok
+2026-10-10T13:04:14.3679933Z test runtime::can::tests::timing_rounds_from_sof_and_checks_overflow ... ok
+2026-10-10T13:04:14.3681279Z test runtime::axi::tests::malformed_or_mismatched_timer_preserves_initial_committed_prefix ... ok
+2026-10-10T13:04:14.3687167Z test runtime::can_ethernet::protocol::tests::every_invalid_field_and_padding ... ok
+2026-10-10T13:04:14.3688399Z test runtime::can_archive::tests::truncated_owned_archive_reports_output_error_and_reclaims_storage ... ok
+2026-10-10T13:04:14.3689457Z test runtime::can_ethernet::protocol::tests::fixed_vectors ... ok
+2026-10-10T13:04:14.3690785Z test runtime::can_ethernet::tests::acceptance_last_can_branch_id_failure_preserves_processing_prefix ... ok
+2026-10-10T13:04:14.3730952Z test runtime::can_ethernet::tests::can_controller_queue_uses_can_arbitration_priority ... ok
+2026-10-10T13:04:14.3732410Z test runtime::can_ethernet::tests::acceptance_last_ethernet_branch_byte_overflow_does_not_commit_first_branch ... ok
+2026-10-10T13:04:14.3733857Z test runtime::can_ethernet::tests::fanout_buses_start_together_with_independent_wire_times ... ok
+2026-10-10T13:04:14.3761022Z test runtime::can_ethernet::tests::fanout_wait_keeps_rx_and_retries_only_unadmitted_branch_at_sof ... ok
+2026-10-10T13:04:14.3781165Z test runtime::can_ethernet::tests::conversion_upserts_preserve_milestone_times_on_retries_and_late_sof ... ok
+2026-10-10T13:04:14.3787788Z test runtime::can_ethernet::tests::future_native_generation_flag_without_synthesized_rows ... ok
+2026-10-10T13:04:14.3789110Z test runtime::can_ethernet::tests::malformed_timer_handles_and_impossible_transition_do_not_mutate ... ok
+2026-10-10T13:04:14.3790623Z test runtime::can_ethernet::tests::r01_exact_store_and_forward_and_rx_hold ... ok
+2026-10-10T13:04:14.3791749Z test runtime::can_ethernet::tests::r02_exact_timing_native_can_and_terminal_completion ... ok
+2026-10-10T13:04:14.3792828Z test runtime::can_ethernet::tests::rx_capacity_and_loop_hop_rule_order ... ok
+2026-10-10T13:04:14.3793914Z test runtime::can_ethernet::tests::same_batch_branch_sof_emits_each_changed_branch_once ... ok
+2026-10-10T13:04:14.3795197Z test runtime::can_ethernet::tests::segment_denominator_freezes_and_duplicate_completion_does_not_increment ... ok
+2026-10-10T13:04:14.3796488Z test runtime::can_ethernet::tests::shared_ethernet_port_retry_wakes_all_classes_in_stable_order ... ok
+2026-10-10T13:04:14.3797746Z test runtime::can_ethernet::tests::staged_multiple_ingress_capacity_and_error_atomicity ... ok
+2026-10-10T13:04:14.3811226Z test runtime::can_ethernet::tests::zero_delay_admits_and_unadmittable_terminates ... ok
+2026-10-10T13:04:14.3821163Z test runtime::canfd::protocol::tests::exact_required_notification_schema_and_canonical_encoding ... ok
+2026-10-10T13:04:14.3822649Z test runtime::ethernet::dynamic::tests::control_refresh_at_expiry_and_registration_eligibility ... ok
+2026-10-10T13:04:14.3823996Z test runtime::ethernet::dynamic::tests::isolated_components ... ok
+2026-10-10T13:04:14.3825147Z test runtime::ethernet::dynamic::tests::atomic_capacity_failure_retains_state_and_epoch ... ok
+2026-10-10T13:04:14.3826513Z test runtime::ethernet::dynamic::tests::known_source_mismatch_does_not_flood_and_router_unions ... ok
+2026-10-10T13:04:14.3827858Z test runtime::ethernet::dynamic::tests::learning_refresh_move_capacity_and_expiry ... ok
+2026-10-10T13:04:14.3829333Z test runtime::ethernet::dynamic::tests::parallel_same_cost_chooses_lexical_ports ... ok
+2026-10-10T13:04:14.3830978Z test runtime::ethernet::dynamic::tests::staged_learning_lookup_observes_delta_before_commit ... ok
+2026-10-10T13:04:14.3832330Z test runtime::ethernet::dynamic::tests::source_filter_static_union_router_and_ip_collision ... ok
+2026-10-10T13:04:14.3833621Z test runtime::ethernet::dynamic::tests::static_shadow_and_known_ineligible_do_not_flood ... ok
+2026-10-10T13:04:14.3834868Z test runtime::ethernet::dynamic::tests::stale_convergence_replaced_and_noop_epoch ... ok
+2026-10-10T13:04:14.3836114Z test runtime::ethernet::dynamic::tests::strict_input_validates_future_controls_and_ip ... ok
+2026-10-10T13:04:14.3867065Z test runtime::ethernet::dynamic::tests::tree_triangle_deterministic_and_break_before_make ... ok
+2026-10-10T13:04:14.3891057Z test runtime::ethernet::media::tests::cancellation_preserves_unrelated_same_time_logical_changes ... ok
+2026-10-10T13:04:14.3910884Z test runtime::ethernet::media::tests::independent_sha256_beb_vectors_match ... ok
+2026-10-10T13:04:14.3971099Z test runtime::ethernet::media::tests::sixteen_collisions_drop_current_without_sixteenth_draw_or_seventeenth_attempt ... ok
+2026-10-10T13:04:14.4060927Z test runtime::ethernet::tests::arithmetic_failure_preserves_callback_prefix ... ok
+2026-10-10T13:04:14.4131283Z test runtime::ethernet::tests::arrival_reservation_commits_with_eof_and_failure_preserves_prefix ... ok
+2026-10-10T13:04:14.4185379Z test runtime::ethernet::dynamic::tests::timer_refresh_bounded_and_generation_overflow_atomic ... ok
+2026-10-10T13:04:14.4211973Z test runtime::ethernet::tests::broadcast_fanout_drops_only_full_output ... ok
+2026-10-10T13:04:14.4251329Z test runtime::ethernet::tests::endpoint_processing_stop_retains_planned_time_only ... ok
+2026-10-10T13:04:14.4311015Z test runtime::ethernet::tests::fanout_sequence_failure_preserves_all_candidates_and_reception ... ok
+2026-10-10T13:04:14.4350825Z test runtime::ethernet::tests::fdb_same_ingress_filters_without_copy ... ok
+2026-10-10T13:04:14.4351806Z test runtime::ethernet::tests::fixture_preparation_rejects_invalid_inputs ... ok
+2026-10-10T13:04:14.4411408Z test runtime::ethernet::tests::generation_dispatch_validates_future_input_without_reserving_all_events ... ok
+2026-10-10T13:04:14.4423274Z test runtime::ethernet::tests::processing_overflow_discards_arrival_atomically ... ok
+2026-10-10T13:04:14.4445416Z test runtime::ethernet::tests::published_serializer_vectors ... ok
+2026-10-10T13:04:14.4446746Z test output::disk_sort::tests::late_binary_decode_and_truncation_failures_clean_the_paired_publication_stage ... ok
+2026-10-10T13:04:14.4521267Z test runtime::ethernet::tests::qos_device_capacity_bounds_all_priority_classes ... ok
+2026-10-10T13:04:14.4531658Z test runtime::ethernet::tests::qos_capacity_bytes_counts_mac_and_excludes_active_frame ... ok
+2026-10-10T13:04:14.4552679Z test runtime::ethernet::tests::qos_fanout_byte_overflow_discards_entire_batch ... ok
+2026-10-10T13:04:14.4605705Z test runtime::ethernet::tests::qos_future_u128_schedule_is_not_truncated_to_u64 ... ok
+2026-10-10T13:04:14.4645832Z test runtime::ethernet::tests::qos_periodic_and_burst_generation_obey_count_end_and_global_stop ... ok
+2026-10-10T13:04:14.4713735Z test runtime::ethernet::tests::qos_unbounded_same_time_burst_respects_max_events_without_expansion ... ok
+2026-10-10T13:04:14.4794228Z test runtime::ethernet::tests::qos_strict_priority_is_nonpreemptive_and_fifo_preserves_offer_order ... ok
+2026-10-10T13:04:14.4795875Z test runtime::ethernet::tests::queue_points_use_reservation_sequence_and_local_effect_order ... ok
+2026-10-10T13:04:14.4855251Z test runtime::ethernet::tests::release_does_not_preempt_same_time_admission ... ok
+2026-10-10T13:04:14.4878700Z test runtime::ethernet::tests::source_processing_overflow_discards_generation ... ok
+2026-10-10T13:04:14.4960893Z test runtime::ethernet::tests::vlan_each_copy_owns_wire_classification_and_capacity_length ... ok
+2026-10-10T13:04:14.5066399Z test runtime::ethernet::tests::vlan_generate_source_ready_offer_and_complete_failures_keep_callback_prefix ... ok
+2026-10-10T13:04:14.5082795Z test runtime::ethernet::tests::vlan_serializer_matches_independent_crc_lengths_and_tag_vectors ... ok
+2026-10-10T13:04:14.5110309Z test runtime::ethernet::tests::published_scenarios_and_half_open_boundaries ... ok
+2026-10-10T13:04:14.5113568Z test runtime::ethernet::tsn::tests::cbs_ifg_and_two_frame_independent_timeline ... ok
+2026-10-10T13:04:14.5117198Z test runtime::ethernet::tsn::tests::cbs_lazy_freeze_and_old_timer_noop ... ok
+2026-10-10T13:04:14.5118456Z test runtime::ethernet::tsn::tests::cbs_saturation_reset_fractional_recovery_and_full_u128 ... ok
+2026-10-10T13:04:14.5121655Z test runtime::ethernet::tsn::tests::composed_arrivals_share_staged_meter_but_never_mutate_before_apply ... ok
+2026-10-10T13:04:14.5125790Z test runtime::ethernet::tsn::tests::composed_control_selection_sof_commits_once_and_stale_wake_stays_empty ... ok
+2026-10-10T13:04:14.5138741Z test runtime::ethernet::tsn::tests::every_independent_design_vector_runs_against_production_planners ... ok
+2026-10-10T13:04:14.5140754Z test runtime::ethernet::tsn::tests::initial_base_never_borrows_prior_cycle_and_elapsed_skips_cycles ... ok
+2026-10-10T13:04:14.5144522Z test runtime::ethernet::tsn::tests::lower_ready_class_can_send_and_fifo_head_never_bypassed ... ok
+2026-10-10T13:04:14.5151308Z test runtime::ethernet::tsn::tests::metadata_roundtrips_and_snapshot_json_stays_decimal ... ok
+2026-10-10T13:04:14.5154533Z test runtime::ethernet::tsn::tests::overflow_plans_are_atomic_future_wake_u128_and_no_busy_loop ... ok
+2026-10-10T13:04:14.5157140Z test runtime::ethernet::tsn::tests::partial_snapshot_keeps_unexecuted_boundary_and_records_decimal ... ok
+2026-10-10T13:04:14.5161054Z test runtime::ethernet::tsn::tests::psfp_five_arrival_independent_vector_and_yellow_drop ... ok
+2026-10-10T13:04:14.5165101Z test runtime::ethernet::tsn::tests::psfp_red_refill_saturation_fraction_no_refund_and_discarded_delta ... ok
+2026-10-10T13:04:14.5168506Z test runtime::ethernet::tsn::tests::psfp_sdu_and_gate_drops_preserve_meter_last_time_and_bypass_tuple ... ok
+2026-10-10T13:04:14.5173373Z test runtime::ethernet::tsn::tests::schedule_generation_overflow_and_empty_control_noop_are_atomic ... ok
+2026-10-10T13:04:14.5176690Z test runtime::ethernet::tsn::tests::staged_return_to_committed_mode_emits_correcting_credit_observation ... ok
+2026-10-10T13:04:14.5180661Z test runtime::ethernet::tsn::tests::tas_01_to_05_ifg_exact_fit_adjacent_and_circular ... ok
+2026-10-10T13:04:14.5185486Z test runtime::ethernet::tsn::tests::tas_06_07_future_base_closed_and_oversized_no_periodic_tick ... ok
+2026-10-10T13:04:14.5190850Z test runtime::ethernet::tsn::tests::tas_08_09_10_control_clips_all_open_invalidates_old_wake ... ok
+2026-10-10T13:04:14.5192722Z test runtime::memory_ipc::protocol::tests::fixed_codec_rejects_unknown_duplicate_and_nondecimal_fields ... ok
+2026-10-10T13:04:14.5209090Z test runtime::ethernet::tests::vlan_zero_delay_arrival_batch_failure_keeps_arrival_uncommitted ... ok
+2026-10-10T13:04:14.5261024Z test runtime::memory_ipc::tests::codec_binds_kind_node_request_generation_and_live_owner ... ok
+2026-10-10T13:04:14.5491523Z test runtime::ethernet::tests::vlan_group_policies_membership_and_ingress_admission_have_single_reasons ... ok
+2026-10-10T13:04:14.5550970Z test runtime::network::tests::intended_terminal_survives_ingress_rejection_without_completion ... ok
+2026-10-10T13:04:14.5661022Z test runtime::network::tests::intended_terminal_set_uses_source_vid_and_ignores_static_misrouting ... ok
+2026-10-10T13:04:14.5691185Z test runtime::registered::tests::failed_arbitration_reservation_keeps_dirty_resources_and_sequence ... ok
+2026-10-10T13:04:14.6131082Z test runtime::registered::tests::staged_effect_validation_keeps_frame_queue_and_failed_event_uncommitted ... ok
+2026-10-10T13:04:14.6271057Z test runtime::registered::tests::staged_duplicate_time_generation_obeys_generator_id_then_ordinal ... ok
+2026-10-10T13:04:14.6321180Z test runtime::registered::tests::staged_filtered_receptions_do_not_reuse_visit_ids ... ok
+2026-10-10T13:04:14.6371383Z test runtime::registered::tests::staged_never_eligible_retains_queue_without_infinite_gate_ticks ... ok
+2026-10-10T13:04:14.6464411Z test runtime::scheduler::tests::initial_schedule_allocation_failure_is_diagnostic ... ok
+2026-10-10T13:04:14.6491059Z test runtime::soc::protocol::tests::codec_exact_keys_canonical_decimal_and_phases ... ok
+2026-10-10T13:04:14.6540947Z test runtime::soc::tests::checkpoint_copies_only_touched_rows_and_restores_journal_append_boundaries ... ok
+2026-10-10T13:04:14.6550683Z test runtime::soc::tests::defensive_deadlock ... ok
+2026-10-10T13:04:14.6581033Z test runtime::soc::tests::failed_completion_cohort_restores_rows_transfers_counters_and_reservation ... ok
+2026-10-10T13:04:14.6590895Z test runtime::spool::tests::truncated_journal_is_reported_and_owned_storage_is_reclaimed ... ok
+2026-10-10T13:04:14.6610974Z test runtime::spool::tests::unavailable_spool_directory_keeps_output_error_classification ... ok
+2026-10-10T13:04:14.6668170Z test runtime::registered::tests::staged_publication_reservation_failure_keeps_fes_and_journal_prefix ... ok
+2026-10-10T13:04:14.6767172Z test runtime::registered::tests::staged_sof_overflow_preserves_admitted_copy_without_planned_transmission ... ok
+2026-10-10T13:04:14.6912924Z test runtime::tests::failed_arbitration_batch_preserves_all_dirty_buses ... ok
+2026-10-10T13:04:14.7080804Z test runtime::tests::failed_gateway_preflight_does_not_register_children ... ok
+2026-10-10T13:04:14.7891029Z test output::stream::tests::multibus_stats_slots_and_reopened_pair_match_materialized_output ... ok
+2026-10-10T13:04:14.7980706Z test runtime::tests::simultaneous_buses_reserve_arbitration_as_one_batch ... ok
+2026-10-10T13:04:14.8011014Z test runtime::timing::tests::counts_only_scoped_work_and_restores_nested_measurements ... ok
+2026-10-10T13:04:14.8161108Z test runtime::tests::lineage_tracks_only_committed_requests_across_gateway_boundaries ... ok
+2026-10-10T13:04:14.8557204Z test tool::ned_editor::composition::tests::all_parent_files_and_instances_are_checked_before_gate_deletion ... ok
+2026-10-10T13:04:14.8654029Z test runtime::tests::archived_ledgers_preserve_gateway_holds_delayed_receivers_and_partial_prefixes ... ok
+2026-10-10T13:04:14.8933328Z test tool::ned_editor::composition::tests::compound_single_and_pair_deletion_preserve_comments_and_other_source_bytes ... ok
+2026-10-10T13:04:14.9071015Z test tool::ned_editor::composition::tests::bus_gate_batches_and_deletions_enforce_pair_count_and_atomic_history ... ok
+2026-10-10T13:04:14.9072312Z test tool::ned_editor::composition::tests::default_package_is_rejected_by_the_common_grammar ... ok
+2026-10-10T13:04:14.9097086Z test tool::ned_editor::composition::tests::bad_names_collisions_payloads_and_late_failures_leave_the_entire_model_unchanged ... ok
+2026-10-10T13:04:14.9441149Z test tool::ned_editor::composition::tests::stale_and_unparseable_dependencies_prevent_proving_a_gate_unused ... ok
+2026-10-10T13:04:14.9503118Z test tool::ned_editor::composition::tests::port_controller_adapts_to_can_without_changing_profile_or_settings ... ok
+2026-10-10T13:04:14.9563672Z test tool::ned_editor::controller::tests::changed_payload_or_revision_invalidates_confirmation ... ok
+2026-10-10T13:04:14.9658346Z test tool::ned_editor::controller::tests::destinations_require_the_current_writer_before_registry_mutation ... ok
+2026-10-10T13:04:14.9860150Z test tool::ned_editor::controller::tests::dirty_reload_requires_confirmation_and_failed_reload_preserves_model ... ok
+2026-10-10T13:04:15.0004967Z test tool::ned_editor::controller::tests::failed_startup_is_browsable_and_reload_can_load_after_source_appears ... ok
+2026-10-10T13:04:15.0083644Z test tool::ned_editor::controller::tests::first_tab_writer_claim_requires_idle_epoch_and_preserves_replay ... ok
+2026-10-10T13:04:15.0231993Z test tool::ned_editor::controller::tests::graph_confirmations_are_bound_one_use_and_jobs_share_terminal_ledger ... ok
+2026-10-10T13:04:15.0356380Z test tool::ned_editor::controller::tests::inflight_jobs_leave_get_responsive_and_reserve_sequence_until_terminal ... ok
+2026-10-10T13:04:15.0540565Z test tool::ned_editor::composition::tests::create_module_three_ports_and_inside_connections_are_atomic_drafts ... ok
+2026-10-10T13:04:15.0702266Z test tool::ned_editor::controller::tests::invalid_save_keeps_dirty_and_creates_no_output ... ok
+2026-10-10T13:04:15.1487320Z test tool::ned_editor::controller::tests::ledger_retains_a_thousand_responses_and_high_watermark_prevents_reexecution ... ok
+2026-10-10T13:04:15.1574240Z test tool::ned_editor::controller::tests::malformed_auth_epoch_busy_and_revision_have_distinct_acceptance_boundaries ... ok
+2026-10-10T13:04:15.1663605Z test tool::ned_editor::controller::tests::malformed_confirmation_payload_is_rejected_without_panicking_or_locking_session ... ok
+2026-10-10T13:04:15.1779076Z test tool::ned_editor::controller::tests::new_command_payloads_reject_unknown_fields_and_settings_stale_confirmation ... ok
+2026-10-10T13:04:15.1949611Z test tool::ned_editor::controller::tests::ini_json_source_edits_update_settings_and_undo_without_changing_paths ... ok
+2026-10-10T13:04:15.2161038Z test tool::ned_editor::controller::tests::new_project_requires_confirmation_and_replay_preserves_one_replacement ... ok
+2026-10-10T13:04:15.2181044Z test tool::ned_editor::controller::tests::no_config_creates_virtual_default_without_source_target ... ok
+2026-10-10T13:04:15.2308097Z test tool::ned_editor::controller::tests::overwrite_requires_exact_preview_and_detects_external_change ... ok
+2026-10-10T13:04:15.2639477Z test tool::ned_editor::controller::tests::commands_preserve_invalid_source_and_idempotent_terminal_results ... ok
+2026-10-10T13:04:15.2783968Z test tool::ned_editor::controller::tests::recovery_protection_blocks_commands_and_destination_registration ... ok
+2026-10-10T13:04:15.3260576Z test tool::ned_editor::controller::tests::protected_layout_replacement_needs_bound_ack_and_preserves_input_revision ... ok
+2026-10-10T13:04:15.3338363Z test tool::ned_editor::controller::tests::save_completion_retains_new_recovery_enumeration_error ... ok
+2026-10-10T13:04:15.3413234Z test tool::ned_editor::controller::tests::save_as_uses_snapshot_after_source_removal_and_marks_only_complete ... ok
+2026-10-10T13:04:15.3486773Z test tool::ned_editor::controller::tests::settings_use_bound_confirmations_async_ledger_and_instance_scope ... ok
+2026-10-10T13:04:15.3507693Z test tool::ned_editor::controller::tests::source_hash_role_and_undo_redo_are_checked_without_losing_history ... ok
+2026-10-10T13:04:15.3516629Z test tool::ned_editor::controller::tests::strict_json_rejects_nested_duplicate_keys_and_trailing_tokens ... ok
+2026-10-10T13:04:15.4318740Z test tool::ned_editor::controller::tests::successful_operation_clears_controller_diagnostics_for_its_origin ... ok
+2026-10-10T13:04:15.4569115Z test tool::ned_editor::controller::tests::validation_is_async_and_semantic_failure_uses_common_diagnostic ... ok
+2026-10-10T13:04:15.4633319Z test tool::ned_editor::controller::tests::startup_checks_recovery_before_missing_input_and_can_complete_without_model ... ok
+2026-10-10T13:04:15.5401775Z test tool::ned_editor::controller::tests::parse_debounce_adopts_latest_input_without_revision_increment ... ok
+2026-10-10T13:04:15.6071066Z test tool::ned_editor::output::tests::cached_registry_clients_preserve_each_others_registered_destinations ... ok
+2026-10-10T13:04:15.6295197Z test tool::ned_editor::output::tests::completed_checkpoint_failure_can_be_finalized_without_restarting ... ok
+2026-10-10T13:04:15.6371291Z test tool::ned_editor::output::tests::completed_manifest_repairs_registry_after_crash_gap ... ok
+2026-10-10T13:04:15.7343151Z test tool::ned_editor::output::tests::export_uses_snapshot_after_source_deleted_and_plan_digest_is_deterministic ... ok
+2026-10-10T13:04:15.7778463Z test tool::ned_editor::output::tests::directory_identity_journal_gap_can_restart_without_unknown_directory_cleanup ... ok
+2026-10-10T13:04:15.8059827Z test tool::ned_editor::output::tests::export_copies_workload_valid_layout_and_multiple_ordered_ned_roots ... ok
+2026-10-10T13:04:15.8659355Z test tool::ned_editor::output::tests::invalid_layout_needs_explicit_replacement_confirmation ... ok
+2026-10-10T13:04:15.8956586Z test tool::ned_editor::output::tests::malformed_retirement_allowlist_cannot_escape_private_journal ... ok
+2026-10-10T13:04:15.9211634Z test tool::ned_editor::output::tests::new_target_foreign_entry_and_existing_external_changes_are_preserved ... ok
+2026-10-10T13:04:15.9672362Z test tool::ned_editor::output::tests::nonreplace_publication_collision_never_clobbers_external_inode ... ok
+2026-10-10T13:04:16.1207765Z test tool::ned_editor::output::tests::managed_save_allows_reserved_layout_creation_and_undo_to_empty_layout ... ok
+2026-10-10T13:04:16.2001489Z test tool::ned_editor::output::tests::recovery_action_cannot_flip_and_untrusted_manifest_cannot_authorize_new_paths ... ok
+2026-10-10T13:04:16.2473088Z test tool::ned_editor::output::tests::invalid_journal_is_protected_without_hiding_other_recoveries_or_blocking_startup ... ok
+2026-10-10T13:04:16.3057945Z test tool::ned_editor::output::tests::recovery_checkpoint_failure_keeps_finalization_available_for_retry ... ok
+2026-10-10T13:04:16.3060976Z test tool::ned_editor::output::tests::recovery_third_party_change_stops_before_any_other_target_changes ... ok
+2026-10-10T13:04:16.4081169Z test tool::ned_editor::output::tests::restart_completes_partial_no_clobber_publication_using_hash_truth ... ok
+2026-10-10T13:04:16.4887766Z test tool::ned_editor::output::tests::restore_allows_semantically_invalid_before_content_and_preserves_invalid_utf8_layout ... ok
+2026-10-10T13:04:16.5283870Z test tool::ned_editor::output::tests::replay_of_old_completed_save_does_not_roll_back_newer_baseline ... ok
+2026-10-10T13:04:16.5398995Z test tool::ned_editor::output::tests::reclamation_preserves_unknown_identities_links_contents_and_unrecovered_journals ... ok
+2026-10-10T13:04:16.5709451Z test tool::ned_editor::output::tests::restore_partial_source_overwrite_returns_exact_before_bytes ... ok
+2026-10-10T13:04:16.5890915Z test tool::ned_editor::output::tests::same_json_input_is_planned_in_both_reference_roles ... ok
+2026-10-10T13:04:16.6020928Z test tool::ned_editor::output::tests::semantic_invalid_output_creates_no_output_or_journal ... ok
+2026-10-10T13:04:16.6140647Z test tool::ned_editor::output::tests::restored_journal_with_unknown_entry_remains_visible_and_protected ... ok
+2026-10-10T13:04:16.6513681Z test tool::ned_editor::output::tests::source_symlink_hardlink_and_permission_changes_are_conflicts ... ok
+2026-10-10T13:04:16.6761341Z test tool::ned_editor::output::tests::source_overwrite_requires_exact_plan_confirmation_and_preserves_ini ... ok
+2026-10-10T13:04:16.7702119Z test tool::ned_editor::output::tests::successful_recovery_clears_marker_when_completion_journal_was_not_persisted ... ok
+2026-10-10T13:04:16.7709219Z test runtime::tests::archived_request_storage_tracks_live_work_not_generated_history ... ok
+2026-10-10T13:04:16.8437525Z test tool::ned_editor::output::tests::stage_identity_journal_gap_can_restart_complete_or_restore_without_unknown_cleanup ... ok
+2026-10-10T13:04:16.8549500Z test tool::ned_editor::output::tests::unknown_orphan_and_symlinked_journal_roots_are_never_collected ... ok
+2026-10-10T13:04:16.8610310Z test tool::ned_editor::settings::tests::empty_project_has_no_stale_overrides_and_remains_an_editable_draft ... ok
+2026-10-10T13:04:16.9000923Z test tool::ned_editor::settings::tests::gateway_and_workload_forms_reject_invalid_ownership_and_preserve_other_settings ... ok
+2026-10-10T13:04:16.9251199Z test tool::ned_editor::settings::tests::gateway_settings_can_be_removed_after_the_module_instance_was_deleted ... ok
+2026-10-10T13:04:16.9478357Z test tool::ned_editor::output::tests::successful_saves_reclaim_all_private_backups_immediately ... ok
+2026-10-10T13:04:16.9538722Z test tool::ned_editor::settings::tests::instance_parameters_validate_common_rules_and_undo_preserves_type_defaults ... ok
+2026-10-10T13:04:16.9741074Z test tool::ned_editor::settings::tests::malformed_or_unknown_json_is_never_silently_replaced_by_forms ... ok
+2026-10-10T13:04:16.9860881Z test tool::ned_editor::settings::tests::json_identifiers_accept_ned_reserved_words_and_disabled_generators ... ok
+2026-10-10T13:04:17.0002739Z test tool::ned_editor::settings::tests::unrepresentable_route_ports_never_get_silently_normalized_by_a_form ... ok
+2026-10-10T13:04:17.0042402Z test tool::ned_editor::settings::tests::missing_workload_file_is_added_virtually_and_undo_restores_input_set ... ok
+2026-10-10T13:04:17.0256322Z test tool::ned_editor::settings::tests::workload_forms_accept_explicit_and_periodic_and_reject_invalid_frames ... ok
+2026-10-10T13:04:17.0480895Z test tool::ned_editor::template::tests::gateway_reference_is_exposed_and_prepares_complete_routing ... ok
+2026-10-10T13:04:17.0721306Z test tool::ned_editor::settings::tests::bom_json_forms_match_common_parsers_and_preserve_encoding_through_history ... ok
+2026-10-10T13:04:17.0744184Z test tool::ned_editor::template::tests::modules_use_fresh_multibus_dependencies_and_stable_catalog_ids ... ok
+2026-10-10T13:04:17.0831001Z test tool::ned_editor::template::tests::snapshot_provenance_paths_hashes_roles_and_layouts_are_consistent ... ok
+2026-10-10T13:04:17.0976589Z test tool::ned_editor::template::tests::invalid_names_templates_and_relative_cwd_are_rejected ... ok
+2026-10-10T13:04:17.1069832Z test tool::ned_editor::tests::atomic_graph_child_delete_preserves_comments_and_is_undoable ... ok
+2026-10-10T13:04:17.1101190Z test tool::ned_editor::template::tests::starters_prepare_with_all_settings_and_zero_traffic_without_disk_creation ... ok
+2026-10-10T13:04:17.1114948Z test tool::ned_editor::tests::bad_graph_candidate_does_not_change_revision_or_history ... ok
+2026-10-10T13:04:17.1265049Z test tool::ned_editor::tests::builtin_collision_and_invalid_payload_preserve_user_definitions ... ok
+2026-10-10T13:04:17.1460941Z test tool::ned_editor::tests::default_and_reconnect_change_only_the_selected_token_span ... ok
+2026-10-10T13:04:17.1476623Z test tool::ned_editor::tests::builtin_gateway_migrates_atomically_and_undo_restores_entire_baseline ... ok
+2026-10-10T13:04:17.1520976Z test tool::ned_editor::tests::default_literal_cannot_hide_other_statements_in_a_comment ... ok
+2026-10-10T13:04:17.1550979Z test tool::ned_editor::tests::default_literal_cannot_inject_ignored_property_statement ... ok
+2026-10-10T13:04:17.1571407Z test tool::ned_editor::tests::default_literal_and_layout_undo_preserve_input_revision_boundary ... ok
+2026-10-10T13:04:17.1572930Z test tool::ned_editor::template::tests::catalog_materialization_allocates_fresh_parseable_definitions_for_both_profiles ... ok
+2026-10-10T13:04:17.1679249Z test tool::ned_editor::tests::edits_preserve_captured_empty_directories ... ok
+2026-10-10T13:04:17.1728629Z test tool::ned_editor::tests::graph_can_pair_is_one_transaction_with_two_edges ... ok
+2026-10-10T13:04:17.1862113Z test tool::ned_editor::tests::input_is_released_and_snapshot_prepare_survives_source_removal ... ok
+2026-10-10T13:04:17.1896935Z test tool::ned_editor::tests::input_rejects_non_utf8_ned_symlink_and_overlapping_roots ... ok
+2026-10-10T13:04:17.2049142Z test tool::ned_editor::tests::instance_projection_distinguishes_ini_override_from_prepared_value ... ok
+2026-10-10T13:04:17.2092274Z test tool::ned_editor::tests::invalid_utf8_layout_warns_and_preserves_original_hash ... ok
+2026-10-10T13:04:17.2173379Z test tool::ned_editor::tests::malformed_reconnect_channel_is_rejected_without_deleting_original ... ok
+2026-10-10T13:04:17.2371039Z test tool::ned_editor::tests::migration_preserves_unrelated_profile_parameters_and_original_values ... ok
+2026-10-10T13:04:17.2446571Z test tool::ned_editor::tests::no_op_keeps_redo_and_reload_resets_history_with_new_context ... ok
+2026-10-10T13:04:17.2504184Z test tool::ned_editor::tests::old_parse_result_never_replaces_newer_source ... ok
+2026-10-10T13:04:17.2643650Z test tool::ned_editor::tests::pending_dependency_gates_are_unresolved_in_other_file_projection ... ok
+2026-10-10T13:04:17.2715530Z test tool::ned_editor::tests::syntax_load_is_rejected_but_semantic_error_is_imported ... ok
+2026-10-10T13:04:17.4532241Z test tool::ned_editor::tests::history_evicts_the_oldest_operation_after_two_hundred_edits ... ok
+2026-10-10T13:04:17.4533830Z test tool::viewer::tests::raw_text_assets_cannot_close_their_html_element ... ok
+2026-10-10T13:04:17.5053709Z test tool::ned_editor::tests::template_export_is_standalone_and_draft_cannot_register_source ... ok
+2026-10-10T13:04:19.8138498Z test tool::ned_editor::output::tests::retirement_and_each_reclamation_boundary_resume_after_restart_and_retry ... ok
+2026-10-10T13:04:25.4542067Z test tool::ned_editor::tests::history_limit_counts_forward_and_reverse_bytes_and_rejects_atomically ... ok
+2026-10-10T13:04:25.4543298Z 
+2026-10-10T13:04:25.4543768Z test result: ok. 323 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 19.87s
+2026-10-10T13:04:25.4544426Z 
+2026-10-10T13:04:25.4570879Z      Running unittests src/main.rs (target/debug/deps/dir_simulator-f66b874e2d85cd1a)
+2026-10-10T13:04:25.4585544Z 
+2026-10-10T13:04:25.4585784Z running 0 tests
+2026-10-10T13:04:25.4586020Z 
+2026-10-10T13:04:25.4586498Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-10T13:04:25.4587132Z 
+2026-10-10T13:04:25.4588864Z      Running tests/ac0008_attributes.rs (target/debug/deps/ac0008_attributes-dd573f535eedffaf)
+2026-10-10T13:04:25.4599514Z 
+2026-10-10T13:04:25.4599708Z running 4 tests
+2026-10-10T13:04:25.4605900Z test comments_inside_strings_are_data_and_class_unit_values_keep_existing_accessors ... ok
+2026-10-10T13:04:25.4607649Z test public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans ... ok
+2026-10-10T13:04:25.4610599Z test supplied_fixture_keeps_grammar_rejection_and_valid_order_retains_quote_backslash ... ok
+2026-10-10T13:04:25.4612385Z test duplicate_metadata_unknown_property_and_invalid_escape_are_rejected ... ok
+2026-10-10T13:04:25.4612890Z 
+2026-10-10T13:04:25.4613352Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-10T13:04:25.4614202Z 
+2026-10-10T13:04:25.4615687Z      Running tests/ac0008_ned_rejections.rs (target/debug/deps/ac0008_ned_rejections-f235601dcf411468)
+2026-10-10T13:04:25.4628201Z 
+2026-10-10T13:04:25.4628373Z running 24 tests
+2026-10-10T13:04:25.4649931Z test bare_extends_remains_syntax_error ... ok
+2026-10-10T13:04:25.4650996Z test bare_import_remains_syntax_error ... ok
+2026-10-10T13:04:25.4652151Z test complete_import_does_not_change_later_bad_expression_reason_or_priority ... ok
+2026-10-10T13:04:25.4656843Z test allowunconnected_is_explicitly_rejected_with_ned_source ... ok
+2026-10-10T13:04:25.4666604Z test extends_without_name_remains_syntax_error ... ok
+2026-10-10T13:04:25.4673963Z test complete_import_does_not_change_later_malformed_string_reason ... ok
+2026-10-10T13:04:25.4692763Z test import_like_comment_does_not_change_lexical_failure_reason ... ok
+2026-10-10T13:04:25.4696235Z test import_like_string_does_not_change_lexical_failure_reason ... ok
+2026-10-10T13:04:25.4697391Z test import_without_name_remains_syntax_error ... ok
+2026-10-10T13:04:25.4705284Z test incomplete_import_name_remains_syntax_error ... ok
+2026-10-10T13:04:25.4725019Z test inheritance_does_not_change_later_lexical_failure_reason_or_priority ... ok
+2026-10-10T13:04:25.4727669Z test inout_is_explicitly_rejected_with_ned_source ... ok
+2026-10-10T13:04:25.4740672Z test malformed_import_path_wildcard_remains_syntax_error ... ok
+2026-10-10T13:04:25.4750977Z test malformed_string_remains_syntax_error ... ok
+2026-10-10T13:04:25.4765987Z test missing_closing_brace_remains_syntax_error ... ok
+2026-10-10T13:04:25.4785754Z test missing_opening_brace_remains_syntax_error ... ok
+2026-10-10T13:04:25.4797781Z test nested_import_wildcard_remains_syntax_error ... ok
+2026-10-10T13:04:25.4815497Z test ordinary_bad_token_remains_syntax_error ... ok
+2026-10-10T13:04:25.4880826Z test import_is_explicitly_rejected_with_ned_source ... ok
+2026-10-10T13:04:25.4889248Z test unqualified_child_type_is_explicitly_rejected_with_ned_source ... ok
+2026-10-10T13:04:25.4905266Z test vector_is_explicitly_rejected_with_ned_source ... ok
+2026-10-10T13:04:25.5035339Z test explicit_import_name_is_rejected_with_ned_keyword_source ... ok
+2026-10-10T13:04:25.5198033Z test inheritance_is_explicitly_rejected_with_ned_source ... ok
+2026-10-10T13:04:25.5344017Z test unknown_property_still_reports_unsupported_syntax ... ok
+2026-10-10T13:04:25.5344495Z 
+2026-10-10T13:04:25.5344911Z test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+2026-10-10T13:04:25.5345338Z 
+2026-10-10T13:04:25.5352816Z      Running tests/ac0008_paths.rs (target/debug/deps/ac0008_paths-8cd11dd326e2edef)
+2026-10-10T13:04:25.5365992Z 
+2026-10-10T13:04:25.5366173Z running 6 tests
+2026-10-10T13:04:25.5531343Z test classical_can_cli_validate_accepts_fixture_and_rejects_missing_config ... ok
+2026-10-10T13:04:32.7361308Z test classical_can_prepare_and_run_preserve_analytic_competition ... ok
+2026-10-10T13:04:32.7471412Z test classical_can_prepare_with_registry_and_run_uses_builtin_adapter ... ok
+2026-10-10T13:04:32.7541201Z test classical_can_explicit_run_config_preserves_plain_projection ... ok
+2026-10-10T13:04:32.8370782Z test classical_can_run_config_matches_plain_observable_projection ... ok
+2026-10-10T13:04:40.2828521Z test classical_can_cli_run_matches_plain_observable_projection ... ok
+2026-10-10T13:04:40.2829044Z 
+2026-10-10T13:04:40.2829409Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.75s
+2026-10-10T13:04:40.2829767Z 
+2026-10-10T13:04:40.2841871Z      Running tests/acceptance_bridge.rs (target/debug/deps/acceptance_bridge-b5fc367e637a5261)
+2026-10-10T13:04:40.2856845Z 
+2026-10-10T13:04:40.2856991Z running 17 tests
+2026-10-10T13:04:47.5791265Z test dir_test_0105_c03f_native_standard_2048_is_rejected_before_dispatch ... ok
+2026-10-10T13:04:49.9681440Z test dir_test_0105_c07_0107_r08_r11_0108_p01_two_gateway_wire_loop_and_multicast ... ok
+2026-10-10T13:04:50.1141653Z test dir_test_0105_c01_c04_c03ef_fixed_wire_vectors_and_independent_crc ... ok
+2026-10-10T13:04:50.4110966Z test dir_test_0106_n04_n05_n06_strict_prepare_failures_do_not_start_run ... ok
+2026-10-10T13:04:50.4350689Z test dir_test_0106_n04_forbidden_models_reject_zero_count_and_future_sources ... ok
+2026-10-10T13:04:50.4853530Z test dir_test_0106_n05_connected_switch_cycle_and_n06_duplicate_json_rule_key_reject ... ok
+2026-10-10T13:04:51.2108267Z test dir_test_0105_c03g_c05_c06_format_rewrite_and_pcp_reclassification ... ok
+2026-10-10T13:04:51.9118621Z test dir_test_0106_n01_n01f_n03_n07_receive_rejection_precedence ... ok
+2026-10-10T13:04:52.7361372Z test dir_test_0107_r03_r05_0108_p10_fanout_and_egress_permutation_and_unadmittable_branches ... ok
+2026-10-10T13:04:52.8961293Z test dir_test_0107_r01_tag_and_each_one_ps_delay_changes_only_causal_milestones ... ok
+2026-10-10T13:04:56.1950995Z test dir_test_0108_p02_hop_limit_in_second_gateway_is_finite ... ok
+2026-10-10T13:04:56.2660882Z test dir_test_0108_p09_event_limit_every_callback_keeps_successful_journal_prefix ... ok
+2026-10-10T13:04:57.0295712Z test dir_test_0107_r08_r13_native_multicast_two_gateways_and_distinct_lineages ... ok
+2026-10-10T13:04:58.6681075Z test positive_conversion_delay_offers_after_existing_same_time_ingress ... ok
+2026-10-10T13:05:02.1223617Z test dir_test_0108_p10_reversed_gateway_rule_port_queue_arrays_preserve_records_and_metrics ... ok
+2026-10-10T13:05:02.8964592Z test dir_test_0107_r01_r02_and_0108_p03_p06_every_milestone_half_open_boundary ... ok
+2026-10-10T13:05:19.6277937Z test dir_test_0107_r10_r11_r12_0108_p12e_two_terminal_tuples_and_partial_completion ... ok
+2026-10-10T13:05:19.6278537Z 
+2026-10-10T13:05:19.6278888Z test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 39.34s
+2026-10-10T13:05:19.6279486Z 
+2026-10-10T13:05:19.6290972Z      Running tests/acceptance_dynamic_tsn.rs (target/debug/deps/acceptance_dynamic_tsn-1553c901b3c69a8a)
+2026-10-10T13:05:19.6305532Z 
+2026-10-10T13:05:19.6305705Z running 19 tests
+2026-10-10T13:05:38.8311204Z test canonical_input_order_and_disabled_tsn_preserve_dynamic_media ... ok
+2026-10-10T13:05:39.9714526Z test cbs_wire_gate_and_recovery_t_minus_one_t_t_plus_one_prefix ... ok
+2026-10-10T13:05:45.2281123Z test dynamic_revisit_has_unique_copy_parent_dag_and_visit_limit ... ok
+2026-10-10T13:05:56.4184992Z test dynamic_wire_down_and_up_receptions_use_arrival_policy ... ok
+2026-10-10T13:06:02.4511276Z test dynamic_ipv4_ipv6_source_filters_static_union_and_endpoint_subscription ... ok
+2026-10-10T13:06:06.3316652Z test gcl_update_t_minus_one_t_t_plus_one_prefix_and_permutation ... ok
+2026-10-10T13:06:19.6309279Z test dynamic_learning_capacity_and_cancelled_expiry_remain_bounded has been running for over 60 seconds
+2026-10-10T13:06:29.5301258Z test dynamic_learning_capacity_and_cancelled_expiry_remain_bounded ... ok
+2026-10-10T13:06:30.7976619Z test psfp_actual_arrival_refill_gate_and_sdu_before_meter ... ok
+2026-10-10T13:06:38.8650223Z test membership_expiry_unknown_policy_and_queued_copy_target_remain_distinct ... ok
+2026-10-10T13:06:39.9721143Z test dynamic_wire_control_and_expiry_t_minus_one_t_t_plus_one_prefix has been running for over 60 seconds
+2026-10-10T13:06:40.8201331Z test psfp_three_egress_partial_fanout_consumes_once_without_refund ... ok
+2026-10-10T13:06:41.0820849Z test psfp_untagged_tuple_uses_receiver_pvid_and_default_priority ... ok
+2026-10-10T13:06:41.4356192Z test psfp_queued_vid_expiry_preserves_tokens_and_resets_positive_credit ... ok
+2026-10-10T13:06:42.0231300Z test queued_linkdown_at_release_preserves_completed_wire_and_drops_waiting_copy ... ok
+2026-10-10T13:06:42.5245746Z test registration_capacity_error_preserves_successful_control_prefix ... ok
+2026-10-10T13:06:43.7071954Z test strict_dynamic_and_tsn_negatives_are_rejected_even_beyond_horizon ... ok
+2026-10-10T13:06:45.6081160Z test same_time_wire_policy_aging_registration_gcl_and_arrival_order ... ok
+2026-10-10T13:06:47.5313983Z test tas_all_ten_declared_vectors_execute_real_wire ... ok
+2026-10-10T13:06:56.4186030Z test fixtures_prepare_and_execute_all_positive_cases has been running for over 60 seconds
+2026-10-10T13:07:29.9831407Z test dynamic_wire_control_and_expiry_t_minus_one_t_t_plus_one_prefix ... ok
+2026-10-10T13:07:49.5258997Z test fixtures_prepare_and_execute_all_positive_cases ... ok
+2026-10-10T13:07:49.5259762Z 
+2026-10-10T13:07:49.5260799Z test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 149.90s
+2026-10-10T13:07:49.5261799Z 
+2026-10-10T13:07:49.5280832Z      Running tests/acceptance_output.rs (target/debug/deps/acceptance_output-9a4b9ebda214b5f6)
+2026-10-10T13:07:49.5294790Z 
+2026-10-10T13:07:49.5295200Z running 6 tests
+2026-10-10T13:07:55.9360728Z test dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows ... ok
+2026-10-10T13:07:55.9401166Z test dir_test_0072_h29_receiver_observations_at_h_remain_pending ... ok
+2026-10-10T13:07:55.9430833Z test dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv ... ok
+2026-10-10T13:07:55.9457730Z test dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation ... ok
+2026-10-10T13:07:55.9579066Z test dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate ... ok
+2026-10-10T13:07:55.9706784Z test dir_test_0073_instantaneous_peak_and_overlapping_interval_union ... ok
+2026-10-10T13:07:55.9707445Z 
+2026-10-10T13:07:55.9708005Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.44s
+2026-10-10T13:07:55.9708606Z 
+2026-10-10T13:07:55.9716799Z      Running tests/acceptance_prefix.rs (target/debug/deps/acceptance_prefix-7c98185dd3a43ce6)
+2026-10-10T13:07:55.9730800Z 
+2026-10-10T13:07:55.9731134Z running 1 test
+2026-10-10T13:07:55.9837300Z test native_can_and_ethernet_future_dispatch_preserve_exact_committed_prefix ... ok
+2026-10-10T13:07:55.9837900Z 
+2026-10-10T13:07:55.9838324Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-10T13:07:55.9838925Z 
+2026-10-10T13:07:55.9847312Z      Running tests/acceptance_resources.rs (target/debug/deps/acceptance_resources-2e7f3657d8656fce)
+2026-10-10T13:07:55.9858499Z 
+2026-10-10T13:07:55.9859049Z running 2 tests
+2026-10-10T13:07:55.9938968Z test failed_winner_time_reservation_keeps_waiting_request_and_queue ... ok
+2026-10-10T13:07:55.9986002Z test finite_waiting_capacity_release_arrival_and_independent_resource ... ok
+2026-10-10T13:07:55.9986673Z 
+2026-10-10T13:07:55.9987302Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-10T13:07:55.9987907Z 
+2026-10-10T13:07:55.9993417Z      Running tests/axi.rs (target/debug/deps/axi-fa539116fae44931)
+2026-10-10T13:07:56.0006022Z 
+2026-10-10T13:07:56.0006248Z running 11 tests
+2026-10-10T13:07:56.0591208Z test config_required_duplicate_unknown_and_numeric_types_are_strict ... ok
+2026-10-10T13:08:03.1191794Z test eligible_overflow_fails_before_generation_commit ... ok
+2026-10-10T13:08:03.1218197Z test callback_failure_retains_only_committed_write_prefix ... ok
+2026-10-10T13:08:03.1227634Z test compound_manager_wrapper_preserves_five_path_topology_and_initial_state ... ok
+2026-10-10T13:08:03.1620677Z test future_clock_edge_is_preserved_beyond_time_limit ... ok
+2026-10-10T13:08:03.1651387Z test failure_after_write_keeps_committed_ram_and_bit_metrics ... ok
+2026-10-10T13:08:03.1863745Z test empty_and_zero_horizon_emit_exact_finite_metric_set ... ok
+2026-10-10T13:08:03.2035019Z test zero_fixed_delay_is_accepted_and_positive_delay_or_crossed_suffix_rejected ... ok
+2026-10-10T13:08:03.2041798Z test sparse_clock_and_large_timestamps_remain_exact_beyond_binary64_integer_precision ... ok
+2026-10-10T13:08:03.2064734Z test invalid_transactions_are_rejected_including_after_time_limit ... ok
+2026-10-10T13:08:03.3501688Z test all_analytic_fixtures_execute_with_exact_handshakes_memory_and_metrics ... ok
+2026-10-10T13:08:03.3502693Z 
+2026-10-10T13:08:03.3503383Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.35s
+2026-10-10T13:08:03.3504376Z 
+2026-10-10T13:08:03.3514024Z      Running tests/build_ledger_identity.rs (target/debug/deps/build_ledger_identity-7746cf3b081159d6)
+2026-10-10T13:08:03.3525450Z 
+2026-10-10T13:08:03.3525627Z running 1 test
+2026-10-10T13:08:03.3529073Z test ledger_identity_requires_a_real_document_version ... ok
+2026-10-10T13:08:03.3529546Z 
+2026-10-10T13:08:03.3529863Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-10T13:08:03.3530438Z 
+2026-10-10T13:08:03.3531817Z      Running tests/can_scenarios.rs (target/debug/deps/can_scenarios-d2be5064b8659fc9)
+2026-10-10T13:08:03.3543682Z 
+2026-10-10T13:08:03.3543842Z running 5 tests
+2026-10-10T13:08:03.3611203Z test overflow_in_eof_delivery_keeps_request_in_flight_without_receivers ... ok
+2026-10-10T13:08:03.3621196Z test mixed_identifier_formats_follow_wire_priority ... ok
+2026-10-10T13:08:03.3622278Z test event_limit_keeps_committed_prefix_and_can_finish_normally_at_exact_count ... ok
+2026-10-10T13:08:03.3658932Z test zero_horizon_and_future_only_generation_do_not_generate_requests ... ok
+2026-10-10T13:08:03.3863867Z test all_documented_can_scenarios_match_analytic_expectations ... ok
+2026-10-10T13:08:03.3864385Z 
+2026-10-10T13:08:03.3864801Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+2026-10-10T13:08:03.3865389Z 
+2026-10-10T13:08:03.3870688Z      Running tests/canfd.rs (target/debug/deps/canfd-86b4e3066940517f)
+2026-10-10T13:08:03.3883282Z 
+2026-10-10T13:08:03.3883423Z running 9 tests
+2026-10-10T13:08:03.4452362Z test frame_binding_schema_and_generator_errors_fail_before_execution ... ok
+2026-10-10T13:08:10.5935292Z test filter_rejection_keeps_planned_completion_and_no_success_count ... ok
+2026-10-10T13:08:10.6010997Z test arbitration_standard_vs_extended_and_capacity_generation_order ... ok
+2026-10-10T13:08:10.6096237Z test overflow_preserves_previous_commit_and_does_not_fabricate_sof ... ok
+2026-10-10T13:08:10.6150740Z test rates_filters_capacities_and_cross_protocol_types_are_strict ... ok
+2026-10-10T13:08:10.6430921Z test zero_capacity_drops_ready_and_exact_limit_generation_never_commits ... ok
+2026-10-10T13:08:10.6592997Z test uppercase_payload_normalizes_and_rebinding_preserves_structural_boundary ... ok
+2026-10-10T13:08:10.7649508Z test strict_stop_eof_arrival_and_processing_boundaries ... ok
+2026-10-10T13:08:10.9955376Z test external_vectors_match_dlc_combined_ceiling_and_committed_metrics ... ok
+2026-10-10T13:08:10.9955937Z 
+2026-10-10T13:08:10.9956267Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.61s
+2026-10-10T13:08:10.9956630Z 
+2026-10-10T13:08:10.9966667Z      Running tests/cli.rs (target/debug/deps/cli-7a11eb379458d39b)
+2026-10-10T13:08:10.9981425Z 
+2026-10-10T13:08:10.9982023Z running 8 tests
+2026-10-10T13:08:11.0638519Z test help_version_argument_errors_and_validate ... ok
+2026-10-10T13:08:11.0817469Z test examples_show_contention_then_overload ... ok
+2026-10-10T13:08:11.1111874Z test output_failure_keeps_the_preceding_execution_diagnostic ... ok
+2026-10-10T13:08:19.6880992Z test prepared_inputs_are_not_reopened_during_run ... ok
+2026-10-10T13:08:19.7070897Z test validate_counts_simple_instances_without_gateway_compounds ... ok
+2026-10-10T13:08:19.8660998Z test execution_limit_exports_consistent_partial_results ... ok
+2026-10-10T13:08:19.9307998Z test errors_do_not_destroy_inputs_or_existing_directories ... ok
+2026-10-10T13:08:20.1344043Z test run_publishes_results_and_refuses_to_overwrite ... ok
+2026-10-10T13:08:20.1344623Z 
+2026-10-10T13:08:20.1345145Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.14s
+2026-10-10T13:08:20.1345959Z 
+2026-10-10T13:08:20.1355825Z      Running tests/diagnostics.rs (target/debug/deps/diagnostics-222846b28c327ec1)
+2026-10-10T13:08:20.1369845Z 
+2026-10-10T13:08:20.1370160Z running 15 tests
+2026-10-10T13:08:20.1421104Z test ini_invalid_value_points_to_adopted_value_not_same_default ... ok
+2026-10-10T13:08:20.1422516Z test ini_unknown_key_points_to_key_after_bom_crlf_and_unicode_comment ... ok
+2026-10-10T13:08:20.1424023Z test duplicate_json_key_points_to_second_key_and_retains_related_location ... ok
+2026-10-10T13:08:20.1425225Z test channel_errors_use_ini_section_reference_or_adopted_value ... ok
+2026-10-10T13:08:20.1426277Z test ned_eof_has_empty_range_and_correct_unicode_scalar_column ... ok
+2026-10-10T13:08:20.1427286Z test ini_unknown_parameter_points_to_complete_assignment_key ... ok
+2026-10-10T13:08:20.1436249Z test ned_unknown_child_reference_points_to_type_token ... ok
+2026-10-10T13:08:20.1471619Z test json_eof_is_a_zero_width_range_after_final_scalar_or_newline ... ok
+2026-10-10T13:08:20.1500787Z test nested_json_error_uses_exact_value_despite_repeated_keys ... ok
+2026-10-10T13:08:20.2052459Z test every_model_family_locates_semantic_json_field_by_identity ... ok
+2026-10-10T13:08:20.2095244Z test unreadable_input_has_path_and_null_positions ... ok
+2026-10-10T13:08:20.2106595Z test wire_contract_is_complete_nullable_and_string_only ... ok
+2026-10-10T13:08:27.9771207Z test runtime_guard_retains_candidate_time_and_reserved_sequence ... ok
+2026-10-10T13:08:28.5327157Z test preparation_stderr_and_jsonl_share_primary_object ... ok
+2026-10-10T13:08:28.6291153Z test stderr_and_jsonl_use_same_control_character_escaping ... ok
+2026-10-10T13:08:28.6291638Z 
+2026-10-10T13:08:28.6292054Z test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.49s
+2026-10-10T13:08:28.6292605Z 
+2026-10-10T13:08:28.6302994Z      Running tests/ethernet.rs (target/debug/deps/ethernet-eb4d21d20c130cd6)
+2026-10-10T13:08:28.6317691Z 
+2026-10-10T13:08:28.6317925Z running 6 tests
+2026-10-10T13:08:28.6360813Z test frame_serializer_matches_independent_golden_bytes_and_crc ... ok
+2026-10-10T13:08:35.8981129Z test eof_boundary_has_no_completed_bits_or_fabricated_reception ... ok
+2026-10-10T13:08:35.9647063Z test unicast_metrics_keep_mac_occupancy_and_delivery_boundaries_separate ... ok
+2026-10-10T13:08:35.9794374Z test qos_metadata_preserves_future_candidate_without_invalid_u64_time ... ok
+2026-10-10T13:08:35.9847224Z test failure_boundary_counts_committed_eof_and_release_only_in_summary ... ok
+2026-10-10T13:08:36.3163397Z test ethernet_product_matches_all_existing_golden_scenarios ... ok
+2026-10-10T13:08:36.3163918Z 
+2026-10-10T13:08:36.3164325Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.68s
+2026-10-10T13:08:36.3164904Z 
+2026-10-10T13:08:36.3173983Z      Running tests/ethernet_media.rs (target/debug/deps/ethernet_media-3ea78a2934aaa829)
+2026-10-10T13:08:36.3189083Z 
+2026-10-10T13:08:36.3189376Z running 14 tests
+2026-10-10T13:08:36.3290946Z test canceled_pair_reservations_are_excluded_from_partial_pending_count ... ok
+2026-10-10T13:08:36.3360916Z test carrier_on_ifg_deadline_resets_continuous_idle_and_post_preamble_collision_jams_immediately ... ok
+2026-10-10T13:08:36.3431736Z test dedicated_100base_t1_uses_independent_policy_and_full_pipeline ... ok
+2026-10-10T13:08:43.6181121Z test current_retry_is_excluded_from_fifo_capacity ... ok
+2026-10-10T13:08:43.6508279Z test arrival_boundary_and_media_schema_metrics_are_exact ... ok
+2026-10-10T13:08:43.6631018Z test delayed_carrier_and_same_time_carrier_prevent_false_collisions ... ok
+2026-10-10T13:08:43.6720877Z test pair_start_overflow_preflights_both_directions_before_any_sof_commit ... ok
+2026-10-10T13:08:43.7019447Z test half_stop_preserves_incomplete_jam_and_backoff_without_delivery ... ok
+2026-10-10T13:08:43.7088931Z test public_media_examples_execute_with_the_selected_profiles ... ok
+2026-10-10T13:08:43.7245457Z test strict_media_prepare_boundaries_report_specific_rules ... ok
+2026-10-10T13:08:43.7440820Z test mixed_switch_pair_timelines_preserve_independent_transfers ... ok
+2026-10-10T13:08:43.7587829Z test collisions_jam_beb_retries_match_analytic_vectors ... ok
+2026-10-10T13:08:43.7812859Z test repeat_collisions_and_max_frame_match_remaining_catalog_cases ... ok
+2026-10-10T13:08:43.7891096Z test t1_duplex_and_pipeline_keep_mac_release_independent_of_phy ... ok
+2026-10-10T13:08:43.7891624Z 
+2026-10-10T13:08:43.7892296Z test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.47s
+2026-10-10T13:08:43.7892897Z 
+2026-10-10T13:08:43.7900876Z      Running tests/ethernet_qos.rs (target/debug/deps/ethernet_qos-a7b9fb7ab5ee76be)
+2026-10-10T13:08:43.7915407Z 
+2026-10-10T13:08:43.7915575Z running 5 tests
+2026-10-10T13:08:51.4391111Z test byte_and_device_queue_capacities_match_golden_admission ... ok
+2026-10-10T13:08:51.5547368Z test active_frame_is_nonpreemptive_and_periodic_burst_times_are_exact ... ok
+2026-10-10T13:08:52.0081688Z test public_ethernet_examples_prepare_and_execute ... ok
+2026-10-10T13:08:52.2207423Z test strict_priority_and_fifo_schedulers_match_golden_source_order ... ok
+2026-10-10T13:08:52.3141439Z test flow_metrics_check_deadlines_nearest_rank_and_empty_samples ... ok
+2026-10-10T13:08:52.3142116Z 
+2026-10-10T13:08:52.3142853Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.52s
+2026-10-10T13:08:52.3143442Z 
+2026-10-10T13:08:52.3152915Z      Running tests/ethernet_vlan.rs (target/debug/deps/ethernet_vlan-ce9f2e43bae9aa50)
+2026-10-10T13:08:52.3167839Z 
+2026-10-10T13:08:52.3168031Z running 7 tests
+2026-10-10T13:08:52.7178080Z test invalid_vlan_types_boundaries_duplicate_and_missing_keys_fail_prepare ... ok
+2026-10-10T13:09:00.7751236Z test fanout_checks_byte_capacity_after_per_copy_tag_rewrite ... ok
+2026-10-10T13:09:02.0611150Z test priority_tracks_hop_class_and_untagged_reception_resets_dei ... ok
+2026-10-10T13:09:02.2071023Z test static_multicast_distinguishes_known_unknown_empty_and_unsubscribed ... ok
+2026-10-10T13:09:02.5725074Z test readable_examples_run_and_unicast_matches_the_64_68_64_byte_timing ... ok
+2026-10-10T13:09:03.8759092Z test vlan_fdb_uses_vid_and_broadcast_skips_nonmember_ports ... ok
+2026-10-10T13:09:23.9998547Z test exact_wire_and_processing_stops_exclude_t_and_commit_at_t_plus_one ... ok
+2026-10-10T13:09:23.9999221Z 
+2026-10-10T13:09:23.9999733Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 31.68s
+2026-10-10T13:09:24.0000922Z 
+2026-10-10T13:09:24.0010601Z      Running tests/event_timing.rs (target/debug/deps/event_timing-9f8cc1a0cd5b24e5)
+2026-10-10T13:09:24.0022329Z 
+2026-10-10T13:09:24.0022501Z running 1 test
+2026-10-10T13:09:46.7470670Z test cli_reports_event_loop_time_for_complete_and_partial_runs ... ok
+2026-10-10T13:09:46.7471224Z 
+2026-10-10T13:09:46.7471678Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.74s
+2026-10-10T13:09:46.7472269Z 
+2026-10-10T13:09:46.7473496Z      Running tests/gateway.rs (target/debug/deps/gateway-7e830aa2c5f45b62)
+2026-10-10T13:09:46.7489290Z 
+2026-10-10T13:09:46.7489464Z running 16 tests
+2026-10-10T13:09:46.7801016Z test gateway_default_rx_capacity_accepts_64_and_drops_the_65th ... ok
+2026-10-10T13:09:46.7830979Z test gateway_failures_keep_the_last_committed_prefix_without_partial_fanout ... ok
+2026-10-10T13:09:46.8031092Z test gateway_rx_capacity_counts_both_gateway_and_tx_processing ... ok
+2026-10-10T13:09:46.8161503Z test gateway_rx_fanout_keeps_only_unadmitted_egress_and_does_not_duplicate_copies ... ok
+2026-10-10T13:09:46.8291033Z test gateway_rx_holds_full_tx_copy_until_sof_frees_a_slot ... ok
+2026-10-10T13:09:46.8385899Z test gateway_rx_overflow_drops_newest_without_changing_source_success ... ok
+2026-10-10T13:09:46.8540506Z test gateway_rx_capacity_json_is_strict_and_normalized ... ok
+2026-10-10T13:09:46.8542160Z test gateway_same_egress_waits_follow_first_ready_order_across_ingresses ... ok
+2026-10-10T13:09:46.8982215Z test all_gateway_fixtures_match_independent_expectations ... ok
+2026-10-10T13:09:46.9171400Z test gateway_zero_rx_and_unmatched_receptions_have_defined_capacity_semantics ... ok
+2026-10-10T13:09:46.9501537Z test same_priority_copies_follow_ready_commit_order_and_configuration_permutations ... ok
+2026-10-10T13:09:46.9914513Z test inactive_reservations_and_mutated_routing_are_validated_before_execution ... ok
+2026-10-10T13:09:47.0054002Z test wrong_bus_rx_and_bus_to_bus_paths_are_rejected ... ok
+2026-10-10T13:09:54.1450237Z test input_roles_and_gateway_initial_state_survive_arbitrary_extensions_and_bom ... ok
+2026-10-10T13:09:54.2004218Z test arbitrary_bus_gate_names_preserve_multibus_results_and_timing ... ok
+2026-10-10T13:09:55.1970438Z test schema2_publication_preserves_references_hashes_and_per_bus_metrics ... ok
+2026-10-10T13:09:55.1971030Z 
+2026-10-10T13:09:55.1971328Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.45s
+2026-10-10T13:09:55.1971722Z 
+2026-10-10T13:09:55.1984008Z      Running tests/memory_ipc.rs (target/debug/deps/memory_ipc-654be7b8e2b8bcff)
+2026-10-10T13:09:55.1997852Z 
+2026-10-10T13:09:55.1997995Z running 11 tests
+2026-10-10T13:10:02.4261559Z test final_dma_write_and_notification_reservation_fail_atomically ... ok
+2026-10-10T13:10:02.4262572Z test failure_during_admission_preserves_awaiting_child_and_offered_conservation ... ok
+2026-10-10T13:10:02.4290798Z test dma_uses_row_boundary_chunks_and_same_memory_nonoverlap ... ok
+2026-10-10T13:10:02.4450684Z test independent_invalid_fixture_rules_are_diagnosed ... ok
+2026-10-10T13:10:02.4660603Z test preparation_is_strict_and_validates_after_stop ... ok
+2026-10-10T13:10:02.4930832Z test metadata_registries_sorted_and_cohort_owner_survives_later_port_reuse ... ok
+2026-10-10T13:10:02.5040781Z test metric_points_preserve_reservation_and_callback_effect_order ... ok
+2026-10-10T13:10:02.5170847Z test service_overflow_retains_admitted_request_and_unmodified_memory ... ok
+2026-10-10T13:10:02.5405944Z test simultaneous_generator_prefix_uses_generator_then_ordinal ... ok
+2026-10-10T13:10:02.5505642Z test zero_horizon_empty_metrics_are_null_without_points ... ok
+2026-10-10T13:10:03.0644201Z test every_fixture_matches_independent_bytes_times_and_prefixes ... ok
+2026-10-10T13:10:03.0644746Z 
+2026-10-10T13:10:03.0645176Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.86s
+2026-10-10T13:10:03.0645767Z 
+2026-10-10T13:10:03.0655486Z      Running tests/network_extensions.rs (target/debug/deps/network_extensions-bcdc7051ee85787e)
+2026-10-10T13:10:03.0673619Z 
+2026-10-10T13:10:03.0673757Z running 11 tests
+2026-10-10T13:10:10.9881076Z test can_ethernet_product_preserves_r01_and_r02_processing_and_wire_times ... ok
+2026-10-10T13:10:11.4171153Z test bridge_fanout_rx_limit_and_partial_denominators_preserve_native_contracts ... ok
+2026-10-10T13:10:11.9861395Z test dynamic_triangle_matches_independent_three_hop_timing ... ok
+2026-10-10T13:10:12.0280853Z test network_prepare_diagnostics_use_original_json_source_and_pointer ... ok
+2026-10-10T13:10:12.1630873Z test identical_native_generator_ids_keep_media_qualified_origins_and_latencies ... ok
+2026-10-10T13:10:12.6721180Z test psfp_product_arrivals_consume_once_and_stream_gate_drops_before_meter ... ok
+2026-10-10T13:10:12.8851015Z test dynamic_large_cost_tree_and_at_prefixed_control_id_remain_valid ... ok
+2026-10-10T13:10:13.9961253Z test tsn_wire_scheduling_matches_independent_tas_and_cbs_boundaries ... ok
+2026-10-10T13:10:15.1877334Z test time_limited_dynamic_run_keeps_planned_and_observed_receptions_separate ... ok
+2026-10-10T13:10:16.6252394Z test registrable_source_and_fdb_use_effective_membership_and_drop_expired_queue_copy ... ok
+2026-10-10T13:10:21.0474388Z test empty_and_control_only_workloads_run_on_the_same_prepared_profile ... ok
+2026-10-10T13:10:21.0474962Z 
+2026-10-10T13:10:21.0475382Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 17.98s
+2026-10-10T13:10:21.0475959Z 
+2026-10-10T13:10:21.0487194Z      Running tests/preparation_failures.rs (target/debug/deps/preparation_failures-f33a25573a42d08a)
+2026-10-10T13:10:21.0501990Z 
+2026-10-10T13:10:21.0502395Z running 2 tests
+2026-10-10T13:10:28.2714611Z test unknown_profile_and_unreadable_config_use_schema_one_and_preserve_existing_files ... ok
+2026-10-10T13:10:30.5831444Z test selected_profile_failures_publish_empty_results_with_registered_descriptors ... ok
+2026-10-10T13:10:30.5832229Z 
+2026-10-10T13:10:30.5832884Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.53s
+2026-10-10T13:10:30.5833789Z 
+2026-10-10T13:10:30.5842333Z      Running tests/provenance.rs (target/debug/deps/provenance-cbf4ddabcd2d03a9)
+2026-10-10T13:10:30.5856545Z 
+2026-10-10T13:10:30.5856775Z running 12 tests
+2026-10-10T13:10:38.2061164Z test composed_bridge_rule_changes_effective_configuration_hash ... ok
+2026-10-10T13:10:38.5861008Z test composed_registered_parameters_and_channels_remain_in_effective_configuration ... ok
+2026-10-10T13:10:38.9146000Z test composed_tsn_large_cbs_credit_is_hashed_without_truncation ... ok
+2026-10-10T13:10:39.2601257Z test composed_tsn_large_meter_capacity_is_hashed_without_truncation ... ok
+2026-10-10T13:10:39.6161078Z test composed_tsn_policy_changes_effective_configuration_hash ... ok
+2026-10-10T13:10:40.0999468Z test composed_dynamic_policy_changes_effective_configuration_hash ... ok
+2026-10-10T13:10:40.1410380Z test execution_settings_adjusted_after_prepare_override_captured_source_values ... ok
+2026-10-10T13:10:40.2000744Z test relocation_preserves_canonical_configuration_and_input_hashes ... ok
+2026-10-10T13:10:40.2266001Z test separate_roots_lineage_and_deleted_sources_survive_export ... ok
+2026-10-10T13:10:41.0553849Z test composed_dynamic_control_changes_effective_configuration_hash ... ok
+2026-10-10T13:10:42.7527963Z test composed_registered_subject_changes_execution_and_effective_configuration_hash ... ok
+2026-10-10T13:10:43.1233863Z test every_builtin_profile_shares_build_and_effective_reproduction_data ... ok
+2026-10-10T13:10:43.1236079Z 
+2026-10-10T13:10:43.1236629Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.54s
+2026-10-10T13:10:43.1237289Z 
+2026-10-10T13:10:43.1247817Z      Running tests/registry.rs (target/debug/deps/registry-686ebde1ef88a2aa)
+2026-10-10T13:10:43.1263324Z 
+2026-10-10T13:10:43.1263500Z running 34 tests
+2026-10-10T13:10:43.1411464Z test callback_failure_discards_every_effect_and_preserves_pending_current ... ok
+2026-10-10T13:10:43.1461183Z test backwards_phase_runs_after_current_arbitration_and_hits_delta_guard_with_context ... ok
+2026-10-10T13:10:43.1550251Z test cancellation_excludes_current_timer_and_removes_future_tombstones_from_pending ... ok
+2026-10-10T13:10:43.1590797Z test channel_capability_checks_descriptor_even_when_implementation_is_permissive ... ok
+2026-10-10T13:10:43.1700858Z test coordinator_borrows_frozen_output_preserves_lineage_and_finishes_before_simples ... ok
+2026-10-10T13:10:43.1921244Z test acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix ... ok
+2026-10-10T13:10:43.2042890Z test coordinator_rejects_noncompound_targets_and_unowned_or_incompatible_outputs ... ok
+2026-10-10T13:10:43.2081264Z test acceptance_phase_fixed_point_resource_order_and_next_delta_repeat ... ok
+2026-10-10T13:10:43.2166185Z test custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically ... ok
+2026-10-10T13:10:50.5211833Z test custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog ... ok
+2026-10-10T13:10:50.5212897Z test custom_preparation_failure_uses_registered_implementation_versions ... ok
+2026-10-10T13:10:50.5249606Z test custom_dynamic_builtin_name_uses_custom_registry ... ok
+2026-10-10T13:10:50.5280535Z test custom_gateway_builtin_name_uses_custom_registry ... ok
+2026-10-10T13:10:50.5360910Z test custom_profile_cannot_publish_schema_two_layout_under_schema_one ... ok
+2026-10-10T13:10:50.5390816Z test custom_profile_validates_owned_json_and_factory_receives_it ... ok
+2026-10-10T13:10:50.5410634Z test custom_tsn_builtin_name_uses_custom_registry ... ok
+2026-10-10T13:10:50.5421262Z test custom_run_publishes_registered_records_and_metrics ... ok
+2026-10-10T13:10:50.5443914Z test duplicate_registration_does_not_replace_original ... ok
+2026-10-10T13:10:50.5550658Z test event_limit_and_half_open_time_boundary_are_enforced ... ok
+2026-10-10T13:10:50.5580736Z test failed_callback_does_not_commit_cancellation_of_an_existing_timer ... ok
+2026-10-10T13:10:50.5670919Z test generic_channel_factories_receive_frozen_inputs_in_stable_order ... ok
+2026-10-10T13:10:50.5700759Z test generic_channel_factory_failure_releases_only_constructed_prefix ... ok
+2026-10-10T13:10:50.5760749Z test explicit_run_config_selects_custom_registry_instead_of_default ... ok
+2026-10-10T13:10:50.5804251Z test generic_invalid_channel_parameter_never_reaches_factories ... ok
+2026-10-10T13:10:50.5830948Z test generic_prepare_defers_model_factories_until_runtime ... ok
+2026-10-10T13:10:50.5855470Z test initialization_error_discards_effects_and_finishes_successful_initializations ... ok
+2026-10-10T13:10:50.5960783Z test panic_is_diagnostic_and_cleanup_receives_committed_prefix ... ok
+2026-10-10T13:10:50.5990287Z test profile_rejects_module_schemas_outside_its_allowlist ... ok
+2026-10-10T13:10:50.5992612Z test live_channel_settings_override_captured_initial_state_after_prepare ... ok
+2026-10-10T13:10:50.6100697Z test strategy_registrations_are_executable ... ok
+2026-10-10T13:10:50.6101514Z test unknown_schema_and_port_version_are_prepare_errors ... ok
+2026-10-10T13:10:50.6217885Z test zero_time_limit_without_initial_events_still_reports_time_limit ... ok
+2026-10-10T13:10:50.6304193Z test registered_builtin_adapter_preserves_builtin_result ... ok
+2026-10-10T13:10:50.9773015Z test finish_can_retain_frozen_spool_after_full_buffer_and_tail_are_committed ... ok
+2026-10-10T13:10:50.9773656Z 
+2026-10-10T13:10:50.9774098Z test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.85s
+2026-10-10T13:10:50.9774730Z 
+2026-10-10T13:10:50.9784056Z      Running tests/registry_diagnostics.rs (target/debug/deps/registry_diagnostics-527e6284e8bd011e)
+2026-10-10T13:10:50.9799433Z 
+2026-10-10T13:10:50.9799607Z running 8 tests
+2026-10-10T13:10:51.0046533Z test generic_parameter_bounds_select_default_and_override_sources ... ok
+2026-10-10T13:10:51.0047876Z test generic_unknown_types_and_declaration_schema_retain_ned_sources ... ok
+2026-10-10T13:10:51.0070713Z test structural_config_reference_errors_use_known_value_spans ... ok
+2026-10-10T13:10:51.0181611Z test static_input_callback_failure_does_not_invent_source_or_target ... ok
+2026-10-10T13:10:51.0210893Z test unused_registered_declaration_defaults_still_obey_registry_bounds ... ok
+2026-10-10T13:10:51.0412459Z test generic_execution_settings_use_adopted_ini_token_and_stable_reason ... ok
+2026-10-10T13:10:51.0413281Z test unused_registered_double_and_channel_defaults_obey_bounds ... ok
+2026-10-10T13:10:58.1615707Z test generic_run_publishes_same_annotated_preparation_diagnostic ... ok
+2026-10-10T13:10:58.1616139Z 
+2026-10-10T13:10:58.1616589Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.18s
+2026-10-10T13:10:58.1617221Z 
+2026-10-10T13:10:58.1625391Z      Running tests/soc.rs (target/debug/deps/soc-6dcc6ce60d8bdebc)
+2026-10-10T13:10:58.1640991Z 
+2026-10-10T13:10:58.1641235Z running 20 tests
+2026-10-10T13:11:05.3760297Z test arithmetic_overflow_keeps_generated_pending_prefix ... ok
+2026-10-10T13:11:05.3780839Z test bus_decode_crossing_and_error_cycles ... ok
+2026-10-10T13:11:05.4070939Z test failure_prefix_keeps_completion_at_h_but_excludes_half_open_window ... ok
+2026-10-10T13:11:05.4420594Z test fixed_priority_and_fifo_selection ... ok
+2026-10-10T13:11:05.4536721Z test exact_queue_means_sample_denominators_and_window_boundary ... ok
+2026-10-10T13:11:05.4553626Z test ahb_stop_in_every_stage_preserves_busy_and_no_completion ... ok
+2026-10-10T13:11:05.5570749Z test all_analytic_fixtures_execute ... ok
+2026-10-10T13:11:05.5840868Z test invalid_topology_ranges_bool_duplicate_json_and_empty_load ... ok
+2026-10-10T13:11:05.5900915Z test noc_arbitration_overflow_rolls_back_prior_grants_and_gauges_in_same_batch ... ok
+2026-10-10T13:11:05.6050756Z test multi_target_shared_resource_gap_and_full_interval_decode ... ok
+2026-10-10T13:11:05.6550911Z test noc_rr_head_of_line_and_same_router_parallel_outputs ... ok
+2026-10-10T13:11:05.6634856Z test noc_three_parallel_outputs_and_final_delivery_only ... ok
+2026-10-10T13:11:05.7010991Z test simultaneous_opposite_links_are_independent ... ok
+2026-10-10T13:11:05.7209765Z test priority_tie_path_and_nonpreemption ... ok
+2026-10-10T13:11:05.7390689Z test strict_validation_includes_unexecuted_workload ... ok
+2026-10-10T13:11:05.7590752Z test zero_delay_channels_are_valid_and_nonzero_delays_reject ... ok
+2026-10-10T13:11:05.7709760Z test single_manager_ahb_error_phase_and_exact_completion_boundary ... ok
+2026-10-10T13:11:05.8015175Z test zero_horizon_empty_metrics_and_descriptors ... ok
+2026-10-10T13:11:07.5531599Z test future_generation_uses_one_dispatcher_and_failed_ordinal_stays_pending ... ok
+2026-10-10T13:11:08.8322903Z test long_sequential_histories_keep_fifo_capacity_and_completion_accounting ... ok
+2026-10-10T13:11:08.8323288Z 
+2026-10-10T13:11:08.8323550Z test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.67s
+2026-10-10T13:11:08.8323916Z 
+2026-10-10T13:11:08.8346699Z      Running tests/spooling.rs (target/debug/deps/spooling-ca1f81c996928e5d)
+2026-10-10T13:11:08.8364678Z 
+2026-10-10T13:11:08.8364911Z running 5 tests
+2026-10-10T13:11:17.3751245Z test archived_delayed_receive_and_lexical_ids_match_materialized_output ... ok
+2026-10-10T13:11:22.5095181Z test every_builtin_profile_has_identical_memory_and_spooled_outputs ... ok
+2026-10-10T13:11:29.2591026Z test spilled_can_observations_and_partial_failure_prefix_match_memory ... ok
+2026-10-10T13:11:30.2143964Z test can_gateway_archives_match_all_valid_fixtures_and_edge_windows ... ok
+2026-10-10T13:11:31.2658559Z test archive_output_matches_every_partial_event_boundary ... ok
+2026-10-10T13:11:31.2659010Z 
+2026-10-10T13:11:31.2659282Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.43s
+2026-10-10T13:11:31.2659660Z 
+2026-10-10T13:11:31.2689788Z      Running tests/viewer_cli.rs (target/debug/deps/viewer_cli-6f2caf8ca5acb87a)
+2026-10-10T13:11:31.2703207Z 
+2026-10-10T13:11:31.2703423Z running 6 tests
+2026-10-10T13:11:31.2831073Z test dangling_output_symlink_is_preserved ... ok
+2026-10-10T13:11:31.2842547Z test invalid_input_and_unknown_schema_do_not_create_output ... ok
+2026-10-10T13:11:31.2911044Z test help_and_argument_errors ... ok
+2026-10-10T13:11:31.2952019Z test relative_output_reports_an_absolute_path ... ok
+2026-10-10T13:11:31.3020458Z test local_html_is_self_contained_and_hostile_json_is_inert ... ok
+2026-10-10T13:11:31.3110408Z test output_collisions_equal_input_and_missing_parent_preserve_data ... ok
+2026-10-10T13:11:31.3110770Z 
+2026-10-10T13:11:31.3111044Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+2026-10-10T13:11:31.3111420Z 
+2026-10-10T13:11:31.3113109Z    Doc-tests dir_simulator
+2026-10-10T13:11:32.0807005Z 
+2026-10-10T13:11:32.0807495Z running 1 test
+2026-10-10T13:11:32.1029327Z test crates/dir-simulator/src/lib.rs - (line 3) - compile ... ok
+2026-10-10T13:11:32.1029747Z 
+2026-10-10T13:11:32.1030286Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-10T13:11:32.1030695Z 
+2026-10-10T13:11:32.2182702Z    Compiling typenum v1.20.1
+2026-10-10T13:11:32.2200224Z    Compiling cpufeatures v0.2.17
+2026-10-10T13:11:32.2201737Z    Compiling cfg-if v1.0.5
+2026-10-10T13:11:32.2470704Z     Checking serde_core v1.0.229
+2026-10-10T13:11:32.2511533Z     Checking zmij v1.0.23
+2026-10-10T13:11:32.5140943Z     Checking bitflags v2.13.2
+2026-10-10T13:11:32.6167856Z     Checking log v0.4.34
+2026-10-10T13:11:32.7031153Z     Checking memchr v2.8.3
+2026-10-10T13:11:32.8761145Z     Checking generic-array v0.14.7
+2026-10-10T13:11:33.0709526Z     Checking chunked_transfer v1.5.0
+2026-10-10T13:11:33.1351172Z     Checking httpdate v1.0.3
+2026-10-10T13:11:33.2216152Z     Checking linux-raw-sys v0.4.15
+2026-10-10T13:11:33.3862886Z     Checking block-buffer v0.10.4
+2026-10-10T13:11:33.4479335Z     Checking crypto-common v0.1.7
+2026-10-10T13:11:33.5516747Z    Compiling digest v0.10.7
+2026-10-10T13:11:33.5913642Z     Checking ascii v1.1.0
+2026-10-10T13:11:33.6611084Z     Checking itoa v1.0.18
+2026-10-10T13:11:33.6828117Z    Compiling sha2 v0.10.9
+2026-10-10T13:11:33.7761612Z     Checking tiny_http v0.12.0
+2026-10-10T13:11:33.9832883Z     Checking rustix v0.38.44
+2026-10-10T13:11:34.0147464Z    Compiling dir-simulator v0.1.0 (/home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator)
+2026-10-10T13:11:34.2209631Z     Checking serde_json v1.0.151
+2026-10-10T13:11:34.2244166Z     Checking serde v1.0.229
+2026-10-10T13:11:52.2124166Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 20.06s
+2026-10-10T13:11:52.2308971Z ##[group]Run cargo build --locked -p dir-simulator
+2026-10-10T13:11:52.2309412Z [36;1mcargo build --locked -p dir-simulator[0m
+2026-10-10T13:11:52.2310387Z [36;1mtarget/debug/dir-simulator run --config docs/verification/fixtures/can/competition.ini --output "$RUNNER_TEMP/ledger-metadata"[0m
+2026-10-10T13:11:52.2311033Z [36;1mpython3 - <<'PY'[0m
+2026-10-10T13:11:52.2311283Z [36;1mimport hashlib, json, os, re[0m
+2026-10-10T13:11:52.2311559Z [36;1mfrom pathlib import Path[0m
+2026-10-10T13:11:52.2311923Z [36;1moutput = Path(os.environ['RUNNER_TEMP']) / 'ledger-metadata'[0m
+2026-10-10T13:11:52.2312373Z [36;1mresult = json.loads((output / 'results.json').read_text())[0m
+2026-10-10T13:11:52.2312817Z [36;1mmanifest = json.loads((output / 'manifest.json').read_text())[0m
+2026-10-10T13:11:52.2313262Z [36;1mledger = Path('docs/third-party/採用物台帳.md').read_bytes()[0m
+2026-10-10T13:11:52.2313616Z [36;1mmetadata = result['metadata'][0m
+2026-10-10T13:11:52.2314069Z [36;1massert metadata['adoption_ledger_sha256'] == hashlib.sha256(ledger).hexdigest()[0m
+2026-10-10T13:11:52.2314767Z [36;1massert metadata['adoption_ledger_version'] == re.search(r'文書バージョン：`([^`]+)`', ledger.decode('utf-8')).group(1)[0m
+2026-10-10T13:11:52.2315475Z [36;1massert metadata['implementation_coverage']['reproduction_conditions'] == 'identified'[0m
+2026-10-10T13:11:52.2316014Z [36;1massert manifest['metadata_ref'] == 'results.json#/metadata'[0m
+2026-10-10T13:11:52.2316385Z [36;1mfor entry in manifest['files']:[0m
+2026-10-10T13:11:52.2316710Z [36;1m    data = (output / entry['name']).read_bytes()[0m
+2026-10-10T13:11:52.2317057Z [36;1m    assert len(data) == int(entry['bytes'])[0m
+2026-10-10T13:11:52.2317441Z [36;1m    assert hashlib.sha256(data).hexdigest() == entry['sha256'][0m
+2026-10-10T13:11:52.2317984Z [36;1mprint('PASS: actual ledger hash/document version, metadata reference and manifest files')[0m
+2026-10-10T13:11:52.2318658Z [36;1mPY[0m
+2026-10-10T13:11:52.2382341Z shell: /usr/bin/bash -e {0}
+2026-10-10T13:11:52.2382730Z ##[endgroup]
+2026-10-10T13:11:52.3276867Z    Compiling dir-simulator v0.1.0 (/home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator)
+2026-10-10T13:11:56.9866492Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.70s
+2026-10-10T13:12:04.5209850Z {"schema_version":1,"termination":"events_exhausted","exit_code":0,"partial":false,"output_path":"/home/runner/work/_temp/ledger-metadata","manifest_path":"/home/runner/work/_temp/ledger-metadata/manifest.json","primary_diagnostic":null,"committed_events":"20","finish_ps":"300000000","last_event_time_ps":"206000000","event_processing_wall_seconds":0.000266705}
+2026-10-10T13:12:04.5485111Z PASS: actual ledger hash/document version, metadata reference and manifest files
+2026-10-10T13:12:04.5566802Z ##[group]Run python3 scripts/check_third_party_notices.py
+2026-10-10T13:12:04.5567284Z [36;1mpython3 scripts/check_third_party_notices.py[0m
+2026-10-10T13:12:04.5567780Z [36;1mcd docs/verification/results/release-native-distribution-audit-2026-10-08[0m
+2026-10-10T13:12:04.5568252Z [36;1mpython3 verify_release_audit.py[0m
+2026-10-10T13:12:04.5568569Z [36;1mpython3 native_correctness.py selftest[0m
+2026-10-10T13:12:04.5632812Z shell: /usr/bin/bash -e {0}
+2026-10-10T13:12:04.5633099Z ##[endgroup]
+2026-10-10T13:12:04.6494989Z {"status": "passed_originals_and_notice_correspondence", "supplied_payload_files_checked": 37, "locked_packages_checked": 42, "crate_license_originals_checked": 89, "source_notice_bundles_checked": 10, "guide_license_originals_checked": 8, "lock_bytes_equal": false, "ledger_version": "1.1.1"}
+2026-10-10T13:12:04.7162500Z {"blob_checks": 43, "zip_members": [11, 8], "external_packages": 42, "project_license_copies": 3, "upstream_license_texts": 4, "historical_manifest_files": 4, "overall_status": "partial_verification_release_conditions_remain"}
+2026-10-10T13:12:04.7626226Z PASS: ordered typed comparison, integer exactness, ratio tolerance and zero boundary
+2026-10-10T13:12:04.7812377Z Post job cleanup.
+2026-10-10T13:12:04.8688989Z [command]/usr/bin/git version
+2026-10-10T13:12:04.8733254Z git version 2.55.0
+2026-10-10T13:12:04.8793859Z Removing SSH command configuration
+2026-10-10T13:12:04.8802407Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T13:12:04.8839734Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T13:12:04.9089349Z Removing HTTP extra header
+2026-10-10T13:12:04.9096697Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T13:12:04.9135889Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T13:12:04.9395470Z Removing includeIf entries pointing to credentials config files
+2026-10-10T13:12:04.9403737Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T13:12:04.9441068Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T13:12:04.9824539Z Cleaning up orphan processes
