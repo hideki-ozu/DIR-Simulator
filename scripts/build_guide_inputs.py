@@ -34,6 +34,7 @@ def main():
     args = parser.parse_args()
     build(SOURCE, OUTPUT, args.check)
     build(ROOT / 'examples/guide/canfd', OUTPUT.with_name('canfd-guide-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-deadline', OUTPUT.with_name('ethernet-deadline-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':

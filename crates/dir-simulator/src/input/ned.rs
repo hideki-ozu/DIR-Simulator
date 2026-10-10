@@ -1,17 +1,53 @@
 //! Common NED syntax, declarations, typed values, containment and connection paths.
 use super::{Result, decimal_parts, error, identifier, quantity, reserved, string_literal};
+use crate::types::{Diagnostic, SourceSpan};
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 #[derive(Clone, Debug)]
 struct Token {
     text: String,
+    start: usize,
+    end: usize,
     line: usize,
     column: usize,
 }
 
+// Classify the wildcard at the lexer failure without accepting it as a token or
+// reclassifying failures elsewhere merely because the file contains an import.
+fn import_wildcard(tokens: &[Token]) -> bool {
+    let mut depth = 0usize;
+    let mut statement = 0;
+    for (index, token) in tokens.iter().enumerate() {
+        match token.text.as_str() {
+            "{" => depth += 1,
+            "}" => {
+                let Some(parent) = depth.checked_sub(1) else {
+                    return false;
+                };
+                depth = parent;
+                if depth == 0 {
+                    statement = index + 1;
+                }
+            }
+            ";" if depth == 0 => statement = index + 1,
+            _ => {}
+        }
+    }
+    let prefix = &tokens[statement..];
+    depth == 0
+        && prefix.first().is_some_and(|token| token.text == "import")
+        && prefix.len() >= 3
+        && prefix.len() % 2 == 1
+        && prefix[1..].chunks_exact(2).all(|pair| {
+            identifier(&pair[0].text) && !reserved(&pair[0].text) && pair[1].text == "."
+        })
+}
+
 fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
+    let original = content;
     let content = content.strip_prefix('\u{feff}').unwrap_or(content);
+    let bom = original.len() - content.len();
     let mut tokens = Vec::new();
     let mut cursor = 0;
     let mut line = 1;
@@ -27,6 +63,10 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
                 "{}:{start_line}:{start_column}: {message}",
                 path.display()
             ))
+            .with_reason("syntax_error")
+            .with_span(path, original, start + bom, start + bom + c.len_utf8())
+            .with_detail("actual", c)
+            .with_detail("expected", message)
         };
         if matches!(c, ' ' | '\t' | '\n') {
             cursor += 1;
@@ -88,10 +128,17 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
             } else if matches!(c, '{' | '}' | ':' | ';' | '.' | '@' | '(' | ')' | '=') {
                 cursor += 1;
             } else {
-                return Err(fail("unsupported NED token"));
+                let diagnostic = fail("unsupported NED token");
+                return Err(if c == '*' && import_wildcard(&tokens) {
+                    diagnostic.with_reason("unsupported_syntax")
+                } else {
+                    diagnostic
+                });
             }
             tokens.push(Token {
                 text: content[start..cursor].into(),
+                start: start + bom,
+                end: cursor + bom,
                 line: start_line,
                 column: start_column,
             });
@@ -111,10 +158,42 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
     }
     tokens.push(Token {
         text: "<EOF>".into(),
+        start: original.len(),
+        end: original.len(),
         line,
         column,
     });
     Ok(tokens)
+}
+
+/// Declaration identity for metadata; instance paths never replace this owner.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum AttributeOwner {
+    Type { qname: String },
+    Parameter { qname: String, parameter: String },
+}
+
+/// A decoded NED property and its original half-open source range (`@` through `)`).
+#[derive(Clone, Debug)]
+pub struct Attribute {
+    name: String,
+    value: String,
+    owner: AttributeOwner,
+    span: SourceSpan,
+}
+impl Attribute {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+    pub fn value(&self) -> &str {
+        &self.value
+    }
+    pub fn owner(&self) -> &AttributeOwner {
+        &self.owner
+    }
+    pub fn span(&self) -> &SourceSpan {
+        &self.span
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -122,25 +201,44 @@ pub struct Parameter {
     scalar: String,
     unit: Option<String>,
     default: Option<String>,
+    span: SourceSpan,
+    default_span: Option<SourceSpan>,
+    attributes: BTreeMap<String, Attribute>,
 }
 #[derive(Clone, Debug)]
 pub struct Connection {
     start: String,
     end: String,
     channel: Option<String>,
+    start_span: SourceSpan,
+    end_span: SourceSpan,
+    channel_span: Option<SourceSpan>,
 }
 #[derive(Clone, Debug)]
 pub struct Declaration {
-    pub(super) name: String,
+    pub(crate) name: String,
     kind: String,
     implementation: Option<String>,
+    attributes: BTreeMap<String, Attribute>,
     parameters: BTreeMap<String, Parameter>,
     gates: BTreeMap<String, bool>, // true = output
     children: Vec<(String, String)>,
     connections: Vec<Connection>,
     source: String,
+    span: SourceSpan,
+    name_span: SourceSpan,
+    child_spans: BTreeMap<String, SourceSpan>,
 }
 impl Parameter {
+    pub fn attributes(&self) -> &BTreeMap<String, Attribute> {
+        &self.attributes
+    }
+    pub fn span(&self) -> &SourceSpan {
+        &self.span
+    }
+    pub fn default_span(&self) -> Option<&SourceSpan> {
+        self.default_span.as_ref()
+    }
     pub fn scalar(&self) -> &str {
         &self.scalar
     }
@@ -163,6 +261,15 @@ impl Connection {
     }
 }
 impl Declaration {
+    pub fn attributes(&self) -> &BTreeMap<String, Attribute> {
+        &self.attributes
+    }
+    pub fn span(&self) -> &SourceSpan {
+        &self.span
+    }
+    pub fn name_span(&self) -> &SourceSpan {
+        &self.name_span
+    }
     pub fn name(&self) -> &str {
         &self.name
     }
@@ -179,15 +286,38 @@ impl Declaration {
         &self.connections
     }
 
-    pub(super) fn fail(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
-        error(format!(
-            "{}: {}: {}",
-            self.source,
-            self.name,
-            message.as_ref()
-        ))
+    pub(crate) fn fail(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
+        let reason =
+            if message.as_ref().contains("@class") || message.as_ref().contains("implementation") {
+                "implementation_missing"
+            } else if message.as_ref().contains("parameter schema") {
+                "invalid_type"
+            } else if message.as_ref().contains("unsupported") {
+                "unsupported_syntax"
+            } else {
+                "model_config_invalid"
+            };
+        self.span
+            .apply(error(format!(
+                "{}: {}: {}",
+                self.source,
+                self.name,
+                message.as_ref()
+            )))
+            .with_reason(reason)
+            .with_target(&self.name)
     }
-    pub(super) fn simple(&self) -> bool {
+    fn parameter_error(&self, name: &str, diagnostic: Diagnostic, default: bool) -> Diagnostic {
+        let parameter = &self.parameters[name];
+        let span = if default {
+            parameter.default_span.as_ref().unwrap_or(&parameter.span)
+        } else {
+            &parameter.span
+        };
+        span.apply(diagnostic)
+            .with_target(format!("{}.{}", self.name, name))
+    }
+    pub(crate) fn simple(&self) -> bool {
         self.kind == "simple"
     }
     pub fn implementation(&self) -> Option<&str> {
@@ -196,7 +326,7 @@ impl Declaration {
     pub fn gates(&self) -> &BTreeMap<String, bool> {
         &self.gates
     }
-    pub(super) fn require_parameters(&self, schema: &[(&str, &str, Option<&str>)]) -> Result<()> {
+    pub(crate) fn require_parameters(&self, schema: &[(&str, &str, Option<&str>)]) -> Result<()> {
         if self.parameters.len() != schema.len() {
             return Err(self.fail("parameter schema mismatch"));
         }
@@ -219,14 +349,47 @@ impl Declaration {
 struct Parser<'a> {
     tokens: Vec<Token>,
     cursor: usize,
+    last_taken: usize,
     path: &'a Path,
+    content: &'a str,
 }
 impl Parser<'_> {
     fn peek(&self) -> &str {
         &self.tokens[self.cursor].text
     }
+    // Look ahead only to recognize an unsupported clause; do not consume tokens
+    // or let incomplete names change the existing syntax-error diagnostic.
+    fn name_clause(&self, mut cursor: usize, terminator: &str) -> bool {
+        loop {
+            let Some(token) = self.tokens.get(cursor) else {
+                return false;
+            };
+            if !identifier(&token.text) || reserved(&token.text) {
+                return false;
+            }
+            match self.tokens.get(cursor + 1).map(|token| token.text.as_str()) {
+                Some(text) if text == terminator => return true,
+                Some(".") => cursor += 2,
+                _ => return false,
+            }
+        }
+    }
     fn fail(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
-        let token = &self.tokens[self.cursor];
+        self.fail_at(self.cursor, message)
+    }
+    fn fail_previous(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
+        self.fail_at(self.last_taken, message)
+    }
+    fn fail_attribute(&self, attribute: &Attribute, message: impl AsRef<str>) -> Diagnostic {
+        let start = self
+            .tokens
+            .iter()
+            .position(|token| token.start == attribute.span.start_byte)
+            .expect("parsed attribute starts at a token");
+        attribute.span.apply(self.fail_at(start, message))
+    }
+    fn fail_at(&self, cursor: usize, message: impl AsRef<str>) -> crate::types::Diagnostic {
+        let token = &self.tokens[cursor];
         error(format!(
             "{}:{}:{}: {} (got {})",
             self.path.display(),
@@ -235,8 +398,38 @@ impl Parser<'_> {
             message.as_ref(),
             token.text
         ))
+        .with_reason("syntax_error")
+        .with_span(self.path, self.content, token.start, token.end)
+        .with_detail("actual", &token.text)
+        .with_detail("expected", message.as_ref())
+    }
+    fn span(&self, start: usize, end: usize) -> SourceSpan {
+        let first = &self.tokens[start];
+        let last = if end > start {
+            &self.tokens[end - 1]
+        } else {
+            first
+        };
+        let width = if end > start && last.text != "<EOF>" {
+            last.text.chars().count()
+        } else {
+            0
+        };
+        SourceSpan {
+            source: Diagnostic::prepare("")
+                .with_source(self.path)
+                .source
+                .unwrap(),
+            line: first.line,
+            column: first.column,
+            end_line: last.line,
+            end_column: last.column + width,
+            start_byte: first.start,
+            end_byte: if end > start { last.end } else { first.start },
+        }
     }
     fn take(&mut self) -> String {
+        self.last_taken = self.cursor;
         let value = self.peek().to_string();
         // Keep EOF addressable so every truncated production returns a diagnostic.
         if self.cursor + 1 < self.tokens.len() {
@@ -285,7 +478,7 @@ impl Parser<'_> {
             return Ok(value);
         }
         if !value.starts_with(|c: char| c.is_ascii_digit() || c == '-') {
-            return Err(self.fail("expected literal"));
+            return Err(self.fail_previous("expected literal"));
         }
         if identifier(self.peek()) && !reserved(self.peek()) {
             value.push(' ');
@@ -293,48 +486,74 @@ impl Parser<'_> {
         }
         Ok(value)
     }
-    fn property(&mut self, parameter: bool) -> Result<(String, String)> {
+    fn property(&mut self, owner: AttributeOwner) -> Result<Attribute> {
+        let start = self.cursor;
+        let parameter = matches!(owner, AttributeOwner::Parameter { .. });
         self.expect("@")?;
         let name = self.id()?;
         if (parameter && !matches!(name.as_str(), "unit" | "display" | "description"))
             || (!parameter && !matches!(name.as_str(), "class" | "display" | "description"))
         {
-            return Err(self.fail(format!("unsupported property: {name}")));
+            return Err(self
+                .fail_previous(format!("unsupported property: {name}"))
+                .with_reason("unsupported_syntax"));
         }
         self.expect("(")?;
         let value = if name == "unit" {
             let unit = self.id()?;
             if !matches!(unit.as_str(), "s" | "bps" | "B") {
-                return Err(self.fail("unsupported unit"));
+                return Err(self.fail_previous("unsupported unit"));
             }
             unit
         } else {
             string_literal(&self.take()).map_err(|e| self.fail(e.message))?
         };
         self.expect(")")?;
-        Ok((name, value))
+        Ok(Attribute {
+            name,
+            value,
+            owner,
+            span: self.span(start, self.cursor),
+        })
     }
     fn declaration(&mut self, package: &str) -> Result<Declaration> {
+        let declaration_start = self.cursor;
         let token = &self.tokens[self.cursor];
         let source = format!("{}:{}:{}", self.path.display(), token.line, token.column);
         let kind = self.take();
         if !matches!(kind.as_str(), "simple" | "module" | "network" | "channel") {
-            return Err(self.fail("unsupported declaration"));
+            let diagnostic = self.fail_previous("unsupported declaration");
+            return Err(if kind == "import" && self.name_clause(self.cursor, ";") {
+                diagnostic.with_reason("unsupported_syntax")
+            } else {
+                diagnostic
+            });
         }
+        let name_start = self.cursor;
         let name = format!("{package}.{}", self.id()?);
-        self.expect("{")?;
+        let name_span = self.span(name_start, self.cursor);
+        self.expect("{").map_err(|diagnostic| {
+            if self.peek() == "extends" && self.name_clause(self.cursor + 1, "{") {
+                diagnostic.with_reason("unsupported_syntax")
+            } else {
+                diagnostic
+            }
+        })?;
         let mut declaration = Declaration {
             name,
             kind,
             implementation: None,
+            attributes: BTreeMap::new(),
             parameters: BTreeMap::new(),
             gates: BTreeMap::new(),
             children: Vec::new(),
             connections: Vec::new(),
             source,
+            span: self.span(declaration_start, self.cursor),
+            name_span,
+            child_spans: BTreeMap::new(),
         };
         let mut last_section = 0;
-        let mut attributes = BTreeSet::new();
         while !self.eat("}") {
             let section = self.take();
             let order = match section.as_str() {
@@ -362,9 +581,15 @@ impl Parser<'_> {
                 match order {
                     1 => {
                         if self.peek() == "@" {
-                            let (name, value) = self.property(false)?;
-                            if !attributes.insert(name.clone()) {
-                                return Err(self.fail(format!("duplicate property {name}")));
+                            let attribute = self.property(AttributeOwner::Type {
+                                qname: declaration.name.clone(),
+                            })?;
+                            let name = &attribute.name;
+                            if declaration.attributes.contains_key(name) {
+                                return Err(self.fail_attribute(
+                                    &attribute,
+                                    format!("duplicate property {name}"),
+                                ));
                             }
                             if name == "class" {
                                 if declaration.compound() {
@@ -372,33 +597,49 @@ impl Parser<'_> {
                                         self.fail("@class is only supported on simple/channel")
                                     );
                                 }
-                                declaration.implementation = Some(value);
+                                declaration.implementation = Some(attribute.value.clone());
                             }
+                            declaration.attributes.insert(name.clone(), attribute);
                             self.expect(";")?;
                         } else {
+                            let parameter_start = self.cursor;
                             let scalar = self.take();
                             if !matches!(scalar.as_str(), "int" | "double" | "bool" | "string") {
-                                return Err(self.fail("unsupported parameter type"));
+                                return Err(self.fail_previous("unsupported parameter type"));
                             }
                             let name = self.id()?;
                             let mut unit = None;
-                            let mut properties = BTreeSet::new();
+                            let mut attributes = BTreeMap::new();
                             while self.peek() == "@" {
-                                let (property, value) = self.property(true)?;
-                                if !properties.insert(property.clone()) {
-                                    return Err(self.fail(format!("duplicate property {property}")));
+                                let attribute = self.property(AttributeOwner::Parameter {
+                                    qname: declaration.name.clone(),
+                                    parameter: name.clone(),
+                                })?;
+                                let property = &attribute.name;
+                                if attributes.contains_key(property) {
+                                    return Err(self.fail_attribute(
+                                        &attribute,
+                                        format!("duplicate property {property}"),
+                                    ));
                                 }
                                 if property == "unit" {
-                                    unit = Some(value);
+                                    unit = Some(attribute.value.clone());
                                 }
+                                attributes.insert(property.clone(), attribute);
                             }
                             if unit.is_some() && !matches!(scalar.as_str(), "int" | "double") {
-                                return Err(self.fail("unit on nonnumeric parameter"));
+                                return Err(self.fail_attribute(
+                                    &attributes["unit"],
+                                    "unit on nonnumeric parameter",
+                                ));
                             }
+                            let mut default_span = None;
                             let default = if self.eat("=") {
                                 self.expect("default")?;
                                 self.expect("(")?;
+                                let value_start = self.cursor;
                                 let value = self.literal()?;
+                                default_span = Some(self.span(value_start, self.cursor));
                                 self.expect(")")?;
                                 Some(value)
                             } else {
@@ -413,6 +654,9 @@ impl Parser<'_> {
                                         scalar,
                                         unit,
                                         default,
+                                        span: self.span(parameter_start, self.cursor),
+                                        default_span,
+                                        attributes,
                                     },
                                 )
                                 .is_some()
@@ -424,7 +668,7 @@ impl Parser<'_> {
                     2 => {
                         let direction = self.take();
                         if !matches!(direction.as_str(), "input" | "output") {
-                            return Err(self.fail("expected input/output scalar gate"));
+                            return Err(self.fail_previous("expected input/output scalar gate"));
                         }
                         let name = self.id()?;
                         self.expect(";")?;
@@ -439,7 +683,11 @@ impl Parser<'_> {
                     3 => {
                         let name = self.id()?;
                         self.expect(":")?;
+                        let child_start = self.cursor;
                         let child_type = self.name(true)?;
+                        declaration
+                            .child_spans
+                            .insert(name.clone(), self.span(child_start, self.cursor));
                         self.expect(";")?;
                         if declaration.children.iter().any(|(other, _)| other == &name) {
                             return Err(self.fail(format!("duplicate child {name}")));
@@ -447,19 +695,30 @@ impl Parser<'_> {
                         declaration.children.push((name, child_type));
                     }
                     4 => {
+                        let start_cursor = self.cursor;
                         let start = self.name(false)?;
+                        let start_span = self.span(start_cursor, self.cursor);
                         if start.split('.').count() > 2 {
                             return Err(self.fail("endpoint must be direct child.gate or own gate"));
                         }
                         self.expect("-->")?;
+                        let middle_cursor = self.cursor;
                         let middle = self.name(false)?;
-                        let (channel, end) = if self.eat("-->") {
+                        let middle_span = self.span(middle_cursor, self.cursor);
+                        let (channel, end, channel_span, end_span) = if self.eat("-->") {
                             if !middle.contains('.') {
                                 return Err(self.fail("channel must be fully qualified"));
                             }
-                            (Some(middle), self.name(false)?)
+                            let end_cursor = self.cursor;
+                            let end = self.name(false)?;
+                            (
+                                Some(middle),
+                                end,
+                                Some(middle_span),
+                                self.span(end_cursor, self.cursor),
+                            )
                         } else {
-                            (None, middle)
+                            (None, middle, None, middle_span)
                         };
                         if end.split('.').count() > 2 {
                             return Err(self.fail("endpoint must be direct child.gate or own gate"));
@@ -469,17 +728,21 @@ impl Parser<'_> {
                             start,
                             end,
                             channel,
+                            start_span,
+                            end_span,
+                            channel_span,
                         });
                     }
                     _ => unreachable!(),
                 }
             }
         }
+        declaration.span = self.span(declaration_start, self.cursor);
         Ok(declaration)
     }
 }
 
-pub(super) fn parse(
+pub(crate) fn parse(
     content: &str,
     path: &Path,
     expected_package: &str,
@@ -487,7 +750,9 @@ pub(super) fn parse(
     let mut parser = Parser {
         tokens: lex(content, path)?,
         cursor: 0,
+        last_taken: 0,
         path,
+        content,
     };
     parser.expect("package")?;
     let package = parser.name(false)?;
@@ -508,14 +773,14 @@ pub(super) fn parse(
 }
 
 #[derive(Clone, Debug)]
-pub(super) enum TypedValue {
+pub(crate) enum TypedValue {
     Integer(i64),
     Quantity(u64),
     Double,
     Boolean,
     String(String),
 }
-pub(super) fn typed_value(parameter: &Parameter, value: &str) -> Result<TypedValue> {
+pub(crate) fn typed_value(parameter: &Parameter, value: &str) -> Result<TypedValue> {
     match parameter.scalar.as_str() {
         "string" => Ok(TypedValue::String(string_literal(value)?)),
         "bool" if matches!(value, "true" | "false") => Ok(TypedValue::Boolean),
@@ -527,9 +792,12 @@ pub(super) fn typed_value(parameter: &Parameter, value: &str) -> Result<TypedVal
                     .next()
                     .unwrap();
                 if number.contains('.') {
-                    return Err(error(format!(
-                        "int parameter has fractional literal: {value}"
-                    )));
+                    return Err(
+                        error(format!("int parameter has fractional literal: {value}"))
+                            .with_reason("invalid_type")
+                            .with_detail("actual", value)
+                            .with_detail("expected", "integer literal"),
+                    );
                 }
                 let unsigned_zero = value.strip_prefix('-').filter(|rest| {
                     rest.starts_with('0')
@@ -549,13 +817,17 @@ pub(super) fn typed_value(parameter: &Parameter, value: &str) -> Result<TypedVal
                     || !digits.bytes().all(|c| c.is_ascii_digit())
                     || (digits.len() > 1 && digits.starts_with('0'))
                 {
-                    return Err(error(format!("invalid int literal: {value}")));
+                    return Err(error(format!("invalid int literal: {value}"))
+                        .with_reason("invalid_type")
+                        .with_detail("actual", value)
+                        .with_detail("expected", &parameter.scalar));
                 }
-                Ok(TypedValue::Integer(
-                    value
-                        .parse()
-                        .map_err(|_| error(format!("int exceeds i64: {value}")))?,
-                ))
+                Ok(TypedValue::Integer(value.parse().map_err(|_| {
+                    error(format!("int exceeds i64: {value}"))
+                        .with_reason("invalid_range")
+                        .with_detail("actual", value)
+                        .with_detail("expected", &parameter.scalar)
+                })?))
             }
         }
         "double" => {
@@ -564,29 +836,46 @@ pub(super) fn typed_value(parameter: &Parameter, value: &str) -> Result<TypedVal
             } else {
                 let (integer, fraction, _, rest) = decimal_parts(value, true)?;
                 if !rest.is_empty() {
-                    return Err(error(format!("unexpected unit or trailing input: {value}")));
+                    return Err(error(format!("unexpected unit or trailing input: {value}"))
+                        .with_reason("invalid_unit")
+                        .with_detail("actual", value)
+                        .with_detail("expected", &parameter.scalar));
                 }
-                let n: f64 = value
-                    .parse()
-                    .map_err(|_| error(format!("invalid double: {value}")))?;
+                let n: f64 = value.parse().map_err(|_| {
+                    error(format!("invalid double: {value}"))
+                        .with_reason("invalid_type")
+                        .with_detail("actual", value)
+                        .with_detail("expected", &parameter.scalar)
+                })?;
                 if !n.is_finite()
                     || (n == 0.0 && integer.bytes().chain(fraction.bytes()).any(|b| b != b'0'))
                 {
-                    return Err(error(format!("double overflow or underflow: {value}")));
+                    return Err(error(format!("double overflow or underflow: {value}"))
+                        .with_reason("invalid_range")
+                        .with_detail("actual", value)
+                        .with_detail("expected", &parameter.scalar));
                 }
                 Ok(TypedValue::Double)
             }
         }
-        _ => Err(error(format!(
-            "invalid {} literal: {value}",
-            parameter.scalar
-        ))),
+        _ => Err(
+            error(format!("invalid {} literal: {value}", parameter.scalar))
+                .with_reason("invalid_type")
+                .with_detail("actual", value)
+                .with_detail("expected", &parameter.scalar),
+        ),
     }
 }
-pub(super) type Values = BTreeMap<String, TypedValue>;
+pub(crate) type Values = BTreeMap<String, TypedValue>;
 
 /// Model policy for simple declarations; syntax, channels and paths remain common.
-pub(super) trait ModelRules {
+pub(crate) trait ModelRules {
+    fn default_literal(&self, _declaration: &Declaration, _name: &str) -> Option<&'static str> {
+        None
+    }
+    fn defaults(&self, _declaration: &Declaration) -> Values {
+        BTreeMap::new()
+    }
     fn validate_schema(&self, declaration: &Declaration) -> Result<()>;
     fn validate_value(
         &self,
@@ -621,10 +910,10 @@ fn validate_schema(declaration: &Declaration, rules: &impl ModelRules) -> Result
     for (name, parameter) in &declaration.parameters {
         if let Some(value) = &parameter.default {
             let value = typed_value(parameter, value)
-                .map_err(|e| declaration.fail(format!("{name} default: {}", e.message)))?;
+                .map_err(|e| declaration.parameter_error(name, e, true))?;
             rules
                 .validate_value(declaration, name, &value)
-                .map_err(|e| declaration.fail(e.message))?;
+                .map_err(|e| declaration.parameter_error(name, e, true))?;
         }
     }
     Ok(())
@@ -641,17 +930,31 @@ fn endpoint<'a>(
             .children
             .iter()
             .find(|(name, _)| name == child_name)
-            .ok_or_else(|| declaration.fail(format!("unknown child endpoint {endpoint}")))?;
+            .ok_or_else(|| {
+                declaration
+                    .fail(format!("unknown child endpoint {endpoint}"))
+                    .with_reason("unknown_instance")
+                    .with_target(endpoint)
+                    .with_detail("actual", endpoint)
+                    .with_detail("expected", "direct child endpoint")
+            })?;
         (&types[&child_type.1], gate, true)
     } else {
         (declaration, endpoint, false)
     };
-    let output = owner
-        .gates
-        .get(gate)
-        .ok_or_else(|| declaration.fail(format!("unknown gate {endpoint}")))?;
+    let output = owner.gates.get(gate).ok_or_else(|| {
+        declaration
+            .fail(format!("unknown gate {endpoint}"))
+            .with_reason("invalid_connection")
+            .with_target(endpoint)
+            .with_detail("actual", gate)
+            .with_detail("expected", "declared gate")
+    })?;
     if *output != (start == child) {
-        return Err(declaration.fail(format!("wrong endpoint direction: {endpoint}")));
+        return Err(declaration
+            .fail(format!("wrong endpoint direction: {endpoint}"))
+            .with_reason("invalid_connection")
+            .with_target(endpoint));
     }
     Ok(())
 }
@@ -664,8 +967,10 @@ fn validate_connections(
     }
     let mut used = BTreeSet::new();
     for connection in &declaration.connections {
-        endpoint(declaration, &connection.start, types, true)?;
-        endpoint(declaration, &connection.end, types, false)?;
+        endpoint(declaration, &connection.start, types, true)
+            .map_err(|d| connection.start_span.apply(d))?;
+        endpoint(declaration, &connection.end, types, false)
+            .map_err(|d| connection.end_span.apply(d))?;
         for endpoint in [&connection.start, &connection.end] {
             if !used.insert(endpoint.clone()) {
                 return Err(declaration.fail(format!("duplicate connection side: {endpoint}")));
@@ -811,7 +1116,7 @@ fn validate_paths(
     Ok(())
 }
 
-fn resolve_values(
+pub(crate) fn resolve_values(
     declaration: &Declaration,
     overrides: Option<&BTreeMap<String, String>>,
     rules: &impl ModelRules,
@@ -821,47 +1126,86 @@ fn resolve_values(
             .keys()
             .find(|key| !declaration.parameters.contains_key(*key))
         {
-            return Err(declaration.fail(format!("unknown parameter: {key}")));
+            return Err(declaration
+                .fail(format!("unknown parameter: {key}"))
+                .with_reason("unknown_parameter")
+                .with_target(key)
+                .with_detail("actual", key)
+                .with_detail("expected", "registered parameter"));
         }
     }
-    declaration
+    let mut values: Values = declaration
         .parameters
         .iter()
         .map(|(name, parameter)| {
             let value = overrides
-                .and_then(|map| map.get(name))
-                .or(parameter.default.as_ref())
-                .ok_or_else(|| declaration.fail(format!("missing required parameter: {name}")))?;
-            let value = typed_value(parameter, value)
-                .map_err(|e| declaration.fail(format!("{name}: {}", e.message)))?;
-            rules.validate_value(declaration, name, &value)?;
+                .and_then(|map| map.get(name).map(String::as_str))
+                .or(parameter.default.as_deref())
+                .or_else(|| rules.default_literal(declaration, name))
+                .ok_or_else(|| {
+                    declaration.parameter_error(
+                        name,
+                        declaration
+                            .fail(format!("missing required parameter: {name}"))
+                            .with_reason("missing_value")
+                            .with_detail("expected", parameter.scalar()),
+                        false,
+                    )
+                })?;
+            let is_default = !overrides.is_some_and(|map| map.contains_key(name));
+            let actual = value;
+            let value = typed_value(parameter, actual).map_err(|e| {
+                declaration
+                    .parameter_error(name, e, is_default)
+                    .with_detail("actual", actual)
+                    .with_detail("expected", parameter.scalar())
+            })?;
+            rules
+                .validate_value(declaration, name, &value)
+                .map_err(|e| {
+                    declaration
+                        .parameter_error(name, e, is_default)
+                        .with_detail("actual", actual)
+                        .with_detail("expected", "value within model range")
+                })?;
             Ok((name.clone(), value))
         })
-        .collect()
+        .collect::<Result<_>>()?;
+    for (name, value) in rules.defaults(declaration) {
+        values.entry(name).or_insert(value);
+    }
+    Ok(values)
 }
 /// Model-neutral instances and paths. Channel values are resolved separately so
 /// an adapter can validate its instance counts before reporting channel errors.
-pub(super) struct Resolved<'a> {
+pub(crate) struct Resolved<'a> {
     types: &'a BTreeMap<String, Declaration>,
     expanded: Expanded,
     values: BTreeMap<String, Values>,
 }
-pub(super) struct ResolvedChannels {
+pub(crate) struct ResolvedChannels {
     delays: BTreeMap<String, u64>,
     values: BTreeMap<String, Values>,
     implementations: BTreeMap<String, String>,
 }
 impl ResolvedChannels {
-    pub(super) fn len(&self) -> usize {
+    pub(crate) fn len(&self) -> usize {
         self.delays.len()
     }
 }
-pub(super) struct ResolvedPath<'a> {
+pub(crate) struct ResolvedPath<'a> {
     pub end: &'a str,
     edges: Vec<&'a Edge>,
 }
 impl ResolvedPath<'_> {
-    pub(super) fn ethernet_link(&self, channels: &ResolvedChannels) -> Result<(String, u64, u64)> {
+    pub(crate) fn channel_ids(&self) -> Vec<String> {
+        self.edges
+            .iter()
+            .filter(|edge| edge.channel.is_some())
+            .map(|edge| edge.id.clone())
+            .collect()
+    }
+    pub(crate) fn ethernet_link(&self, channels: &ResolvedChannels) -> Result<(String, u64, u64)> {
         let linked: Vec<_> = self.edges.iter().filter(|e| e.channel.is_some()).collect();
         if linked.len() != 1
             || !matches!(
@@ -869,7 +1213,7 @@ impl ResolvedPath<'_> {
                     .implementations
                     .get(&linked[0].id)
                     .map(String::as_str),
-                Some("dir.ethernet.Link" | "dir.ethernet.LinkV2")
+                Some("dir.ethernet.Link" | "dir.ethernet.LinkV2" | "dir.bridge.EthLink")
             )
         {
             return Err(error(
@@ -885,7 +1229,7 @@ impl ResolvedPath<'_> {
         Ok((linked[0].id.clone(), *bitrate, *delay))
     }
 
-    pub(super) fn delay(&self, channels: &ResolvedChannels) -> Result<u64> {
+    pub(crate) fn delay(&self, channels: &ResolvedChannels) -> Result<u64> {
         self.edges.iter().try_fold(0u64, |sum, edge| {
             sum.checked_add(*channels.delays.get(&edge.id).unwrap_or(&0))
                 .ok_or_else(|| error(format!("channel path delay overflow at {}", edge.id)))
@@ -893,29 +1237,40 @@ impl ResolvedPath<'_> {
     }
 }
 impl Resolved<'_> {
-    pub(super) fn instances(&self) -> impl Iterator<Item = (&str, &Declaration)> {
+    pub(crate) fn instances(&self) -> impl Iterator<Item = (&str, &Declaration)> {
         self.expanded
             .instances
             .iter()
             .map(|(id, name)| (id.as_str(), &self.types[name]))
     }
-    pub(super) fn declaration(&self, instance: &str) -> &Declaration {
+    pub(crate) fn channels(&self) -> Vec<(&str, &Declaration)> {
+        self.expanded
+            .edges
+            .values()
+            .filter_map(|edge| {
+                edge.channel
+                    .as_ref()
+                    .map(|channel| (edge.id.as_str(), &self.types[channel]))
+            })
+            .collect()
+    }
+    pub(crate) fn declaration(&self, instance: &str) -> &Declaration {
         &self.types[&self.expanded.instances[instance]]
     }
-    pub(super) fn values(&self, instance: &str) -> &Values {
+    pub(crate) fn values(&self, instance: &str) -> &Values {
         &self.values[instance]
     }
-    pub(super) fn module_paths(&self) -> Vec<String> {
+    pub(crate) fn module_paths(&self) -> Vec<String> {
         self.instances()
             .filter(|(_, d)| d.kind == "module")
             .map(|(id, _)| id.to_string())
             .collect()
     }
-    pub(super) fn trace(&self, start: &str) -> Result<ResolvedPath<'_>> {
+    pub(crate) fn trace(&self, start: &str) -> Result<ResolvedPath<'_>> {
         let (end, edges) = trace(start, &self.expanded)?;
         Ok(ResolvedPath { end, edges })
     }
-    pub(super) fn resolve_channels(
+    pub(crate) fn resolve_channels(
         &self,
         channels: &BTreeMap<String, BTreeMap<String, String>>,
         rules: &impl ModelRules,
@@ -925,7 +1280,17 @@ impl Resolved<'_> {
         let mut implementations = BTreeMap::new();
         for edge in self.expanded.edges.values() {
             if let Some(channel) = &edge.channel {
-                let values = resolve_values(&self.types[channel], channels.get(&edge.id), rules)?;
+                let values = resolve_values(&self.types[channel], channels.get(&edge.id), rules)
+                    .map_err(|mut diagnostic| {
+                        if let Some(parameter) = diagnostic
+                            .target
+                            .as_ref()
+                            .and_then(|target| target.rsplit('.').next())
+                        {
+                            diagnostic.target = Some(format!("{}.{}", edge.id, parameter));
+                        }
+                        diagnostic
+                    })?;
                 let TypedValue::Quantity(delay) = values["delay"] else {
                     unreachable!()
                 };
@@ -939,7 +1304,11 @@ impl Resolved<'_> {
         }
         for id in channels.keys() {
             if !delays.contains_key(id) {
-                return Err(error(format!("unknown or channel-less connection: {id}")));
+                return Err(error(format!("unknown or channel-less connection: {id}"))
+                    .with_reason("invalid_connection")
+                    .with_target(id)
+                    .with_detail("actual", id)
+                    .with_detail("expected", "explicit channel connection"));
             }
         }
         Ok(ResolvedChannels {
@@ -949,7 +1318,7 @@ impl Resolved<'_> {
         })
     }
 }
-pub(super) fn resolve<'a>(
+pub(crate) fn resolve<'a>(
     types: &'a BTreeMap<String, Declaration>,
     network: &str,
     assignments: &BTreeMap<String, String>,
@@ -957,10 +1326,16 @@ pub(super) fn resolve<'a>(
 ) -> Result<Resolved<'a>> {
     for declaration in types.values() {
         validate_schema(declaration, rules)?;
-        for (_, child_type) in &declaration.children {
-            let child = types
-                .get(child_type)
-                .ok_or_else(|| declaration.fail(format!("unknown child type: {child_type}")))?;
+        for (child_name, child_type) in &declaration.children {
+            let child = types.get(child_type).ok_or_else(|| {
+                declaration.child_spans[child_name]
+                    .apply(declaration.fail(format!("unknown child type: {child_type}")))
+                    .with_reason("unknown_type")
+                    .with_target(child_type)
+                    .with_detail("type", child_type)
+                    .with_detail("actual", child_type)
+                    .with_detail("expected", "declared NED type")
+            })?;
             if !matches!(child.kind.as_str(), "simple" | "module") {
                 return Err(declaration.fail(format!("unsupported child type kind: {child_type}")));
             }
@@ -968,9 +1343,16 @@ pub(super) fn resolve<'a>(
         for connection in &declaration.connections {
             if let Some(channel) = &connection.channel {
                 if types.get(channel).is_none_or(|d| d.kind != "channel") {
-                    return Err(
-                        declaration.fail(format!("unknown or wrong-kind channel: {channel}"))
-                    );
+                    return Err(connection
+                        .channel_span
+                        .as_ref()
+                        .unwrap()
+                        .apply(
+                            declaration.fail(format!("unknown or wrong-kind channel: {channel}")),
+                        )
+                        .with_reason("unknown_type")
+                        .with_target(channel)
+                        .with_detail("type", channel));
                 }
             }
         }
@@ -985,9 +1367,14 @@ pub(super) fn resolve<'a>(
             validate_paths(&expanded(&declaration.name, types), types, rules)?;
         }
     }
-    let declaration = types
-        .get(network)
-        .ok_or_else(|| error(format!("unknown network type: {network}")))?;
+    let declaration = types.get(network).ok_or_else(|| {
+        error(format!("unknown network type: {network}"))
+            .with_reason("unknown_type")
+            .with_target("network")
+            .with_detail("type", network)
+            .with_detail("actual", network)
+            .with_detail("expected", "declared network type")
+    })?;
     if declaration.kind != "network" {
         return Err(declaration.fail("selected network must have network kind"));
     }
@@ -998,7 +1385,11 @@ pub(super) fn resolve<'a>(
             .rsplit_once('.')
             .ok_or_else(|| error(format!("unknown General key {key}")))?;
         if !expanded.instances.contains_key(instance) {
-            return Err(error(format!("unknown instance: {instance}")));
+            return Err(error(format!("unknown instance: {instance}"))
+                .with_reason("unknown_instance")
+                .with_target(key)
+                .with_detail("actual", instance)
+                .with_detail("expected", "declared instance"));
         }
         overrides
             .entry(instance.into())
@@ -1008,7 +1399,15 @@ pub(super) fn resolve<'a>(
     let mut values = BTreeMap::new();
     for (instance, name) in &expanded.instances {
         let declaration = &types[name];
-        let resolved = resolve_values(declaration, overrides.get(instance), rules)?;
+        let resolved = resolve_values(declaration, overrides.get(instance), rules).map_err(
+            |mut diagnostic| {
+                if let Some(parameter) = diagnostic.target.clone() {
+                    let parameter = parameter.rsplit('.').next().unwrap_or(&parameter);
+                    diagnostic.target = Some(format!("{instance}.{parameter}"));
+                }
+                diagnostic
+            },
+        )?;
         rules.validate_instance(instance, declaration, &resolved)?;
         values.insert(instance.clone(), resolved);
     }

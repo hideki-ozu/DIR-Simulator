@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "can": {
+    "schema_version": 2,
+    "generators": []
+  },
+  "ethernet": {
+    "schema_version": 3,
+    "generators": [
+      {
+        "id": "eth_source",
+        "node": "R02.sink",
+        "kind": "ethernet.explicit.v1",
+        "times_ps": [
+          "0"
+        ],
+        "frame": {
+          "dst_mac": "02:00:00:00:00:01",
+          "ether_type": 34997,
+          "data": "4449524301000000080000",
+          "tag": {
+            "vid": 10,
+            "pcp": 3,
+            "dei": 0
+          }
+        },
+        "flow_id": "reverse",
+        "priority": 3,
+        "deadline_ps": null
+      }
+    ]
+  }
+}

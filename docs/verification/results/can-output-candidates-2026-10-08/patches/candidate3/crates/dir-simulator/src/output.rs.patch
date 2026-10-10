@@ -1,0 +1,28 @@
+--- a/crates/dir-simulator/src/output.rs
++++ b/crates/dir-simulator/src/output.rs
+@@ -102,23 +102,9 @@
+             2
+         };
+         return publish::stream(output, &run_id, version, snapshot, |stage| {
+-            stage.write("results.json", |writer| {
++            stage.write_pair("results.json", "events.csv", |writer, csv_writer| {
+                 json::write_stream_result(
+-                    writer, prepared, snapshot, &run_id, &timestamp, &streamed,
+-                )
+-            })?;
+-            stage.write("events.csv", |writer| {
+-                csv::write_stream(
+-                    writer,
+-                    streamed.records.iter()?.enumerate().map(|(i, row)| {
+-                        row.map(|row| {
+-                            let mut value = row.value;
+-                            value["seq"] = serde_json::json!(i.to_string());
+-                            value
+-                        })
+-                    }),
+-                    &run_id,
+-                    version,
++                    writer, csv_writer, prepared, snapshot, &run_id, &timestamp, &streamed,
+                 )
+             })?;
+             stage.write("summary.csv", |writer| {

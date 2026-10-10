@@ -1,0 +1,3861 @@
+{
+  "schema_version": 1,
+  "started_at_utc": "2026-10-08T01:04:29.033131+00:00",
+  "specification": "docs/品質・配布方針.md section 1",
+  "series": "WSL2 separate environment",
+  "binary_sha256": "35000619b4d15cd8858c3270e0be5d35f23b0aeadb748a30ec5e94bb84c7f9ba",
+  "cargo_lock_sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca",
+  "git_head": "dffc50e6bec0f9ccaff68c33946b3a85ceff74cc",
+  "git_dirty": true,
+  "environment": {
+    "uname": [
+      "Linux",
+      "OMEN35L",
+      "6.18.33.2-microsoft-standard-WSL2",
+      "#1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026",
+      "x86_64"
+    ],
+    "cpuinfo": "processor\t: 0\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 0\ncpu cores\t: 20\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 1\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 1\ncpu cores\t: 20\napicid\t\t: 1\ninitial apicid\t: 1\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 2\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 2\ncpu cores\t: 20\napicid\t\t: 2\ninitial apicid\t: 2\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 3\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 3\ncpu cores\t: 20\napicid\t\t: 3\ninitial apicid\t: 3\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 4\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 4\ncpu cores\t: 20\napicid\t\t: 4\ninitial apicid\t: 4\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 5\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 5\ncpu cores\t: 20\napicid\t\t: 5\ninitial apicid\t: 5\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 6\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 6\ncpu cores\t: 20\napicid\t\t: 6\ninitial apicid\t: 6\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 7\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 7\ncpu cores\t: 20\napicid\t\t: 7\ninitial apicid\t: 7\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 8\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 8\ncpu cores\t: 20\napicid\t\t: 8\ninitial apicid\t: 8\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 9\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 9\ncpu cores\t: 20\napicid\t\t: 9\ninitial apicid\t: 9\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 10\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 10\ncpu cores\t: 20\napicid\t\t: 10\ninitial apicid\t: 10\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 11\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 11\ncpu cores\t: 20\napicid\t\t: 11\ninitial apicid\t: 11\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 12\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 12\ncpu cores\t: 20\napicid\t\t: 12\ninitial apicid\t: 12\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 13\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 13\ncpu cores\t: 20\napicid\t\t: 13\ninitial apicid\t: 13\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 14\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 14\ncpu cores\t: 20\napicid\t\t: 14\ninitial apicid\t: 14\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 15\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 15\ncpu cores\t: 20\napicid\t\t: 15\ninitial apicid\t: 15\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 16\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 16\ncpu cores\t: 20\napicid\t\t: 16\ninitial apicid\t: 16\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 17\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 17\ncpu cores\t: 20\napicid\t\t: 17\ninitial apicid\t: 17\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 18\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 18\ncpu cores\t: 20\napicid\t\t: 18\ninitial apicid\t: 18\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\nprocessor\t: 19\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 198\nmodel name\t: Intel(R) Core(TM) Ultra 7 265K\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 3878.401\ncache size\t: 30720 KB\nphysical id\t: 0\nsiblings\t: 20\ncore id\t\t: 19\ncpu cores\t: 20\napicid\t\t: 19\ninitial apicid\t: 19\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nvmx flags\t: vnmi invvpid ept_x_only ept_ad ept_1gb tsc_offset vtpr ept vpid unrestricted_guest ept_mode_based_exec tsc_scaling usr_wait_pause\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs retbleed eibrs_pbrsb bhi spectre_v2_user\nbogomips\t: 7756.80\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:\n\n",
+    "os_release": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "meminfo": "MemTotal:       32549540 kB\nMemFree:        18115112 kB\nMemAvailable:   28049892 kB\nBuffers:         1018984 kB\nCached:          8636928 kB\nSwapCached:           16 kB\nActive:          7069116 kB\nInactive:        5785084 kB\nActive(anon):       2912 kB\nInactive(anon):  3199132 kB\nActive(file):    7066204 kB\nInactive(file):  2585952 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:       8388608 kB\nSwapFree:        8388552 kB\nDirty:             20404 kB\nWriteback:             0 kB\nAnonPages:       3198584 kB\nMapped:           521348 kB\nShmem:              3720 kB\nKReclaimable:     659716 kB\nSlab:             910156 kB\nSReclaimable:     659716 kB\nSUnreclaim:       250440 kB\nKernelStack:       10432 kB\nPageTables:        39044 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    24663376 kB\nCommitted_AS:    5000404 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      182280 kB\nVmallocChunk:          0 kB\nPercpu:            10464 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:    575488 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:       58368 kB\nDirectMap2M:    10106880 kB\nDirectMap1G:    31457280 kB\n",
+    "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7\n"
+  },
+  "resource_guard": {
+    "address_space_limit_bytes": 27917287424,
+    "rss_stop_bytes": 25769803776,
+    "minimum_available_bytes": 3221225472,
+    "core_file_limit_bytes": 1,
+    "wall_observation_limit_seconds": 180.0,
+    "note": "Incomplete guarded/aborted runs do not establish unconstrained peak RSS or completion time."
+  },
+  "targets": {
+    "wall_seconds": 120,
+    "max_rss_bytes": 2147483648
+  },
+  "generation": {
+    "bit_time_ps": 2000000,
+    "bitrate_bps": 500000,
+    "calculation": {
+      "C_i_definition": "(frame_bits_including_sof_to_eof + 3) * bit_time_ps",
+      "T_definition": "count_per_sender * P",
+      "crc_input": "SOF through data field, before CRC sequence",
+      "crc_polynomial_hex": "0x4599",
+      "dynamic_stuffing": "SOF through CRC sequence inclusive",
+      "intermission_bits": 3,
+      "period_rounding": "ceil(sum(C_i) / rho), using exact rational arithmetic",
+      "phase_definition": "floor(sender_index * P / 32), with zero-based index",
+      "rho_definition": "sum(C_i) / P",
+      "unstuffed_trailing_bits": 10
+    },
+    "channel_delay_ps": 0,
+    "count_per_sender": 31250,
+    "frame": {
+      "can_id_first": 256,
+      "can_id_last": 287,
+      "data_hex": "0000000000000000",
+      "format": "standard"
+    },
+    "generator": "scripts/performance/generate_can_million.py",
+    "input_sha256": {
+      "models/canmillion/Main.ned": "a5c6b07aed7c5b36f3f4743fd3221f928b4ab5745719ea434075626a313ac364",
+      "rho-0.30.ini": "7d2077885ceca232b29c4e959916e043e9e271eba54874a845251519252f00f3",
+      "rho-0.30.workload.json": "74319bb54e97c12da0700a7e7db6967543ae109d6b274f1343b9a208d00d9bce",
+      "rho-0.90.ini": "977389feb148f844f36529de40ed3edcf5f7fdc57424d2fee4e6bbf1eb52081f",
+      "rho-0.90.workload.json": "994135f73152af21b7886cdc1817649f880f4e3d4d256e3d449c08988c4d4a41",
+      "rho-1.20.ini": "e748c96a2fb451b5c05afb4a0ff210d0550ebb2216b9fd46d5f6c46c7a54e25f",
+      "rho-1.20.workload.json": "abc143b433a8a5ca314c31be3356aec86f51407ccb8199614802ede560f7de14"
+    },
+    "metrics_window": "1ms",
+    "provenance": "Deterministic analytic Classical CAN timing inputs; CRC-15 register and polynomial-division calculations agree. This does not claim simulator execution, performance, hardware capture, or ISO conformance.",
+    "queue_capacity": 64,
+    "request_count_per_configuration": 1000000,
+    "rx_filter": "*",
+    "rx_processing_delay_ps": 0,
+    "scenarios": [
+      {
+        "P_ps": 26660000000,
+        "T_ps": 833125000000000,
+        "ini": "rho-0.30.ini",
+        "request_count_per_sender": 31250,
+        "request_count_total": 1000000,
+        "rho": "0.30",
+        "rho_exact": {
+          "denominator": 10,
+          "numerator": 3
+        },
+        "senders": [
+          {
+            "last_start_ps": 833098340000000,
+            "node": "Main.n00",
+            "phase_ps": 0,
+            "sender_index": 0
+          },
+          {
+            "last_start_ps": 833099173125000,
+            "node": "Main.n01",
+            "phase_ps": 833125000,
+            "sender_index": 1
+          },
+          {
+            "last_start_ps": 833100006250000,
+            "node": "Main.n02",
+            "phase_ps": 1666250000,
+            "sender_index": 2
+          },
+          {
+            "last_start_ps": 833100839375000,
+            "node": "Main.n03",
+            "phase_ps": 2499375000,
+            "sender_index": 3
+          },
+          {
+            "last_start_ps": 833101672500000,
+            "node": "Main.n04",
+            "phase_ps": 3332500000,
+            "sender_index": 4
+          },
+          {
+            "last_start_ps": 833102505625000,
+            "node": "Main.n05",
+            "phase_ps": 4165625000,
+            "sender_index": 5
+          },
+          {
+            "last_start_ps": 833103338750000,
+            "node": "Main.n06",
+            "phase_ps": 4998750000,
+            "sender_index": 6
+          },
+          {
+            "last_start_ps": 833104171875000,
+            "node": "Main.n07",
+            "phase_ps": 5831875000,
+            "sender_index": 7
+          },
+          {
+            "last_start_ps": 833105005000000,
+            "node": "Main.n08",
+            "phase_ps": 6665000000,
+            "sender_index": 8
+          },
+          {
+            "last_start_ps": 833105838125000,
+            "node": "Main.n09",
+            "phase_ps": 7498125000,
+            "sender_index": 9
+          },
+          {
+            "last_start_ps": 833106671250000,
+            "node": "Main.n10",
+            "phase_ps": 8331250000,
+            "sender_index": 10
+          },
+          {
+            "last_start_ps": 833107504375000,
+            "node": "Main.n11",
+            "phase_ps": 9164375000,
+            "sender_index": 11
+          },
+          {
+            "last_start_ps": 833108337500000,
+            "node": "Main.n12",
+            "phase_ps": 9997500000,
+            "sender_index": 12
+          },
+          {
+            "last_start_ps": 833109170625000,
+            "node": "Main.n13",
+            "phase_ps": 10830625000,
+            "sender_index": 13
+          },
+          {
+            "last_start_ps": 833110003750000,
+            "node": "Main.n14",
+            "phase_ps": 11663750000,
+            "sender_index": 14
+          },
+          {
+            "last_start_ps": 833110836875000,
+            "node": "Main.n15",
+            "phase_ps": 12496875000,
+            "sender_index": 15
+          },
+          {
+            "last_start_ps": 833111670000000,
+            "node": "Main.n16",
+            "phase_ps": 13330000000,
+            "sender_index": 16
+          },
+          {
+            "last_start_ps": 833112503125000,
+            "node": "Main.n17",
+            "phase_ps": 14163125000,
+            "sender_index": 17
+          },
+          {
+            "last_start_ps": 833113336250000,
+            "node": "Main.n18",
+            "phase_ps": 14996250000,
+            "sender_index": 18
+          },
+          {
+            "last_start_ps": 833114169375000,
+            "node": "Main.n19",
+            "phase_ps": 15829375000,
+            "sender_index": 19
+          },
+          {
+            "last_start_ps": 833115002500000,
+            "node": "Main.n20",
+            "phase_ps": 16662500000,
+            "sender_index": 20
+          },
+          {
+            "last_start_ps": 833115835625000,
+            "node": "Main.n21",
+            "phase_ps": 17495625000,
+            "sender_index": 21
+          },
+          {
+            "last_start_ps": 833116668750000,
+            "node": "Main.n22",
+            "phase_ps": 18328750000,
+            "sender_index": 22
+          },
+          {
+            "last_start_ps": 833117501875000,
+            "node": "Main.n23",
+            "phase_ps": 19161875000,
+            "sender_index": 23
+          },
+          {
+            "last_start_ps": 833118335000000,
+            "node": "Main.n24",
+            "phase_ps": 19995000000,
+            "sender_index": 24
+          },
+          {
+            "last_start_ps": 833119168125000,
+            "node": "Main.n25",
+            "phase_ps": 20828125000,
+            "sender_index": 25
+          },
+          {
+            "last_start_ps": 833120001250000,
+            "node": "Main.n26",
+            "phase_ps": 21661250000,
+            "sender_index": 26
+          },
+          {
+            "last_start_ps": 833120834375000,
+            "node": "Main.n27",
+            "phase_ps": 22494375000,
+            "sender_index": 27
+          },
+          {
+            "last_start_ps": 833121667500000,
+            "node": "Main.n28",
+            "phase_ps": 23327500000,
+            "sender_index": 28
+          },
+          {
+            "last_start_ps": 833122500625000,
+            "node": "Main.n29",
+            "phase_ps": 24160625000,
+            "sender_index": 29
+          },
+          {
+            "last_start_ps": 833123333750000,
+            "node": "Main.n30",
+            "phase_ps": 24993750000,
+            "sender_index": 30
+          },
+          {
+            "last_start_ps": 833124166875000,
+            "node": "Main.n31",
+            "phase_ps": 25826875000,
+            "sender_index": 31
+          }
+        ],
+        "total_C_i_ps": 7998000000,
+        "workload": "rho-0.30.workload.json"
+      },
+      {
+        "P_ps": 8886666667,
+        "T_ps": 277708333343750,
+        "ini": "rho-0.90.ini",
+        "request_count_per_sender": 31250,
+        "request_count_total": 1000000,
+        "rho": "0.90",
+        "rho_exact": {
+          "denominator": 10,
+          "numerator": 9
+        },
+        "senders": [
+          {
+            "last_start_ps": 277699446677083,
+            "node": "Main.n00",
+            "phase_ps": 0,
+            "sender_index": 0
+          },
+          {
+            "last_start_ps": 277699724385416,
+            "node": "Main.n01",
+            "phase_ps": 277708333,
+            "sender_index": 1
+          },
+          {
+            "last_start_ps": 277700002093749,
+            "node": "Main.n02",
+            "phase_ps": 555416666,
+            "sender_index": 2
+          },
+          {
+            "last_start_ps": 277700279802083,
+            "node": "Main.n03",
+            "phase_ps": 833125000,
+            "sender_index": 3
+          },
+          {
+            "last_start_ps": 277700557510416,
+            "node": "Main.n04",
+            "phase_ps": 1110833333,
+            "sender_index": 4
+          },
+          {
+            "last_start_ps": 277700835218749,
+            "node": "Main.n05",
+            "phase_ps": 1388541666,
+            "sender_index": 5
+          },
+          {
+            "last_start_ps": 277701112927083,
+            "node": "Main.n06",
+            "phase_ps": 1666250000,
+            "sender_index": 6
+          },
+          {
+            "last_start_ps": 277701390635416,
+            "node": "Main.n07",
+            "phase_ps": 1943958333,
+            "sender_index": 7
+          },
+          {
+            "last_start_ps": 277701668343749,
+            "node": "Main.n08",
+            "phase_ps": 2221666666,
+            "sender_index": 8
+          },
+          {
+            "last_start_ps": 277701946052083,
+            "node": "Main.n09",
+            "phase_ps": 2499375000,
+            "sender_index": 9
+          },
+          {
+            "last_start_ps": 277702223760416,
+            "node": "Main.n10",
+            "phase_ps": 2777083333,
+            "sender_index": 10
+          },
+          {
+            "last_start_ps": 277702501468749,
+            "node": "Main.n11",
+            "phase_ps": 3054791666,
+            "sender_index": 11
+          },
+          {
+            "last_start_ps": 277702779177083,
+            "node": "Main.n12",
+            "phase_ps": 3332500000,
+            "sender_index": 12
+          },
+          {
+            "last_start_ps": 277703056885416,
+            "node": "Main.n13",
+            "phase_ps": 3610208333,
+            "sender_index": 13
+          },
+          {
+            "last_start_ps": 277703334593749,
+            "node": "Main.n14",
+            "phase_ps": 3887916666,
+            "sender_index": 14
+          },
+          {
+            "last_start_ps": 277703612302083,
+            "node": "Main.n15",
+            "phase_ps": 4165625000,
+            "sender_index": 15
+          },
+          {
+            "last_start_ps": 277703890010416,
+            "node": "Main.n16",
+            "phase_ps": 4443333333,
+            "sender_index": 16
+          },
+          {
+            "last_start_ps": 277704167718749,
+            "node": "Main.n17",
+            "phase_ps": 4721041666,
+            "sender_index": 17
+          },
+          {
+            "last_start_ps": 277704445427083,
+            "node": "Main.n18",
+            "phase_ps": 4998750000,
+            "sender_index": 18
+          },
+          {
+            "last_start_ps": 277704723135416,
+            "node": "Main.n19",
+            "phase_ps": 5276458333,
+            "sender_index": 19
+          },
+          {
+            "last_start_ps": 277705000843749,
+            "node": "Main.n20",
+            "phase_ps": 5554166666,
+            "sender_index": 20
+          },
+          {
+            "last_start_ps": 277705278552083,
+            "node": "Main.n21",
+            "phase_ps": 5831875000,
+            "sender_index": 21
+          },
+          {
+            "last_start_ps": 277705556260416,
+            "node": "Main.n22",
+            "phase_ps": 6109583333,
+            "sender_index": 22
+          },
+          {
+            "last_start_ps": 277705833968749,
+            "node": "Main.n23",
+            "phase_ps": 6387291666,
+            "sender_index": 23
+          },
+          {
+            "last_start_ps": 277706111677083,
+            "node": "Main.n24",
+            "phase_ps": 6665000000,
+            "sender_index": 24
+          },
+          {
+            "last_start_ps": 277706389385416,
+            "node": "Main.n25",
+            "phase_ps": 6942708333,
+            "sender_index": 25
+          },
+          {
+            "last_start_ps": 277706667093749,
+            "node": "Main.n26",
+            "phase_ps": 7220416666,
+            "sender_index": 26
+          },
+          {
+            "last_start_ps": 277706944802083,
+            "node": "Main.n27",
+            "phase_ps": 7498125000,
+            "sender_index": 27
+          },
+          {
+            "last_start_ps": 277707222510416,
+            "node": "Main.n28",
+            "phase_ps": 7775833333,
+            "sender_index": 28
+          },
+          {
+            "last_start_ps": 277707500218749,
+            "node": "Main.n29",
+            "phase_ps": 8053541666,
+            "sender_index": 29
+          },
+          {
+            "last_start_ps": 277707777927083,
+            "node": "Main.n30",
+            "phase_ps": 8331250000,
+            "sender_index": 30
+          },
+          {
+            "last_start_ps": 277708055635416,
+            "node": "Main.n31",
+            "phase_ps": 8608958333,
+            "sender_index": 31
+          }
+        ],
+        "total_C_i_ps": 7998000000,
+        "workload": "rho-0.90.workload.json"
+      },
+      {
+        "P_ps": 6665000000,
+        "T_ps": 208281250000000,
+        "ini": "rho-1.20.ini",
+        "request_count_per_sender": 31250,
+        "request_count_total": 1000000,
+        "rho": "1.20",
+        "rho_exact": {
+          "denominator": 5,
+          "numerator": 6
+        },
+        "senders": [
+          {
+            "last_start_ps": 208274585000000,
+            "node": "Main.n00",
+            "phase_ps": 0,
+            "sender_index": 0
+          },
+          {
+            "last_start_ps": 208274793281250,
+            "node": "Main.n01",
+            "phase_ps": 208281250,
+            "sender_index": 1
+          },
+          {
+            "last_start_ps": 208275001562500,
+            "node": "Main.n02",
+            "phase_ps": 416562500,
+            "sender_index": 2
+          },
+          {
+            "last_start_ps": 208275209843750,
+            "node": "Main.n03",
+            "phase_ps": 624843750,
+            "sender_index": 3
+          },
+          {
+            "last_start_ps": 208275418125000,
+            "node": "Main.n04",
+            "phase_ps": 833125000,
+            "sender_index": 4
+          },
+          {
+            "last_start_ps": 208275626406250,
+            "node": "Main.n05",
+            "phase_ps": 1041406250,
+            "sender_index": 5
+          },
+          {
+            "last_start_ps": 208275834687500,
+            "node": "Main.n06",
+            "phase_ps": 1249687500,
+            "sender_index": 6
+          },
+          {
+            "last_start_ps": 208276042968750,
+            "node": "Main.n07",
+            "phase_ps": 1457968750,
+            "sender_index": 7
+          },
+          {
+            "last_start_ps": 208276251250000,
+            "node": "Main.n08",
+            "phase_ps": 1666250000,
+            "sender_index": 8
+          },
+          {
+            "last_start_ps": 208276459531250,
+            "node": "Main.n09",
+            "phase_ps": 1874531250,
+            "sender_index": 9
+          },
+          {
+            "last_start_ps": 208276667812500,
+            "node": "Main.n10",
+            "phase_ps": 2082812500,
+            "sender_index": 10
+          },
+          {
+            "last_start_ps": 208276876093750,
+            "node": "Main.n11",
+            "phase_ps": 2291093750,
+            "sender_index": 11
+          },
+          {
+            "last_start_ps": 208277084375000,
+            "node": "Main.n12",
+            "phase_ps": 2499375000,
+            "sender_index": 12
+          },
+          {
+            "last_start_ps": 208277292656250,
+            "node": "Main.n13",
+            "phase_ps": 2707656250,
+            "sender_index": 13
+          },
+          {
+            "last_start_ps": 208277500937500,
+            "node": "Main.n14",
+            "phase_ps": 2915937500,
+            "sender_index": 14
+          },
+          {
+            "last_start_ps": 208277709218750,
+            "node": "Main.n15",
+            "phase_ps": 3124218750,
+            "sender_index": 15
+          },
+          {
+            "last_start_ps": 208277917500000,
+            "node": "Main.n16",
+            "phase_ps": 3332500000,
+            "sender_index": 16
+          },
+          {
+            "last_start_ps": 208278125781250,
+            "node": "Main.n17",
+            "phase_ps": 3540781250,
+            "sender_index": 17
+          },
+          {
+            "last_start_ps": 208278334062500,
+            "node": "Main.n18",
+            "phase_ps": 3749062500,
+            "sender_index": 18
+          },
+          {
+            "last_start_ps": 208278542343750,
+            "node": "Main.n19",
+            "phase_ps": 3957343750,
+            "sender_index": 19
+          },
+          {
+            "last_start_ps": 208278750625000,
+            "node": "Main.n20",
+            "phase_ps": 4165625000,
+            "sender_index": 20
+          },
+          {
+            "last_start_ps": 208278958906250,
+            "node": "Main.n21",
+            "phase_ps": 4373906250,
+            "sender_index": 21
+          },
+          {
+            "last_start_ps": 208279167187500,
+            "node": "Main.n22",
+            "phase_ps": 4582187500,
+            "sender_index": 22
+          },
+          {
+            "last_start_ps": 208279375468750,
+            "node": "Main.n23",
+            "phase_ps": 4790468750,
+            "sender_index": 23
+          },
+          {
+            "last_start_ps": 208279583750000,
+            "node": "Main.n24",
+            "phase_ps": 4998750000,
+            "sender_index": 24
+          },
+          {
+            "last_start_ps": 208279792031250,
+            "node": "Main.n25",
+            "phase_ps": 5207031250,
+            "sender_index": 25
+          },
+          {
+            "last_start_ps": 208280000312500,
+            "node": "Main.n26",
+            "phase_ps": 5415312500,
+            "sender_index": 26
+          },
+          {
+            "last_start_ps": 208280208593750,
+            "node": "Main.n27",
+            "phase_ps": 5623593750,
+            "sender_index": 27
+          },
+          {
+            "last_start_ps": 208280416875000,
+            "node": "Main.n28",
+            "phase_ps": 5831875000,
+            "sender_index": 28
+          },
+          {
+            "last_start_ps": 208280625156250,
+            "node": "Main.n29",
+            "phase_ps": 6040156250,
+            "sender_index": 29
+          },
+          {
+            "last_start_ps": 208280833437500,
+            "node": "Main.n30",
+            "phase_ps": 6248437500,
+            "sender_index": 30
+          },
+          {
+            "last_start_ps": 208281041718750,
+            "node": "Main.n31",
+            "phase_ps": 6456718750,
+            "sender_index": 31
+          }
+        ],
+        "total_C_i_ps": 7998000000,
+        "workload": "rho-1.20.workload.json"
+      }
+    ],
+    "schema_version": 1,
+    "sender_count": 32,
+    "senders": [
+      {
+        "C_i_ps": 252000000,
+        "can_id": 256,
+        "crc15": 13480,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n00",
+        "intermission_bits": 3,
+        "node": "Main.n00",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 0,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 257,
+        "crc15": 16307,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n01",
+        "intermission_bits": 3,
+        "node": "Main.n01",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 1,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 258,
+        "crc15": 8862,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n02",
+        "intermission_bits": 3,
+        "node": "Main.n02",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 2,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 259,
+        "crc15": 10629,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n03",
+        "intermission_bits": 3,
+        "node": "Main.n03",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 3,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 260,
+        "crc15": 6340,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n04",
+        "intermission_bits": 3,
+        "node": "Main.n04",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 4,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 261,
+        "crc15": 5087,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n05",
+        "intermission_bits": 3,
+        "node": "Main.n05",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 5,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 262,
+        "crc15": 3826,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n06",
+        "intermission_bits": 3,
+        "node": "Main.n06",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 6,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 263,
+        "crc15": 1513,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n07",
+        "intermission_bits": 3,
+        "node": "Main.n07",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 7,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 264,
+        "crc15": 27760,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n08",
+        "intermission_bits": 3,
+        "node": "Main.n08",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 8,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 265,
+        "crc15": 26475,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n09",
+        "intermission_bits": 3,
+        "node": "Main.n09",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 9,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 266,
+        "crc15": 31302,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n10",
+        "intermission_bits": 3,
+        "node": "Main.n10",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 10,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 267,
+        "crc15": 29021,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n11",
+        "intermission_bits": 3,
+        "node": "Main.n11",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 11,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 252000000,
+        "can_id": 268,
+        "crc15": 16412,
+        "frame_bits_including_sof_to_eof": 123,
+        "generator_id": "n12",
+        "intermission_bits": 3,
+        "node": "Main.n12",
+        "occupied_bits_including_intermission": 126,
+        "sender_index": 12,
+        "stuff_bits": 15
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 269,
+        "crc15": 19207,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n13",
+        "intermission_bits": 3,
+        "node": "Main.n13",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 13,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 270,
+        "crc15": 22058,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n14",
+        "intermission_bits": 3,
+        "node": "Main.n14",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 14,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 271,
+        "crc15": 23857,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n15",
+        "intermission_bits": 3,
+        "node": "Main.n15",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 15,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 254000000,
+        "can_id": 272,
+        "crc15": 16513,
+        "frame_bits_including_sof_to_eof": 124,
+        "generator_id": "n16",
+        "intermission_bits": 3,
+        "node": "Main.n16",
+        "occupied_bits_including_intermission": 127,
+        "sender_index": 16,
+        "stuff_bits": 16
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 273,
+        "crc15": 19354,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n17",
+        "intermission_bits": 3,
+        "node": "Main.n17",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 17,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 274,
+        "crc15": 22199,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n18",
+        "intermission_bits": 3,
+        "node": "Main.n18",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 18,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 275,
+        "crc15": 23980,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n19",
+        "intermission_bits": 3,
+        "node": "Main.n19",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 19,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 276,
+        "crc15": 27885,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n20",
+        "intermission_bits": 3,
+        "node": "Main.n20",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 20,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 277,
+        "crc15": 26614,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n21",
+        "intermission_bits": 3,
+        "node": "Main.n21",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 21,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 278,
+        "crc15": 31451,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n22",
+        "intermission_bits": 3,
+        "node": "Main.n22",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 22,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 279,
+        "crc15": 29120,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n23",
+        "intermission_bits": 3,
+        "node": "Main.n23",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 23,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 280,
+        "crc15": 6233,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n24",
+        "intermission_bits": 3,
+        "node": "Main.n24",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 24,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 248000000,
+        "can_id": 281,
+        "crc15": 4930,
+        "frame_bits_including_sof_to_eof": 121,
+        "generator_id": "n25",
+        "intermission_bits": 3,
+        "node": "Main.n25",
+        "occupied_bits_including_intermission": 124,
+        "sender_index": 25,
+        "stuff_bits": 13
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 282,
+        "crc15": 3695,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n26",
+        "intermission_bits": 3,
+        "node": "Main.n26",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 26,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 283,
+        "crc15": 1396,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n27",
+        "intermission_bits": 3,
+        "node": "Main.n27",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 27,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 284,
+        "crc15": 13365,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n28",
+        "intermission_bits": 3,
+        "node": "Main.n28",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 28,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 285,
+        "crc15": 16174,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n29",
+        "intermission_bits": 3,
+        "node": "Main.n29",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 29,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 286,
+        "crc15": 8707,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n30",
+        "intermission_bits": 3,
+        "node": "Main.n30",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 30,
+        "stuff_bits": 14
+      },
+      {
+        "C_i_ps": 250000000,
+        "can_id": 287,
+        "crc15": 10520,
+        "frame_bits_including_sof_to_eof": 122,
+        "generator_id": "n31",
+        "intermission_bits": 3,
+        "node": "Main.n31",
+        "occupied_bits_including_intermission": 125,
+        "sender_index": 31,
+        "stuff_bits": 14
+      }
+    ],
+    "tx_processing_delay_ps": 0
+  },
+  "conditions": [
+    {
+      "config": "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+      "input_sha256": "7d2077885ceca232b29c4e959916e043e9e271eba54874a845251519252f00f3",
+      "attempts": [
+        {
+          "started_at_utc": "2026-10-08T01:04:29.087086+00:00",
+          "finished_at_utc": "2026-10-08T01:07:29.450658+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-0/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-0/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.11,
+            "max_rss_kib": 118804,
+            "user_seconds": 149.49,
+            "system_seconds": 11.74,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 121655296,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-0",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-observations-1214336-0",
+              "bytes": 6635608057
+            },
+            {
+              "path": ".dir-can-ledger-1214336-0",
+              "bytes": 4523619600
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-391",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-425",
+              "bytes": 67638265
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-306",
+              "bytes": 67641391
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-289",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-459",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-545",
+              "bytes": 401603532
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-340",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-476",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-272",
+              "bytes": 1082316072
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-527",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-544",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-323",
+              "bytes": 67640292
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-357",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-493",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-408",
+              "bytes": 67638244
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-442",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-374",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1214336-2/run-510",
+              "bytes": 67638248
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-651",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-650",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-562",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-579",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-545",
+              "bytes": 1079485834
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-648",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-272",
+              "bytes": 1079572946
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-652",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-649",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-653",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1214336-1/run-647",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1214336-0/run-16",
+              "bytes": 67216040
+            },
+            {
+              "path": ".dir-result-sort-1214336-0/run-33",
+              "bytes": 67219345
+            },
+            {
+              "path": ".dir-result-sort-1214336-0/run-67",
+              "bytes": 67211710
+            },
+            {
+              "path": ".dir-result-sort-1214336-0/run-50",
+              "bytes": 67218301
+            }
+          ],
+          "kind": "warmup",
+          "repeat": 0,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:07:29.921065+00:00",
+          "finished_at_utc": "2026-10-08T01:10:30.273525+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-1/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-1/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.1,
+            "max_rss_kib": 118788,
+            "user_seconds": 167.35,
+            "system_seconds": 12.25,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 121638912,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-1",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-can-ledger-1215055-0",
+              "bytes": 4523619600
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-1215055-0",
+              "bytes": 6635608057
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-72",
+              "bytes": 4200735
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-70",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-16",
+              "bytes": 67216040
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-69",
+              "bytes": 4200732
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-68",
+              "bytes": 4200733
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-33",
+              "bytes": 67219345
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-67",
+              "bytes": 67211710
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-50",
+              "bytes": 67218301
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-73",
+              "bytes": 4200731
+            },
+            {
+              "path": ".dir-result-sort-1215055-0/run-71",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-716",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-719",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-698",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-562",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-715",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-579",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-681",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-545",
+              "bytes": 1079485834
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-718",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-664",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-272",
+              "bytes": 1079572946
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-717",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215055-1/run-647",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215055-2/run-597",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1215055-2/run-598",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1215055-2/run-562",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1215055-2/run-579",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1215055-2/run-545",
+              "bytes": 1082220444
+            },
+            {
+              "path": ".dir-result-sort-1215055-2/run-272",
+              "bytes": 1082316072
+            },
+            {
+              "path": ".dir-result-sort-1215055-2/run-596",
+              "bytes": 67638261
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 1,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:10:30.770985+00:00",
+          "finished_at_utc": "2026-10-08T01:13:31.189929+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-2/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-2/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.16,
+            "max_rss_kib": 119000,
+            "user_seconds": 164.52,
+            "system_seconds": 12.44,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 121856000,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-2",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-can-ledger-1215758-0",
+              "bytes": 4523619600
+            },
+            {
+              "path": ".dir-observations-1215758-0",
+              "bytes": 6635608057
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-72",
+              "bytes": 4200735
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-70",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-16",
+              "bytes": 67216040
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-69",
+              "bytes": 4200732
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-68",
+              "bytes": 4200733
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-33",
+              "bytes": 67219345
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-67",
+              "bytes": 67211710
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-50",
+              "bytes": 67218301
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-73",
+              "bytes": 4200731
+            },
+            {
+              "path": ".dir-result-sort-1215758-0/run-71",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-716",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-719",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-720",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-698",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-721",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-562",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-715",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-579",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-681",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-545",
+              "bytes": 1079485834
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-722",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-718",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-723",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-664",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-272",
+              "bytes": 1079572946
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-724",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-717",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1215758-1/run-647",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-597",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-598",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-601",
+              "bytes": 4227381
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-562",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-579",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-545",
+              "bytes": 1082220444
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-272",
+              "bytes": 1082316072
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-596",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-603",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-599",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-600",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1215758-2/run-602",
+              "bytes": 4227400
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 2,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:13:31.669699+00:00",
+          "finished_at_utc": "2026-10-08T01:16:32.162909+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-3/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.30.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-3/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.24,
+            "max_rss_kib": 118212,
+            "user_seconds": 166.68,
+            "system_seconds": 11.94,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 121049088,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-0.30-3",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-1216581-0",
+              "bytes": 6635608057
+            },
+            {
+              "path": ".dir-can-ledger-1216581-0",
+              "bytes": 4523619600
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-614",
+              "bytes": 4227389
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-618",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-613",
+              "bytes": 67638256
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-562",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-579",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-616",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-545",
+              "bytes": 1082220444
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-617",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-272",
+              "bytes": 1082316072
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-596",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1216581-2/run-615",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-72",
+              "bytes": 4200735
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-70",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-16",
+              "bytes": 67216040
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-69",
+              "bytes": 4200732
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-68",
+              "bytes": 4200733
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-33",
+              "bytes": 67219345
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-75",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-67",
+              "bytes": 67211710
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-50",
+              "bytes": 67218301
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-74",
+              "bytes": 4200734
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-73",
+              "bytes": 4200731
+            },
+            {
+              "path": ".dir-result-sort-1216581-0/run-71",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-733",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-732",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-698",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-741",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-742",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-562",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-734",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-715",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-579",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-681",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-545",
+              "bytes": 1079485834
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-737",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-739",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-736",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-738",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-664",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-272",
+              "bytes": 1079572946
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-740",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-735",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1216581-1/run-647",
+              "bytes": 67465440
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 3,
+          "large_outputs_removed_after_recording": true
+        }
+      ],
+      "evaluation": {
+        "complete_measurement_count": 0,
+        "median_completion_wall_seconds": null,
+        "maximum_observed_rss_bytes": 121856000,
+        "median_attempt_wall_seconds": 180.16,
+        "performance_target_passed": null,
+        "memory_target_passed": null,
+        "deterministic_results_equal": null,
+        "verdict": "failed"
+      }
+    },
+    {
+      "config": "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+      "input_sha256": "977389feb148f844f36529de40ed3edcf5f7fdc57424d2fee4e6bbf1eb52081f",
+      "attempts": [
+        {
+          "started_at_utc": "2026-10-08T01:16:32.658003+00:00",
+          "finished_at_utc": "2026-10-08T01:19:33.152927+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-0/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-0/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.24,
+            "max_rss_kib": 118900,
+            "user_seconds": 165.61,
+            "system_seconds": 12.0,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 121753600,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-0",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-can-ledger-1217277-0",
+              "bytes": 4504948360
+            },
+            {
+              "path": ".dir-observations-1217277-0",
+              "bytes": 6626005705
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-result-sort-1217277-2/run-562",
+              "bytes": 67638248
+            },
+            {
+              "path": ".dir-result-sort-1217277-2/run-579",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1217277-2/run-545",
+              "bytes": 1082253883
+            },
+            {
+              "path": ".dir-result-sort-1217277-2/run-581",
+              "bytes": 4227380
+            },
+            {
+              "path": ".dir-result-sort-1217277-2/run-272",
+              "bytes": 1082360732
+            },
+            {
+              "path": ".dir-result-sort-1217277-2/run-580",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-688",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-683",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-687",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-691",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-685",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-698",
+              "bytes": 59768613
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-696",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-562",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-695",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-579",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-681",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-693",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-545",
+              "bytes": 1079549869
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-682",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-664",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-684",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-689",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-272",
+              "bytes": 1079609764
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-692",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-694",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-697",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-690",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-647",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1217277-1/run-686",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1217277-0/run-70",
+              "bytes": 4200732
+            },
+            {
+              "path": ".dir-result-sort-1217277-0/run-16",
+              "bytes": 67216940
+            },
+            {
+              "path": ".dir-result-sort-1217277-0/run-69",
+              "bytes": 4200734
+            },
+            {
+              "path": ".dir-result-sort-1217277-0/run-68",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1217277-0/run-33",
+              "bytes": 67214924
+            },
+            {
+              "path": ".dir-result-sort-1217277-0/run-67",
+              "bytes": 67212224
+            },
+            {
+              "path": ".dir-result-sort-1217277-0/run-50",
+              "bytes": 67214680
+            },
+            {
+              "path": ".dir-result-sort-1217277-0/run-71",
+              "bytes": 4200734
+            }
+          ],
+          "kind": "warmup",
+          "repeat": 0,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:19:33.637460+00:00",
+          "finished_at_utc": "2026-10-08T01:22:34.077350+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-1/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-1/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.19,
+            "max_rss_kib": 118668,
+            "user_seconds": 163.38,
+            "system_seconds": 12.45,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 121516032,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-1",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-can-ledger-1219241-0",
+              "bytes": 4504948360
+            },
+            {
+              "path": ".dir-observations-1219241-0",
+              "bytes": 6626005705
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-62",
+              "bytes": 4200731
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-63",
+              "bytes": 4200734
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-65",
+              "bytes": 4200733
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-61",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-58",
+              "bytes": 4200732
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-55",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-57",
+              "bytes": 4200733
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-56",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-16",
+              "bytes": 67216940
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-59",
+              "bytes": 4200734
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-60",
+              "bytes": 4200731
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-33",
+              "bytes": 67214924
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-51",
+              "bytes": 4200792
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-54",
+              "bytes": 4200734
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-50",
+              "bytes": 67214680
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-64",
+              "bytes": 4200732
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-52",
+              "bytes": 4200787
+            },
+            {
+              "path": ".dir-result-sort-1219241-0/run-53",
+              "bytes": 4201131
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-391",
+              "bytes": 67641410
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-425",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-306",
+              "bytes": 67646178
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-289",
+              "bytes": 67646165
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-459",
+              "bytes": 67638244
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-545",
+              "bytes": 260046090
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-340",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-476",
+              "bytes": 67638265
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-272",
+              "bytes": 1082360732
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-527",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-544",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-323",
+              "bytes": 67643993
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-357",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-493",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-408",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-442",
+              "bytes": 67639617
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-374",
+              "bytes": 67641391
+            },
+            {
+              "path": ".dir-result-sort-1219241-2/run-510",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-651",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-650",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-562",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-579",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-545",
+              "bytes": 1079549869
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-648",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-272",
+              "bytes": 1079609764
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-652",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-649",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219241-1/run-647",
+              "bytes": 67465440
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 1,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:22:34.579935+00:00",
+          "finished_at_utc": "2026-10-08T01:25:34.919215+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-2/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-2/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.09,
+            "max_rss_kib": 118832,
+            "user_seconds": 166.03,
+            "system_seconds": 12.12,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 121683968,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-2",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-1219985-0",
+              "bytes": 6626005705
+            },
+            {
+              "path": ".dir-can-ledger-1219985-0",
+              "bytes": 4504948360
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-651",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-650",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-655",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-562",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-579",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-545",
+              "bytes": 1079549869
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-657",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-648",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-272",
+              "bytes": 1079609764
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-652",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-649",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-654",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-653",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-647",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1219985-1/run-656",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1219985-0/run-16",
+              "bytes": 67216940
+            },
+            {
+              "path": ".dir-result-sort-1219985-0/run-33",
+              "bytes": 67214924
+            },
+            {
+              "path": ".dir-result-sort-1219985-0/run-67",
+              "bytes": 67212224
+            },
+            {
+              "path": ".dir-result-sort-1219985-0/run-50",
+              "bytes": 67214680
+            },
+            {
+              "path": ".dir-result-sort-1219985-2/run-547",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1219985-2/run-546",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1219985-2/run-545",
+              "bytes": 1082253883
+            },
+            {
+              "path": ".dir-result-sort-1219985-2/run-272",
+              "bytes": 1082360732
+            },
+            {
+              "path": ".dir-result-sort-1219985-2/run-548",
+              "bytes": 4227384
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 2,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:25:35.380041+00:00",
+          "finished_at_utc": "2026-10-08T01:28:35.695115+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-3/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-0.90.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-3/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.07,
+            "max_rss_kib": 119148,
+            "user_seconds": 164.81,
+            "system_seconds": 11.17,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 122007552,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-0.90-3",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-can-ledger-1220718-0",
+              "bytes": 4504948360
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-1220718-0",
+              "bytes": 6626005705
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-651",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-650",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-562",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-579",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-545",
+              "bytes": 1079549869
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-648",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-272",
+              "bytes": 1079609764
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-652",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-649",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1220718-1/run-647",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-62",
+              "bytes": 4200731
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-63",
+              "bytes": 4200734
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-65",
+              "bytes": 4200733
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-61",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-58",
+              "bytes": 4200732
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-55",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-57",
+              "bytes": 4200733
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-56",
+              "bytes": 4200730
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-16",
+              "bytes": 67216940
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-59",
+              "bytes": 4200734
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-60",
+              "bytes": 4200731
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-33",
+              "bytes": 67214924
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-51",
+              "bytes": 4200792
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-54",
+              "bytes": 4200734
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-50",
+              "bytes": 67214680
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-64",
+              "bytes": 4200732
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-52",
+              "bytes": 4200787
+            },
+            {
+              "path": ".dir-result-sort-1220718-0/run-53",
+              "bytes": 4201131
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-391",
+              "bytes": 67641410
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-425",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-306",
+              "bytes": 67646178
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-289",
+              "bytes": 67646165
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-459",
+              "bytes": 67638244
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-545",
+              "bytes": 619706378
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-340",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-476",
+              "bytes": 67638265
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-272",
+              "bytes": 1082360732
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-527",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-544",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-323",
+              "bytes": 67643993
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-357",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-493",
+              "bytes": 67638261
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-408",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-442",
+              "bytes": 67639617
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-374",
+              "bytes": 67641391
+            },
+            {
+              "path": ".dir-result-sort-1220718-2/run-510",
+              "bytes": 67638261
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 3,
+          "large_outputs_removed_after_recording": true
+        }
+      ],
+      "evaluation": {
+        "complete_measurement_count": 0,
+        "median_completion_wall_seconds": null,
+        "maximum_observed_rss_bytes": 122007552,
+        "median_attempt_wall_seconds": 180.09,
+        "performance_target_passed": null,
+        "memory_target_passed": null,
+        "deterministic_results_equal": null,
+        "verdict": "failed"
+      }
+    },
+    {
+      "config": "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+      "input_sha256": "e748c96a2fb451b5c05afb4a0ff210d0550ebb2216b9fd46d5f6c46c7a54e25f",
+      "attempts": [
+        {
+          "started_at_utc": "2026-10-08T01:28:36.193920+00:00",
+          "finished_at_utc": "2026-10-08T01:31:36.626199+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-0/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-0/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.18,
+            "max_rss_kib": 117944,
+            "user_seconds": 167.8,
+            "system_seconds": 9.99,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 120774656,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-0",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-can-ledger-1221433-0",
+              "bytes": 3826327530
+            },
+            {
+              "path": ".dir-observations-1221433-0",
+              "bytes": 5573039696
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-72",
+              "bytes": 4200803
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-70",
+              "bytes": 4201080
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-16",
+              "bytes": 67220682
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-69",
+              "bytes": 4201194
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-68",
+              "bytes": 4201402
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-33",
+              "bytes": 67218121
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-75",
+              "bytes": 4200918
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-67",
+              "bytes": 67220563
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-50",
+              "bytes": 67219182
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-74",
+              "bytes": 4201031
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-73",
+              "bytes": 4201027
+            },
+            {
+              "path": ".dir-result-sort-1221433-0/run-71",
+              "bytes": 4201034
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-614",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-618",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-562",
+              "bytes": 67469600
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-579",
+              "bytes": 67469185
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-616",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-545",
+              "bytes": 1079535795
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-617",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-622",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-272",
+              "bytes": 1079609084
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-619",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-615",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-623",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-624",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-620",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-1/run-621",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-514",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-391",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-512",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-511",
+              "bytes": 4227400
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-519",
+              "bytes": 4227380
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-516",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-425",
+              "bytes": 67641393
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-306",
+              "bytes": 67646165
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-289",
+              "bytes": 67646179
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-513",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-520",
+              "bytes": 4227401
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-459",
+              "bytes": 67641403
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-517",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-340",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-476",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-272",
+              "bytes": 1082362045
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-323",
+              "bytes": 67643964
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-357",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-493",
+              "bytes": 67639114
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-408",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-442",
+              "bytes": 67641399
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-374",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-518",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-510",
+              "bytes": 67638245
+            },
+            {
+              "path": ".dir-result-sort-1221433-2/run-515",
+              "bytes": 4227384
+            }
+          ],
+          "kind": "warmup",
+          "repeat": 0,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:31:37.027211+00:00",
+          "finished_at_utc": "2026-10-08T01:34:37.403833+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-1/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-1/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.13,
+            "max_rss_kib": 118000,
+            "user_seconds": 166.19,
+            "system_seconds": 10.02,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 120832000,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-1",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-can-ledger-1222161-0",
+              "bytes": 3826327530
+            },
+            {
+              "path": ".dir-observations-1222161-0",
+              "bytes": 5573039696
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-72",
+              "bytes": 4200803
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-70",
+              "bytes": 4201080
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-16",
+              "bytes": 67220682
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-69",
+              "bytes": 4201194
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-68",
+              "bytes": 4201402
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-33",
+              "bytes": 67218121
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-75",
+              "bytes": 4200918
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-67",
+              "bytes": 67220563
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-50",
+              "bytes": 67219182
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-74",
+              "bytes": 4201031
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-73",
+              "bytes": 4201027
+            },
+            {
+              "path": ".dir-result-sort-1222161-0/run-71",
+              "bytes": 4201034
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-614",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-618",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-562",
+              "bytes": 67469600
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-579",
+              "bytes": 67469185
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-616",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-545",
+              "bytes": 1079535795
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-617",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-622",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-272",
+              "bytes": 1079609084
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-619",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-615",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-623",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-624",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-620",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-1/run-621",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-514",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-391",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-512",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-511",
+              "bytes": 4227400
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-519",
+              "bytes": 4227380
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-516",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-425",
+              "bytes": 67641393
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-306",
+              "bytes": 67646165
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-289",
+              "bytes": 67646179
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-513",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-459",
+              "bytes": 67641403
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-517",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-340",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-476",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-272",
+              "bytes": 1082362045
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-323",
+              "bytes": 67643964
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-357",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-493",
+              "bytes": 67639114
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-408",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-442",
+              "bytes": 67641399
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-374",
+              "bytes": 67641394
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-518",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-510",
+              "bytes": 67638245
+            },
+            {
+              "path": ".dir-result-sort-1222161-2/run-515",
+              "bytes": 4227384
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 1,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:34:37.833829+00:00",
+          "finished_at_utc": "2026-10-08T01:37:38.295566+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-2/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-2/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.21,
+            "max_rss_kib": 117960,
+            "user_seconds": 168.92,
+            "system_seconds": 10.51,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 120791040,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-2",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-observations-1222910-0",
+              "bytes": 5573039696
+            },
+            {
+              "path": ".dir-can-ledger-1222910-0",
+              "bytes": 3826327530
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-665",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-667",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-562",
+              "bytes": 67469600
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-671",
+              "bytes": 1048574
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-579",
+              "bytes": 67469185
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-545",
+              "bytes": 1079535795
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-670",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-669",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-664",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-272",
+              "bytes": 1079609084
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-666",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-668",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1222910-1/run-647",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-72",
+              "bytes": 4200803
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-76",
+              "bytes": 4200914
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-70",
+              "bytes": 4201080
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-77",
+              "bytes": 4201086
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-16",
+              "bytes": 67220682
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-69",
+              "bytes": 4201194
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-68",
+              "bytes": 4201402
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-78",
+              "bytes": 4200975
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-33",
+              "bytes": 67218121
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-75",
+              "bytes": 4200918
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-67",
+              "bytes": 67220563
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-80",
+              "bytes": 4201086
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-50",
+              "bytes": 67219182
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-79",
+              "bytes": 4200858
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-74",
+              "bytes": 4201031
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-73",
+              "bytes": 4201027
+            },
+            {
+              "path": ".dir-result-sort-1222910-0/run-71",
+              "bytes": 4201034
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-547",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-550",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-553",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-555",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-546",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-545",
+              "bytes": 1082262751
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-557",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-558",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-554",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-272",
+              "bytes": 1082362045
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-552",
+              "bytes": 4227400
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-551",
+              "bytes": 4227381
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-549",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-548",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1222910-2/run-556",
+              "bytes": 4227384
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 2,
+          "large_outputs_removed_after_recording": true
+        },
+        {
+          "started_at_utc": "2026-10-08T01:37:41.139979+00:00",
+          "finished_at_utc": "2026-10-08T01:40:41.542385+00:00",
+          "command": [
+            "/usr/bin/time",
+            "-o",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-3/gnu-time.txt",
+            "-f",
+            "{\"wall_seconds\":%e,\"max_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"exit_status\":%x}",
+            "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator/docs/verification/fixtures/performance/can-million/rho-1.20.ini",
+            "--output",
+            "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-3/output"
+          ],
+          "returncode": 143,
+          "measurements": {
+            "wall_seconds": 180.15,
+            "max_rss_kib": 118332,
+            "user_seconds": 164.84,
+            "system_seconds": 10.51,
+            "exit_status": 0,
+            "termination_signal": 15
+          },
+          "max_rss_bytes": 121171968,
+          "event_processing_wall_seconds": null,
+          "observed_thread_counts": [
+            1
+          ],
+          "guard_reason": "external_wall_observation_limit",
+          "evidence_directory": "/tmp/dir-acceptance-million-2026-10-08/rho-1.20-3",
+          "stderr_tail": "",
+          "event_processing_wall_note": "CLI timing unavailable or process aborted.",
+          "completed": false,
+          "unpublished_files": [
+            {
+              "path": ".dir-can-ledger-1223664-0",
+              "bytes": 3826327530
+            },
+            {
+              "path": ".dir-observations-1223664-0",
+              "bytes": 5573039696
+            },
+            {
+              "path": ".dir-simulator.lock",
+              "bytes": 0
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-72",
+              "bytes": 4200803
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-76",
+              "bytes": 4200914
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-70",
+              "bytes": 4201080
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-77",
+              "bytes": 4201086
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-16",
+              "bytes": 67220682
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-69",
+              "bytes": 4201194
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-68",
+              "bytes": 4201402
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-78",
+              "bytes": 4200975
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-33",
+              "bytes": 67218121
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-75",
+              "bytes": 4200918
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-67",
+              "bytes": 67220563
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-50",
+              "bytes": 67219182
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-79",
+              "bytes": 4200858
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-74",
+              "bytes": 4201031
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-73",
+              "bytes": 4201027
+            },
+            {
+              "path": ".dir-result-sort-1223664-0/run-71",
+              "bytes": 4201034
+            },
+            {
+              "path": ".dir-result-sort-1223664-2/run-547",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1223664-2/run-546",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1223664-2/run-545",
+              "bytes": 1082262751
+            },
+            {
+              "path": ".dir-result-sort-1223664-2/run-272",
+              "bytes": 1082362045
+            },
+            {
+              "path": ".dir-result-sort-1223664-2/run-549",
+              "bytes": 4227384
+            },
+            {
+              "path": ".dir-result-sort-1223664-2/run-548",
+              "bytes": 4227397
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-651",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-650",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-655",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-613",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-562",
+              "bytes": 67469600
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-579",
+              "bytes": 67469185
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-545",
+              "bytes": 1079535795
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-657",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-648",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-659",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-630",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-272",
+              "bytes": 1079609084
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-652",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-649",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-596",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-654",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-658",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-653",
+              "bytes": 4216590
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-647",
+              "bytes": 67465440
+            },
+            {
+              "path": ".dir-result-sort-1223664-1/run-656",
+              "bytes": 4216590
+            }
+          ],
+          "kind": "measurement",
+          "repeat": 3,
+          "large_outputs_removed_after_recording": true
+        }
+      ],
+      "evaluation": {
+        "complete_measurement_count": 0,
+        "median_completion_wall_seconds": null,
+        "maximum_observed_rss_bytes": 121171968,
+        "median_attempt_wall_seconds": 180.15,
+        "performance_target_passed": null,
+        "memory_target_passed": null,
+        "deterministic_results_equal": null,
+        "verdict": "failed"
+      }
+    }
+  ],
+  "finished_at_utc": "2026-10-08T01:40:41.964984+00:00"
+}

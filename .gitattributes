@@ -1,0 +1,18 @@
+# Captured verification logs, patch context lines, and perf reports retain the
+# exact bytes recorded by their SHA-256 inventories. Their whitespace belongs
+# to the producing tools; current source and editable documents use normal checks.
+docs/verification/results/**/*.log -whitespace
+docs/verification/results/**/*.patch -whitespace
+docs/verification/results/can-export-optimization-2026-10-08/profiles/**/*.txt -whitespace
+
+# Redacted AC0008 evidence is checked by byte hashes on every platform.
+docs/verification/results/ac0008-vscode-execution-2026-10-10/** -text
+docs/verification/results/ac0008-vscode-execution-2026-10-10/**/*.stdout -whitespace
+docs/verification/results/ac0008-vscode-execution-2026-10-10/**/*.stderr -whitespace
+docs/verification/results/ac0008-issue44-2026-10-10/** -text
+
+# Upstream license originals include CRLF and intentional blank lines. Preserve
+# their bytes in the Git index and across checkouts for hash-based verification.
+docs/third-party/licenses/** -text -whitespace
+docs/guide/assets/licenses/*.txt -text -whitespace
+docs/verification/results/release-native-distribution-audit-2026-10-08/license-originals-validation-2026-10-08/*.txt -text -whitespace

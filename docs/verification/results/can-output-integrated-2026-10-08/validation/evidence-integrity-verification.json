@@ -1,0 +1,521 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "checks": {
+    "support_inventory": {
+      "expected_entries": 389,
+      "unique_entries": 389,
+      "verified_files": 389,
+      "all_verified": true,
+      "uninventoried_support_files": [],
+      "missing_inventory_files": []
+    },
+    "source_snapshots_and_scope": {
+      "baseline_files": 183,
+      "integrated_files": 184,
+      "authorized_change_count": 7,
+      "added": [
+        "crates/dir-simulator/src/output/contribution_sort.rs"
+      ],
+      "modified": [
+        "crates/dir-simulator/src/output.rs",
+        "crates/dir-simulator/src/output/csv.rs",
+        "crates/dir-simulator/src/output/disk_sort.rs",
+        "crates/dir-simulator/src/output/json.rs",
+        "crates/dir-simulator/src/output/publish.rs",
+        "crates/dir-simulator/src/output/stream.rs"
+      ],
+      "removed": [],
+      "source_map_delta_exact": true,
+      "unchanged_outside_authorized_paths": true,
+      "changed_source_files_verified": 7,
+      "patch_support_path": "source-changes/integrated.patch",
+      "authorized_paths": [
+        "crates/dir-simulator/src/output.rs",
+        "crates/dir-simulator/src/output/contribution_sort.rs",
+        "crates/dir-simulator/src/output/csv.rs",
+        "crates/dir-simulator/src/output/disk_sort.rs",
+        "crates/dir-simulator/src/output/json.rs",
+        "crates/dir-simulator/src/output/publish.rs",
+        "crates/dir-simulator/src/output/stream.rs"
+      ]
+    },
+    "patch_replay": {
+      "patch_executable": "git apply",
+      "method": "--numstat allowlist, --check, then apply to a fresh temporary copy",
+      "patch_paths": [
+        "crates/dir-simulator/src/output.rs",
+        "crates/dir-simulator/src/output/contribution_sort.rs",
+        "crates/dir-simulator/src/output/csv.rs",
+        "crates/dir-simulator/src/output/disk_sort.rs",
+        "crates/dir-simulator/src/output/json.rs",
+        "crates/dir-simulator/src/output/publish.rs",
+        "crates/dir-simulator/src/output/stream.rs"
+      ],
+      "patches_applied": true,
+      "source_map_exact_match": true,
+      "replayed_source_file_count": 184
+    },
+    "local_binaries": {
+      "baseline": {
+        "path": "/tmp/dir-opt-integrated-2026-10-08/bin/baseline",
+        "bytes": 11549592,
+        "sha256": "afa99e235603c1cf2cac6494ce90dd0c2b737457f88c4ba91c11042e51734c54"
+      },
+      "integrated": {
+        "path": "/tmp/dir-opt-integrated-2026-10-08/bin/integrated",
+        "bytes": 11552480,
+        "sha256": "1e134d589885a593d295771d955b0e59c1f7e0d468f83317b25fc21da4b09de7"
+      }
+    },
+    "gates": {
+      "baseline": {
+        "latest_gate_support_path": "gates/baseline/producer-latest.json",
+        "latest_gate_sha256": "672bd8f430ca24fc28a21c5ba87ef43d12ddd1933c477beeebd0b25a0acfec33",
+        "source_file_count": 183,
+        "binary_sha256": "afa99e235603c1cf2cac6494ce90dd0c2b737457f88c4ba91c11042e51734c54",
+        "binary_bytes": 11549592,
+        "commands_verified": 4,
+        "logs_verified": 4,
+        "test_counts_from_log": {
+          "passed": 522,
+          "failed": 0,
+          "ignored": 0,
+          "suites": 28
+        },
+        "test_counts_match_gate": true,
+        "verified_logs": [
+          {
+            "action": "fmt",
+            "support_path": "gates/baseline/0.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "clippy",
+            "support_path": "gates/baseline/1.log",
+            "bytes": 174,
+            "sha256": "93065d57955245cbcfddbfdddb3aa8ba3b2fa2f962ad873f0eb045afb388a275"
+          },
+          {
+            "action": "test",
+            "support_path": "gates/baseline/2.log",
+            "bytes": 52390,
+            "sha256": "b2cba9bd3ba43ffda5b0284919d74069d47a77ca8d9755664aecfb1f889278c9"
+          },
+          {
+            "action": "build",
+            "support_path": "gates/baseline/3.log",
+            "bytes": 1015,
+            "sha256": "d526327adb7dc099d76c3b91755359f3d8a0bdb0513d49e079414e2753635ebd"
+          }
+        ]
+      },
+      "integrated": {
+        "latest_gate_support_path": "gates/integrated/latest.json",
+        "latest_gate_sha256": "785c72aca5be2982e9a5e7e35b5fd9fdcc1cf94338e6018efc4cfcf00c59af80",
+        "source_file_count": 184,
+        "binary_sha256": "1e134d589885a593d295771d955b0e59c1f7e0d468f83317b25fc21da4b09de7",
+        "binary_bytes": 11552480,
+        "commands_verified": 4,
+        "logs_verified": 4,
+        "test_counts_from_log": {
+          "passed": 543,
+          "failed": 0,
+          "ignored": 0,
+          "suites": 28
+        },
+        "test_counts_match_gate": true,
+        "verified_logs": [
+          {
+            "action": "fmt",
+            "support_path": "gates/integrated/20261008T063901/0.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "clippy",
+            "support_path": "gates/integrated/20261008T063901/1.log",
+            "bytes": 157,
+            "sha256": "c321ab63a9893c96f55894fa0daf17ae448bac900ccb94a3036c9b8a51cfe065"
+          },
+          {
+            "action": "test",
+            "support_path": "gates/integrated/20261008T063901/2.log",
+            "bytes": 54411,
+            "sha256": "f66533a423132165a7721c7d8ee0a5f7dda4ccf8d7b11b40d2ab126faef48ec5"
+          },
+          {
+            "action": "build",
+            "support_path": "gates/integrated/20261008T063901/3.log",
+            "bytes": 147,
+            "sha256": "e823167d58f8b587524fae689f2e2443c777e8106046b0f70438c6d26d48eca2"
+          }
+        ]
+      }
+    },
+    "controller_copy": {
+      "support_path": "measurements/controller.json",
+      "sha256": "027d9694acbf8eb99d4ecba37ab3389ba34c7b76357b0ad1c7f595519bdb76cb",
+      "comparison_count": 3,
+      "matches_main_report": true
+    },
+    "report_validation_counts": {
+      "completed_attempts": 24,
+      "warmups": 6,
+      "measurements": 18,
+      "output_manifest_files_verified": 96,
+      "normalized_outputs_equal_case_count": 3,
+      "diagnostics_equal_case_count": 3,
+      "source_inventory_before": 183,
+      "source_inventory_integrated": 184,
+      "raw_gnu_time_records_match": true,
+      "source_changes_exactly_authorized_paths": true,
+      "unrelated_source_files_unchanged": true,
+      "large_outputs_removed_after_verification": true,
+      "full_million_request_verdict": false
+    },
+    "measurements": {
+      "cases": [
+        {
+          "case": "n16000-rho030",
+          "comparison_support_path": "measurements/cases/n16000-rho030/helper-output/comparison.json",
+          "attempts": 8,
+          "manifest_entries": 32,
+          "raw_gnu_time_attempt_wall_rss_reconciled": 8,
+          "normalized_outputs_equal": true,
+          "diagnostics_sha256_equal": true,
+          "recomputed_wall_rss": {
+            "case": "n16000-rho030",
+            "attempt_count": 8,
+            "normalized_hashes_equal": true,
+            "normalized_hashes": {
+              "simulation_sha256": "d8c3b86e634a1ed8e83cc8c7f8999bc84d44f9083914dee0425ec718f6bc0000",
+              "events.csv_normalized_sha256": "a6080ea24cfd770efd7c95f6ff0c8f056763b52ae512c8a3ba4afcb98f8d5dc0",
+              "summary.csv_normalized_sha256": "eb1c711364f0f5f9954be364deba5058eaab9079e3af8058fb77a2ae0b71d7d6"
+            },
+            "diagnostics_sha256_equal": true,
+            "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "summaries_recomputed_from_gnu_time_attempts": {
+              "baseline": {
+                "measurement_repeats": [
+                  1,
+                  2,
+                  3
+                ],
+                "wall_seconds": {
+                  "values": [
+                    32.13,
+                    32.37,
+                    32.48
+                  ],
+                  "median": 32.37,
+                  "minimum": 32.13,
+                  "maximum": 32.48,
+                  "range": 0.3499999999999943
+                },
+                "max_rss_bytes": {
+                  "values": [
+                    121671680,
+                    121769984,
+                    121614336
+                  ],
+                  "median": 121671680,
+                  "minimum": 121614336,
+                  "maximum": 121769984,
+                  "range": 155648
+                }
+              },
+              "integrated": {
+                "measurement_repeats": [
+                  1,
+                  2,
+                  3
+                ],
+                "wall_seconds": {
+                  "values": [
+                    10.13,
+                    10.31,
+                    10.28
+                  ],
+                  "median": 10.28,
+                  "minimum": 10.13,
+                  "maximum": 10.31,
+                  "range": 0.17999999999999972
+                },
+                "max_rss_bytes": {
+                  "values": [
+                    49266688,
+                    49258496,
+                    49414144
+                  ],
+                  "median": 49266688,
+                  "minimum": 49258496,
+                  "maximum": 49414144,
+                  "range": 155648
+                }
+              }
+            },
+            "integrated_minus_baseline": {
+              "median_wall_seconds": -22.089999999999996,
+              "wall_reduction_percent": 68.24219956750076,
+              "measurement_repeat_wall_delta_seconds": {
+                "by_measurement_repeat": [
+                  -22.0,
+                  -22.059999999999995,
+                  -22.199999999999996
+                ],
+                "median": -22.059999999999995,
+                "minimum": -22.199999999999996,
+                "maximum": -22.0,
+                "range": 0.19999999999999574
+              },
+              "median_max_rss_bytes": -72404992,
+              "maximum_max_rss_bytes": -72355840,
+              "measurement_repeat_max_rss_delta_bytes": {
+                "by_measurement_repeat": [
+                  -72404992,
+                  -72511488,
+                  -72200192
+                ],
+                "median": -72404992,
+                "minimum": -72511488,
+                "maximum": -72200192,
+                "range": 311296
+              }
+            }
+          }
+        },
+        {
+          "case": "n3200-rho090",
+          "comparison_support_path": "measurements/cases/n3200-rho090/helper-output/comparison.json",
+          "attempts": 8,
+          "manifest_entries": 32,
+          "raw_gnu_time_attempt_wall_rss_reconciled": 8,
+          "normalized_outputs_equal": true,
+          "diagnostics_sha256_equal": true,
+          "recomputed_wall_rss": {
+            "case": "n3200-rho090",
+            "attempt_count": 8,
+            "normalized_hashes_equal": true,
+            "normalized_hashes": {
+              "simulation_sha256": "e49ea8df4284ff498f65172f34533d6ea0b340d6c397cb52377e46ba0c178e0b",
+              "events.csv_normalized_sha256": "a73ef641f7a18aa70bf2d1bd1a158b221e352e60e0cf8c9af0ddff946f911500",
+              "summary.csv_normalized_sha256": "51a52371990e51313520f6f4f4a9566bd87306e8cf6abb9eb61a465a1c600643"
+            },
+            "diagnostics_sha256_equal": true,
+            "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "summaries_recomputed_from_gnu_time_attempts": {
+              "baseline": {
+                "measurement_repeats": [
+                  1,
+                  2,
+                  3
+                ],
+                "wall_seconds": {
+                  "values": [
+                    3.6,
+                    3.81,
+                    3.63
+                  ],
+                  "median": 3.63,
+                  "minimum": 3.6,
+                  "maximum": 3.81,
+                  "range": 0.20999999999999996
+                },
+                "max_rss_bytes": {
+                  "values": [
+                    106831872,
+                    106799104,
+                    106938368
+                  ],
+                  "median": 106831872,
+                  "minimum": 106799104,
+                  "maximum": 106938368,
+                  "range": 139264
+                }
+              },
+              "integrated": {
+                "measurement_repeats": [
+                  1,
+                  2,
+                  3
+                ],
+                "wall_seconds": {
+                  "values": [
+                    1.26,
+                    1.24,
+                    1.23
+                  ],
+                  "median": 1.24,
+                  "minimum": 1.23,
+                  "maximum": 1.26,
+                  "range": 0.030000000000000027
+                },
+                "max_rss_bytes": {
+                  "values": [
+                    41537536,
+                    41439232,
+                    41238528
+                  ],
+                  "median": 41439232,
+                  "minimum": 41238528,
+                  "maximum": 41537536,
+                  "range": 299008
+                }
+              }
+            },
+            "integrated_minus_baseline": {
+              "median_wall_seconds": -2.3899999999999997,
+              "wall_reduction_percent": 65.84022038567493,
+              "measurement_repeat_wall_delta_seconds": {
+                "by_measurement_repeat": [
+                  -2.34,
+                  -2.5700000000000003,
+                  -2.4
+                ],
+                "median": -2.4,
+                "minimum": -2.5700000000000003,
+                "maximum": -2.34,
+                "range": 0.23000000000000043
+              },
+              "median_max_rss_bytes": -65392640,
+              "maximum_max_rss_bytes": -65400832,
+              "measurement_repeat_max_rss_delta_bytes": {
+                "by_measurement_repeat": [
+                  -65294336,
+                  -65359872,
+                  -65699840
+                ],
+                "median": -65359872,
+                "minimum": -65699840,
+                "maximum": -65294336,
+                "range": 405504
+              }
+            }
+          }
+        },
+        {
+          "case": "n3200-rho120",
+          "comparison_support_path": "measurements/cases/n3200-rho120/helper-output/comparison.json",
+          "attempts": 8,
+          "manifest_entries": 32,
+          "raw_gnu_time_attempt_wall_rss_reconciled": 8,
+          "normalized_outputs_equal": true,
+          "diagnostics_sha256_equal": true,
+          "recomputed_wall_rss": {
+            "case": "n3200-rho120",
+            "attempt_count": 8,
+            "normalized_hashes_equal": true,
+            "normalized_hashes": {
+              "simulation_sha256": "363e4321de8385dd29254080be09086a9739087b092b8762f2454300f1a38774",
+              "events.csv_normalized_sha256": "f34b80b370577105a0d2ef43a0e6b2268fd884693839b677cc43be1afe007b85",
+              "summary.csv_normalized_sha256": "d16e1c38de699f34b5f9b43cc0925c8dd98f7f3aa59ae7c8473dc7176f3e1256"
+            },
+            "diagnostics_sha256_equal": true,
+            "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "summaries_recomputed_from_gnu_time_attempts": {
+              "baseline": {
+                "measurement_repeats": [
+                  1,
+                  2,
+                  3
+                ],
+                "wall_seconds": {
+                  "values": [
+                    2.88,
+                    3.16,
+                    3.12
+                  ],
+                  "median": 3.12,
+                  "minimum": 2.88,
+                  "maximum": 3.16,
+                  "range": 0.28000000000000025
+                },
+                "max_rss_bytes": {
+                  "values": [
+                    115396608,
+                    115527680,
+                    115458048
+                  ],
+                  "median": 115458048,
+                  "minimum": 115396608,
+                  "maximum": 115527680,
+                  "range": 131072
+                }
+              },
+              "integrated": {
+                "measurement_repeats": [
+                  1,
+                  2,
+                  3
+                ],
+                "wall_seconds": {
+                  "values": [
+                    1.04,
+                    1.03,
+                    1.03
+                  ],
+                  "median": 1.03,
+                  "minimum": 1.03,
+                  "maximum": 1.04,
+                  "range": 0.010000000000000009
+                },
+                "max_rss_bytes": {
+                  "values": [
+                    39690240,
+                    39874560,
+                    39911424
+                  ],
+                  "median": 39874560,
+                  "minimum": 39690240,
+                  "maximum": 39911424,
+                  "range": 221184
+                }
+              }
+            },
+            "integrated_minus_baseline": {
+              "median_wall_seconds": -2.09,
+              "wall_reduction_percent": 66.98717948717949,
+              "measurement_repeat_wall_delta_seconds": {
+                "by_measurement_repeat": [
+                  -1.8399999999999999,
+                  -2.13,
+                  -2.09
+                ],
+                "median": -2.09,
+                "minimum": -2.13,
+                "maximum": -1.8399999999999999,
+                "range": 0.29000000000000004
+              },
+              "median_max_rss_bytes": -75583488,
+              "maximum_max_rss_bytes": -75616256,
+              "measurement_repeat_max_rss_delta_bytes": {
+                "by_measurement_repeat": [
+                  -75706368,
+                  -75653120,
+                  -75546624
+                ],
+                "median": -75653120,
+                "minimum": -75706368,
+                "maximum": -75546624,
+                "range": 159744
+              }
+            }
+          }
+        }
+      ],
+      "attempts_verified": 24,
+      "manifest_entries_verified": 96,
+      "wall_rss_reconciled_attempts": 24,
+      "normalized_output_cases": 3,
+      "diagnostics_equal_cases": 3
+    }
+  },
+  "input_report": "/home/hideki/DIR-Simulator/docs/verification/results/can-output-integrated-2026-10-08.json",
+  "input_report_sha256": "e32cd48efc048a273f83073e177848d6c9b4956acf916a843de2706ed058a210",
+  "support_directory": "/home/hideki/DIR-Simulator/docs/verification/results/can-output-integrated-2026-10-08",
+  "document_id": "can-output-integrated-2026-10-08",
+  "overall_checks_passed": 8,
+  "overall_checks_expected": 8
+}

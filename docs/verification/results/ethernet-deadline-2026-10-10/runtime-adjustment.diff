@@ -1,0 +1,11 @@
+--- <preserved-handoff>/check_deadline_results.py
++++ check_deadline_results.runtime-adjusted.py
+@@ -93,7 +93,7 @@
+     result = load_json(result_path)
+     require(result['schema_version'] == 2, 'results schema')
+     meta = result['metadata']
+-    require(meta['model_profile'] == PROFILE and meta['runtime_version'] == '1.1.4', 'runtime/profile')
++    require(meta['model_profile'] == PROFILE and meta['runtime_version'] == '0.1.0', 'runtime/profile')
+     require(meta['git_commit'] == SOURCE, 'measured source is not requested b455156')
+     require(meta['binary_sha256'] == execution['binary']['sha256'], 'binary identity mismatch')
+     require(meta['compiler'].startswith('rustc 1.85.0 '), 'compiler differs')

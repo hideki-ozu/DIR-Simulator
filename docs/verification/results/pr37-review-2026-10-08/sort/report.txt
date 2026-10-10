@@ -1,0 +1,9 @@
+PR #37 sorter truncation review
+
+Confirmed before fix: five trusted-producer complete-row-loss tests failed, and the real paired writer accepted a shortened stream at a complete row boundary. See before-whole-row-loss.log and before-boundary-publication.log. Partial header/length/body/fixed-record failures were already detected.
+
+The fix retains checked producer byte counts through both sorters' intermediate merges, final Sorted handles, and OrderedWriter direct/fallback paths. Both readers validate actual file length against the pin. The fixed-width reader now keeps remaining trusted bytes and reads whole records with read_exact, rejecting clean EOF while bytes remain. Existing general-reader remaining checks handle late shrink beyond prefetch.
+
+After fix: 22 disk-sort and 6 contribution-sort tests pass, including all five previously failing cases, byte-cut coverage, valid empty/boundary EOF, after-open shrink beyond buffers, stable sorting, real paired writer manifest protection, and RAII cleanup. Targeted rustfmt check and git diff --check pass.
+
+Only output/disk_sort.rs and output/contribution_sort.rs were changed by this worker. Original checkout, docs, commits, pushes, and PR publication were untouched. Full commands, source hashes, and outcomes are in report.json. Scaffolding failures have separate explicitly named logs and are not product reproductions.

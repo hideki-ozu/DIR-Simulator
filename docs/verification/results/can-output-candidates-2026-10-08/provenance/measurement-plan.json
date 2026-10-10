@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "plan_id": "dir-opt-five-2026-10-08",
+  "prepared_at_utc": "2026-10-08T05:28:09.555129+00:00",
+  "status": "primary_measurement_complete",
+  "objective": "Serial scaled-input candidate comparisons using one shared baseline per case; no full-million acceptance verdict.",
+  "controller": "/tmp/dir-opt-five-2026-10-08/measure-candidates.py",
+  "binary_dir_expected": "/tmp/dir-opt-five-2026-10-08/bin",
+  "binary_names_required": [
+    "baseline",
+    "candidate1",
+    "candidate2",
+    "candidate3",
+    "candidate4",
+    "candidate5"
+  ],
+  "binary_name_optional": "combined",
+  "baseline_manifest": {
+    "path": "/tmp/dir-opt-five-2026-10-08/baseline.json",
+    "refresh_required_after_baseline_gate": false,
+    "runtime_association": "controller requires baseline.json source_sha256 and binary path/hash to match gates/baseline/latest.json",
+    "sha256": "b54750874e9960a10ca3b52b18b946ed8a60dc9d38870135db4759e7e8a7ffd3"
+  },
+  "source_copy_dirs": {
+    "baseline-source": "/tmp/dir-opt-five-2026-10-08/baseline-source",
+    "candidate1": "/tmp/dir-opt-five-2026-10-08/candidate1",
+    "candidate2": "/tmp/dir-opt-five-2026-10-08/candidate2",
+    "candidate3": "/tmp/dir-opt-five-2026-10-08/candidate3",
+    "candidate4": "/tmp/dir-opt-five-2026-10-08/candidate4",
+    "candidate5": "/tmp/dir-opt-five-2026-10-08/candidate5"
+  },
+  "measurement_helper": "/home/hideki/DIR-Simulator/scripts/performance/measure_can_export.py",
+  "comparison_design": {
+    "per_case_helper_invocations": 1,
+    "binary_order_forward": [
+      "baseline",
+      "candidate1",
+      "candidate2",
+      "candidate3",
+      "candidate4",
+      "candidate5"
+    ],
+    "binary_order_reverse": [
+      "candidate5",
+      "candidate4",
+      "candidate3",
+      "candidate2",
+      "candidate1",
+      "baseline"
+    ],
+    "rounds": 4,
+    "warmups_per_binary": 1,
+    "measurements_per_binary": 3,
+    "attempts_per_case_without_combined": 24,
+    "shared_baseline_round_based": true,
+    "paired_ab_claim": false,
+    "candidate_deltas": "recompute each candidate median against baseline median from the same case",
+    "all_output_manifest_and_normalized_hashes_required": true,
+    "optional_combined_order": "append combined after candidate5 in the forward round; reverse all variants in the next round"
+  },
+  "primary_cases": [
+    {
+      "name": "n16000-rho030",
+      "config": "/tmp/dir-profile-can-2026-10-08/inputs-16000/rho-0.30.ini",
+      "config_sha256": "da8e6a0dc99a7a639329fa925e595c6bf1dd907b0b8a4afec3f191d264c1f33b",
+      "generation_path": "/tmp/dir-profile-can-2026-10-08/inputs-16000/generation.json",
+      "generation_sha256": "a534ce6517ffed92b58024fcd7d1674cb044f3b6175ba901e16fddffefa951b7",
+      "request_count_per_configuration": 16000,
+      "rho": "0.30",
+      "all_generation_pinned_inputs_sha256": {
+        "models/canmillion/Main.ned": "a5c6b07aed7c5b36f3f4743fd3221f928b4ab5745719ea434075626a313ac364",
+        "rho-0.30.ini": "da8e6a0dc99a7a639329fa925e595c6bf1dd907b0b8a4afec3f191d264c1f33b",
+        "rho-0.30.workload.json": "4283611df01cbccf52d7a9a8ac8605de46aee89aa5a917458a4270a91fe14b38",
+        "rho-0.90.ini": "144a4b9da6147d5302c12cacbb3e597f7fd4e978bdb11bdd1b85c898389352b4",
+        "rho-0.90.workload.json": "1b3d30dd222bfa62cb24d49714a5d262931daed76e3f3fc73140cffdf19eae1f",
+        "rho-1.20.ini": "2feae8a1a5ec5685d80a1df2b7aaa7345012fcf15eb185a9a6576e0c8255f07a",
+        "rho-1.20.workload.json": "ba5711bd4547251204533f7a70b4e64e9a34d8974fa09e6584fbbbedb3031293"
+      }
+    },
+    {
+      "name": "n3200-rho090",
+      "config": "/tmp/dir-profile-can-2026-10-08/inputs-3200/rho-0.90.ini",
+      "config_sha256": "5a76d31a78c24b0680fd5e7683236cbc5fc1ca4e49e65db6be78c94c73c1243a",
+      "generation_path": "/tmp/dir-profile-can-2026-10-08/inputs-3200/generation.json",
+      "generation_sha256": "90c6d351cf7da57d8383a97da19efd86bd38aeffdabbb239d2be5ac51ac71a94",
+      "request_count_per_configuration": 3200,
+      "rho": "0.90",
+      "all_generation_pinned_inputs_sha256": {
+        "models/canmillion/Main.ned": "a5c6b07aed7c5b36f3f4743fd3221f928b4ab5745719ea434075626a313ac364",
+        "rho-0.30.ini": "cb0595f5f52b1ab0736043180e0c8cfb91a2aa9eebd6c5b4798935af758843dc",
+        "rho-0.30.workload.json": "8668469f45989db4301a3809515883dd5fdf4a6e655eb8660b24c555914af2d6",
+        "rho-0.90.ini": "5a76d31a78c24b0680fd5e7683236cbc5fc1ca4e49e65db6be78c94c73c1243a",
+        "rho-0.90.workload.json": "92b682bf8f0589ea00413ff3204eca02c7c1cd8319d4a4b99fbb12bf261b3175",
+        "rho-1.20.ini": "260cc70290f4eb275a67159eba86cffae90978d29e14842641100cc3ed7f21ed",
+        "rho-1.20.workload.json": "7cbce0beab65183800e8b56ac8fad1971bc79511bd47e5ecd6549c176f14d70b"
+      }
+    },
+    {
+      "name": "n3200-rho120",
+      "config": "/tmp/dir-profile-can-2026-10-08/inputs-3200/rho-1.20.ini",
+      "config_sha256": "260cc70290f4eb275a67159eba86cffae90978d29e14842641100cc3ed7f21ed",
+      "generation_path": "/tmp/dir-profile-can-2026-10-08/inputs-3200/generation.json",
+      "generation_sha256": "90c6d351cf7da57d8383a97da19efd86bd38aeffdabbb239d2be5ac51ac71a94",
+      "request_count_per_configuration": 3200,
+      "rho": "1.20",
+      "all_generation_pinned_inputs_sha256": {
+        "models/canmillion/Main.ned": "a5c6b07aed7c5b36f3f4743fd3221f928b4ab5745719ea434075626a313ac364",
+        "rho-0.30.ini": "cb0595f5f52b1ab0736043180e0c8cfb91a2aa9eebd6c5b4798935af758843dc",
+        "rho-0.30.workload.json": "8668469f45989db4301a3809515883dd5fdf4a6e655eb8660b24c555914af2d6",
+        "rho-0.90.ini": "5a76d31a78c24b0680fd5e7683236cbc5fc1ca4e49e65db6be78c94c73c1243a",
+        "rho-0.90.workload.json": "92b682bf8f0589ea00413ff3204eca02c7c1cd8319d4a4b99fbb12bf261b3175",
+        "rho-1.20.ini": "260cc70290f4eb275a67159eba86cffae90978d29e14842641100cc3ed7f21ed",
+        "rho-1.20.workload.json": "7cbce0beab65183800e8b56ac8fad1971bc79511bd47e5ecd6549c176f14d70b"
+      }
+    }
+  ],
+  "optional_smoke_case": {
+    "name": "n3200-rho030",
+    "config": "/tmp/dir-profile-can-2026-10-08/inputs-3200/rho-0.30.ini",
+    "config_sha256": "cb0595f5f52b1ab0736043180e0c8cfb91a2aa9eebd6c5b4798935af758843dc",
+    "generation_path": "/tmp/dir-profile-can-2026-10-08/inputs-3200/generation.json",
+    "generation_sha256": "90c6d351cf7da57d8383a97da19efd86bd38aeffdabbb239d2be5ac51ac71a94",
+    "request_count_per_configuration": 3200,
+    "rho": "0.30",
+    "all_generation_pinned_inputs_sha256": {
+      "models/canmillion/Main.ned": "a5c6b07aed7c5b36f3f4743fd3221f928b4ab5745719ea434075626a313ac364",
+      "rho-0.30.ini": "cb0595f5f52b1ab0736043180e0c8cfb91a2aa9eebd6c5b4798935af758843dc",
+      "rho-0.30.workload.json": "8668469f45989db4301a3809515883dd5fdf4a6e655eb8660b24c555914af2d6",
+      "rho-0.90.ini": "5a76d31a78c24b0680fd5e7683236cbc5fc1ca4e49e65db6be78c94c73c1243a",
+      "rho-0.90.workload.json": "92b682bf8f0589ea00413ff3204eca02c7c1cd8319d4a4b99fbb12bf261b3175",
+      "rho-1.20.ini": "260cc70290f4eb275a67159eba86cffae90978d29e14842641100cc3ed7f21ed",
+      "rho-1.20.workload.json": "7cbce0beab65183800e8b56ac8fad1971bc79511bd47e5ecd6549c176f14d70b"
+    }
+  },
+  "execution": {
+    "serial_cpu_work": true,
+    "primary_case_order": [
+      "n16000-rho030",
+      "n3200-rho090",
+      "n3200-rho120"
+    ],
+    "primary_helper_invocations": 3,
+    "core_attempts_without_combined": 72,
+    "core_attempts_if_combined_binary_present": 84,
+    "optional_smoke_attempts_without_combined": 24,
+    "per_attempt_wall_guard_seconds": 180,
+    "address_space_guard_bytes": 27917287424,
+    "retain_large_result_outputs": false,
+    "output_root": "/tmp/dir-opt-five-2026-10-08/measurements",
+    "fresh_run_directory": "measurements/run-<UTC timestamp>/ per invocation; previous evidence is preserved",
+    "shared_baseline_rounds": true,
+    "case_comparison_count": 3,
+    "optional_smoke_attempts_if_combined_present": 28
+  },
+  "recommended_schedule": {
+    "first": "Optional 3,200-request rho 0.30 smoke invocation, if root schedules it.",
+    "then": "Primary 16,000-request rho 0.30, followed by 3,200-request rho 0.90 and rho 1.20.",
+    "smoke_and_primary_separate_invocations": true,
+    "reason": "Each invocation writes a unique fresh directory, so a smoke record remains intact and the primary run can follow."
+  },
+  "duration_budget": {
+    "recommended_primary_minutes": "20-30 if candidates remain near prior same-scale timings",
+    "recommended_smoke_minutes": "about 5 reserved minutes",
+    "guard_bound_primary_minutes": 216,
+    "basis": "72 serial attempts × 180-second observation guard = 216 minutes; a guard-hit attempt is incomplete and fails the case. Practical duration varies with candidate and host load.",
+    "guard_bound_with_combined_minutes": 252
+  },
+  "suggested_smoke_argv": [
+    "python3",
+    "/tmp/dir-opt-five-2026-10-08/measure-candidates.py",
+    "--binary-dir",
+    "/tmp/dir-opt-five-2026-10-08/bin",
+    "--case",
+    "n3200-rho030=/tmp/dir-profile-can-2026-10-08/inputs-3200/rho-0.30.ini"
+  ],
+  "suggested_primary_argv": [
+    "python3",
+    "/tmp/dir-opt-five-2026-10-08/measure-candidates.py",
+    "--binary-dir",
+    "/tmp/dir-opt-five-2026-10-08/bin",
+    "--case",
+    "n16000-rho030=/tmp/dir-profile-can-2026-10-08/inputs-16000/rho-0.30.ini",
+    "--case",
+    "n3200-rho090=/tmp/dir-profile-can-2026-10-08/inputs-3200/rho-0.90.ini",
+    "--case",
+    "n3200-rho120=/tmp/dir-profile-can-2026-10-08/inputs-3200/rho-1.20.ini"
+  ],
+  "scope_note": "All three primary cases completed: 72 attempts, six independent variants, one warmup and three measurements per variant per case. No optional smoke, combined prototype, production adoption or full-million acceptance claim.",
+  "source_inventory_policy": {
+    "algorithm": "match gate-candidates.py source_sha256 map exactly",
+    "included": "non-symlink files under crates/ (including Rust crate tests because gate-candidates hashes them) plus root Cargo.toml, Cargo.lock, and rust-toolchain.toml",
+    "excluded": "copied root-level docs, examples, scripts, and tests; symlinks",
+    "gate_requirement": "baseline and every measured variant must have four successful fmt, clippy, test, and release-build commands with matching source inventory and binary path/hash in gates/<name>/latest.json"
+  },
+  "verified_at_utc": "2026-10-08T06:02:56.618188+00:00",
+  "gate_binary_identities": {
+    "baseline": {
+      "path": "/tmp/dir-opt-five-2026-10-08/bin/baseline",
+      "sha256": "afa99e235603c1cf2cac6494ce90dd0c2b737457f88c4ba91c11042e51734c54",
+      "bytes": 11549592
+    },
+    "candidate1": {
+      "path": "/tmp/dir-opt-five-2026-10-08/bin/candidate1",
+      "sha256": "5febc5b8c74736d485942626330acb7be693d86f1126e793f0ebdd54ae1a7d58",
+      "bytes": 11558848
+    },
+    "candidate2": {
+      "path": "/tmp/dir-opt-five-2026-10-08/bin/candidate2",
+      "sha256": "7c3558d73762dede2e9a0b2661e007258253b4611c4394c5ac5429ed91d61940",
+      "bytes": 11610208
+    },
+    "candidate3": {
+      "path": "/tmp/dir-opt-five-2026-10-08/bin/candidate3",
+      "sha256": "e5b1eb8d3a3a017889a0bfb74ce00ce73d2ebab049e73b1fcd34c01c2011a2b9",
+      "bytes": 11495064
+    },
+    "candidate4": {
+      "path": "/tmp/dir-opt-five-2026-10-08/bin/candidate4",
+      "sha256": "35b13a924c72348ef830135fe207b5d77a8387b2139ea65fd363d6010219dadb",
+      "bytes": 11538128
+    },
+    "candidate5": {
+      "path": "/tmp/dir-opt-five-2026-10-08/bin/candidate5",
+      "sha256": "fc9680698846bd00947b6941d8d7fa299d05bce88372b2914894ddddad7ec7b5",
+      "bytes": 11537096
+    }
+  },
+  "executed_controller": "/tmp/dir-opt-five-2026-10-08/measurements/run-20261008T060256.828759Z/controller.json"
+}

@@ -1,0 +1,154 @@
+# CAN出力最適化詳細設計書
+
+文書ID：`design-can-output-optimization`
+
+作成日：`2026-10-08`
+
+文書状態：設計・独立試作の検証。①〜⑤の製品ソースへの適用は本記録の対象外。
+
+## 目的と対象
+
+<a id="internal-output"></a>
+
+```trace
+{
+  "id": "design-can-output-optimization#internal-output",
+  "stage": "design",
+  "requirements": ["DIR-REQ-0008", "DIR-REQ-0042", "DIR-REQ-0043", "DIR-REQ-0054"],
+  "upstream": ["architecture#arch-results"],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+CAN／Gatewayの退避済み台帳から結果を出力する処理について、5案をそれぞれ独立に試作し、同じ基準版に対する効果を測る。[結果処理詳細設計書](結果処理詳細設計書.md)の責務分割と[結果仕様](../specs/結果詳細機能仕様書.md)の外部契約を維持する。新しい要求・出力schema・モデルAPIは追加しない。以前の局所最適化を含む作業ソースを基準として固定し、その上に各案を単独で適用する。
+
+完成結果を全件メモリに戻す方式は採らない。変更対象は内部の一時表現・走査・対象の検索であり、イベント実行、時刻計算、実行終了境界、台帳の生成・退避は従来処理を使う。JSONとCSVの指標値・行順・連続採番・丸め・欠落値・エスケープを比較する。実行ID、日時、構築情報等の来歴は比較対象のソースに応じて変わるため、simulationと実行IDを正規化したCSVで一致を判定する。
+
+| 案 | 内部変更 | 主な変更先 |
+| --- | --- | --- |
+| ① | 外部ソートのキーと本体をバイナリ化し、マージ中のJSON復元を除く | `output/disk_sort.rs` |
+| ② | 観測点と時間窓を別の整列済み系列にし、recordsの外部ソートを省く | `output/disk_sort.rs`, `output/stream.rs` |
+| ③ | recordsを1回読みJSONとCSVへ射影し、canonicalの不要なキー整列を除く | `output.rs`, `output/json.rs`, `output/csv.rs`, `output/publish.rs` |
+| ④ | 集計用寄与を固定長バイナリにし、Timelineを対象IDで参照する | `output.rs`, `output/contribution_sort.rs`, `output/stream.rs` |
+| ⑤ | Stats更新先を対象IDで引き、文字列生成とentry更新を除く | `output/stream.rs` |
+
+上表の`output/`は`crates/dir-simulator/src/output/`を指す。①〜⑤はそれぞれ別のソースコピーで検証する。短縮率の合計は求めず、全案を併用した効果も本測定から推定しない。
+
+## ① 外部ソートのバイナリ化
+
+### 境界とキー
+
+既存の`Sorter.push(Vec<String>, Value)`と`Sorted.iter()`から得る`Row { key, tie, value }`を維持する。push時にキーと値を一度だけ符号化し、チャンク内とマージ中は符号化済みデータを扱う。最終走査時に既存のRowへ復元する。JSON値を生成する上流や公開writerに新しい型を要求しない。
+
+キーの各StringをUTF-8バイト列で保持し、NULを`00 ff`、成分の終端を`00 00`にする。成分を連結したバイト列の辞書順と元の`Vec<String>`の辞書順が一致する。終端がNULより先に並ぶため、空文字、接頭辞、NULを含む文字列と成分数の差も区別する。最終比較は符号化キー、続いて従来の挿入順`tie:u64`とする。時刻等の既存のキー構成自体は変更しない。
+
+### 一時ファイルと値
+
+runは8バイトのmagic/version `DIRSORT1`で始める。整数フィールドはlittle endianとする。
+
+| フィールド | 大きさ |
+| --- | --- |
+| body length | u64、8 byte |
+| key length | u64、8 byte |
+| payload length | u64、8 byte |
+| tie | u64、8 byte |
+| key | key length byte |
+| payload | payload length byte |
+
+body lengthは`24 + key length + payload length`である。本体はタグ付きの値表現とする。
+
+| タグ | 値 |
+| --- | --- |
+| 0 | null |
+| 1 / 2 | false / true |
+| 3 | u64、8 byte |
+| 4 | i64、8 byte |
+| 5 | f64のビット列、8 byte |
+| 6 | UTF-8文字列。u64バイト長と本文 |
+| 7 | 配列。u64要素数と値列 |
+| 8 | object。u64要素数、各キーのu64長・UTF-8本文と値 |
+
+serde_jsonの数値種別を保持し、有限f64の負のゼロ・subnormalをビット単位で保存する。公開JSONの数値表記は従来writerで決める。マージはキー、tieとopaqueなpayloadを読み書きし、Valueを復元しない。サイズ測定用のJSON書き出しも不要になる。
+
+### 上限と失敗
+
+チャンクは実際の符号化長で4 MiBに制限する。ただし単独で上限を超える1行は従来どおり扱う。マージ幅16を維持し、同時に保持するのは各runのheadと既存バッファである。
+
+書き手が実際に作った最大body長をreaderへ渡す。読取時はその上限、ファイル残量、長さのchecked演算を割当て前に確認する。文字列長・要素数は残payloadから検査し、再帰深さは128に制限する。不正magic、タグ、UTF-8、キーescape、重複objectキー、非有限数、長さ矛盾、trailing bytes、切断はDiagnosticにする。従来JSONと不正深度入力に対する診断タイミングまで同一とは規定しない。ownedな一時ディレクトリを成功・失敗時に除去し、公開処理へエラーを伝播する。
+
+検証では手書きのタグ・数値ベクトル、空/NUL/Unicode/接頭辞のキー比較、同一キーの安定性、複数段マージ、opaque merge、過大長・切断・破損・深度とcleanupを確認する。
+
+## ② recordsの外部ソート省略
+
+### 系列の構成
+
+単に「もともと整列済み」と仮定しない。初期観測点のbatchと各時間窓の行は、完全な既存出力キーで局所安定ソートする。callback内の観測点の整列とeffect_seqの付与は従来どおり行う。
+
+`OrderedWriter`を観測点系列と時間窓系列のそれぞれに設ける。各行を従来のRow JSONL形式で一度保存し、前行との完全キー比較で単調性を検査する。整列が保たれた系列はこのファイルを直接`Sorted`として返す。model_records、requests、receivers、寄与の外部ソートは変更しない。
+
+### 順序違反への復帰
+
+途中で順序違反が起きても、既に書いた行を捨てない。finish時に保存した系列全体を最初から従来Sorterへ元の挿入順で投入する。遅い位置で違反した場合もprefixを含む全行が対象となる。観測点生成・窓集計は再実行しないため、Statsや寄与を二重計上しない。
+
+完成した2系列を`MergedRecords`でマージする。完全キーが等しい場合は観測点を先に出し、従来の「全観測点、続いて全時間窓」という投入順による安定性を保つ。各系列内の安定順も維持する。JSON・CSVから独立に再走査でき、seqは既存の出力時に採番する。
+
+直接経路では現在のbatch／1窓の行、各writerの前キー、マージhead 2行とI/Oバッファを保持する。fallback中には従来Sorterのチャンクとrun headsも加わる。全recordsをメモリに戻さない。I/O失敗、fallback再読込の破損、ソート失敗はDiagnosticとなり、一時ファイルをownedなディレクトリで除去する。直接経路、遅い違反、同一キー、fallback破損・cleanupを検証する。
+
+## ③ JSON／CSVの同時出力
+
+### 一度の走査
+
+退避済みCAN／Gatewayの出力で、`results.json`と`events.csv`のwriterを同時に開く。JSON writerがrecords配列を書く際にCSV headerを出し、各行のseqを一度決めてから両形式へ射影する。ソート済みrecordsを2回読んでパースする処理を1回にする。JSONの他配列、summary、診断の処理は維持する。
+
+各writerは従来どおりboundedな64 KiB HashWriterを持つ。`write_pair`は異なる合法ファイル名に`create_new`を適用し、callbackの完了、両writerのflush／closeが成功してから両ファイルをstagingに登録する。manifestを最後に公開する処理と既存出力の保護を維持する。片方への書込が失敗した場合も新しい完成manifestを作らず、ownedなstagingを除去する。
+
+### canonicalキー順
+
+固定したCargo.lockではserde_jsonに`preserve_order`がなく、Mapの走査順はキーの辞書順である。この構成を前提に、canonicalのobjectを再びBTreeMapへ詰め直す処理を除く。浮動小数点、引用・制御文字・Unicode等の出力表記は従来関数を使う。将来`preserve_order`を有効にする変更時は、この前提とcanonical回帰試験を再評価する。
+
+両形式の行順・値・引用を比較し、片方の書込前／途中／両方への書込後にcallbackエラーを注入して公開とcleanupを検証する。この追加試験はOSのflush／closeそのものの失敗を注入した証明ではない。
+
+## ④ 固定長の寄与とTimelineの添字参照
+
+### 固定長レコード
+
+寄与専用Sorterを設け、JSONの文字列数値とtargetを次の41 byte固定長形式に置き換える。各整数はlittle endianとする。
+
+| フィールド | 型 | byte |
+| --- | --- | ---: |
+| time | u64 | 8 |
+| tie | u64 | 8 |
+| target | u64 | 8 |
+| kind | u8 | 1 |
+| amount | i128 | 16 |
+
+kindは0 busy、1 frame、2 queue、3 payload、4 serialized、5 occupied、6 receivedとする。符号付きamountを維持し、占有の増減を正確に扱う。ソート比較は**time、続いてtieのみ**とし、targetやkindで同時刻の到着順を入れ替えない。これにより同時刻のキュー最終値と各更新後のピーク、占有差分の中間非負検査を保つ。
+
+チャンクは格納済み行の`len × size_of::<Row>()`が4 MiBになる行数をflush閾値とする。ファイル長41 byteとメモリ上のalignmentによる大きさを混同しない。Vecの余剰capacity、allocator、I/Oバッファも別途メモリを使うため、4 MiBを総割当ての厳密な上限とはしない。マージ幅16、checked tie／ファイル連番／階層計算、固定長の切断とkind検査、ownedな一時ディレクトリのcleanupを規定する。
+
+### 対象表
+
+prepare済みtopologyからバス、controller、txQueue、rxQueueの安定したIDを一度割り当てる。キュー名もcontrollerごとに一度作る。`Vec<Timeline>`をIDで参照し、窓ごとのキュー名formatと文字列BTreeMap検索を除く。集計・summaryの既存の対象順と表記は保持する。未知のtarget／IDはDiagnosticとし、uncheckedな配列参照を行わない。
+
+Statsは本案では従来方式のままとする。固定長codec、同時刻の更新、ID対応、切断・kind不正・cleanupと既存の全指標・窓境界を検証する。
+
+## ⑤ Statsの添字参照
+
+`StatsTable { indices: BTreeMap<String, usize>, values: Vec<Stats>, all: usize }`を導入する。controller、bus、`$all`を最初に登録し、無通信対象にも従来の0／nullを出す。対象名からslotへの解決は要求の送信元とbusにつき一度、受信先につき一度行う。
+
+以後の状態件数・bits・遅延更新はslotでVecを参照する。毎回の`entry(target.clone())`と`String::from("$all")`を除き、各要求／受信の既存の3対象を同じ順で更新する。別名が同じslotを指す場合も従来の更新回数を維持する。checked u128演算と集計母数は変えない。
+
+summaryは小さなtopology順の走査で従来対象名へ対応付ける。未知の退避済みtargetはslot解決時にDiagnosticへ変換し、panicにしない。寄与、ソート、JSON／CSV writerは本案では変更しない。未知のsourceを持つ退避済み要求の出力失敗・manifest非公開・cleanupと既存の件数保存則を検証する。
+
+## 比較測定と採用判断
+
+基準版と5案のreleaseバイナリ、ソースSHA-256、Cargo.lock、入力生成記録を固定する。各版でRust 1.85.0のfmt、locked/offline clippy、locked/offline workspace test、release buildを実行し、通過した同じソースと測定バイナリの対応を確認する。コピー内のfixtureは実ファイルで用意し、symlink拒否の入力契約を変更しない。構築来歴のGit版は元リポジトリのcommitを用い、試作差分は別のsource hash mapで識別する。
+
+比較入力は16,000要求・rho 0.30、3,200要求・rho 0.90、3,200要求・rho 1.20とする。各条件は6版それぞれwarmup 1回と測定3回、合計24回をCPU測定／ビルドと重ねず逐次実行する。roundごとに版の順序を反転する。GNU timeで準備開始から出力完了までのwallと最大RSSを記録し、3回の中央値と生値の範囲、3回の最大RSSを報告する。比較のhash検証時間はCLI wallに含まれない。
+
+全実行で4ファイルのmanifest hash／byte数を照合する。simulation JSON、run_idを除いたevents.csv／summary.csvとdiagnosticsの一致を判定する。来歴を含むresults.json全体のraw hashの一致は要求しない。出力照合後に大きな比較出力を削除し、生測定、manifest、正規化hash、実行argv、入力pin、gate log、試作patchを証跡として残す。
+
+効果は各案と同条件の共通基準版の比較で判断する。小さい差は3試行の変動とともに扱う。本測定は大きく構造を変えない候補の選択材料であり、[品質・配布方針](../品質・配布方針.md)の100万要求の完走・性能・全体peak RSS受け入れを代替しない。
+
+実測結果と再現用証跡は[個別候補の実測記録](../verification/results/can-output-candidates-2026-10-08.md)に記載する。

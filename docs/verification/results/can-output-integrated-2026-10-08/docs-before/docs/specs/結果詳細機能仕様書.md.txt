@@ -1,0 +1,370 @@
+# 結果詳細機能仕様書
+
+文書バージョン：`1.0.0`
+対象GitHubバージョン：`v1.0.0`
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.0.0` | `2026-10-03` | GWのRX保持・解放・破棄、schema2の結果と停止境界を反映。文書版を1.0.0、対象タグをv1.0.0に統一 |
+| `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
+| `0.1.0` | `2026-10-01` | 作業内容を集約：計測点・保存則・集計・結果スキーマ・実験識別を確定。出力対象・連番・境界窓・wire表現・確定snapshotと完全台帳例を具体化。追加モデルのschema2・ModelRecordとprofile別指標へ接続。CSMA/CD半二重・1000BASE-T1の媒体別profileと互換境界を追加 |
+
+文書ID：`spec-results`
+文書状態：仕様確定。開発中ソースでschema1/2結果、manifest最終公開、取得済み入力と確定設定の再現情報、準備失敗の5ファイル公開、観測点の4,096件退避と順次出力を実装した。[拡張runtime検証記録](../verification/results/extension-runtime-2026-10-05.json)に今回の共通境界の実施範囲を記録する。組込みprofileの集計と100万要求の性能・メモリ目標は別に判定する。
+
+| 項目 | 内容 |
+| --- | --- |
+| 適用版 | 以下のschema1・37指標は既定CANの正本。追加profileのschema2とモデル別指標は[拡張共通仕様](拡張モデル共通詳細機能仕様書.md#results)と各モデル仕様を正とする |
+
+[評価結果の取得の親要件](../要件定義書.md#dir-req-0008)は、時系列、集計、保存形式と診断を同じ実行へ対応付けて満たす。本書の入力は[実行仕様](実行詳細機能仕様書.md#event-order)の成功コミット済みjournal、凍結した終了境界と確定条件である。モデルが通知した実到達点と資源遷移から計測・集計を作り、CSV／JSONとmanifestを出力する。[診断仕様](診断詳細機能仕様書.md#termination)が終了状態と診断の意味を定める。
+
+親要件の判定では、要求ID・対象・単位・時刻／区間を使い、モデルの状態、時系列標本、集計値、読み戻したCSV／JSONを照合する。CANの送信成功と受信完了は別の観測点であり、一送信・複数受信を同じ母数へ合算すると保存則が崩れる。子要件の個別指標の確認に加え、要求台帳と受信台帳それぞれの件数・未完了状態が集計と一致することを確認する。
+
+## 1. 観測点と状態
+
+<a id="measurement-points"></a>
+
+```trace
+{
+  "id": "spec-results#measurement-points",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0042",
+    "DIR-REQ-0083",
+    "DIR-REQ-0084",
+    "DIR-REQ-0087",
+    "DIR-REQ-0103",
+    "DIR-REQ-0113",
+    "DIR-REQ-0115",
+    "DIR-REQ-0120",
+    "DIR-REQ-0001",
+    "DIR-REQ-0008"
+  ],
+  "upstream": [
+    "DIR-FUNC-0018",
+    "DIR-FUNC-0015",
+    "DIR-FUNC-0016",
+    "DIR-FUNC-0017"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 対象 | 確定規則 |
+| --- | --- |
+| 分担 | [時系列記録](../機能仕様書.md#dir-func-0018)を具体化する。時間・順序は実行詳細仕様、送受信条件はCAN詳細仕様を正とし、本書は観測と保存形式を定める。 |
+| 時刻 | シミュレーション開始を0とするu64の整数ps。`generated_ps=g`、送信処理終了・キュー受理判定`ready_ps=q`、送信開始`sof_ps=s`、送信成功`eof_ps=e`、受信先の観測`observed_ps=o`、受信処理完了`received_ps=r`。未到達点はnull。予定時刻はplannedフィールドへ分離する。 |
+| 識別 | `target`は完全インスタンスパス（キューは所有ノードパス+`.txQueue`）、全体集計だけは予約名`$all`。`request_id`はCAN負荷仕様の`<generator_id>:<ordinal>`。generator_idは実行内一意な`[A-Za-z_][A-Za-z0-9_]*`、ordinalは0始まりの生成連番。`receiver`は配送先完全パス。run_idは実行の識別として別フィールドに保持する。 |
+| 送信待ち | `tx_wait_ps=s-g`は処理・キュー待ちを含む。`arbitration_wait_ps=s-q`は受理後のFIFO・バス・仲裁待ちを含む。両方SOF時に一回記録。仲裁敗北だけを再送と数えない。 |
+| 転送・配送遅延 | `transfer_ps=e-s`をEOFで一回、`delivery_ps=r-g`を受信完了時に受信先ごとに一回記録。フィルタ不一致・未完了は標本除外とする。 |
+| キュー量 | 待機要求数。ローカル候補を含み送信中を除く。H>0で時刻0の初期値と、受理・SOF・破棄の判定後の値を記録。満杯破棄でも同値の記録を残す。同時刻はイベント連番で識別する。 |
+| 要求最終状態 | `processing`（送信処理中）、`pending`（受理済・未SOF）、`in_flight`（SOF済・未EOF）、`success`（EOF済）、`dropped`（満杯のdrop-newest）の排他的5状態。実行停止で未完了を破棄・送信失敗へ書き換えない。 |
+| 受信最終状態 | 送信元を除く各接続先に`pending`（EOF後の伝搬/受信処理が未完了）、`received`、`filtered`を記録。受信行の作成契機はEOF到達とする。フィルタ不一致は観測時刻oで終端とし、受信フィルタ結果として独立集計する。 |
+| 保存則 | `generated = processing + admitted + dropped`、`admitted = pending + in_flight + success`、`unfinished = processing + pending + in_flight`。送信試行`attempts=in_flight+success`、`retries=0`、`failed=0`（理想モデル）。一要求が多数受信してもsuccessは1。受信機会数`receiver_opportunities=received+filtered+rx_pending`は別集計。 |
+| 未生成 | generatedの計数対象は終了境界未満に実際に生成した要求とする（異常時は境界時刻でも成功コミット済なら含む）。途中結果は最後にコミットしたイベントまでの状態を出力する。 |
+
+## 2. 窓・指標・集計
+
+<a id="aggregation"></a>
+
+```trace
+{
+  "id": "spec-results#aggregation",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0043",
+    "DIR-REQ-0085",
+    "DIR-REQ-0086",
+    "DIR-REQ-0088",
+    "DIR-REQ-0089",
+    "DIR-REQ-0090",
+    "DIR-REQ-0091",
+    "DIR-REQ-0115",
+    "DIR-REQ-0120",
+    "DIR-REQ-0008"
+  ],
+  "upstream": [
+    "DIR-FUNC-0018",
+    "DIR-FUNC-0019",
+    "DIR-FUNC-0013"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 規則 | 契約 |
+| --- | --- |
+| 全体区間 | `[0,H)`。正常時は早期イベント枯渇でもH=T。最後のイベント以降は定常状態をTまで積分する。注：この積分区間の延長は処理イベント数の計数対象外。last_event_time_psを別に記録する。異常時は診断仕様の部分prefix規則に従う。時間打切りでも正常終了であり、未完了件数を残す。 |
+| 観測窓 | 幅W=`metrics-window`（ps、正値、既定1ms）。窓は`[kW,min((k+1)W,H))`。最終短縮窓にもその実長を使う。W>Hなら一窓、H=0なら窓なし。窓の境界は計測集計器が論理的に区切る。注：監視窓だけを目的とした実行イベント予約は対象外。 |
+| 算術平均 | tx_wait / arbitration_wait / transfer / delivery各々について完了した観測点の標本だけを重み1で集計。deliveryは（要求,受信先）を一標本とし、全体平均では受信数の多い要求が標本数分寄与する。各受信先平均も出す。未完了は母数から除外し別件数を必ず出す。 |
+| 時間加重平均 | `queue_mean = integral Q(t)dt / H`。イベント処理後のQを次の時刻まで保持し同時刻間隔は0。`queue_max`は初期値と全遷移後の最大を取り、ゼロ時間だけのピークも含む。 |
+| 使用率 | `bus_utilization = measure(union [SOF,release) intersect window) / window_length`。intermissionを含む。`frame_utilization`は同じ式の区間を`[SOF,EOF)`としてintermissionを除く。終了時に未完了でも開始済区間をHまでクリップし、予定EOF以降を実行済と扱わない。 |
+| バッファ使用率 | 容量Cのキューで`buffer_utilization=Q/C`をqueue_lengthと同じ各観測点に記録。窓平均と全体平均`buffer_utilization_mean=integral Q(t)dt/(C*interval_length)`も記録し、単位は`1`。C=0なら点・平均ともnull、区間長0の平均はnull。Q=0かつC>0なら0。容量は確定設定で参照可能とする。 |
+| ペイロード量 | `payload_bits`はEOFで完了した各バス送信の8×データbyte数を一回加算。受信先別`received_payload_bits`はrで一回加算。バス量と受信先量は独立集計とする。 |
+| 総転送量 | `serialized_bits`はEOFで完了したフレームのCRC・stuff・ACK・EOFを含むフレームbitsを一回加算（intermission除外）。`occupied_bits`はバス解放で完了したフレームbits+3を加算。完了量の集計対象は対応する完了点へ到達したフレームに限定し、部分占有は使用率に反映する。 |
+| スループット | 各窓で`payload_throughput_bps=payload_bits*10^12/window_length`、`serialized_throughput_bps=serialized_bits*10^12/window_length`、受信先別`received_throughput_bps=received_payload_bits*10^12/window_length`。完了点で窓に帰属し、途中フレームは完了点を含む窓へ全量を帰属させる。全体値は総量/全長であり窓の単純平均ではない。 |
+| 破棄 | `dropped`は対象キュー・原因`queue_full`別に集計。注：フィルタ不一致、仲裁敗北、未完了、処理失敗は破棄集計の対象外。 |
+| 空集合・ゼロ | 標本数0の平均はnull。H=0の比率・時間加重平均はnull、正常H=0の件数・量は0、初期空キュー最大は0。欠損の数値表現はnullとする。正長のアイドル窓は使用率0・スループット0。 |
+| 算術 | 時刻はu64、件数・和・積分分子はchecked u128相当以上の正確整数で保持し、あふれはE-0004。平均・率だけを有理数からbinary64最近接偶数丸めへ一度変換。有限でなければE-0004。集計順はイベント順で固定。 |
+| 部分prefixの窓 | 異常時Hにある成功コミット済の点記録はrecordsとsummaryへ含め、[0,H)の窓集計から除く。窓は全て正長半開区間のままとし、H=0でも成功点記録が存在し得る。summaryの完了量/標本数と窓の総和の差はHの成功点だけに一致する。H以前のコミットで開始した使用率区間はHまで積分する。 |
+| 拡張 | 指標登録は`metric_id/version/unit/value_kind/sampling/aggregation`を必須とし名前重複を準備失敗とする。既存指標の意味変更はmetric versionとschema_versionを更新。初期版は下表に列挙した指標のみ登録し、注：利用者の任意式評価は提供範囲外。 |
+
+| 指標ID | unit | value_kind | 出力範囲 |
+| --- | --- | --- | --- |
+| `queue_length`, `queue_max`, `generated`, `admitted`, `processing`, `pending`, `in_flight`, `success`, `dropped`, `unfinished`, `attempts`, `retries`, `failed`, `receiver_opportunities`, `received`, `filtered`, `rx_pending` | `count` | integer | queue_lengthは点標本、queue_maxはキュー別全体集計、件数は下表の対象別/全体集計 |
+| `tx_wait_ps`, `arbitration_wait_ps`, `transfer_ps`, `delivery_ps` | `ps` | integer | 個別イベント標本 |
+| `tx_wait_mean_ps`, `arbitration_wait_mean_ps`, `transfer_mean_ps`, `delivery_mean_ps` | `ps` | number | 各対象と全体の標本平均 |
+| `queue_mean` | `count` | number | キューごとの全体集計 |
+| `buffer_utilization`, `buffer_utilization_mean` | `1` | number | キューごとの点標本、観測窓平均と全体平均 |
+| `bus_utilization`, `frame_utilization` | `1` | number | バス別観測窓と全体集計 |
+| `payload_bits`, `serialized_bits`, `occupied_bits`, `received_payload_bits` | `bit` | integer | バスまたは受信先別観測窓と全体集計 |
+| `payload_throughput_bps`, `serialized_throughput_bps`, `received_throughput_bps` | `bit/s` | number | バスまたは受信先別観測窓と全体集計 |
+
+| 出力集合・対象 | 必須行と集計規則 |
+| --- | --- |
+| 点記録 | queue_lengthとbuffer_utilizationはtarget=キュー完全パス、tx_wait_ps/arbitration_wait_psは送信元、transfer_psはバス、delivery_psは受信先。要求起因はrequest_idを設定し、deliveryのみreceiverも設定する。初期キュー記録のrequest_idはnull。reasonは全てnull。 |
+| 件数summary | generated/admitted/processing/pending/in_flight/success/unfinished/attempts/retries/failedは各送信元、各バス、予約対象名`$all`へ要求を一度ずつ集計。droppedも同じ対象にreason=queue_fullで出し、各キューにもその破棄数を出す。0件でも行を出す。他の件数のreasonはnull。 |
+| 受信summary | receiver_opportunities/received/filtered/rx_pendingは各受信先、各バス、`$all`へ（要求,受信先）を一度ずつ集計。受信先行のreceiverはその完全パス、バス/$allはnull。送信対象にもなるノードでは要求件数と受信件数を独立に保持する。 |
+| 遅延summary | tx_wait_mean_ps/arbitration_wait_mean_psは各送信元・各バス・$all、transfer_mean_psは各バス・$all、delivery_mean_psは各受信先・各バス・$all。標本数をsample_countへ、受信先別deliveryではreceiverにも完全パスを設定。他はreceiver=null。注：遅延の窓平均は初期出力の対象外。 |
+| 窓とsummary | bus_utilization/frame_utilization/payload_bits/serialized_bits/occupied_bits/payload_throughput_bps/serialized_throughput_bpsは各バス。received_payload_bits/received_throughput_bpsは各受信先（receiverにも同じパス）。buffer_utilization_meanは各キュー。それぞれrecordsへ全窓の行、summaryへ[0,H)の一行を出す。queue_mean/queue_maxは各キューのsummaryのみ。対象は接続済モデルから作成し0件でも全て出力する。 |
+| 補助列 | 集計行のrequest_idはnull、上記で指定したもの以外のreceiver/reasonはnull。sample_countは算術標本平均だけに使い、時間加重平均・使用率・スループットはnullとする。全体summaryのstart_ps=0、end_ps=H。 |
+| 保持値と最大 | queue_maxは初期値とHより前の全変化後の値を含む（異常prefixはHの成功変化も含む）。満杯で値不変の点も出力する。queue_meanの分子は同時刻の最後の確定値を次時刻まで保持して積分する。 |
+| メトリクス登録値 | versionは文字列`1`。samplingは点指標=`point`、件数/queue_max/queue_mean/遅延平均=`summary`、それ以外=`window_summary`。aggregationは点=`identity`、件数とbit量=`sum`（状態件数は終端台帳上の該当要素数）、queue_max=`max`、遅延平均=`sample_mean`、queue_meanとbuffer_utilization_mean=`time_mean`、使用率=`occupancy_ratio`、スループット=`rate`。 |
+
+## 3. ファイルスキーマ
+
+<a id="result-schema"></a>
+
+```trace
+{
+  "id": "spec-results#result-schema",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0044",
+    "DIR-REQ-0054",
+    "DIR-REQ-0092",
+    "DIR-REQ-0093",
+    "DIR-REQ-0094",
+    "DIR-REQ-0095",
+    "DIR-REQ-0096",
+    "DIR-REQ-0103"
+  ],
+  "upstream": [
+    "DIR-FUNC-0020",
+    "DIR-FUNC-0018",
+    "DIR-FUNC-0019"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| 共通項目 | 確定スキーマ |
+| --- | --- |
+| 型略記 | Dは先頭0なしの非負10進数字文字列（0のみ例外、時刻/イベント予約sequenceはu64、件数/量/記録連番はu128以内）、SはUTF-8文字列、Nは有限JSON number、?はnull可、配列は`[]`で示す。全フィールド必須、任意値もキーを保持しnullで表す。schema_versionはJSON整数1。 |
+| エンコーディング | UTF-8 BOMなし。JSON objectはキーのUTF-8辞書順、compact表現、末尾LF。integer値・全時刻・件数はD、率・平均はN?。CSVはheaderあり、カンマ区切り、LF、引用符/カンマ/改行を含むセルを二重引用符で囲み内部引用符を二重化。CSVのnullは空セル、numberはJSONと同じ有限十進表記。 |
+| 文字と数値のwire表現 | JSON文字列はUnicode正規化を行わず、quoteとbackslashをエスケープしU+0000～001Fを小文字hexの`\u00xx`で表す。他のUnicode scalarはUTF-8をそのまま保存しslashをエスケープしない。Nはbinary64を十進有効17桁へ最近接偶数丸めし、`d.dddddddddddddddde±n`形式（小数部16桁、指数の先頭0なし）で出す。0は`0.0000000000000000e+0`、負0は正0へ正規化。CSVも同じ文字列を使う。以下のJSON例は説明用のキー順/短いNを許す表示例であり、ファイル保存時はこの正規表現に従う。 |
+| ファイル集合 | `manifest.json`, `results.json`, `events.csv`, `summary.csv`, `diagnostics.jsonl`の5ファイル。CSVはresults.json内のrecords/summaryと一対一で復元可能。要求台帳・メタデータはresults.jsonを参照する。 |
+| results.json | `{schema_version:1,run_id:S,metadata:Metadata,simulation:Simulation}`。Simulation=`{termination:S,partial:boolean,start_ps:D,end_ps:D,last_event_time_ps:D?,committed_events:D,pending_events:D,records:Record[],summary:Record[],requests:Request[],receivers:Receiver[]}`。start_psは0、end_psはH。terminationは診断仕様のtime_limit/events_exhausted/prep_failed/execution_failedで、保存失敗のoutput_failedは公開済simulationへ設定する値ではない。 |
+| Record（列順も固定） | `{seq:D,event_seq:D?,effect_seq:D?,target:S,metric:S,unit:S,value_kind:S,value:DまたはNまたはnull,time_ps:D?,start_ps:D?,end_ps:D?,request_id:S?,receiver:S?,reason:S?,sample_count:D?}`。integerならvalue=D、numberならN?。点標本はtimeのみ、窓/全体集計はstart/endのみを非null。算術標本平均にはsample_count、他はnull。metric versionは初期版すべて1でmetadataに登録。 |
+| CSV列 | `schema_version,run_id,seq,event_seq,effect_seq,target,metric,unit,value_kind,value,time_ps,start_ps,end_ps,request_id,receiver,reason,sample_count`。events.csvはrecords、summary.csvはsummaryを同じ順序で射影しschema_version/run_idを付ける。 |
+| Request | `{request_id:S,source:S,bus:S,status:S,generated_ps:D,ready_ps:D?,sof_ps:D?,eof_ps:D?,payload_bits:D,serialized_bits:D?,model_fields:CanFields,attempts:D,retries:D,drop_reason:S?}`。到達したreadyは満杯破棄にも記録。初期CANはprepareでフレーム長を計算済みとし、生成成功時からserialized_bitsとmodel_fieldsを設定する。nullableなserialized_bitsは将来モデルの共通欄であり初期CANは常にD。 |
+| CanFields | `{profile:S,schema_version:1,crc15:D,stuff_bits:D,frame_bits:D,intermission_bits:D,bitrate_bps:D,planned_eof_ps:D?,planned_release_ps:D?,release_ps:D?}`。profileは`can.cc.ideal.v1`、crc15は0～32767、intermission_bitsは`3`、frame_bitsはserialized_bitsと一致。SOF前の予定時刻はnull、予定時刻はSOF時に設定、release_psはバス解放到達時だけ設定。初期CANのコミット済Requestは生成時から全内訳を保持する。 |
+| Receiver | `{request_id:S,receiver:S,status:S,observed_ps:D?,received_ps:D?}`。受信先のpendingには観測前と観測後の受信処理中を含み、到達時刻で区別する。 |
+| 安定順序 | recordsを有効時刻（点はtime_ps、窓はend_ps）、同時刻の窓→初期点→callback点の種別順、callback実行コミット順、effect_seqの順に並べる。窓内と初期点はtarget/metric/reason/receiverのUTF-8辞書順。summaryも同じ辞書順。requestsはrequest_id順、receiversはrequest_id/receiver順（ordinalの数値順とは異なる）。nullは全ての文字列より前。seqはrecords/summary各配列で0から隙間なく採番する。 |
+| 観測の出自 | event_seqはruntimeの予約sequence、effect_seqは一callbackが報告する観測だけを0始まりで数えた連番（予約等の他効果は計数対象外）。callback内の複数対象を一括報告する場合はtarget/metric/request_id/receiver順に展開して採番する。初期点と集計行は両方null。実行コミット順はruntimeの処理順であり、注：予約sequenceの数値sortは処理順の代用対象外。 |
+| multibus schema2 | Request・ReceiverはModelRecordへ格納する。[GW仕様](models/GWモデル詳細機能仕様書.md#payload-results)でMultibusFields.tx_enqueued_ps（nullableな実TX受理時刻）、waiting_tx状態/summary、gw.rx_buffer/1とRX/TX待ち指標を定める。ready_psは初回TX処理完了のまま、arbitration_wait_psはSOF−tx_enqueued_ps、tx_wait_psはSOF−generated_ps。unfinishedとgenerated保存則へwaiting_txを加え、TX queue_lengthには含めない。本書のschema1 Request/CanFieldsと既存metric集合は保持する。 |
+| model_fieldsの拡張 | model_fieldsはprofileとschema_versionで解釈するモデル別オブジェクト。初期版はCanFields（schema_version=1）を用い、将来モデルは独立したschemaを登録する。共通exporterはその識別と直列化済みオブジェクトを扱い、固有フィールドの意味はモデル側に属する。 |
+| pending_events | 終端snapshotに残る有効な実イベント数、まだphase 2予約へ実体化していないdirty資源数、dispatcherの次回予約を遅延展開している場合の論理予約1件の合計。dirtyは(time,delta,resource)ごとに一件と数え、実体化済み予約との二重算入は除外する。取り消し済みイベントは除外。失敗候補は有効集合から成功コミット時にだけ消費するため異常snapshotにはその候補も含む。将来生成が存在するdispatcher予約が既に実イベントに含まれる場合は一度だけ計数する。注：未生成の全要求数やgeneratorの総発火回数は計数対象外。 |
+| manifest.json | `{schema_version:1,run_id:S,status:S,termination:S,partial:boolean,metadata_ref:S,files:File[]}`。File=`{name:S,sha256:S,bytes:D}`。metadata_refは`results.json#/metadata`固定で、実験メタデータの唯一の正本を参照する。自身を除く4ファイルをname順に列挙。statusは`complete`のみ（5ファイルの公開成功を示しシミュレーションの成功とは別）。SHA256は完成ファイルraw bytesの64桁小文字hex。 |
+| diagnostics.jsonl | 診断詳細仕様のDiagnostic objectを一行一件。正常時は空ファイル。 |
+| exporter拡張 | exporter登録を`format_id/schema_version/export(snapshot)`で分離する。既存の5ファイル契約は必須。追加形式は別名ファイルとmanifest項目を追加するschemaの新versionで提供し、既存形式の列と意味を保持する。 |
+| 台帳整合性 | Requestのstatusがprocessingならready/sof/eof=null、pendingならreadyのみ、in_flightならready/sof、successならready/sof/eofが非null。droppedはready非null、sof/eof=null、drop_reason=queue_full。他状態のdrop_reasonはnull。planned_eof/planned_releaseはSOF前ともにnull、SOF後は両方設定されeの実到達とは分離する。時刻はg≤q≤s≤e、attemptsはSOF前0/後1、retries=0。ReceiverはEOF済要求だけを参照し、pendingはreceived=null、filteredはobserved非null/received=null、receivedは両方非nullかつe≤o≤r。release_psが非nullならe≤release。参照先要求/インスタンスは実行内に存在し台帳キーは一意とする。 |
+| 読み戻し | 未対応schema_version、不正D、非有限値、重複seq、対象型とunit/value_kindの不一致、manifest hash不一致は不正出力として拒否する。利用者がCSVのみを読む場合もrun_idとschema_versionでJSON/manifestへ対応付ける。 |
+
+## 4. メタデータ・再現条件
+
+[実験条件と結果の対応](../要件定義書.md#dir-req-0117)は、入力snapshot・確定値・モデル前提をこの実行の結果へ結び付ける責務である。[再現性](../要件定義書.md#dir-req-0045)の確認は、それらの条件をそろえて再実行し、本書の比較範囲に従って`simulation`を照合する。メタデータの保存、イベント順の決定性、モデル計算と集計の一致を組み合わせて確認し、実時間やrun_idの差は実行の識別情報として扱う。
+
+<a id="experiment-metadata"></a>
+
+```trace
+{
+  "id": "spec-results#experiment-metadata",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0114",
+    "DIR-REQ-0117"
+  ],
+  "upstream": [
+    "DIR-FUNC-0020"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| Metadataの必須フィールド | 型・内容 |
+| --- | --- |
+| `started_at_utc`, `finished_at_utc` | S。UTC ISO8601、実時間の開始/完了。比較対象simulationと分離してmetadataに保存する。 |
+| `sources` | `{logical_path:S,canonical_path:S,sha256:S,content_utf8:S}[]`。INI・workload JSONと実際に読み込んだ全NEDのraw UTF-8内容、実在正規絶対パス、raw bytes SHA256。logical_pathはNEDには探索root番号とroot相対`/`パス、INIには`config`、workload JSONには`workload`を使いこれでsort。UTF-8不正入力は準備失敗。注：環境変数・認証情報は自動収集対象外。 |
+| `config` | `{key:S,value:S}[]`。型解決済の全設定をkey/valueのSペア配列に正規化しkey順に保存（単位はps/bit/s/byte/count、文字列はJSON引用、真偽はtrue/false）。default由来の値も含める。 |
+| `config_sha256` | S。configのcompact canonical JSON UTF-8（末尾LFなし）のSHA256。 |
+| `input_sha256` | S。sourcesのlogical_pathとsha256だけをキー順compact JSON化した配列（末尾LFなし）のSHA256。注：絶対パス・実時間はhash入力対象外。 |
+| `runtime_version`, `git_commit`, `binary_sha256`, `model_registry_version`, `compiler`, `target_triple`, `os`, `cpu` | S。実行器の版、完全Git commit、実行バイナリraw SHA256、モデル登録版、rustcの完全版、ビルドtarget、OS名/版、CPUアーキテクチャ/モデル。不明は空文字ではなく`unknown`を明記し再現条件未同定として扱う。 |
+| `cargo_lock_sha256`, `toolchain`, `adoption_ledger_version` | S。実行バイナリ構築に使ったCargo.lock raw bytesのSHA256、`rustc -Vv`の完全出力、採用モデル/外部仕様台帳の版または完全Git commit。未取得は`unknown`とし再現条件未同定と明記する。compilerは短い版識別、toolchainは詳細の正本。 |
+| `models` | `{type:S,version:S,assumptions:S[]}[]`。type順。初期CANは`can.cc.ideal.v1`、理想ACK・再送なし・エラー注入なし・フレーム単位内容依存時間・固定伝搬遅延・送信元自己配送なし・フィルタとACK独立を列挙。 |
+| 準備失敗のmetadata | 型を変えず、取得完了済sourcesのみ保存し、configは値解決全件成功前なら空配列、initial_stateは初期化全件成功前なら空配列とする。modelsは照合済登録、metricsは組込み全登録を保存。window_psは解決前なら既定値1000000000、解決後なら確定値。空config/sourcesにも通常のhash計算を適用する。未取得の版/環境値はunknownとし、入力のraw内容が取得できてもUTF-8不正ならsources要素を追加しない。 |
+| `topology` | schema1/2共通のController接続情報。controllersは`{id:S,bus:S,tx_channel_delay_ps:D,rx_channel_delay_ps:D}[]`をid順に保存する。準備済みのBus所属とTX/RX経路遅延を正本とし、通信のないControllerも含む。構成図はこの所属を参照する。 |
+| `initial_state` | `{instance:S,state:S}[]`をinstance順。各モデルversionで定義された初期状態のcanonical JSON文字列（CANの具体形はCAN仕様の初期状態表を正本とする）。キュー空・バスidle・生成連番0・設定で確定した生成列を識別できる状態を含む。 |
+| `metrics` | `{metric_id:S,version:S,unit:S,value_kind:S,sampling:S,aggregation:S}[]`。metric_id順。本書の全登録指標を列挙。 |
+| `time_resolution_ps`, `window_ps`, `seed` | D、D、S?。time_resolution_ps=`1`、window_ps=解決済W、既存の乱数未使用profileはseed=null。Ethernet v2のbackoffは媒体仕様のseedを正規十進文字列として保存。 |
+| `run_id`（外側） | 各実行開始時のUUIDv4文字列。別実行で必ず新規採番。結果の同一性はmetadataやrun_idではなくsimulationを比較する。CSV比較ではrun_id列を除く。 |
+| 再現保証 | 同一入力内容・論理配置・確定値・初期状態・runtime/model/metric版と同一実行環境でsimulationのイベント順と値が一致。異なる計算機については固定版の整数時間/決定的順序/丸めに従うsimulationだけを比較対象とし、注：実時間・OS/CPU・パス・run_id・バイナリhashの一致、および未同定版や異なる版での同一結果は保証範囲外。 |
+
+## 5. 公開手順と例
+
+<a id="atomic-output"></a>
+
+```trace
+{
+  "id": "spec-results#atomic-output",
+  "stage": "spec",
+  "requirements": [
+    "DIR-REQ-0044",
+    "DIR-REQ-0120"
+  ],
+  "upstream": [
+    "DIR-FUNC-0020"
+  ],
+  "state": "confirmed",
+  "pending": []
+}
+```
+
+| ケース | 規則・具体例 |
+| --- | --- |
+| 出力先 | CLIのoutputは新規または空ディレクトリのみ。準備段階で非空・書込不可を拒否しexit4/E-0003。既存ファイルを保持して出力処理を拒否する。 |
+| 原子的公開 | 同一ファイルシステムの出力dir内`.tmp-<run_id>`へ全データを書きflush/closeしhash計算後、各ファイルを最終名へrename。manifestを最後に一時名からrenameする。読者はmanifestがありhashを検証できた集合だけを完成物と認める。注：電源断に対する耐久性は保証範囲外。 |
+| 出力失敗 | manifestが無い集合は不完全。処理停止してexit4、E-0003をstderrへ出す。完成済データは調査用に残し、一時ファイルはbest-effortで削除。注：自動再試行・既存成果の上書きは提供範囲外。診断JSONL自体を書けなくてもstderr通知を試みる。 |
+| 実行失敗の部分結果 | 出力可能なら終了状態execution_failed・partial=trueと最後の整合snapshotを保存し、manifest completeを公開する。prepare失敗はsimulationのrecords/requests/receiversを空、区間[0,0)、summary空、partial=trueとする。正常time_limit/events_exhaustedはpartial=false（未完了要求の有無とは別）。 |
+| manifest例 | `{"schema_version":1,"run_id":"550e8400-e29b-41d4-a716-446655440000","status":"complete","termination":"events_exhausted","partial":false,"metadata_ref":"results.json#/metadata","files":[{"name":"diagnostics.jsonl","sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","bytes":"0"}]}`。filesは空診断の一要素のみを示した部分例であり、実ファイルには他3要素も必須。 |
+| Record受理例 | `{"seq":"0","event_seq":null,"effect_seq":null,"target":"Net.bus","metric":"bus_utilization","unit":"1","value_kind":"number","value":0.5,"time_ps":null,"start_ps":"0","end_ps":"2000000","request_id":null,"receiver":null,"reason":null,"sample_count":null}`。同じCSV行：`1,550e8400-e29b-41d4-a716-446655440000,0,,,Net.bus,bus_utilization,1,number,5.0000000000000000e-1,,0,2000000,,,,`。 |
+| CanFields実数例 | standard ID=0・空payload・500kbit/s・SOF=0・バス解放済では`{"profile":"can.cc.ideal.v1","schema_version":1,"crc15":"0","stuff_bits":"6","frame_bits":"50","intermission_bits":"3","bitrate_bps":"500000","planned_eof_ps":"100000000","planned_release_ps":"106000000","release_ps":"106000000"}`。解析fixtureであり実装の実行結果ではない。 |
+| Request抽象例 | `{"request_id":"load:0","source":"Net.a","bus":"Net.bus","status":"success","generated_ps":"0","ready_ps":"2","sof_ps":"5","eof_ps":"15","payload_bits":"8","serialized_bits":"52","attempts":"1","retries":"0","drop_reason":null}`。model_fieldsを省略した集計検証用の部分例。時刻は抽象値で、実際の完全RequestではCAN時間仕様に従う内訳と時刻を追加する。 |
+| 独立計算例 | 上例をr=18と20の二受信、観測[0,30)、release=18、Q=1が[2,5)として計算するとtx_wait=5、仲裁待ち=3、transfer=10、delivery平均19、queue_mean=0.1、queue_max=1、bus_utilization=13/30、frame_utilization=10/30、payload_bits=8、received_payload_bitsは各8、generated=admitted=success=attempts=1、unfinished=dropped=0。 |
+| 打切り例 | 同例をH=10で切るとin_flight=1、success=0、unfinished=1、transfer/delivery平均null、payload_bits=0、bus_utilization=5/10。EOF未到達のためreceiversは空（将来の受信を先行してpending行へ追加しない）。 |
+| 境界例 | 正常H=0ならrecordsは空（初期キュー値はsummaryの最大値0で示す）・平均null。時刻が窓終端と等しい標本は次窓へ。Dの例`"18446744073709551615"`はps表現で受理、JSON数値18446744073709551615や`"01"`は時刻として拒否。 |
+| 判断と検証先 | DIR-TBD-0006は本書で解消。DIR-AC-0006/0015/0022/0024/0026について上記保存則・窓・丸め・CSV/JSON往復・出力失敗注入を下流の検証仕様へ割当てる。[結果処理詳細設計](../design/結果処理詳細設計書.md)と[結果処理検証仕様](../verification/cases/結果処理検証仕様書.md)を規定済み。開発中ソースの共通結果公開・準備失敗成果物は[拡張runtime検証記録](../verification/results/extension-runtime-2026-10-05.json)に実施範囲を記録する。仕様例は試験合格証跡ではなく、全指標の製品適合と性能目標は個別に判定する。 |
+
+### 5.1. 完全台帳と再現可能なファイル集合例
+
+| 例 | 入力・期待値・位置付け |
+| --- | --- |
+| 完全Request | standard ID=0、payload空、500kbit/s、送信処理0、SOF=0、EOF=100000000ps、release=106000000psの成功要求は以下の全フィールドを持つ。これはCAN時間計算の仕様fixtureである。 |
+| 完全Receiver | 伝搬0、受信処理0の受信先Net.bは以下のreceived行となる。EOF前に停止した場合はこの行自体を生成しない。 |
+| 完全ファイル集合 | 下のPython 3例は引数に指定する未作成ディレクトリへ、読取不能入力のprep_failedを表す5ファイルを生成する。全必須フィールド、全登録指標、CSVヘッダ、診断、実バイト数とSHA256が揃う。sources/config/initial_stateは準備前失敗のため空。OS依存詳細はこのfixtureでは固定値とする。製品実装・実行試験の証跡とは区別する。 |
+
+```json
+{"request_id":"load:0","source":"Net.a","bus":"Net.bus","status":"success","generated_ps":"0","ready_ps":"0","sof_ps":"0","eof_ps":"100000000","payload_bits":"0","serialized_bits":"50","model_fields":{"profile":"can.cc.ideal.v1","schema_version":1,"crc15":"0","stuff_bits":"6","frame_bits":"50","intermission_bits":"3","bitrate_bps":"500000","planned_eof_ps":"100000000","planned_release_ps":"106000000","release_ps":"106000000"},"attempts":"1","retries":"0","drop_reason":null}
+```
+
+```json
+{"request_id":"load:0","receiver":"Net.b","status":"received","observed_ps":"100000000","received_ps":"100000000"}
+```
+
+```python
+import hashlib
+import json
+import pathlib
+import sys
+
+# Usage: python3 fixture.py /tmp/new-dir-result-fixture
+out = pathlib.Path(sys.argv[1])
+out.mkdir()  # Existing directories are rejected.
+run_id = "550e8400-e29b-41d4-a716-446655440000"
+def canonical(value):
+    return json.dumps(value, ensure_ascii=False, sort_keys=True,
+                      separators=(",", ":"))
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+metrics = []
+def register(names, unit, kind, sampling, aggregation):
+    for name in names.split():
+        metrics.append(dict(metric_id=name, version="1", unit=unit,
+                            value_kind=kind, sampling=sampling,
+                            aggregation=aggregation))
+register("queue_length", "count", "integer", "point", "identity")
+register("queue_max", "count", "integer", "summary", "max")
+register("generated admitted processing pending in_flight success dropped "
+         "unfinished attempts retries failed receiver_opportunities "
+         "received filtered rx_pending", "count", "integer", "summary", "sum")
+register("tx_wait_ps arbitration_wait_ps transfer_ps delivery_ps",
+         "ps", "integer", "point", "identity")
+register("tx_wait_mean_ps arbitration_wait_mean_ps transfer_mean_ps delivery_mean_ps",
+         "ps", "number", "summary", "sample_mean")
+register("queue_mean", "count", "number", "summary", "time_mean")
+register("buffer_utilization", "1", "number", "point", "identity")
+register("buffer_utilization_mean", "1", "number", "window_summary", "time_mean")
+register("bus_utilization frame_utilization", "1", "number",
+         "window_summary", "occupancy_ratio")
+register("payload_bits serialized_bits occupied_bits received_payload_bits",
+         "bit", "integer", "window_summary", "sum")
+register("payload_throughput_bps serialized_throughput_bps received_throughput_bps",
+         "bit/s", "number", "window_summary", "rate")
+metadata = {key: "unknown" for key in (
+    "runtime_version git_commit binary_sha256 model_registry_version compiler "
+    "target_triple os cpu cargo_lock_sha256 toolchain adoption_ledger_version").split()}
+metadata.update(started_at_utc="2026-09-29T00:00:00Z",
+                finished_at_utc="2026-09-29T00:00:00Z", sources=[], config=[],
+                config_sha256=digest(b"[]"), input_sha256=digest(b"[]"),
+                models=[], initial_state=[],
+                metrics=sorted(metrics, key=lambda m: m["metric_id"]),
+                time_resolution_ps="1", window_ps="1000000000", seed=None)
+simulation = dict(termination="prep_failed", partial=True, start_ps="0",
+                  end_ps="0", last_event_time_ps=None, committed_events="0",
+                  pending_events="0", records=[], summary=[], requests=[], receivers=[])
+result = dict(schema_version=1, run_id=run_id, metadata=metadata, simulation=simulation)
+diag = dict(schema_version=1, seq="0", severity="error", primary=True,
+            code="E-0001", phase="prepare", reason="input_unreadable",
+            message="Cannot read config", source="/work/missing.ini",
+            line=None, column=None, end_line=None, end_column=None,
+            target="config", time_ps=None, event_seq=None,
+            details=dict(operation="read", os_error="file not found"))
+header = ("schema_version,run_id,seq,event_seq,effect_seq,target,metric,unit,"
+          "value_kind,value,time_ps,start_ps,end_ps,request_id,receiver,reason,sample_count\n")
+files = {"results.json": canonical(result) + "\n", "events.csv": header,
+         "summary.csv": header, "diagnostics.jsonl": canonical(diag) + "\n"}
+entries = []
+for name, content in sorted(files.items()):
+    data = content.encode("utf-8")
+    (out / name).write_bytes(data)
+    entries.append(dict(name=name, sha256=digest(data), bytes=str(len(data))))
+manifest = dict(schema_version=1, run_id=run_id, status="complete",
+                termination="prep_failed", partial=True,
+                metadata_ref="results.json#/metadata", files=entries)
+(out / "manifest.json").write_bytes((canonical(manifest) + "\n").encode("utf-8"))
+```
+
+## 拡張モデルの結果
+
+| 対象 | 正本・適用 |
+| --- | --- |
+| schema2全体 | [拡張モデル共通詳細機能仕様](拡張モデル共通詳細機能仕様書.md#results)がSimulation2・ModelRecord・Metadata2・版選択を定める |
+| 共通部分 | CSV17列、Record、正確整数、文字表現、window、出力順、hash、原子的公開、失敗prefixは本書の規則を継承 |
+| モデル固有 | GWの元要求／転送copy、AXItransaction／handshake／RAM、Ethernetframe／hop／receptionを独立schemaとして保存。Ethernet v2は試行・衝突・backoff・PHY状態を登録されたschema版で追加する |
+| 指標集合 | 37指標の一律生成は既定CANに限定。追加profileはそのspecに列挙したmetricをmetadataへ登録して計測する |
+| 再現情報 | model-configもsourcesへ保持。Metadata2はmodel_profileとmodel_schemasを追加し、unknown値と準備失敗時の扱いは本書を継承 |
+
+## 将来対応モデルへの適用
+
+現行Classical CANのschema1と指標集合を維持し、以下の将来モデルは[schema2](拡張モデル共通詳細機能仕様書.md#results)の登録レコードとモデル別の母数を使用する。仕様の存在と製品実行試験の完了は別に扱う。
+
+| 項目 | 契約 |
+| --- | --- |
+| 将来モデル | 追加モデルの要求、段階別時刻、内容・所有権、未完了と破棄理由を登録ModelRecordへ保存する。CAN固有指標はCAN profileに適用し、各追加モデルの指標は専用descriptorを登録する。停止時は成功commit prefixから出力する。 |
+| 正本 | [CAN FD・100BASE-T1](models/CANFD・100BASE-T1詳細機能仕様書.md)、[SoC・AHB・NoC](models/SoC・AHB・NoC詳細機能仕様書.md)、[DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC](models/メモリ・IPC詳細機能仕様書.md) |

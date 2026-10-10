@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "review_scope": "Final integrated evidence consistency review for narrow Issue41 retention repair; no product tests rerun or artifact-wide audit",
+  "source_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+  "test_commit": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+  "baseline_commit": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "original_artifact_commit": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+  "status": "review_complete_no_open_findings",
+  "findings": [],
+  "blockers": [],
+  "resolved_findings": [
+    {
+      "id": "EVIDENCE-REVIEW-001",
+      "severity": "P3",
+      "description": "Two shared-declaration atomic entries initially linked only focused integration stdout although the named test executes in input-unit stdout.",
+      "resolution": "Root regenerated mappings with per-evidence execution_log and SHA plus row execution_logs. O01 now references focused and input-unit logs; O02 references input-unit log. All direct named-test log paths and hashes rechecked; handoff dependent hashes refreshed."
+    }
+  ],
+  "verified": {
+    "final_gates": [
+      {
+        "name": "focused-no-run",
+        "exit_code": 0,
+        "named_tests": 0
+      },
+      {
+        "name": "fmt-check",
+        "exit_code": 0,
+        "named_tests": 0
+      },
+      {
+        "name": "focused-tests",
+        "exit_code": 0,
+        "named_tests": 15
+      },
+      {
+        "name": "input-unit-tests",
+        "exit_code": 0,
+        "named_tests": 45
+      },
+      {
+        "name": "diagnostic-regressions",
+        "exit_code": 0,
+        "named_tests": 15
+      },
+      {
+        "name": "clippy",
+        "exit_code": 0,
+        "named_tests": 0
+      }
+    ],
+    "gate_logs": "Read raw stdout/stderr and verified all 12 log hashes; final focused15/input45/diagnostics15 match summaries; no-run/fmt/clippy exit0",
+    "baseline": "Preserved fmt exit1 and raw differences in ac0008_ned_rejections.rs and ac0008_paths.rs; baseline compile and10 tests pass separately",
+    "source": "All six inventory hashes match current committed files; implementation.patch exactly equals git diff bfe0ebe..HEAD",
+    "states": {
+      "repo": {
+        "path": "<REPO_ROOT>",
+        "head": "0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c",
+        "clean": true
+      },
+      "baseline": {
+        "path": "<AUDIT_ROOT>/baseline",
+        "head": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+        "clean": true
+      },
+      "implementation": {
+        "path": "<AUDIT_ROOT>/implementation",
+        "head": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+        "clean": true
+      }
+    },
+    "binding_sources": "31 attribute/atomic evidence function ranges and7 rejection assertion ranges match final source, with exact hashes",
+    "direct_named_test_logs_verified": 26,
+    "atomic": "All11 atomic mappings partial; helpers have no standalone executed-test identity;7 rejection variants remain characterization with full_atomic_acceptance false",
+    "normative_gaps": "Import/extends syntax_error vs unsupported_syntax and wildcard-star primary are disclosed; callback counts/full original Controller cases not inferred",
+    "build": "Debug binary hash matches; current Cargo JSON/verbose/metadata/toolchain reference hashes match;42 artifact records /29 unique package IDs /31 resolved graph nodes independently counted;119 fingerprint scope explicitly broader than this invocation",
+    "prior_originals": "All four provenance copy entries compared byte-for-byte and hashes checked against source; old0b7 artifact scope not promoted to current debug build",
+    "handoff_evidence_hashes": "Every listed handoff evidence hash rechecked after binding fix"
+  },
+  "evidence": [
+    {
+      "path": "実行結果.md",
+      "sha256": "719c2931c636c22c729b99b88a2e0057d70091122511f0dada15b8edbc126d6a",
+      "bytes": 10074
+    },
+    {
+      "path": "handoff-result.json",
+      "sha256": "ddaa8ab2e25a361468923c0893bb0f94ec555ac25698114f9f0dac085a7025f0",
+      "bytes": 4884
+    },
+    {
+      "path": "results/runtime-case-bindings.json",
+      "sha256": "5caba5e8e27a9118bec0e52bcdf8a77c4921215e6ede2a4cf8e365305113d3f4",
+      "bytes": 51890
+    },
+    {
+      "path": "results/integrated-checks.json",
+      "sha256": "4a4a28256085c2335c838395412a282da9f9b895cc8944b6c3888076745afae0",
+      "bytes": 16655
+    },
+    {
+      "path": "results/source-inventory.json",
+      "sha256": "b73fa199db9a503b651a5569b17ba66ec2048b6682e990dc907290194556b116",
+      "bytes": 1148
+    },
+    {
+      "path": "results/build-link-current-summary.json",
+      "sha256": "742b8897e9bac9eaeb1777deceaaee055cbf94a3187ffe6ff70ddd1b87b45c54",
+      "bytes": 3494
+    },
+    {
+      "path": "results/build-link-current.json",
+      "sha256": "982fd937e2849e2489f38d0dff79e92546a3f70160ab1ab6409c4ac7ca075db0",
+      "bytes": 32652
+    },
+    {
+      "path": "results/build-link-current-bindings.json",
+      "sha256": "3217bac0a43f98f0a396a65b9f6490704a01591fbfbad7dd3073879b6dc0b922",
+      "bytes": 4687
+    },
+    {
+      "path": "results/build-link-prior-provenance.json",
+      "sha256": "8c160e380481b7c0e5e73c75495758537a29f71bb6d5500afc22d57e6300293c",
+      "bytes": 2811
+    },
+    {
+      "path": "results/baseline-tests.json",
+      "sha256": "7696428f95fb00844b99e3923e442bf1633f5e60e6f33bfff0dbbde3023a7872",
+      "bytes": 16269
+    },
+    {
+      "path": "results/static-baseline-checks.json",
+      "sha256": "6d5e61fefb2cf10f32640eaed1b42d27a8ec65e272f0fd5bb7ff99cd799f7e64",
+      "bytes": 5591
+    },
+    {
+      "path": "results/implementation-review.json",
+      "sha256": "310f98ae05d2112989e4d72385073ef6b3daa7907815d17244a58d8bc9dcf94d",
+      "bytes": 7229
+    },
+    {
+      "path": "implementation.patch",
+      "sha256": "19639594acb9593267f9760714b49cbdfbca37f40e83f734236863ec40607b28",
+      "bytes": 29911
+    },
+    {
+      "path": "results/prior-audit/ac0008-status.json",
+      "sha256": "dd267123aa515a1793e3e6b9512c1fb661f51c075a38d79cdbcf42b8b04750c0",
+      "bytes": 31227
+    },
+    {
+      "path": "results/prior-audit/fresh-candidate-reverification.json",
+      "sha256": "abe34fcba9a4c75f9e9e3330b3cceec432353bba68c3c7cffcfae079e44a68a1",
+      "bytes": 1497
+    },
+    {
+      "path": "logs/integrated-focused-no-run.stdout.log",
+      "sha256": "2058bf83daec887fffbe16da440266fd7f7a2c146407d8ae30afee798f67a4e9",
+      "bytes": 42315
+    },
+    {
+      "path": "logs/integrated-focused-no-run.stderr.log",
+      "sha256": "a4d42a4fdebd9561b5397764c68ba9b1acdf1aaaa2ceac7a863caee3c58af2ed",
+      "bytes": 18176
+    },
+    {
+      "path": "logs/integrated-fmt-check.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "logs/integrated-fmt-check.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "logs/integrated-focused-tests.stdout.log",
+      "sha256": "7d8016a9900c6ee1618e78815301be7996a71fe64c78ef736df82ac02f0d1211",
+      "bytes": 6108
+    },
+    {
+      "path": "logs/integrated-focused-tests.stderr.log",
+      "sha256": "65d57b56532706b02c080d1ecbe28b3babc532abc91341afc5a522f72c78138b",
+      "bytes": 356
+    },
+    {
+      "path": "logs/integrated-input-unit-tests.stdout.log",
+      "sha256": "ff41440d6c543f06680507bfaf0ce560cbfb01fefcf3cf65ea25f76172800da6",
+      "bytes": 4215
+    },
+    {
+      "path": "logs/integrated-input-unit-tests.stderr.log",
+      "sha256": "80d273cd5ae9718389725f6f3c8834ede85a94481aab7011bca5e3bdc15ad3b9",
+      "bytes": 295
+    },
+    {
+      "path": "logs/integrated-diagnostic-regressions.stdout.log",
+      "sha256": "863809f961e8f141357c63f9fd81209023132850685b2f360754b779f95e1cc0",
+      "bytes": 1144
+    },
+    {
+      "path": "logs/integrated-diagnostic-regressions.stderr.log",
+      "sha256": "0bb3fcefb24bb2dd8bb17ad7ed8c78762285b41e29612654e2f77a9fc5d99f1e",
+      "bytes": 293
+    },
+    {
+      "path": "logs/integrated-clippy.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "logs/integrated-clippy.stderr.log",
+      "sha256": "ecfbb526521bf889f9009acc8dfc1cf84a079afb959903af207448f9fa21f249",
+      "bytes": 871
+    }
+  ],
+  "limitations": [
+    "Evidence index and SHA256SUMS are pending final packaging after this review; not a defect and not yet verified.",
+    "Existing AC0008/full atomic acceptance, legal/adoption/origin assertions remain unapproved; this is consistency review only.",
+    "No complete3705member/6manifest/42crate audit, Release rebuild, static object/linker-map population proof, or Windows validation performed.",
+    "Source and evidence checks are local snapshots; no new GitHub status query or remote mutation performed."
+  ],
+  "commands_run": [
+    "Read final Markdown/JSON summaries and gate raw logs",
+    "Python SHA256 comparisons of handoff references, source inventory, gate logs, build references, binary and provenance copies",
+    "git rev-parse HEAD and git status --porcelain in main/baseline/implementation",
+    "git diff bfe0ebe..HEAD byte comparison with implementation.patch",
+    "Python source-function line range and direct named-test execution-log validation",
+    "Read Cargo JSON and metadata to count artifact/package/resolve populations"
+  ],
+  "changed_paths": [
+    "results/final-evidence-review.json"
+  ]
+}

@@ -1,0 +1,762 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-08",
+  "product_execution": true,
+  "scope": "Bridge worker acceptance execution; per-row partial entries remain open and must not be claimed full case completion.",
+  "changed_source_paths": [
+    "crates/dir-simulator/src/input/ethernet.rs",
+    "crates/dir-simulator/src/input/can_ethernet.rs",
+    "crates/dir-simulator/src/runtime/can_ethernet.rs"
+  ],
+  "new_test": "crates/dir-simulator/tests/acceptance_bridge.rs",
+  "fixture_root": "docs/verification/fixtures/acceptance-2026-10-08/bridge",
+  "fixture_case_count": 75,
+  "topology_count": 5,
+  "defect": {
+    "trigger": "CAN-to-Ethernet rule with ordinary multicast destination 01:00:5e:00:00:01",
+    "before": "prepare failed invalid unicast or broadcast MAC",
+    "fix": "Reuse VLAN destination_mac parser for bridge egress; preserve original /gateways/.../rules/.../egresses/.../dst_mac diagnostic pointer",
+    "regression": "two-Gateway switch multicast plus zero/reserved/malformed destination rejection"
+  },
+  "executions": [
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo fmt --all -- --check",
+      "log": null,
+      "named_tests": [],
+      "result": "passed",
+      "summary": []
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH git diff --check",
+      "log": null,
+      "named_tests": [],
+      "result": "passed",
+      "summary": []
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --test acceptance_bridge",
+      "log": "/tmp/dir-acceptance-bridge-integration-final.log",
+      "named_tests": [
+        {
+          "name": "dir_test_0108_p09_event_limit_every_callback_keeps_successful_journal_prefix",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n04_n05_n06_strict_prepare_failures_do_not_start_run",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r03_r05_0108_p10_fanout_and_egress_permutation_and_unadmittable_branches",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r01_tag_and_each_one_ps_delay_changes_only_causal_milestones",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c01_c04_c03ef_fixed_wire_vectors_and_independent_crc",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0108_p02_hop_limit_in_second_gateway_is_finite",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c07_0107_r08_r11_0108_p01_two_gateway_wire_loop_and_multicast",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c03g_c05_c06_format_rewrite_and_pcp_reclassification",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n01_n01f_n03_n07_receive_rejection_precedence",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r08_r13_native_multicast_two_gateways_and_distinct_lineages",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0108_p10_reversed_gateway_rule_port_queue_arrays_preserve_records_and_metrics",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r01_r02_and_0108_p03_p06_every_milestone_half_open_boundary",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r10_r11_r12_0108_p12e_two_terminal_tuples_and_partial_completion",
+          "result": "ok"
+        }
+      ],
+      "result": "passed",
+      "summary": [
+        "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.27s"
+      ]
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --lib can_ethernet",
+      "log": "/tmp/dir-acceptance-bridge-unit-final.log",
+      "named_tests": [
+        {
+          "name": "runtime::can_ethernet::protocol::tests::every_invalid_field_and_padding",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::protocol::tests::fixed_vectors",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::future_native_generation_flag_without_synthesized_rows",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::acceptance_last_can_branch_id_failure_preserves_processing_prefix",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::acceptance_last_ethernet_branch_byte_overflow_does_not_commit_first_branch",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::fanout_wait_keeps_rx_and_retries_only_unadmitted_branch_at_sof",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::fanout_buses_start_together_with_independent_wire_times",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::r01_exact_store_and_forward_and_rx_hold",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::can_controller_queue_uses_can_arbitration_priority",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::conversion_upserts_preserve_milestone_times_on_retries_and_late_sof",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::rx_capacity_and_loop_hop_rule_order",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::r02_exact_timing_native_can_and_terminal_completion",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::malformed_timer_handles_and_impossible_transition_do_not_mutate",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::segment_denominator_freezes_and_duplicate_completion_does_not_increment",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::same_batch_branch_sof_emits_each_changed_branch_once",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::staged_multiple_ingress_capacity_and_error_atomicity",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::zero_delay_admits_and_unadmittable_terminates",
+          "result": "ok"
+        },
+        {
+          "name": "runtime::can_ethernet::tests::shared_ethernet_port_retry_wakes_all_classes_in_stable_order",
+          "result": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::source_ownership_checked_for_zero_count_and_future_time",
+          "result": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::complete_native_r01_r02_inputs_validate",
+          "result": "ok"
+        },
+        {
+          "name": "input::can_ethernet::tests::strict_rules_ownership_and_ranges_reject",
+          "result": "ok"
+        }
+      ],
+      "result": "passed",
+      "summary": [
+        "test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 264 filtered out; finished in 0.03s"
+      ]
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --lib staged_effect_validation_keeps_frame_queue_and_failed_event_uncommitted",
+      "log": "/tmp/dir-acceptance-bridge-validator.log",
+      "named_tests": [
+        {
+          "name": "runtime::registered::tests::staged_effect_validation_keeps_frame_queue_and_failed_event_uncommitted",
+          "result": "ok"
+        }
+      ],
+      "result": "passed",
+      "summary": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 284 filtered out; finished in 0.02s"
+      ]
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --lib staged_publication_reservation_failure_keeps_fes_and_journal_prefix",
+      "log": "/tmp/dir-acceptance-bridge-reservation.log",
+      "named_tests": [
+        {
+          "name": "runtime::registered::tests::staged_publication_reservation_failure_keeps_fes_and_journal_prefix",
+          "result": "ok"
+        }
+      ],
+      "result": "passed",
+      "summary": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 284 filtered out; finished in 0.01s"
+      ]
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --test acceptance_bridge",
+      "log": "/tmp/dir-acceptance-bridge-integration-preparation.log",
+      "result": "passed",
+      "named_tests": [
+        {
+          "name": "dir_test_0108_p09_event_limit_every_callback_keeps_successful_journal_prefix",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n04_n05_n06_strict_prepare_failures_do_not_start_run",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c03f_native_standard_2048_is_rejected_before_dispatch",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n05_connected_switch_cycle_and_n06_duplicate_json_rule_key_reject",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n04_forbidden_models_reject_zero_count_and_future_sources",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r03_r05_0108_p10_fanout_and_egress_permutation_and_unadmittable_branches",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r01_tag_and_each_one_ps_delay_changes_only_causal_milestones",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0108_p02_hop_limit_in_second_gateway_is_finite",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c01_c04_c03ef_fixed_wire_vectors_and_independent_crc",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c07_0107_r08_r11_0108_p01_two_gateway_wire_loop_and_multicast",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c03g_c05_c06_format_rewrite_and_pcp_reclassification",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r08_r13_native_multicast_two_gateways_and_distinct_lineages",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n01_n01f_n03_n07_receive_rejection_precedence",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0108_p10_reversed_gateway_rule_port_queue_arrays_preserve_records_and_metrics",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r01_r02_and_0108_p03_p06_every_milestone_half_open_boundary",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r10_r11_r12_0108_p12e_two_terminal_tuples_and_partial_completion",
+          "result": "ok"
+        }
+      ],
+      "summary": [
+        "test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.44s"
+      ]
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --test acceptance_bridge",
+      "log": "/tmp/dir-acceptance-bridge-integration-cycle-diagnostic.log",
+      "result": "passed",
+      "named_tests": [
+        {
+          "name": "dir_test_0106_n04_n05_n06_strict_prepare_failures_do_not_start_run",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0108_p09_event_limit_every_callback_keeps_successful_journal_prefix",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c03f_native_standard_2048_is_rejected_before_dispatch",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n05_connected_switch_cycle_and_n06_duplicate_json_rule_key_reject",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n04_forbidden_models_reject_zero_count_and_future_sources",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r03_r05_0108_p10_fanout_and_egress_permutation_and_unadmittable_branches",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r01_tag_and_each_one_ps_delay_changes_only_causal_milestones",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c01_c04_c03ef_fixed_wire_vectors_and_independent_crc",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0108_p02_hop_limit_in_second_gateway_is_finite",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c07_0107_r08_r11_0108_p01_two_gateway_wire_loop_and_multicast",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0105_c03g_c05_c06_format_rewrite_and_pcp_reclassification",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0106_n01_n01f_n03_n07_receive_rejection_precedence",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r08_r13_native_multicast_two_gateways_and_distinct_lineages",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0108_p10_reversed_gateway_rule_port_queue_arrays_preserve_records_and_metrics",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r01_r02_and_0108_p03_p06_every_milestone_half_open_boundary",
+          "result": "ok"
+        },
+        {
+          "name": "dir_test_0107_r10_r11_r12_0108_p12e_two_terminal_tuples_and_partial_completion",
+          "result": "ok"
+        }
+      ],
+      "summary": [
+        "test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.88s"
+      ]
+    }
+  ],
+  "cases": {
+    "DIR-TEST-0105": {
+      "requirements": [
+        "DIR-AC-0059",
+        "DIR-AC-0060"
+      ],
+      "passed": [
+        "C01",
+        "C02",
+        "C03",
+        "C03E",
+        "C03G",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C03F"
+      ],
+      "partial": {},
+      "named_tests": [
+        "dir_test_0105_c03f_native_standard_2048_is_rejected_before_dispatch",
+        "dir_test_0105_c01_c04_c03ef_fixed_wire_vectors_and_independent_crc",
+        "dir_test_0105_c07_0107_r08_r11_0108_p01_two_gateway_wire_loop_and_multicast",
+        "dir_test_0105_c03g_c05_c06_format_rewrite_and_pcp_reclassification"
+      ]
+    },
+    "DIR-TEST-0106": {
+      "passed": [
+        "N01",
+        "N01F",
+        "N03",
+        "N07",
+        "N04",
+        "N06",
+        "N05"
+      ],
+      "partial": {
+        "N02": "Other MAC and nonmember VID produce conversion0; bad-FCS injection has no public input mechanism and was not run."
+      },
+      "named_tests": [
+        "dir_test_0106_n04_n05_n06_strict_prepare_failures_do_not_start_run",
+        "dir_test_0106_n05_connected_switch_cycle_and_n06_duplicate_json_rule_key_reject",
+        "dir_test_0106_n04_forbidden_models_reject_zero_count_and_future_sources",
+        "dir_test_0106_n01_n01f_n03_n07_receive_rejection_precedence"
+      ]
+    },
+    "DIR-TEST-0107": {
+      "passed": [
+        "R01",
+        "R02",
+        "R03",
+        "R05",
+        "R08",
+        "R10",
+        "R11",
+        "R12",
+        "R13"
+      ],
+      "unit_only": [
+        "R04",
+        "R06",
+        "R07",
+        "R09"
+      ],
+      "unit_evidence": [
+        "fanout_wait_keeps_rx_and_retries_only_unadmitted_branch_at_sof",
+        "staged_multiple_ingress_capacity_and_error_atomicity",
+        "can_controller_queue_uses_can_arbitration_priority",
+        "r01_exact_store_and_forward_and_rx_hold"
+      ],
+      "variants": [
+        "R01 tagged +32000ps after SOF",
+        "R01 CAN RX, conversion, Ethernet TX, link propagation, sink RX each +1ps",
+        "R01/R02 every milestone T-1/T/T+1",
+        "R08 native multicast two Gateway acceptances and three endpoint receptions",
+        "R13 same origin to same terminal via distinct native/converted segment and lineage tuples"
+      ],
+      "named_tests": [
+        "dir_test_0107_r03_r05_0108_p10_fanout_and_egress_permutation_and_unadmittable_branches",
+        "dir_test_0107_r01_tag_and_each_one_ps_delay_changes_only_causal_milestones",
+        "dir_test_0105_c07_0107_r08_r11_0108_p01_two_gateway_wire_loop_and_multicast",
+        "dir_test_0107_r08_r13_native_multicast_two_gateways_and_distinct_lineages",
+        "dir_test_0107_r01_r02_and_0108_p03_p06_every_milestone_half_open_boundary",
+        "dir_test_0107_r10_r11_r12_0108_p12e_two_terminal_tuples_and_partial_completion"
+      ]
+    },
+    "DIR-TEST-0108": {
+      "passed": [
+        "P01",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P10",
+        "P12E"
+      ],
+      "partial": {
+        "P02": "Second Gateway hop_limit passed; wire-only reinjection as fresh native origin not separately replayed.",
+        "P07": "RX hold/fanout retry product unit covered; browser playback delegated to parent.",
+        "P08": "Last CAN branch invalid ID after accepted ingress and last Ethernet branch reserved-byte overflow keep committed prefix; time overflow existing bridge unit covered. Full every-last-branch time/ID/byte/metric-site matrix not performed.",
+        "P09": "Every R01 callback budget 0..17 event_limit tested; existing common staged effect-validator and commit_effects reservation hooks run on dynamic fixture. Full all bridge allocation sites unavailable as exposed hooks.",
+        "P11": "Viewer loader tests delegated to parent.",
+        "P12": "Viewer browser replay delegated to parent.",
+        "P12F": "T0/SOF boundary denominator0 and gateway-only native target set through boundary test; duplicate completion through bridge unit segment_denominator_freezes_and_duplicate_completion_does_not_increment.",
+        "P13": "All-profile fixture regression delegated to parent."
+      },
+      "named_tests": [
+        "dir_test_0108_p09_event_limit_every_callback_keeps_successful_journal_prefix",
+        "dir_test_0107_r03_r05_0108_p10_fanout_and_egress_permutation_and_unadmittable_branches",
+        "dir_test_0108_p02_hop_limit_in_second_gateway_is_finite",
+        "dir_test_0105_c07_0107_r08_r11_0108_p01_two_gateway_wire_loop_and_multicast",
+        "dir_test_0108_p10_reversed_gateway_rule_port_queue_arrays_preserve_records_and_metrics",
+        "dir_test_0107_r01_r02_and_0108_p03_p06_every_milestone_half_open_boundary",
+        "dir_test_0107_r10_r11_r12_0108_p12e_two_terminal_tuples_and_partial_completion"
+      ]
+    }
+  },
+  "artifact_hashes": {
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-extended-to-standard/model.json": "125f3a2752e6bcdf7697bf3dfc57694508effee15d85869ad08324a7705b8cd0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-extended-to-standard/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-extended-to-standard/workload.json": "03d7a902be195171118453dc8c1e2fe6a874b086fad8fea528d2d40cb6c91666",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-dlc/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-dlc/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-dlc/workload.json": "79cbc489a9003a04dd4b58bad2c75e31dfaf440c145b8564de006c6f4fccfdb3",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-extended-id/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-extended-id/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-extended-id/workload.json": "30beec802eeccdf06d28fdbce49efb7bf64d1a05aca2852b967167f5c0c8b919",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-flags/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-flags/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-flags/workload.json": "249782336a0e938add7fb4585e9528dc31c4b57b014d33091fe3161d8b73d425",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-magic/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-magic/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-magic/workload.json": "3a2be4ad7fd20077659dd4ff90883f7bf55ca01a0190c44c2e3783f1fb3f35b2",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-padding/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-padding/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-padding/workload.json": "1751cd6c96787378fb45732a98aa3d5bd12481a818a1a279526351fc9745b975",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-standard-id/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-standard-id/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-standard-id/workload.json": "5b748122458765274b01c9260cf54a0d48bdcc61b4db6259d128f4376577d1ee",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-truncated/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-truncated/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-truncated/workload.json": "380c4fc2d8dd7932993d0421d15d878ff7f01a388715338a871dd8361bdc1dfd",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-version/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-version/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-invalid-version/workload.json": "64419b03c2d17e4f19b3c9a0991c847dab25c281d3651baf983e48718e51b62a",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-2047/model.json": "675c6f2975aea547c9fc2a1807c2c523de0e418ca059c71c620d221fb6c92d1f",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-2047/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-2047/workload.json": "6ba5ac93d60ea643cc1ab292dcb390c7e92a05f7abf363b486e215e0a81c2e39",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-2048/model.json": "3d2ebaf812025e3879424e877ea429454f5cb84c110a672b1802535fd5481aa0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-2048/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-2048/workload.json": "b024021664a841b6e6e2bf6c98097aef97629857ca307f0229e995030c5417f7",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-zero/model.json": "41d2a88be3eb29defdc2d86e2fc83b803b0c153c099ee7b1a1dfbb61295cf323",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-zero/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-extended-zero/workload.json": "dbd339bf9a434bd22d0440c90692dcbdb6acbbcbe51d9b0b61062e5500713744",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-max-extended/model.json": "e353eb146c40cb0d5e84a8af30b3b2a49ebcabb14589b853500113e663711c3d",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-max-extended/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-max-extended/workload.json": "dbb110ed955e8d94129a37382103f8c2f32245cbb61993c2848c96d7f31d7419",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-max-standard/model.json": "ae1e353bb8df717021fbf7067bf3ba8e39dab0cd5fbd2d95c5f4d1dcb6667366",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-max-standard/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-max-standard/workload.json": "6b8ad927abd6503c0dd29cc86fbdefa40be4b0e1b6030d1e4d257371637c3aaa",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-small/model.json": "2e33c21cdf24e3ebc0ac177319d13aca2cc6d11414e4198a12b64fd658fc8eb8",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-small/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-small/workload.json": "8a29e696a97c9cf06256226dfd3667ab63285d5969c1c73a279f149a1d687b9c",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-standard-2047/model.json": "ae1e353bb8df717021fbf7067bf3ba8e39dab0cd5fbd2d95c5f4d1dcb6667366",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-standard-2047/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-standard-2047/workload.json": "8473fdef7f6259aabf8b2b2b513b130bead1c70713d865a4bd7d6603f19a2ab7",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-zero/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-zero/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-valid-zero/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-zero-to-one/model.json": "63a49b8cccdcf6034407d23b36dec88c2fe3c8ba4b2eb6c4101a221dd2aaeeab",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-zero-to-one/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/codec-zero-to-one/workload.json": "ea01dafe5d00d8baec5e6ce78e8e782866744f62545ede2746ed53c813d8f2e6",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/ethernet-unadmittable/model.json": "789d3c8bf8dc8da2a787a661bdf2572b36c110142c8904daffc15a478b97323c",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/ethernet-unadmittable/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/ethernet-unadmittable/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/expected.json": "7361215befa5abb116e70a167c64066e5a8b8dd399ed26ecc60d934e514c4638",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout/model.json": "f67786fc5b7a40f9b10223d94ee07e64134d2f930af02ccbb944b6e730352e0c",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout/run.ini": "b1cd4a21bce7d2e16e880c0a370325ce1021a3486cfde5e576bb4b78f55998af",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout/workload.json": "82a5f2d8e3a29bff020a511df3d7a24f70e4a766d0acd07d230f1cdc26341e95",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout-reversed/model.json": "19b7ee57f892f8b1929c648cb25f834b80d5513929454c783e3e046c22be0325",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout-reversed/run.ini": "b1cd4a21bce7d2e16e880c0a370325ce1021a3486cfde5e576bb4b78f55998af",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout-reversed/workload.json": "82a5f2d8e3a29bff020a511df3d7a24f70e4a766d0acd07d230f1cdc26341e95",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout-unadmittable/model.json": "f67786fc5b7a40f9b10223d94ee07e64134d2f930af02ccbb944b6e730352e0c",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout-unadmittable/run.ini": "af1749b9a11a25332d4b08e99c7735cd5b1f63269e1ac75e522d248554635e82",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/fanout-unadmittable/workload.json": "82a5f2d8e3a29bff020a511df3d7a24f70e4a766d0acd07d230f1cdc26341e95",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-broadcast/model.json": "ab9046f130cf2ef5c65fe64bcb3af6dfc5f163b7314f01a0215a83101d743e6f",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-broadcast/run.ini": "1017deba8401d2342f70d015d496ee43638919f105734d2e634edc2cec0ef3b1",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-broadcast/workload.json": "a257f3b809c24c68332bcbeb4b9b2dbab69c19acf5feffa1c1823062e05bd6e3",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-hop-limit/model.json": "a22779430cfeaa4aaa45942e262747c28a9b9608e74964f30e6f2fe2973c5bae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-hop-limit/run.ini": "1017deba8401d2342f70d015d496ee43638919f105734d2e634edc2cec0ef3b1",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-hop-limit/workload.json": "a257f3b809c24c68332bcbeb4b9b2dbab69c19acf5feffa1c1823062e05bd6e3",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-multicast/model.json": "0b4f1bc743e6564b7c4caf9dd1beb9691e964f21e74e4b8abd425cb09ffc1027",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-multicast/run.ini": "1017deba8401d2342f70d015d496ee43638919f105734d2e634edc2cec0ef3b1",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-multicast/workload.json": "a257f3b809c24c68332bcbeb4b9b2dbab69c19acf5feffa1c1823062e05bd6e3",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-multicast-reversed/model.json": "7f63ab6039111eb03ccac964b2eae78ec94c83cdf86612ea362cf20d947adf76",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-multicast-reversed/run.ini": "1017deba8401d2342f70d015d496ee43638919f105734d2e634edc2cec0ef3b1",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/loop-multicast-reversed/workload.json": "a257f3b809c24c68332bcbeb4b9b2dbab69c19acf5feffa1c1823062e05bd6e3",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-can-terminals/model.json": "be9238347da257502f226fb9721bc1e88b8367c99b98647a50fd88711f0044d8",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-can-terminals/run.ini": "e767b03e68dfcf52f4da76cbe2754719e991d0c2a2eab8a3ed50fb1c5514860a",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-can-terminals/workload.json": "4f4f7c262c6daf0f041fba46c87ccb6c8fac52e5d761388fb4df5767e6fc48e8",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-ethernet-terminals/model.json": "7c1937e814e8501d92be809407bbee7565ff890ac0575cb80212b5c326212b53",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-ethernet-terminals/run.ini": "1017deba8401d2342f70d015d496ee43638919f105734d2e634edc2cec0ef3b1",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-ethernet-terminals/workload.json": "70eefaa55bfc6ff428804937558f8d91dd57d49cd549799d6ddde08f11f2ce97",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-multicast-lineages/model.json": "8b2eac3e1a2acc8d0721c46c4e69ccf42fa2e0774c9e45269cafd2669a9ff133",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-multicast-lineages/run.ini": "1017deba8401d2342f70d015d496ee43638919f105734d2e634edc2cec0ef3b1",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/native-multicast-lineages/workload.json": "c767f24b95e4a93f67903f0b5afead962c7676f45dd92d8434079c62d54c9775",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/pcp-reclassification/model.json": "b3057a44675667fc70f178975616c31444bf0b814ccc9b1a695f01f89d148613",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/pcp-reclassification/run.ini": "1017deba8401d2342f70d015d496ee43638919f105734d2e634edc2cec0ef3b1",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/pcp-reclassification/workload.json": "a257f3b809c24c68332bcbeb4b9b2dbab69c19acf5feffa1c1823062e05bd6e3",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-bool-pcp/model.json": "1b714308b13f00e26abd5fe132b98b0995baf73869b277a39c0aa88c638c0f8f",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-bool-pcp/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-bool-pcp/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-connected-ethernet-cycle/model.json": "aa1a967859526d9aadf98a823cd66ff622c378044cc65cc317d5f706f03c5cef",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-connected-ethernet-cycle/run.ini": "5dba8c0337417dffbdf8e41533e4e9436e1acb4dcd8b75e44a6913548d0d7a25",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-connected-ethernet-cycle/workload.json": "225909eae88d3b7d767b2b49b1a7cf571bcff5052ecdffdd891c7a7074eca2a6",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-egress/model.json": "beb27ab75b6772705508a85b8eec98fc5a7166070de8d4f526441501380d6063",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-egress/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-egress/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-json-rule-key/model.json": "c96b529d72ae9619c84754d75aac1506a2cd5b02269f481dde3ed80e369c6e26",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-json-rule-key/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-json-rule-key/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-owner/model.json": "c1c148b4a3ae16c2413440b35b6b0f657812e1b22ad3f91475ccec44358630d8",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-owner/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-owner/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-rule/model.json": "0b9a9345b6d9a482a4f140dedefa47fd840e7bf8176140751b35294db49aff0f",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-rule/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-duplicate-rule/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-dynamic-count-zero/model.json": "94c2ba86f5dca0d4149c6dcc1c5c15f1bc99649583b2d23b7576122c01da93b7",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-dynamic-count-zero/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-dynamic-count-zero/workload.json": "32a8b9b75d4f3bfd31d9f162d6868300843f5e40150e6dbbe72069d9b9ff190b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-dynamic-future/model.json": "94c2ba86f5dca0d4149c6dcc1c5c15f1bc99649583b2d23b7576122c01da93b7",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-dynamic-future/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-dynamic-future/workload.json": "0e47c1309da5cc8dcaa09ea2c8a4791a8d85ccabc97df38191851cca7fe03559",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd/workload.json": "b809d7cae02e82098af8ddeabf9d96b97b2d35c4120fc9ec8d3982cc22e8a5be",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd-count-zero/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd-count-zero/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd-count-zero/workload.json": "94524f15ee4a512acfc14f157227318104010b8e8c8dffaa9dad9ccf79064e03",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd-future/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd-future/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-fd-future/workload.json": "7f1e844a7218dd66e947a9211b219287d14e3c8ca99e8e377afe5980fb1c3e4c",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex/model.json": "3feda230b506deb26b03a0581d98607001597834da44d85a030a6c07c8879863",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex-count-zero/model.json": "3feda230b506deb26b03a0581d98607001597834da44d85a030a6c07c8879863",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex-count-zero/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex-count-zero/workload.json": "32a8b9b75d4f3bfd31d9f162d6868300843f5e40150e6dbbe72069d9b9ff190b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex-future/model.json": "3feda230b506deb26b03a0581d98607001597834da44d85a030a6c07c8879863",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex-future/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-half-duplex-future/workload.json": "0e47c1309da5cc8dcaa09ea2c8a4791a8d85ccabc97df38191851cca7fe03559",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-invalid-dst/model.json": "571a3b76b6265c993d6fec361c065f0a72281a3fff2b425e209ab31ec49b8af2",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-invalid-dst/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-invalid-dst/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-missing-format/model.json": "d491d4d33eb1fc7bda45eada56e16d02ca61a3d5ec6352134e831433b1d78360",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-missing-format/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-missing-format/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-native-standard-2048/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-native-standard-2048/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-native-standard-2048/workload.json": "bd478eebfc037dbb14e15a5b55a34ff115d75542f86b4d2e39347f86e57a8b0d",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-overflow/model.json": "8cc7d81334aa33238cc035bf7f9da0c3aef921cd4556ed3f016a54853d73d475",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-overflow/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-overflow/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-pcp8/model.json": "fc340d7da8d835e2a4b9481a092bd85671f1c2265518405b920862c71ee09d5f",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-pcp8/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-pcp8/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-reserved-dst/model.json": "6ea865da7b0aa55fa4a308e4338238f39f9ce2084852c12937a0d22885c82a78",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-reserved-dst/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-reserved-dst/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr/workload.json": "16576480e4483b1a1a61c58436cc2ae0154c3b50c947a100f30f86ca8d2ea76a",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr-count-zero/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr-count-zero/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr-count-zero/workload.json": "c71d27414fc2c9541ef44cb99a89f1170c695d41d2c88040494d84d9b7f69bd7",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr-future/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr-future/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-rtr-future/workload.json": "d6c7949cfedc9a936faedeb51c24f6cd6e6421450c41d15244ef2a2a08688b05",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-tsn-count-zero/model.json": "b04259e4d3762cba72885d175dc3a6825feefc011121e0240a9775b86fc8412b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-tsn-count-zero/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-tsn-count-zero/workload.json": "32a8b9b75d4f3bfd31d9f162d6868300843f5e40150e6dbbe72069d9b9ff190b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-tsn-future/model.json": "b04259e4d3762cba72885d175dc3a6825feefc011121e0240a9775b86fc8412b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-tsn-future/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-tsn-future/workload.json": "0e47c1309da5cc8dcaa09ea2c8a4791a8d85ccabc97df38191851cca7fe03559",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-unconnected-egress/model.json": "70a4e8be43a901df145b6216cc458f4e716911dbcb6dabb8733ca6f72f174720",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-unconnected-egress/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-unconnected-egress/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-unknown-key/model.json": "07cecf8e79661ce6d60c4c0623884669458598b4f14e777cac75b4d5d630b8db",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-unknown-key/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-unknown-key/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-vid0/model.json": "6b77e4b38ab32ce52d4aa386e1dcb566f6a42f17468d9f8770310eb6e65e30c7",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-vid0/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-vid0/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-vid4095/model.json": "ed61ab13ed1a6b0f1aa546c0205d91c8e393707a108607586ebe482f3d60225a",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-vid4095/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-vid4095/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-zero-dst/model.json": "9bed333b802567564ef92a7c12d9c9e9493471e97b147a410846fdaa3789882b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-zero-dst/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/prepare-invalid-zero-dst/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-can-rx/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-can-rx/run.ini": "6fc1657729c719ce59ca1fcbdf3ea3fae3d4bbfb1c6ffeadd693d421322bc8c4",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-can-rx/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-conversion/model.json": "94975c79bdf4d96cc1a68d2334a04b659847395e2b2f204c68c75daa0c742056",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-conversion/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-conversion/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-eth-tx/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-eth-tx/run.ini": "50ac8941a35fab273e387fe88fc03e2b85839d730972177d189931a60a7645ad",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-eth-tx/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-link/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-link/run.ini": "9284b5a267c24098342fc73e56fe7cbe601b7ba3623df837e32c58df94ec190d",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-link/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-sink-rx/model.json": "6c8d48e1207109a32bdcc5ea6c0fd75f701b7aa7925a00b47865f8d952c138ae",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-sink-rx/run.ini": "fb31d45aea51e6af06dc1d0011081bf73eb17b73718090ae1e0d5d5b8d123728",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-plus-sink-rx/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-tagged/model.json": "f0a3ed71cae981c0be3b0e77a99287350b1655453904d02fe3ba060fabedd38c",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-tagged/run.ini": "83998e2ece021172a4868199d828556dc0d68feb91546c83400dab1d59c8bed0",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r01-tagged/workload.json": "9a0b1a8f28cabd0f6ca84afae9b045fa3b3a42955d16afeadad7bc57c3d6a855",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r02/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r02/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/r02/workload.json": "ea01dafe5d00d8baec5e6ce78e8e782866744f62545ede2746ed53c813d8f2e6",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-format-mismatch/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-format-mismatch/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-format-mismatch/workload.json": "265743af1929a46b4c526559e5c5c067e272bd2f16da5c0bdfc8c28f8ce4056b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-no-rule/model.json": "c71015c9e64fbea9f7c68db573428cae2d94cc3baecf2772cab89556c98d1f38",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-no-rule/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-no-rule/workload.json": "ea01dafe5d00d8baec5e6ce78e8e782866744f62545ede2746ed53c813d8f2e6",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-ethertype/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-ethertype/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-ethertype/workload.json": "2d9c967eb36719093d963edf1ea1c71abc64466bcc44a97563a400254a277fac",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-mac/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-mac/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-mac/workload.json": "eb5f129c6c7fa874542f69e55b0a464328a8353523fcc80c4f944ff23ce2077b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-vid/model.json": "921cc9eb3e5ed964813baad90baf364a32d4eb1faf1f353b3e404dca102e99d1",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-vid/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-other-vid/workload.json": "0b342f504058dca020f257de43b80b87fa1cab4894760d1e87894e075f23715b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-rx-zero/model.json": "e839853774e41be7e0c589c78493926a506a6f4bde97e8d44ec571af1d55f54b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-rx-zero/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-rx-zero/workload.json": "ea01dafe5d00d8baec5e6ce78e8e782866744f62545ede2746ed53c813d8f2e6",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-unsubscribed/model.json": "42e6fdeff5f10929aaa3992eb19408f8407ac1fe0bf88c565065a51579b0e656",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-unsubscribed/run.ini": "baaaffcae9e3a915137ecb4f9aa24160d2356bf59eb618fd9c2d4c9f38f6ae7b",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/receive-unsubscribed/workload.json": "c314c6e470e9fbab1678e7d7a7265bc5e9aa11530483b06ab9645ca937540c66",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/topologies/2cdb997676bc/bridge/Main.ned": "2cdb997676bc0f5d3ceb3414b8d21bf45aa388fcfc2c09a29f122a134101c698",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/topologies/afc263844458/bridge/Main.ned": "afc263844458e0de93b4cce4ae94dab611b2d445b75d34ef2346893ef6b9a96e",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/topologies/d2acd8e6f7f5/bridge/Main.ned": "d2acd8e6f7f5e222c1710bc0ee6b6c1b4dd94d95686290090649adac35527413",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/topologies/d48fe20eda4f/bridge/Main.ned": "d48fe20eda4fbbfceb53afec2b6b137575c7e15d2f5589de7516e9809a6300c7",
+    "docs/verification/fixtures/acceptance-2026-10-08/bridge/topologies/dd45218e1366/bridge/Main.ned": "dd45218e136692a4c597b97f84c191f5a7c8b402bac8e4c795dc23e272311d15"
+  },
+  "source_hashes": {
+    "crates/dir-simulator/tests/acceptance_bridge.rs": "0107bd90b28dd2614da32b92a300053eefd214ff455dba7ec3812087b1c45c9c",
+    "crates/dir-simulator/src/input/ethernet.rs": "cb7f8814394edc1c084dd10bf99c7e0fdba7561f3416b306ceca4ff186749e27",
+    "crates/dir-simulator/src/input/can_ethernet.rs": "636b3e078023a149e986fd4f7c1b7fbe8d3158ecc7337d257d81c25bcb21d0f0",
+    "crates/dir-simulator/src/runtime/can_ethernet.rs": "24a0352fa37b8142736838de48d3f1c23e7d79a11d8b13c48db7c3db70366a51"
+  },
+  "gaps": [
+    "Bad-FCS ingress is not representable by current public workload schema and has not been injected.",
+    "Full P08/P09 all-site allocator/effect/metric overflow fault matrix remains open; tested named points are listed.",
+    "Parent owns viewer and all-profile/global checks."
+  ],
+  "preparation_gap_closure": {
+    "new_fixtures": 13,
+    "new_named_tests": [
+      "dir_test_0105_c03f_native_standard_2048_is_rejected_before_dispatch",
+      "dir_test_0106_n05_connected_switch_cycle_and_n06_duplicate_json_rule_key_reject",
+      "dir_test_0106_n04_forbidden_models_reject_zero_count_and_future_sources"
+    ],
+    "assertions": [
+      "native standard ID2048 invalid_range /can/generators/0/frame/id",
+      "FD/RTR/TSN/dynamic/halfduplex count0 and future sources reject with exact original JSON pointers, source files, line and column",
+      "literal duplicate can_id JSON rule key duplicate_definition /gateways/0/rules/0/match/can_id",
+      "connected five-device five-edge switch triangle rejects tree topology",
+      "every new fixture public run_config returns exit_code2/termination prep_failed/committed_events0/last_event_time_ps null/event_processing_wall_seconds null",
+      "Connected-cycle prepare and public run report preserve exact NED source, target Cycle, reason topology_invalid, selected declaration span 53:1 through 61:2."
+    ],
+    "production_edits": false,
+    "diagnostic_gap": null
+  },
+  "n05_diagnostic_fix": {
+    "owner": "parent",
+    "regression": "dir_test_0106_n05_connected_switch_cycle_and_n06_duplicate_json_rule_key_reject",
+    "source": "docs/verification/fixtures/acceptance-2026-10-08/bridge/topologies/2cdb997676bc/bridge/Main.ned",
+    "target": "Cycle",
+    "reason": "topology_invalid",
+    "line": 53,
+    "column": 1,
+    "end_line": 61,
+    "end_column": 2,
+    "prepare_exit_code": 2,
+    "committed_events": "0",
+    "event_processing_wall_seconds": null
+  }
+}

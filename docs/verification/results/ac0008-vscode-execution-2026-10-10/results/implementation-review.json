@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "review_scope": "Issue41 narrow NED attribute retention; read-only source and focused evidence review",
+  "baseline_commit": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "reviewed_head": "ddfa7bd916212a0b9fedb6adffa9bdb5e83c8401",
+  "source_sha256": {
+    "crates/dir-simulator/src/input.rs": "b190c0e25bc0d9075cd9bc932753adf66f63e20e0b2fff6b5042fa11121b7d95",
+    "crates/dir-simulator/src/input/ned.rs": "aa050a998e47abdde045e76789aa4136312c4b6fcd2480427f9d1fcb261f70ec",
+    "crates/dir-simulator/src/input/ned/tests.rs": "244a80dc42f28b26c0ab94df3c6a63f13a649f9fc1194f72475d732ebca2c93b",
+    "crates/dir-simulator/tests/ac0008_attributes.rs": "cafb00704e1a35876274b4bd8423160d3c8447a5d5e410c912c68f7283a3ceda",
+    "crates/dir-simulator/tests/ac0008_ned_rejections.rs": "1beb9d70da4ac11155993aa6d4b2f3d56cc414fab02c73c534e4489bac9819e2",
+    "crates/dir-simulator/tests/ac0008_paths.rs": "452af8a2e4522d64bccbc1084fb8d37283583cee61337b8886d4da4d898edf3c",
+    "crates/dir-simulator/src/lib/types/common.rs": "0c30dd2ae55d11a98addccc2ffb1c44a695d6b3650bba685e3f4540e22c46d99",
+    "docs/specs/NED詳細機能仕様書.md": "03ac712fe248b6e3ad1c5f3919a042ff07671b49e38f159502b3a967b4ec9f13"
+  },
+  "evidence_sha256": {
+    "results/implementation-review-ffe9c5e.json": "25a45f4291238997bdd65ea658cc3382f09097ed07bd200a0abf6452d1eb4f1f",
+    "results/attribute-case-bindings.json": "f61ec97da911df6b42b9bf72e238da4e00845e088657e84db5c4928c2f6d1ce7",
+    "results/attribute-diagnostic-coherence-summary.json": "14708fb81308bc6612eec47c4f5b452e3eb3aae4b5e88a88d1a2d4910f13b71f",
+    "results/attribute-diagnostic-coherence-before-fix.log": "7680cdd76f20011dea7b7a9c581803c26d545d21697c11b1e00ba9d26a1e791f",
+    "results/attribute-diagnostic-coherence-regressions.log": "7c037b6fd4983c863d00b83967229fad92b15d965118c44641c0ff92b2950fcd",
+    "results/attribute-diagnostic-coherence-ned-unit-tests.log": "27f7abe0d42a8cb28fce3a0b175de058587c9e2a487ceaf6a38c05b7c56d8e19",
+    "logs/integrated-focused-tests.stdout.log": "7d8016a9900c6ee1618e78815301be7996a71fe64c78ef736df82ac02f0d1211"
+  },
+  "outcome": "No open correctness findings or new blockers identified in narrow metadata-retention implementation; prior P3 resolved",
+  "confirmed_interfaces": [
+    "Private Attribute fields with immutable name/value/owner/span getters; Declaration and Parameter BTreeMap attribute getters; public exports in input.rs",
+    "Typed owners distinguish Type qname and Parameter qname/name; same attributes retained for class/unit with legacy implementation/unit accessors preserved",
+    "Existing string_literal decoding is retained and exact BOM/CRLF byte and scalar coordinates are exercised by hard-coded assertions",
+    "Resolved declaration uses expanded instance type identity to reference one source Declaration; unit regression compares Declaration and Attribute pointer identities for Main.a/b",
+    "Schema/value paths are unchanged; focused TinyRules unit test retains five values and verifies existing defaults and quantity interpretation",
+    "Duplicate display/description on both owners reject with full second-property span; unknown property and invalid escapes reject through existing parse/lex machinery"
+  ],
+  "focused_execution_evidence": {
+    "attribute-diagnostic-coherence-regressions.log": "4 passed; read worker log, source hashes match final commit",
+    "attribute-diagnostic-coherence-ned-unit-tests.log": "4 passed; read worker log",
+    "logs/integrated-focused-tests.stdout.log": "Root final committed source: attributes4 + rejections7 + CAN paths4 passed. Both wildcard * and explicit import keyword diagnostic paths asserted separately."
+  },
+  "atomic_mapping": {
+    "attribute_plan_cases": 7,
+    "atomic_rows": 7,
+    "all_atomic_rows_partial": true,
+    "assessment": "Seven original attribute rows plus four diagnostic supplement rows explicitly remain partial predicate evidence; original file hashes/line references identify older source and supplement identifies changed tests. No blanket AC0008 acceptance.",
+    "supplement_atomic_rows": 4,
+    "supplement_all_partial": true
+  },
+  "limitations": [
+    "Import and extends still report syntax_error rather than normative unsupported_syntax; characterization success does not resolve this existing gap.",
+    "No callback-count or exact original Controller profile atomic-row acceptance inferred.",
+    "Broader root integrated gates may still be running; this review confirms observed focused final-source tests and format result only.",
+    "Original post-default property fixture remains rejected; explicit corrected fixture used for metadata assertions.",
+    "No whole-artifact, legal, independent-origin, release, Windows, or full AC0008 acceptance review performed."
+  ],
+  "commands_run": [
+    "git rev-parse HEAD",
+    "git diff baseline..HEAD --stat and scoped six-file diff",
+    "git status --short",
+    "rg source/spec symbols and read scoped source/spec/test files",
+    "cat attribute-regressions.log attribute-ned-unit-tests.log attribute-case-bindings.json github-41.json",
+    "Python hashlib snapshot and report generation",
+    "git diff ffe9c5e..HEAD -- scoped source and regression files",
+    "cat coherence before/after logs and final-source focused stdout",
+    "git status --short (clean)",
+    "git diff --check (passed)",
+    "Python compare focused worker hashes to final source and write final report"
+  ],
+  "changed_paths": [
+    "results/implementation-review.json"
+  ],
+  "review_state": "final narrow source review",
+  "resolved_findings": [
+    {
+      "id": "IMPL-REVIEW-001",
+      "severity": "P3",
+      "blocking": false,
+      "file": "crates/dir-simulator/src/input/ned.rs",
+      "lines": [
+        517,
+        519,
+        547,
+        549,
+        557,
+        559
+      ],
+      "title": "Rebased diagnostic span leaves textual location and actual token at following token",
+      "evidence": "self.fail builds message path:line:column and details.actual from self.cursor after property(); SourceSpan::apply in lib/types/common.rs:74 changes only structured source and coordinates. A duplicate type property therefore points structurally to the second @property(...) but message location and actual describe its trailing semicolon. Parameter diagnostics can describe = or ; instead.",
+      "correction": "Capture attribute-start token index and construct fail_at(start, ...) before applying full attribute span, or construct a consistent attribute diagnostic directly. Assert message and actual together with structured coordinates.",
+      "scope": "Diagnostic presentation consistency; duplicate rejection and retained valid metadata remain correct.",
+      "status": "resolved_at_ddfa7bd",
+      "resolution": "fail_attribute locates immutable parsed attribute start-byte token, builds fail_at(start), then applies full span. Tests require exact message coordinates, got @, details.actual @, expected text and full span for both-owner display/description duplicates, class/unit duplicates and nonnumeric unit with BOM/CRLF/Unicode. Before-fix regression log fails exactly on message col87 versus col72; after-fix suite passes."
+    }
+  ],
+  "findings": []
+}

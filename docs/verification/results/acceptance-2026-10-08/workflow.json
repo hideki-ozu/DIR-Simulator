@@ -1,0 +1,1165 @@
+{
+  "status": "passed",
+  "binary": "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+  "binary_sha256": "35000619b4d15cd8858c3270e0be5d35f23b0aeadb748a30ec5e94bb84c7f9ba",
+  "cases": [
+    {
+      "case_id": "DIR-TEST-0080",
+      "subcase": "A",
+      "status": "passed",
+      "config": "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/A.ini",
+      "config_sha256": "7d6ef5d4762c2b0fadb6bca218b940ff56e5e0d4135f41976b968f3eba7ef031",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/A",
+      "expected": {
+        "sof_ps": [
+          3000000
+        ],
+        "eof_ps": [
+          103000000
+        ],
+        "release_ps": [
+          109000000
+        ],
+        "received_ps": [
+          115000000
+        ]
+      },
+      "actual": {
+        "requests": [
+          {
+            "attempts": "1",
+            "bus": "Main.bus",
+            "drop_reason": null,
+            "eof_ps": "103000000",
+            "generated_ps": "0",
+            "model_fields": {
+              "bitrate_bps": "500000",
+              "crc15": "0",
+              "frame_bits": "50",
+              "intermission_bits": "3",
+              "planned_eof_ps": "103000000",
+              "planned_release_ps": "109000000",
+              "profile": "can.cc.ideal.v1",
+              "release_ps": "109000000",
+              "schema_version": 1,
+              "stuff_bits": "6"
+            },
+            "payload_bits": "0",
+            "ready_ps": "3000000",
+            "request_id": "a:0",
+            "retries": "0",
+            "serialized_bits": "50",
+            "sof_ps": "3000000",
+            "source": "Main.a",
+            "status": "success"
+          }
+        ],
+        "receivers": [
+          {
+            "observed_ps": "108000000",
+            "received_ps": "115000000",
+            "receiver": "Main.b",
+            "request_id": "a:0",
+            "status": "received"
+          },
+          {
+            "observed_ps": "105000000",
+            "received_ps": null,
+            "receiver": "Main.c",
+            "request_id": "a:0",
+            "status": "filtered"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIR-TEST-0080",
+      "subcase": "B",
+      "status": "passed",
+      "config": "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/B.ini",
+      "config_sha256": "866c5cedce723d6fdd47a1f0c4bf2fbfc410cab3eebc8d73bc1206d60ae39ab4",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/B",
+      "expected": {
+        "sof_ps": [
+          5000000
+        ],
+        "eof_ps": [
+          105000000
+        ],
+        "release_ps": [
+          111000000
+        ],
+        "received_ps": [
+          117000000
+        ]
+      },
+      "actual": {
+        "requests": [
+          {
+            "attempts": "1",
+            "bus": "Main.bus",
+            "drop_reason": null,
+            "eof_ps": "105000000",
+            "generated_ps": "0",
+            "model_fields": {
+              "bitrate_bps": "500000",
+              "crc15": "0",
+              "frame_bits": "50",
+              "intermission_bits": "3",
+              "planned_eof_ps": "105000000",
+              "planned_release_ps": "111000000",
+              "profile": "can.cc.ideal.v1",
+              "release_ps": "111000000",
+              "schema_version": 1,
+              "stuff_bits": "6"
+            },
+            "payload_bits": "0",
+            "ready_ps": "5000000",
+            "request_id": "a:0",
+            "retries": "0",
+            "serialized_bits": "50",
+            "sof_ps": "5000000",
+            "source": "Main.a",
+            "status": "success"
+          }
+        ],
+        "receivers": [
+          {
+            "observed_ps": "110000000",
+            "received_ps": "117000000",
+            "receiver": "Main.b",
+            "request_id": "a:0",
+            "status": "received"
+          },
+          {
+            "observed_ps": "107000000",
+            "received_ps": null,
+            "receiver": "Main.c",
+            "request_id": "a:0",
+            "status": "filtered"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIR-TEST-0080",
+      "subcase": "C",
+      "status": "passed",
+      "config": "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/C.ini",
+      "config_sha256": "afa2f4d57d4808c17e42dc665fb83ae1b410fd8deeb427af9d0e97abf67f2b5d",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/C",
+      "expected": {
+        "sof_ps": [
+          3000000
+        ],
+        "eof_ps": [
+          203000000
+        ],
+        "release_ps": [
+          215000000
+        ],
+        "received_ps": [
+          215000000
+        ]
+      },
+      "actual": {
+        "requests": [
+          {
+            "attempts": "1",
+            "bus": "Main.bus",
+            "drop_reason": null,
+            "eof_ps": "203000000",
+            "generated_ps": "0",
+            "model_fields": {
+              "bitrate_bps": "250000",
+              "crc15": "0",
+              "frame_bits": "50",
+              "intermission_bits": "3",
+              "planned_eof_ps": "203000000",
+              "planned_release_ps": "215000000",
+              "profile": "can.cc.ideal.v1",
+              "release_ps": "215000000",
+              "schema_version": 1,
+              "stuff_bits": "6"
+            },
+            "payload_bits": "0",
+            "ready_ps": "3000000",
+            "request_id": "a:0",
+            "retries": "0",
+            "serialized_bits": "50",
+            "sof_ps": "3000000",
+            "source": "Main.a",
+            "status": "success"
+          }
+        ],
+        "receivers": [
+          {
+            "observed_ps": "208000000",
+            "received_ps": "215000000",
+            "receiver": "Main.b",
+            "request_id": "a:0",
+            "status": "received"
+          },
+          {
+            "observed_ps": "205000000",
+            "received_ps": null,
+            "receiver": "Main.c",
+            "request_id": "a:0",
+            "status": "filtered"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIR-TEST-0080",
+      "subcase": "D",
+      "status": "passed",
+      "config": "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/D.ini",
+      "config_sha256": "b0134221006aa844eb888a12f5c50dd55a9c724e79b9ca931c6e837a834360b2",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/D",
+      "expected": {
+        "sof_ps": [],
+        "eof_ps": [],
+        "release_ps": [],
+        "received_ps": []
+      },
+      "actual": {
+        "requests": [
+          {
+            "attempts": "0",
+            "bus": "Main.bus",
+            "drop_reason": "queue_full",
+            "eof_ps": null,
+            "generated_ps": "0",
+            "model_fields": {
+              "bitrate_bps": "500000",
+              "crc15": "0",
+              "frame_bits": "50",
+              "intermission_bits": "3",
+              "planned_eof_ps": null,
+              "planned_release_ps": null,
+              "profile": "can.cc.ideal.v1",
+              "release_ps": null,
+              "schema_version": 1,
+              "stuff_bits": "6"
+            },
+            "payload_bits": "0",
+            "ready_ps": "3000000",
+            "request_id": "a:0",
+            "retries": "0",
+            "serialized_bits": "50",
+            "sof_ps": null,
+            "source": "Main.a",
+            "status": "dropped"
+          }
+        ],
+        "receivers": []
+      }
+    },
+    {
+      "case_id": "DIR-TEST-0080",
+      "subcase": "E",
+      "status": "passed",
+      "config": "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/E.ini",
+      "config_sha256": "da68cb66ba02fb29a4c5d9b7c2a7fc5839de7424ba9e96b44fa0b1127a077bb2",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/E",
+      "expected": {
+        "sof_ps": [
+          3000000,
+          153000000
+        ],
+        "eof_ps": [
+          103000000,
+          253000000
+        ],
+        "release_ps": [
+          109000000,
+          259000000
+        ],
+        "received_ps": [
+          115000000,
+          265000000
+        ]
+      },
+      "actual": {
+        "requests": [
+          {
+            "attempts": "1",
+            "bus": "Main.bus",
+            "drop_reason": null,
+            "eof_ps": "103000000",
+            "generated_ps": "0",
+            "model_fields": {
+              "bitrate_bps": "500000",
+              "crc15": "0",
+              "frame_bits": "50",
+              "intermission_bits": "3",
+              "planned_eof_ps": "103000000",
+              "planned_release_ps": "109000000",
+              "profile": "can.cc.ideal.v1",
+              "release_ps": "109000000",
+              "schema_version": 1,
+              "stuff_bits": "6"
+            },
+            "payload_bits": "0",
+            "ready_ps": "3000000",
+            "request_id": "a:0",
+            "retries": "0",
+            "serialized_bits": "50",
+            "sof_ps": "3000000",
+            "source": "Main.a",
+            "status": "success"
+          },
+          {
+            "attempts": "1",
+            "bus": "Main.bus",
+            "drop_reason": null,
+            "eof_ps": "253000000",
+            "generated_ps": "150000000",
+            "model_fields": {
+              "bitrate_bps": "500000",
+              "crc15": "0",
+              "frame_bits": "50",
+              "intermission_bits": "3",
+              "planned_eof_ps": "253000000",
+              "planned_release_ps": "259000000",
+              "profile": "can.cc.ideal.v1",
+              "release_ps": "259000000",
+              "schema_version": 1,
+              "stuff_bits": "6"
+            },
+            "payload_bits": "0",
+            "ready_ps": "153000000",
+            "request_id": "a:1",
+            "retries": "0",
+            "serialized_bits": "50",
+            "sof_ps": "153000000",
+            "source": "Main.a",
+            "status": "success"
+          }
+        ],
+        "receivers": [
+          {
+            "observed_ps": "108000000",
+            "received_ps": "115000000",
+            "receiver": "Main.b",
+            "request_id": "a:0",
+            "status": "received"
+          },
+          {
+            "observed_ps": "105000000",
+            "received_ps": null,
+            "receiver": "Main.c",
+            "request_id": "a:0",
+            "status": "filtered"
+          },
+          {
+            "observed_ps": "258000000",
+            "received_ps": "265000000",
+            "receiver": "Main.b",
+            "request_id": "a:1",
+            "status": "received"
+          },
+          {
+            "observed_ps": "255000000",
+            "received_ps": null,
+            "receiver": "Main.c",
+            "request_id": "a:1",
+            "status": "filtered"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "existing-output-preserved",
+      "status": "passed"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "missing-workload",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/missing-workload"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "negative-time",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/negative-time"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "unknown-option",
+      "status": "passed"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-0",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-0"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-1",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-1"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-2999999",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-2999999"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-3000000",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-3000000"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-3000001",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-3000001"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-102999999",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-102999999"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-103000000",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-103000000"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-103000001",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-103000001"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-104999999",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-104999999"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-105000000",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-105000000"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-105000001",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-105000001"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-107999999",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-107999999"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-108000000",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108000000"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-108000001",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108000001"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-108999999",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108999999"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-109000000",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-109000000"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-109000001",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-109000001"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-114999999",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-114999999"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-115000000",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-115000000"
+    },
+    {
+      "case_id": "DIR-TEST-0081",
+      "subcase": "half-open-boundary-115000001",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-115000001"
+    },
+    {
+      "case_id": "DIR-TEST-0083",
+      "subcase": "competition-three-repetitions",
+      "status": "passed"
+    },
+    {
+      "case_id": "DIR-TEST-0083",
+      "subcase": "competition-generator-permutation",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/reversed-competition"
+    },
+    {
+      "case_id": "DIR-TEST-0083",
+      "subcase": "release-arrival-three-repetitions",
+      "status": "passed"
+    },
+    {
+      "case_id": "DIR-TEST-0083",
+      "subcase": "release-arrival-generator-permutation",
+      "status": "passed",
+      "output": "/tmp/dir-acceptance-workflow-v4-2026-10-08/reversed-release-arrival"
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "validate",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/A.ini"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/A.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/A"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/A\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/A/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"12\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"115000000\",\"event_processing_wall_seconds\":0.000029083}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "view",
+        "--input",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/A/results.json",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/A/viewer.html"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/A/viewer.html\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "validate",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/B.ini"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/B.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/B"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/B\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/B/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"12\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"117000000\",\"event_processing_wall_seconds\":0.000032294}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "view",
+        "--input",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/B/results.json",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/B/viewer.html"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/B/viewer.html\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "validate",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/C.ini"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/C.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/C"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/C\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/C/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"12\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"215000000\",\"event_processing_wall_seconds\":0.000031874}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "view",
+        "--input",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/C/results.json",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/C/viewer.html"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/C/viewer.html\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "validate",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/D.ini"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/D.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/D"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/D\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/D/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"4\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"3000000\",\"event_processing_wall_seconds\":0.000018268}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "view",
+        "--input",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/D/results.json",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/D/viewer.html"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/D/viewer.html\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "validate",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/E.ini"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"channel_count\":\"6\",\"network\":\"demo.Main\",\"node_count\":\"4\",\"schema_version\":1,\"status\":\"valid\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/E.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/E"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/E\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/E/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"24\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"265000000\",\"event_processing_wall_seconds\":0.0000343}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "view",
+        "--input",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/E/results.json",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/E/viewer.html"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/E/viewer.html\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/A.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/A"
+      ],
+      "exit_code": 4,
+      "stdout": "{\"event_processing_wall_seconds\":null,\"exit_code\":4,\"manifest_path\":null,\"output_path\":null,\"partial\":true,\"schema_version\":1,\"termination\":\"output_failed\"}\n",
+      "stderr": "{\"code\":\"E-0003\",\"column\":null,\"details\":{},\"end_column\":null,\"end_line\":null,\"event_seq\":null,\"line\":null,\"message\":\"output directory is not empty; existing results were preserved\",\"phase\":\"output\",\"primary\":true,\"reason\":\"output_write_failed\",\"schema_version\":1,\"seq\":\"0\",\"severity\":\"error\",\"source\":null,\"target\":null,\"time_ps\":null}\n"
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "validate",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/missing-workload.ini"
+      ],
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "{\"code\":\"E-0001\",\"column\":null,\"details\":{\"operation\":\"metadata\",\"os_error\":\"No such file or directory (os error 2)\"},\"end_column\":null,\"end_line\":null,\"event_seq\":null,\"line\":null,\"message\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/missing-workload.ini: /tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/absent.json: No such file or directory (os error 2)\",\"phase\":\"prepare\",\"primary\":true,\"reason\":\"input_unreadable\",\"schema_version\":1,\"seq\":\"0\",\"severity\":\"error\",\"source\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/absent.json\",\"target\":null,\"time_ps\":null}\n"
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/missing-workload.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/missing-workload"
+      ],
+      "exit_code": 2,
+      "stdout": "{\"schema_version\":1,\"termination\":\"prep_failed\",\"exit_code\":2,\"partial\":true,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/missing-workload\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/missing-workload/manifest.json\",\"primary_diagnostic\":{\"code\":\"E-0001\",\"column\":null,\"details\":{\"operation\":\"metadata\",\"os_error\":\"No such file or directory (os error 2)\"},\"end_column\":null,\"end_line\":null,\"event_seq\":null,\"line\":null,\"message\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/missing-workload.ini: /tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/absent.json: No such file or directory (os error 2)\",\"phase\":\"prepare\",\"primary\":true,\"reason\":\"input_unreadable\",\"schema_version\":1,\"seq\":\"0\",\"severity\":\"error\",\"source\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/absent.json\",\"target\":null,\"time_ps\":null},\"committed_events\":\"0\",\"finish_ps\":\"0\",\"last_event_time_ps\":null,\"event_processing_wall_seconds\":null}\n",
+      "stderr": "{\"code\":\"E-0001\",\"column\":null,\"details\":{\"operation\":\"metadata\",\"os_error\":\"No such file or directory (os error 2)\"},\"end_column\":null,\"end_line\":null,\"event_seq\":null,\"line\":null,\"message\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/missing-workload.ini: /tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/absent.json: No such file or directory (os error 2)\",\"phase\":\"prepare\",\"primary\":true,\"reason\":\"input_unreadable\",\"schema_version\":1,\"seq\":\"0\",\"severity\":\"error\",\"source\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/absent.json\",\"target\":null,\"time_ps\":null}\n"
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "validate",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/negative-time.ini"
+      ],
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "{\"code\":\"E-0001\",\"column\":\"18\",\"details\":{\"actual\":\"-1ps\",\"expected\":\"representable positive integer or quantity\"},\"end_column\":\"22\",\"end_line\":\"4\",\"event_seq\":null,\"line\":\"4\",\"message\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/negative-time.ini: negative quantity: -1ps\",\"phase\":\"prepare\",\"primary\":true,\"reason\":\"invalid_range\",\"schema_version\":1,\"seq\":\"0\",\"severity\":\"error\",\"source\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/negative-time.ini\",\"target\":\"sim-time-limit\",\"time_ps\":null}\n"
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/negative-time.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/negative-time"
+      ],
+      "exit_code": 2,
+      "stdout": "{\"schema_version\":1,\"termination\":\"prep_failed\",\"exit_code\":2,\"partial\":true,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/negative-time\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/negative-time/manifest.json\",\"primary_diagnostic\":{\"code\":\"E-0001\",\"column\":\"18\",\"details\":{\"actual\":\"-1ps\",\"expected\":\"representable positive integer or quantity\"},\"end_column\":\"22\",\"end_line\":\"4\",\"event_seq\":null,\"line\":\"4\",\"message\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/negative-time.ini: negative quantity: -1ps\",\"phase\":\"prepare\",\"primary\":true,\"reason\":\"invalid_range\",\"schema_version\":1,\"seq\":\"0\",\"severity\":\"error\",\"source\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/negative-time.ini\",\"target\":\"sim-time-limit\",\"time_ps\":null},\"committed_events\":\"0\",\"finish_ps\":\"0\",\"last_event_time_ps\":null,\"event_processing_wall_seconds\":null}\n",
+      "stderr": "{\"code\":\"E-0001\",\"column\":\"18\",\"details\":{\"actual\":\"-1ps\",\"expected\":\"representable positive integer or quantity\"},\"end_column\":\"22\",\"end_line\":\"4\",\"event_seq\":null,\"line\":\"4\",\"message\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/negative-time.ini: negative quantity: -1ps\",\"phase\":\"prepare\",\"primary\":true,\"reason\":\"invalid_range\",\"schema_version\":1,\"seq\":\"0\",\"severity\":\"error\",\"source\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/negative-time.ini\",\"target\":\"sim-time-limit\",\"time_ps\":null}\n"
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--unknown-acceptance-option"
+      ],
+      "exit_code": 2,
+      "stdout": "{\"event_processing_wall_seconds\":null,\"exit_code\":2,\"manifest_path\":null,\"output_path\":null,\"partial\":true,\"schema_version\":1,\"termination\":\"prep_failed\"}\n",
+      "stderr": "{\"code\":\"E-0001\",\"column\":null,\"details\":{},\"end_column\":null,\"end_line\":null,\"event_seq\":null,\"line\":null,\"message\":\"unknown option --unknown-acceptance-option\",\"phase\":\"prepare\",\"primary\":true,\"reason\":\"invalid_argument\",\"schema_version\":1,\"seq\":\"0\",\"severity\":\"error\",\"source\":null,\"target\":null,\"time_ps\":null}\n"
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-0.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-0"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-0\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-0/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"0\",\"finish_ps\":\"0\",\"last_event_time_ps\":null,\"event_processing_wall_seconds\":5.12e-7}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-1.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-1"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-1\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-1/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"2\",\"finish_ps\":\"1\",\"last_event_time_ps\":\"0\",\"event_processing_wall_seconds\":2.195e-6}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-2999999.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-2999999"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-2999999\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-2999999/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"2\",\"finish_ps\":\"2999999\",\"last_event_time_ps\":\"0\",\"event_processing_wall_seconds\":5.288e-6}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-3000000.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-3000000"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-3000000\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-3000000/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"2\",\"finish_ps\":\"3000000\",\"last_event_time_ps\":\"0\",\"event_processing_wall_seconds\":4.842e-6}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-3000001.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-3000001"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-3000001\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-3000001/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"5\",\"finish_ps\":\"3000001\",\"last_event_time_ps\":\"3000000\",\"event_processing_wall_seconds\":0.000012602}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-102999999.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-102999999"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-102999999\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-102999999/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"5\",\"finish_ps\":\"102999999\",\"last_event_time_ps\":\"3000000\",\"event_processing_wall_seconds\":0.000013526}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-103000000.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-103000000"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-103000000\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-103000000/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"5\",\"finish_ps\":\"103000000\",\"last_event_time_ps\":\"3000000\",\"event_processing_wall_seconds\":0.000013062}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-103000001.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-103000001"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-103000001\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-103000001/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"6\",\"finish_ps\":\"103000001\",\"last_event_time_ps\":\"103000000\",\"event_processing_wall_seconds\":0.000015745}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-104999999.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-104999999"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-104999999\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-104999999/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"6\",\"finish_ps\":\"104999999\",\"last_event_time_ps\":\"103000000\",\"event_processing_wall_seconds\":0.000015965}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-105000000.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-105000000"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-105000000\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-105000000/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"6\",\"finish_ps\":\"105000000\",\"last_event_time_ps\":\"103000000\",\"event_processing_wall_seconds\":0.000014438}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-105000001.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-105000001"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-105000001\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-105000001/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"7\",\"finish_ps\":\"105000001\",\"last_event_time_ps\":\"105000000\",\"event_processing_wall_seconds\":0.000014697}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-107999999.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-107999999"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-107999999\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-107999999/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"7\",\"finish_ps\":\"107999999\",\"last_event_time_ps\":\"105000000\",\"event_processing_wall_seconds\":0.00001633}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-108000000.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108000000"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108000000\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108000000/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"7\",\"finish_ps\":\"108000000\",\"last_event_time_ps\":\"105000000\",\"event_processing_wall_seconds\":0.000015952}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-108000001.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108000001"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108000001\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108000001/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"8\",\"finish_ps\":\"108000001\",\"last_event_time_ps\":\"108000000\",\"event_processing_wall_seconds\":0.000016286}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-108999999.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108999999"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108999999\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-108999999/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"8\",\"finish_ps\":\"108999999\",\"last_event_time_ps\":\"108000000\",\"event_processing_wall_seconds\":0.000025549}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-109000000.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-109000000"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-109000000\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-109000000/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"8\",\"finish_ps\":\"109000000\",\"last_event_time_ps\":\"108000000\",\"event_processing_wall_seconds\":0.000017892}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-109000001.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-109000001"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-109000001\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-109000001/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"10\",\"finish_ps\":\"109000001\",\"last_event_time_ps\":\"109000000\",\"event_processing_wall_seconds\":0.000017748}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-114999999.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-114999999"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-114999999\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-114999999/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"10\",\"finish_ps\":\"114999999\",\"last_event_time_ps\":\"109000000\",\"event_processing_wall_seconds\":0.000016172}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-115000000.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-115000000"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"time_limit\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-115000000\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-115000000/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"10\",\"finish_ps\":\"115000000\",\"last_event_time_ps\":\"109000000\",\"event_processing_wall_seconds\":0.000016122}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/boundary-115000001.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-115000001"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-115000001\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/boundary-115000001/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"12\",\"finish_ps\":\"115000001\",\"last_event_time_ps\":\"115000000\",\"event_processing_wall_seconds\":0.00002876}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator/docs/verification/fixtures/can/competition.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-0"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-0\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-0/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"20\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"206000000\",\"event_processing_wall_seconds\":0.000038758}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator/docs/verification/fixtures/can/competition.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-1"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-1\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-1/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"20\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"206000000\",\"event_processing_wall_seconds\":0.00004158}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator/docs/verification/fixtures/can/competition.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-2"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-2\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-competition-2/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"20\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"206000000\",\"event_processing_wall_seconds\":0.000042759}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/reversed-competition.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/reversed-competition"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/reversed-competition\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/reversed-competition/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"20\",\"finish_ps\":\"300000000\",\"last_event_time_ps\":\"206000000\",\"event_processing_wall_seconds\":0.000042964}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator/docs/verification/fixtures/can/release-arrival.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-0"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-0\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-0/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"30\",\"finish_ps\":\"400000000\",\"last_event_time_ps\":\"306000000\",\"event_processing_wall_seconds\":0.000044767}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator/docs/verification/fixtures/can/release-arrival.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-1"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-1\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-1/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"30\",\"finish_ps\":\"400000000\",\"last_event_time_ps\":\"306000000\",\"event_processing_wall_seconds\":0.00004464}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator/docs/verification/fixtures/can/release-arrival.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-2"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-2\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/repeat-release-arrival-2/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"30\",\"finish_ps\":\"400000000\",\"last_event_time_ps\":\"306000000\",\"event_processing_wall_seconds\":0.000044468}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/tmp/dir-acceptance-final-gates-v4/bin/dir-simulator",
+        "run",
+        "--config",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/inputs/reversed-release-arrival.ini",
+        "--output",
+        "/tmp/dir-acceptance-workflow-v4-2026-10-08/reversed-release-arrival"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/reversed-release-arrival\",\"manifest_path\":\"/tmp/dir-acceptance-workflow-v4-2026-10-08/reversed-release-arrival/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"30\",\"finish_ps\":\"400000000\",\"last_event_time_ps\":\"306000000\",\"event_processing_wall_seconds\":0.00004726}\n",
+      "stderr": ""
+    }
+  ],
+  "limits": [
+    "Lifecycle allocation/finish fault injection is exercised separately by registered-engine tests",
+    "Native-versus-WSL comparison requires an independent native environment; this script exercises WSL only",
+    "Cases 0082 and remaining 0083 scheduler/permutation assertions are supplied by Rust registered-engine tests"
+  ]
+}

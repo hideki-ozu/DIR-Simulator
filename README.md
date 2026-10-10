@@ -1,12 +1,21 @@
 # DIR Simulator
 
-文書バージョン：`1.1.5`
-対象GitHubバージョン：`v1.1.3`
+文書バージョン：`1.1.12`
+対象GitHubバージョン：`v1.1.4`（公開候補）
+公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.12` | `2026-10-10` | 第4push。mainの受入・出自・ライセンス記録とEthernet期限ガイドの入口を統合。分岐した1.1.11履歴を両方保持 |
+| `1.1.11` | `2026-10-10` | Ethernet配送期限のCLI実測・実Viewer比較と配布入力への入口を追加（PR #50の分岐履歴） |
+| `1.1.11` | `2026-10-10` | 固定40件のMIT経路選択と外部部品の用途・元の選択肢・追加条件の一覧への入口を追加。原文と歴史的未承認記録を保持 |
+| `1.1.10` | `2026-10-10` | v1.1.4の公開依頼に基づきソース配布候補と対象版を明示。NED属性・診断修正とCAN受入経路の資料への入口を追加し、既存実測・未確認事項を保持 |
+| `1.1.9` | `2026-10-10` | 動作確認・受入範囲をWSL上のUbuntu 24.04 LTS x86_64へ統一。Ubuntu native比較・Windows native単独確認を現在の必須条件から除外し、同一環境の検証と過去証跡を維持 |
+| `1.1.8` | `2026-10-08` | PR #39の採用物台帳とCargo・ガイドの第三者ライセンス原文表示への入口を追加 |
+| `1.1.7` | `2026-10-08` | PR #37レビュー対応で時間・RSSの目標を参考計測へ変更し、必須合否から除外。正しさ・再現性と取得時の証跡を維持 |
+| `1.1.6` | `2026-10-08` | 公開拡張API・構造化診断・再現メタデータ・準備失敗出力、CAN↔Ethernet・動的制御・TSN、CAN出力最適化と受け入れ／100万要求測定を反映し、最新mainを基準にv1.1.4向けPRを準備 |
 | `1.1.5` | `2026-10-06` | Qiita移植メモを執筆者向け文書へ移し、公開ガイドと管理資料を分離 |
 | `1.1.4` | `2026-10-05` | 入門ガイド・Qiita移植・GitHub Pages自動公開を追加し、基準公開版v1.1.3の案内を更新 |
 | `1.1.3` | `2026-10-05` | AXI・SoC/AHB/NoC・DDR/SRAM・IPC/DMA、Viewer・サンプル・製品検証記録を追加し、v1.1.3向けPRを準備 |
@@ -25,9 +34,11 @@
 
 文書ID：`readme`
 
-Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。公開版`v1.1.3`にはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加しています。公開タグと開発中の変更を分けて記載します。
+Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。公開版`v1.1.3`にはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加しています。本PRは公開拡張API、CAN↔Ethernet変換・動的制御・TSN、CAN/Gatewayの大規模出力処理を追加し、次の公開版を`v1.1.4`とします。公開タグとPRの提供状態を分けて記載します。
 
 初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。初回公開はこの構成をmainへ反映した後です。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
+
+[Ethernet配送期限と遅延判定の比較](docs/guide/Ethernet配送期限と遅延判定の比較.md)では、期限だけを1psずつ変えて、同じ配送遅延に対する超過判定を実測で比較します。入力基礎v1.1.3と実測版v1.1.4を区別し、[8入力のZIP](docs/guide/downloads/ethernet-deadline-inputs.zip)と実Viewer画像を掲載しています。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
@@ -37,6 +48,15 @@ DIR Simulatorは、CAN／CAN FD・Ethernet・SoC通信・メモリ・IPCと接�
 1. **Definition（定義）** — NEDの構造記述の一部に対応
 2. **Initialization（初期化）** — 必要最小限の独自INI仕様によるシナリオ設定とパラメータの上書き
 3. **Runtime（実行）** — Rustネイティブのシミュレーションモジュールと実行エンジン
+
+
+CAN↔Ethernet変換、Ethernet動的制御、TSNの初期抽象profileを本PRで追加します。共通CLI、結果出力、Viewerで利用できます。[製品検証記録](docs/verification/results/network-extension-product-2026-10-07.json)と[受け入れ検証記録](docs/verification/results/acceptance-2026-10-08.md)に実施範囲を保存し、予定公開版は`v1.1.4`です。
+
+| 分野 | 詳細仕様 | 詳細設計 | 検証ケース |
+| --- | --- | --- | --- |
+| CAN↔Ethernet変換 | [仕様](docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md) | [設計](docs/design/CAN・Ethernet変換詳細設計書.md) | [検証](docs/verification/cases/CAN・Ethernet変換検証仕様書.md) |
+| Ethernet動的制御 | [仕様](docs/specs/models/Ethernet動的制御詳細機能仕様書.md) | [設計](docs/design/Ethernet動的制御詳細設計書.md) | [検証](docs/verification/cases/Ethernet動的制御検証仕様書.md) |
+| Ethernet TSN | [仕様](docs/specs/models/EthernetTSN詳細機能仕様書.md) | [設計](docs/design/EthernetTSN詳細設計書.md) | [検証](docs/verification/cases/EthernetTSN検証仕様書.md) |
 
 ## 目標
 
@@ -50,7 +70,7 @@ CANノードと共有バスの通信を仮想時刻上で実行し、負荷・�
 
 v1.0.0では、単一CAN・複数CAN共通でBusゲート名の制約撤廃を反映しています。Busの入力・出力の役割は`input`／`output`、ペアは同じControllerへの接続経路から決まります。サンプルは入力`rx_a`・出力`tx_a`などを使いますが、接頭辞や接尾辞の一致は必須ではありません。旧形式の有効な入力`tx_a`／出力`rx_a`も読み込めます。Controllerの`tx`／`rx`は維持します。以下は現在のソースをビルドして実行してください。公開済みv0.1の仕様はその時点のものです。
 
-Linux / WSLでRust 1.85.0を使用します。`rust-toolchain.toml`でツールチェーン、`Cargo.lock`で依存版を固定しています。Rust導入済みのシェルで、リポジトリのルートから実行してください。
+動作確認環境はWSL上のUbuntu 24.04 LTS x86_64で、Rust 1.85.0を使用します。Ubuntu nativeとの比較とWindows native単独確認は現在の要件・受入・公開必須条件に含めません。`rust-toolchain.toml`でツールチェーン、`Cargo.lock`で依存版を固定しています。Rust導入済みのシェルで、リポジトリのルートから実行してください。
 
 ```bash
 cargo build --locked --release -p dir-simulator
@@ -84,9 +104,21 @@ for row in result["simulation"]["summary"]:
 PYRESULT
 ```
 
-CLIの終了コードは正常0、入力・準備失敗2、実行失敗3、出力失敗4です。正常終了の`time_limit`でも未完了要求はあり得ます。`max-events`等による実行失敗時には、最後に確定した要求・受信状態を`partial=true`で出力します。準備失敗時は診断をstderrへ返し、結果ファイルは作成しません。実行失敗後に結果の保存も失敗した場合は終了コード4となり、先の実行診断と最後の出力診断を順にstderrへ返します。
+CLIの終了コードは正常0、入力・準備失敗2、実行失敗3、出力失敗4です。正常終了の`time_limit`でも未完了要求はあり得ます。`max-events`等による実行失敗時には、最後に確定した要求・受信状態を`partial=true`で出力します。`run --config`の準備失敗時も取得済み入力を再読込せず、空のsimulationと診断を`manifest.json`、`results.json`、`events.csv`、`summary.csv`、`diagnostics.jsonl`の5ファイルへ公開します。profile選択後はそのprofileの結果schema版を使い、`can.cc.ideal.v1`はschema1、既知の追加profileと登録拡張profileはschema2です。選択前や未登録profileはschema1を使います。`validate`の失敗とCLI引数の失敗は結果公開の対象外です。実行失敗後に結果の保存も失敗した場合は終了コード4となり、先の実行診断と最後の出力診断を順にstderrへ返します。
 
-ライブラリは`dir_simulator::prepare(&Path)`と`dir_simulator::run(prepared, &Path)`から同じ処理を利用できます。`run`のエラー型は従来の`Diagnostic`を維持し、保存失敗前の診断もメッセージへ残します。診断を個別に扱う場合は追加APIの`run_with_diagnostics(prepared, &Path)`を使用してください。エラーの`RunFailure`は最後の`diagnostic`、先行する`prior_diagnostics`、結果公開前の`original_termination`を保持します。[公開APIと実装境界](docs/アーキテクチャ設計書.md#公開apiと互換性)を参照してください。
+ライブラリは従来の`dir_simulator::prepare(&Path)`と`dir_simulator::run(prepared, &Path)`を維持します。静的にリンクした独自モデルは`registry::Registry`へprofile・module・channel・event・metric・model recordを登録し、`prepare_with_registry(&Path, registry)`で準備できます。準備失敗の結果公開まで含める場合は`run_config(&Path, &Path)`又は`run_config_with_registry(&Path, &Path, registry)`を使用します。`run`のエラー型は従来の`Diagnostic`を維持し、保存失敗前の診断もメッセージへ残します。診断を個別に扱う場合は`run_with_diagnostics(prepared, &Path)`を使用してください。`RunFailure`は最後の`diagnostic`、先行する`prior_diagnostics`、結果公開前の`original_termination`を保持します。[公開APIと実装境界](docs/アーキテクチャ設計書.md#公開apiと互換性)を参照してください。
+
+登録済みprofileをライブラリから一括実行する例です。独自モデルを使う場合は、呼び出し前に同じ`registry`へdescriptorとfactoryを登録します。
+
+```rust
+use std::path::Path;
+use dir_simulator::{registry::Registry, run_config_with_registry};
+
+let registry = Registry::new();
+let report = run_config_with_registry(
+    Path::new("scenario.ini"), Path::new("results"), registry,
+)?;
+```
 
 ### 結果ビューア
 
@@ -156,7 +188,7 @@ mkdir -p /tmp/dir-editor-exports
 
 標準11bit／拡張29bitのClassical CANデータフレーム、CRC-15、内容依存ビットスタッフィング、優先度仲裁、理想ACK、同報、有限キュー、受信フィルタ、固定伝搬・処理遅延、明示列／周期負荷を実装しています。`can.cc.ideal.v1`は単一バス、`can.cc.multibus.v1`は1個以上の独立バスと任意のGWを扱い、各バスに2個以上のControllerが必要です。NEDは宣言・スカラーポート・接続・compound展開の対応サブセットを読み込みます。
 
-この版では、汎用Registry/Envelope拡張API、診断の完全な構造化位置情報、全宣言・値の採用元を含む再現メタデータは未実装です。準備失敗はCLIのE-0001診断で停止し、schema2の準備失敗結果は生成しません。メタデータの不足とGW拡張APIの境界は`metadata.implementation_coverage`にも記録します。台帳・観測行・出力はメモリに保持するため、100万要求の性能・メモリ目標は未検証です。CANエラー状態・再送、内容依存CAN FD wire codec、未対応の他プロトコルは将来対象です。
+開発中ソースは汎用`Registry`／`Envelope`／`Context`拡張API、位置付きの構造化診断、採用元と確定設定を含む再現メタデータ、準備失敗の5ファイル公開を備えます。観測点は4,096件を境に一時JSONLへ退避し、結果公開時に読み出します。既存の組込み13 profileは専用エンジンをアダプターとして使い、追加3 profileと外部登録モデルは共通エンジンで実行します。[100万要求のWSL2実測](docs/verification/results/can-million-performance-2026-10-06.json)では2 GiBのメモリ目標を超過し、出力確定まで完了しませんでした。その測定後、CAN/Gatewayの完了済み台帳を一時ファイルへ退避し、時間順の寄与を増分集計する出力経路を追加しました。窓ごとの全件再走査と全出力行のメモリ保持を避け、正規順序への整列は上限付きの外部ソートで行います。CLIのrun報告にはイベント処理のみの実時間を追加し、検出可能な予約メモリの確保失敗は構造化診断へ変換します。[逐次処理改修後の測定](docs/verification/results/can-streaming-2026-10-06.json)では3,200要求の3条件が完了し、100万要求の通常負荷は180秒で中断しました。その後、並べ替え行と時刻付き寄与のバイナリ化、順序検査付き2系列マージ、JSON/CSV同時出力、添字による集計を製品へ統合しました。[統合後の100万要求完走実測](docs/verification/results/can-million-integrated-2026-10-08.md)では通常／高負荷／過負荷が754.75／740.48／592.35秒、最大RSSは47.41／49.06／47.88 MiBでした。WSL2の各条件1回の完走観測でメモリは2 GiB以内、時間は120秒の目標未達です。反復再現性とnative基準機での測定は未検証です。PR #37のレビュー対応で性能目標を参考計測に変更し、120秒・2 GiBの数値を受け入れ・PR・公開の必須合否条件から外しました。正しさ・件数保存・再現性・成果物整合の条件は維持します。CANエラー状態・再送、内容依存CAN FD wire codec、未対応の他プロトコルは将来対象です。拡張runtimeの検証範囲は[実行記録](docs/verification/results/extension-runtime-2026-10-05.json)で確認できます。
 
 ```bash
 cargo test --locked
@@ -208,7 +240,7 @@ cargo build --locked -p dir-simulator
 
 [unicast.ini](examples/ethernet/unicast.ini)、[duplex.ini](examples/ethernet/duplex.ini)、[qos-priority.ini](examples/ethernet/qos-priority.ini)、[qos-periodic-burst.ini](examples/ethernet/qos-periodic-burst.ini)、[vlan-unicast.ini](examples/ethernet/vlan-unicast.ini)、[vlan-multicast.ini](examples/ethernet/vlan-multicast.ini)を同梱します。結果はschema2の`simulation.model_records`に元frame・方向別copy・受信を分けて保存します。viewerはEndpoint／Switch構成、方向別送信、copy親子関係、8classキュー、フロー指標を表示します。ステップ操作は移動先の直前区間を再表示し、連続再生は線を強調します。実績arrivalがないcopyから受信を作りません。
 
-詳細は[L2仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md)、[負荷・QoS仕様](docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[負荷・QoS設計](docs/design/Ethernet負荷・QoS詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)を参照してください。VLAN・静的multicast制御はv1.1.1でmainへマージ済みです。[詳細仕様](docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)・[設計と実装順](docs/design/EthernetVLAN・マルチキャスト詳細設計書.md#implementation-order)・[検証手順](docs/verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)へ入力・処理・schemaと実行記録を集約しています。VLAN画面ではVLAN表示filter、source/hop priority・タグ・FCS・MAC長、静かなPortのpolicy/group設定を確認できます。表示filterは集計の母数を変えません。媒体別PHY・半二重とCAN FDは開発中ソースに追加しています。CAN↔Ethernet変換、動的制御・TSNは後続段階です。公開Registry/EnvelopeやIEEE認証、性能検証の完了を示すものではありません。
+詳細は[L2仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md)、[負荷・QoS仕様](docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[負荷・QoS設計](docs/design/Ethernet負荷・QoS詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)を参照してください。VLAN・静的multicast制御はv1.1.1でmainへマージ済みです。[詳細仕様](docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)・[設計と実装順](docs/design/EthernetVLAN・マルチキャスト詳細設計書.md#implementation-order)・[検証手順](docs/verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)へ入力・処理・schemaと実行記録を集約しています。VLAN画面ではVLAN表示filter、source/hop priority・タグ・FCS・MAC長、静かなPortのpolicy/group設定を確認できます。表示filterは集計の母数を変えません。媒体別PHY・半二重とCAN FDは開発中ソースに追加しています。CAN↔Ethernet変換、動的制御・TSNの初期profileも開発中ソースへ追加しています。公開Registry/Envelope APIは開発中ソースへ追加済みです。IEEE認証や性能検証の完了を示すものではありません。
 
 VLANの実行例：
 
@@ -280,7 +312,7 @@ DIRは、OMNeT++の実装コードを移植するのではなく、公開ドキ�
 | [品質・配布方針](docs/品質・配布方針.md) | 性能・精度・出自管理 |
 | [将来拡張計画](docs/将来拡張計画.md) | v1.0.0のGW・複数バスと他プロトコルへの境界 |
 
-16分野の詳細機能仕様、入力・結果処理を含む14詳細設計と利用フロー・品質を含む15検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。開発中ソースにはCAN FD・Ethernet媒体拡張・100BASE-T1、AXI・SoC/AHB/NoC・メモリ/IPCも追加しています。残るモデルの製品実装・実行試験、および各規格全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
+21詳細機能仕様、入力・結果処理を含む17詳細設計と利用フロー・品質を含む18検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。開発中ソースにはCAN FD・Ethernet媒体拡張・100BASE-T1、AXI・SoC/AHB/NoC・メモリ/IPCも追加しています。残るモデルの製品実装・実行試験、および各規格全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
 
 図の編集元（`.puml`）と表示用SVGは `docs/diagrams/<文書ID>/` に保存しています。ローカルのPlantUMLで全図を更新・確認できます。
 
@@ -289,7 +321,7 @@ python3 scripts/render_diagrams.py
 python3 scripts/render_diagrams.py --check
 ```
 
-要件から検証までの対応は次で点検できます。通常検査は未完了を報告し、`--strict` は経路に不足があれば失敗します。全205要件を検証仕様まで接続し、構造エラー・未完了項目は0件です。これは文書の追跡経路の検査であり、全要件の製品実装・試験合格を意味しません。
+要件から検証までの対応は次で点検できます。通常検査は未完了を報告し、`--strict` は経路に不足があれば失敗します。全231要件を検証仕様まで接続し、構造エラー・未完了項目は0件です。これは文書の追跡経路の検査であり、全要件の製品実装・試験合格を意味しません。
 
 ```bash
 python3 scripts/check_traceability.py
@@ -302,13 +334,15 @@ python3 scripts/check_traceability.py --impact DIR-FUNC-0008
 ## 開発状況
 
 0.1.0（CAN動作確認版）のRust CLI・ライブラリにGW・複数CANを追加しました。既存の解析期待値によるCAN 8シナリオ、9ビットベクトルとGW 16 fixtureの先行照合は、RX保持・TX満杯待ち導入前の証跡です。改訂したRX/TX契約の期待と実行範囲は[GW検証仕様](docs/verification/cases/GWモデル検証仕様書.md)で区別して記録します。仕様全体への適合完了や、実機CANとの適合認証を示すものではありません。
-CANの再現範囲、NED/INIの詳細、時間と終了条件、バッファ・調停、計測定義、実行環境を詳細仕様に規定しました。要件199件、機能51件、受け入れ条件55件、TBD台帳15件（全件解決済み）を表形式で管理しています。番号付きIDは`DIR-REQ-0001`のように4桁です。
+CANの再現範囲、NED/INIの詳細、時間と終了条件、バッファ・調停、計測定義、実行環境を詳細仕様に規定しました。要件231件、機能60件、受け入れ条件64件、TBD台帳15件（全件解決済み）を表形式で管理しています。番号付きIDは`DIR-REQ-0001`のように4桁です。
 
 ## ライセンス
 
 DIR Simulatorのプロジェクト作成物は、別途ライセンス表示がある場合を除き、MIT LicenseまたはApache License 2.0のいずれか（利用者が選択）で利用できます。対象にはソースコード、文書、テンプレート、PlantUMLソース、生成図を含みます。ライセンス本文は [`LICENSE-MIT`](LICENSE-MIT) と [`LICENSE-APACHE`](LICENSE-APACHE)、適用範囲は [`LICENSE`](LICENSE) を参照してください。
 
 第三者の素材・依存関係はこの許諾の対象外で、それぞれのライセンス条件に従います。配布条件と出自の確認方法は[品質・配布方針](docs/品質・配布方針.md)に規定しています。
+
+名前・版・原文の対応は[採用物台帳](docs/third-party/採用物台帳.md)、Cargo依存の原文は[第三者ライセンス表示](docs/third-party/第三者ライセンス表示.md)、ガイド資産の表示は[ガイドのライセンス表示](docs/guide/ガイドのライセンス表示.md)を参照してください。
 
 ## CAN実装の入口
 
@@ -368,7 +402,7 @@ cargo run --locked -p dir-simulator -- view --input /tmp/dir-fd-demo/results.jso
 
 ## AXI・SoC・AHB・NoC・メモリ／IPCを実行する
 
-v1.1.3向けの本PRで、設計済みの次の抽象モデルを共通CLIへ追加しています。全profileがschema2のモデル別レコード、指標、初期状態と入力snapshotを保存します。
+公開済み`v1.1.3`には、設計済みの次の抽象モデルを共通CLIへ追加しています。全profileがschema2のモデル別レコード、指標、初期状態と入力snapshotを保存します。
 
 | profile | 実装内容 | 実行例 |
 | --- | --- | --- |
@@ -391,3 +425,34 @@ mkdir -p tmp
 AXI 8ケース、SoC/AHB/NoC 6ケース、メモリ/IPC 13ケースの独立期待値を実シミュレータと照合しています。追加の入力拒否・停止・codec・失敗prefix試験は各モデルのRust試験、表示の試験は`tests/transaction_viewer_model.test.cjs`と`tests/transaction_viewer_browser.cjs`に保存します。公開拡張APIと信号／RTL・JEDEC・CPU実行などの規格全体への適合は既存の抽象profileの対象境界に従います。
 
 v1.1.3向けPRの最新main取り込み、製品ソースの一致、文書版と追加のNode/Python検証は[PR準備記録](docs/verification/results/soc-memory-v1.1.3-pr-2026-10-05.json)に保存します。製品実行時点の記録は取得したsnapshotのまま保持します。
+
+## CAN↔Ethernet・動的Ethernet・TSN
+
+追加3 profileは共通CLIで準備・実行し、5ファイルの結果とViewerを生成します。CAN変換は双方向DIRC codec、有限RX保持・TX待ち、fanoutと媒体別lineageを扱います。動的EthernetはMAC学習、源別membership、VID登録、link変更と中央計算treeを扱い、TSNは理想共有clock上でTAS、CBS、PSFPを合成します。採用した抽象契約の時間・状態評価であり、IEEE規格全文適合を示すものではありません。
+
+| profile | 実行例 | 追加例 |
+| --- | --- | --- |
+| `can.ethernet.gateway.v1` | [CAN→Ethernet](examples/can-ethernet/r01.ini)、[Ethernet→CAN](examples/can-ethernet/r02.ini) | [双方向](examples/can-ethernet/bidirectional.ini)、[fanout](examples/can-ethernet/fanout.ini)、[RX上限](examples/can-ethernet/rx-limit.ini) |
+| `ethernet.l2.dynamic.v1` | [冗長三角網](examples/ethernet/dynamic/unicast.ini) | [link変更](examples/ethernet/dynamic/topology.ini)、[membership](examples/ethernet/dynamic/membership.ini)、[登録](examples/ethernet/dynamic/registration.ini) |
+| `ethernet.tsn.v1` | [TAS](examples/ethernet/tsn/tas.ini)、[CBS](examples/ethernet/tsn/cbs.ini)、[PSFP](examples/ethernet/tsn/psfp.ini) | [GCL更新](examples/ethernet/tsn/tas-update.ini)、[gate中のcredit](examples/ethernet/tsn/cbs-gated.ini)、[stream gate](examples/ethernet/tsn/psfp-gate.ini) |
+
+```sh
+cargo run --locked -p dir-simulator -- validate --config examples/ethernet/tsn/tas.ini
+cargo run --locked -p dir-simulator -- run --config examples/ethernet/tsn/tas.ini --output /tmp/dir-tsn-tas
+cargo run --locked -p dir-simulator -- view --input /tmp/dir-tsn-tas/results.json --output /tmp/dir-tsn-tas/viewer.html
+```
+
+Viewerでは動的policy表・制御履歴・visit/copy、TSN gate/credit/token・阻止理由、変換origin/branchとCAN/Ethernetの物理経路を確認できます。時間上限による正常停止は`partial=false`で、予定時刻と実績を分けて表示します。停止前に未到着の受信を補完しません。
+
+今回のv1.1.4向けPRの最新main統合、文書改訂、現行Rust/Node/Python・CLI/Viewer・ガイド検証は[PR準備記録](docs/verification/results/v1.1.4-pr-2026-10-08.md)へ保存します。100万要求の測定証跡は取得時の固定ソースのまま保持し、取得時の時間目標未達と反復・native基準機未測定を明記しています。現在の性能計測は参考情報として保持します。
+
+PR #37レビュー4件の再現・修正と性能方針変更は[レビュー対応の検証記録](docs/verification/results/pr37-review-2026-10-08.md)へ保存します。
+
+
+## v1.1.4の公開候補
+
+v1.1.4は、公開Registry API・構造化診断・再現メタデータ、CAN↔Ethernet変換・動的Ethernet・TSN、CAN出力改善を含むソース配布版です。動作確認対象はWSL上のUbuntu 24.04 LTS x86_64です。
+
+NEDのdisplay／description属性と元SourceSpanの保持、非対応import／extendsの診断reason修正の実測は[修正証拠](docs/verification/results/ac0008-issue44-2026-10-10/README.md)へ保存しています。組み込みCANと汎用拡張の経路別条件は[受入対応表](docs/verification/results/can-acceptance-paths-2026-10-10/README.md)で管理します。個別実測、通常回帰、全受入条件の適合を区別し、AC0008・採用判断・出自の未確認記録を保持します。公開操作はこれらの全件合格の宣言ではありません。
+
+外部部品は[用途とライセンス選択一覧](docs/third-party/外部部品ライセンス選択一覧.md)にまとめています。固定40件のOR経路は利用者承認によりMITを選択し、元の選択肢・著作通知・個別の追加条件を保持します。ガイドのMPL/BSD/OFL等は各資産の原条件を維持します。

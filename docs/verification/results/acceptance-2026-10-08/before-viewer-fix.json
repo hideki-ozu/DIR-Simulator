@@ -1,0 +1,269 @@
+{
+  "binary": "/tmp/dir-acceptance-final-gates-v3/bin/dir-simulator",
+  "binary_sha256": "c445bd5b0a58d28257825faf85950e39a1c0aa913326da488ce97b3271dd5953",
+  "cases": [
+    {
+      "case_id": "docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave",
+      "input": "/home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+      "input_sha256": "5011a3e0c07e7d7887001010ec76150cf71a2ea527b4d24a13a7acfc0b9acff8",
+      "input_bytes": 229,
+      "expectations": {
+        "classification": "ordinary",
+        "validate_exit": 0,
+        "run_exit": 0
+      },
+      "validate_command": {
+        "command": "/tmp/dir-acceptance-final-gates-v3/bin/dir-simulator validate --config /home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+        "argv": [
+          "/tmp/dir-acceptance-final-gates-v3/bin/dir-simulator",
+          "validate",
+          "--config",
+          "/home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini"
+        ],
+        "cwd": "/home/hideki/DIR-Simulator",
+        "env_overrides": {},
+        "expected_exit_code": 0,
+        "actual_exit_code": 0,
+        "timed_out": false,
+        "launch_error": null,
+        "duration_seconds": 0.003809,
+        "stdout": "{\"channel_count\":\"8\",\"network\":\"ethaccept.Net\",\"node_count\":\"5\",\"schema_version\":1,\"status\":\"valid\"}\n",
+        "stderr": "",
+        "status": "passed"
+      },
+      "run_command": {
+        "command": "/tmp/dir-acceptance-final-gates-v3/bin/dir-simulator run --config /home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini --output /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run",
+        "argv": [
+          "/tmp/dir-acceptance-final-gates-v3/bin/dir-simulator",
+          "run",
+          "--config",
+          "/home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+          "--output",
+          "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run"
+        ],
+        "cwd": "/home/hideki/DIR-Simulator",
+        "env_overrides": {},
+        "expected_exit_code": 0,
+        "actual_exit_code": 0,
+        "timed_out": false,
+        "launch_error": null,
+        "duration_seconds": 0.070945,
+        "stdout": "{\"schema_version\":1,\"termination\":\"events_exhausted\",\"exit_code\":0,\"partial\":false,\"output_path\":\"/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run\",\"manifest_path\":\"/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/manifest.json\",\"primary_diagnostic\":null,\"committed_events\":\"38\",\"finish_ps\":\"200000000000\",\"last_event_time_ps\":\"282912000\",\"event_processing_wall_seconds\":0.001285339}\n",
+        "stderr": "",
+        "status": "passed"
+      },
+      "artifact_export": {
+        "run_directory": "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run",
+        "artifacts": [
+          {
+            "name": "diagnostics.jsonl",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "events.csv",
+            "bytes": 57468,
+            "sha256": "925eae752e83c1c80f62ba8746d383632d933c46effdf1b1cd334886e732283e"
+          },
+          {
+            "name": "manifest.json",
+            "bytes": 651,
+            "sha256": "f587c4268d13af1186786c521ba727195ab43d0f2dd743487dca14b586d897b3"
+          },
+          {
+            "name": "results.json",
+            "bytes": 539339,
+            "sha256": "c46df54934d54d2df532b05168b0ae7a8d1fce7b333b78d41337afc63ffd1f7a"
+          },
+          {
+            "name": "summary.csv",
+            "bytes": 85732,
+            "sha256": "169b51c5078c0bc32d78e9eedb1f68d2a8b3670efe07979935c2f5489d8d1681"
+          }
+        ],
+        "manifest": {
+          "files": [
+            {
+              "bytes": "0",
+              "name": "diagnostics.jsonl",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "bytes": "57468",
+              "name": "events.csv",
+              "sha256": "925eae752e83c1c80f62ba8746d383632d933c46effdf1b1cd334886e732283e"
+            },
+            {
+              "bytes": "539339",
+              "name": "results.json",
+              "sha256": "c46df54934d54d2df532b05168b0ae7a8d1fce7b333b78d41337afc63ffd1f7a"
+            },
+            {
+              "bytes": "85732",
+              "name": "summary.csv",
+              "sha256": "169b51c5078c0bc32d78e9eedb1f68d2a8b3670efe07979935c2f5489d8d1681"
+            }
+          ],
+          "metadata_ref": "results.json#/metadata",
+          "partial": false,
+          "run_id": "a0333dc7-0fe5-4b0c-b19f-9a692b3eabbe",
+          "schema_version": 2,
+          "status": "complete",
+          "termination": "events_exhausted"
+        },
+        "manifest_verification": "passed",
+        "results_json": {
+          "path": "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json",
+          "bytes": 539339,
+          "sha256": "c46df54934d54d2df532b05168b0ae7a8d1fce7b333b78d41337afc63ffd1f7a"
+        },
+        "results_parse": "passed",
+        "result_model_profile": "ethernet.tsn.v1",
+        "simulation_partial": false,
+        "source_inputs": [
+          {
+            "logical_path": "config",
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+            "reported_sha256": "5011a3e0c07e7d7887001010ec76150cf71a2ea527b4d24a13a7acfc0b9acff8",
+            "actual_sha256": "5011a3e0c07e7d7887001010ec76150cf71a2ea527b4d24a13a7acfc0b9acff8",
+            "bytes": 229,
+            "hash_matches_report": true
+          },
+          {
+            "logical_path": "model-config",
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.model.json",
+            "reported_sha256": "3c23aa8e59f813a685da637a10802fbf579f8fd5250def2886cbc1ca7ebe76b6",
+            "actual_sha256": "3c23aa8e59f813a685da637a10802fbf579f8fd5250def2886cbc1ca7ebe76b6",
+            "bytes": 16445,
+            "hash_matches_report": true
+          },
+          {
+            "logical_path": "root0/ethaccept/Main.ned",
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/models/slow/ethaccept/Main.ned",
+            "reported_sha256": "fac7abff1bc6235bbfe742b1291e81cf7448de31db6c8fc749b987de88d21828",
+            "actual_sha256": "fac7abff1bc6235bbfe742b1291e81cf7448de31db6c8fc749b987de88d21828",
+            "bytes": 1179,
+            "hash_matches_report": true
+          },
+          {
+            "logical_path": "workload",
+            "canonical_path": "/home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.workload.json",
+            "reported_sha256": "34b914b48075d94becc0f755a1a5fc7cf56120684d3548c3c5bbeb6126429482",
+            "actual_sha256": "34b914b48075d94becc0f755a1a5fc7cf56120684d3548c3c5bbeb6126429482",
+            "bytes": 3566,
+            "hash_matches_report": true
+          }
+        ],
+        "manifest_errors": []
+      },
+      "viewer_command": {
+        "command": "/tmp/dir-acceptance-final-gates-v3/bin/dir-simulator view --input /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json --output /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/viewer.html",
+        "argv": [
+          "/tmp/dir-acceptance-final-gates-v3/bin/dir-simulator",
+          "view",
+          "--input",
+          "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json",
+          "--output",
+          "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/viewer.html"
+        ],
+        "cwd": "/home/hideki/DIR-Simulator",
+        "env_overrides": {},
+        "expected_exit_code": 0,
+        "actual_exit_code": 0,
+        "timed_out": false,
+        "launch_error": null,
+        "duration_seconds": 0.011629,
+        "stdout": "{\"schema_version\":1,\"status\":\"complete\",\"viewer_path\":\"/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/viewer.html\"}\n",
+        "stderr": "",
+        "status": "passed"
+      },
+      "viewer_output": {
+        "path": "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/viewer.html",
+        "exists": true,
+        "bytes": 839099,
+        "sha256": "8442f2d94599a666a88567624ecdd5d8ecb00a24d9ad4de175616026db88e607"
+      },
+      "status": "failed",
+      "case_report": "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/case.json",
+      "browser_coverage_status": "failed"
+    }
+  ],
+  "browser_cases": [
+    {
+      "case_id": "docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave",
+      "input": "/home/hideki/DIR-Simulator/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+      "result_path": "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json",
+      "model_profile": "ethernet.tsn.v1",
+      "simulation_partial": false,
+      "strict_js_parse": {
+        "command": "/home/hideki/.nvm/versions/node/v22.22.0/bin/node -e 'const fs=require('\"'\"'node:fs'\"'\"');const p=process.argv[1];JSON.parse(fs.readFileSync(p,'\"'\"'utf8'\"'\"'));process.stdout.write('\"'\"'strict JSON.parse passed: '\"'\"'+p+'\"'\"'\\n'\"'\"');' /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json",
+        "argv": [
+          "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+          "-e",
+          "const fs=require('node:fs');const p=process.argv[1];JSON.parse(fs.readFileSync(p,'utf8'));process.stdout.write('strict JSON.parse passed: '+p+'\\n');",
+          "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json"
+        ],
+        "cwd": "/home/hideki/DIR-Simulator",
+        "env_overrides": {
+          "NODE_PATH": "/home/hideki/.npm/_npx/705bc6b22212b352/node_modules"
+        },
+        "expected_exit_code": 0,
+        "actual_exit_code": 0,
+        "timed_out": false,
+        "launch_error": null,
+        "duration_seconds": 0.019265,
+        "stdout": "strict JSON.parse passed: /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json\n",
+        "stderr": "",
+        "status": "passed"
+      },
+      "browser_harness": "/home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs",
+      "production_assets_browser_command": {
+        "command": "/home/hideki/.nvm/versions/node/v22.22.0/bin/node /home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json",
+        "argv": [
+          "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+          "/home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs",
+          "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json"
+        ],
+        "cwd": "/home/hideki/DIR-Simulator",
+        "env_overrides": {
+          "NODE_PATH": "/home/hideki/.npm/_npx/705bc6b22212b352/node_modules"
+        },
+        "expected_exit_code": 0,
+        "actual_exit_code": 1,
+        "timed_out": false,
+        "launch_error": null,
+        "duration_seconds": 0.327382,
+        "stdout": "",
+        "stderr": "Error: Ethernet: 購読VLANがmemberではありません\n    at fail (/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js:9:32)\n    at Object.parseResults (/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js:394:99)\n    at /home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs:12:69\n",
+        "status": "failed"
+      },
+      "exported_html_path": "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/viewer.html",
+      "exported_html_exists": true,
+      "exported_html_browser_command": {
+        "command": "/home/hideki/.nvm/versions/node/v22.22.0/bin/node /home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs --exported-html /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json /tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/viewer.html",
+        "argv": [
+          "/home/hideki/.nvm/versions/node/v22.22.0/bin/node",
+          "/home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs",
+          "--exported-html",
+          "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/run/results.json",
+          "/tmp/dir-acceptance-catalog-final-2026-10-08/cases/docs__verification__fixtures__acceptance-2026-10-08__dynamic-tsn__psfp-queued-membership-leave/viewer.html"
+        ],
+        "cwd": "/home/hideki/DIR-Simulator",
+        "env_overrides": {
+          "NODE_PATH": "/home/hideki/.npm/_npx/705bc6b22212b352/node_modules"
+        },
+        "expected_exit_code": 0,
+        "actual_exit_code": 1,
+        "timed_out": false,
+        "launch_error": null,
+        "duration_seconds": 0.305292,
+        "stdout": "",
+        "stderr": "Error: Ethernet: 購読VLANがmemberではありません\n    at fail (/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js:9:32)\n    at Object.parseResults (/home/hideki/DIR-Simulator/crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js:394:99)\n    at /home/hideki/DIR-Simulator/tests/network_viewer_browser.cjs:12:69\n",
+        "status": "failed"
+      },
+      "status": "failed"
+    }
+  ],
+  "full_original_report": "/tmp/dir-acceptance-catalog-final-2026-10-08/report.json",
+  "full_original_report_sha256": "4941dad42f3bd7deec8b971d020c63aef1d4576886cd04db3f5aa44e6bd3078d"
+}

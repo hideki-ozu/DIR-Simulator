@@ -1,0 +1,630 @@
+{
+  "schema_version": 1,
+  "status": "passed_limited",
+  "source_inputs": [
+    {
+      "path": "Cargo.toml",
+      "bytes": 130,
+      "sha256": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc"
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 9577,
+      "sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+      "bytes": 5400,
+      "sha256": "13988b13add493d8dde202521878c271ca32f2e633c71c54df6a12a669d6c8f8"
+    },
+    {
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "bytes": 65278,
+      "sha256": "c56997742b4ec5c37703beddc5c33fea2f3be29944acc4dda1dc5bd736af4160"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib.rs",
+      "bytes": 996,
+      "sha256": "b89701ad6132b7fafdcd275aa79a3291e9ecbf32ae6a3fec16d6daf2255939d8"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime.rs",
+      "bytes": 2900,
+      "sha256": "851ae0678d7d015566f6a72db5e40d4c59ffde2cb902f54ea470c87e837d6a62"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/engine.rs",
+      "bytes": 16080,
+      "sha256": "50e889dcfe0f7d32328f9828201b281ab83e4a58da19d6a2baf9fe110af228a8"
+    },
+    {
+      "path": "crates/dir-simulator/src/main.rs",
+      "bytes": 6180,
+      "sha256": "9c07a7e7e4737409e2d6140dd927d569e9a44426b467e606a7e4b5851899ed66"
+    },
+    {
+      "path": "crates/dir-simulator/src/cli_runtime_boundary_tests.rs",
+      "bytes": 2568,
+      "sha256": "03f8f511550af6e8b731057538f04614fbba1846e7f5a0187e48d829ec836018"
+    }
+  ],
+  "commands": [
+    {
+      "kind": "--test",
+      "target": "ac0008_paths",
+      "named_test": "classical_can_explicit_run_config_preserves_plain_projection",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_paths",
+        "classical_can_explicit_run_config_preserves_plain_projection",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "classical_can_explicit_run_config_preserves_plain_projection.stdout.log",
+          "bytes": 185,
+          "sha256": "e3424438c91a38c8297932bcef1b84935471636377b99398928256c74dbe8499"
+        },
+        "stderr": {
+          "path": "classical_can_explicit_run_config_preserves_plain_projection.stderr.log",
+          "bytes": 1155,
+          "sha256": "44fe6af63fd3d331ca5021536ecaa1bdb0b42962a6eb8699edd9bdad20b59f4d"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "ac0008_paths",
+      "named_test": "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_paths",
+        "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config.stdout.log",
+          "bytes": 194,
+          "sha256": "dc107e8e7095a598ee19a313daf4e48660e61dc572dcb8a9d67a70143afac2ae"
+        },
+        "stderr": {
+          "path": "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config.stderr.log",
+          "bytes": 304,
+          "sha256": "92a9cbd528fcece2fde124cee55dd1382430167b6b040b8db6fda247c890d0a1"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_prepare_defers_model_factories_until_runtime",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "generic_prepare_defers_model_factories_until_runtime",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "generic_prepare_defers_model_factories_until_runtime.stdout.log",
+          "bytes": 178,
+          "sha256": "aa72f2fb2b1f498532c0738796ccfb9e918de49d01603fdc5f18d1aca2f72614"
+        },
+        "stderr": {
+          "path": "generic_prepare_defers_model_factories_until_runtime.stderr.log",
+          "bytes": 296,
+          "sha256": "c5207ef6a6fa6474509b127e8d7d110ccc7e4fad55d331454e5fa23130e0f8b4"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "explicit_run_config_selects_custom_registry_instead_of_default",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "explicit_run_config_selects_custom_registry_instead_of_default",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "explicit_run_config_selects_custom_registry_instead_of_default.stdout.log",
+          "bytes": 188,
+          "sha256": "5ea47dea114f2e51c48a0b3db3ef1c94e3c7cc6dea3dcc8d35e895a51a7889f4"
+        },
+        "stderr": {
+          "path": "explicit_run_config_selects_custom_registry_instead_of_default.stderr.log",
+          "bytes": 296,
+          "sha256": "b37ac58e20adb095b0778553a370f8e6253d357d7d5a7ad9fd54cb78839e11e5"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix.stdout.log",
+          "bytes": 193,
+          "sha256": "98230de9d364e094b932f818dce8ba5fa49904e0b23c81f098af1877f2ecf370"
+        },
+        "stderr": {
+          "path": "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix.stderr.log",
+          "bytes": 296,
+          "sha256": "1ddb4d74fa2cc9e318d37663acf1cd305871768e6080f0cfdd26b22c89723680"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "initialization_error_discards_effects_and_finishes_successful_initializations",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "initialization_error_discards_effects_and_finishes_successful_initializations",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "initialization_error_discards_effects_and_finishes_successful_initializations.stdout.log",
+          "bytes": 203,
+          "sha256": "bdac1f662c7feaf5d2359ee0d1287d077975af5c9c94b81a1c9d2bb24eeaf1db"
+        },
+        "stderr": {
+          "path": "initialization_error_discards_effects_and_finishes_successful_initializations.stderr.log",
+          "bytes": 296,
+          "sha256": "11a4b193b9a729321640603ae2003161c9b3cfdd5e9180c1711f7fa39d47e458"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically.stdout.log",
+          "bytes": 203,
+          "sha256": "d923e1e8a457bbb2d277298a0c05cbf60c230b8a1ec131f63ff347282303f461"
+        },
+        "stderr": {
+          "path": "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically.stderr.log",
+          "bytes": 296,
+          "sha256": "513e2e9fec26c2d2a270f79ce6587911ce864ff3b1e419ed1df6844cffaa9aa7"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "callback_failure_discards_every_effect_and_preserves_pending_current",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "callback_failure_discards_every_effect_and_preserves_pending_current",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "callback_failure_discards_every_effect_and_preserves_pending_current.stdout.log",
+          "bytes": 194,
+          "sha256": "c7442366bbccc850479313b077f3f79d5e2c5e0a4fd3bc51464b2e41d81ec45e"
+        },
+        "stderr": {
+          "path": "callback_failure_discards_every_effect_and_preserves_pending_current.stderr.log",
+          "bytes": 296,
+          "sha256": "a8d104e3443d0e8603fbcd6ffd7103c8ea653cda72232c2c72a349711605cd42"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_channel_factories_receive_frozen_inputs_in_stable_order",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "generic_channel_factories_receive_frozen_inputs_in_stable_order",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "generic_channel_factories_receive_frozen_inputs_in_stable_order.stdout.log",
+          "bytes": 189,
+          "sha256": "34e94f2f73428ffc6f48ef2d9c80ae6369da59beb7bfe8ba23b30b6e0bf025d3"
+        },
+        "stderr": {
+          "path": "generic_channel_factories_receive_frozen_inputs_in_stable_order.stderr.log",
+          "bytes": 296,
+          "sha256": "d9c941355f6bceca372cce3b364b5f2457f7369121128ab5b3e59a0972b149dd"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_invalid_channel_parameter_never_reaches_factories",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "generic_invalid_channel_parameter_never_reaches_factories",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "generic_invalid_channel_parameter_never_reaches_factories.stdout.log",
+          "bytes": 183,
+          "sha256": "2835d034dc5ff33c9cb46cd1c25b0e23e9f49f0d8cb2857c0b8f607fd262bcfd"
+        },
+        "stderr": {
+          "path": "generic_invalid_channel_parameter_never_reaches_factories.stderr.log",
+          "bytes": 296,
+          "sha256": "24d0ed04beece0dfee11ab7ce85ef634c45c83c398d508bad6f70c2e09182281"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_channel_factory_failure_releases_only_constructed_prefix",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "registry",
+        "generic_channel_factory_failure_releases_only_constructed_prefix",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "generic_channel_factory_failure_releases_only_constructed_prefix.stdout.log",
+          "bytes": 190,
+          "sha256": "544b3f5383e70eb18e54328b796e2557124879bb421dfa0a9ae0974b5a8f4ff5"
+        },
+        "stderr": {
+          "path": "generic_channel_factory_failure_releases_only_constructed_prefix.stderr.log",
+          "bytes": 296,
+          "sha256": "ef0481f9753135cf1858ef7989baf323bcd7e41fb7e843fe5d629279a43a04be"
+        }
+      },
+      "status": "passed_limited"
+    },
+    {
+      "kind": "--lib",
+      "target": null,
+      "named_test": "cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--lib",
+        "cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "cli_runtime_boundary_tests__cli_validate_does_not_enter_runtime_and_run_positive_control_does.stdout.log",
+          "bytes": 684,
+          "sha256": "9235f777ba26f901d9d2685897c0ef36a032c265e1a197541a0b0677580b660c"
+        },
+        "stderr": {
+          "path": "cli_runtime_boundary_tests__cli_validate_does_not_enter_runtime_and_run_positive_control_does.stderr.log",
+          "bytes": 305,
+          "sha256": "8ce8c6fa2a85aca1300d63e8561e3db8581a1d1e1aeeb7a1f1a6b16ba99d73ba"
+        }
+      },
+      "status": "passed_limited"
+    }
+  ],
+  "started_utc": "2026-10-10T14:33:56.845979+00:00",
+  "scope": "Twelve named regressions including four bounded additions; no full specification/AC0008, channel conformance or adoption approval",
+  "environment_preflight": [
+    {
+      "argv": [
+        "uname",
+        "-a"
+      ],
+      "exit_code": 0,
+      "stdout": "Linux OMEN35L 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cat",
+        "/etc/os-release"
+      ],
+      "exit_code": 0,
+      "stdout": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "rustc",
+        "-Vv"
+      ],
+      "exit_code": 0,
+      "stdout": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cargo",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "cargo 1.85.0 (d73d2caf9 2024-12-31)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "600fd34ba4d24d2dfb6d21a0e586176c798499fa\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cargo": "cargo 1.85.0 (d73d2caf9 2024-12-31)",
+  "required_checks": [
+    {
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "required-0.stdout.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "required-0.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "required-1.stdout.log",
+          "bytes": 56598,
+          "sha256": "70648dd56ef8d527b73635fc6989ca733842f7e264f2bfca13531c09f136f2e9"
+        },
+        "stderr": {
+          "path": "required-1.stderr.log",
+          "bytes": 2931,
+          "sha256": "6c118205f53bb0cc841662b8af2e4c449dac378a4641fbe65eab1ee421fbadf5"
+        }
+      }
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "streams": {
+        "stdout": {
+          "path": "required-2.stdout.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "required-2.stderr.log",
+          "bytes": 880,
+          "sha256": "54efc0001e71d433f86a1ce5496e54f29c21905dff6fe5dc6552ae701d58b174"
+        }
+      }
+    }
+  ],
+  "planned_tests": [
+    {
+      "kind": "--test",
+      "target": "ac0008_paths",
+      "named_test": "classical_can_explicit_run_config_preserves_plain_projection"
+    },
+    {
+      "kind": "--test",
+      "target": "ac0008_paths",
+      "named_test": "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_prepare_defers_model_factories_until_runtime"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "explicit_run_config_selects_custom_registry_instead_of_default"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "initialization_error_discards_effects_and_finishes_successful_initializations"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "callback_failure_discards_every_effect_and_preserves_pending_current"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_channel_factories_receive_frozen_inputs_in_stable_order"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_invalid_channel_parameter_never_reaches_factories"
+    },
+    {
+      "kind": "--test",
+      "target": "registry",
+      "named_test": "generic_channel_factory_failure_releases_only_constructed_prefix"
+    },
+    {
+      "kind": "--lib",
+      "target": null,
+      "named_test": "cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does"
+    }
+  ],
+  "finished_utc": "2026-10-10T14:38:34.435927+00:00"
+}

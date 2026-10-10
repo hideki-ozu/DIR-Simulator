@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "tested_source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+  "scope": "Documentation generation and published-evidence review only; product gates are recorded separately in run-result.json.",
+  "document_gates": [
+    {
+      "argv": [
+        "python3",
+        "scripts/generate_traceability.py"
+      ],
+      "started_utc": "2026-10-10T05:55:18.919445+00:00",
+      "ended_utc": "2026-10-10T05:55:19.785022+00:00",
+      "exit_code": 0,
+      "stdout": "generated traceability Markdown/HTML and hierarchy HTML: 231 requirements, 274 trace nodes, 0 incomplete items\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "started_utc": "2026-10-10T05:55:19.785667+00:00",
+      "ended_utc": "2026-10-10T05:55:19.899194+00:00",
+      "exit_code": 0,
+      "stdout": "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_utc": "2026-10-10T05:55:19.899290+00:00",
+      "ended_utc": "2026-10-10T05:55:19.938462+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "independent_code_review": {
+    "status": "approved_no_open_findings",
+    "evidence": "code-review.json"
+  },
+  "independent_evidence_review": {
+    "status": "approved_no_open_findings",
+    "scope": "Independent final correctness/privacy/evidence review of new and modified publication material; no product tests rerun",
+    "tested_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+    "findings": [],
+    "verification": {
+      "packet_verifiers": {
+        "new": "passed:20 public files,3 normative cases,32/45/23 recorded passing tests",
+        "historical": "passed:170 public files,166 derivatives,6 immutable historical source files"
+      },
+      "original_hash_checks": {
+        "direct_original_files": 14,
+        "reconstructed_runtime_binding_original": true,
+        "historical_preservation_original": true,
+        "total_manifest_entries": 16
+      },
+      "review_source_hashes_equal_immutable_commit": 2,
+      "historical_files_compared_to_previous_head": 166,
+      "runtime_bindings_match_actual_log_entries": 24,
+      "callback_evidence": "Three normative cases have measured positive control1/rejection0; fourth unknown-property case preserves same control",
+      "fmt_clippy": "Actual raw run records and log hashes preserved, exit0; no re-execution by reviewer",
+      "generic_syntax": "Final reviewed source and focused malformed-input tests preserved",
+      "privacy_match_counts": {
+        "private_paths": 0,
+        "emails": 0,
+        "sensitive_json_fields": 0,
+        "credential_candidates": 0,
+        "current_hostname": 0
+      },
+      "privacy_scope": "All new packet file contents plus added lines of modified tracked files",
+      "readme_relative_links": "all resolve",
+      "byte_preserving_git_attribute": "text unset",
+      "complete_ac0008_claim": false
+    },
+    "commands_run": [
+      "git status --short and git diff inspections",
+      "Both public verify_evidence.py scripts",
+      "Read-only Python checks: original/public hashes, immutable commit source hashes, historical git-show byte hashes, run metadata/log parity, privacy counts and README links",
+      "Read-only Python reconstruction of runtime binding original hash",
+      "git check-attr text"
+    ],
+    "unresolved_uncertainty": [],
+    "private_original_sha256": "f0b155684df54dfbdaac566cb3ba2c8855817f76455fae0d955b23af7377bba0",
+    "private_original_bytes": 2350
+  },
+  "historical_derived_files_preserved": 166,
+  "complete_ac0008_acceptance": false
+}

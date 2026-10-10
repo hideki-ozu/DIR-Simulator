@@ -1,0 +1,507 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-08T01:43:29.559526+00:00",
+  "status": "passed; final source frozen",
+  "reason": "All12 parent performance attempts finished; parent explicitly authorized CPU verification. Production source and pinned binary unchanged.",
+  "changed_paths": [
+    "crates/dir-simulator/tests/acceptance_output.rs"
+  ],
+  "source_sha256": "961d15bf054a661dd1926b66bf8c617065f65c2a88347b19bb1d8d0ad2d158f4",
+  "input_sha256": {
+    "docs/verification/cases/結果処理検証仕様書.md": "cfc2a119b393ea6e62d3a9d64117a350780969dd35370f0a9548287a0969703f",
+    "crates/dir-simulator/src/lib/snapshot/can.rs": "017bea2d68f5e07cd28c9c76ae12c2aa9990516c9a552e4df3d46d81a5aa08b6",
+    "crates/dir-simulator/src/lib/snapshot/common.rs": "75694192a86776adcfba176e95f11640adac4f675e2a5bc5134d30831179a361",
+    "crates/dir-simulator/src/output.rs": "17a158fe804cea3271779bec04d571a4f73cf8ed37be63972058ec149520624e",
+    "crates/dir-simulator/src/output/aggregate.rs": "cfd9952fa074a405fd6821cbc84ff9a79707a13026b2329988b529ecd0711c30",
+    "crates/dir-simulator/src/output/csv.rs": "4872d34e8492d1e9a6ec7546de5c6af90a98a3b9ce26a6ea9a6688c84f54b70b",
+    "crates/dir-simulator/src/output/model_records.rs": "77f48ceddaf71dbb567e42bf8eb13291d894cd2b1c8d1cb4f4d2c8bf10930b9c"
+  },
+  "architecture": "Synthetic committed Snapshot constructed with public structs and exported via public output::export; not a native CAN timing run",
+  "expected_source": "結果処理検証仕様書.md Input A and DIR-TEST-0070..0073 tables; all independent rational operands exactly representable below 2^53, rounded with one division",
+  "tests": [
+    "dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv",
+    "dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation",
+    "dir_test_0072_h29_receiver_observations_at_h_remain_pending",
+    "dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate",
+    "dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows",
+    "dir_test_0073_instantaneous_peak_and_overlapping_interval_union"
+  ],
+  "coverage": {
+    "DIR-TEST-0070": [
+      "7 requests and 4 receivers",
+      "10 Net.a queue observations including same-time acceptance/full-drop",
+      "derived buffer points, waits, transfer and delivery observations",
+      "b/c initial zero and extra capacity-zero queue null point"
+    ],
+    "DIR-TEST-0071": [
+      "exact 37 metric descriptor table and metric union",
+      "complete ordered expected records and summary projections including all row fields",
+      "four authored window vectors and mandatory zero rows",
+      "complete JSON to CSV 15 field projection plus schema/run identity"
+    ],
+    "DIR-TEST-0072": [
+      "complete independent request/receiver DTO tables",
+      "direct ledger status counts and conservation",
+      "per-receiver opportunities/received/filtered/pending/latency/sample counts",
+      "H29 observations at H excluded; two pending receivers"
+    ],
+    "DIR-TEST-0073": [
+      "H0 empty records/ledgers/windows and all null/zero/sample_count expectations",
+      "H30 W100 empty model retains horizon and mandatory zero rows",
+      "instantaneous 0->1->0 peak with zero area",
+      "H10 clips occupancy and excludes future generation",
+      "generic overlapping interval union [1,6),[4,8),[8,9) length8"
+    ]
+  },
+  "planned_commands": [
+    "PATH=/home/hideki/.cargo/bin:$PATH rustfmt --edition 2024 crates/dir-simulator/tests/acceptance_output.rs",
+    "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --test acceptance_output",
+    "PATH=/home/hideki/.cargo/bin:$PATH cargo clippy --locked -p dir-simulator --test acceptance_output -- -D warnings",
+    "PATH=/home/hideki/.cargo/bin:$PATH rustfmt --edition 2024 --check crates/dir-simulator/tests/acceptance_output.rs",
+    "git diff --no-index --check /dev/null crates/dir-simulator/tests/acceptance_output.rs"
+  ],
+  "executed_commands": [
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo test --locked -p dir-simulator --test acceptance_output > /tmp/dir-acceptance-output-tests.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-tests.log",
+      "log_sha256": "99d3e6685f1db6ea64b7469554a2f06101306b3adef7f74e37e716902863cc1f",
+      "output": "   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator/crates/dir-simulator)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.66s\n     Running tests/acceptance_output.rs (target/debug/deps/acceptance_output-9a4b9ebda214b5f6)\n\nrunning 6 tests\ntest dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate ... ok\ntest dir_test_0072_h29_receiver_observations_at_h_remain_pending ... ok\ntest dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation ... ok\ntest dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows ... ok\ntest dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv ... ok\ntest dir_test_0073_instantaneous_peak_and_overlapping_interval_union ... ok\n\ntest result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.30s\n\n",
+      "meaning": "initial source execution"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH rustfmt --edition 2024 crates/dir-simulator/tests/acceptance_output.rs > /tmp/dir-acceptance-output-fmt.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-fmt.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": "",
+      "meaning": "format"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo clippy --locked -p dir-simulator --test acceptance_output -- -D warnings > /tmp/dir-acceptance-output-clippy.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-clippy.log",
+      "log_sha256": "9f2edb5104bdbe922af5837db235bd2f42410e5e0fbddc5dabcfb8385890bb81",
+      "output": "   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator/crates/dir-simulator)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.37s\n",
+      "meaning": "initial focused clippy"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH rustfmt --edition 2024 --check crates/dir-simulator/tests/acceptance_output.rs > /tmp/dir-acceptance-output-fmt-check.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-fmt-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": "",
+      "meaning": "initial format check"
+    },
+    {
+      "command": "git diff --no-index --check /dev/null crates/dir-simulator/tests/acceptance_output.rs > /tmp/dir-acceptance-output-diff-check.log 2>&1",
+      "exit_code": 1,
+      "log": "/tmp/dir-acceptance-output-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": "",
+      "meaning": "new-file whitespace check; exit1 denotes addition differing from /dev/null; empty output means no whitespace errors"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH rustfmt --edition 2024 crates/dir-simulator/tests/acceptance_output.rs > /tmp/dir-acceptance-output-fmt-final.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-fmt-final.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": "",
+      "meaning": "final format after optional artifact retention"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH DIR_ACCEPTANCE_OUTPUT_ARTIFACTS=/tmp/dir-acceptance-output-artifacts cargo test --locked -p dir-simulator --test acceptance_output > /tmp/dir-acceptance-output-tests-final.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-tests-final.log",
+      "log_sha256": "a1430caddf8038dcaec4b514ba09c120c556321e6afbe2b7c4e161ba29c79101",
+      "output": "   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator/crates/dir-simulator)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.07s\n     Running tests/acceptance_output.rs (target/debug/deps/acceptance_output-9a4b9ebda214b5f6)\n\nrunning 6 tests\ntest dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate ... ok\ntest dir_test_0072_h29_receiver_observations_at_h_remain_pending ... ok\ntest dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation ... ok\ntest dir_test_0073_instantaneous_peak_and_overlapping_interval_union ... ok\ntest dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows ... ok\ntest dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv ... ok\n\ntest result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.31s\n\n",
+      "meaning": "final source execution with all exports retained"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH cargo clippy --locked -p dir-simulator --test acceptance_output -- -D warnings > /tmp/dir-acceptance-output-clippy-final.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-clippy-final.log",
+      "log_sha256": "723a5888dfc8c00952128bce72b39dcaa6de357caf91f319b31c2b177037b741",
+      "output": "   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator/crates/dir-simulator)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.32s\n",
+      "meaning": "final focused clippy"
+    },
+    {
+      "command": "PATH=/home/hideki/.cargo/bin:$PATH rustfmt --edition 2024 --check crates/dir-simulator/tests/acceptance_output.rs > /tmp/dir-acceptance-output-fmt-check-final.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-fmt-check-final.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": "",
+      "meaning": "final format check"
+    },
+    {
+      "command": "git diff --no-index --check /dev/null crates/dir-simulator/tests/acceptance_output.rs > /tmp/dir-acceptance-output-diff-check-final.log 2>&1",
+      "exit_code": 1,
+      "log": "/tmp/dir-acceptance-output-diff-check-final.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": "",
+      "meaning": "final new-file whitespace check; exit1 denotes addition differing from /dev/null; empty output means no whitespace errors"
+    },
+    {
+      "command": "git diff --check > /tmp/dir-acceptance-output-worktree-diff-check.log 2>&1",
+      "exit_code": 0,
+      "log": "/tmp/dir-acceptance-output-worktree-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": "",
+      "meaning": "whole tracked worktree whitespace check"
+    }
+  ],
+  "gaps": [
+    "Synthetic result-processing boundary only; native CAN journal provenance is separately evidenced by model tests, not this test",
+    "CSV splitter covers authored Input A fields without quoting; generic escaping tests are separate",
+    "TEST0074 exact large-integer/tie/overflow procedures are outside this Input A scope",
+    "The benchmark does not establish a passing performance result: parent reports all12 attempts stopped at180s,0complete; this focused acceptance result does not change that evidence"
+  ],
+  "review": {
+    "reviewer": "network_impl_architecture",
+    "mode": "read-only source review; no execution",
+    "findings": "Input A states/timings, all37 descriptors, complete row expectations and H29 construction match specification",
+    "refinements_applied": [
+      "Require all19 interval rows for H30/W100 with extra capacity-zero controller and exact zero/null values",
+      "Give generic overlapping interval requests coherent generated/ready/admission/SOF/EOF/release fields; overlap remains explicitly generic aggregation data"
+    ]
+  },
+  "mechanical_test_fixes": [],
+  "source_changes_after_review": [
+    "rustfmt formatting only",
+    "optional DIR_ACCEPTANCE_OUTPUT_ARTIFACTS output retention; authored input, expectations and assertions unchanged"
+  ],
+  "artifacts": [
+    {
+      "directory": "/tmp/dir-acceptance-output-artifacts/dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv-1226012-1",
+      "test_name": "dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv",
+      "run_id": "1d35e4f1-0a9c-4d5e-a918-41df066413a6",
+      "schema_version": 1,
+      "end_ps": "35",
+      "termination": "time_limit",
+      "partial": false,
+      "request_rows": 7,
+      "receiver_rows": 4,
+      "metric_record_rows": 99,
+      "summary_rows": 117,
+      "metric_descriptors": 37,
+      "files": {
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv-1226012-1/diagnostics.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv-1226012-1/events.csv": {
+          "sha256": "b1a0428feb5a4953f61dfb5e1e4b796e75d24794132d1e40ee11617914e3f309",
+          "bytes": 11084
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv-1226012-1/manifest.json": {
+          "sha256": "639f779a0c526e5fbe815c4bce27a66ad03133ec9656a9da5ad4e672f47b3c9e",
+          "bytes": 644
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv-1226012-1/results.json": {
+          "sha256": "97fef5045871093d65d3d5fce3c923d28cd39cb341de9bbc2d2b5aa6cdfce7ff",
+          "bytes": 75844
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv-1226012-1/summary.csv": {
+          "sha256": "4cc2ce37a6a9c94b27eaaa62ed4a9db2266ad57902478fe7d6b01daf687f37e4",
+          "bytes": 11271
+        }
+      }
+    },
+    {
+      "directory": "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-2",
+      "test_name": "dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows",
+      "run_id": "0deccc41-75e2-45ea-9f6b-a23343c19888",
+      "schema_version": 1,
+      "end_ps": "30",
+      "termination": "time_limit",
+      "partial": false,
+      "request_rows": 0,
+      "receiver_rows": 0,
+      "metric_record_rows": 27,
+      "summary_rows": 141,
+      "metric_descriptors": 37,
+      "files": {
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-2/diagnostics.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-2/events.csv": {
+          "sha256": "b88de1eb54d7c38e9a571f5c67e3cb7bf0e29c6b75e19adf8a8137fbd3fcdac7",
+          "bytes": 3065
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-2/manifest.json": {
+          "sha256": "14df342c45f4d7748912595dc122c3cb03f4c1bf2911e872f4c8e138e537faaa",
+          "bytes": 643
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-2/results.json": {
+          "sha256": "b353fdfd00fcd23f667c6cc0571da0011816f4b0b2f463a2957be5b5fac4c224",
+          "bytes": 61107
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-2/summary.csv": {
+          "sha256": "c130aa36c0415b0f884418b0afd73db7f058cd12be42cff26548f6bf69cb407c",
+          "bytes": 13270
+        }
+      }
+    },
+    {
+      "directory": "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-7",
+      "test_name": "dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows",
+      "run_id": "af233ed6-52bd-4937-a240-a1067503c25a",
+      "schema_version": 1,
+      "end_ps": "0",
+      "termination": "time_limit",
+      "partial": false,
+      "request_rows": 0,
+      "receiver_rows": 0,
+      "metric_record_rows": 0,
+      "summary_rows": 117,
+      "metric_descriptors": 37,
+      "files": {
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-7/diagnostics.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-7/events.csv": {
+          "sha256": "5e0cea6c607d26b130916139b76d6f3586aa88054f4560ecd2c7a9003e0dc62e",
+          "bytes": 147
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-7/manifest.json": {
+          "sha256": "6ffd908abfb2d795f20631569c90a90651c877b5c945603726da1d58e22e3e51",
+          "bytes": 642
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-7/results.json": {
+          "sha256": "1bfa0af9041fb94b64c29779d25b38be9af83fa60c6657f5fa3cf304a4891e44",
+          "bytes": 44994
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows-1226012-7/summary.csv": {
+          "sha256": "637d06ec111a3cef16da841ba4da3dd0bf4fe00ef2d02f215010c83a6ed858b3",
+          "bytes": 10619
+        }
+      }
+    },
+    {
+      "directory": "/tmp/dir-acceptance-output-artifacts/dir_test_0072_h29_receiver_observations_at_h_remain_pending-1226012-3",
+      "test_name": "dir_test_0072_h29_receiver_observations_at_h_remain_pending",
+      "run_id": "e8e2fb77-cd9d-41d4-b6bf-755699e27931",
+      "schema_version": 1,
+      "end_ps": "29",
+      "termination": "time_limit",
+      "partial": false,
+      "request_rows": 4,
+      "receiver_rows": 4,
+      "metric_record_rows": 74,
+      "summary_rows": 117,
+      "metric_descriptors": 37,
+      "files": {
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_h29_receiver_observations_at_h_remain_pending-1226012-3/diagnostics.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_h29_receiver_observations_at_h_remain_pending-1226012-3/events.csv": {
+          "sha256": "36b30392556bd12a6b4b3836e70ab4d93c3ce0b79ffc08f9adc2da07accf8f7f",
+          "bytes": 8300
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_h29_receiver_observations_at_h_remain_pending-1226012-3/manifest.json": {
+          "sha256": "e86ce419038f1d5c07d2328af1e96c82a6abce97c4f4802508bdc1eb4b7457ad",
+          "bytes": 643
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_h29_receiver_observations_at_h_remain_pending-1226012-3/results.json": {
+          "sha256": "76422f196dea65df14506d170c5bb4352a473bd7eab0290a0cfe5d5309de32d7",
+          "bytes": 67715
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_h29_receiver_observations_at_h_remain_pending-1226012-3/summary.csv": {
+          "sha256": "8d0795f1cf197527284df09a25dcecd5358e74cd8735a27962d5e641a42b4cc7",
+          "bytes": 11269
+        }
+      }
+    },
+    {
+      "directory": "/tmp/dir-acceptance-output-artifacts/dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation-1226012-0",
+      "test_name": "dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation",
+      "run_id": "39d43ddd-323f-45fd-b765-b44228362d56",
+      "schema_version": 1,
+      "end_ps": "35",
+      "termination": "time_limit",
+      "partial": false,
+      "request_rows": 7,
+      "receiver_rows": 4,
+      "metric_record_rows": 99,
+      "summary_rows": 117,
+      "metric_descriptors": 37,
+      "files": {
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation-1226012-0/diagnostics.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation-1226012-0/events.csv": {
+          "sha256": "1b498aa858095d6cae7899b9f92e74153fab9701d05d73d9eb4b984af1b32a35",
+          "bytes": 11084
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation-1226012-0/manifest.json": {
+          "sha256": "272076e1664e399a5863e149ad10c0852e6f94ef9341579eb1c01a47ef94da77",
+          "bytes": 644
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation-1226012-0/results.json": {
+          "sha256": "97e3516552beca2f1471e1a9262e64514d63e25924a03fc84801d655ed9a2f7d",
+          "bytes": 75844
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation-1226012-0/summary.csv": {
+          "sha256": "5c9b798e205b6d1d16a6057dd7a988e94b28a5e2657e86f6b57c1507fc85987f",
+          "bytes": 11271
+        }
+      }
+    },
+    {
+      "directory": "/tmp/dir-acceptance-output-artifacts/dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate-1226012-5",
+      "test_name": "dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate",
+      "run_id": "b7743bbc-b702-4539-9529-d944de5ed974",
+      "schema_version": 1,
+      "end_ps": "10",
+      "termination": "time_limit",
+      "partial": false,
+      "request_rows": 3,
+      "receiver_rows": 0,
+      "metric_record_rows": 32,
+      "summary_rows": 117,
+      "metric_descriptors": 37,
+      "files": {
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate-1226012-5/diagnostics.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate-1226012-5/events.csv": {
+          "sha256": "79d6c12046f136f1964929494e5eb2a68ed06dead96f6f19821bdcea2c1a4492",
+          "bytes": 3665
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate-1226012-5/manifest.json": {
+          "sha256": "25d6c8cd0e1d3534b272d22f08506331ab350e21eb23f1ab83a982a6a4448df2",
+          "bytes": 643
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate-1226012-5/results.json": {
+          "sha256": "ed994f63efce75cea406b74835e4d4b4b9d31ba9d550d4f1431f750355627959",
+          "bytes": 55424
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate-1226012-5/summary.csv": {
+          "sha256": "98a7c99426719404fd1dc9722160eb06101c90b856649292c1c93375ada150fd",
+          "bytes": 11135
+        }
+      }
+    },
+    {
+      "directory": "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-4",
+      "test_name": "dir_test_0073_instantaneous_peak_and_overlapping_interval_union",
+      "run_id": "01d816b9-a051-43b3-a7f3-aacc03f08f2f",
+      "schema_version": 1,
+      "end_ps": "30",
+      "termination": "time_limit",
+      "partial": false,
+      "request_rows": 0,
+      "receiver_rows": 0,
+      "metric_record_rows": 58,
+      "summary_rows": 117,
+      "metric_descriptors": 37,
+      "files": {
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-4/diagnostics.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-4/events.csv": {
+          "sha256": "01bcff3fa6d2d6940a2bc11acefd19a0c633b949532859b7b828f3a3a728924b",
+          "bytes": 6566
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-4/manifest.json": {
+          "sha256": "b654dae969fbb9a238e16d68b551e28b7cee211fbc33123822929bf58798bbcb",
+          "bytes": 643
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-4/results.json": {
+          "sha256": "da2b321bc8b03e959fd2a5bc02c89ad1b413e8d979545b6884b8cf008fe092e8",
+          "bytes": 61045
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-4/summary.csv": {
+          "sha256": "53a0d311b6a76a38452e1a67e700f5879976a1d8f509d9b9d5b50956982df8a3",
+          "bytes": 11009
+        }
+      }
+    },
+    {
+      "directory": "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-6",
+      "test_name": "dir_test_0073_instantaneous_peak_and_overlapping_interval_union",
+      "run_id": "e337a70c-d66d-4fc3-aeb8-f7a8214aab11",
+      "schema_version": 1,
+      "end_ps": "10",
+      "termination": "time_limit",
+      "partial": false,
+      "request_rows": 3,
+      "receiver_rows": 0,
+      "metric_record_rows": 22,
+      "summary_rows": 117,
+      "metric_descriptors": 37,
+      "files": {
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-6/diagnostics.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-6/events.csv": {
+          "sha256": "bc8dab59df1bcde79e83eb8559cdd2f998866da00ae0f6ca9b219c368cff8d06",
+          "bytes": 2555
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-6/manifest.json": {
+          "sha256": "c6eba829924b6c705377441d15d292920dc404294d904a3107fb85907c4caa68",
+          "bytes": 643
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-6/results.json": {
+          "sha256": "3b92899fb07774e22f0093d501845f2c1aa6dfbf833a906888c19a1e8cbb56da",
+          "bytes": 52629
+        },
+        "/tmp/dir-acceptance-output-artifacts/dir_test_0073_instantaneous_peak_and_overlapping_interval_union-1226012-6/summary.csv": {
+          "sha256": "b4a640d21b0e64a6d57cdd2c26e39198165f2bf7bb7b9b256ca919c2bf0952a7",
+          "bytes": 11016
+        }
+      }
+    }
+  ],
+  "test_results": {
+    "dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv": "passed",
+    "dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation": "passed",
+    "dir_test_0072_h29_receiver_observations_at_h_remain_pending": "passed",
+    "dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate": "passed",
+    "dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows": "passed",
+    "dir_test_0073_instantaneous_peak_and_overlapping_interval_union": "passed"
+  },
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "initial_run": "6/6 passed",
+    "final_source_run": "6/6 passed",
+    "focused_clippy": "passed",
+    "format_check": "passed",
+    "diff_check": "passed; raw no-index exit1 with empty log means added file and no whitespace errors",
+    "exports_retained": 8,
+    "exported_files_hashed": 40,
+    "production_edits": 0,
+    "fixture_edits": 0,
+    "binary_identity_changed": false
+  },
+  "architecture_review": {
+    "path": "/tmp/dir-acceptance-output-review.json",
+    "sha256": "caeb31a64b3cbe9f8e5884dafa798029053b9eb481c6adfe24259c1c441768fb",
+    "reviewed_source_sha256": "11c4ec10b754e0b8951103a86999919de7f0e10ff4abfb533cd5f074fdc73008",
+    "approved_before_execution": true
+  },
+  "compiled_test_artifacts": {
+    "/home/hideki/DIR-Simulator/target/debug/deps/acceptance_output-9a4b9ebda214b5f6": {
+      "sha256": "e03a5af10c0bb9e263d836b314a6e63d06a4a526eea60eec687ecd0f95c7d51b",
+      "bytes": 121653776
+    }
+  },
+  "current_relevant_source_sha256": {
+    "docs/verification/cases/結果処理検証仕様書.md": "cfc2a119b393ea6e62d3a9d64117a350780969dd35370f0a9548287a0969703f",
+    "crates/dir-simulator/src/lib/snapshot/can.rs": "017bea2d68f5e07cd28c9c76ae12c2aa9990516c9a552e4df3d46d81a5aa08b6",
+    "crates/dir-simulator/src/lib/snapshot/common.rs": "75694192a86776adcfba176e95f11640adac4f675e2a5bc5134d30831179a361",
+    "crates/dir-simulator/src/output.rs": "17a158fe804cea3271779bec04d571a4f73cf8ed37be63972058ec149520624e",
+    "crates/dir-simulator/src/output/aggregate.rs": "cfd9952fa074a405fd6821cbc84ff9a79707a13026b2329988b529ecd0711c30",
+    "crates/dir-simulator/src/output/csv.rs": "4872d34e8492d1e9a6ec7546de5c6af90a98a3b9ce26a6ea9a6688c84f54b70b",
+    "crates/dir-simulator/src/output/model_records.rs": "77f48ceddaf71dbb567e42bf8eb13291d894cd2b1c8d1cb4f4d2c8bf10930b9c"
+  }
+}

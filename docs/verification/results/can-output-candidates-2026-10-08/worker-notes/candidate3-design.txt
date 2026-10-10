@@ -1,0 +1,9 @@
+# Candidate 3: one-pass JSON and CSV export
+
+Verified Cargo features for serde_json are default, float_roundtrip and std; preserve_order is absent. Iterate existing sorted Map entries directly in canonical() while keeping string escapes, integer and f64 formatting. The existing independent canonical golden covers reversed keys, controls and Unicode.
+
+Staging.write_pair opens two distinct permitted names with create_new, supplies two bounded hashing BufWriters, flushes/closes both and records both hashes only after success. The common manifest remains last; RAII removes any failed private staging. Existing single-file writer semantics are preserved by sharing open/close helpers. No threads or all-row buffering are added.
+
+JSON records iteration assigns final seq exactly once, projects the same Value to the CSV row writer, then appends JSON. Header and other JSON arrays, summary and diagnostics retain their existing order and format. Generic registered and in-memory paths keep their existing row iteration. This candidate measures the combined scope of the original candidate3: canonical re-sort removal plus shared parse/read, not separate additive effects.
+
+Verify golden wire bytes, paired writer failure before/after each side, memory/spooled schema1 and schema2 equivalence, full locked gates and independent CLI hash comparisons. No production adoption is implied.

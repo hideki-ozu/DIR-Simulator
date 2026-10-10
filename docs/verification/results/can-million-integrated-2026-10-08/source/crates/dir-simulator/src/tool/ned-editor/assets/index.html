@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <title>DIR Simulator · NED Editor</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/view.js" defer></script>
+  <script src="/assets/input.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">D</span><div>DIR <strong>Simulator</strong><small>NED EDITOR</small></div></div>
+    <div class="header-summary"><strong id="project-name">プロジェクトに接続中…</strong><span id="network-name"></span></div>
+    <span id="writer-status" class="badge">接続中</span><button id="writer-claim" hidden>編集権限を取得</button>
+  </header>
+  <nav class="toolbar" aria-label="プロジェクト操作">
+    <button id="new-project" data-command="new_project" disabled>新規プロジェクト…</button><span class="separator"></span>
+    <button id="undo" data-command="undo" disabled>↶ 元に戻す</button><button id="redo" data-command="redo" disabled>↷ やり直す</button>
+    <span class="separator"></span><button id="validate" data-command="validate" disabled>エラーチェック</button>
+    <button id="save-as" class="primary" data-command="save_as_project" disabled>別フォルダに保存</button>
+    <button id="overwrite" data-command="overwrite_project" disabled>上書き保存…</button><button id="reload" data-command="reload" disabled>元から再読込…</button>
+    <button id="project-settings" data-command="set_project_settings" disabled>ネットワーク設定</button><button id="gateway-settings" data-command="set_gateway" disabled>Gateway設定</button><button id="workload-settings" data-command="set_workload" disabled>送信設定</button>
+    <span class="toolbar-spacer"></span><button id="refresh">表示を更新</button>
+  </nav>
+  <div id="notice" class="notice" role="alert" hidden><span id="notice-text"></span><button id="notice-close" aria-label="通知を閉じる">×</button></div>
+  <div id="pending-actions" class="pending-actions" hidden><span id="pending-label"></span><button id="check-command">処理結果を照会</button><button id="retry-input">入力を再送信</button></div>
+  <main class="workspace">
+    <aside class="sidebar" aria-label="プロジェクトナビゲーション">
+      <section><h2>ファイル</h2><div id="files" class="navigation"></div></section>
+      <section><h2>インスタンス階層</h2><p class="hint">networkの実際の階層です。INI上書きと実効値を参照できます。</p><input id="instance-filter" type="search" placeholder="パス・型名で検索" aria-label="インスタンスのパス・型名で検索"><div id="instances" class="navigation" aria-label="インスタンス階層"></div></section>
+      <section><h2>型定義</h2><input id="type-filter" type="search" placeholder="型名で検索" aria-label="型名で検索"><div id="types" class="navigation"></div></section>
+      <section><h2>配置パレット</h2><p class="hint">標準部品を配置すると、必要な型定義をプロジェクトに追加します。channelは接続時に選択します。</p><h3>標準部品</h3><div id="builtin-palette" class="palette"></div><h3>プロジェクトの型</h3><div id="palette" class="palette"></div></section>
+      <section id="recovery-section" hidden><h2>保存の復旧</h2><div id="recovery"></div></section>
+      <section class="project-paths"><h2>入出力</h2><dl><dt>読込元</dt><dd id="origin-path">—</dd><dt>保存先</dt><dd id="output-path">未出力</dd></dl></section>
+    </aside>
+    <div class="editor-main">
+      <section class="graph-pane" aria-label="構成図">
+        <div class="pane-heading"><div><div id="breadcrumbs" class="breadcrumbs"></div><h1 id="graph-title">構成図</h1><span id="graph-state" class="hint">型を選択してください</span></div><div class="graph-tools"><button id="zoom-out" aria-label="縮小">−</button><button id="zoom-in" aria-label="拡大">＋</button><button id="zoom-fit">全体</button></div></div>
+        <div class="graph-actions"><button id="add-child" data-command="add_child" data-structural disabled>子を追加</button><button id="connect" data-command="connect" data-structural disabled>接続</button><button id="can-pair" data-command="connect_can_pair" data-structural disabled>CAN TX/RX 接続</button><button id="delete-selection" data-structural disabled>選択を削除</button><button id="align" data-command="set_layout" data-layout disabled>整列</button><span class="hint">ドラッグで移動 · ダブルクリックで内部へ · 空白をドラッグでパン</span></div>
+        <div class="graph-actions"><button id="create-module" data-command="create_module" data-structural disabled>複合モジュールを作成</button><button id="add-gates" data-command="add_gates" data-structural disabled>gateを追加</button><button id="delete-gate" data-command="delete_gate" data-structural disabled>gateを削除</button><button id="add-port" data-command="add_port" data-structural disabled>境界ポートを追加</button></div>
+        <div id="graph-wrap" class="graph-wrap"><svg id="graph" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="型の構成図" tabindex="0"></svg><div id="graph-empty" class="graph-empty">型を選ぶと、子・gate・接続を表示します。</div></div>
+        <div class="graph-legend"><span><i class="gate input"></i>input</span><span><i class="gate output"></i>output</span><span>境界inputは内部の始点、境界outputは内部の終点</span><span id="selection-name"></span></div>
+      </section>
+      <section class="source-pane" aria-label="プロジェクトソース">
+        <div class="pane-heading"><div><h2 id="source-title">ソース</h2><span id="source-state" class="hint">原文を読込中</span></div><button id="flush-source" disabled>入力を反映</button></div>
+        <textarea id="source-editor" aria-label="プロジェクトソース編集" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" disabled></textarea>
+        <div class="source-footer"><span id="caret-position">行 1 · 列 1</span><span id="source-format">原文のBOM・改行を保持</span></div>
+      </section>
+    </div>
+    <aside class="properties-pane" aria-label="プロパティ">
+      <div class="pane-heading"><h2>プロパティ</h2></div><div id="selection-properties"><p class="hint">子や接続を選択してください。</p></div>
+      <section><h2>パラメータ</h2><p id="parameter-context" class="parameter-context">型定義: 未選択</p><p class="hint">defaultの変更は共有型定義に反映します。INI上書きは選択したインスタンスの値、実効値は全体検証で取得できた値です（参照専用）。</p><div id="parameters"></div></section>
+      <section><h2>接続一覧</h2><div id="connections" class="navigation"></div></section>
+      <details><summary>利用条件と上限</summary><div id="capabilities"></div></details>
+    </aside>
+  </main>
+  <section class="diagnostics-pane" aria-labelledby="diagnostics-title"><div class="pane-heading"><h2 id="diagnostics-title">診断 <span id="diagnostic-count">0</span></h2><span class="hint">位置を持つ診断を選択するとソースへ移動します。</span></div><div id="diagnostics" role="log" aria-live="polite"></div></section>
+  <footer id="status" role="status" aria-live="polite">接続中…</footer>
+  <dialog id="editor-dialog"><form id="dialog-form"><div class="dialog-heading"><h2 id="dialog-title"></h2><button id="dialog-close" type="button" aria-label="閉じる">×</button></div><div id="dialog-body"></div><p id="dialog-error" class="field-error" role="alert" hidden></p><div class="dialog-actions"><button id="dialog-cancel" type="button">キャンセル</button><button id="dialog-submit" type="submit" class="primary">実行</button></div></form></dialog>
+</body>
+</html>

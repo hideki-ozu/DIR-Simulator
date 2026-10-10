@@ -1,0 +1,74 @@
+{
+  "schema_version": 4,
+  "generators": [
+    {
+      "id": "x",
+      "node": "Net.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "0"
+      ],
+      "frame": {
+        "dst_mac": "01:00:5e:01:01:01",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 7,
+          "dei": 0
+        },
+        "ip_multicast": {
+          "family": "ipv4",
+          "source": "192.0.2.1",
+          "group": "239.1.1.1"
+        }
+      },
+      "flow_id": "x",
+      "priority": 7,
+      "deadline_ps": null
+    },
+    {
+      "id": "y",
+      "node": "Net.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "2000000"
+      ],
+      "frame": {
+        "dst_mac": "01:00:5e:01:01:01",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 7,
+          "dei": 0
+        },
+        "ip_multicast": {
+          "family": "ipv4",
+          "source": "192.0.2.2",
+          "group": "239.1.1.1"
+        }
+      },
+      "flow_id": "y",
+      "priority": 7,
+      "deadline_ps": null
+    }
+  ],
+  "controls": [
+    {
+      "id": "include",
+      "at_ps": "0",
+      "kind": "membership_set",
+      "switch": "Net.s",
+      "port": "Net.s.tx_b",
+      "vid": 10,
+      "family": "ipv4",
+      "group": "239.1.1.1",
+      "mode": "include",
+      "sources": [
+        "192.0.2.1"
+      ],
+      "lifetime_ps": "1000000"
+    }
+  ]
+}

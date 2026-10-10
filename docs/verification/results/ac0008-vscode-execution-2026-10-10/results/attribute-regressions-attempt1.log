@@ -1,0 +1,48 @@
+   Compiling dir-simulator v0.1.0 (<AUDIT_ROOT>/implementation/crates/dir-simulator)
+error[E0599]: no method named `as_deref` found for struct `std::string::String` in the current scope
+  --> crates/dir-simulator/tests/ac0008_attributes.rs:69:32
+   |
+69 |     assert_eq!(rejected.reason.as_deref(), Some("syntax_error"));
+   |                                ^^^^^^^^
+   |
+help: there is a method `as_ref` with a similar name
+   |
+69 |     assert_eq!(rejected.reason.as_ref(), Some("syntax_error"));
+   |                                ~~~~~~
+
+error[E0599]: no method named `as_deref` found for struct `std::string::String` in the current scope
+   --> crates/dir-simulator/tests/ac0008_attributes.rs:156:42
+    |
+156 |             assert_eq!(diagnostic.reason.as_deref(), Some("syntax_error"));
+    |                                          ^^^^^^^^
+    |
+help: there is a method `as_ref` with a similar name
+    |
+156 |             assert_eq!(diagnostic.reason.as_ref(), Some("syntax_error"));
+    |                                          ~~~~~~
+
+error[E0599]: no method named `as_deref` found for struct `std::string::String` in the current scope
+   --> crates/dir-simulator/tests/ac0008_attributes.rs:171:34
+    |
+171 |     assert_eq!(diagnostic.reason.as_deref(), Some("unsupported_syntax"));
+    |                                  ^^^^^^^^
+    |
+help: there is a method `as_ref` with a similar name
+    |
+171 |     assert_eq!(diagnostic.reason.as_ref(), Some("unsupported_syntax"));
+    |                                  ~~~~~~
+
+error[E0599]: no method named `as_deref` found for struct `std::string::String` in the current scope
+   --> crates/dir-simulator/tests/ac0008_attributes.rs:181:38
+    |
+181 |         assert_eq!(diagnostic.reason.as_deref(), Some("syntax_error"));
+    |                                      ^^^^^^^^
+    |
+help: there is a method `as_ref` with a similar name
+    |
+181 |         assert_eq!(diagnostic.reason.as_ref(), Some("syntax_error"));
+    |                                      ~~~~~~
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `dir-simulator` (test "ac0008_attributes") due to 4 previous errors
+warning: build failed, waiting for other jobs to finish...

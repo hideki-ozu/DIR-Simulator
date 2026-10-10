@@ -1,0 +1,110 @@
+# Ethernet動的制御詳細機能仕様書
+
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 2f1e60b`
+予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書ID：`spec-ethernet-dynamic`
+文書状態：未公開。抽象モデルを実装済みで、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
+
+### 更新履歴
+
+| 文書バージョン | 更新日 | 更新内容 |
+| --- | --- | --- |
+| `1.1.0` | `2026-10-08` | 初回pushに向け、MAC学習・源別membership・VID登録・抽象STP・link変更・観測の動的制御契約を確定 |
+
+## 1. 対象と根拠
+
+native CLIで実行できる [unicast](../../../examples/ethernet/dynamic/unicast.ini)、[空負荷](../../../examples/ethernet/dynamic/empty.ini)、[link変更](../../../examples/ethernet/dynamic/topology.ini)、[membership](../../../examples/ethernet/dynamic/membership.ini)、[VID登録](../../../examples/ethernet/dynamic/registration.ini) を同梱する。独立期待値は [dynamic fixture](../../verification/fixtures/network-extensions/dynamic/expected.json)、実施範囲は [検証仕様](../../verification/cases/Ethernet動的制御検証仕様書.md) を参照する。
+
+profile `ethernet.l2.dynamic.v1` は [VLAN仕様](EthernetVLAN・マルチキャスト詳細機能仕様書.md) の全二重、単一C-tag、8class非プリエンプト送信、整数ps、半開区間[0,T)を継承する。旧profileのschema3とconnected tree制約を変更せず、このprofileだけは固定配線のcycle・非連結グラフと時刻付き制御を許す。配線の追加削除、速度変更、半二重、BPDU/IGMP/MLD/MVRP wire packetの生成解釈は対象外。制御は設定された事実を時刻通り適用する抽象workloadであり、query/report交換や規格conformanceを主張しない。
+
+源フィルタの用語は [RFC 9776 IGMPv3](https://www.rfc-editor.org/info/rfc9776/) と [RFC 9777 MLDv2](https://www.rfc-editor.org/info/rfc9777/) に従う。2026-10-07確認時点でそれぞれRFC 3376、3810を廃止している。ここではINCLUDE/EXCLUDE集合の意味を採用し、規定のprotocol state machineを再現しない。抽象STPは単一共通tree、MVRP相当機能は明示VID登録の有効期間を表し、分散protocolの収束時間予測ではない。
+
+<a id="membership"></a>
+
+## 2. 入力とmembership
+
+```trace
+{"id":"spec-ethernet-dynamic#membership","stage":"spec","requirements":["DIR-REQ-0240","DIR-REQ-0241","DIR-REQ-0242","DIR-REQ-0243"],"upstream":["DIR-FUNC-0060"],"state":"confirmed","pending":[]}
+```
+
+### 2.1. 厳密schemaと例
+
+本profileのmodel-configは `{schema_version:4,endpoints:[],switches:[],ports:[],outputs:[],dynamic:{...}}`。既存4配列はVLAN形式を継承し、dynamic以外へ未知fieldを許さない。Dは正規u64十進文字列、Nは正のJSON整数（bool不可）。dynamicの全fieldは次の例どおり必須。pathはNEDで解決した完全名を使う。列挙順を意味に利用せず、bridge ID、port、link名を一意にする。
+
+```json
+{
+  "mac_age_ps":"5000000",
+  "convergence_ps":"1000000",
+  "bridges":[{"instance":"Net.S1","bridge_id":"1"},{"instance":"Net.S2","bridge_id":"2"}],
+  "links":[{"id":"L12","ports":["Net.S1.tx_2","Net.S2.tx_1"],"up":true,"cost":"10"}],
+  "registrable":[{"port":"Net.S1.tx_3","vid":20,"tagged":true}],
+  "limits":{"mac_entries":1024,"membership_entries":1024,"sources_per_entry":64,"registrations":1024,"control_events":10000,"pending_timers":4096,"visits_per_frame":256}
+}
+```
+
+上記はdynamicオブジェクトの例であり、全接続linkと全Switch bridge行が必要。cost、mac_age_psは1以上。convergence_psは0可。静的Port.vlansは常時member、registrableは動的に追加可能なVIDとtag形式。PVIDは必ず静的member、registrableは同Portの静的VIDと重複不可、動的VIDはtagged:trueのみとする。これで失効によりuntagged分類が変化しない。link行はEndpoint接続も含めtx/rx対を一度だけ覆う。固定物理linkの上下を双方向一体で変更する。
+
+workloadは `{schema_version:4,generators:[],controls:[]}`。generatorはschema3を継承し、frameへ必須nullable `ip_multicast` を追加する。nullは従来L2、非nullは `{family:"ipv4"|"ipv6",source:S,group:S}`。sourceは同familyのunicast、groupは同familyのmulticast。IPv4は224.0.0.0/4、IPv6はff00::/8。IPv4 groupの下位23bitを01:00:5eへ、IPv6下位32bitを33:33へ写像したdst_macを要求する。EtherTypeも0x0800/0x86ddに一致させる。dataは不透明のままで、IP headerの存在・checksumを主張しない。flow内ではこの三値も一致させる。異なるIP groupが同一MACへ写像されてもmembershipキーを混同しない。
+
+次は時刻付きcontrol配列の有効な行例（Net.S1.tx_2はVID10静的member、tx_3はVID20登録許可とする）。
+
+```json
+[
+  {"id":"join-B","at_ps":"1000000","kind":"membership_set","switch":"Net.S1","port":"Net.S1.tx_2","vid":10,"family":"ipv4","group":"239.1.1.1","mode":"include","sources":["192.0.2.1"],"lifetime_ps":"3000000"},
+  {"id":"router","at_ps":"1000000","kind":"router_set","switch":"Net.S1","port":"Net.S1.tx_2","vid":10,"family":"ipv4","lifetime_ps":"5000000"},
+  {"id":"vid20","at_ps":"2000000","kind":"vlan_register","port":"Net.S1.tx_3","vid":20,"lifetime_ps":"4000000"},
+  {"id":"leave-B","at_ps":"3000000","kind":"membership_leave","switch":"Net.S1","port":"Net.S1.tx_2","vid":10,"family":"ipv4","group":"239.1.1.1"},
+  {"id":"down","at_ps":"4000000","kind":"link_set","link":"L12","up":false}
+]
+```
+
+全kind共通必須はid（非空・一意）、at_ps、kind。上記以外は `router_leave`（router_setのlifetime以外）、`vlan_unregister`（registerのlifetime以外）。membership_leaveにはmode/sources/lifetimeを置かない。lifetimeは1以上。未知kind/field、重複JSONキー、範囲外VID、参照不正、IP重複、family不一致、groupでないgroup、無許可登録、個別上限超過、at+lifetime overflowはprepare失敗。空generator・T以後のcontrolsにも同じ検査を適用。controlsは `(at_ps, subphase, idのUTF-8辞書順)` で整列する。同一keyへの複数操作もこの順で適用し後の操作が最終状態となる。時刻は文字列として比較しない。
+
+### 2.2. 学習・aging
+
+SwitchはFCS/admit/VID/link/STP入場検査成功時にindividual source MACを `(switch,VID,MAC)` → ingress portへ学習する。更新はphase1の入力順（既存eventの固定source順）に行い、processing完了を待たない。source MACは元Endpoint MACであり、移動試験はloopを含む冗長経路切替で別ingressへ到達させる。static FDBを最優先し、同keyの学習を抑制して `static_shadowed` を記録する。動的同key同portは期限更新、別portはmoveと期限更新。期限は最後の受理arrival + mac_age_psで、有効区間は[learn,expire)。更新ごとに世代を進め、古い期限は無効化する。
+
+lookupはstatic→有効dynamic→unknown flood。known entryのportが現在不適格なら候補0・`known_egress_ineligible`、floodへ変更しない。表上限時は新keyを学習せず `mac_capacity` を記録するがframe転送は続く。同key更新は満杯でも可。topology変更時は全Switchのdynamic FDBをflushし、staticは保持する。
+
+### 2.3. 源別snoopingとrouter port
+
+keyは `(switch,VID,family,group,port)`。membership_setは当該portを代表する集約状態を原子的に置換する。host別集約を内部で推測しない。INCLUDE(S)はsource∈S、EXCLUDE(S)はsource∉Sを受理する。INCLUDE空は明示受理0、EXCLUDE空は全source受理。membership_leave/期限はkeyを削除する。leave済みkeyのleaveはno-op。router_setは `(switch,VID,family,port)` の期限付き登録であり、同VID/familyの全IP multicastを受理する。router_leave/期限は削除する。
+
+IP multicastの候補は「一致する静的L2 multicast egress集合」∪「sourceを受理するmembership ports」∪「router ports」。その後ingress除外・link/VID/STP eligibilityを適用する。静的groupの明示空、又は該当IP groupのmembership keyが一つでも存在する場合はknownとし、source不一致による候補0をunknown floodへ変えない。routerだけの場合もknownとする。これらが全くない場合だけ既存unknown_multicast=flood/dropを適用する。IP metadataがnullなら従来L2 static lookupだけで、源別membershipを使わない。Endpointの静的購読条件は従来どおり別途必要で、Switch登録から自動生成しない。
+
+登録は[set,expire)で有効。同時刻set/leaveを先に適用してから期限を照合するので更新された世代は旧期限で消えない。leave後に同時刻setがある場合は固定id順の最後の操作で決まる。登録を上限超過させるcontrolはrunを診断付き停止し、そのcallback全体を未commitにする。
+
+### 2.4. VID登録
+
+有効membershipは静的Port.vlans∪有効registration。registerはregistrableにある単一Port/VIDだけを追加し、peerや隣接Switchへ伝播しない。更新は期限を置換、unregister/expireは動的分だけ削除する。静的VIDのregister/unregisterはprepare拒否。link downやSTP blockingでも期限は進行し、復旧で期限を復活させない。snooping状態はVID登録失効時も期限まで保持するが、eligibilityで除外する。
+
+<a id="topology"></a>
+
+## 3. 抽象tree・切替・観測
+
+```trace
+{"id":"spec-ethernet-dynamic#topology","stage":"spec","requirements":["DIR-REQ-0244","DIR-REQ-0245","DIR-REQ-0246","DIR-REQ-0247"],"upstream":["DIR-FUNC-0061"],"state":"confirmed","pending":[]}
+```
+
+### 3.1. 共通tree
+
+Switch間up graphの各連結成分で最小bridge_idをrootとする。rootまでの最小累積costを求め、同costなら `(隣接bridge_id,隣接port完全名,自port完全名)` の小さい接続をroot portとする。各linkのdesignated側は `(rootまでのcost,bridge_id,port完全名)` の小さい側。root port又はdesignated portはforwarding、それ以外はalternate/discarding。Endpoint portはupならdesignated/forwarding。link downはdisabled。全VIDで共通treeを使い、VIDごとの最適経路は計算しない。VLAN分断時は不通をそのまま観測し、別treeを捏造しない。
+
+t=0の初期treeはprepare済み状態として有効。link_setで実際のup値が変わるとtopology世代を進めFDBをflushし、全Switch間portをdiscardingへ閉じる。t+convergence_psに最新graphのtreeを原子的に公開する。収束中のlink変更は旧予約を世代で無効化して期限を再設定する。0遅延は同じphase0 callback内で公開。Endpoint portはlink状態に従う。これは中央計算のbreak-before-makeでありBPDU分散protocolではない。切断成分同士の到達性はない。
+
+### 3.2. 同時刻とcopy寿命
+
+共通FESはphase0完了/制御、phase1 arrival/source入力、phase2 arbitrationの順を維持する。profile所有coordinatorの同時刻batch内でwire完了→link/STP変更→registration/membership変更→aging期限→TSN GCL切替を適用する。Engineグローバル順は変更しない。phase0内の同種は固定source順、controlではid辞書順とする。phase0完了通知がphase1到達を予約する既存処理も、すべてのphase0制御完了後に消費する。
+
+SOF済みcopyはlinkが途中でdownしても非中断でEOF/arrivalまで進む。到達時のingress link/STP/VID状態で受付を判定し、不適格ならreception filteredとする。queueにいるcopyはphase2選択時に現在のegress link/VID/STPを再検査し、無効なら理由付きdrop。同時刻SOF予定も更新後の状態で判定する。既に決定したegress集合をmembership/FDB変更で増減しない。queue dropで別portへ再routingしない。down portのqueueは更新callbackで即削除せず同時刻phase2をdirtyにして処理する。
+
+eligibility理由の優先順位は `link_down` → `stp_discarding` → `vlan_unregistered`。frameごとのvisit上限を超えるArrivalは `visit_limit` filterとし、新たなforwarding copyを生成せず無限経路を抑える。各受信visitと各copyに単調IDとparentを付け、同一frameの同一port再訪を許す。旧tree専用 `frame_id@from_port` の一意性に依存しない。
+
+### 3.3. 出力と互換性
+
+output_schema_version=2の外枠と5ファイルを維持し、本profileのmodel_recordsは `ethernet.dynamic.frame/1`、`ethernet.dynamic.transfer/1`、`ethernet.dynamic.reception/1`、`ethernet.dynamic.control/1`、`ethernet.dynamic.policy/1` を使う。既存record schemaの意味は上書きしない。transferにvisit/parentとoffer/start epoch、receptionにarrival epoch、controlに予定時刻・実績時刻・kind・変更前後・理由・世代を持つ。policyは初期状態とcommit差分を出す。明示controlのno-opは監査行を持ちepochは変えない。refreshで旧期限を取消し、世代不一致のwakeは実効変更・監査実績を生成しない。policy_epochは実効policy変更を含むbatch commitにつき一つ増加し、topology_generationとtimer generationは別管理する。
+
+metadataに初期設定、全controlと正規順、上限、抽象化範囲を保存する。control予定と適用実績を混同せず、停止境界Tのcontrolは未適用。未到達receptionや予定treeを実績として補わない。MAC learn/move/expire/flush/capacity、membership/registration更新と失効、topology切替数、理由別copy drop/filterを集計し、timer staleは有効更新数へ含めない。
+
+Viewerは任意時刻のcommit差分からMAC表・源集合・VID・link/STP role・epochを復元する。in-flight copyは開始epochと現在policyを併記し、forward/backward seekで同じ状態・同じ到達区間を再現する。連続再生は方向線強調。旧profileは旧schema・旧ID・旧描画を維持し、新fieldを拒否する。TSNは本profileのpolicy状態を共用し、gate開放だけでlink/VID/STPの不適格を覆せない。

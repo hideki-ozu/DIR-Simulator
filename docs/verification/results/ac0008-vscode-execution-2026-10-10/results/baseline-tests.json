@@ -1,0 +1,174 @@
+{
+  "task": "AC0008 PR #42 exact baseline focused Rust compile/fmt/test",
+  "baseline_sha": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+  "pr40_base_sha": "36eeaa4fe1bf77d82d90b42dd8cc057861d46df5",
+  "test_source_sha": "6cd33fbf3b1cb09f61d628974559c560c519b47c",
+  "captured_utc": "2026-10-10T04:50:54.298038Z",
+  "cwd": "<AUDIT_ROOT>/baseline",
+  "environment": {
+    "PATH": "<REDACTED_PRIVATE_FIELD>",
+    "CARGO_TARGET_DIR": "<AUDIT_ROOT>/environment/cargo-target-baseline",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "git_before": {
+    "label": "before",
+    "captured_utc": "2026-10-10T04:50:22.879671Z",
+    "head": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+    "head_exit_code": 0,
+    "status": "## HEAD (no branch)",
+    "status_exit_code": 0,
+    "head_stderr": "",
+    "status_stderr": ""
+  },
+  "toolchain": {
+    "rustc_version_file": "<AUDIT_ROOT>/environment/baseline-toolchain.json",
+    "rustc_stdout": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7\n",
+    "rustc_stderr": "",
+    "cargo_stdout": "cargo 1.85.0 (d73d2caf9 2024-12-31)\n",
+    "cargo_stderr": ""
+  },
+  "commands": [
+    {
+      "name": "focused-no-run",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_paths",
+        "--test",
+        "ac0008_ned_rejections",
+        "--no-run"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:50:23.034869Z",
+      "finished_utc": "2026-10-10T04:50:48.304477Z",
+      "environment": {
+        "PATH": "<REDACTED_PRIVATE_FIELD>",
+        "CARGO_TARGET_DIR": "<AUDIT_ROOT>/environment/cargo-target-baseline",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8"
+      },
+      "exit_code": 0,
+      "status": "passed",
+      "stdout_file": "<AUDIT_ROOT>/logs/baseline-focused-no-run.stdout.log",
+      "stderr_file": "<AUDIT_ROOT>/logs/baseline-focused-no-run.stderr.log",
+      "stdout_bytes": 0,
+      "stderr_bytes": 1427,
+      "named_test_outcomes": []
+    },
+    {
+      "name": "fmt-check",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:50:48.304789Z",
+      "finished_utc": "2026-10-10T04:50:48.972714Z",
+      "environment": {
+        "PATH": "<REDACTED_PRIVATE_FIELD>",
+        "CARGO_TARGET_DIR": "<AUDIT_ROOT>/environment/cargo-target-baseline",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8"
+      },
+      "exit_code": 1,
+      "status": "failed",
+      "stdout_file": "<AUDIT_ROOT>/logs/baseline-fmt-check.stdout.log",
+      "stderr_file": "<AUDIT_ROOT>/logs/baseline-fmt-check.stderr.log",
+      "stdout_bytes": 2191,
+      "stderr_bytes": 0,
+      "named_test_outcomes": []
+    },
+    {
+      "name": "focused-tests",
+      "argv": [
+        "<HOME>/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--test",
+        "ac0008_paths",
+        "--test",
+        "ac0008_ned_rejections"
+      ],
+      "cwd": "<AUDIT_ROOT>/baseline",
+      "started_utc": "2026-10-10T04:50:48.972881Z",
+      "finished_utc": "2026-10-10T04:50:54.287932Z",
+      "environment": {
+        "PATH": "<REDACTED_PRIVATE_FIELD>",
+        "CARGO_TARGET_DIR": "<AUDIT_ROOT>/environment/cargo-target-baseline",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8"
+      },
+      "exit_code": 0,
+      "status": "passed",
+      "stdout_file": "<AUDIT_ROOT>/logs/baseline-focused-tests.stdout.log",
+      "stderr_file": "<AUDIT_ROOT>/logs/baseline-focused-tests.stderr.log",
+      "stdout_bytes": 896,
+      "stderr_bytes": 445,
+      "named_test_outcomes": [
+        {
+          "test": "allowunconnected_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "test": "import_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "test": "inout_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "test": "unqualified_child_type_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "test": "vector_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "test": "inheritance_is_explicitly_rejected_with_ned_source",
+          "outcome": "ok"
+        },
+        {
+          "test": "classical_can_prepare_and_run_preserve_analytic_competition",
+          "outcome": "ok"
+        },
+        {
+          "test": "classical_can_prepare_with_registry_and_run_uses_builtin_adapter",
+          "outcome": "ok"
+        },
+        {
+          "test": "classical_can_run_config_matches_plain_observable_projection",
+          "outcome": "ok"
+        },
+        {
+          "test": "classical_can_cli_run_matches_plain_observable_projection",
+          "outcome": "ok"
+        }
+      ]
+    }
+  ],
+  "git_after": {
+    "label": "after",
+    "captured_utc": "2026-10-10T04:50:54.298017Z",
+    "head": "bfe0ebedaef7ed814d06d2f90ca0a7dbe453c54a",
+    "head_exit_code": 0,
+    "status": "## HEAD (no branch)",
+    "status_exit_code": 0,
+    "head_stderr": "",
+    "status_stderr": ""
+  },
+  "source_checkout_unchanged": true,
+  "original_errors_preserved_in_command_logs": true,
+  "generated_cargo_target_directory_cleaned": true
+}

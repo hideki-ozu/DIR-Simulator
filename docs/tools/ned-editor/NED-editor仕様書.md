@@ -1,12 +1,13 @@
 # NED-editor仕様書
 
-文書バージョン：`1.0.2`
-対象GitHubバージョン：`v1.0.1`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ 0b7b23d8`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-10` | 動作確認・受入範囲をWSL上のUbuntu 24.04 LTS x86_64へ統一。Ubuntu native比較・Windows native単独確認を現在の必須条件から除外し、同一環境の検証と過去証跡を維持 |
 | `1.0.2` | `2026-10-04` | NED editor追加に伴うGitHub版v1.0.1を対象に更新。GitHubのPATCH変更のため文書版は維持 |
 | `1.0.2` | `2026-10-04` | 完了／復元journalの耐久化台帳・引退と中断後に再開可能なbackup回収、保護診断・再試行、CRLFテンプレート挿入を補正。OMEN35LのRust／実ブラウザ検証を追記 |
 | `1.0.1` | `2026-10-04` | PRレビューに基づき、保存先登録のwriter契約・復旧投影・入力互換性・操作表示を補正。追加変更の検証状態を区別 |
@@ -56,7 +57,7 @@ NED文法は[NED詳細機能仕様書](../../specs/NED詳細機能仕様書.md)�
 | 設定フォーム | 実行制限、実体別INI上書き、Gatewayのports/routes・容量・遅延、explicit/periodic送信定義。通常のINI/JSONに反映し履歴へ含める |
 | 後段へ分離 | 任意の新規ファイル作成、実体固有の型複製、一括リネーム、シミュレーション実行とviewer連携 |
 
-初期の動作確認対象はLinux／WSL2上のサービスとChromium系ブラウザとし、ブラウザの検証版を実施記録へ残す。HTTPライブラリ等の具体的な依存版は実装時にRust 1.85.0との適合を確認して固定する。これは配信実装の選定であり、下記のブロック責務・保存契約を変える理由にはしない。
+現在の動作確認対象はWSL上のUbuntu 24.04 LTS x86_64のサービスとChromium系ブラウザとする。Ubuntu nativeとの比較とWindows native単独確認は現在の要件・受入・公開必須条件に含めない。WindowsブラウザでViewerを開く手順は維持し、ブラウザの検証版を実施記録へ残す。HTTPライブラリ等の具体的な依存版は実装時にRust 1.85.0との適合を確認して固定する。これは配信実装の選定であり、下記のブロック責務・保存契約を変える理由にはしない。
 
 <a id="block-architecture"></a>
 
@@ -1091,3 +1092,4 @@ B6の投影へkind/implementation、gate_editable、gateway_settings、workload�
 追加検証は[構造組立の8試験](../../../crates/dir-simulator/src/tool/ned-editor/composition_tests.rs)、[設定の9試験](../../../crates/dir-simulator/src/tool/ned-editor/settings_tests.rs)、操作統括の2試験、UIの19試験（累計53）。構造・設定のUndo/Redo、共有gate参照、設定の未知項目・重複・所有者・範囲拒否、JSON ID互換、無ディスクでの設定ファイル追加、配置削除後のGateway設定解除、未解決ポート値の保持、未送信原文と確認中の変更、IME待ち、連続dialogのclose eventを確認した。
 
 [実ブラウザのUI組立試験](../../../tests/ned_editor_composition_browser.test.cjs)は、空のMultibusを新規作成し、Router module・3境界ポート・3Bus・3外部Controller・結線・実体別上書き・Gatewayの複数出口への経路・送信設定・実行制限をUIで作った。Busのgate組追加・削除もUIから実行した。原文入力やAPIの変更要求を試験から直接送らず、保存した一式のCLI validate/runを実行し、native 1要求、Gatewayコピー2要求、全3件成功、payload長・CRC・直列化長の保持を確認した。結果JSONの出典workloadは`01020304`と一致する。既存の[ブラウザ往復試験](../../../tests/ned_editor_browser.test.cjs)も成功した。この確認は当該3Busシナリオの動作証拠であり、性能・汎用OMNeT++文法・ブラウザ間適合を証明しない。
+

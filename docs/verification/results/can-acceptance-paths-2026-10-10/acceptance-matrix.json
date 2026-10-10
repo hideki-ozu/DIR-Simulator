@@ -1,0 +1,386 @@
+{
+  "schema_version": 1,
+  "document_version": "1.1.0",
+  "document_history": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-10",
+      "change": "Independent initial push after approved CAN acceptance decomposition"
+    }
+  ],
+  "approval": {
+    "decision_utc": "2026-10-10T06:09Z",
+    "by": "user",
+    "scope": "Separate built-in CAN and generic extension acceptance; no CAN factory migration",
+    "not_approved": [
+      "all tests passed",
+      "AC0008 overall",
+      "license adoption",
+      "merge/release"
+    ]
+  },
+  "baseline": "f86268956e876ed1f528a45ce6cb21219d6451a5",
+  "product_executed_in_this_task": false,
+  "existing_WSL_evidence_reused": true,
+  "source_navigation": "source-navigation.json",
+  "cases": [
+    {
+      "case_id": "CAN-BUILTIN-CLI",
+      "acceptance": "DIR-TEST-0085",
+      "api": "CLI run",
+      "implementation_path": "run_config → default Registry → prepare_with_registry_and_source → BuiltinAdapter → runtime registered adapter branch → simulate_builtin → CAN Engine",
+      "expected": "CLI exit0 and exact simulation projection equals plain prepare/run; metadata excluded, arrays retain order",
+      "test": {
+        "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+        "named_test": "classical_can_cli_run_matches_plain_observable_projection",
+        "line": 48,
+        "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+      },
+      "execution": {
+        "status": "passed_limited",
+        "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "published_at_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5",
+        "environment": "WSL2 Ubuntu24.04.4 LTS;Rust/Cargo1.85.0;x86_64-unknown-linux-gnu",
+        "log": "docs/verification/results/ac0008-issue44-2026-10-10/logs/focused-tests.stdout.log",
+        "log_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+        "run_result": "docs/verification/results/ac0008-issue44-2026-10-10/run-result.json"
+      },
+      "limits": [
+        "Observable equality is not factory/callback invocation evidence",
+        "competition fixture only; no universal model conformance"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "CAN-BUILTIN-RUN-CONFIG",
+      "acceptance": "DIR-TEST-0085",
+      "api": "run_config",
+      "implementation_path": "same default Registry/BuiltinAdapter/Engine path as CLI run",
+      "expected": "RunReport exit0 and exact simulation projection equals plain prepare/run",
+      "test": {
+        "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+        "named_test": "classical_can_run_config_matches_plain_observable_projection",
+        "line": 68,
+        "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+      },
+      "execution": {
+        "status": "passed_limited",
+        "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "published_at_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5",
+        "environment": "WSL2 Ubuntu24.04.4 LTS;Rust/Cargo1.85.0;x86_64-unknown-linux-gnu",
+        "log": "docs/verification/results/ac0008-issue44-2026-10-10/logs/focused-tests.stdout.log",
+        "log_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+        "run_result": "docs/verification/results/ac0008-issue44-2026-10-10/run-result.json"
+      },
+      "limits": [
+        "Observable equality is not factory/callback invocation evidence",
+        "competition fixture only; no universal model conformance"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "CAN-BUILTIN-PLAIN",
+      "acceptance": "DIR-TEST-0085",
+      "api": "prepare + run",
+      "implementation_path": "input::prepare → prepare_with_source; Classical CAN registered=None; run → runtime builtin → CAN Engine",
+      "expected": "registered=None;2requests a:0,b:0;SOF0/106000000ps;EOF100000000/200000000ps;exit0;exact simulation projection",
+      "test": {
+        "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+        "named_test": "classical_can_prepare_and_run_preserve_analytic_competition",
+        "line": 76,
+        "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+      },
+      "execution": {
+        "status": "passed_limited",
+        "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "published_at_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5",
+        "environment": "WSL2 Ubuntu24.04.4 LTS;Rust/Cargo1.85.0;x86_64-unknown-linux-gnu",
+        "log": "docs/verification/results/ac0008-issue44-2026-10-10/logs/focused-tests.stdout.log",
+        "log_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+        "run_result": "docs/verification/results/ac0008-issue44-2026-10-10/run-result.json"
+      },
+      "limits": [
+        "Observable equality is not factory/callback invocation evidence",
+        "competition fixture only; no universal model conformance"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "CAN-BUILTIN-EXPLICIT",
+      "acceptance": "DIR-TEST-0085",
+      "api": "prepare_with_registry(default) + run",
+      "implementation_path": "explicit default Registry → BuiltinAdapter; registered.is_generic=false → CAN Engine",
+      "expected": "registered Some and is_generic=false;exit0;exact simulation projection equals plain",
+      "test": {
+        "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+        "named_test": "classical_can_prepare_with_registry_and_run_uses_builtin_adapter",
+        "line": 97,
+        "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+      },
+      "execution": {
+        "status": "passed_limited",
+        "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "published_at_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5",
+        "environment": "WSL2 Ubuntu24.04.4 LTS;Rust/Cargo1.85.0;x86_64-unknown-linux-gnu",
+        "log": "docs/verification/results/ac0008-issue44-2026-10-10/logs/focused-tests.stdout.log",
+        "log_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+        "run_result": "docs/verification/results/ac0008-issue44-2026-10-10/run-result.json"
+      },
+      "limits": [
+        "Observable equality is not factory/callback invocation evidence",
+        "competition fixture only; no universal model conformance"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "CAN-VALIDATE-DIRECT",
+      "acceptance": "DIR-TEST-0085",
+      "api": "CLI validate",
+      "implementation_path": "main validate → ordinary prepare → input::prepare_with_source; no run",
+      "expected": "Validate does not construct/execute CAN Engine or generic models",
+      "concrete_tests": [],
+      "execution": {
+        "status": "not_tested",
+        "source_commit": null,
+        "test_commit": null
+      },
+      "limits": [
+        "Static source path only; no exact named validate counter test bound to this measured run"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "CAN-EXPLICIT-RUN-CONFIG",
+      "acceptance": "DIR-TEST-0085",
+      "api": "run_config_with_registry",
+      "implementation_path": "supplied Registry decides builtin adapter or generic Prepared",
+      "expected": "Default Registry builtin and custom Registry profile selections are distinct",
+      "concrete_tests": [
+        {
+          "path": "crates/dir-simulator/tests/registry.rs",
+          "named_test": "registered_builtin_adapter_preserves_builtin_result",
+          "line": 710,
+          "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+        },
+        {
+          "path": "crates/dir-simulator/tests/registry.rs",
+          "named_test": "custom_run_publishes_registered_records_and_metrics",
+          "line": 723,
+          "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+        }
+      ],
+      "execution": {
+        "status": "not_tested",
+        "source_commit": null,
+        "test_commit": null
+      },
+      "limits": [
+        "Existing builtin test uses gateway/fanout, not Classical CAN competition; no named registry integration execution log verified here"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "GENERIC-PREPARE",
+      "acceptance": "DIR-TEST-0085",
+      "api": "prepare_with_registry(custom)",
+      "implementation_path": "freeze/validate descriptors → model/channel configs; factories start in runtime",
+      "expected": "Successful prepare constructs no execution model; rejection starts no event callbacks",
+      "concrete_tests": [
+        {
+          "path": "crates/dir-simulator/tests/registry.rs",
+          "named_test": "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically",
+          "line": 223,
+          "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+        }
+      ],
+      "execution": {
+        "status": "not_tested",
+        "source_commit": null,
+        "test_commit": null
+      },
+      "limits": [
+        "This concrete test covers runtime results, not factory counter0 during prepare"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "GENERIC-FACTORY-LIFECYCLE",
+      "acceptance": "DIR-TEST-0085",
+      "api": "custom Registry + run/runtime::simulate",
+      "implementation_path": "generic registered Engine initializes factories/models/channels; executes callbacks; finishes/releases",
+      "expected": "Factory selection/input/order, allocate failure, initialize failure, callback failure, reverse cleanup and frozen prefix must be observed separately",
+      "concrete_tests": [
+        {
+          "path": "crates/dir-simulator/tests/registry.rs",
+          "named_test": "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix",
+          "line": 387,
+          "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+        },
+        {
+          "path": "crates/dir-simulator/tests/registry.rs",
+          "named_test": "initialization_error_discards_effects_and_finishes_successful_initializations",
+          "line": 348,
+          "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+        }
+      ],
+      "execution": {
+        "status": "not_tested",
+        "source_commit": null,
+        "test_commit": null
+      },
+      "limits": [
+        "Lifecycle CALLS includes allocate/init/finish/drop; no exact saved named registry execution log tied here"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "GENERIC-CALLBACK-EFFECTS",
+      "acceptance": "DIR-TEST-0085",
+      "api": "custom Registry + runtime::simulate",
+      "implementation_path": "generic registered Engine → custom on_event/on_arbitration/channel capability",
+      "expected": "Normal registered deliveries2/5ps, committed_events3, record byte7; callback failure leaves committed2/pending1/points1 and no model records",
+      "concrete_tests": [
+        {
+          "path": "crates/dir-simulator/tests/registry.rs",
+          "named_test": "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically",
+          "line": 223,
+          "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+        },
+        {
+          "path": "crates/dir-simulator/tests/registry.rs",
+          "named_test": "callback_failure_discards_every_effect_and_preserves_pending_current",
+          "line": 258,
+          "source_read_commit": "f86268956e876ed1f528a45ce6cb21219d6451a5"
+        }
+      ],
+      "execution": {
+        "status": "not_tested",
+        "source_commit": null,
+        "test_commit": null
+      },
+      "limits": [
+        "Concrete assertions read; existing aggregate569/29 does not prove these named tests individually"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "GENERIC-REJECTION-CALLBACK-01",
+      "acceptance": "DIR-TEST-0085",
+      "api": "public prepare with custom registered positive control",
+      "expected": "Normal input executes real callback once; after reset rejected input executes zero callbacks; exact rejection diagnostic preserved",
+      "test": {
+        "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+        "named_test": "explicit_import_name_is_rejected_with_ned_keyword_source"
+      },
+      "execution": {
+        "status": "passed_limited",
+        "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "log": "docs/verification/results/ac0008-issue44-2026-10-10/logs/focused-tests.stdout.log",
+        "log_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+        "binding": "docs/verification/results/ac0008-issue44-2026-10-10/runtime-bindings.json",
+        "binding_case_id": "NED-S1-T01-R09-O001",
+        "positive_control": "Named test asserts committed_events and actual on_event=1 before resetting counter",
+        "callback_count": 0,
+        "positive_callback_count": 1
+      },
+      "limits": [
+        "Only3Issue44 rejection cases and unknown property",
+        "Does not prove Classical CAN factory callbacks or all generic lifecycle conditions"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "GENERIC-REJECTION-CALLBACK-02",
+      "acceptance": "DIR-TEST-0085",
+      "api": "public prepare with custom registered positive control",
+      "expected": "Normal input executes real callback once; after reset rejected input executes zero callbacks; exact rejection diagnostic preserved",
+      "test": {
+        "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+        "named_test": "import_is_explicitly_rejected_with_ned_source"
+      },
+      "execution": {
+        "status": "passed_limited",
+        "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "log": "docs/verification/results/ac0008-issue44-2026-10-10/logs/focused-tests.stdout.log",
+        "log_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+        "binding": "docs/verification/results/ac0008-issue44-2026-10-10/runtime-bindings.json",
+        "binding_case_id": "NED-S1-T01-R09-O001",
+        "positive_control": "Named test asserts committed_events and actual on_event=1 before resetting counter",
+        "callback_count": 0,
+        "positive_callback_count": 1
+      },
+      "limits": [
+        "Only3Issue44 rejection cases and unknown property",
+        "Does not prove Classical CAN factory callbacks or all generic lifecycle conditions"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "GENERIC-REJECTION-CALLBACK-03",
+      "acceptance": "DIR-TEST-0085",
+      "api": "public prepare with custom registered positive control",
+      "expected": "Normal input executes real callback once; after reset rejected input executes zero callbacks; exact rejection diagnostic preserved",
+      "test": {
+        "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+        "named_test": "inheritance_is_explicitly_rejected_with_ned_source"
+      },
+      "execution": {
+        "status": "passed_limited",
+        "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "log": "docs/verification/results/ac0008-issue44-2026-10-10/logs/focused-tests.stdout.log",
+        "log_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+        "binding": "docs/verification/results/ac0008-issue44-2026-10-10/runtime-bindings.json",
+        "binding_case_id": "NED-S1-T01-R09-O002",
+        "positive_control": "Named test asserts committed_events and actual on_event=1 before resetting counter",
+        "callback_count": 0,
+        "positive_callback_count": 1
+      },
+      "limits": [
+        "Only3Issue44 rejection cases and unknown property",
+        "Does not prove Classical CAN factory callbacks or all generic lifecycle conditions"
+      ],
+      "full_ac0008_acceptance": false
+    },
+    {
+      "case_id": "GENERIC-REJECTION-CALLBACK-04",
+      "acceptance": "DIR-TEST-0085",
+      "api": "public prepare with custom registered positive control",
+      "expected": "Normal input executes real callback once; after reset rejected input executes zero callbacks; exact rejection diagnostic preserved",
+      "test": {
+        "path": "crates/dir-simulator/tests/ac0008_ned_rejections.rs",
+        "named_test": "unknown_property_still_reports_unsupported_syntax"
+      },
+      "execution": {
+        "status": "passed_limited",
+        "source_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "test_commit": "9adf18faf1d0791360c4528fe1445b2560e395f8",
+        "log": "docs/verification/results/ac0008-issue44-2026-10-10/logs/focused-tests.stdout.log",
+        "log_sha256": "69d954cbf64a5b51be271c1f7203e20dbc202da6dba1edc35356d54fc80a52b3",
+        "binding": "docs/verification/results/ac0008-issue44-2026-10-10/runtime-bindings.json",
+        "binding_case_id": "ISSUE44-UNKNOWN-PROPERTY",
+        "positive_control": "Named test asserts committed_events and actual on_event=1 before resetting counter",
+        "callback_count": 0,
+        "positive_callback_count": 1
+      },
+      "limits": [
+        "Only3Issue44 rejection cases and unknown property",
+        "Does not prove Classical CAN factory callbacks or all generic lifecycle conditions"
+      ],
+      "full_ac0008_acceptance": false
+    }
+  ],
+  "historical_results_unchanged": true,
+  "remaining": [
+    "unbound named registry execution evidence",
+    "full atomic NED fixtures/assertions",
+    "origin/adoption/static-link population residuals"
+  ],
+  "full_ac0008_acceptance": false
+}

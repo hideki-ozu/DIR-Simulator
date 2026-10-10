@@ -1,0 +1,11 @@
+# Candidate ④: fixed-width contribution sorting and indexed timelines
+
+Scope: this candidate changes only CAN/Gateway archived metric contribution handling. The existing JSON external sorters for event records, model records, requests, and receivers remain unchanged. No schema or published file layout changes.
+
+The archive pass gives each contribution a topology target ID and a monotonically increasing `tie` in original arrival order. A contribution is one fixed-width, little-endian 41-byte row: `time:u64`, `tie:u64`, `target:u64`, `kind:u8`, `amount:i128`. Kind codes 0–6 map to busy, frame, queue, payload, serialized, occupied, received. Runs compare **only** `(time,tie)`; neither target nor kind affects order. This keeps same-time queue last-write behavior and the original order of occupancy increments/decrements, including their intermediate nonnegative checks.
+
+The dedicated sorter owns a temporary directory and removes it on success or error. It bounds in-memory rows by `4 MiB / size_of::<Row>()` (1 KiB in tests), and each merge has at most 16 readers (3 in tests). Overflow in sequence numbers, file serials, and merge levels reports a Diagnostic; a truncated binary row or unknown kind is a decoding error. The payload has no variable-length fields. The total row count is bounded by the checked `tie` counter. Each output run uses `create_new` and checked I/O; a failed merge leaves its partial file inside the owned directory for RAII cleanup.
+
+The topology is fixed before reading archived rows. It assigns IDs to buses, controllers, each controller's txQueue, and each controller's rxQueue; duplicate names are diagnosed. A `Vec<Timeline>` indexed by those IDs replaces string-keyed timeline lookup. Transmit and receive queue names are precomputed once per controller for aggregate and summary rows. Unknown contribution targets in the source or a decoded row return Diagnostics. Existing statistics and queue maximum maps keep their semantics.
+
+Validation to run in the parent's serial phase: format check; focused `output::contribution_sort::tests` and `output::stream::tests`; full locked Rust tests and clippy under Rust 1.85.0; compare all five published outputs against the frozen baseline for schema-1 CAN and schema-2 Gateway, including partial/H=0 cases. No build, test, or benchmark has been run in this candidate worker.
