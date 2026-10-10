@@ -175,7 +175,7 @@ def main():
         assert [result["simulation"], csv_rows(destination, "events.csv"), csv_rows(destination, "summary.csv")] == previous
         cases.append({"case_id": "DIR-TEST-0083", "subcase": name + "-generator-permutation", "status": "passed", "output": str(destination)})
 
-    write(base / "report.json", {"status": "passed", "binary": str(binary), "binary_sha256": sha(binary), "cases": cases, "commands": commands, "limits": ["Lifecycle allocation/finish fault injection is exercised separately by registered-engine tests", "Native-versus-WSL comparison requires an independent native environment; this script exercises WSL only", "Cases 0082 and remaining 0083 scheduler/permutation assertions are supplied by Rust registered-engine tests"]})
+    write(base / "report.json", {"status": "passed", "binary": str(binary), "binary_sha256": sha(binary), "cases": cases, "commands": commands, "limits": ["Lifecycle allocation/finish fault injection is exercised separately by registered-engine tests", "Current verification scope is Ubuntu 24.04 LTS x86_64 on WSL; native Ubuntu comparison and Windows native verification are outside current requirements", "Cases 0082 and remaining 0083 scheduler/permutation assertions are supplied by Rust registered-engine tests"]})
     print(json.dumps({"status": "passed", "cases": len(cases), "commands": len(commands), "report": str(base / "report.json")}))
 
 

@@ -1,7 +1,7 @@
 # 設定・用語・FAQ
 
-文書バージョン：`1.1.0`  
-対象GitHubバージョン：`v1.1.3`  
+文書バージョン：`1.1.1`  
+対象GitHubバージョン：`main @ 0b7b23d8`  
 文書ID：`guide-reference`  
 文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
 
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-10` | 動作確認・受入範囲をWSL上のUbuntu 24.04 LTS x86_64へ統一。Ubuntu native比較・Windows native単独確認を現在の必須条件から除外し、同一環境の検証と過去証跡を維持 |
 | `1.1.0` | `2026-10-05` | 初版：公開サンプルの実行・実画面・条件変更実験、GitHub Pages公開とMarkdown再利用を整備 |
 
 ## 最小例で使う設定
@@ -63,10 +64,11 @@ INIはNEDのパラメータを上書きします。NED自体は独立パーサ�
 
 ### Windowsで同じコマンドを使えるか
 
-掲載Bashコマンドと実行検証はWSLで行いました。Viewer HTMLとMkDocs静的ガイドはWindowsブラウザで読めます。Windows native Rustビルドは今回検証していません。
+掲載Bashコマンドと実行検証はWSLで行いました。現在の動作確認・受入範囲はWSL上のUbuntu 24.04 LTS x86_64です。Ubuntu nativeとの比較とWindows native単独確認は現在の要件・受入・公開必須条件に含めません。Viewer HTMLとMkDocs静的ガイドはWindowsブラウザで読めます。Windows native Rustビルドは今回検証していません。
 
 ### 実装とREADMEの予定表記が違う
 
 対象タグの実装・テスト・Releaseを確認します。v1.1.3には5つの初期transaction profileが入り、Viewerも対応しています。全文規格適合や性能受入と、profileが動くことは別の確認です。
 
 [入門](初めてのCAN実行.md)、[画面操作](Viewerで結果を読む.md)、[調停実験](CANの調停.md)へ戻れます。
+
