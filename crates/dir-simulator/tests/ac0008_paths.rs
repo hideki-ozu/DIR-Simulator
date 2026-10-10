@@ -103,3 +103,41 @@ fn classical_can_prepare_with_registry_and_run_uses_builtin_adapter() {
     assert_eq!(run(prepared, &destination).unwrap().exit_code, 0);
     assert_eq!(projection(&destination), expected);
 }
+
+#[test]
+fn classical_can_explicit_run_config_preserves_plain_projection() {
+    let output = Output::new();
+    let expected = plain_reference(&output.0.join("reference"));
+    let destination = output.0.join("explicit-run-config");
+    let report =
+        dir_simulator::run_config_with_registry(&fixture(), &destination, Registry::default())
+            .unwrap();
+    assert_eq!(report.exit_code, 0);
+    assert_eq!(projection(&destination), expected);
+}
+#[test]
+fn classical_can_cli_validate_accepts_fixture_and_rejects_missing_config() {
+    let output = Output::new();
+    let valid = Command::new(env!("CARGO_BIN_EXE_dir-simulator"))
+        .arg("validate")
+        .arg("--config")
+        .arg(fixture())
+        .current_dir(&output.0)
+        .output()
+        .unwrap();
+    assert!(
+        valid.status.success(),
+        "{}",
+        String::from_utf8_lossy(&valid.stderr)
+    );
+    let invalid = Command::new(env!("CARGO_BIN_EXE_dir-simulator"))
+        .arg("validate")
+        .arg("--config")
+        .arg(output.0.join("missing.ini"))
+        .current_dir(&output.0)
+        .output()
+        .unwrap();
+    assert!(!invalid.status.success());
+    assert!(!invalid.stderr.is_empty());
+    assert_eq!(fs::read_dir(&output.0).unwrap().count(), 0);
+}

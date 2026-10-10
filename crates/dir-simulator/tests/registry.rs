@@ -1447,3 +1447,63 @@ fn finish_can_retain_frozen_spool_after_full_buffer_and_tail_are_committed() {
             .starts_with(".dir-observations-")
     }));
 }
+
+#[test]
+fn generic_prepare_defers_model_factories_until_runtime() {
+    static FACTORIES: AtomicU64 = AtomicU64::new(0);
+    let f = Fixture::new();
+    let r = registry_factories(
+        |_| {
+            FACTORIES.fetch_add(1, Ordering::Relaxed);
+            Ok(Box::new(Sender))
+        },
+        |_| {
+            FACTORIES.fetch_add(1, Ordering::Relaxed);
+            Ok(Box::new(Receiver { fail: false }))
+        },
+    );
+    FACTORIES.store(0, Ordering::Relaxed);
+    let prepared = prepare_with_registry(&f.config(), r.clone()).unwrap();
+    assert!(prepared.registered.as_ref().unwrap().is_generic());
+    assert_eq!(FACTORIES.load(Ordering::Relaxed), 0);
+    let snapshot = runtime::simulate(&prepared).unwrap();
+    assert_eq!(snapshot.common.termination, "events_exhausted");
+    assert_eq!(snapshot.common.committed_events, 3);
+    assert_eq!(FACTORIES.load(Ordering::Relaxed), 2);
+    FACTORIES.store(0, Ordering::Relaxed);
+    let config = std::fs::read_to_string(f.config()).unwrap();
+    std::fs::write(
+        f.config(),
+        config.replace("test.profile.v1", "test.missing.v1"),
+    )
+    .unwrap();
+    assert!(prepare_with_registry(&f.config(), r).is_err());
+    assert_eq!(FACTORIES.load(Ordering::Relaxed), 0);
+}
+#[test]
+fn explicit_run_config_selects_custom_registry_instead_of_default() {
+    let f = Fixture::new();
+    let default = dir_simulator::run_config_with_registry(
+        &f.config(),
+        &f.0.join("default-results"),
+        Registry::default(),
+    )
+    .unwrap();
+    assert_eq!(default.exit_code, 2);
+    assert_eq!(default.termination, "prep_failed");
+    assert_eq!(default.committed_events, "0");
+    let output = f.0.join("custom-results");
+    let report =
+        dir_simulator::run_config_with_registry(&f.config(), &output, registry(false)).unwrap();
+    assert_eq!(report.exit_code, 0);
+    let result: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(output.join("results.json")).unwrap()).unwrap();
+    assert_eq!(
+        result["simulation"]["model_records"]
+            .as_array()
+            .unwrap()
+            .len(),
+        1
+    );
+    assert_eq!(result["simulation"]["model_records"][0]["data"]["byte"], 7);
+}
