@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.11`
+文書バージョン：`1.1.12`
 対象GitHubバージョン：`v1.1.4`（公開候補）
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,8 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.12` | `2026-10-10` | 第4push。mainの受入・出自・ライセンス記録とEthernet期限ガイドの入口を統合。分岐した1.1.11履歴を両方保持 |
+| `1.1.11` | `2026-10-10` | Ethernet配送期限のCLI実測・実Viewer比較と配布入力への入口を追加（PR #50の分岐履歴） |
 | `1.1.11` | `2026-10-10` | 固定40件のMIT経路選択と外部部品の用途・元の選択肢・追加条件の一覧への入口を追加。原文と歴史的未承認記録を保持 |
 | `1.1.10` | `2026-10-10` | v1.1.4の公開依頼に基づきソース配布候補と対象版を明示。NED属性・診断修正とCAN受入経路の資料への入口を追加し、既存実測・未確認事項を保持 |
 | `1.1.9` | `2026-10-10` | 動作確認・受入範囲をWSL上のUbuntu 24.04 LTS x86_64へ統一。Ubuntu native比較・Windows native単独確認を現在の必須条件から除外し、同一環境の検証と過去証跡を維持 |
@@ -35,6 +37,8 @@
 Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。公開版`v1.1.3`にはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加しています。本PRは公開拡張API、CAN↔Ethernet変換・動的制御・TSN、CAN/Gatewayの大規模出力処理を追加し、次の公開版を`v1.1.4`とします。公開タグとPRの提供状態を分けて記載します。
 
 初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。初回公開はこの構成をmainへ反映した後です。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
+
+[Ethernet配送期限と遅延判定の比較](docs/guide/Ethernet配送期限と遅延判定の比較.md)では、期限だけを1psずつ変えて、同じ配送遅延に対する超過判定を実測で比較します。入力基礎v1.1.3と実測版v1.1.4を区別し、[8入力のZIP](docs/guide/downloads/ethernet-deadline-inputs.zip)と実Viewer画像を掲載しています。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
