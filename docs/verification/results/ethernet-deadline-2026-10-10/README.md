@@ -1,6 +1,6 @@
 # Ethernet配送期限の実測証跡
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.4`  
 文書ID：`evidence-ethernet-deadline`  
 文書状態：実測・実Viewer確認済み。公開ガイドの表示・検索・Project登録は別途確認
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-10` | 第2push。第1headのGuide/Policy CI成功、公開入口、本文表示/検索/Project未確認を別記 |
 | `1.1.0` | `2026-10-10` | 初回push。実測原本のhash確認、全record・指標・入力snapshot、実Viewer画像の根拠を保存 |
 
 ## 実行と再確認の範囲
@@ -44,3 +45,9 @@ Chromium 151.0.7922.34でshort/equalを共に1,200,000ps、packet:0選択で撮�
 ## 統合前の静的検証
 
 [静的検証](static-verification.json)でstrict traceability 231要件・274ノード・不完全0、生成一覧fresh、入力とZIP、checker一行差分、全record・指標と画像hashを確認。既存traceability関連39 testsを試行し、Git fixture初期化で6 failures（2 subtestsを含む）が発生した。操作は一時フォルダの`git init --quiet`、障害は`.git/config`書込みPermission denied、exit 128。設定や権限変更で回避せず依存検証を停止した。ガイドbrowser checkerはNode syntax検査のみで、実行済みではない。[公開source版照合](public-version-source-check.json)も参照。
+
+## 第1headのCIと第2pushの統合状況
+
+第1head `5b13385d9f8d20b3f11b8d6beea4b126a92ddd40` の[Guide CI](https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38059877332/job/114235775224)と[policy CI](https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38059877377)が成功。MkDocs strict、3種類のZIP、11 HTMLと512リンク・画像・anchorが合格。Pages upload/deployはskipped。Rust CIはこのheadに新しいrunを作成していない。
+
+第2pushで実測済み記事へのnav/index/README入口を追加し、記事から統合作業の状況を移した。全体の完了判定はまだ保留する。ガイド本文の390px、検索「期限」「配送」、その4画像の目視、Project登録は未完了。Viewer自体の390px検証と区別する。CUAブラウザlauncherはHRESULT 0x80070003、ローカルMkDocs moduleは存在せず、Project toolもなく、設定/権限変更や追加tool導入による回避をしない。未実施分だけを通常環境で検証し、18操作の実測をやり直さない。

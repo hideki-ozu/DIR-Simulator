@@ -1,7 +1,7 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.4`  
-対象GitHubバージョン：`v1.1.3`  
+文書バージョン：`1.1.5`  
+対象GitHubバージョン：CAN記事は`v1.1.3`、Ethernet期限記事は`v1.1.4`  
 文書ID：`guide-index`  
 文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
 
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.5` | `2026-10-10` | Ethernet期限の実測比較を追加し、CAN記事の基準版と実測版を区別 |
 | `1.1.4` | `2026-10-07` | CAN FDのデータ速度比較と独立配布入力を追加 |
 | `1.1.3` | `2026-10-06` | 公開済みmainを統合し、受信フィルタと受信処理遅延の両ガイド・配布入力への入口を維持 |
 | `1.1.2` | `2026-10-06` | CANの受信フィルタとECU別の受信選択実習を追加 |
@@ -16,7 +17,7 @@
 | `1.1.1` | `2026-10-06` | 読者向けガイドから原稿再利用と執筆管理の説明を分離 |
 | `1.1.0` | `2026-10-05` | 初版：公開サンプルの実行・実画面・条件変更実験、GitHub Pages公開とMarkdown再利用を整備 |
 
-DIRを初めて使う人が、サンプルのCAN通信を実行し、結果を読み、設定を変えて理由を確かめるためのガイドです。コードと数値の基準は公開版v1.1.3（`dd6199503913db24729f04bcca7e9e4f856fd71c`）です。
+DIRを初めて使う人が、サンプルのCAN・Ethernet通信を実行し、結果を読み、設定を変えて理由を確かめるためのガイドです。既存CAN記事のコードと数値の基準は公開版v1.1.3（`dd6199503913db24729f04bcca7e9e4f856fd71c`）です。Ethernet配送期限の記事はv1.1.3の入力を基礎に、公開版v1.1.4の固定sourceで実測しています。
 
 ## ここから始める
 
@@ -30,12 +31,13 @@ DIRを初めて使う人が、サンプルのCAN通信を実行し、結果を�
 | 機能辞典・受信選択 | [CANの受信フィルタ](CANの受信フィルタ.md) | 送信成功と受信選別を区別し、1設定を3条件で比較 |
 | 受信処理の実験 | [CAN受信処理遅延の比較](CAN受信処理遅延の比較.md) | 受信処理時間だけを変え、送信・観測・受信完了と終了時pendingを区別 |
 | FDデータ速度の実験 | [CAN FDのデータ速度比較](CANFDのデータ速度比較.md) | 位相bit数を固定し、速度と次要求の待ち時間を比較 |
+| Ethernet期限の実験 | [Ethernet配送期限と遅延判定の比較](Ethernet配送期限と遅延判定の比較.md) | deadlineだけを1psずつ変え、同じ配送遅延と期限超過判定を区別 |
 | 設定・用語・FAQ | [設定・用語・FAQ](設定・用語・FAQ.md) | パス、単位、上書きエラー、学習時の疑問 |
 
 上から3ページを順に読むと、一つの小さな実験がつながります。入門は3要求だけに絞り、実際に保存された結果と画面を掲載しています。
 
 ## 現在使える範囲
 
-このガイドの実習はClassical CANの`can.cc.ideal.v1`です。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、外部計算位相bit数を使うCAN FD、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。READMEの古い「予定」表記だけでは実装有無を判定しません。[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)と対象タグの実装を基準にします。
+Classical CANの実習は`can.cc.ideal.v1`、CAN FDは当該記事のprofileを使います。Ethernet配送期限の実習は`ethernet.l2.qos.v1`です。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、外部計算位相bit数を使うCAN FD、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。READMEの古い「予定」表記だけでは実装有無を判定しません。[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)と対象タグの実装を基準にします。
 
 規格全体への適合や100万要求の性能受入は、この実習が証明する範囲に含みません。CAN FDは任意フレームの完全wire codecではありません。
