@@ -1,0 +1,248 @@
+﻿2026-10-10T12:56:33.4324342Z Current runner version: '2.337.0'
+2026-10-10T12:56:33.4348135Z ##[group]Runner Image Provisioner
+2026-10-10T12:56:33.4349152Z Hosted Compute Agent
+2026-10-10T12:56:33.4349733Z Version: 20261002.596
+2026-10-10T12:56:33.4350320Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-10T12:56:33.4351002Z Build Date: 2026-10-02T22:28:27Z
+2026-10-10T12:56:33.4351680Z Worker ID: {ce52083d-41c5-49b3-8f3b-fa54eb1015d9}
+2026-10-10T12:56:33.4352319Z Region: westus3
+2026-10-10T12:56:33.4352821Z Cloud: Azure
+2026-10-10T12:56:33.4353345Z ##[endgroup]
+2026-10-10T12:56:33.4354715Z ##[group]Operating System
+2026-10-10T12:56:33.4355342Z Ubuntu
+2026-10-10T12:56:33.4355825Z 24.04.5
+2026-10-10T12:56:33.4356297Z LTS
+2026-10-10T12:56:33.4356803Z ##[endgroup]
+2026-10-10T12:56:33.4357340Z ##[group]Runner Image
+2026-10-10T12:56:33.4357942Z Image: ubuntu-24.04
+2026-10-10T12:56:33.4358581Z Version: 20261004.327.1
+2026-10-10T12:56:33.4359766Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-10T12:56:33.4361185Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-10T12:56:33.4362188Z ##[endgroup]
+2026-10-10T12:56:33.4363185Z ##[group]GITHUB_TOKEN Permissions
+2026-10-10T12:56:33.4365106Z Contents: read
+2026-10-10T12:56:33.4365656Z Metadata: read
+2026-10-10T12:56:33.4366145Z ##[endgroup]
+2026-10-10T12:56:33.4368144Z Secret source: Actions
+2026-10-10T12:56:33.4369307Z Cache mode: write
+2026-10-10T12:56:33.4370048Z Prepare workflow directory
+2026-10-10T12:56:33.4711690Z Prepare all required actions
+2026-10-10T12:56:33.4777317Z Getting action download info
+2026-10-10T12:56:33.7732007Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-10-10T12:56:33.9322062Z Complete job name: Rust ledger identity regression
+2026-10-10T12:56:34.0020861Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-10T12:56:34.0021987Z with:
+2026-10-10T12:56:34.0022509Z   ref: 4e3413a00f870c9d43eedc2b8812f9ab59072645
+2026-10-10T12:56:34.0023221Z   persist-credentials: false
+2026-10-10T12:56:34.0023772Z   set-safe-directory: false
+2026-10-10T12:56:34.0024353Z   repository: hideki-ozu/DIR-Simulator
+2026-10-10T12:56:34.0028026Z   token: ***
+2026-10-10T12:56:34.0028677Z   ssh-strict: true
+2026-10-10T12:56:34.0029215Z   ssh-user: git
+2026-10-10T12:56:34.0029704Z   clean: true
+2026-10-10T12:56:34.0030208Z   sparse-checkout-cone-mode: true
+2026-10-10T12:56:34.0030797Z   fetch-depth: 1
+2026-10-10T12:56:34.0031268Z   fetch-tags: false
+2026-10-10T12:56:34.0031773Z   show-progress: true
+2026-10-10T12:56:34.0032251Z   lfs: false
+2026-10-10T12:56:34.0032704Z   submodules: false
+2026-10-10T12:56:34.0033282Z   allow-unsafe-pr-checkout: false
+2026-10-10T12:56:34.0034144Z ##[endgroup]
+2026-10-10T12:56:34.1270743Z Syncing repository: hideki-ozu/DIR-Simulator
+2026-10-10T12:56:34.1272752Z ##[group]Getting Git version info
+2026-10-10T12:56:34.1273594Z Working directory is '/home/runner/work/DIR-Simulator/DIR-Simulator'
+2026-10-10T12:56:34.1274727Z [command]/usr/bin/git version
+2026-10-10T12:56:34.1275325Z git version 2.55.0
+2026-10-10T12:56:34.1277004Z ##[endgroup]
+2026-10-10T12:56:34.1281416Z Deleting the contents of '/home/runner/work/DIR-Simulator/DIR-Simulator'
+2026-10-10T12:56:34.1282666Z ##[group]Determining repository object format
+2026-10-10T12:56:34.1283713Z ##[endgroup]
+2026-10-10T12:56:34.1284674Z ##[group]Initializing the repository
+2026-10-10T12:56:34.1285755Z [command]/usr/bin/git init /home/runner/work/DIR-Simulator/DIR-Simulator
+2026-10-10T12:56:34.1336187Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-10T12:56:34.1337959Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-10T12:56:34.1339794Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-10T12:56:34.1341141Z hint: call:
+2026-10-10T12:56:34.1342013Z hint:
+2026-10-10T12:56:34.1343171Z hint: 	git config --global init.defaultBranch <name>
+2026-10-10T12:56:34.1344253Z hint:
+2026-10-10T12:56:34.1345281Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-10T12:56:34.1346989Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-10T12:56:34.1348456Z hint:
+2026-10-10T12:56:34.1349203Z hint: 	git branch -m <name>
+2026-10-10T12:56:34.1350049Z hint:
+2026-10-10T12:56:34.1351175Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-10T12:56:34.1357483Z Initialized empty Git repository in /home/runner/work/DIR-Simulator/DIR-Simulator/.git/
+2026-10-10T12:56:34.1367993Z [command]/usr/bin/git remote add origin https://github.com/hideki-ozu/DIR-Simulator
+2026-10-10T12:56:34.1433538Z ##[endgroup]
+2026-10-10T12:56:34.1434906Z ##[group]Disabling automatic garbage collection
+2026-10-10T12:56:34.1436146Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-10T12:56:34.1459277Z ##[endgroup]
+2026-10-10T12:56:34.1460641Z ##[group]Setting up auth
+2026-10-10T12:56:34.1461649Z Removing SSH command configuration
+2026-10-10T12:56:34.1467006Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T12:56:34.1499445Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T12:56:34.1835034Z Removing HTTP extra header
+2026-10-10T12:56:34.1841411Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T12:56:34.1872976Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T12:56:34.2067739Z Removing includeIf entries pointing to credentials config files
+2026-10-10T12:56:34.2075347Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T12:56:34.2108073Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T12:56:34.2294239Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-10T12:56:34.2331736Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git.path /home/runner/work/_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:34.2360171Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:34.2390631Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:34.2451391Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:34.2474045Z ##[endgroup]
+2026-10-10T12:56:34.2474761Z ##[group]Fetching the repository
+2026-10-10T12:56:34.2483085Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 4e3413a00f870c9d43eedc2b8812f9ab59072645
+2026-10-10T12:56:36.2340655Z From https://github.com/hideki-ozu/DIR-Simulator
+2026-10-10T12:56:36.2343263Z  * branch            4e3413a00f870c9d43eedc2b8812f9ab59072645 -> FETCH_HEAD
+2026-10-10T12:56:36.2349641Z [command]/usr/bin/git rev-parse --verify --quiet 4e3413a00f870c9d43eedc2b8812f9ab59072645^{object}
+2026-10-10T12:56:36.2373464Z 4e3413a00f870c9d43eedc2b8812f9ab59072645
+2026-10-10T12:56:36.2377718Z ##[endgroup]
+2026-10-10T12:56:36.2379404Z ##[group]Determining the checkout info
+2026-10-10T12:56:36.2381581Z ##[endgroup]
+2026-10-10T12:56:36.2382896Z [command]/usr/bin/git sparse-checkout disable
+2026-10-10T12:56:36.2424585Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-10T12:56:36.2452360Z ##[group]Checking out the ref
+2026-10-10T12:56:36.2455016Z [command]/usr/bin/git checkout --progress --force 4e3413a00f870c9d43eedc2b8812f9ab59072645
+2026-10-10T12:56:36.5187996Z Note: switching to '4e3413a00f870c9d43eedc2b8812f9ab59072645'.
+2026-10-10T12:56:36.5189081Z 
+2026-10-10T12:56:36.5189437Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-10T12:56:36.5190391Z changes and commit them, and you can discard any commits you make in this
+2026-10-10T12:56:36.5191371Z state without impacting any branches by switching back to a branch.
+2026-10-10T12:56:36.5191921Z 
+2026-10-10T12:56:36.5192407Z If you want to create a new branch to retain commits you create, you may
+2026-10-10T12:56:36.5193370Z do so (now or later) by using -c with the switch command. Example:
+2026-10-10T12:56:36.5193911Z 
+2026-10-10T12:56:36.5194184Z   git switch -c <new-branch-name>
+2026-10-10T12:56:36.5194581Z 
+2026-10-10T12:56:36.5194817Z Or undo this operation with:
+2026-10-10T12:56:36.5195154Z 
+2026-10-10T12:56:36.5195362Z   git switch -
+2026-10-10T12:56:36.5195621Z 
+2026-10-10T12:56:36.5196063Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-10T12:56:36.5196606Z 
+2026-10-10T12:56:36.5197155Z HEAD is now at 4e3413a test: bound channel factory inputs and real CLI runtime separation
+2026-10-10T12:56:36.5209399Z ##[endgroup]
+2026-10-10T12:56:36.5248528Z [command]/usr/bin/git log -1 --format=%H
+2026-10-10T12:56:36.5270420Z 4e3413a00f870c9d43eedc2b8812f9ab59072645
+2026-10-10T12:56:36.5280199Z ##[group]Removing auth
+2026-10-10T12:56:36.5280577Z Removing SSH command configuration
+2026-10-10T12:56:36.5283618Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T12:56:36.5310290Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T12:56:36.5486581Z Removing HTTP extra header
+2026-10-10T12:56:36.5491107Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T12:56:36.5521772Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T12:56:36.5694584Z Removing includeIf entries pointing to credentials config files
+2026-10-10T12:56:36.5699060Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T12:56:36.5723132Z includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git.path
+2026-10-10T12:56:36.5724231Z includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git/worktrees/*.path
+2026-10-10T12:56:36.5725088Z includeif.gitdir:/github/workspace/.git.path
+2026-10-10T12:56:36.5725674Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-10T12:56:36.5734045Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git.path
+2026-10-10T12:56:36.5753516Z /home/runner/work/_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:36.5762516Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git.path /home/runner/work/_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:36.5793494Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git/worktrees/*.path
+2026-10-10T12:56:36.5812102Z /home/runner/work/_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:36.5821716Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/DIR-Simulator/DIR-Simulator/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:36.5850670Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-10T12:56:36.5868520Z /github/runner_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:36.5876875Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:36.5909189Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-10T12:56:36.5929477Z /github/runner_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:36.5936121Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config
+2026-10-10T12:56:36.5964793Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T12:56:36.6137964Z Removing credentials config '/home/runner/work/_temp/git-credentials-93710452-0fa7-404e-ac61-9535f75fe885.config'
+2026-10-10T12:56:36.6146638Z ##[endgroup]
+2026-10-10T12:56:36.6322639Z ##[group]Run rustup toolchain install 1.85.0 --profile minimal --component rustfmt --component clippy
+2026-10-10T12:56:36.6323583Z [36;1mrustup toolchain install 1.85.0 --profile minimal --component rustfmt --component clippy[0m
+2026-10-10T12:56:36.6519936Z shell: /usr/bin/bash -e {0}
+2026-10-10T12:56:36.6520321Z ##[endgroup]
+2026-10-10T12:56:36.7050619Z info: syncing channel updates for 1.85.0-x86_64-unknown-linux-gnu
+2026-10-10T12:56:36.8806012Z info: latest update on 2025-02-20 for version 1.85.0 (4d91de4e4 2025-02-17)
+2026-10-10T12:56:36.8806607Z info: downloading 5 components
+2026-10-10T12:56:45.1336270Z 
+2026-10-10T12:56:45.1410671Z   1.85.0-x86_64-unknown-linux-gnu installed - rustc 1.85.0 (4d91de4e4 2025-02-17)
+2026-10-10T12:56:45.1411126Z 
+2026-10-10T12:56:45.1487526Z ##[group]Run cargo fmt --all -- --check
+2026-10-10T12:56:45.1487876Z [36;1mcargo fmt --all -- --check[0m
+2026-10-10T12:56:45.1488176Z [36;1mcargo test --locked --workspace[0m
+2026-10-10T12:56:45.1488881Z [36;1mcargo clippy --locked --workspace --all-targets -- -D warnings[0m
+2026-10-10T12:56:45.1528958Z shell: /usr/bin/bash -e {0}
+2026-10-10T12:56:45.1529249Z ##[endgroup]
+2026-10-10T12:56:46.2112992Z Diff in /home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator/tests/registry.rs:47:
+2026-10-10T12:56:46.2114155Z              if let Some(route) = c.connections().first() {
+2026-10-10T12:56:46.2114740Z                  let channel = route.channels[0].clone();
+2026-10-10T12:56:46.2115262Z                  for _ in 0..2 {
+2026-10-10T12:56:46.2121817Z -                    let ParameterValue::Quantity(value) = c.channel_capability(
+2026-10-10T12:56:46.2122566Z -                        &channel,
+2026-10-10T12:56:46.2123189Z -                        &Schema::new("test.propagation", 1),
+2026-10-10T12:56:46.2123708Z -                        &[],
+2026-10-10T12:56:46.2124096Z -                    )?
+2026-10-10T12:56:46.2124552Z +                    let ParameterValue::Quantity(value) =
+2026-10-10T12:56:46.2125320Z +                        c.channel_capability(&channel, &Schema::new("test.propagation", 1), &[])?
+2026-10-10T12:56:46.2125960Z                      else {
+2026-10-10T12:56:46.2126477Z                          return Err("unexpected channel capability type".into());
+2026-10-10T12:56:46.2127063Z                      };
+2026-10-10T12:56:46.2127807Z Diff in /home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator/tests/registry.rs:136:
+2026-10-10T12:56:46.2128773Z          };
+2026-10-10T12:56:46.2129314Z          std::fs::write(path, format!("{}{network}\n", &old[..end])).unwrap();
+2026-10-10T12:56:46.2129967Z          let ini = std::fs::read_to_string(f.config()).unwrap();
+2026-10-10T12:56:46.2131218Z -        std::fs::write(f.config(), format!("{ini}\n[Channel Demo::z.out]\ndelay = 7ps\n"))
+2026-10-10T12:56:46.2131943Z -            .unwrap();
+2026-10-10T12:56:46.2132364Z +        std::fs::write(
+2026-10-10T12:56:46.2132752Z +            f.config(),
+2026-10-10T12:56:46.2133255Z +            format!("{ini}\n[Channel Demo::z.out]\ndelay = 7ps\n"),
+2026-10-10T12:56:46.2133852Z +        )
+2026-10-10T12:56:46.2134181Z +        .unwrap();
+2026-10-10T12:56:46.2134558Z          f
+2026-10-10T12:56:46.2134904Z      }
+2026-10-10T12:56:46.2135208Z  }
+2026-10-10T12:56:46.2135897Z Diff in /home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator/tests/registry.rs:161:
+2026-10-10T12:56:46.2136813Z      assert_eq!(snapshot.common.committed_events, 0);
+2026-10-10T12:56:46.2137425Z      assert_eq!(snapshot.common.pending_events, 0);
+2026-10-10T12:56:46.2138025Z      assert!(snapshot.common.diagnostics.is_empty());
+2026-10-10T12:56:46.2138955Z -    assert!(snapshot.registered.as_ref().unwrap().model_records.is_empty());
+2026-10-10T12:56:46.2139652Z +    assert!(
+2026-10-10T12:56:46.2139992Z +        snapshot
+2026-10-10T12:56:46.2140353Z +            .registered
+2026-10-10T12:56:46.2140730Z +            .as_ref()
+2026-10-10T12:56:46.2141100Z +            .unwrap()
+2026-10-10T12:56:46.2141472Z +            .model_records
+2026-10-10T12:56:46.2141867Z +            .is_empty()
+2026-10-10T12:56:46.2142230Z +    );
+2026-10-10T12:56:46.2142555Z      assert_eq!(
+2026-10-10T12:56:46.2142890Z          calls(),
+2026-10-10T12:56:46.2143233Z          vec![
+2026-10-10T12:56:46.2143929Z Diff in /home/runner/work/DIR-Simulator/DIR-Simulator/crates/dir-simulator/tests/registry.rs:234:
+2026-10-10T12:56:46.2144875Z      assert_eq!(snapshot.common.committed_events, 0);
+2026-10-10T12:56:46.2145495Z      assert_eq!(snapshot.common.pending_events, 0);
+2026-10-10T12:56:46.2146095Z      assert!(snapshot.common.points.is_empty());
+2026-10-10T12:56:46.2146838Z -    assert!(snapshot.registered.as_ref().unwrap().model_records.is_empty());
+2026-10-10T12:56:46.2147524Z +    assert!(
+2026-10-10T12:56:46.2148202Z +        snapshot
+2026-10-10T12:56:46.2148709Z +            .registered
+2026-10-10T12:56:46.2149088Z +            .as_ref()
+2026-10-10T12:56:46.2149464Z +            .unwrap()
+2026-10-10T12:56:46.2149849Z +            .model_records
+2026-10-10T12:56:46.2150259Z +            .is_empty()
+2026-10-10T12:56:46.2150638Z +    );
+2026-10-10T12:56:46.2151059Z      assert_eq!(snapshot.common.diagnostics.len(), 1);
+2026-10-10T12:56:46.2151702Z      let error = &snapshot.common.diagnostics[0];
+2026-10-10T12:56:46.2152268Z      assert_eq!(error.code, "E-0001");
+2026-10-10T12:56:46.2354142Z ##[error]Process completed with exit code 1.
+2026-10-10T12:56:46.2496025Z Post job cleanup.
+2026-10-10T12:56:46.3317702Z [command]/usr/bin/git version
+2026-10-10T12:56:46.3359381Z git version 2.55.0
+2026-10-10T12:56:46.3385838Z Removing SSH command configuration
+2026-10-10T12:56:46.3395499Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T12:56:46.3428481Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T12:56:46.3627505Z Removing HTTP extra header
+2026-10-10T12:56:46.3634011Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T12:56:46.3665403Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T12:56:46.3860497Z Removing includeIf entries pointing to credentials config files
+2026-10-10T12:56:46.3885686Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T12:56:46.3908863Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T12:56:46.4260831Z Cleaning up orphan processes

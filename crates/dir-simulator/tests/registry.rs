@@ -6,6 +6,258 @@ use std::path::PathBuf;
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicU64, Ordering};
 
+mod channel_boundary_probe {
+    use super::*;
+    use std::cell::{Cell, RefCell};
+
+    #[derive(Clone, Debug, PartialEq)]
+    pub(super) enum Call {
+        Channel(String, String, Parameters),
+        Model(String),
+        Initialize(String),
+        Query(String, u64),
+        FinishModel(String),
+        FinishChannel(String),
+        DropModel(String),
+        DropChannel(String),
+    }
+    thread_local! {
+        static CALLS: RefCell<Vec<Call>> = const { RefCell::new(Vec::new()) };
+        static FAIL_LAST: Cell<bool> = const { Cell::new(false) };
+    }
+    fn record(call: Call) {
+        CALLS.with(|calls| calls.borrow_mut().push(call));
+    }
+    pub(super) fn reset(fail_last: bool) {
+        CALLS.with(|calls| calls.borrow_mut().clear());
+        FAIL_LAST.with(|mode| mode.set(fail_last));
+    }
+    pub(super) fn calls() -> Vec<Call> {
+        CALLS.with(|calls| calls.borrow().clone())
+    }
+    struct ObservedModel(String);
+    impl Drop for ObservedModel {
+        fn drop(&mut self) {
+            record(Call::DropModel(self.0.clone()));
+        }
+    }
+    impl Model for ObservedModel {
+        fn initialize(&mut self, c: &mut Context<'_>) -> ModelResult {
+            record(Call::Initialize(self.0.clone()));
+            if let Some(route) = c.connections().first() {
+                let channel = route.channels[0].clone();
+                for _ in 0..2 {
+                    let ParameterValue::Quantity(value) =
+                        c.channel_capability(&channel, &Schema::new("test.propagation", 1), &[])?
+                    else {
+                        return Err("unexpected channel capability type".into());
+                    };
+                    record(Call::Query(self.0.clone(), value));
+                }
+            }
+            Ok(())
+        }
+        fn on_event(&mut self, _: &Envelope, _: &mut Context<'_>) -> ModelResult {
+            Err("unexpected event in no-event probe".into())
+        }
+        fn finish(&mut self, _: &FinishContext<'_>) -> ModelResult {
+            record(Call::FinishModel(self.0.clone()));
+            Ok(())
+        }
+    }
+    struct ObservedChannel {
+        id: String,
+        delay: u64,
+        queries: Cell<u64>,
+    }
+    impl Drop for ObservedChannel {
+        fn drop(&mut self) {
+            record(Call::DropChannel(self.id.clone()));
+        }
+    }
+    impl Channel for ObservedChannel {
+        fn capability(&self, name: &Schema, _: u64, _: &[u8]) -> ModelResult<ParameterValue> {
+            if name != &Schema::new("test.propagation", 1) {
+                return Err("unknown capability".into());
+            }
+            let previous = self.queries.get();
+            self.queries.set(previous + 1);
+            Ok(ParameterValue::Quantity(self.delay + previous))
+        }
+        fn finish(&mut self, _: &FinishContext<'_>) -> ModelResult {
+            record(Call::FinishChannel(self.id.clone()));
+            Ok(())
+        }
+    }
+    fn model(config: &ModelConfig) -> ModelResult<Box<dyn Model>> {
+        record(Call::Model(config.id.clone()));
+        Ok(Box::new(ObservedModel(config.id.clone())))
+    }
+    fn channel(config: &ChannelConfig) -> ModelResult<Box<dyn Channel>> {
+        record(Call::Channel(
+            config.id.clone(),
+            config.implementation_key.clone(),
+            config.parameters.clone(),
+        ));
+        if FAIL_LAST.with(Cell::get) && config.id == "Demo::z.out" {
+            return Err("channel factory rejected".into());
+        }
+        let ParameterValue::Quantity(delay) = config.parameters["delay"] else {
+            return Err("bad delay".into());
+        };
+        Ok(Box::new(ObservedChannel {
+            id: config.id.clone(),
+            delay,
+            queries: Cell::new(0),
+        }))
+    }
+    pub(super) fn registry() -> Registry {
+        registry_factories_with_channel_in(Registry::new(), model, model, channel, Some(10.0))
+    }
+    pub(super) fn allocation(id: &str, delay: u64) -> Call {
+        Call::Channel(
+            id.into(),
+            "test.Delay".into(),
+            BTreeMap::from([("delay".into(), ParameterValue::Quantity(delay))]),
+        )
+    }
+    pub(super) fn fixture(three_edges: bool) -> Fixture {
+        let f = Fixture::new();
+        let path = f.0.join("ned/demo/model.ned");
+        let old = std::fs::read_to_string(&path).unwrap();
+        let end = old.find("network Demo").unwrap();
+        let network = if three_edges {
+            "network Demo { submodules: z: demo.Sender; y: demo.Receiver; m: demo.Sender; n: demo.Receiver; a: demo.Sender; b: demo.Receiver; connections: z.out --> demo.Delay --> y.in; m.out --> demo.Delay --> n.in; a.out --> demo.Delay --> b.in; }"
+        } else {
+            "network Demo { submodules: z: demo.Sender; y: demo.Receiver; a: demo.Sender; b: demo.Receiver; connections: z.out --> demo.Delay --> y.in; a.out --> demo.Delay --> b.in; }"
+        };
+        std::fs::write(path, format!("{}{network}\n", &old[..end])).unwrap();
+        let ini = std::fs::read_to_string(f.config()).unwrap();
+        std::fs::write(
+            f.config(),
+            format!("{ini}\n[Channel Demo::z.out]\ndelay = 7ps\n"),
+        )
+        .unwrap();
+        f
+    }
+}
+
+/// Public prepare/runtime separation and per-edge state; ordering is an internal
+/// design regression, not an independent protocol-timing oracle.
+#[test]
+fn generic_channel_factories_receive_frozen_inputs_in_stable_order() {
+    use channel_boundary_probe::{Call, allocation, calls, fixture, reset};
+    reset(false);
+    let f = fixture(false);
+    let prepared = prepare_with_registry(&f.config(), channel_boundary_probe::registry()).unwrap();
+    assert!(prepared.registered.as_ref().unwrap().is_generic());
+    assert_eq!(prepared.common.channel_count, 2);
+    assert!(calls().is_empty());
+    // The already prepared channel configs must not reread this invalid override.
+    let ini = std::fs::read_to_string(f.config()).unwrap();
+    std::fs::write(f.config(), ini.replace("7ps", "11ps")).unwrap();
+    let snapshot = runtime::simulate(&prepared).unwrap();
+    assert_eq!(snapshot.common.termination, "events_exhausted");
+    assert_eq!(snapshot.common.committed_events, 0);
+    assert_eq!(snapshot.common.pending_events, 0);
+    assert!(snapshot.common.diagnostics.is_empty());
+    assert!(
+        snapshot
+            .registered
+            .as_ref()
+            .unwrap()
+            .model_records
+            .is_empty()
+    );
+    assert_eq!(
+        calls(),
+        vec![
+            allocation("Demo::a.out", 3),
+            allocation("Demo::z.out", 7),
+            Call::Model("Demo.a".into()),
+            Call::Model("Demo.b".into()),
+            Call::Model("Demo.y".into()),
+            Call::Model("Demo.z".into()),
+            Call::Initialize("Demo.a".into()),
+            Call::Query("Demo.a".into(), 3),
+            Call::Query("Demo.a".into(), 4),
+            Call::Initialize("Demo.b".into()),
+            Call::Initialize("Demo.y".into()),
+            Call::Initialize("Demo.z".into()),
+            Call::Query("Demo.z".into(), 7),
+            Call::Query("Demo.z".into(), 8),
+            Call::FinishModel("Demo.z".into()),
+            Call::FinishModel("Demo.y".into()),
+            Call::FinishModel("Demo.b".into()),
+            Call::FinishModel("Demo.a".into()),
+            Call::FinishChannel("Demo::z.out".into()),
+            Call::FinishChannel("Demo::a.out".into()),
+            Call::DropModel("Demo.z".into()),
+            Call::DropModel("Demo.y".into()),
+            Call::DropModel("Demo.b".into()),
+            Call::DropModel("Demo.a".into()),
+            Call::DropChannel("Demo::z.out".into()),
+            Call::DropChannel("Demo::a.out".into()),
+        ]
+    );
+}
+
+#[test]
+fn generic_invalid_channel_parameter_never_reaches_factories() {
+    use channel_boundary_probe::{calls, fixture, reset};
+    reset(false);
+    let f = fixture(false);
+    let ini = std::fs::read_to_string(f.config()).unwrap();
+    std::fs::write(f.config(), ini.replace("7ps", "11ps")).unwrap();
+    let error = prepare_with_registry(&f.config(), channel_boundary_probe::registry()).unwrap_err();
+    assert_eq!(error.code, "E-0001");
+    assert_eq!(error.reason, "invalid_range");
+    assert_eq!(error.target.as_deref(), Some("Demo::z.out.delay"));
+    assert!(calls().is_empty());
+}
+
+#[test]
+fn generic_channel_factory_failure_releases_only_constructed_prefix() {
+    use channel_boundary_probe::{Call, allocation, calls, fixture, reset};
+    reset(true);
+    let f = fixture(true);
+    let prepared = prepare_with_registry(&f.config(), channel_boundary_probe::registry()).unwrap();
+    assert_eq!(prepared.common.channel_count, 3);
+    assert!(calls().is_empty());
+    let snapshot = runtime::simulate(&prepared).unwrap();
+    assert_eq!(
+        calls(),
+        vec![
+            allocation("Demo::a.out", 3),
+            allocation("Demo::m.out", 3),
+            allocation("Demo::z.out", 7),
+            Call::FinishChannel("Demo::m.out".into()),
+            Call::FinishChannel("Demo::a.out".into()),
+            Call::DropChannel("Demo::m.out".into()),
+            Call::DropChannel("Demo::a.out".into()),
+        ]
+    );
+    assert_eq!(snapshot.common.termination, "prep_failed");
+    assert_eq!(snapshot.common.committed_events, 0);
+    assert_eq!(snapshot.common.pending_events, 0);
+    assert!(snapshot.common.points.is_empty());
+    assert!(
+        snapshot
+            .registered
+            .as_ref()
+            .unwrap()
+            .model_records
+            .is_empty()
+    );
+    assert_eq!(snapshot.common.diagnostics.len(), 1);
+    let error = &snapshot.common.diagnostics[0];
+    assert_eq!(error.code, "E-0001");
+    assert_eq!(error.reason, "allocation_failed");
+    assert_eq!(error.target.as_deref(), Some("Demo::z.out"));
+    assert_eq!(error.details.as_ref().unwrap()["operation"], "allocate");
+    assert!(error.message.contains("channel factory rejected"));
+}
+
 static NEXT: AtomicU64 = AtomicU64::new(0);
 static FINISHED: Mutex<Vec<String>> = Mutex::new(Vec::new());
 struct Fixture(PathBuf);
@@ -141,10 +393,26 @@ fn registry(fail: bool) -> Registry {
 fn registry_factories(sender: ModelFactory, receiver: ModelFactory) -> Registry {
     registry_factories_in(Registry::new(), sender, receiver)
 }
-fn registry_factories_in(
+fn registry_factories_in(r: Registry, sender: ModelFactory, receiver: ModelFactory) -> Registry {
+    registry_factories_with_channel_in(
+        r,
+        sender,
+        receiver,
+        |c| {
+            let ParameterValue::Quantity(n) = c.parameters["delay"] else {
+                return Err("bad delay".into());
+            };
+            Ok(Box::new(Delay(n)))
+        },
+        None,
+    )
+}
+fn registry_factories_with_channel_in(
     mut r: Registry,
     sender: ModelFactory,
     receiver: ModelFactory,
+    channel: ChannelFactory,
+    maximum_delay: Option<f64>,
 ) -> Registry {
     r.register_event(EventDescriptor {
         schema: schema(),
@@ -166,12 +434,7 @@ fn registry_factories_in(
     .unwrap();
     r.register_channel(
         "test.Delay",
-        |c| {
-            let ParameterValue::Quantity(n) = c.parameters["delay"] else {
-                return Err("bad delay".into());
-            };
-            Ok(Box::new(Delay(n)))
-        },
+        channel,
         ChannelDescriptor {
             implementation_key: "test.Delay".into(),
             implementation_version: "1".into(),
@@ -180,7 +443,7 @@ fn registry_factories_in(
                 ned_type: "double".into(),
                 dimension: Dimension::Time,
                 minimum: Some(0.0),
-                maximum: None,
+                maximum: maximum_delay,
                 required: true,
             }],
             capabilities: vec![Schema::new("test.propagation", 1)],

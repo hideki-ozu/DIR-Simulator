@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "status": "passed_limited",
+  "exit_code": 0,
+  "source_commit": "600fd34ba4d24d2dfb6d21a0e586176c798499fa",
+  "worktree": "<isolated-worktree>",
+  "result_root": "<received-result-root>",
+  "script_output_folder": "<received-result-root>/results",
+  "invocation": [
+    "python3",
+    "scripts/verification/run_extension_acceptance.py",
+    "--root",
+    "<isolated-worktree>",
+    "--output",
+    "<received-result-root>/results"
+  ],
+  "cwd": "<isolated-worktree>",
+  "cargo": "cargo 1.85.0 (d73d2caf9 2024-12-31)",
+  "environment": "WSL2 Ubuntu 24.04.4 LTS x86_64; existing Cargo/Rust 1.85.0",
+  "named_regressions_passed": 12,
+  "required_checks": [
+    {
+      "name": "format",
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "workspace_tests",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--workspace"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "workspace_test_summary": {
+    "harness_summaries": 32,
+    "passed": 610,
+    "failed": 0,
+    "ignored": 0
+  },
+  "stdout_stderr_hashes_verified": 30,
+  "source_files_hashes_unchanged": 191,
+  "existing_work_unchanged": {
+    "head": true,
+    "status": true,
+    "refs": true,
+    "worktrees": true
+  },
+  "prior_manual_measurement_rerun": false,
+  "execution_report": "results/execution.json",
+  "exit_code_file": "exit-code.txt",
+  "started_utc": "2026-10-10T14:33:56.817596+00:00",
+  "finished_utc": "2026-10-10T14:38:34.444202+00:00",
+  "scope": "Twelve named regressions including four bounded additions; no full specification/AC0008, channel conformance or adoption approval"
+}
