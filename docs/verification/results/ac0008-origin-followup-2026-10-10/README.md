@@ -1,14 +1,15 @@
 # AC0008 出自・配布人口の限定追補
 
-文書バージョン：`1.1.1`  
+文書バージョン：`1.1.2`  
 対象GitHubバージョン：`main @ b45515644dfc65c205216d564d5bf7ef00280622`  
 文書ID：`ac0008-origin-followup`  
-状態：既存証跡と固定上流URLの照合。採用承認・作者申告・全静的包含は未確定。
+状態：作成経緯の本人回答と固定40件のMIT選択承認を受領済み。個別由来・全配布適合・全静的包含は未確定。
 
 ### 更新履歴
 
 | 文書版 | 日付 | push単位の内容 |
 | --- | --- | --- |
+| 1.1.2 | 2026-10-10 | 第3push。13:40 UTCの本人回答を別追補へ保存。個別ファイルの分類・モデル／ツール・全権利条件とは区別し、過去の未回答記録とMIT選択記録を保持 |
 | 1.1.1 | 2026-10-10 | 第2push。六つの公開履歴・通知sourceの限定追補、利用者承認40件のMIT選択一覧を追加。旧JSON・生成器と取得時未承認記録を保持 |
 | 1.1.0 | 2026-10-10 | 初回push。保存済み集計と固定上流ソースを別取得して照合し、旧packetを保持した限定追補と再生成checkerを追加 |
 
@@ -45,7 +46,7 @@ current_host_resolved_librariesは調査時の解決先であり、歴史的なh
 
 Amongは原典のprototype helperから比較先のconstructor内instance helperへ配置が変わり、namespace/UMD wrapperも変わっている。SnowballProgramの一致を全体無改変へ広げない。[lunr.ja.js](https://github.com/MihaiValentin/lunr-languages/blob/f313734d145048be2f3681b756f9bf925aa299a1/lunr.ja.js)のstemmerはwordをそのまま返す。[build/build.js](https://github.com/MihaiValentin/lunr-languages/blob/f313734d145048be2f3681b756f9bf925aa299a1/build/build.js)のja entryにtemplate指定はなく、template以外の整形/minify経路がある。日本語実装全体がSnowballから自動生成されたとは断定しない。
 
-元のUrim配布archive、最初のimport履歴、出典連鎖を採用判断に十分とするか、作者本人の申告は未確定である。旧UMDのpinned_commit/license_blob/hash/adapted_wrapper_evidenceは保持し、原典を未発見へ戻さない。正確なimport revision、最終notice/source-listへの統合と採用判断は残す。
+初回記録時点では、元のUrim配布archive、最初のimport履歴、出典連鎖を採用判断に十分とするか、作者本人の申告は未確定だった。現在は[本人の全体説明](作成経緯の本人回答.md)を受領済みであり、個別の由来・権利申告とは区別する。旧UMDのpinned_commit/license_blob/hash/adapted_wrapper_evidenceは保持し、原典を未発見へ戻さない。正確なimport revision、最終notice/source-listへの統合と採用判断は残す。
 
 ## 再生成と未承認事項
 
@@ -53,8 +54,12 @@ Amongは原典のprototype helperから比較先のconstructor内instance helper
 
 `python scripts/verification/ac0008_origin_followup.py`でscoped-reconciliation.jsonを再生成し、`--check`で確認する。事前取得した固定ソースをinput-8.txtからinput-13.txtとして保持した場合のみ`--upstream-cache <directory>`で本体比較を再計算できる。checkerは外部通信・原典再取得を行わない。通常のcheckは保存資料と受領記録の整合確認であり、上流ソース再取得とは区別する。
 
-**50行のadoption、40行のOR選択、作者申告は未承認のまま。** rustix CC0の以前のHTTP403は不足として保持し、再取得・別経路・迂回は行わない。完全な静的包含・全AC0008・全仕様適合の合格証明でもなく、main/Release/Siteへ公開反映する判断は行っていない。
+**初回取得時点の記録では50行のadoption・40行のOR選択・作者申告が未承認だった。** 現在は固定40件のMIT経路承認と本人の作成経緯の全体説明を別記録で受領済み。全50件の採用・配布適合と個別の権利申告は未確認。 rustix CC0の以前のHTTP403は不足として保持し、再取得・別経路・迂回は行わない。完全な静的包含・全AC0008・全仕様適合の合格証明でもなく、main/Release/Siteへ公開反映する判断は行っていない。
 
 ## 現在の限定追補
 
-[公開履歴・通知レビュー](public-history-notice-review.md)と[用途・ライセンス選択一覧](../../../third-party/外部部品ライセンス選択一覧.md)を追加した。利用者の2026-10-10 13:08:40 UTCの承認は固定Cargo40件のMIT経路選択に限定し、[新記録](license-selection-2026-10-10.json)へ保存する。上記の旧JSONにある取得時点の未選択／未承認は書き換えない。著者申告・全配布適合・UMD公開通知統合は別の残件である。
+[公開履歴・通知レビュー](public-history-notice-review.md)と[用途・ライセンス選択一覧](../../../third-party/外部部品ライセンス選択一覧.md)を追加した。利用者の2026-10-10 13:08:40 UTCの承認は固定Cargo40件のMIT経路選択に限定し、[新記録](license-selection-2026-10-10.json)へ保存する。上記の旧JSONにある取得時点の未選択／未承認は書き換えない。本人の全体説明は[別追補](作成経緯の本人回答.md)で受領済み。個別由来・権利申告、全配布適合、UMD公開通知統合は別の残件である。
+
+## 作成経緯の現在状態
+
+13:40:00 UTCの[本人回答](作成経緯の本人回答.md)と[50部品の個別出典対応](owner-origin-statement.json)を追補した。本人の全体説明待ちは解消したが、ファイルごとのAI作成／AI選択、モデル・ツール・外部出典と権利条件の全件確認は解消したと扱わない。

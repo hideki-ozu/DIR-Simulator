@@ -1,14 +1,15 @@
 # 公開履歴と通知・ソース表示の限定追補
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`PR #48 @ d79c036fd20c8ba203190739335b7cf1f4d44c65`  
 文書ID：`ac0008-public-origin-notice-review`  
-文書状態：公開固定履歴・既存表示の限定確認。著者申告・全配布適合は未確認
+文書状態：公開固定履歴・既存表示の限定確認。本人の全体説明は受領済み、個別由来・全配布適合は未確認
 
 ### 更新履歴
 
 | 文書版 | 日付 | push単位の内容 |
 | --- | --- | --- |
+| 1.1.1 | 2026-10-10 | 本人の全体説明を受領した追補へ接続し、個別の由来・権利条件の残件と区別 |
 | 1.1.0 | 2026-10-10 | 六つの公開commit、通知・ソース表示と提案の区別、rustixの限定cfg推論を追加 |
 
 ## 公開履歴から観測した上流変更
@@ -22,7 +23,7 @@
 | 2015-10-29 | [7965e9674a8e](https://github.com/MihaiValentin/lunr-languages/commit/7965e9674a8e5299d9f9e9150b3883acfd13d2c9) | trimmerSupport.generateTrimmerを追加 |
 | 2017-04-03 | [4c64ac618e5c](https://github.com/MihaiValentin/lunr-languages/commit/4c64ac618e5c89868c0755761cb6f510d0a74d91) | Lunr 2 token.updateと従来文字列の分岐を追加 |
 
-parent SHA、対象blobと公開patchは[固定記録](public-origin-notice-review.json)に保持する。root以前のUrimアーカイブ／SVNの出自、実際に取り込んだ素材、作者の申告は未確認。Gitの表示を作者による証言へ読み替えない。
+parent SHA、対象blobと公開patchは[固定記録](public-origin-notice-review.json)に保持する。root以前のUrimアーカイブ／SVNの出自、実際に取り込んだ素材、個別作者の権利申告は未確認。本人によるプロジェクト全体の[作成経緯の説明](作成経緯の本人回答.md)は13:40 UTCに受領済み。Gitの表示を作者による証言へ読み替えない。
 
 既存の[SnowballProgram限定比較](scoped-reconciliation.json)は外側のbraceを含む関数bodyの空白除去後3743文字・SHA256 `45a3fca22291091557083dde3fcc71f2d308ac19f8772a3d9c141e3c5b563bd3`が一致した観測である。ファイル全体のbyte一致、JS実行同値性、全日本語stemmerがSnowball生成という主張ではない。Amongの配置変更、UMD、trimmerは別の変更である。
 
@@ -57,4 +58,4 @@ rustix 0.38.44の固定上流2ファイルだけを公開URLから読み、bytes
 
 CC0本文の既知HTTP403は未解決。別経路の取得や新しい配布物作成はしていない。MIT選択でrustix COPYRIGHT・個別ファイルの別条件は消えない。ソース配布時のvendor／本文収録を自動的に完了扱いしない。
 
-40件のMIT経路承認は[別の現在記録](license-selection-2026-10-10.json)へ記録する。過去の未選択／50件採用未承認記録は変更せず、著者申告・全配布適合の残件も維持する。
+40件のMIT経路承認は[別の現在記録](license-selection-2026-10-10.json)へ記録する。過去の未選択／50件採用未承認記録は変更せず、本人の全体説明待ちは解消し、個別の由来・権利申告、全配布適合の残件を維持する。
