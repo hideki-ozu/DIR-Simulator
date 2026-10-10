@@ -13,6 +13,37 @@ struct Token {
     column: usize,
 }
 
+// Classify the wildcard at the lexer failure without accepting it as a token or
+// reclassifying failures elsewhere merely because the file contains an import.
+fn import_wildcard(tokens: &[Token]) -> bool {
+    let mut depth = 0usize;
+    let mut statement = 0;
+    for (index, token) in tokens.iter().enumerate() {
+        match token.text.as_str() {
+            "{" => depth += 1,
+            "}" => {
+                let Some(parent) = depth.checked_sub(1) else {
+                    return false;
+                };
+                depth = parent;
+                if depth == 0 {
+                    statement = index + 1;
+                }
+            }
+            ";" if depth == 0 => statement = index + 1,
+            _ => {}
+        }
+    }
+    let prefix = &tokens[statement..];
+    depth == 0
+        && prefix.first().is_some_and(|token| token.text == "import")
+        && prefix.len() >= 3
+        && prefix.len() % 2 == 1
+        && prefix[1..].chunks_exact(2).all(|pair| {
+            identifier(&pair[0].text) && !reserved(&pair[0].text) && pair[1].text == "."
+        })
+}
+
 fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
     let original = content;
     let content = content.strip_prefix('\u{feff}').unwrap_or(content);
@@ -97,7 +128,12 @@ fn lex(content: &str, path: &Path) -> Result<Vec<Token>> {
             } else if matches!(c, '{' | '}' | ':' | ';' | '.' | '@' | '(' | ')' | '=') {
                 cursor += 1;
             } else {
-                return Err(fail("unsupported NED token"));
+                let diagnostic = fail("unsupported NED token");
+                return Err(if c == '*' && import_wildcard(&tokens) {
+                    diagnostic.with_reason("unsupported_syntax")
+                } else {
+                    diagnostic
+                });
             }
             tokens.push(Token {
                 text: content[start..cursor].into(),
@@ -321,6 +357,23 @@ impl Parser<'_> {
     fn peek(&self) -> &str {
         &self.tokens[self.cursor].text
     }
+    // Look ahead only to recognize an unsupported clause; do not consume tokens
+    // or let incomplete names change the existing syntax-error diagnostic.
+    fn name_clause(&self, mut cursor: usize, terminator: &str) -> bool {
+        loop {
+            let Some(token) = self.tokens.get(cursor) else {
+                return false;
+            };
+            if !identifier(&token.text) || reserved(&token.text) {
+                return false;
+            }
+            match self.tokens.get(cursor + 1).map(|token| token.text.as_str()) {
+                Some(text) if text == terminator => return true,
+                Some(".") => cursor += 2,
+                _ => return false,
+            }
+        }
+    }
     fn fail(&self, message: impl AsRef<str>) -> crate::types::Diagnostic {
         self.fail_at(self.cursor, message)
     }
@@ -469,12 +522,23 @@ impl Parser<'_> {
         let source = format!("{}:{}:{}", self.path.display(), token.line, token.column);
         let kind = self.take();
         if !matches!(kind.as_str(), "simple" | "module" | "network" | "channel") {
-            return Err(self.fail_previous("unsupported declaration"));
+            let diagnostic = self.fail_previous("unsupported declaration");
+            return Err(if kind == "import" && self.name_clause(self.cursor, ";") {
+                diagnostic.with_reason("unsupported_syntax")
+            } else {
+                diagnostic
+            });
         }
         let name_start = self.cursor;
         let name = format!("{package}.{}", self.id()?);
         let name_span = self.span(name_start, self.cursor);
-        self.expect("{")?;
+        self.expect("{").map_err(|diagnostic| {
+            if self.peek() == "extends" && self.name_clause(self.cursor + 1, "{") {
+                diagnostic.with_reason("unsupported_syntax")
+            } else {
+                diagnostic
+            }
+        })?;
         let mut declaration = Declaration {
             name,
             kind,
