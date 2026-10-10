@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "status": "not_run",
+  "source_inputs": [
+    {
+      "path": "Cargo.toml",
+      "bytes": 130,
+      "sha256": "9164720ceafa38aee2f57a58b582c85bbdd18aefa1000870cab1ad8c816545dc"
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 9577,
+      "sha256": "d098dabec5f5999897390845119abc20fab15e56d7977c823497c17c57b654ca"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ac0008_paths.rs",
+      "bytes": 5400,
+      "sha256": "13988b13add493d8dde202521878c271ca32f2e633c71c54df6a12a669d6c8f8"
+    },
+    {
+      "path": "crates/dir-simulator/tests/registry.rs",
+      "bytes": 55025,
+      "sha256": "f538e14d94459868a2d3f57d749541902b188a3124569e1845dd06e1ba182b68"
+    }
+  ],
+  "commands": [],
+  "started_utc": "2026-10-10T11:52:57.177239+00:00",
+  "scope": "Eight named acceptance regressions; no universal conformance or license approval",
+  "reason": "cargo unavailable; no installation attempted",
+  "planned_tests": [
+    {
+      "target": "ac0008_paths",
+      "named_test": "classical_can_explicit_run_config_preserves_plain_projection"
+    },
+    {
+      "target": "ac0008_paths",
+      "named_test": "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config"
+    },
+    {
+      "target": "registry",
+      "named_test": "generic_prepare_defers_model_factories_until_runtime"
+    },
+    {
+      "target": "registry",
+      "named_test": "explicit_run_config_selects_custom_registry_instead_of_default"
+    },
+    {
+      "target": "registry",
+      "named_test": "acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix"
+    },
+    {
+      "target": "registry",
+      "named_test": "initialization_error_discards_effects_and_finishes_successful_initializations"
+    },
+    {
+      "target": "registry",
+      "named_test": "custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically"
+    },
+    {
+      "target": "registry",
+      "named_test": "callback_failure_discards_every_effect_and_preserves_pending_current"
+    }
+  ],
+  "finished_utc": "2026-10-10T11:52:57.198889+00:00"
+}
