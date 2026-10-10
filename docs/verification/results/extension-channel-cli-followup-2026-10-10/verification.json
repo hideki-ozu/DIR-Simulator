@@ -1,7 +1,12 @@
 {
   "schema_version": 1,
-  "document_version": "1.1.1",
+  "document_version": "1.1.2",
   "document_history": [
+    {
+      "version": "1.1.2",
+      "date": "2026-10-10",
+      "change": "Third push: retain successful exact-source ordinary CI log and bounded results; WSL remains not_run"
+    },
     {
       "version": "1.1.1",
       "date": "2026-10-10",
@@ -41,7 +46,7 @@
     "record": "local-execution-not-run.json"
   },
   "ordinary_GitHub_Actions": {
-    "status": "pending_after_fmt_correction",
+    "status": "passed",
     "first_attempt": {
       "source_commit": "4e3413a00f870c9d43eedc2b8812f9ab59072645",
       "job_id": 114218099928,
@@ -52,7 +57,57 @@
       "log_bytes": 20603,
       "log_sha256": "ece6e6f542d40c2dbf973f2486108c833d78ccdd9e51b5d24ac08cb1a5221c8d"
     },
-    "target_WSL_equivalence": false
+    "target_WSL_equivalence": false,
+    "successful_attempt": {
+      "source_commit": "bebf21e3cba331f3efaeac792f8143c5e619cddf",
+      "job_id": 114219090452,
+      "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38054162432/job/114219090452",
+      "environment": "GitHub-hosted Ubuntu 24.04.5 x86_64, rustc/cargo 1.85.0",
+      "five_exact_tests": [
+        {
+          "name": "generic_channel_factories_receive_frozen_inputs_in_stable_order",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "name": "generic_invalid_channel_parameter_never_reaches_factories",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "name": "generic_channel_factory_failure_releases_only_constructed_prefix",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "name": "cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "name": "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        }
+      ],
+      "workspace": {
+        "groups": 32,
+        "passed": 610,
+        "failed": 0,
+        "ignored": 0
+      },
+      "fmt": "passed",
+      "clippy": "passed",
+      "log": "ci-rust-bebf21e3.log",
+      "log_bytes": 116641,
+      "log_sha256": "8a182b30537b3bc845fd7664e03e9f7fe0953115aacdf9ec0d561f7f95acfca4",
+      "note": "The five focused executions are additional executions of tests also contained in the workspace suite; do not count 615 unique tests."
+    }
   },
   "source_inputs": [
     {
@@ -112,6 +167,6 @@
     "generated_reports": "passed",
     "runner_exact_matching": "passed: 12 cases, one lib target, exact-positive match and zero-selected rejection"
   },
-  "scope": "Bounded helper/test-only instrumentation patch. No Rust compilation, WSL acceptance, CI success, complete channel conformance, full AC0008 or adoption approval",
+  "scope": "Bounded channel/helper and actual-source in-process CLI tests passed in ordinary CI. Target WSL not_run; no full channel/profile/AC0008 conformance or adoption approval.",
   "historical_PR47_records_modified": false
 }
