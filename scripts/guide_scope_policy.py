@@ -22,6 +22,10 @@ SAMPLES = {'examples/guide/can/minimal.ini', 'examples/guide/can/fast.ini',
            'examples/guide/can/id-swap.ini', 'examples/guide/can/minimal.json',
            'examples/guide/can/id-swap.json'}
 ALLOWLIST = GUIDES | IMAGES | SAMPLES
+GENERATED_REPORTS = {'docs/要件トレーサビリティ一覧.md', 'docs/要件トレーサビリティ一覧.html'}
+# Derived reports are not arbitrary editable guide input. Every caller accepting
+# them must additionally prove exact regeneration with trusted-base code.
+COLLECTED_PATHS = ALLOWLIST | GENERATED_REPORTS
 REQUIRED_CHECKS = {'MkDocs strict build and links', 'Guide sample reproduction'}
 WORKFLOW_PATH = '.github/workflows/guide-pages.yml'
 SHA = re.compile(r'^[0-9a-f]{40}$')
@@ -36,18 +40,24 @@ def need(condition, reason):
         raise Stop(reason)
 
 
-def allowed_path(path):
+def allowed_path(path, generated=False):
     need(isinstance(path, str), 'path_missing')
     need(path == str(PurePosixPath(path)) and '\\' not in path and
          not any(p in {'.', '..', ''} for p in path.split('/')), 'noncanonical_path')
-    need(path in ALLOWLIST, 'path_outside_allowlist')
+    need(path in (COLLECTED_PATHS if generated else ALLOWLIST), 'path_outside_allowlist')
 
 
-def safe_content(path, contents, blob_sha):
+def safe_content(path, contents, blob_sha, generated=False):
     need(isinstance(contents, str), 'content_missing')
     data = base64.b64decode(contents, validate=True)
     need(hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == blob_sha, 'blob_digest_mismatch')
-    need(len(data) <= (2_000_000 if path in IMAGES else 200_000), 'blob_too_large')
+    limit = 4_000_000 if path in GENERATED_REPORTS else (2_000_000 if path in IMAGES else 200_000)
+    need(len(data) <= limit, 'blob_too_large')
+    if path in GENERATED_REPORTS:
+        need(generated is True, 'generated_report_requires_trusted_regeneration')
+        data.decode('utf-8')
+        need(b'\x00' not in data, 'binary_text')
+        return
     if path in IMAGES:
         # Only a conservative signature screen; future trusted CI must fully decode
         # and re-encode PNG and reject malformed/polyglot images before eligibility.
@@ -59,10 +69,24 @@ def safe_content(path, contents, blob_sha):
     for _ in range(4):
         normalized = html.unescape(unquote(normalized))
     need(not re.search(r'<\s*[!/?A-Za-z]|(?:javascript|vbscript|data|file)\s*:', normalized, re.I), 'active_or_local_content')
+    need(not re.search(r'(?:javascript|vbscript|data|file):', re.sub(r'\s', '', normalized), re.I), 'spaced_active_uri')
+    need(not re.search(r'!\[[^\]]*\]\(\s*(?:https?:|//)', normalized, re.I), 'external_image_embed')
     if path.endswith('.json'):
         value = json.loads(text)
         need(isinstance(value, dict) and value.get('schema_version') == 1 and
              isinstance(value.get('generators'), list), 'sample_schema_unknown')
+        need(set(value) == {'schema_version', 'generators'} and len(value['generators']) <= 3, 'sample_unbounded_or_extra_fields')
+        total = 0
+        for generator in value['generators']:
+            need(set(generator) == {'id', 'kind', 'node', 'start', 'period', 'count', 'frame'} and
+                 generator['kind'] == 'can.periodic.v1' and generator['node'] in {'Main.a', 'Main.b', 'Main.c'} and
+                 type(generator['count']) is int and 0 <= generator['count'] <= 1000, 'sample_generator_out_of_scope')
+            frame = generator['frame']
+            need(set(frame) == {'format', 'id', 'data'} and frame['format'] in {'standard', 'extended'} and
+                 type(frame['id']) is int and isinstance(frame['data'], str) and
+                 len(frame['data']) <= 16 and re.fullmatch(r'(?:[0-9a-fA-F]{2})*', frame['data']), 'sample_frame_out_of_scope')
+            total += generator['count']
+        need(total <= 1000, 'sample_total_unbounded')
     if path.endswith('.ini'):
         # Includes would expand the sample outside the bounded input set.
         need(not re.search(r'^\s*(?:include|extends)\b', text, re.I | re.M), 'sample_include')
