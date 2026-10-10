@@ -50,7 +50,11 @@
   "safety_revision": {
     "reviewed_head": "2f4c1605550d54fe94b00e35804edc72b967315a",
     "date": "2026-10-06",
-    "issues": [29, 30, 31],
+    "issues": [
+      29,
+      30,
+      31
+    ],
     "legacy_policy_tests": 9,
     "runtime_validation_tests": 28,
     "general_pr_protection": "mock_only; scoped check excluded from global required checks",
@@ -59,5 +63,50 @@
     "real_merge_dispatch_deployment_mutations": 0,
     "bypass_evidence": "unresolved with standard GITHUB_TOKEN; absent is never empty",
     "deployment_read_with_real_token": "unverified"
+  },
+  "design_revision_2026_10_10": {
+    "trusted_main": "0a6b22f47c232ab6d3c9f5eae9b2f8199a6e60d4",
+    "previous_pr_head": "3e50f6943a623d40ada81bc6ea6793f4d9dcff10",
+    "generated_reports": "trusted-base canonical LF UTF-8 regeneration, byte-equal; derived paths only; modified only; 4MB limit",
+    "unit_tests": {
+      "legacy_policy": 9,
+      "collector_writer_validator": 33
+    },
+    "mkdocs_strict": "passed",
+    "local_links_assets_anchors": 527,
+    "sample_zip_inputs": {
+      "can": 11,
+      "canfd": 8,
+      "ethernet_deadline": 8
+    },
+    "strict_traceability": {
+      "requirements": 231,
+      "functions": 60,
+      "nodes": 274,
+      "structural_errors": 0,
+      "incomplete": 0
+    },
+    "production_enabled": false,
+    "activation_record": null,
+    "real_merge_dispatch_deployment_mutations": 0,
+    "cli_reproduction": "not rerun; prior baseline result retained above",
+    "ruleset_read": "connector public rulesets list empty; branch-rules URL rejected by connector URL allowlist; no alternate access attempted",
+    "bypass_evidence": "unresolved: documented ruleset write-access visibility unavailable in standard GITHUB_TOKEN permission model; missing is never empty",
+    "deployment_read": "not tested with real token; current explicit permissions omit deployments and therefore set it to none",
+    "official_sources": [
+      "https://docs.github.com/en/rest/repos/rules#get-a-repository-ruleset",
+      "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions"
+    ],
+    "windows_checkout": "working text normalized to repository LF for ZIP matching; only trusted generator output is canonicalized to LF, PR report bytes are never normalized",
+    "settings_auth_permissions_changed": false,
+    "existing_traceability_tests": {
+      "local_windows": {
+        "tests": 39,
+        "passed": 33,
+        "failed": 6,
+        "reason": "existing pre-commit invokes python3; only python.exe installed"
+      },
+      "linux_ci": "added to read-only policy test workflow; pending push"
+    }
   }
 }

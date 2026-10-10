@@ -11,6 +11,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 from guide_scope_policy import ALLOWLIST, safe_content, allowed_path, SHA, Stop, need
+from guide_scope_policy import GENERATED_REPORTS
+from guide_merge_generated import verify_generated
 
 POLICY_PATH = '.github/guide-merge-policy.json'
 
@@ -98,10 +100,10 @@ class Collector:
         self.api, self.policy, self.trusted_sha = api, policy, trusted_sha
         need(SHA.fullmatch(trusted_sha), 'trusted_sha_invalid')
 
-    def blob(self, sha):
+    def blob(self, sha, limit=2_000_000):
         need(SHA.fullmatch(sha), 'blob_sha_invalid')
         obj = self.api.get('/git/blobs/' + sha)
-        need(obj['encoding'] == 'base64' and obj['sha'] == sha and obj['size'] <= 2_000_000, 'blob_schema_or_size')
+        need(obj['encoding'] == 'base64' and obj['sha'] == sha and obj['size'] <= limit, 'blob_schema_or_size')
         data = base64.b64decode(obj['content'].replace('\n', ''), validate=True)
         need(len(data) == obj['size'] and blob_digest(data) == sha, 'blob_digest_mismatch')
         return data
@@ -179,10 +181,12 @@ class Collector:
         need(len(rows) == p['changed_files'], 'file_count_mismatch')
         expected, seen, files = set(), set(), {}
         for row in rows:
-            path = row['filename']; allowed_path(path)
+            path = row['filename']; allowed_path(path, generated=True)
             need(path not in seen, 'duplicate_file')
             seen.add(path); expected.add(path)
             status = row['status']
+            if path in GENERATED_REPORTS:
+                need(status == 'modified', 'generated_report_must_be_modified')
             need(status in {'added', 'modified', 'renamed'}, 'deletion_or_unknown_status')
             old = row.get('previous_filename') if status == 'renamed' else path
             if status == 'renamed':
@@ -199,13 +203,15 @@ class Collector:
             else:
                 b = base_tree[old]
                 need(b['type'] == 'blob' and b['mode'] == '100644', 'base_mode_type')
-            data = self.blob(h['sha'])
-            safe_content(path, base64.b64encode(data).decode(), h['sha'])
+            data = self.blob(h['sha'], 4_000_000 if path in GENERATED_REPORTS else 2_000_000)
+            safe_content(path, base64.b64encode(data).decode(), h['sha'], generated=True)
             files[path] = data
         changed = {path for path in set(base_tree) | set(head_tree)
                    if base_tree.get(path) != head_tree.get(path) and
                    (base_tree.get(path, {}).get('type') != 'tree' or head_tree.get(path, {}).get('type') != 'tree')}
         need(changed == expected, 'tree_diff_file_list_mismatch')
+        if set(files) & GENERATED_REPORTS:
+            verify_generated(Path(__file__).resolve().parents[1], files, trusted_sha=self.trusted_sha)
         return files
 
     def checks(self, p, base_tree, head_tree):

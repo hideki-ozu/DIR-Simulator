@@ -14,6 +14,8 @@ import warnings
 import zlib
 from guide_scope_policy import ALLOWLIST, IMAGES, Stop, need
 from guide_merge_runtime import Collector, GitHub, load_policy
+from guide_scope_policy import GENERATED_REPORTS
+from guide_merge_generated import verify_generated
 
 
 def validate_png(data):
@@ -58,7 +60,8 @@ def validate_png(data):
 def validate_overlay(root, files, binary, runner=subprocess.run):
     root, binary = Path(root).resolve(), Path(binary).resolve()
     need(binary.is_file(), 'trusted_binary_missing')
-    need(set(files) <= ALLOWLIST and files, 'overlay_outside_allowlist')
+    need(set(files) <= ALLOWLIST | GENERATED_REPORTS and files, 'overlay_outside_allowlist')
+    verify_generated(root, files)
     # Trusted checkout contains code/dependencies; PR input is only bounded bytes.
     with tempfile.TemporaryDirectory(prefix='dir-guide-validation-') as scratch:
         scratch = Path(scratch)

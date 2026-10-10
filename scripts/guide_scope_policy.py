@@ -22,6 +22,10 @@ SAMPLES = {'examples/guide/can/minimal.ini', 'examples/guide/can/fast.ini',
            'examples/guide/can/id-swap.ini', 'examples/guide/can/minimal.json',
            'examples/guide/can/id-swap.json'}
 ALLOWLIST = GUIDES | IMAGES | SAMPLES
+GENERATED_REPORTS = {'docs/要件トレーサビリティ一覧.md', 'docs/要件トレーサビリティ一覧.html'}
+# Derived reports are not arbitrary editable guide input. Every caller accepting
+# them must additionally prove exact regeneration with trusted-base code.
+COLLECTED_PATHS = ALLOWLIST | GENERATED_REPORTS
 REQUIRED_CHECKS = {'MkDocs strict build and links', 'Guide sample reproduction'}
 WORKFLOW_PATH = '.github/workflows/guide-pages.yml'
 SHA = re.compile(r'^[0-9a-f]{40}$')
@@ -36,18 +40,24 @@ def need(condition, reason):
         raise Stop(reason)
 
 
-def allowed_path(path):
+def allowed_path(path, generated=False):
     need(isinstance(path, str), 'path_missing')
     need(path == str(PurePosixPath(path)) and '\\' not in path and
          not any(p in {'.', '..', ''} for p in path.split('/')), 'noncanonical_path')
-    need(path in ALLOWLIST, 'path_outside_allowlist')
+    need(path in (COLLECTED_PATHS if generated else ALLOWLIST), 'path_outside_allowlist')
 
 
-def safe_content(path, contents, blob_sha):
+def safe_content(path, contents, blob_sha, generated=False):
     need(isinstance(contents, str), 'content_missing')
     data = base64.b64decode(contents, validate=True)
     need(hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == blob_sha, 'blob_digest_mismatch')
-    need(len(data) <= (2_000_000 if path in IMAGES else 200_000), 'blob_too_large')
+    limit = 4_000_000 if path in GENERATED_REPORTS else (2_000_000 if path in IMAGES else 200_000)
+    need(len(data) <= limit, 'blob_too_large')
+    if path in GENERATED_REPORTS:
+        need(generated is True, 'generated_report_requires_trusted_regeneration')
+        data.decode('utf-8')
+        need(b'\x00' not in data, 'binary_text')
+        return
     if path in IMAGES:
         # Only a conservative signature screen; future trusted CI must fully decode
         # and re-encode PNG and reject malformed/polyglot images before eligibility.

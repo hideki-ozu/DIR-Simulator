@@ -30,7 +30,7 @@ class ValidationTests(unittest.TestCase):
             calls=[]
             def run(argv,**kwargs):
                 calls.append((argv,kwargs));return type('Result',(),{'returncode':0})()
-            with patch.dict(os.environ,{'GH_TOKEN':'dummy-test-token','GITHUB_TOKEN':'dummy-test-token'}):
+            with patch('guide_merge_validate.verify_generated', return_value=True), patch.dict(os.environ,{'GH_TOKEN':'dummy-test-token','GITHUB_TOKEN':'dummy-test-token'}):
                 r=validate_overlay(root,{'docs/guide/index.md':b'# Guide\n'},binary,run)
             self.assertEqual(r['status'],'passed');self.assertFalse(r['pr_code_executed']);self.assertEqual(len(calls),4)
             for argv,kw in calls:
@@ -40,6 +40,10 @@ class ValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);binary=root/'binary';binary.write_bytes(b'x')
             with self.assertRaises(Stop): validate_overlay(root,{'scripts/evil.py':b'print(1)'},binary)
+            with patch('guide_merge_validate.verify_generated', side_effect=Stop('generated_report_mismatch')), patch('guide_merge_validate.subprocess.run') as runner:
+                with self.assertRaisesRegex(Stop, 'generated_report_mismatch'):
+                    validate_overlay(root, {'docs/guide/index.md': b'# Guide'}, binary)
+                runner.assert_not_called()
     def test_workflow_static_locks_and_permission_boundaries(self):
         import json
         root=Path(__file__).resolve().parents[1]
