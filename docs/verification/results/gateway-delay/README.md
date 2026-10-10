@@ -1,6 +1,6 @@
 # Gateway処理遅延ガイド検証記録
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.4`  
 文書ID：`verification-guide-gateway-delay`  
 文書状態：実施記録。Project登録は環境・権限で未実施
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 第2push。ビルド12 HTMLと404を除く実ブラウザ確認11件を区別。入力・測定・画像は保持 |
 | `1.1.0` | `2026-10-11` | 初回push。正式タグCLIと独立ZIPの18操作、実Viewer、サイト表示・検索・適用traceability検査を保存 |
 
 ## 基準と独立テーマ
@@ -27,7 +28,7 @@
 
 Viewerは生成済みHTMLを実Chromium 149.0.7827.55で開き、400µsへ移動しsource:0を選択。B/Cの現在状態を直接assertし、[viewer-browser.json](viewer-browser.json)と公開assetsの3画像に記録。画像は別途実画素を開いて、0µsでB送信中/C送信成功、100µsでB/C送信中、300µsでGW RX1/4・コピー生成前を確認した。架空・合成のViewer画像は使用していない。
 
-MkDocs 1.6.1 strict、ローカルリンク/画像/アンカー595件、公開asset・執筆メモ除外検査、全4ZIPの正本一致、第三者通知の元バイト対応と9件の回帰テストを確認。[site-browser.json](site-browser.json)は全12 HTMLページ（読者向け9ページと付属ページ）の画像読込、390pxで文書横幅超過なし、外部通信・page error・HTTP failureなし、新記事への日本語検索「中継」「遅延」を記録。desktop・390px本文・実測表・検索のPNGも実画素を確認。
+MkDocs 1.6.1 strict、ローカルリンク/画像/アンカー595件、公開asset・執筆メモ除外検査、全4ZIPの正本一致、第三者通知の元バイト対応と9件の回帰テストを確認。ビルド総数は404.htmlを含む12 HTML。[site-browser.json](site-browser.json)の`pages`は404.htmlを除く11件（読者向け9ページと入口・ライセンス表示）で、その11件の画像読込、390pxで文書横幅超過なし、外部通信・page error・HTTP failureなし、新記事への日本語検索「中継」「遅延」を記録。desktop・390px本文・実測表・検索のPNGも実画素を確認。
 
 既存仕様・実装を解説する追加記事で、要件・機能・trace nodeは追加しない。GW仕様のconfiguration/forwarding/payload-resultsを参照し、DIR-REQ-0123/0126/0128に対する`check_traceability.py --strict --requirement`を実施。各検査は231要件・60機能・274 node、構造エラー/未完了0。生成一覧・階層HTMLを規約のpush単位改訂確定後に再生成し、`generate_traceability.py --check`を確認。
 
