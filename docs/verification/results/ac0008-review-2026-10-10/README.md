@@ -1,6 +1,6 @@
 # AC0008 残余証拠・レビュー提案
 
-文書バージョン：`1.1.1`  
+文書バージョン：`1.1.2`  
 文書ID：`ac0008-review-evidence`  
 対象：固定製品 `0b7b23d8e23fcb1a1491cd13cd42aa5b96a9ab1c`  
 状態：未承認・未完了。合格証明ではない。
@@ -9,6 +9,7 @@
 
 | 文書版 | 日付 | push単位の内容 |
 | --- | --- | --- |
+| 1.1.2 | 2026-10-10 | 公開準備の証拠整合修正：初回4件の実行記録を保持し、第2pushの9件構成をmerge済みsourceとbyte照合して再実行。別の名前付きログ・JSONへ9件成功を記録 |
 | 1.1.1 | 2026-10-10 | 第2push：37群の個別predicate、0060–0069の期待oracle、assertion対応と全未対応case索引、通常VSCodeへの実行依頼を追加。CI対象外条件を確認 |
 | 1.1.0 | 2026-10-10 | WSL方針PR #40を基礎に、独立した残余レビュー資料・未実行テストを初回保存 |
 
@@ -59,3 +60,7 @@ CI0件は第2push前のheadをread-onlyで再確認した。guide-pages/guide-po
 `python scripts/verification/ac0008_matrix.py`、`python scripts/verification/ac0008_packet.py`、`python scripts/verification/ac0008_atomic.py` でJSONを再生成する。matrix/atomicの `--check` と `test_ac0008_packet.py` の9件は索引の再現・一意key・50行/37群・全95原稿行の保持・未承認状態を検査する。具体的限定対応24predicate、未対応406predicateと全318subcaseは個別gap索引へ記録した。製品のWSL試験とは別。
 
 独立PRはPR #40 branchをbaseにするため、mainのみを対象とするCIは自動起動対象外になり得る。remote exact headと実際のchecksを確認し、CI未実施を成功と書かない。merge/tag/release/deploy、設定変更、外部レビュー依頼は行わない。Ethernet期限完成稿は停止状態を維持する。
+
+## 初回4件と第2pushの9件構成の記録
+
+[execution-status.json](execution-status.json) の `packet_unit_tests=4` は初回の歴史記録として保持する。第2pushで追加した9件の構成は、2026-10-10 06:57 UTCに[merge commit 528cf4a2](https://github.com/hideki-ozu/DIR-Simulator/commit/528cf4a2caaa54c5b65c3299fa67e171cf43152e)のscript・入力10ファイルとbyte照合し、Windows Python 3.11で改めて実行した。[新規実行JSON](packet-tests-rerun-2026-10-10.json)と[名前付き9件のログ](packet-tests-rerun-2026-10-10.log)を別に保存する。これは今回の再実行の証拠であり、第2push当時の実行時刻を復元した記録ではない。Python packetの構造検査の成功をRust製品試験、全atomic・AC0008適合、採用承認・作者申告へ転用しない。
