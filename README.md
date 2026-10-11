@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.13`
+文書バージョン：`1.1.14`
 対象GitHubバージョン：`v1.1.4`（公開候補）
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.14` | `2026-10-11` | SRAMポート数の1変数実習、正式v1.1.4の測定・実Viewer・独立ZIPへの入口を追加 |
 | `1.1.13` | `2026-10-11` | Gatewayの処理遅延1変数実習、正式v1.1.4での測定・実Viewer・独立ZIPへの入口を追加 |
 | `1.1.12` | `2026-10-10` | 第4push。mainの受入・出自・ライセンス記録とEthernet期限ガイドの入口を統合。分岐した1.1.11履歴を両方保持 |
 | `1.1.11` | `2026-10-10` | Ethernet配送期限のCLI実測・実Viewer比較と配布入力への入口を追加（PR #50の分岐履歴） |
@@ -36,6 +37,8 @@
 文書ID：`readme`
 
 Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。公開版`v1.1.3`にはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加しています。本PRは公開拡張API、CAN↔Ethernet変換・動的制御・TSN、CAN/Gatewayの大規模出力処理を追加し、次の公開版を`v1.1.4`とします。公開タグとPRの提供状態を分けて記載します。
+
+[SRAMのポート数と読み出し待ち時間](docs/guide/SRAMのポート数と読み出し待ち時間.md)では、正式v1.1.4で同時読出し3件を1変数比較できます。[独立入力ZIP](docs/guide/downloads/sram-ports-inputs.zip)を配布しています。
 
 初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。初回公開はこの構成をmainへ反映した後です。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
 
