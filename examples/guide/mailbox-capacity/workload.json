@@ -1,0 +1,58 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "send_a",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.mailbox",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "send",
+        "actor": "producer",
+        "hex": "01020304"
+      }
+    },
+    {
+      "id": "send_b",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.mailbox",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "send",
+        "actor": "producer",
+        "hex": "11121314"
+      }
+    },
+    {
+      "id": "send_c",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.mailbox",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "send",
+        "actor": "producer",
+        "hex": "21222324"
+      }
+    },
+    {
+      "id": "receive",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.mailbox",
+      "times": [
+        "400ps",
+        "600ps",
+        "800ps"
+      ],
+      "request": {
+        "op": "receive",
+        "actor": "consumer"
+      }
+    }
+  ]
+}
