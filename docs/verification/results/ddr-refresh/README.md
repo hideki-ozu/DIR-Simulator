@@ -1,6 +1,6 @@
 # DDRリフレッシュガイド検証記録
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.4`  
 文書ID：`verification-guide-ddr-refresh`  
 文書状態：補助記録（読者サイトの外）
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 第2push。対象版の厳密パーサー負例・DDR限定metadata検査・生成一覧整合の修正を追記 |
 | `1.1.0` | `2026-10-11` | DDRの1変数実測・隔離ZIP・実Viewer・fresh証跡負例・サイト検証を記録 |
 
 基準mainは `f4f284c9ece09427baea5e6448169770d561d728`。公開Release/tagを再取得し、clean v1.1.4 / `b45515644dfc65c205216d564d5bf7ef00280622` の正式ソースからビルド済みCLIをWSL Ubuntu 24.04で使用した。正式版とmainは区別した。画像生成は使わず、公開サンプルの実Viewerを撮影した。
@@ -25,3 +26,11 @@
 [measurements.json](measurements.json)、[viewer-browser.json](viewer-browser.json)、[site-browser.json](site-browser.json)に公開証拠を保存する。raw出力・一時サイト画像・個人環境パスはGit対象外。exact head CIとProject状態はDraft PR本文に記録する。
 
 制約：実機DDR・bank並列・JEDEC全体、書き込み・別行/bank・fault・満杯・DMA競合・refresh途中打切りは未検証。Windows native CLI・CPU/cache/AXI/OS同期・性能試験も未実施。予定イベントを実績扱いしない。マージ・auto-merge・close・デプロイは実施しない。
+
+## 第2push：生成一覧の対象版整合
+
+初回head `3b0df2837af0347076d6d4eccab70a88cb44f113` では、読者記事の対象版行へcommitを括弧で併記したため、生成器の厳密なGITHUB_VERSIONパーサーが対象版を「未記載」とした。生成鮮度だけではこの意味上の不一致を検出できない。DDR記事のタグは単独行とし、実測commitを別行へ移す。過去履歴は保持し、今回変更する2文書は同じMAJOR.MINORの追加pushとして1.1.1へ改訂する。既存の別記事や生成器のパース規則は変更しない。
+
+新しい `python3 scripts/check_ddr_document_metadata.py --source-only` は実生成器の正規表現・document_inventoryを利用し、修正前に失敗することを再現した。最終stage後に一覧を再生成し、`python3 scripts/check_ddr_document_metadata.py` で源文書とMarkdown/HTML双方のDDR行の正確な文書版・v1.1.4を照合する。関連Issueとexact head CIはPR65へ記録し、自動クローズ指定を使用しない。
+
+サンプル・測定・Viewer PNGは初回pushと同一内容のためCLIとViewer撮影は再実行しない。今回のreader HTMLは再buildしてブラウザ・日本語検索・390pxを検証し、metadata変更後の実画素を確認する。初回のCLI/Viewer成功と今回のmetadata検証を区別する。
