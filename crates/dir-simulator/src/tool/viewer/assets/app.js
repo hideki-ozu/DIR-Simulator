@@ -127,6 +127,7 @@
     $("node-states").replaceChildren();
     $("bus-states").replaceChildren();
     $("detail-raw").textContent = "";
+    $("request-events").replaceChildren();
     $("detail-content").hidden = true;
     $("detail-empty").hidden = false;
     $("clear-selection").hidden = true;
@@ -801,7 +802,28 @@
     $("detail-empty").hidden = !!request;
     $("detail-content").hidden = !request;
     $("clear-selection").hidden = !request;
+    $("request-events").replaceChildren();
     if (!request) return;
+    const groups = API.requestEventGroups(model, request.id);
+    for (const group of groups) {
+      const item = element("li", "request-event");
+      const button = element("button", "button small", `${group.time} ps へ移動`);
+      button.type = "button";
+      button.dataset.eventTime = group.time.toString();
+      button.addEventListener("click", () => {
+        pause();
+        $("jump-error").hidden = true;
+        $("jump-time").removeAttribute("aria-invalid");
+        setCurrent(group.time, true);
+        // Rendering replaces these controls; keep keyboard focus at this time.
+        $("request-events").querySelector(`[data-event-time="${group.time}"]`)?.focus({preventScroll:true});
+        $("announcement").textContent = `要求 ${request.id} の記録時刻 ${group.time} ps へ移動しました。`;
+      });
+      const labels = element("ul", "event-labels");
+      for (const event of group.events) labels.append(element("li", "", `${event.label} — ${event.node}`));
+      item.append(button, labels);
+      $("request-events").append(item);
+    }
     $("selected-id").textContent = request.id;
     const state = API.requestStateAt(request, current);
     $("selected-status").className = `status ${state}`;
