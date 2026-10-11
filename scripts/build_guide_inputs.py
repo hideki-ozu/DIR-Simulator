@@ -37,6 +37,7 @@ def main():
     build(ROOT / 'examples/guide/ethernet-deadline', OUTPUT.with_name('ethernet-deadline-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/gateway-delay', OUTPUT.with_name('gateway-delay-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/sram-ports', OUTPUT.with_name('sram-ports-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/mailbox-capacity', OUTPUT.with_name('mailbox-capacity-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':
