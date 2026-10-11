@@ -457,3 +457,71 @@ test('legacy Gateway membership never guesses idle CAN wiring from a single obse
   assert.equal(network.nodes.length,3);
   assert.deepEqual(network.connections,[]);
 });
+
+test('interval queues use final same-time state and independent integer-ps duration oracle',()=>{
+  const samples=[{time:0n,value:0},{time:2n,value:1},{time:4n,value:4},{time:4n,value:2},{time:7n,value:0},{time:9n,value:1}];
+  const before=structuredClone(samples);
+  for(let a=0;a<12;a++)for(let b=a;b<=12;b++) {
+    // Independent short-horizon oracle: one final replay state per integer ps.
+    const values=[];
+    for(let t=a;t<b;t++){let value=0;for(const s of samples)if(s.time<=BigInt(t))value=s.value;values.push(value);}
+    let run=0,longest=0;for(const value of values){run=value>0?run+1:0;longest=Math.max(longest,run);}
+    const actual=model.queueInterval(samples,BigInt(a),BigInt(b));
+    assert.equal(actual.total,BigInt(values.filter(v=>v>0).length));
+    assert.equal(actual.longest,BigInt(longest));
+    assert.equal(actual.replayPeak,values.length?Math.max(...values):null);
+  }
+  const at=model.queueInterval(samples,3n,8n);
+  assert.equal(at.replayPeak,2);
+  assert.equal(at.replayPeakAt,4n);
+  assert.equal(at.firstNonempty,3n);assert.deepEqual(samples,before);
+});
+test('missing initial measurement is unavailable; adjacent u64 clipping retains integer ps',()=>{
+  assert.equal(model.queueInterval([{time:3n,value:1}],0n,5n).available,false);
+  const base=(1n<<64n)-10n;
+  const m=model.queueInterval([{time:base,value:1},{time:base+3n,value:0}],base+1n,base+4n);
+  assert.equal(m.total,2n);assert.equal(m.longest,2n);assert.equal(m.replayPeakAt,base+1n);
+});
+test('interval comparison clips two buses, unfinished committed TX, idle rows and separates TX from RX',()=>{
+  const raw=rxHoldingFixture();
+  raw.simulation.records=[
+    {time_ps:'0',metric:'queue_length',target:'Main.gw.b.txQueue',value_kind:'integer',value:'0'},
+    {time_ps:'250',metric:'queue_length',target:'Main.gw.b.txQueue',value_kind:'integer',value:'1'},
+    {time_ps:'260',metric:'queue_length',target:'Main.gw.b.txQueue',value_kind:'integer',value:'0'},
+    {time_ps:'0',metric:'gw_rx_queue_length',target:'Main.gw.a.rxQueue',value_kind:'integer',value:'0'},
+    {time_ps:'130',metric:'gw_rx_queue_length',target:'Main.gw.a.rxQueue',value_kind:'integer',value:'1'},
+    {time_ps:'500',metric:'gw_rx_queue_length',target:'Main.gw.a.rxQueue',value_kind:'integer',value:'0'}];
+  const m=model.parseResults(raw), before=JSON.stringify(raw), result=model.intervalComparison(m,200n,540n);
+  assert.equal(result.buses.find(row=>row.id==='Main.busA').tx,10n);
+  assert.equal(result.buses.find(row=>row.id==='Main.busB').tx,40n);
+  assert.equal(result.buses.find(row=>row.id==='Main.busC').tx,30n);
+  assert.equal(result.txQueues.find(row=>row.id==='Main.gw.b').total,10n);
+  assert.equal(result.rxQueues.find(row=>row.id==='Main.gw.a').total,300n);
+  assert.equal(result.rxQueues.find(row=>row.id==='Main.gw.a').firstNonempty,200n);
+  assert.equal(result.txQueues.find(row=>row.id==='Main.gw.a').available,false);
+  assert.equal(JSON.stringify(raw),before);
+  assert.throws(()=>model.intervalComparison(m,540n,200n));
+  const empty=model.intervalComparison(m,200n,200n);
+  assert.equal(empty.duration,0n);assert.equal(empty.buses[0].tx,0n);
+  const partial=fixture();partial.simulation.partial=true;partial.simulation.end_ps='40';partial.simulation.receivers=[];
+  Object.assign(partial.simulation.requests[0],{status:'in_flight',eof_ps:null});partial.simulation.requests[0].model_fields.release_ps=null;
+  const stopped=model.intervalComparison(model.parseResults(partial),35n,40n).buses[0];
+  assert.equal(stopped.tx,5n);assert.equal(stopped.unfinishedTx,1);
+  const gap=fixture();gap.simulation.partial=true;gap.simulation.end_ps='105';gap.simulation.receivers=[];
+  gap.simulation.requests[0].model_fields.release_ps=null;
+  const unfinished=model.intervalComparison(model.parseResults(gap),95n,105n).buses[0];
+  assert.equal(unfinished.tx,5n);assert.equal(unfinished.intermission,5n);assert.equal(unfinished.unfinishedIntermission,1);
+});
+test('interval aggregation includes >500 transmissions and >75 requests without altering inputs',()=>{
+  const requests=[];
+  for(let i=0;i<620;i++)for(const [bus,length]of [['A',5n],['B',2n]]) {
+    const sof=BigInt(i)*10n;requests.push({id:`${bus}:${i}`,bus,sof,eof:sof+length,release:sof+length+2n});
+  }
+  const m={start:0n,end:6200n,buses:['A','B','idle'],nodes:['missing'],gatewayPorts:new Set(),queueRecords:new Map(),rxQueueRecords:new Map(),requests};
+  const rows=model.intervalComparison(m,5000n,6000n).buses;
+  // Independent tally of 100 complete 10ps slots: A uses 5, B uses 2, gap uses 2.
+  assert.equal(rows[0].tx,500n);assert.equal(rows[1].tx,200n);
+  assert.equal(rows[0].intermission,200n);assert.equal(rows[1].intermission,200n);
+  assert.equal(rows[2].tx,0n);assert.equal(rows[2].firstTx,null);
+  assert.equal(m.requests.length,1240);
+});

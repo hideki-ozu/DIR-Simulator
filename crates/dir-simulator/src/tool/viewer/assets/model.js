@@ -633,5 +633,62 @@
     }
     return groups;
   }
-  return { parseResults, stateAt, networkAt, stepTransfers, requestEventGroups, requestStateAt, receiverStateAt, forwardStateAt, rxBufferStateAt, gatewayTransfersAt, originsAt, formatTime, parseTime, fraction, timeFromFraction };
+  function overlap(start,end,a,b) {
+    const left=start>a?start:a,right=end<b?end:b;
+    return right>left?right-left:0n;
+  }
+  function queueInterval(samples,a,b) {
+    if(typeof a!=='bigint'||typeof b!=='bigint'||b<a)throw new Error('invalid interval');
+    const states=[];
+    for(const sample of samples) {
+      if(states.length&&states.at(-1).time===sample.time)states[states.length-1]=sample;
+      else states.push(sample);
+    }
+    let initial=null;
+    for(const state of states)if(state.time<=a)initial=state;else break;
+    if(initial===null)return {available:false,total:null,longest:null,replayPeak:null};
+    if(a===b)return {available:true,total:0n,longest:0n,replayPeak:null};
+    const clipped=[{time:a,value:initial.value},...states.filter(s=>s.time>a&&s.time<b)];
+    let total=0n,longest=0n,runStart=null,firstNonempty=null,replayPeak=-1,replayPeakAt=null;
+    for(let i=0;i<clipped.length;i++) {
+      const s=clipped[i],end=clipped[i+1]?.time??b;
+      if(s.value>replayPeak){replayPeak=s.value;replayPeakAt=s.time;}
+      if(s.value>0) {
+        total+=end-s.time;
+        if(runStart===null)runStart=s.time;
+        if(firstNonempty===null)firstNonempty=s.time;
+      } else if(runStart!==null) {
+        if(s.time-runStart>longest)longest=s.time-runStart;
+        runStart=null;
+      }
+    }
+    if(runStart!==null&&b-runStart>longest)longest=b-runStart;
+    return {available:true,total,longest,firstNonempty,replayPeak,replayPeakAt};
+  }
+  // Half-open observation intervals use committed milestones only. All rows
+  // are aggregated before drawing, search and pagination limits are applied.
+  function intervalComparison(model, a, b) {
+    if (typeof a !== 'bigint' || typeof b !== 'bigint' || a < model.start || b > model.end || b < a) fail('Invalid comparison interval');
+    const buses = new Map(model.buses.map(id => [id, {id,tx:0n,intermission:0n,unfinishedTx:0,unfinishedIntermission:0,firstTx:null,requestId:null}]));
+    for (const request of model.requests) {
+      if (request.sof === null) continue;
+      const row = buses.get(request.bus);
+      const tx = overlap(request.sof, request.eof ?? model.end, a, b);
+      row.tx += tx;
+      if (tx > 0n) {
+        const first = request.sof > a ? request.sof : a;
+        if (row.firstTx === null || first < row.firstTx) {row.firstTx = first; row.requestId = request.id;}
+        if (request.eof === null) row.unfinishedTx++;
+      }
+      if (request.eof !== null) {
+        const gap = overlap(request.eof, request.release ?? model.end, a, b);
+        row.intermission += gap;
+        if (gap > 0n && request.release === null) row.unfinishedIntermission++;
+      }
+    }
+    const queues = (ids, records) => [...ids].sort().map(id => ({id, ...queueInterval(records.get(id) || [], a, b)}));
+    return {start:a,end:b,duration:b-a,buses:[...buses.values()],
+      txQueues:queues(model.nodes,model.queueRecords),rxQueues:queues(model.gatewayPorts,model.rxQueueRecords)};
+  }
+  return { intervalComparison, queueInterval, parseResults, stateAt, networkAt, stepTransfers, requestEventGroups, requestStateAt, receiverStateAt, forwardStateAt, rxBufferStateAt, gatewayTransfersAt, originsAt, formatTime, parseTime, fraction, timeFromFraction };
 });

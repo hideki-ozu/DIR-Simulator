@@ -344,9 +344,9 @@ async function assertGatewayRouteReplay(browser, viewer, result) {
   } finally { await page.close(); }
 }
 async function main(){
-  if (process.argv.includes('--recorded-events')) {
+  if (process.argv.includes('--recorded-events') || process.argv.includes('--interval-comparison')) {
     const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE});
-    try { await assertRecordedEvents(browser); }
+    try { if(process.argv.includes('--interval-comparison')) await assertIntervalComparison(browser); else await assertRecordedEvents(browser); }
     finally { await browser.close(); }
     return;
   }
@@ -357,6 +357,7 @@ async function main(){
   const browser=await chromium.launch({headless:true});
   try {
     await assertRecordedEvents(browser);
+    await assertIntervalComparison(browser);
     await assertStepPlayback(browser,viewer,result);
     const fanout=run(['run','--config',path.join(root,'examples/gateway/fanout.ini'),'--output',path.join(temp,'gateway-fanout')]);
     const fanoutResult=path.join(fanout.output_path,'results.json'),fanoutViewer=path.join(temp,'gateway-fanout.html');
@@ -848,6 +849,80 @@ async function assertRecordedEvents(browser) {
     assert.equal(await page.locator('#request-events button').count(),0);
     assert.deepEqual(errors,[]);assert.deepEqual(network,[]);
     console.log('PASS recorded-events: schema1/schema2/public CAN, adjacent u64, rewind/manual equivalence, playback 100ms focus/identity and Space/Enter, positive step cancellation, narrow layout, partial/empty, different request, file/profile/invalid reset, no network');
+  } finally {await page.close();}
+}
+async function assertIntervalComparison(browser) {
+  const {fixture,rxHoldingFixture}=require('./viewer_fixtures.cjs');
+  const page=await browser.newPage({viewport:{width:1440,height:1000}}), errors=[],network=[];
+  page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))network.push(r.url());});
+  const load=async(raw,name)=>{
+    await page.locator('#file-input').setInputFiles({name,mimeType:'application/json',buffer:Buffer.from(JSON.stringify(raw))});
+    await page.waitForFunction(name=>document.getElementById('filename').textContent===name,name);
+  };
+  const cells=async(selector)=>page.locator(selector).evaluateAll(rows=>rows.map(row=>[...row.cells].map(cell=>cell.textContent)));
+  try {
+    await page.goto(pathToFileURL(path.join(root,'crates/dir-simulator/src/tool/viewer/assets/index.html')).href);
+    const raw=fixture(),source=JSON.stringify(raw);
+    raw.simulation.records.splice(2,0,{time_ps:'20',metric:'queue_length',target:'Main.a.txQueue',value_kind:'integer',value:'2'},
+      {time_ps:'20',metric:'queue_length',target:'Main.a.txQueue',value_kind:'integer',value:'1'});
+    await load(raw,'comparison-can.json');
+    assert.deepEqual((await cells('#comparison-buses tr'))[0].slice(0,5),['Main.bus','70','35.000%','10','0 / 0']);
+    const tx=(await cells('#comparison-tx tr'))[0];assert.deepEqual(tx,['Main.a','1','20','10','10','20']);
+    await page.locator('#comparison-tx [data-comparison-time="20"]').first().click();await assertText(page,'#current-ps','20 ps');
+    const linked=await page.locator('#node-states').innerText();
+    await page.locator('#time-unit').selectOption('ps');await page.locator('#jump-time').fill('20');await page.locator('#jump').click();
+    assert.equal(await page.locator('#node-states').innerText(),linked);
+    await page.locator('#comparison-buses button').click();await assertText(page,'#current-ps','30 ps');await assertText(page,'#selected-id','g:0');
+    await page.locator('#comparison-tx button').first().click();await assertText(page,'#current-ps','20 ps');
+    const original=await cells('#comparison-buses tr');
+    await page.locator('#request-search').fill('no matching requests');assert.deepEqual(await cells('#comparison-buses tr'),original);
+    await page.locator('#request-search').fill('');
+    await page.locator('#comparison-scope').selectOption('viewport');await page.locator('#zoom-in').click();
+    assert.notEqual(await page.locator('#comparison-range').innerText(),'[0, 200) ps / 200 ps');
+    await page.locator('#zoom-reset').click();assert.deepEqual(await cells('#comparison-buses tr'),original);
+    await page.locator('#comparison-tx-sort').selectOption('id');assert.equal((await cells('#comparison-tx tr'))[0][0],'Main.a');
+    const gw=rxHoldingFixture();
+    gw.simulation.records=[['queue_length','Main.gw.b.txQueue','0','0'],['queue_length','Main.gw.b.txQueue','250','1'],['queue_length','Main.gw.b.txQueue','260','0'],['gw_rx_queue_length','Main.gw.a.rxQueue','0','0'],['gw_rx_queue_length','Main.gw.a.rxQueue','130','1'],['gw_rx_queue_length','Main.gw.a.rxQueue','500','0']].map(([metric,target,time_ps,value])=>({metric,target,time_ps,value,value_kind:'integer'}));
+    await load(gw,'comparison-gateway.json');assert.equal(await page.locator('#comparison-buses tr').count(),3);
+    assert.equal(await page.locator('#comparison-rx tr').count(),3);
+    assert.equal((await cells('#comparison-rx tr'))[0][3],'370');
+    assert.equal((await cells('#comparison-tx tr')).find(row=>row[0]==='Main.gw.b')[3],'10');
+    await page.locator('#comparison-bus-sort').selectOption('id');
+    assert.deepEqual((await cells('#comparison-buses tr')).map(row=>row[0]),['Main.busA','Main.busB','Main.busC']);
+    await page.locator('#comparison-rx-sort').selectOption('longest');
+    assert.equal((await cells('#comparison-rx tr'))[0][0],'Main.gw.a');
+    await page.locator('#comparison-rx button').first().click();await assertText(page,'#current-ps','130 ps');
+    await page.setViewportSize({width:390,height:844});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    if(process.env.VIEWER_COMPARISON_SCREENSHOT)await page.screenshot({path:process.env.VIEWER_COMPARISON_SCREENSHOT,fullPage:true});
+    const many=fixture();many.simulation.receivers=[];many.simulation.requests=[];many.simulation.end_ps='6200';
+    for(let i=0;i<620;i++)for(const [bus,length] of [['A',5],['B',2]]) {
+      const request=structuredClone(fixture().simulation.requests[0]),sof=i*10;
+      Object.assign(request,{request_id:`${bus}:${i}`,source:`Node.${bus}`,bus:`Bus.${bus}`,generated_ps:String(sof),ready_ps:String(sof),sof_ps:String(sof),eof_ps:String(sof+length)});
+      Object.assign(request.model_fields,{planned_eof_ps:String(sof+length),planned_release_ps:String(sof+length+2),release_ps:String(sof+length+2)});
+      many.simulation.requests.push(request);
+    }
+    await load(many,'many-requests.json');
+    const totals=await cells('#comparison-buses tr');
+    assert.equal(totals.find(row=>row[0]==='Bus.A')[1],'3100');assert.equal(totals.find(row=>row[0]==='Bus.B')[1],'1240');
+    await page.locator('#page-next').click();assert.deepEqual(await cells('#comparison-buses tr'),totals);
+    await page.locator('#request-search').fill('B:619');assert.deepEqual(await cells('#comparison-buses tr'),totals);
+    const empty=fixture();Object.assign(empty.simulation,{end_ps:'0',requests:[],receivers:[],records:[]});
+    await load(empty,'zero-duration.json');assert((await cells('#comparison-buses tr')).every(row=>row[2]==='未定義'));
+    assert((await cells('#comparison-tx tr')).every(row=>row[1]==='N/A'));
+    const publicPath=path.join(root,'docs/verification/results/acceptance-2026-10-08/output-exports/dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation-1226012-0/results.json');
+    const publicBytes=fs.readFileSync(publicPath);
+    const manifestPath=path.join(path.dirname(publicPath),'manifest.json'),manifestBytes=fs.readFileSync(manifestPath);
+    await page.locator('#file-input').setInputFiles(publicPath);
+    await page.waitForFunction(()=>document.getElementById('filename').textContent==='results.json');
+    assert(await page.locator('#comparison-buses tr').count()>0);assert.deepEqual(fs.readFileSync(publicPath),publicBytes);
+    assert.deepEqual(fs.readFileSync(manifestPath),manifestBytes);
+    await load(fixture(),'reset.json');assert.equal(await page.locator('#comparison-scope').inputValue(),'all');
+    assert.equal(JSON.stringify(fixture()),source);
+    await page.locator('#file-input').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{}')});
+    await page.locator('#error-banner').waitFor({state:'visible'});assert.equal(await page.locator('#comparison-buses tr').count(),0);
+    assert.deepEqual(errors,[]);assert.deepEqual(network,[]);
+    console.log('PASS interval-comparison: schema1/schema2/public CAN, same-time replay peak, TX ratio, seek/manual/rewind, viewport/sort/search, narrow screen, file/reset, unchanged public input, no network');
   } finally {await page.close();}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>fs.rmSync(temp,{recursive:true,force:true}));

@@ -84,6 +84,20 @@
         </aside>
       </div>
 
+      <section id="comparison-panel" class="panel" aria-labelledby="comparison-title">
+        <div class="section-heading"><h2 id="comparison-title">同一区間のバス・キュー比較</h2>
+          <label>対象区間 <select id="comparison-scope" data-requires-model><option value="all">全期間</option><option value="viewport">タイムライン表示区間</option></select></label>
+        </div>
+        <p id="comparison-range"></p>
+        <p class="comparison-note">区間は [開始, 終了) です。TX と intermission は別々に表示します。未完了は観測終了で打ち切ります。キューは同時刻の最後の計測による再演状態です（全記録の queue_max とは異なります）。開始以前の計測がない場合は N/A。時間リンクから現在状態を確認できます。</p>
+        <h3>バス占有</h3><label>並び順 <select id="comparison-bus-sort" data-requires-model><option value="tx">TX 占有降順</option><option value="id">バス名</option></select></label>
+        <div class="comparison-scroll"><table><thead><tr><th>バス</th><th>TX (ps)</th><th>TX 割合</th><th>Intermission (ps)</th><th>未完了 TX / Intermission</th><th>最初の TX (ps)</th></tr></thead><tbody id="comparison-buses"></tbody></table></div>
+        <h3>Controller TX キュー</h3><label>並び順 <select id="comparison-tx-sort" data-requires-model><option value="replayPeak">再演状態最大降順</option><option value="total">非空合計降順</option><option value="longest">非空最長降順</option><option value="id">ノード名</option></select></label>
+        <div class="comparison-scroll"><table><thead><tr><th>ノード</th><th>再演状態最大</th><th>最初の最大時刻 (ps)</th><th>非空合計 (ps)</th><th>非空最長連続 (ps)</th><th>最初の非空 (ps)</th></tr></thead><tbody id="comparison-tx"></tbody></table></div>
+        <h3>Gateway RX キュー</h3><label>並び順 <select id="comparison-rx-sort" data-requires-model><option value="replayPeak">再演状態最大降順</option><option value="total">非空合計降順</option><option value="longest">非空最長降順</option><option value="id">ノード名</option></select></label>
+        <div class="comparison-scroll"><table><thead><tr><th>ノード</th><th>再演状態最大</th><th>最初の最大時刻 (ps)</th><th>非空合計 (ps)</th><th>非空最長連続 (ps)</th><th>最初の非空 (ps)</th></tr></thead><tbody id="comparison-rx"></tbody></table></div>
+      </section>
+
       <section class="panel request-panel" aria-labelledby="requests-title">
         <div class="panel-heading"><div><h2 id="requests-title">要求一覧 <span id="request-total" class="heading-count"></span></h2><p>状態は現在の時刻、時刻列は実行全体の記録</p></div><div class="filters"><label class="search-field"><span aria-hidden="true">⌕</span><input id="request-search" type="search" placeholder="要求 ID / ノードで検索" aria-label="要求IDまたはノードで検索" data-requires-model></label><select id="status-filter" aria-label="要求の状態で絞り込む" data-requires-model><option value="all">すべての状態</option><option value="not_generated">生成前</option><option value="processing">TX 処理中</option><option value="waiting_tx">TX 容量待機</option><option value="pending">送信待機</option><option value="in_flight">送信中</option><option value="success">送信成功</option><option value="dropped">破棄</option></select></div></div>
         <div class="table-scroll"><table><thead><tr><th scope="col">要求 ID</th><th scope="col">送信ノード</th><th scope="col">バス</th><th scope="col">現在の状態</th><th scope="col">生成 <span class="table-unit">µs</span></th><th scope="col">SOF <span class="table-unit">µs</span></th><th scope="col">EOF <span class="table-unit">µs</span></th><th scope="col">受信先</th></tr></thead><tbody id="request-rows"></tbody></table></div>
