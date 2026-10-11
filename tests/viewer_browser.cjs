@@ -889,6 +889,15 @@ async function assertIntervalComparison(browser) {
     assert.equal((await cells('#comparison-tx tr')).find(row=>row[0]==='Main.gw.b')[3],'10');
     await page.locator('#comparison-bus-sort').selectOption('id');
     assert.deepEqual((await cells('#comparison-buses tr')).map(row=>row[0]),['Main.busA','Main.busB','Main.busC']);
+    const bars=async(id)=>page.locator('#timeline rect[role="button"]').evaluateAll((rects,id)=>rects.filter(rect=>rect.getAttribute('aria-label').startsWith(`${id} `)).map(rect=>({opacity:rect.getAttribute('opacity'),stroke:rect.getAttribute('stroke')})),id);
+    await page.locator('#request-rows tr').filter({hasText:'gw:source:0/b'}).first().click();
+    assert((await bars('gw:source:0/b')).every(bar=>bar.stroke==='#203651'&&bar.opacity==='0.92'));
+    assert((await bars('source:0')).every(bar=>bar.stroke==='none'&&bar.opacity==='0.34'));
+    await page.locator('#comparison-buses tr[data-comparison-id="Main.busA"] button').click();
+    await assertText(page,'#selected-id','source:0');await assertText(page,'#current-ps','30 ps');
+    assert((await bars('source:0')).length>0);
+    assert((await bars('source:0')).every(bar=>bar.stroke==='#203651'&&bar.opacity==='0.92'),'bus link switches selected timeline bars');
+    assert((await bars('gw:source:0/b')).every(bar=>bar.stroke==='none'&&bar.opacity==='0.34'),'bus link dims the previous request');
     await page.locator('#comparison-rx-sort').selectOption('longest');
     assert.equal((await cells('#comparison-rx tr'))[0][0],'Main.gw.a');
     await page.locator('#comparison-rx button').first().click();await assertText(page,'#current-ps','130 ps');

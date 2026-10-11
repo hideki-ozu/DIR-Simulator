@@ -910,7 +910,7 @@
       button.setAttribute('aria-label',`${nodeId || requestId || 'バス'} の ${at} ps に移動`);
       button.addEventListener('click',() => {
         pause(); $('jump-error').hidden = true;
-        if (requestId) selected = requestId;
+        if (requestId) selectRequest(requestId);
         setCurrent(at,true);
         if (nodeId) {
           const card = [...$('node-states').children].find(card => card.dataset.comparisonNode === nodeId);

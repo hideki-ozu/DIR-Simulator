@@ -1,6 +1,6 @@
 # Issue #53 区間比較の検証
 
-文書バージョン：`1.0.0`
+文書バージョン：`1.0.1`
 対象GitHubバージョン：`main @ 87740a7`
 文書ID：`verify-viewer-intervals-2026-10-11`
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.1` | `2026-10-11` | Issue #53 のバスリンク選択不整合の修正前再現、修正とタイムライン強調回帰を記録 |
 | `1.0.0` | `2026-10-11` | Issue #53 の承認済み定義、実装接続とモデル・実画面・文書の検証結果を記録 |
 
 基準 main: `87740a7fc83d30c652d3a64e98ec4cd1252a8610`。独立ブランチ `viewer-interval-comparison-53`。Issue #52 のユーザーによるマージ後の main から開始した。
@@ -24,3 +25,9 @@
 ローカルに cargo / Rust CLI がないため actual CLI 2試験と全 browser run はローカルでは未実施。Linux リモート Rust workflow で全29モデル試験と全ブラウザ回帰を実行する。厳密なリモート head と CI 結果は PR に記録する。要求チェック名、ruleset、標準自動マージ設定は変更しない。
 
 狭い画面の [比較表スクリーンショット](comparison-mobile.png) を保存し、比較表の横スクロールとページ全体の幅を目視確認した。`mkdocs build --strict` PASS、ガイドの13 HTML / 661リンク PASS、traceability 231要件 / 60機能 / 274ノード / 構造エラー0、traceability unit tests 40/40 PASS。新規報告の文書ID欠如は追加して修正した。生成鮮度の最終検証とリモート CI は PR に記録する。schema、Runtime、出力生成、元 manifest の変更なし。
+
+## バス時刻リンクの選択同期の修正
+
+初回公開 head `9e26d0f767365eec05807d6214330a3390ac687a` の独立レビュー指摘を実画面で再現した。Bus B の `gw:source:0/b` を選択後、全範囲表示で Bus A の first-TX リンクを押すと、詳細は `source:0` / 30 ps へ移るが、表示区間内の移動ではタイムラインが以前の選択を保持した。追加した回帰試験は修正前に `bus link switches selected timeline bars` で FAIL。
+
+`selected` の直接代入を既存 `selectRequest(requestId)` に変更し、タイムラインも再描画する。追加回帰で新要求の `stroke=#203651 / opacity=0.92`、旧要求の `stroke=none / opacity=0.34` を確認して PASS。比較UI全体と #52 recorded-events のブラウザ回帰も PASS。既存 Issue #53 / PR #60 で追跡し、重複 Issue は作らない。指標定義の変更はない。
