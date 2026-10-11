@@ -21,6 +21,7 @@
   let viewStart = 0n;
   let viewEnd = 0n;
   let selected = null;
+  let comparisonCache = null;
   let eventModel = null;
   let eventRequest = null;
   let page = 0;
@@ -131,6 +132,12 @@
     $("detail-raw").textContent = "";
     $("request-events").replaceChildren();
     eventModel = eventRequest = null;
+    comparisonCache = null;
+    for (const id of ['comparison-buses','comparison-tx','comparison-rx']) $(id).replaceChildren();
+    $('comparison-range').textContent = '';
+    $('comparison-scope').value = 'all';
+    $('comparison-bus-sort').value = 'tx';
+    $('comparison-tx-sort').value = $('comparison-rx-sort').value = 'replayPeak';
     $("detail-content").hidden = true;
     $("detail-empty").hidden = false;
     $("clear-selection").hidden = true;
@@ -677,6 +684,8 @@
     const cards = [];
     for (const node of state.nodes) {
       const card = element("article", "node-card");
+      card.dataset.comparisonNode = node.id;
+      card.tabIndex = -1;
       const name = element("div", "node-name");
       const title = element("strong", "", node.id);
       title.title = node.id;
@@ -874,7 +883,67 @@
     $("detail-raw").textContent = JSON.stringify(request.raw, null, 2);
   }
 
+  function renderComparison() {
+    if (!model) return;
+    $('comparison-panel').hidden = Boolean(model.canfd);
+    if (model.canfd) return;
+    const start = $('comparison-scope').value === 'all' ? model.start : viewStart;
+    const end = $('comparison-scope').value === 'all' ? model.end : viewEnd;
+    const sorts = ['bus','tx','rx'].map(kind => $(`comparison-${kind}-sort`).value).join(',');
+    if (comparisonCache?.model === model && comparisonCache.start === start && comparisonCache.end === end && comparisonCache.sorts === sorts) return;
+    comparisonCache = {model,start,end,sorts};
+    const result = API.intervalComparison(model,start,end);
+    $('comparison-range').textContent = `[${start}, ${end}) ps / ${result.duration} ps`;
+    const sortRows = (rows,key) => [...rows].sort((a,b) => {
+      if (key !== 'id') {
+        const av = a[key] ?? null, bv = b[key] ?? null;
+        if (av === null && bv !== null) return 1;
+        if (bv === null && av !== null) return -1;
+        if (av !== bv) return av > bv ? -1 : 1;
+      }
+      return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+    });
+    const link = (at,nodeId,requestId) => {
+      if (at === null || at === undefined) return element('span','','N/A');
+      const button = element('button','comparison-time',at.toString());
+      button.type = 'button'; button.dataset.comparisonTime = at.toString();
+      button.setAttribute('aria-label',`${nodeId || requestId || 'バス'} の ${at} ps に移動`);
+      button.addEventListener('click',() => {
+        pause(); $('jump-error').hidden = true;
+        if (requestId) selectRequest(requestId);
+        setCurrent(at,true);
+        if (nodeId) {
+          const card = [...$('node-states').children].find(card => card.dataset.comparisonNode === nodeId);
+          if (card) {card.focus({preventScroll:true}); card.scrollIntoView({block:'nearest'});}
+        }
+      });
+      return button;
+    };
+    const cell = value => element('td','',value === null || value === undefined ? 'N/A' : value.toString());
+    const percent = tx => {
+      if (result.duration === 0n) return '未定義';
+      const scaled = tx * 100000n / result.duration;
+      return `${scaled / 1000n}.${(scaled % 1000n).toString().padStart(3,'0')}%`;
+    };
+    $('comparison-buses').replaceChildren(...sortRows(result.buses,$('comparison-bus-sort').value).map(row => {
+      const tr = element('tr');tr.dataset.comparisonId = row.id;
+      const target = cell('');target.append(link(row.firstTx,null,row.requestId));
+      tr.append(cell(row.id),cell(row.tx),cell(percent(row.tx)),cell(row.intermission),cell(`${row.unfinishedTx} / ${row.unfinishedIntermission}`),target);
+      return tr;
+    }));
+    for (const [kind,rows] of [['tx',result.txQueues],['rx',result.rxQueues]]) {
+      $(`comparison-${kind}`).replaceChildren(...sortRows(rows,$(`comparison-${kind}-sort`).value).map(row => {
+        const tr = element('tr');tr.dataset.comparisonId = row.id;
+        const peak = cell(''),first = cell('');
+        peak.append(link(row.replayPeakAt,row.id));first.append(link(row.firstNonempty,row.id));
+        tr.append(cell(row.id),cell(row.replayPeak),peak,cell(row.total),cell(row.longest),first);
+        return tr;
+      }));
+    }
+  }
+
   function renderTimeline() {
+    renderComparison();
     if (!model) return;
     const canvas = $("timeline");
     const width = Math.max(550, $("timeline-wrap").clientWidth);
@@ -1022,6 +1091,9 @@
   $("time-slider").addEventListener("input", event => { if (!model) return; pause(); $("jump-error").hidden = true; setCurrent(API.timeFromFraction(model.start, model.end, Number(event.target.value)), true); });
   $("jump").addEventListener("click", jump);
   $("jump-time").addEventListener("keydown", event => { if (event.key === "Enter") jump(); });
+  for (const id of ['comparison-scope','comparison-bus-sort','comparison-tx-sort','comparison-rx-sort']) {
+    $(id).addEventListener('change',renderComparison);
+  }
   $("time-unit").addEventListener("change", () => { if (model) { $("jump-time").value = time(current); $("jump-error").hidden = true; renderCurrent(); renderTimeline(); } });
   $("zoom-in").addEventListener("click", () => zoom(.5));
   $("zoom-out").addEventListener("click", () => zoom(2));
