@@ -1,14 +1,15 @@
 # メールボックス容量ガイド検証記録
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.4`  
 文書ID：`verification-guide-mailbox-capacity`  
-文書状態：実施記録。Project登録は親タスクへ引継ぎ
+文書状態：実施記録。Project登録は親タスク確認済み
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 第2push。同時送信FIFOの受信時刻3条件を独立実測し、次実験提案を訂正。親側Project登録確認を追記 |
 | `1.1.0` | `2026-10-11` | 初回push。正式CLI・隔離ZIP・fresh証跡回帰・実Viewer・サイト・適用traceabilityの検証を保存 |
 
 ## 基準と独立テーマ
@@ -39,3 +40,11 @@ traceability40回帰テスト、全体strict、DIR-REQ-0214/0215/0216/0217の適
 - Project参照は既存ghトークンのread:project不足で拒否された。認証・権限は変更せず、PR作成後に親タスクへ既存「DIR取説整備」への登録・進行状態設定を引き継ぐ。未実施を成功扱いしない。
 - 実機IPC、OS/CPU割込、再送、権限拒否、queue_full、終端未通知の受入はこの比較の範囲外。正式タグの抽象単一server/FIFOモデルだけを説明する。
 - マージ、auto-merge変更、Issue/PR close、force push、履歴書換え、デプロイ、Release/tag作成は実施しない。
+
+## 同時受付の独立確認と第2push
+
+独立レビューで「容量1で受信だけ早めればsend間に取り出せる」という提案が同時受付FIFOでは成立しないと指摘された。正式仕様のphase2全admission→FIFO dispatchを再確認し、`verify_mailbox_receive_timing.py`でcapacity1の全設定・send0 psを固定、receive時刻だけを400/600/800、50/250/450、0/100/200 psへ変えた。各条件validate/runの6操作で、全てsend ok1/full2、receive ok1/empty2、completed6/rejected0だった。0 psの最初のreceiveはstarted0/emptyを確認。実測は[receive-timing.json](receive-timing.json)へ保存した。
+
+成立しない追加実験提案を削除し、同時送信3件がFIFOに先に入る境界を公開本文へ明記した。送信分散など複数変数を変更した結果を1変数比較として混ぜていない。元のcapacity比較は新しいfresh証跡で再測定し、両browser checkerと旧出力回帰、サイト・実画素も確認する。過去の初回測定・履歴は保持し、push単位の改訂と生成一覧を更新する。
+
+Project参照失敗と引継ぎは初回push時点の記録である。現在は親タスクから、既存「DIR取説整備」Project1へPR61を1件登録、Status「執筆中」、対応バージョンv1.1.4を設定し再読確認済みとの通知を受領した。こちらは重複登録、権限・認証変更、Doneによるcloseを操作していない。
