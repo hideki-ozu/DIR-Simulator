@@ -35,12 +35,15 @@
     "bypass_actors": [],
     "review_count": 0,
     "conversation_resolution": true,
-    "required_checks": ["MkDocs strict build and links", "Disabled policy unit tests"],
+    "required_checks": [
+      "MkDocs strict build and links",
+      "Disabled policy unit tests"
+    ],
     "strict": true,
     "force_push_and_delete_blocked": true
   },
   "local_windows_checkout": {
-    "traceability_tests": "39 executed; 33 passed; six hook cases blocked at isolated git init by sandbox .git/config write denial",
+    "traceability_tests": "39 test methods executed; 34 checker/generator methods passed; five hook methods blocked at isolated git init by sandbox .git/config write denial (six failure entries including subtests)",
     "mkdocs_strict": "passed",
     "guide_links": "12 HTML, 595 links/assets/anchors passed",
     "license_correspondence": "passed",
@@ -58,5 +61,12 @@
     "workflow dispatch or deployment",
     "Issue close or external-agent request",
     "CLI/OMNeT/full-image-overlay rerun"
-  ]
+  ],
+  "LF_archive": {
+    "source": "git -c core.autocrlf=false archive HEAD; checkout settings unchanged",
+    "downloadable_samples": "4 ZIPs, 11/8/8/9 inputs passed",
+    "traceability_checker_generator": "23+11=34 tests passed",
+    "notice_regression": "pending final result; recorded in PR body",
+    "mkdocs_links_license": "recorded in PR body"
+  }
 }
