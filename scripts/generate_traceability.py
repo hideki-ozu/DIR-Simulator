@@ -61,9 +61,9 @@ def link_html(label: str, path: str, anchor: str, *, class_name: str = "") -> st
 
 def document_inventory(check: Check) -> list[tuple[str, str, str, str]]:
     paths = sorted(
-        p
-        for p in check.docs.rglob("*.md")
-        if "templates" not in p.relative_to(check.docs).parts and p != check.docs / OUTPUT.name
+        (p for p in check.docs.rglob("*.md")
+         if "templates" not in p.relative_to(check.docs).parts and p != check.docs / OUTPUT.name),
+        key=lambda p: p.relative_to(check.docs).as_posix(),
     )
     rows = []
     for path in paths:
