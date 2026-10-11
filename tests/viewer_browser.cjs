@@ -759,6 +759,8 @@ async function assertRecordedEvents(browser) {
     await page.waitForFunction(name=>document.getElementById('filename').textContent===name,name);
   };
   try {
+    await page.clock.install({time:new Date('2026-10-11T00:00:00Z')});
+    await page.clock.pauseAt(new Date('2026-10-11T01:00:00Z'));
     await page.goto(pathToFileURL(path.join(root,'crates/dir-simulator/src/tool/viewer/assets/index.html')).href);
     const publicDir=path.join(root,'docs/verification/results/acceptance-2026-10-08/output-exports/dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation-1226012-0');
     const publicRaw=JSON.parse(fs.readFileSync(path.join(publicDir,'results.json')));
@@ -780,15 +782,33 @@ async function assertRecordedEvents(browser) {
       const first=page.locator('#request-events button').first();
       await first.focus();await page.keyboard.press('Enter');
       assert.equal(await page.locator('#request-events button').first().evaluate(e=>e===document.activeElement),true);
+      const chosen=API.parseResults(raw).requests.find(r=>r.id===id);
+      await jumpPs(page,chosen.sof-1n);
       await page.locator('#next-time').click();
+      assert(await page.locator('#network [data-step-transfer]').count()>0,'positive control: step animation exists before event jump');
       await page.locator('#request-events button').first().click();
-      assert.equal(await page.locator('#network .step-transfer').count(),0);
+      assert.equal(await page.locator('#network [data-step-transfer]').count(),0);
       await page.locator('#play').click();
-      await page.locator('#request-events button').first().click();
+      await page.locator('#request-events button').first().focus();
+      const control=await page.locator('#request-events button').first().elementHandle();
+      await page.clock.runFor(100);
+      assert.equal(await control.evaluate(e=>e.isConnected),true,'playback preserves control identity for slow pointer gestures');
+      assert.equal(await page.locator('#request-events button').first().evaluate(e=>e===document.activeElement),true,'playback rerenders preserve event control focus');
+      await page.keyboard.press('Space');
+      await assertText(page,'#current-ps',`${groups[0].time} ps`);
+      assert.equal(await page.locator('#play').getAttribute('aria-pressed'),'false');
+      await page.locator('#play').click();await page.locator('#request-events button').first().focus();
+      await page.clock.runFor(100);await page.keyboard.press('Enter');
+      await assertText(page,'#current-ps',`${groups[0].time} ps`);
       assert.equal(await page.locator('#play').getAttribute('aria-pressed'),'false');
       await page.setViewportSize({width:390,height:844});
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
       if(process.env.VIEWER_EVENTS_SCREENSHOT)await page.screenshot({path:process.env.VIEWER_EVENTS_SCREENSHOT,fullPage:true});
+      if(name==='schema2.json') {
+        await page.locator('#request-rows tr').filter({hasText:'source:1'}).click();
+        await assertText(page,'#selected-id','source:1');
+        assert.deepEqual(await page.locator('#request-events button').evaluateAll(rows=>rows.map(e=>e.dataset.eventTime)),API.requestEventGroups(API.parseResults(raw),'source:1').map(g=>String(g.time)));
+      }
       await page.locator('#clear-selection').click();
       assert.equal(await page.locator('#request-events button').count(),0);
       await page.setViewportSize({width:1440,height:1000});
@@ -800,8 +820,34 @@ async function assertRecordedEvents(browser) {
     assert.deepEqual(await page.locator('#request-events button').evaluateAll(rows=>rows.map(e=>e.dataset.eventTime)),['10','20','30']);
     const empty=fixture();empty.simulation.requests=[];empty.simulation.receivers=[];empty.simulation.records=[];empty.simulation.end_ps='0';
     await load(empty,'empty.json');assert.equal(await page.locator('#request-events button').count(),0);
+    const high=fixture(),base=(1n<<64n)-6n,r=high.simulation.requests[0];
+    high.simulation.end_ps=((1n<<64n)-1n).toString();high.simulation.receivers=[];high.simulation.records=[];
+    for(const [field,delta] of [['generated_ps',0n],['ready_ps',1n],['sof_ps',2n],['eof_ps',3n]])r[field]=String(base+delta);
+    Object.assign(r.model_fields,{planned_eof_ps:String(base+3n),release_ps:String(base+4n),planned_release_ps:String(base+4n)});
+    await load(high,'adjacent-u64.json');await page.locator('#request-rows tr').first().click();
+    for(let delta=0n;delta<5n;delta++) {
+      await page.locator(`#request-events [data-event-time="${base+delta}"]`).click();
+      await assertText(page,'#current-ps',`${base+delta} ps`);
+    }
+    await page.setViewportSize({width:390,height:844});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'large u64 buttons fit on mobile');
+    if(process.env.VIEWER_U64_SCREENSHOT)await page.screenshot({path:process.env.VIEWER_U64_SCREENSHOT,fullPage:true});
+    // Public saved products exercise successful cross-profile mounts, rather
+    // than merely clearing the controls through the invalid-input path.
+    for(const [product,panel] of [['bridge-complete','#ethernet-dashboard'],['axi-complete','#transaction-dashboard']]) {
+      await load(fixture(),`before-${product}.json`);await page.locator('#request-rows tr').first().click();
+      assert(await page.locator('#request-events button').count()>0);
+      await page.locator('#file-input').setInputFiles(path.join(root,`docs/verification/results/v1.1.4-pr-2026-10-08/non-rust-gates/results/verified/${product}/results.json`));
+      await page.locator(panel).waitFor({state:'visible'});
+      assert.equal(await page.locator('#error-banner').isVisible(),false);
+      assert.equal(await page.locator('#request-events button').count(),0);
+    }
+    await load(fixture(),'before-invalid.json');await page.locator('#request-rows tr').first().click();
+    await page.locator('#file-input').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{}')});
+    await page.locator('#error-banner').waitFor({state:'visible'});
+    assert.equal(await page.locator('#request-events button').count(),0);
     assert.deepEqual(errors,[]);assert.deepEqual(network,[]);
-    console.log('PASS recorded-events: schema1/schema2, exact times, rewind/manual equivalence, keyboard focus, playback cancellation, narrow layout, partial/empty, selection/file reset, no network');
+    console.log('PASS recorded-events: schema1/schema2/public CAN, adjacent u64, rewind/manual equivalence, playback 100ms focus/identity and Space/Enter, positive step cancellation, narrow layout, partial/empty, different request, file/profile/invalid reset, no network');
   } finally {await page.close();}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>fs.rmSync(temp,{recursive:true,force:true}));

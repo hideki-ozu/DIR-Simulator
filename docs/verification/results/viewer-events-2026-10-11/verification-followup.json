@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-11",
+  "prior_head": "8e96d9183212a028a2bfddfe8da5cbc764170c52",
+  "issue": 52,
+  "duplicate_check": "Open issues only 52/53; issue52 keyboard acceptance already covers this introduced draft regression; tracked in same PR58 rather than a duplicate issue",
+  "reproduced": "Prior app.js: start playback, focus first recorded-event button, advance browser clock by 100ms; focus false. focus-before.txt retains failure",
+  "fix": "Only selection/file changes rebuild event controls; time refresh preserves focus and pointer target identity",
+  "regression": "PASS: playback100ms focus/identity, Space and Enter seek+pause, existing animation positive control then cancellation; schema1/schema2/public CAN, different request, exact adjacent u64, empty/partial, public bridge and AXI mounts, invalid file, narrow layout, no network/page error",
+  "source_sha256": {
+    "app.js": "cfb7f850cfc3782717ea1b81ea935c448260990aaa157dd1ba02d5ae64ec86e5",
+    "model.js": "ef78539104c556525c610d890df2bfdcd1d3d675b8e79add89e77c30d7fbd0c6",
+    "viewer_browser.cjs": "24fbd4e961c6301a9a70c15513ba1b199f0fa578cf15d79fe458b611ce27c7aa",
+    "release-audit.yml": "b91b40e8eb50f97a00903ddcdf00f3a83ae54a3b1c3085fd53923d9cd348a5ba"
+  },
+  "CI_connection": "Existing Rust ledger identity regression job now runs all viewer model tests with built CLI and full viewer_browser after installing fixed Playwright1.64.0/Chromium; required2checks preserved",
+  "local_limits": "Rust/WSL absent; full CLI browser remains not executed locally; local focused Playwright1.64.0 used existing Chromium1243; remote second-head CI pending before push",
+  "prior_CI": {
+    "head": "8e96d9183212a028a2bfddfe8da5cbc764170c52",
+    "policy": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38107236590/job/114375213165",
+    "guide": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38107236594/job/114375213552",
+    "required": "both completed/success; policy logs40 tests, strict231/60/274, fresh; guide ZIP/build/links/license success; pages skipped"
+  },
+  "screenshots": "mobile-public-can-followup.png and mobile-u64-followup.png captured by the supplemented actual browser test; original screenshot/verification.json remain historical"
+}

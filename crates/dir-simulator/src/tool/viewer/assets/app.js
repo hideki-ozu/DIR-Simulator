@@ -21,6 +21,8 @@
   let viewStart = 0n;
   let viewEnd = 0n;
   let selected = null;
+  let eventModel = null;
+  let eventRequest = null;
   let page = 0;
   let playing = false;
   let animation = 0;
@@ -128,6 +130,7 @@
     $("bus-states").replaceChildren();
     $("detail-raw").textContent = "";
     $("request-events").replaceChildren();
+    eventModel = eventRequest = null;
     $("detail-content").hidden = true;
     $("detail-empty").hidden = false;
     $("clear-selection").hidden = true;
@@ -797,11 +800,13 @@
     for (const [label, value] of values) nodes.push(element("dt", "", label), element("dd", "", value));
     target.replaceChildren(...nodes);
   }
-  function renderDetail() {
-    const request = model.requests.find(request => request.id === selected);
-    $("detail-empty").hidden = !!request;
-    $("detail-content").hidden = !request;
-    $("clear-selection").hidden = !request;
+  function renderRequestEvents(request) {
+    // These controls depend on file/selection, not the current playback time.
+    // Preserve their identity through playback so focus and pointer gestures
+    // survive the 32ms state refresh.
+    if (eventModel === model && eventRequest === (request?.id ?? null)) return;
+    eventModel = model;
+    eventRequest = request?.id ?? null;
     $("request-events").replaceChildren();
     if (!request) return;
     const groups = API.requestEventGroups(model, request.id);
@@ -815,7 +820,7 @@
         $("jump-error").hidden = true;
         $("jump-time").removeAttribute("aria-invalid");
         setCurrent(group.time, true);
-        // Rendering replaces these controls; keep keyboard focus at this time.
+        // The control survives state rendering and remains the keyboard target.
         $("request-events").querySelector(`[data-event-time="${group.time}"]`)?.focus({preventScroll:true});
         $("announcement").textContent = `要求 ${request.id} の記録時刻 ${group.time} ps へ移動しました。`;
       });
@@ -824,6 +829,14 @@
       item.append(button, labels);
       $("request-events").append(item);
     }
+  }
+  function renderDetail() {
+    const request = model.requests.find(request => request.id === selected);
+    $("detail-empty").hidden = !!request;
+    $("detail-content").hidden = !request;
+    $("clear-selection").hidden = !request;
+    renderRequestEvents(request);
+    if (!request) return;
     $("selected-id").textContent = request.id;
     const state = API.requestStateAt(request, current);
     $("selected-status").className = `status ${state}`;
