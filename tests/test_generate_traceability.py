@@ -267,6 +267,25 @@ class TraceabilityGeneratorFixture(unittest.TestCase):
 
 
 class TestTraceabilityGenerator(TraceabilityGeneratorFixture):
+    def test_inventory_order_is_case_sensitive_posix_on_every_platform(self):
+        self.add_requirement("DIR-REQ-0001", "Root", ["DIR-FUNC-0001"])
+        self.write_docs()
+        names = ("Z.md", "a.md", "middle/entry.md")
+        for index, name in enumerate(names):
+            path = self.docs / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(
+                f"# Inventory {index}\n文書ID：`inventory-{index}`\n", encoding="utf-8"
+            )
+        result = self.run_generator()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for name in ("要件トレーサビリティ一覧.md", "要件トレーサビリティ一覧.html"):
+            parser = TableParser()
+            parser.feed((self.docs / name).read_text(encoding="utf-8"))
+            links = [link for row in parser.tables[0]["rows"]
+                     for cell in row["cells"] for link in cell["links"] if link in names]
+            self.assertEqual(links, ["Z.md", "a.md", "middle/entry.md"])
+
     def test_hierarchy_html_escapes_fields_and_links_each_requirement_and_parent(self):
         self.add_requirement(
             "DIR-REQ-0001",

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-11",
+  "base_main": "baa983462bddef0deda27f562cf4814704a1e222",
+  "scope": "Retire custom guide merge; preserve shared checks and native GitHub auto-merge",
+  "removed": [
+    ".github/guide-merge-policy.json",
+    ".github/requirements-guide-merge.txt",
+    ".github/workflows/guide-scoped-merge.yml",
+    ".github/workflows/guide-scoped-validation.yml",
+    "scripts/guide_scope_policy.py",
+    "scripts/guide_merge_generated.py",
+    "scripts/guide_merge_runtime.py",
+    "scripts/guide_merge_validate.py",
+    "scripts/test_guide_scope_policy.py",
+    "scripts/test_guide_merge_generated.py",
+    "scripts/test_guide_merge_runtime.py",
+    "scripts/test_guide_merge_validate.py",
+    "scripts/test_guide_merge_evidence.py"
+  ],
+  "pages": "Only custom workflow_dispatch/expected_sha/activation-variable route removed; pull_request checks and main push publication retained",
+  "required_check": {
+    "context": "Disabled policy unit tests",
+    "provider_app": 15368,
+    "context_renamed": false,
+    "implementation": "Existing 39 shared traceability checker/generator/index-hook tests plus strict traceability and generated freshness",
+    "dummy_or_unconditional_success": false,
+    "ruleset_changed": false
+  },
+  "remote_observations": {
+    "allow_auto_merge": true,
+    "ruleset_id": 24862905,
+    "enforcement": "active",
+    "target": "refs/heads/main",
+    "bypass_actors": [],
+    "review_count": 0,
+    "conversation_resolution": true,
+    "required_checks": [
+      "MkDocs strict build and links",
+      "Disabled policy unit tests"
+    ],
+    "strict": true,
+    "force_push_and_delete_blocked": true
+  },
+  "local_windows_checkout": {
+    "traceability_tests": "39 test methods executed; 34 checker/generator methods passed; five hook methods blocked at isolated git init by sandbox .git/config write denial (six failure entries including subtests)",
+    "mkdocs_strict": "passed",
+    "guide_links": "12 HTML, 595 links/assets/anchors passed",
+    "license_correspondence": "passed",
+    "downloadable_samples": "CRLF checkout differs from committed LF ZIP inputs; verify LF archive separately",
+    "notice_regression": "8/9 passed; one byte-based Cargo.lock LF fixture mismatch under CRLF checkout",
+    "strict_traceability": "231 requirements, 60 functions, 274 nodes; errors/incomplete zero",
+    "generated_freshness": "passed"
+  },
+  "followup_validation": "LF archive and exact-head Linux CI results recorded in Draft PR body; this JSON records pre-push local results",
+  "history": "Prior verification JSONs and published history preserved; prior design marked historical",
+  "issue31": "Still open; propose disposition as obsolete after retirement merge, not bypass-evidence technical resolution",
+  "not_performed": [
+    "security/auth/visibility/application/required-check settings changes",
+    "PR auto-merge reservation or actual merge",
+    "workflow dispatch or deployment",
+    "Issue close or external-agent request",
+    "CLI/OMNeT/full-image-overlay rerun"
+  ],
+  "LF_archive": {
+    "source": "git -c core.autocrlf=false archive HEAD; checkout settings unchanged",
+    "downloadable_samples": "4 ZIPs, 11/8/8/9 inputs passed",
+    "traceability_checker_generator": "23+11=34 tests passed",
+    "notice_regression": "9 tests passed",
+    "mkdocs_links_license": "strict build, 12 HTML/595 links, correspondence passed"
+  },
+  "first_push_CI": {
+    "head": "40a1fcd38e06efd850597dc4ef321fa633a3f417",
+    "merge_ref": "7ba0b4335ab5305cd4aa69d59705ac44bafef88c",
+    "job": 114369902996,
+    "shared_tests": "39 passed",
+    "strict": "passed",
+    "freshness": "failed for traceability MD/HTML; Path ordering differs between Windows and Linux"
+  },
+  "portable_inventory_fix": {
+    "sort_key": "relative POSIX path string",
+    "regression": "Z.md/a.md/middle/entry.md; case-sensitive order differs from Windows case-fold order in both MD/HTML",
+    "general_traceability_tests_now": 40,
+    "generator_local_tests": "12 passed",
+    "exact_head_followup": "recorded in PR body",
+    "old_implementation_probe": "Isolated generator from 40a1fcd fails strengthened regression on actual Windows; current 12 generator tests pass",
+    "issue": 57
+  }
+}

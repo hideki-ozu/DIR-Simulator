@@ -1,12 +1,6 @@
 name: Guide checks and GitHub Pages
 
 on:
-  workflow_dispatch:
-    inputs:
-      expected_sha:
-        description: Approved main commit to publish; disabled without activation variable
-        type: string
-        required: true
   pull_request:
     branches: [main]
   push:
@@ -21,7 +15,6 @@ concurrency:
 
 jobs:
   build:
-    if: ${{ github.event_name != 'workflow_dispatch' || (vars.GUIDE_SCOPED_MERGE_ENABLED == 'enabled' && github.ref == 'refs/heads/main' && inputs.expected_sha == github.sha) }}
     name: MkDocs strict build and links
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -49,14 +42,14 @@ jobs:
           python scripts/check_third_party_notices.py --guide-dir build/guide
           python tests/test_third_party_notices.py
       - name: Upload Pages artifact after main checks pass
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && vars.GUIDE_SCOPED_MERGE_ENABLED == 'enabled' && inputs.expected_sha == github.sha))
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: build/guide
 
   deploy:
     name: Publish main to GitHub Pages
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && vars.GUIDE_SCOPED_MERGE_ENABLED == 'enabled' && inputs.expected_sha == github.sha))
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 10
