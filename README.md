@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.15`
+文書バージョン：`1.1.16`
 対象GitHubバージョン：`v1.1.4`（公開候補）
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.16` | `2026-10-11` | DMAのコピー完了と通知待ちの独立実習・8入力ZIP・fresh証跡検証を追加 |
 | `1.1.15` | `2026-10-11` | メールボックス容量の1変数実習、正式v1.1.4実測・実Viewer・独立ZIPへの入口を追加 |
 | `1.1.14` | `2026-10-11` | SRAMポート数の1変数実習、正式v1.1.4の測定・実Viewer・独立ZIPへの入口を追加 |
 | `1.1.13` | `2026-10-11` | Gatewayの処理遅延1変数実習、正式v1.1.4での測定・実Viewer・独立ZIPへの入口を追加 |
@@ -42,6 +43,8 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [SRAMのポート数と読み出し待ち時間](docs/guide/SRAMのポート数と読み出し待ち時間.md)では、正式v1.1.4で同時読出し3件を1変数比較できます。[独立入力ZIP](docs/guide/downloads/sram-ports-inputs.zip)を配布しています。
 
 [メールボックスの容量と満杯応答](docs/guide/メールボックスの容量と満杯応答.md)は、完了した要求の理由とメッセージ受渡しを区別する正式v1.1.4の実習です。[8入力ZIP](docs/guide/downloads/mailbox-capacity-inputs.zip)を配布しています。
+
+[DMAのコピー完了と通知待ち](docs/guide/DMAのコピー完了と通知待ち.md)では、通知時間だけを変え、データ書き込み完了と親要求の通知を正式v1.1.4の実測で分けます。[8入力ZIP](docs/guide/downloads/dma-notification-inputs.zip)を配布しています。
 
 初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。初回公開はこの構成をmainへ反映した後です。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
 

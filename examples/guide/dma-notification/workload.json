@@ -1,0 +1,34 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "copy",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.dma",
+      "times": [
+        "0ps"
+      ],
+      "request": {
+        "op": "copy",
+        "src": "Main.src",
+        "dst": "Main.dst",
+        "src_address": 0,
+        "dst_address": 0,
+        "length": 8
+      }
+    },
+    {
+      "id": "observe",
+      "kind": "memory-ipc.explicit.v1",
+      "node": "Main.dst",
+      "times": [
+        "700ps"
+      ],
+      "request": {
+        "op": "read",
+        "address": 0,
+        "length": 8
+      }
+    }
+  ]
+}

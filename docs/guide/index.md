@@ -1,7 +1,7 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.9`  
-対象GitHubバージョン：CAN記事は`v1.1.3`、Ethernet期限・Gateway・SRAM・メールボックス記事は`v1.1.4`  
+文書バージョン：`1.1.10`  
+対象GitHubバージョン：CAN記事は`v1.1.3`、Ethernet期限・Gateway・SRAM・メールボックス・DMA記事は`v1.1.4`  
 文書ID：`guide-index`  
 文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
 
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.10` | `2026-10-11` | DMAのコピー完了と通知待ちの独立実習・8入力ZIP・fresh証跡検証を追加 |
 | `1.1.9` | `2026-10-11` | メールボックス容量・満杯応答の独立実習と8入力ZIPを追加。既存入口・履歴を保持 |
 | `1.1.8` | `2026-10-11` | SRAMポート数の独立実習と8入力ZIPを追加。既存入口と履歴を保持 |
 | `1.1.7` | `2026-10-11` | Gateway処理遅延の独立実習と9入力ZIPを追加。既存CC/FD/Ethernet入口と分岐履歴を保持 |
@@ -40,6 +41,7 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信とメモリ読
 | 複数CANバスの実験 | [Gateway処理遅延と複数CANバスの中継](Gateway処理遅延と複数CANバスの中継.md) | 処理遅延だけを変え、元通信・二つのコピー・RX保持を区別 |
 | SRAM読出しの実験 | [SRAMのポート数と読み出し待ち時間](SRAMのポート数と読み出し待ち時間.md) | ポート数だけを変え、待ち時間と処理時間を区別 |
 | IPC受渡しの実験 | [メールボックスの容量と満杯応答](メールボックスの容量と満杯応答.md) | メッセージ容量だけを変え、完了・full/empty・FIFO受信・通知を区別 |
+| DMAコピーの実験 | [DMAのコピー完了と通知待ち](DMAのコピー完了と通知待ち.md) | 通知時間だけを変え、書き込み完了と通知待ちを区別 |
 | 設定・用語・FAQ | [設定・用語・FAQ](設定・用語・FAQ.md) | パス、単位、上書きエラー、学習時の疑問 |
 
 上から3ページを順に読むと、一つの小さな実験がつながります。入門は3要求だけに絞り、実際に保存された結果と画面を掲載しています。
@@ -49,3 +51,5 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信とメモリ読
 入門・Viewer・調停・受信フィルタ・受信処理遅延の実習はClassical CANの`can.cc.ideal.v1`です。「CAN FDのデータ速度比較」は、外部から与える位相bit数を使う`can.fd.precomputed.v1`の実習です。Ethernet配送期限の実習は`ethernet.l2.qos.v1`です。Gateway処理遅延の実習は`can.cc.multibus.v1`を正式v1.1.4で実測し、別の[Gateway実習入力ZIP](downloads/gateway-delay-inputs.zip)を使います。SRAMの実習は`memory.ipc.transaction.v1`を正式v1.1.4で実測し、[SRAM実習入力ZIP](downloads/sram-ports-inputs.zip)を使います。メールボックスの実習も`memory.ipc.transaction.v1`を正式v1.1.4で実測し、[独立入力ZIP](downloads/mailbox-capacity-inputs.zip)を使います。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、外部計算位相bit数を使うCAN FD、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。READMEの古い「予定」表記だけでは実装有無を判定しません。[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)と対象タグの実装を基準にします。
 
 規格全体への適合や100万要求の性能受入は、この実習が証明する範囲に含みません。CAN FDは外部算定位相bit数を用いる`structural-only`の時間評価で、任意フレームの完全wire codecや完全ISO波形適合を保証しません。
+
+DMAの実習は正式v1.1.4の `memory.ipc.transaction.v1` を使います。[DMA実習入力ZIP](downloads/dma-notification-inputs.zip)で再現できます。

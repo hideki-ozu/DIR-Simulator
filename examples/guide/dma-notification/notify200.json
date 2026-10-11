@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "profile": "memory.ipc.transaction.v1",
+  "ddr": [],
+  "sram": [
+    {
+      "node": "Main.src",
+      "size": 16,
+      "initial": [
+        {
+          "offset": 0,
+          "hex": "0102030405060708090a0b0c0d0e0f10"
+        }
+      ],
+      "queue_capacity": 4,
+      "ports": 1,
+      "read_ps": "100",
+      "write_ps": "150",
+      "fault_ranges": []
+    },
+    {
+      "node": "Main.dst",
+      "size": 16,
+      "initial": [],
+      "queue_capacity": 4,
+      "ports": 1,
+      "read_ps": "100",
+      "write_ps": "150",
+      "fault_ranges": []
+    }
+  ],
+  "shared": [],
+  "dma": [
+    {
+      "node": "Main.dma",
+      "queue_capacity": 4,
+      "chunk_bytes": 4,
+      "setup_ps": "100",
+      "notify_ps": "200"
+    }
+  ],
+  "mailboxes": []
+}
