@@ -1,13 +1,16 @@
 // Actual released Transaction Viewer state and pixels for the SRAM guide.
 const fs=require('fs'),path=require('path'),assert=require('node:assert/strict');
 const {chromium}=require(process.env.GUIDE_PLAYWRIGHT||'playwright');
+const {loadEvidence}=require('./sram_evidence.cjs');
 (async()=>{
- const root=path.resolve(process.argv[2]||'.'),browser=await chromium.launch({headless:true});
- const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[],report={browser:browser.version(),conditions:{}};
+ const root=path.resolve(process.argv[2]||'.');
+ const {evidence,inputHashes}=loadEvidence(root,process.argv[3]);
+ const browser=await chromium.launch({headless:true});
+ const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[],report={browser:browser.version(),input_hashes:inputHashes,conditions:{}};
  page.on('pageerror',e=>errors.push(e.message));
  try {
   for(const ports of [1,2,3]){
-   await page.goto('file://'+path.join(root,`guide-evidence/sram-final/repository/ports${ports}-viewer.html`));
+   await page.goto('file://'+path.join(evidence,`repository/ports${ports}-viewer.html`));
    await page.locator('#transaction-dashboard').waitFor({state:'visible'});
    assert.equal(await page.locator('#error-banner').isVisible(),false);
    await page.locator('#txn-jump-value').fill('150');await page.locator('#txn-jump').click();
@@ -23,6 +26,7 @@ const {chromium}=require(process.env.GUIDE_PLAYWRIGHT||'playwright');
   }
   assert.deepEqual(errors,[]);report.status='passed';report.errors=errors;
   fs.writeFileSync(path.join(root,'docs/verification/results/sram-ports/viewer-browser.json'),JSON.stringify(report,null,2)+'\n');
+  fs.writeFileSync(path.join(evidence,'viewer-browser.json'),JSON.stringify(report,null,2)+'\n');
   console.log('PASS: real transaction Viewer counters, rows, details and PNG captures');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

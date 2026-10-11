@@ -1,14 +1,15 @@
 # SRAMポート数ガイド検証記録
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.4`  
 文書ID：`verification-guide-sram-ports`  
-文書状態：実施記録。Project登録は親タスクへの引継ぎ対象
+文書状態：実施記録。Project登録は親タスクの確認済み
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 第2push。fresh証跡の明示指定・必須ファイル検証と旧出力誤利用の回帰を追加。親側Project確認を追記 |
 | `1.1.0` | `2026-10-11` | 初回push。正式タグCLI・隔離ZIP18操作、実Viewer、サイト・検索・適用traceabilityの検証記録 |
 
 ## 基準と選定
@@ -31,3 +32,11 @@ MkDocs1.6.1 strictで404を含む13 HTMLを生成。`check_guide_links.py`で661
 - 初回checkerはCLI JSONの終端キーを`finish_ps`と誤認して失敗。実際の`simulation.end_ps`へ修正し、新出力先で18操作を全て再実行した。失敗を合格へ流用していない。
 - Project参照は既存ghトークンに`read:project`がなく拒否された。認証・権限変更はせず、Draft PR URLを親タスクに渡して既存「DIR取説整備」Projectへの登録・進行状態設定を引き継ぐ。未実施を成功扱いしない。
 - マージ、auto-merge変更、Issue/PR close、force push、履歴書換え、デプロイ、外部レビュー依頼は実施しない。
+
+## 第2pushの再検証と現在状態
+
+ブラウザcheckerが旧`guide-evidence/sram-final`を固定参照していた問題を修正。CLIを新規`guide-evidence/sram-review-fresh`へ18操作再実行し、両checkerへ同じパスを明示した。共有loaderがディレクトリと3条件のViewer/results/manifestを検査し、全manifestハッシュを確認する。reportには選択した9ファイルのSHA-256を記録し、指定証跡ディレクトリへもreportを保存する。
+
+有効な旧出力が存在する状態で回帰checkerを実行。引数省略、存在しない選択先、選択先のports1 Viewer欠落の各条件に対し、両checkerが非ゼロ終了することを確認した。退避Viewerを復元してfresh実Viewer・サイト検証を再実行した。旧出力へフォールバックせず、fresh側のreportと画像が生成された。
+
+Project参照失敗は上記の過去記録として保持する。現在は親タスクの既存browser担当が「DIR取説整備」ProjectへPR59を1件登録し、Status「執筆中」を2026-10-11 03:18 UTCに再読確認したとの通知を受領。こちらから重複登録や認証・権限変更は行っていない。

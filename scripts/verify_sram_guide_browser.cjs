@@ -1,10 +1,11 @@
 // Verify actual generated Viewer pixels, or the built public guide without rewriting old assets.
 const fs=require('fs'),path=require('path'),http=require('http'),assert=require('node:assert/strict');
 const {chromium}=require(process.env.GUIDE_PLAYWRIGHT||'playwright');
-const root=path.resolve(process.argv[2]||'.'), mode=process.argv[3]||'viewer';
-const evidence=path.join(root,'guide-evidence/sram-final');
+const root=path.resolve(process.argv[2]||'.'), mode='site';
+const {loadEvidence}=require('./sram_evidence.cjs');
 const title='SRAMのポート数と読み出し待ち時間';
 (async()=>{
+ const {evidence,inputHashes}=loadEvidence(root,process.argv[3]);
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:1440,height:1100}});
  const errors=[],failures=[],external=[];
@@ -13,7 +14,7 @@ const title='SRAMのポート数と読み出し待ち時間';
  page.on('requestfailed',r=>failures.push(r.url()));
  page.on('request',r=>{if(!r.url().startsWith('file:')&&!r.url().startsWith('http://127.0.0.1:'))external.push(r.url());});
  let server;
- const report={browser:browser.version(),mode};
+ const report={browser:browser.version(),mode,input_hashes:inputHashes};
  try {
   if(mode!=='site') throw new Error('Use verify_sram_viewer.cjs for Viewer');
   {
@@ -64,6 +65,7 @@ const title='SRAMのポート数と読み出し待ち時間';
   assert.deepEqual(errors,[]);assert.deepEqual(failures,[]);assert.deepEqual(external,[]);
   Object.assign(report,{status:'passed',errors,failures,external,visual_review:'Requires opening actual PNG pixels separately'});
   fs.writeFileSync(path.join(root,'docs/verification/results/sram-ports',mode+'-browser.json'),JSON.stringify(report,null,2)+'\n');
+  fs.writeFileSync(path.join(evidence,mode+'-browser.json'),JSON.stringify(report,null,2)+'\n');
   console.log('PASS: '+mode+' actual Chromium assertions and PNG captures.');
  }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});
