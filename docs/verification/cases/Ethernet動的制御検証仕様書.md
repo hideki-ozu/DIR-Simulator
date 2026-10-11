@@ -1,15 +1,16 @@
 # Ethernet動的制御検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 文書ID：`verification-ethernet-dynamic`
-文書状態：未公開。抽象モデルを実装済みで、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
+文書状態：v1.1.4で公開済み。抽象モデルを実装し、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-08` | 初回pushに向け、動的制御・経路・時刻・上限・停止・互換性の独立期待値と製品照合範囲を規定 |
 
 [仕様](../../specs/models/Ethernet動的制御詳細機能仕様書.md)・[設計](../../design/Ethernet動的制御詳細設計書.md)を対象とする。以下は実装の受入契約と独立期待値である。製品fixtureとnamed testの実施範囲を第5節に示し、ソース/binary hash・コマンド・成果物・判定を製品検証記録へ保存する。表中の全変種が照合済みという意味ではない。
@@ -134,3 +135,6 @@ Viewerはdown/alternate/quiet port、MAC aging、INCLUDE/EXCLUDE source、静的
 未照合の受入組合せとして、全wire/control/expiry/収束時刻のT±1ps、wire進行中のlinkdown/up全配置、以前のSwitch/outputへ戻る実再訪とvisit_limit、phase0の全domain同時刻合成、全preflight失敗地点を残す。仕様のtable/timer上限保証と試験した境界は区別し、大規模性能やBPDU/IGMP/MLD/MVRP protocol conformanceの証拠にしない。
 
 統合試験 `registrable_source_and_fdb_use_effective_membership_and_drop_expired_queue_copy` は宣言済みregistrable VIDのsource/FDB参照、時刻0登録、未登録source drop、登録失効後のqueued copy再検査、PVID静的member必須を照合する。`dynamic_large_cost_tree_and_at_prefixed_control_id_remain_valid` はu64内の大きなcostで初期/更新treeを生成し、入力ID `@maintenance` の監査値を保存する。native generatorの同時刻重複は `[a:0,a:1,b:0]` の順を維持する。製品記録へ実施結果を保存する。
+
+
+後続の製品回帰・全INIのCLI/出力/Viewer確認は[2026-10-08受け入れ実施記録](../results/acceptance-2026-10-08.md)へ記録した。個別条件への対応と未確認の範囲は同記録の[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を参照する。本文の初回検証記録は取得時点の証跡であり、後続試験の成功を全内部注入・規格適合・全受け入れ条件の合格へ読み替えない。

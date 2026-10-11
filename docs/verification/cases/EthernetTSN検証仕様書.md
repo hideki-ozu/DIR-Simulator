@@ -1,16 +1,17 @@
 # EthernetTSN検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`main @ 2f1e60b`
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`v1.1.4`
 設計日：`2026-10-07`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+公開版：`v1.1.4`（公開済み）
 文書ID：`verification-ethernet-tsn`
-文書状態：未公開。抽象モデルを実装済みで、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
+文書状態：v1.1.4で公開済み。抽象モデルを実装し、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-08` | 初回pushに向け、TAS・CBS・PSFPの独立算術・合成・停止・部分結果の検証契約と製品照合範囲を規定 |
 
 ## 1. 証拠の境界
@@ -124,3 +125,6 @@ filterのmax_sdu=64でM64受理、M68はmeter非評価でpsfp_max_sdu。gate ope
 完全入力例は [TAS](../../../examples/ethernet/tsn/tas.ini)、[TAS-update](../../../examples/ethernet/tsn/tas-update.ini)、[CBS](../../../examples/ethernet/tsn/cbs.ini)、[CBS-gated](../../../examples/ethernet/tsn/cbs-gated.ini)、[PSFP](../../../examples/ethernet/tsn/psfp.ini)、[PSFP-gate](../../../examples/ethernet/tsn/psfp-gate.ini)。主な実施commandは `/home/hideki/.cargo/bin/cargo test --locked -p dir-simulator --lib ethernet::tsn`、`cargo test --locked -p dir-simulator --test network_extensions`、`node --test tests/network_viewer_model.test.cjs`、`node tests/network_viewer_browser.cjs <製品results.json> ...`。format/clippy、全旧profile回帰、browser対象fileと判定の正本は製品検証記録である。
 
 未照合組合せは、全wire/link/STP/VID/aging/GCL同時刻、PSFP通過後queued copyのpolicy失効・token非refund・credit resetを重ねるfixture、全T±1ps境界とprefix比較、全機能無効のdynamic同値、全codec/予約/ID/metric failure地点である。実施したplanner/CLI/Viewer試験をIEEE 802.1Qbv/Qav/Qci conformance、clock同期品質、大規模長時間性能の証拠へ拡張しない。
+
+
+後続の製品回帰・全INIのCLI/出力/Viewer確認は[2026-10-08受け入れ実施記録](../results/acceptance-2026-10-08.md)へ記録した。個別条件への対応と未確認の範囲は同記録の[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を参照する。本文の初回検証記録は取得時点の証跡であり、後続試験の成功を全内部注入・規格適合・全受け入れ条件の合格へ読み替えない。

@@ -1,13 +1,14 @@
 # viewer取扱説明書
 
-文書バージョン：`1.1.6`
-対象GitHubバージョン：`main @ 87740a7`
-対象は上記mainを基準とした開発ブランチ。公開版への反映は未実施。
+文書バージョン：`1.1.7`
+対象GitHubバージョン：`v1.1.4`
+記載範囲：v1.1.4の機能と、`main @ 1e33955`で提供する選択要求の記録イベントへの移動・同一区間のBUS占有／キュー比較を含む。これらの追加操作は既存タグ以後のmainで提供する。
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.7` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.6` | `2026-10-11` | Issue #53追補：バス時刻リンクの要求選択とタイムライン強調を同期、修正前再現と実画面回帰を追加 |
 | `1.1.5` | `2026-10-11` | Issue #53：同一区間のバス占有・TX/GW RXキュー比較、境界と算出条件、時刻移動・回帰検証を追加 |
 | `1.1.4` | `2026-10-11` | Issue #52追補：再生中でもイベントボタンのキーボード操作を保持することを明記 |
@@ -18,9 +19,9 @@
 
 文書ID：`tool-viewer-manual`
 
-文書状態：公開草案（CAN/GW画面の初版）
+文書状態：公開仕様。CAN/GWを中心に、Ethernet・CAN FD・transaction画面の正本と検証範囲へ接続する。
 
-本書はCAN/GW画面の説明を対象とする。v1.1.0で追加したEthernet画面は[Ethernet負荷・QoS詳細機能仕様書](../../specs/models/Ethernet負荷・QoS詳細機能仕様書.md)と[READMEのEthernet実行例](../../../README.md#ethernetサンプルを実行する)を参照する。v1.1.1向けPRのVLAN・静的multicast画面は[EthernetVLAN・マルチキャスト詳細機能仕様書](../../specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)を参照する。
+本書はCAN/GW画面の操作を中心に説明する。Ethernet画面は[Ethernet負荷・QoS詳細機能仕様書](../../specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[EthernetVLAN・マルチキャスト詳細機能仕様書](../../specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)と[READMEのEthernet実行例](../../../README.md#ethernetサンプルを実行する)を参照する。transaction画面は[viewer仕様書](viewer仕様書.md)の「AXI・SoC・メモリ／IPCの結果」を参照する。
 
 本書は結果ビューアの作成と操作を説明する。表示の契約、内部の復元方法、受け入れ確認は[viewer仕様書](viewer仕様書.md)を参照する。以下のコマンドはリポジトリのルートから実行する。
 
@@ -54,7 +55,7 @@ explorer.exe "$(wslpath -w "$PWD/results-viewer.html")"
 
 HTMLには結果と入力スナップショットが埋め込まれ、ブラウザでの表示にサーバーや追加パッケージは不要である。元の結果とmanifestは変更されない。HTMLを別の環境へ渡す場合も同じ記録を表示できる。CLIはブラウザを自動起動しない。
 
-代わりに[ビューア本体](../../../crates/dir-simulator/src/tool/viewer/assets/index.html)を直接開き、「results.json を選択」から結果を読むこともできる。この方法では同じフォルダの`style.css`、`model.js`、`ethernet-model.js`、`ethernet-app.js`、`app.js`を一緒に保つ。いずれの方法もファイルはブラウザ内で処理され、外部通信を行わない。
+代わりに[ビューア本体](../../../crates/dir-simulator/src/tool/viewer/assets/index.html)を直接開き、「results.json を選択」から結果を読むこともできる。この方法では同じフォルダの`style.css`、`model.js`、`ethernet-model.js`、`ethernet-app.js`、`transaction-model.js`、`transaction-app.js`、`app.js`を一緒に保つ。いずれの方法もファイルはブラウザ内で処理され、外部通信を行わない。
 
 ## 2. 時刻と通信を読む
 
@@ -76,17 +77,17 @@ schema 2では「Gateway転送」にRX入力Controllerごとの容量・保持�
 
 ## 4. 別の結果とエラー
 
-「結果ファイルを開く」から別の`results.json`を選ぶか、画面へ1ファイルをドロップして切り替える。本書で説明する結果はschema 1の`can.cc.ideal.v1`とschema 2の`can.cc.multibus.v1`である。schema 2の`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`と、v1.1.1向けPRの`ethernet.l2.vlan.v1`を開くとEthernet画面へ切り替わる。未対応のschema/profileや不正なレコードは読込エラーになる。
+「結果ファイルを開く」から別の`results.json`を選ぶか、画面へ1ファイルをドロップして切り替える。ここまで説明したCAN/GW画面はschema 1の`can.cc.ideal.v1`とschema 2の`can.cc.multibus.v1`で使う。schema 2のEthernet系profileはEthernet画面、AXI・SoC・AHB・NoC・メモリ／IPC系profileはtransaction画面へ切り替わる。未対応のschema/profileや不正なレコードは読込エラーになる。
 
 CLIで「Viewer output already exists」と表示されたら、新しい出力ファイル名を指定する。親ディレクトリがない場合は先に作成する。入力JSONが読めない、構文が不正、schemaが対象外の場合は入力側を確認する。HTMLは作成できてもブラウザで読込エラーが出る場合は、結果の要求・受信・Gatewayレコードまたは時刻の整合性を確認する。結果を編集して直す前に、生成元の[結果仕様](../../specs/結果詳細機能仕様書.md)と[GW仕様](../../specs/models/GWモデル詳細機能仕様書.md)を参照する。
 
-## 開発中profileの表示
+## CAN FD・Ethernet媒体profileの表示
 
 `ethernet.l2.store-forward.v2`と`ethernet.l2.100base-t1.v1`はEthernet画面へ切り替える。物理linkのmode/duplex/role/PHY遅延、試行数・衝突数、試行ごとのSOF・collision・jam・backoff、MAC/MDIの予定時刻と成功実績を表示する。衝突試行から正常受信を作らず、停止時の未到達EOF・jam終了・arrivalを補完しない。前後ステップは移動先の直前区間を同じ向きで再表示する。
 
 `can.fd.precomputed.v1`はController→Bus→受信先の画面を使い、二速度・DLC・BRS・外部位相bit数・evidence・binding SHA-256を詳細へ表示する。`fidelity=externally-precomputed-phase-bits`、`wire_validation=structural-only`を明示する。静的frame行があっても生成時刻が停止境界以後なら送信要求を作らない。任意profileの汎用codecではなく、対応する3種のFDレコードを検証して共通の記録時刻再演へ接続する。
 
-この追加は開発中ソースの実装であり、公開版と文書版は次回push準備時に確定する。
+これらのprofileは公開版v1.1.2以降の結果を開ける。CAN FDの例は[CAN FDのデータ速度比較](../../guide/CANFDのデータ速度比較.md)を参照する。
 
 ## 選択要求の記録時刻へ進む
 

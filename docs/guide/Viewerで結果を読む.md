@@ -1,14 +1,15 @@
 # Viewerで結果を読む
 
-文書バージョン：`1.1.0`  
-対象GitHubバージョン：`v1.1.3`  
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`v1.1.4`
 文書ID：`guide-viewer`  
-文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
+文書状態：公開済み。mainへのpush時に検証後、GitHub Pagesを自動更新
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-05` | 初版：公開サンプルの実行・実画面・条件変更実験、GitHub Pages公開とMarkdown再利用を整備 |
 
 ## 目的
@@ -76,6 +77,6 @@ run → results.json → view → 結果とCSS/JSを埋め込んだ単独HTML
 
 タイムライン描画は最大500区間、要求一覧は75行ずつです。省略表示やページ移動は母数を変えません。未到達の予定EOF・解放・受信を実績として補いません。`partial: true`の結果では「部分結果」を確認し、未確定時刻を完了として数えないでください。
 
-現行v1.1.3はCAN/GatewayのほかEthernet各profile、CAN FD外部位相bit数、AXI/SoC/AHB/NoC/メモリ・IPC初期transaction profileへも対応しています。モデルにより専用画面とレコードが切り替わります。このページの操作と数値の検証はClassical CAN最小例です。
+ガイドの基準版v1.1.3はCAN/Gatewayのほか、同版に収録されたEthernet profile、CAN FD外部位相bit数、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profileへも対応しています。モデルにより専用画面とレコードが切り替わります。このページの操作と数値の検証はClassical CAN最小例です。
 
 接続の読み方は[初めてのCAN実行](初めてのCAN実行.md)、送信順の理由は[CANの調停](CANの調停.md)、エラーへの対処は[設定・用語・FAQ](設定・用語・FAQ.md)を参照してください。

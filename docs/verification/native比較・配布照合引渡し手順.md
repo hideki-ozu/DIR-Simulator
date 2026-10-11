@@ -1,13 +1,14 @@
 # native比較・配布照合引渡し手順
 
-文書バージョン：`1.1.2`
-対象GitHubバージョン：`main @ 0b7b23d8`
-予定公開版：`v1.1.4`
+文書バージョン：`1.1.3`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.3` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.2` | `2026-10-10` | 動作確認・受入範囲をWSL上のUbuntu 24.04 LTS x86_64へ統一。Ubuntu native比較・Windows native単独確認を現在の必須条件から除外し、同一環境の検証と過去証跡を維持 |
 | `1.1.1` | `2026-10-08` | 添付監査ZIPの受領・Cargo原文とPopper通知の収録・出典固定を引継ぎ済みへ更新。native比較と正式配布照合の残件を維持 |
 | `1.1.0` | `2026-10-08` | 固定commit・入力・反復・比較・証跡手順と配布残件を作成。ZIP v2の取得障害と台帳識別判定の修正・回帰検証を反映 |
@@ -83,7 +84,7 @@ Bootstrap bundleのPopper 2.11.8 MIT原文・Federico Zivolo表示をガイド�
 
 requirements-guide.txtだけではMkDocsの推移版が固定されない。実生成環境のpip freeze/inspect、wheel一覧とhashを保存し、生成物へ実際に入る資産と生成器だけの依存を区別する。固定製品archiveの全member・bytes・SHA-256と、承認された台帳集合・LICENSE両本文・必要NOTICE/表示を過不足0件で照合する。input-only ZIPや過去の結果manifestを製品配布archiveの代わりにしない。
 
-台帳が追加されたPRの製品でadoption_ledger_sha256、adoption_ledger_versionの実在文書への到達、manifest.metadata_refを再取得する。対象d7cb386のversion fieldはGit commitだったが、本PRでは台帳文書版を取得する。台帳なし／不正なhash・版でidentifiedとしない回帰試験をRust CIで実行する。歴史的not-present記録は保持する。全採用物の条件・最終配布・出自レビューが未充足ならAC0008は未充足のまま。
+台帳が追加されたPRの製品でadoption_ledger_sha256、adoption_ledger_versionの実在文書への到達、manifest.metadata_refを再取得する。対象d7cb386のversion fieldはGit commitだったが、PR #39では台帳文書版を取得する。台帳なし／不正なhash・版でidentifiedとしない回帰試験をRust CIで実行する。歴史的not-present記録は保持する。全採用物の条件・最終配布・出自レビューが未充足ならAC0008は未充足のまま。
 
 監査ZIPに収録されたunicode-identのUnicode-3.0全文、rustix/linux-raw-sysのCOPYRIGHT、crate別の追加表示を保存した。rustixのCC0-1.0由来はソース表示で確認できるが、独立CC0全文は添付にない。全ソース3,465件の照合証跡は固定d7cb386候補のもので、PR #39修正後の正式製品配布archiveの検査とは区別する。原文未取得を残件から外し、target別実配布集合・承認・archive同梱の検査を引き継ぐ。
 

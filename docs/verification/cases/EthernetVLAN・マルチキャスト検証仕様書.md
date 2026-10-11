@@ -1,17 +1,18 @@
 # EthernetVLAN・マルチキャスト検証仕様書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ 811360a`
-予定公開版：`v1.1.1`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.1` | `2026-10-04` | 初版：独立wire期待値・VLAN/multicast経路・停止境界・Viewer・回帰の手順と製品試験証跡を記録。利用者指定の文書版1.1.1で初回push |
 
 文書ID：`verification-ethernet-vlan`
-文書状態：v1.1.1向けPR版。算術期待値に対する製品試験を実施。具体的な実施範囲・対象ソースは末尾と[実行記録](../results/ethernet-vlan-2026-10-04.json)で管理する。
+文書状態：v1.1.1で公開済み。算術期待値に対する製品試験を実施。具体的な実施範囲・対象ソースは末尾と[実行記録](../results/ethernet-vlan-2026-10-04.json)で管理する。
 
 <a id="dir-test-0102"></a>
 
@@ -100,3 +101,6 @@ viewerはsource priority7とhop class0/2、VID切替、group/購読、tagged/unt
 [wire fixture](../fixtures/ethernet-vlan/wire-vectors.json)とその検査scriptは設計式を標準ライブラリ・独立bit-wise CRCで確認する算術資料のままとし、製品合格記録には変更しない。製品serializerはその独立期待値へ照合し、生成結果も別の検査scriptへ渡す。上表は実施した試験範囲を示し、前節の条件の全組合せを網羅したという意味ではない。
 
 性能、大量結果、IEEE適合認証、VID0/QinQ、動的登録・snooping・STP・TSNは未実施。文書traceの経路完備、wire算術検査、既存v1.1.0の試験記録と区別する。
+
+
+後続の製品回帰・全INIのCLI/出力/Viewer確認は[2026-10-08受け入れ実施記録](../results/acceptance-2026-10-08.md)へ記録した。個別条件への対応と未確認の範囲は同記録の[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を参照する。本文の初回検証記録は取得時点の証跡であり、後続試験の成功を全内部注入・規格適合・全受け入れ条件の合格へ読み替えない。

@@ -1,13 +1,14 @@
 # AXIモデル詳細機能仕様書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.1` | `2026-10-08` | AXIの仕様・詳細設計・fixtureと製品実行記録の対応および検証範囲の管理先を明記 |
 | `1.1.0` | `2026-10-05` | 本書の初期抽象profileの組込み実装・製品照合とv1.1.3向け提供範囲を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
@@ -18,13 +19,13 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 文書状態 | 契約確定。開発中ソースへ組込み実装を追加し、独立fixtureとの製品実行照合を実施 |
+| 文書状態 | 契約確定。組込み初期profileはv1.1.3で公開済み。独立fixtureとの製品実行照合を実施 |
 
 組込み実装の入口は`input`／`runtime`／`output`のモデル別アダプターである。実施した製品試験と内部codec・停止境界の範囲は[検証記録](../../verification/cases/AXIモデル検証仕様書.md#product-execution)を参照する。公開Registry/Envelope拡張APIへの適合と規格全体の適合は、この製品実行照合の主張に含めない。
 
 ## 親要件とtransactionの確認順序
 
-[AXI読書き評価](../../要件定義書.md#dir-req-0133)は構成・要求入力、容量と競合、五チャネル、RAM内容、応答、打切りを合わせた評価能力を表す。組込み初期profileをv1.1.3向けPRで提供する。本書の契約確定はリリース完了を示さない。
+[AXI読書き評価](../../要件定義書.md#dir-req-0133)は構成・要求入力、容量と競合、五チャネル、RAM内容、応答、打切りを合わせた評価能力を表す。組込み初期profileはv1.1.3で公開済み。製品検証の実施範囲は末尾の検証記録で管理する。
 
 | 確認段階 | 担当する契約 | 結果をつなぐ観点 |
 | --- | --- | --- |
@@ -105,7 +106,7 @@ writeの一部WがT未満に到達しBがT以上にある場合、RAM更新済�
 | 識別と生成 | request_id=`generator_id:ordinal`、ordinalはtimesの0始まりindex。生成順は(time,generator ID,ordinal)。T未満だけ生成し、T以後の入力も妥当性検査する。全時刻・容量・件数の算術を検査する |
 | 候補時刻 | P=clock_period、eligible_ps=ceil(generated_ps/P)*P（checked u64）。generated時刻にpendingとなり、eligible以後のedgeで選出できる。idleかつ次候補がfuture edgeならそのedgeの仲裁機会を予約する |
 | 容量 | max_outstandingはManager内のpending+active件数。生成時に使用量<上限ならpending、満杯ならdropped/outstanding_full。既存要求は保持。completedで使用量を一つ減らす。phase0完了と同時刻phase1生成なら減算後の容量を使う |
-| 局所順序 | 各Managerは生成順FIFOで候補を出す。round-robinはManager間の選択だけを行う。全体でread/writeを一つのFIFO順にし、responseが完了した後に次のtransactionを開始する |
+| 局所順序 | 各Managerは生成順FIFOで候補を出す。round-robinはManager間の選択だけを行う。各Manager内ではread/writeを同じFIFOに格納し、Interconnect全体では選出済みtransactionのresponseが完了した後に次を選出する。Manager間の生成時刻順はround-robinで置き換わり得る |
 | 停止 | 状態はpending→active→completed又は生成時dropped。completedはOKAYとerror応答の両方を含む。generated=completed+dropped+pending+active。Tにある生成/handshakeは未処理として残す |
 
 ## 3. クロック・調停・五チャネル

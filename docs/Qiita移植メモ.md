@@ -1,7 +1,7 @@
 # Qiita移植メモ
 
-文書バージョン：`1.1.1`  
-対象GitHubバージョン：`v1.1.3`  
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`v1.1.4`
 文書ID：`guide-portability`  
 文書状態：執筆者向け管理資料。GitHubで保存し、MkDocs公開対象には含めない
 
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.1` | `2026-10-06` | 執筆者向け文書として公開ガイドの対象外へ移動し、参照先を更新 |
 | `1.1.0` | `2026-10-05` | 初版：公開サンプルの実行・実画面・条件変更実験、GitHub Pages公開とMarkdown再利用を整備 |
 
@@ -27,7 +28,7 @@ GitHubへ保存しただけではQiitaへ自動同期されません。[公式Qi
 5. コードフェンスの`bash`、`ini`、`json`、`text`を保ち、表・改行・画像幅をQiitaプレビューで確認します。
 6. プロジェクトの著作権・選択したライセンスの通知、第三者素材の通知を保持します。投稿前に秘密や個人情報が混入していないか確認します。
 
-例：GitHub Pagesの公開先は`https://hideki-ozu.github.io/DIR-Simulator/`です。初回公開はmainへのマージ後です。公開後は次の絶対URLを使えます。Qiitaの画像アップロードを使う場合は、アップロードで得たURLへ置き換えます。投稿前に、読者がログインせず画像とリンクを開けることを確認してください。所有者限定の別Siteやローカル画像パスは、Qiita読者への公開リンクとして使えません。
+GitHub Pagesの公開先は`https://hideki-ozu.github.io/DIR-Simulator/`です。現在の公開先を確認したうえで、次の絶対URLを使えます。Qiitaの画像アップロードを使う場合は、アップロードで得たURLへ置き換えます。投稿前に、読者がログインせず画像とリンクを開けることを確認してください。所有者限定の別Siteやローカル画像パスは、Qiita読者への公開リンクとして使えません。
 
 ```markdown
 ![最小CAN例](assets/guide-minimal-viewer.png)
@@ -39,7 +40,7 @@ GitHubへ保存しただけではQiitaへ自動同期されません。[公式Qi
 [CANの調停](https://hideki-ozu.github.io/DIR-Simulator/CAN%E3%81%AE%E8%AA%BF%E5%81%9C.html)
 ```
 
-`scripts/export_guide_qiita.py`は相対リンクを指定の公開base URLへ変換し、ローカル投稿候補を出力します。元の正本を変更せず、投稿はしません。出力候補は投稿前の下書きです。GitHub Pagesの初回公開完了と、すべての画像・リンクへ読者がアクセスできることを確認してください。所有者限定Siteをbase URLに指定した場合は、公開できる画像・リンクへ置き換えます。
+`scripts/export_guide_qiita.py`は相対リンクを指定の公開base URLへ変換し、ローカル投稿候補を出力します。元の正本を変更せず、投稿はしません。出力候補は投稿前の下書きです。すべての画像・リンクへ読者がアクセスできることを確認してください。所有者限定Siteをbase URLに指定した場合は、公開できる画像・リンクへ置き換えます。
 
 ```bash
 python scripts/export_guide_qiita.py --base-url https://hideki-ozu.github.io/DIR-Simulator/ --output build/qiita
