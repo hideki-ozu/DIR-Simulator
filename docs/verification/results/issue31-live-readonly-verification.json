@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-11",
+  "issue": 31,
+  "base_main": "5950f79ab1cd2bf5b7d6102fbe72c3b3db0c13a6",
+  "scope": "Read-only live evidence and access audit; no settings changes",
+  "production_enabled": false,
+  "activation_record": null,
+  "settings_changes": 0,
+  "tokens_created": 0,
+  "real_merge_dispatch_deployment_writes": 0,
+  "public_deployment": {
+    "client": "PublicDeployments; no Authorization or environment credentials",
+    "deployment_id": 6989392630,
+    "status_id": 19585157627,
+    "latest_state": "success",
+    "environment": "github-pages",
+    "sha": "5950f79ab1cd2bf5b7d6102fbe72c3b3db0c13a6",
+    "preflight": "passed",
+    "run_id": 38101996865,
+    "deploy_job_id": 114359715084,
+    "run": {
+      "head_sha": "5950f79ab1cd2bf5b7d6102fbe72c3b3db0c13a6",
+      "event": "push",
+      "path": ".github/workflows/guide-pages.yml",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    "jobs": {
+      "build": 114359667388,
+      "deploy": 114359715084,
+      "conclusions": "success"
+    },
+    "log_url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38101996865/job/114359715084",
+    "environment_url": "https://hideki-ozu.github.io/DIR-Simulator/",
+    "limit": "Existing push publication only; dispatch and writer merge not exercised"
+  },
+  "protection": {
+    "public_main_protected": false,
+    "public_rulesets": [],
+    "public_branch_rules": [],
+    "owner_classic_protection_http": 404,
+    "collector_stop": "active_main_rules_missing",
+    "bypass": "No actual ruleset to test visibility; absent evidence remains unresolved",
+    "standard_GITHUB_TOKEN": "Not obtained or tested; owner credential is a different principal"
+  },
+  "access_audit": {
+    "repository_public": true,
+    "allow_auto_merge": false,
+    "credential": {
+      "existing_noninteractive_GCM": true,
+      "GET_user_login": "hideki-ozu",
+      "observed_OAuth_scopes": [
+        "gist",
+        "repo",
+        "workflow"
+      ],
+      "secret_persisted_or_printed": false
+    },
+    "collaborators": {
+      "http": 200,
+      "complete": true,
+      "entries": [
+        {
+          "login": "hideki-ozu",
+          "role_name": "admin"
+        }
+      ]
+    },
+    "teams": {
+      "http": 200,
+      "complete": true,
+      "entries": []
+    },
+    "deploy_keys": {
+      "http": 200,
+      "totalCount": 0,
+      "hasNextPage": false,
+      "fields_requested": [
+        "id",
+        "title",
+        "readOnly",
+        "enabled"
+      ],
+      "key_body_requested": false
+    },
+    "actions": {
+      "enabled": true,
+      "allowed_actions": "all",
+      "sha_pinning_required": false,
+      "default_workflow_permissions": "read",
+      "can_approve_pull_request_reviews": false
+    },
+    "apps": {
+      "connector_visible_installation": 83500803,
+      "account": "hideki-ozu",
+      "viewer_can_administer": null,
+      "complete_inventory_proven": false,
+      "denied_action": "GET",
+      "denied_target": "https://api.github.com/user/installations?per_page=100",
+      "denied_http": 403,
+      "same_purpose_alternative_attempted": false
+    },
+    "proposal": "No collaborator/team/deploy-key removal indicated. Preserve owner/Codex. Complete other App inventory requires owner decision; no unknown app revocation or permission expansion."
+  },
+  "environment": {
+    "gh": "not installed",
+    "WSL": "Wsl/E_ACCESSDENIED; no retry",
+    "initial_credential_read_auto_review": "deadline timeout; one permitted retry succeeded",
+    "connector_collaborators_teams": "400 allowed-public-URL restriction, distinct from GitHub 403"
+  },
+  "tests": {
+    "guide_mock": 40,
+    "legacy_policy": 9,
+    "local_passed": 49,
+    "traceability": {
+      "requirements": 231,
+      "functions": 60,
+      "nodes": 274,
+      "errors": 0
+    },
+    "linux_traceability_39": "exact-head CI pending"
+  },
+  "not_performed": [
+    "standard GITHUB_TOKEN live probe",
+    "actual ruleset bypass visibility probe",
+    "full GitHub App inventory after HTTP403",
+    "merge/dispatch/deployment write",
+    "permission/auth/protection changes",
+    "CLI and full image overlay rerun"
+  ],
+  "documentation_checks": {
+    "mkdocs_strict": "passed",
+    "html_files": 12,
+    "local_links_assets_anchors": 595,
+    "generated_freshness": "passed",
+    "authoring_memo_absent": "passed"
+  }
+}
