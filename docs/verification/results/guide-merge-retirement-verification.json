@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-11",
+  "base_main": "baa983462bddef0deda27f562cf4814704a1e222",
+  "scope": "Retire custom guide merge; preserve shared checks and native GitHub auto-merge",
+  "removed": [
+    ".github/guide-merge-policy.json",
+    ".github/requirements-guide-merge.txt",
+    ".github/workflows/guide-scoped-merge.yml",
+    ".github/workflows/guide-scoped-validation.yml",
+    "scripts/guide_scope_policy.py",
+    "scripts/guide_merge_generated.py",
+    "scripts/guide_merge_runtime.py",
+    "scripts/guide_merge_validate.py",
+    "scripts/test_guide_scope_policy.py",
+    "scripts/test_guide_merge_generated.py",
+    "scripts/test_guide_merge_runtime.py",
+    "scripts/test_guide_merge_validate.py",
+    "scripts/test_guide_merge_evidence.py"
+  ],
+  "pages": "Only custom workflow_dispatch/expected_sha/activation-variable route removed; pull_request checks and main push publication retained",
+  "required_check": {
+    "context": "Disabled policy unit tests",
+    "provider_app": 15368,
+    "context_renamed": false,
+    "implementation": "Existing 39 shared traceability checker/generator/index-hook tests plus strict traceability and generated freshness",
+    "dummy_or_unconditional_success": false,
+    "ruleset_changed": false
+  },
+  "remote_observations": {
+    "allow_auto_merge": true,
+    "ruleset_id": 24862905,
+    "enforcement": "active",
+    "target": "refs/heads/main",
+    "bypass_actors": [],
+    "review_count": 0,
+    "conversation_resolution": true,
+    "required_checks": ["MkDocs strict build and links", "Disabled policy unit tests"],
+    "strict": true,
+    "force_push_and_delete_blocked": true
+  },
+  "local_windows_checkout": {
+    "traceability_tests": "39 executed; 33 passed; six hook cases blocked at isolated git init by sandbox .git/config write denial",
+    "mkdocs_strict": "passed",
+    "guide_links": "12 HTML, 595 links/assets/anchors passed",
+    "license_correspondence": "passed",
+    "downloadable_samples": "CRLF checkout differs from committed LF ZIP inputs; verify LF archive separately",
+    "notice_regression": "8/9 passed; one byte-based Cargo.lock LF fixture mismatch under CRLF checkout",
+    "strict_traceability": "231 requirements, 60 functions, 274 nodes; errors/incomplete zero",
+    "generated_freshness": "passed"
+  },
+  "followup_validation": "LF archive and exact-head Linux CI results recorded in Draft PR body; this JSON records pre-push local results",
+  "history": "Prior verification JSONs and published history preserved; prior design marked historical",
+  "issue31": "Still open; propose disposition as obsolete after retirement merge, not bypass-evidence technical resolution",
+  "not_performed": [
+    "security/auth/visibility/application/required-check settings changes",
+    "PR auto-merge reservation or actual merge",
+    "workflow dispatch or deployment",
+    "Issue close or external-agent request",
+    "CLI/OMNeT/full-image-overlay rerun"
+  ]
+}
