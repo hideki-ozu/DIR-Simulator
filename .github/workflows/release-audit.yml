@@ -10,6 +10,9 @@ on:
       - 'scripts/check_third_party_notices.py'
       - 'docs/verification/results/release-native-distribution-audit-2026-10-08/**'
       - '.github/workflows/release-audit.yml'
+      - 'tests/viewer_model.test.cjs'
+      - 'tests/viewer_browser.cjs'
+      - 'tests/viewer_fixtures.cjs'
 
 permissions:
   contents: read
@@ -66,6 +69,14 @@ jobs:
               assert hashlib.sha256(data).hexdigest() == entry['sha256']
           print('PASS: actual ledger hash/document version, metadata reference and manifest files')
           PY
+      - name: Viewer model and browser regression
+        run: |
+          node --version
+          npm --version
+          npm install --prefix "$RUNNER_TEMP/viewer-tests" --no-package-lock --no-save playwright@1.64.0
+          "$RUNNER_TEMP/viewer-tests/node_modules/.bin/playwright" install --with-deps chromium
+          node --test tests/viewer_model.test.cjs
+          NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node tests/viewer_browser.cjs
       - name: Audit checker and comparison selftests
         run: |
           python3 scripts/check_third_party_notices.py

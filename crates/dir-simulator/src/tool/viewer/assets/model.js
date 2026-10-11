@@ -613,5 +613,25 @@
     for (const item of result) item.untilStage = children.get(item).length ? item.stage + 1 : Infinity;
     return result;
   }
-  return { parseResults, stateAt, networkAt, stepTransfers, requestStateAt, receiverStateAt, forwardStateAt, rxBufferStateAt, gatewayTransfersAt, originsAt, formatTime, parseTime, fraction, timeFromFraction };
+  // Only the selected request and its own receivers/RX buffers belong here.
+  // Forwarding events describe other branches; their child generation is
+  // already represented by that child's recorded request event.
+  function requestEventGroups(model, requestId) {
+    if (!model.requests.some(request => request.id === requestId)) return [];
+    const kinds = new Set(['generated', 'ready', 'dropped', 'tx_enqueued', 'sof',
+      'eof', 'release', 'observed', 'filtered', 'received', 'gw_rx_hold',
+      'gw_rx_release', 'gw_rx_dropped']);
+    const groups = [];
+    for (const event of model.events) {
+      if (event.requestId !== requestId || !kinds.has(event.kind)) continue;
+      let group = groups[groups.length - 1];
+      if (!group || group.time !== event.time) {
+        group = { time: event.time, events: [] };
+        groups.push(group);
+      }
+      group.events.push(event);
+    }
+    return groups;
+  }
+  return { parseResults, stateAt, networkAt, stepTransfers, requestEventGroups, requestStateAt, receiverStateAt, forwardStateAt, rxBufferStateAt, gatewayTransfersAt, originsAt, formatTime, parseTime, fraction, timeFromFraction };
 });
