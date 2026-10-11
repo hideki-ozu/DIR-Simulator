@@ -39,6 +39,7 @@ def main():
     build(ROOT / 'examples/guide/sram-ports', OUTPUT.with_name('sram-ports-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/mailbox-capacity', OUTPUT.with_name('mailbox-capacity-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/dma-notification', OUTPUT.with_name('dma-notification-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ddr-refresh', OUTPUT.with_name('ddr-refresh-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':
