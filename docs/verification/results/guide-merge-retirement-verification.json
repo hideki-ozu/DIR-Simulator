@@ -79,9 +79,11 @@
   },
   "portable_inventory_fix": {
     "sort_key": "relative POSIX path string",
-    "regression": "case-sensitive names and directory ordering in MD/HTML",
+    "regression": "Z.md/a.md/middle/entry.md; case-sensitive order differs from Windows case-fold order in both MD/HTML",
     "general_traceability_tests_now": 40,
     "generator_local_tests": "12 passed",
-    "exact_head_followup": "recorded in PR body"
+    "exact_head_followup": "recorded in PR body",
+    "old_implementation_probe": "Isolated generator from 40a1fcd fails strengthened regression on actual Windows; current 12 generator tests pass",
+    "issue": 57
   }
 }

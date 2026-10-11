@@ -270,7 +270,7 @@ class TestTraceabilityGenerator(TraceabilityGeneratorFixture):
     def test_inventory_order_is_case_sensitive_posix_on_every_platform(self):
         self.add_requirement("DIR-REQ-0001", "Root", ["DIR-FUNC-0001"])
         self.write_docs()
-        names = ("A.md", "z.md", "middle/entry.md")
+        names = ("Z.md", "a.md", "middle/entry.md")
         for index, name in enumerate(names):
             path = self.docs / name
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -284,7 +284,7 @@ class TestTraceabilityGenerator(TraceabilityGeneratorFixture):
             parser.feed((self.docs / name).read_text(encoding="utf-8"))
             links = [link for row in parser.tables[0]["rows"]
                      for cell in row["cells"] for link in cell["links"] if link in names]
-            self.assertEqual(links, ["A.md", "middle/entry.md", "z.md"])
+            self.assertEqual(links, ["Z.md", "a.md", "middle/entry.md"])
 
     def test_hierarchy_html_escapes_fields_and_links_each_requirement_and_parent(self):
         self.add_requirement(
