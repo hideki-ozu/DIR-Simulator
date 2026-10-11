@@ -1,18 +1,19 @@
 # EthernetVLAN・マルチキャスト詳細設計書
 
-文書バージョン：`1.1.2`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.3`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.3` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.2` | `2026-10-08` | CAN↔Ethernet変換・Ethernet動的制御・TSNの別profileへの詳細設計参照と静的VLAN契約の境界を追記。追加profileの実装・製品検証状態を更新 |
 | `1.1.1` | `2026-10-04` | 初版：Port policy、copy別wire/class、原子的VLAN/group交換、schema・Viewerの実装と検証への対応を記録。利用者指定の文書版1.1.1で初回push |
 
 文書ID：`design-ethernet-vlan`
-文書状態：v1.1.1向けPR版。既存Ethernet Engineへ以下の変更を実装。製品試験の範囲は[検証仕様](../verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)で管理する。
+文書状態：v1.1.1で公開済み。既存Ethernet Engineへ以下の変更を実装。製品試験の範囲は[検証仕様](../verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)で管理する。
 
 ## 1. 既存構成への追加
 

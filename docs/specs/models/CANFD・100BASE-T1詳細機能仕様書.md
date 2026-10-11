@@ -1,13 +1,14 @@
 # CANFD・100BASE-T1詳細機能仕様書
 
-文書バージョン：`1.1.3`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.4`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.4` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.3` | `2026-10-08` | v1.1.2で公開済みの抽象profile実装と、今回の共通API・診断・成果物改修および検証境界を区別 |
 | `1.1.2` | `2026-10-04` | 採用した抽象profileの契約を確定し、CAN FD・100BASE-T1の実装とstructural-onlyの検証境界を明記 |
 | `1.0.0` | `2026-10-03` | 実装層との境界と将来モデルの位置付けを整合。文書版を1.0.0、対象タグをv1.0.0に統一 |
@@ -16,13 +17,13 @@
 
 文書ID：`spec-original-network`
 
-状態：採用した抽象profileの契約を確定。開発中ソースに製品実装を追加。製品試験の実施範囲は本書の検証記録又は対応する検証仕様を参照。規格全体適合・実機試験は未実施。抽象profileの製品実装はv1.1.2で公開済み。今回の予定公開版v1.1.4（本PR）では共通登録API・診断・結果成果物の改修と、既存媒体／CAN FD固有の製品検証範囲を区別して記録する。独立解析fixtureと製品実行の証跡は区別する。
+状態：採用した抽象profileの契約を確定し、製品実装を提供する。製品試験の実施範囲は本書の検証記録又は対応する検証仕様を参照。規格全体適合・実機試験は未実施。抽象profileの製品実装はv1.1.2で公開済み。v1.1.4では共通登録API・診断・結果成果物の改修と、既存媒体／CAN FD固有の製品検証範囲を区別して記録する。独立解析fixtureと製品実行の証跡は区別する。
 
 既存[Classical CAN](CANモデル詳細機能仕様書.md)と[Ethernet v1](Ethernetモデル詳細機能仕様書.md)/[v2媒体](Ethernet媒体拡張詳細機能仕様書.md)を保持し、以下を別profileとして明示選択する。追加profileも共通の時刻ps、phase 0完了→phase 1生成→phase 2仲裁、commit journal、[0,T)停止規則を使用する。
 
 ## 二つの親要件と入力根拠の境界
 
-[CAN FD通信](../../要件定義書.md#dir-req-0174)と[100BASE-T1通信](../../要件定義書.md#dir-req-0182)は別々の親要件で、いずれも1.0.0以後に追加する対象で、現行の開発中ソースに実装した。共通の実行・記録基盤を使うが、仲裁の有無と転送時間の根拠が異なる。
+[CAN FD通信](../../要件定義書.md#dir-req-0174)と[100BASE-T1通信](../../要件定義書.md#dir-req-0182)は別々の親要件で、いずれもv1.1.2で抽象profileを公開済みである。共通の実行・記録基盤を使うが、仲裁の有無と転送時間の根拠が異なる。
 
 | 親要件 | 構成・入力から送信まで | 結果・受入の確認 |
 | --- | --- | --- |
@@ -59,7 +60,7 @@ FDの親要件はCCのCRC/stuff算定を流用したと見なさず、採用prof
 
 | 項目 | 契約 |
 | --- | --- |
-| 選択と構成 | INI `model-profile = "can.fd.precomputed.v1"`、`model-config = "fd.model.json"`。model-config全キー必須の厳密rootは`{schema_version:1,profile:"can.fd.precomputed.v1"}`のみ。モデル値はNED/INIを正本とし、このJSONはprofile版の照合用。相対パスはINI親。登録型`dir.canfd.ControllerV1/BusV1`と`dir.link.FixedDelay`。Controllerのtx/rxとBusのinput/outputをCCと同じpeer対で接続。将来のBusV1もv1.0.0の[NED仕様](../NED詳細機能仕様書.md#implementation)を継承し、ゲート名は任意の識別子、対は同じControllerへの接続経路で決定する。Bus1個・Controller2個以上、全端常時active、ideal ACK成立。ControllerのqueueCapacity/txProcessingDelay/rxProcessingDelay/rxFilterとchannel delayはCC v1の型・範囲を使用する |
+| 選択と構成 | INI `model-profile = "can.fd.precomputed.v1"`、`model-config = "fd.model.json"`。model-config全キー必須の厳密rootは`{schema_version:1,profile:"can.fd.precomputed.v1"}`のみ。モデル値はNED/INIを正本とし、このJSONはprofile版の照合用。相対パスはINI親。登録型`dir.canfd.ControllerV1/BusV1`と`dir.link.FixedDelay`。Controllerのtx/rxとBusのinput/outputをCCと同じpeer対で接続。BusV1も[NED仕様](../NED詳細機能仕様書.md#implementation)を継承し、ゲート名は任意の識別子、対は同じControllerへの接続経路で決定する。Bus1個・Controller2個以上、全端常時active、ideal ACK成立。ControllerのqueueCapacity/txProcessingDelay/rxProcessingDelay/rxFilterとchannel delayはCC v1の型・範囲を使用する |
 | Bus | 必須`nominalBitrate`=1..1000000整数bps、`dataBitrate`=nominalBitrate..8000000整数bps。両値は本抽象profileの受理範囲。全端が同じBus値を参照する。注：実機対応最大速度を保証する値ではない |
 | workload | 共通schema_version=2、generators配列。各generator全キー必須`{id,kind,node,times_ps,frame}`。kind=`can.fd.explicit.v1`、idは共通識別子、nodeはController完全パス、times_psは非負u64正規十進文字列のps配列、非減少・重複可。生成順は(時刻,id UTF-8辞書順,配列ordinal)。周期負荷は時刻配列へ事前展開して使用する |
 | frame | 全キー必須`{format,id,data,brs,wire}`。format=standard/extended、id整数範囲=11/29bit、data偶数hex。byte長は0..8,12,16,20,24,32,48,64だけ、DLCは0..15対応表から導出。brsはJSON bool。全階層未知/欠落/重複キーを準備失敗とする。注：暗黙padding、remote frame、CCとの同一バス混在、エラー注入、ESI/error-passiveは本profileの対象外。ESIはerror-active固定 |

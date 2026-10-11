@@ -1,13 +1,14 @@
 # Ethernet媒体拡張詳細設計書
 
-文書バージョン：`1.1.3`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.4`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.4` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.3` | `2026-10-08` | 媒体拡張の状態所有・callback事前検証と公開Registry・共通実行経路・組込みアダプターの境界を反映。v1.1.2公開済み実装と今回改修を区別 |
 | `1.1.2` | `2026-10-04` | 半二重CSMA/CD・固定BEB・T1 pipelineの内部実装と検証範囲を接続し、v1.1.2向け文書版を確定 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
@@ -19,7 +20,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | 担当元 | [architecture#arch-ethernet-media](../アーキテクチャ設計書.md#arch-ethernet-media)を実現する。契約は[媒体仕様](../specs/models/Ethernet媒体拡張詳細機能仕様書.md)、既存frame/FDBは[v1設計](Ethernetモデル詳細設計書.md)を正本とする |
-| 状態 | 設計確定。開発中ソースに製品実装を追加。製品試験の実施範囲は本書の検証記録又は対応する検証仕様を参照。規格全体適合・実機試験は未実施。抽象profileの製品実装はv1.1.2で公開済み。今回の予定公開版v1.1.4（本PR）では共通登録API・診断・結果成果物の改修と、既存媒体／CAN FD固有の製品検証範囲を区別して記録する。 |
+| 状態 | 設計確定。製品実装を提供する。製品試験の実施範囲は本書の検証記録又は対応する検証仕様を参照。規格全体適合・実機試験は未実施。抽象profileの製品実装はv1.1.2で公開済み。v1.1.4では共通登録API・診断・結果成果物の改修と、既存媒体／CAN FD固有の製品検証範囲を区別して記録する。 |
 
 <a id="half-state"></a>
 
@@ -134,8 +135,8 @@
 | schema互換 | serializer/FDB/旧codecの実装を共用できるが登録entryはv1/v2で独立する。v1のtransfer/1をv2の拡張field入りobjectで上書きしない。v2のdescriptor集合は出力metadataへ全件明示する |
 | 検証 | [媒体検証](../verification/cases/Ethernet媒体拡張検証仕様書.md)の0033～0039。carrier同時刻、preamble/jam、BEB固定vector、取消し、T、T1非対称遅延、混在treeとv1回帰を分担する |
 
-## 開発中実装の境界
+## 組込み実装の境界
 
-製品コードは共通INI/NED・結果公開層に専用input/runtime/outputを接続する。媒体対の論理timeline・予約世代・試行状態、CAN FDの不変frame cacheと受信状態をモデル内部で所有し、callbackの時刻・予約を事前検証してから結果へ反映する。公開Registry、Context、Envelope、TimerTokenと登録モデル用の共通実行経路を開発中ソースに追加した。媒体拡張の組込みprofileは引き続き専用エンジンのアダプターとして動き、モデル固有の製品適合は媒体検証記録で判定する。
+製品コードは共通INI/NED・結果公開層に専用input/runtime/outputを接続する。媒体対の論理timeline・予約世代・試行状態、CAN FDの不変frame cacheと受信状態をモデル内部で所有し、callbackの時刻・予約を事前検証してから結果へ反映する。公開Registry、Context、Envelope、TimerTokenと登録モデル用の共通実行経路はv1.1.4で公開済みである。媒体拡張の組込みprofileは引き続き専用エンジンのアダプターとして動き、モデル固有の製品適合は媒体検証記録で判定する。
 
 CAN FDは外部位相bit数による時間評価で、結果に`externally-precomputed-phase-bits`と`structural-only`を保存する。媒体v2は連続idle96bitのdeferenceと固定SHA-256 BEB、T1は時刻0からlink-up済みの固定PHY遅延を採用する。内容依存FD CRC/stuffing、波形、training、規格全文適合はこの実装の範囲外。

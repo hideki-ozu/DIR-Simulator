@@ -1,17 +1,18 @@
 # Ethernet負荷・QoS検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`main @ 45ce163`
-予定公開版：`v1.1.0`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-04` | 初版：QoS独立fixture・製品試験、viewer・CAN回帰、停止境界の実施範囲と証跡 |
 
 文書ID：`verification-ethernet-qos`
-文書状態：開発版。以下の独立期待値を製品実行と照合済み。実施範囲は末尾に記録する。
+文書状態：v1.1.0で公開済み。以下の独立期待値を製品実行と照合済み。実施範囲は末尾に記録する。
 
 <a id="dir-test-0099"></a>
 
@@ -63,3 +64,6 @@ CSVとJSONのprojection一致、manifest hash、profile別schema集合とmetric 
 | 2026-10-04・停止と内部境界 | `ethernet`の6外部試験と内部Ethernet試験でEOF／release境界、実績だけの受信、予約失敗の未commit、reservation event_seq、拒否offerの不変占有、u64範囲外の論理候補を確認 |
 | 2026-10-04・viewer | Ethernet純粋モデル10試験と実L2／priority／周期・burst／flow結果のChromium desktop/mobile確認。CAN model23試験・既存CAN browserも回帰確認。詳細は[統合検証記録](../results/ethernet-integration-2026-10-04.json) |
 | 未実施 | 性能・大量結果、IEEE適合認証、媒体v2、VLAN／multicast制御、CAN↔Ethernet変換、TSN、公開Registry/Envelope。これらの文書経路を第一段階の製品適合と取り違えない |
+
+
+後続の製品回帰・全INIのCLI/出力/Viewer確認は[2026-10-08受け入れ実施記録](../results/acceptance-2026-10-08.md)へ記録した。個別条件への対応と未確認の範囲は同記録の[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を参照する。本文の初回検証記録は取得時点の証跡であり、後続試験の成功を全内部注入・規格適合・全受け入れ条件の合格へ読み替えない。

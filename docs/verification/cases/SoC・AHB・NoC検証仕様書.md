@@ -1,13 +1,14 @@
 # SoC・AHB・NoC検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`main @ 9ad16c4`
-予定公開版：`v1.1.3`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-05` | 本書の独立fixtureと製品出力の照合、入力・codec・停止prefix・Viewer試験と実行記録を追加 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
 | `0.1.1` | `2026-10-03` | v0.1公開に合わせ、文書版を0.1.1へ統一し対象タグを確定 |
@@ -15,7 +16,7 @@
 
 文書ID：`verification-soc-models`
 
-文書状態：契約確定。解析fixtureと開発中ソースの製品実行結果を照合済み。内部試験・追加境界の実施範囲は末尾の検証記録を参照する。
+文書状態：契約確定。組込みprofileはv1.1.3で公開済み。解析fixtureと製品実行結果を照合済み。内部試験・追加境界の実施範囲は末尾の検証記録を参照する。
 
 | 項目 | 確定契約 |
 | --- | --- |
@@ -25,7 +26,7 @@
 | 製品実行計画 | `dir-simulator run --config docs/verification/fixtures/soc/soc-round-robin.ini --output /tmp/dir-soc-round-robin`。他ケースも対応INIと未使用出力先へ置換する。製品CLI/イベントループを実行済み（末尾参照） |
 | 製品照合 | ModelRecordのtransactionからrequest_id,start_ps,completed_ps,status,response,active_planを取り出し、Dを整数に変換してexpected.transactionsへ投影する。transferはrequest_id,subject,start_ps,end_psをexpected.hopsと比較する。transaction行順はID順、hop行は(request_id,hop)順へ正規化して比較する |
 | metrics照合 | $all delivered_bitsはexpected.delivered_bitsへ完全一致。busのutilizationはbusy_ps/Tを共通規則でbinary64へ一度丸める。窓も半開区間へbusyをclipして照合する。NoCは各outputのtransferと未完了予定から同様に占有を算出する |
-| 境界・不正追加計画 | schema未知/重複キー、bool整数、負容量、範囲重複、未配置path、AHB非整列、mesh欠落/重複座標、不正隣接、時刻overflowを個別に与え、prepare不正E-0001と実行overflow E-0004を確認する。製品不正入力試験は未実施 |
+| 境界・不正追加計画 | schema未知/重複キー、bool整数、負容量、範囲重複、未配置path、AHB非整列、mesh欠落/重複座標、不正隣接、時刻overflowを個別に与え、prepare不正E-0001と実行overflow E-0004を確認する。製品不正入力試験の実施範囲は末尾の追加検証対応表を参照 |
 | 注記 | checkerは独立した算術・資料照合であり、製品のqueue実装、scheduler、NED parser、protocol適合の合格証拠ではない。 |
 
 <a id="dir-test-0044"></a>
@@ -210,7 +211,7 @@
 
 ## 追加ケースの再現と実施境界
 
-以下は保存済みfixtureを変更せず、実装時に一時ディレクトリへ複製して表の差分を適用する検証入力の仕様である。既存INIのnetwork/profile/clock/窓幅と無変更値を継承し、相対model/workload/NED参照を複製先にそろえる。生成順は(time,id,ordinal)、全時刻はps。追加入力の製品実行・内部状態注入試験は未実施であり、既存fixture checkerの合格件数へ加算しない。期待値は仕様の整数式と半開区間から独立に求める。
+以下は保存済みfixtureを変更せず、実装時に一時ディレクトリへ複製して表の差分を適用する検証入力の仕様である。既存INIのnetwork/profile/clock/窓幅と無変更値を継承し、相対model/workload/NED参照を複製先にそろえる。生成順は(time,id,ordinal)、全時刻はps。追加入力の製品実行・内部状態注入試験の実施範囲は末尾の追加検証対応表で管理し、既存fixture checkerの合格件数へ加算しない。期待値は仕様の整数式と半開区間から独立に求める。
 
 <a id="dir-test-0090"></a>
 
@@ -238,7 +239,7 @@
 | 同順位 | m0.priority=m1.priority=0に変更するとpath小のm0を毎回選ぶためa:0,a:1,b:0、開始0/30/60、完了30/60/90。RRのa:0,b:0,a:1とは異なる |
 | 後着 | 基準の固定優先度でa.times=[0]、b.times=[10]に変更。a:0は0～30を保持し、優先度の高いb:0は30～60。bのwait=20、latency=50。10psにactiveの所有者又は予定完了を置換しない |
 | 内部判定 | grant直前のeligible FIFO head集合、(priority,path)勝者、FIFO pop前後、capacity=pending+activeを採取する。fixed_priorityはRR cursorを選択根拠にしない。時刻・順・stateをjournalと照合する |
-| 受入・状態 | DIR-AC-0045。仕様・設計照合と独立期待値算定済み。製品実行・状態採取は未実施 |
+| 受入・状態 | DIR-AC-0045。仕様・設計照合と独立期待値算定済み。製品実行の対応は末尾のDIR-TEST-0090欄を参照。全内部観測点の実施完了は主張しない |
 
 <a id="dir-test-0091"></a>
 
@@ -269,7 +270,7 @@
 | 境界 | d:0の12～20とe:0の44～52はそれぞれtarget終端を跨ぐ。target=null、ERROR、開始100/120・完了120/140。始点だけのdecodeを採用しない |
 | 集計 | generated=completed=5、errors=3、pending=active=dropped=0、delivered_bits=128。busy=140、utilization=14/15。wait標本[0,30,80,100,120]のmean66、latency標本[30,80,100,120,140]のmean94、各sample_count=5 |
 | 内部判定 | 要求全byte半開区間、decode対象、ceil beat数、service加算分、active_planと最終transfer.toを採取する。ERRORも完了・容量解放・遅延標本に一回含め、配送bit量へ含めない |
-| 受入・状態 | DIR-AC-0045。独立期待値算定済み。追加配置のNED parser・製品実行は未実施 |
+| 受入・状態 | DIR-AC-0045。独立期待値算定済み。追加配置の製品実行は末尾のDIR-TEST-0091欄を参照。全内部観測点の実施完了は主張しない |
 
 <a id="dir-test-0092"></a>
 
@@ -301,7 +302,7 @@
 | ERROR段階 | addressを16に変更するとdecode済ERRORでplanned_end50、error段階[40,50)。T45とT50ではactive・completed=null・busy45/50・bits0、T51でcompleted/ERROR、errors1、busy50、delivered0、latency50/sample_count1。targetのwait2を保持する |
 | 窓 | W10、T25の窓は[0,10),[10,20),[20,25)でbusy10/10/5、各utilization1。全段階の実区間をHでclipし、予定40/50までの未来busyを加えない |
 | 内部判定 | 単一managerのcursor/FIFO、active段階境界、最終timer、busy積分、finish前snapshotを採取。未完了をcompleted又はtransferへ補完せず、capacityとactiveを停止snapshot後に解放する |
-| 受入・状態 | DIR-AC-0046。独立期待値算定済み。段階観測・製品停止試験は未実施 |
+| 受入・状態 | DIR-AC-0046。独立期待値算定済み。製品停止試験は末尾のDIR-TEST-0092欄を参照。全内部段階観測の実施完了は主張しない |
 
 <a id="dir-test-0093"></a>
 
@@ -331,7 +332,7 @@
 | 次のgrant | 50psにc:0をlocal_outで50～60、cursorは0へ。cをpopした後、同edge phase2でd:0をout_westへ50～60、r00:local_outへ60～70。dの開始は50であり0～40のidle westを使う追越しは発生しない |
 | 台帳 | a/b/c/dのfirst start=0/0/50/50、final completed=50/40/60/70、全OKAY。generated=completed=4、delivered224bit。途中hopの4byteを重複加算しない |
 | 内部判定 | 各grant時の出力別cursor前後、二候補のhead/request/eligible/slot、local FIFO[c,d]、同phase再走査を採取。勝者以外のheadは保存し、busy localと独立out_westの同時grantを許す |
-| 受入・状態 | DIR-AC-0047。独立経路・時刻算定済み。製品RR/cursor/FIFO試験は未実施 |
+| 受入・状態 | DIR-AC-0047。独立経路・時刻算定済み。RR/FIFOの製品試験は末尾のDIR-TEST-0093欄を参照。全cursor内部観測の実施完了は主張しない |
 
 <a id="dir-test-0094"></a>
 
@@ -359,7 +360,7 @@
 | 並列 | r00:out_eastのa:0、r00:out_northのb:0、r10:out_westのc:0がすべて0～10を占有。r00はaをFIFOからpop後にbを同edgeでgrantする。単一routerの二出力と一physical linkの反対方向を独立資源として扱う |
 | 配送 | 10～20にr10/r01/r00の各local_outへ配送、全request first start0、completed20、2hop。delivered96bit、各使用出力busy10/T30=1/3。r00 eastとr10 westの区間重複を違反と判定しない |
 | 内部判定 | outputごとのactive一件、3件の下流slot予約と10psの予約解除/appendを採取。同時刻Complete cohortを(resource ID,request_id)順に一batchでcommitし、phase2までに全slotを反映する |
-| 受入・状態 | DIR-AC-0047。独立期待値算定済み。製品並列出力・cohort試験は未実施 |
+| 受入・状態 | DIR-AC-0047。独立期待値算定済み。並列出力の製品試験は末尾のDIR-TEST-0094欄を参照。全cohort内部観測の実施完了は主張しない |
 
 <a id="dir-test-0095"></a>
 
@@ -389,7 +390,7 @@
 | 生成あり | eligibleなしでもfuture Generate30がある場合はその生成を待ち、deadlockを出さない。既存GenerateをWakeに複製しない。通常の生成・phase2経路を進行条件とする |
 | T優先 | 判定時刻T20に到達した条件では共通停止を先に適用し、正常time_limit、H20、pending1、E-0002なし。Tのphase2/注入/progressを実行しない。pendingをdeadlock理由で改変しない |
 | 内部判定 | 未完了数、active出力数、future生成/eligible最小値、Wake所有表、診断details、Jのbyte列を採取。失敗batchからtimer・journal・metrics deltaが漏れないことを比較する |
-| 受入・状態 | DIR-AC-0047。仕様・設計の診断分類照合済み。注入試験・製品失敗prefix試験は未実施 |
+| 受入・状態 | DIR-AC-0047。仕様・設計の診断分類照合済み。固定点注入と失敗prefixは別に判定し、末尾のDIR-TEST-0095欄を参照 |
 
 <a id="dir-test-0096"></a>
 
@@ -442,7 +443,7 @@
 | H0 | 三基準fixtureをT0へ変更。全count/queue_max/delivered0、queue_mean/wait/latency/utilization/throughput=null、wait/latency sample_count0、窓0件。台帳とtransfer空、全descriptorは存在 |
 | H正・空負荷 | 各workload.generators=[]、T100。全count/queue_max/delivered0、queue_mean/utilization/throughput0、wait/latency=null,n0。各登録source/queue/outputに0又はnullを明示し、存在しない受信対象を作らない |
 | 半開窓 | SoC0044をW30へ変更。busy=[30,30,30,0]、bits=[0,64,64,64]、窓長=[30,30,30,10]。完了30/60/90は次窓へ帰属。summary bits192、throughput192*10^12/100であり窓率の単純平均でない |
-| 内部判定・状態 | 整数queue積分、busy区間、標本分子/数、台帳状態、descriptor/target集合を採取してjournal prefixから再集計。独立期待値算定済み、製品集計・export試験未実施。DIR-AC-0045/0046/0047 |
+| 内部判定・状態 | 整数queue積分、busy区間、標本分子/数、台帳状態、descriptor/target集合を採取してjournal prefixから再集計。独立期待値算定済み。製品集計・export試験の対応は末尾のDIR-TEST-0096欄を参照。DIR-AC-0045/0046/0047 |
 
 <a id="product-execution"></a>
 
@@ -462,3 +463,19 @@ cargo test --locked -p dir-simulator --test soc
 ```
 
 現在の試験範囲は本節と実行記録で判定し、個別に実施していない内部注入・追加入力の手順まで合格へ読み替えない。
+
+
+### 追加検証と受け入れ記録の対応
+
+[2026-10-08受け入れ実施記録](../results/acceptance-2026-10-08.md)と[Rust実行ログ](../results/acceptance-2026-10-08/rust.log)は、後続ソースのSoC統合試験20件の成功を記録している。以下の試験名は[現行の製品試験](../../../crates/dir-simulator/tests/soc.rs)に対応する。初期6fixtureの照合、追加試験の成功、検証仕様の全条件の受け入れ完了を区別する。ソースhashと個別受け入れ条件の不足は[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を正本とし、この記録を異なるソースの再実行結果には読み替えない。
+
+| 検証項目 | 実行記録にある対応試験と境界 |
+| --- | --- |
+| 入力境界 | `strict_validation_includes_unexecuted_workload`、`invalid_topology_ranges_bool_duplicate_json_and_empty_load`。時刻あふれは準備失敗と分けて`arithmetic_overflow_keeps_generated_pending_prefix`で確認 |
+| DIR-TEST-0090 | `fixed_priority_and_fifo_selection`、`priority_tie_path_and_nonpreemption`。外部結果で選出順・非プリエンプトを検査し、全内部観測点の採取までは含めない |
+| DIR-TEST-0091 | `multi_target_shared_resource_gap_and_full_interval_decode`。複数target、gap、全要求範囲でのdecodeを製品実行 |
+| DIR-TEST-0092 | `ahb_stop_in_every_stage_preserves_busy_and_no_completion`、`single_manager_ahb_error_phase_and_exact_completion_boundary`。全段階の停止とERROR追加cycleを製品実行 |
+| DIR-TEST-0093 | `noc_rr_head_of_line_and_same_router_parallel_outputs`。RR、FIFO先頭による待ち、同Routerの並列出力を製品実行 |
+| DIR-TEST-0094 | `noc_three_parallel_outputs_and_final_delivery_only`、`simultaneous_opposite_links_are_independent`。並列出力と最終配送量を製品結果で確認 |
+| DIR-TEST-0095 | `future_generation_uses_one_dispatcher_and_failed_ordinal_stays_pending`、`failure_prefix_keeps_completion_at_h_but_excludes_half_open_window`は将来生成・失敗prefixの証跡。これだけで本節の固定点state注入・全deadlock条件を実施済みとはしない |
+| DIR-TEST-0096 | `exact_queue_means_sample_denominators_and_window_boundary`、`zero_horizon_empty_metrics_and_descriptors`。queue積分、標本母数、窓境界、H=0の出力を製品実行 |

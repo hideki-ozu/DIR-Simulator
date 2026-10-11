@@ -1,16 +1,17 @@
 # CAN・Ethernet変換検証仕様書
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 設計日：`2026-10-07`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 文書ID：`verification-can-ethernet`
-文書状態：未公開。抽象モデルを実装済みで、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
+文書状態：v1.1.4で公開済み。抽象モデルを実装し、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-08` | 初回pushに向け、CAN↔Ethernet変換の独立codec・時間・容量・lineage・受信母数期待値と製品照合範囲を規定 |
 
 [仕様](../../specs/models/CAN・Ethernet変換詳細機能仕様書.md)、[設計](../../design/CAN・Ethernet変換詳細設計書.md)、[DIR-AC-0059/0060](../../要件定義書.md)に対応する。各ケースは詳細契約と独立期待値を示す。実装済みproductのnamed testと実行例に対応する照合範囲を第5節に示し、下表の全行・全変種を試験済みとは扱わない。独立照合器は整数算術、固定byte vector、保存則を正本にし、製品serializerを呼んで期待値を作らない。
@@ -131,3 +132,6 @@ R01のEthernet出力をtaggedへ変えるとEOF/arrival/receivedは各32000ps増
 独立レビューの再現ケースも製品記録へ保存する。同名CAN/Ethernet generatorは媒体修飾originで区別し、生成時刻の大小を反転した統合試験 `identical_native_generator_ids_keep_media_qualified_origins_and_latencies` を実行する。共有Port容量解放で別PCP枝を再試行する `shared_ethernet_port_retry_wakes_all_classes_in_stable_order`、受信admit拒否・静的FDB誤経路でも意図したSOF対象を保持するruntime試験を追加する。準備診断は `network_prepare_diagnostics_use_original_json_source_and_pointer` で変換前のJSON位置へ結び付ける。正確なnamed testの一覧と結果は製品記録に保存する。
 
 `conversion_upserts_preserve_milestone_times_on_retries_and_late_sof` と `same_batch_branch_sof_emits_each_changed_branch_once` は、容量不変の再試行、子SOFと兄弟branch、最終branchのRX解放、同batchの重複通知を照合する。DTOが変わらない行を再発行せず、conversion自身の実績時刻を保持する。
+
+
+後続の製品回帰・全INIのCLI/出力/Viewer確認は[2026-10-08受け入れ実施記録](../results/acceptance-2026-10-08.md)へ記録した。個別条件への対応と未確認の範囲は同記録の[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を参照する。本文の初回検証記録は取得時点の証跡であり、後続試験の成功を全内部注入・規格適合・全受け入れ条件の合格へ読み替えない。

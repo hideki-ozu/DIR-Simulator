@@ -1,14 +1,15 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.10`  
-対象GitHubバージョン：CAN記事は`v1.1.3`、Ethernet期限・Gateway・SRAM・メールボックス・DMA記事は`v1.1.4`  
+文書バージョン：`1.1.11`
+対象GitHubバージョン：`v1.1.4`
 文書ID：`guide-index`  
-文書状態：公開用完成稿。mainへのマージ後にGitHub Pagesへ反映
+文書状態：公開済み。mainへのpush時に検証後、GitHub Pagesを自動更新
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.11` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.10` | `2026-10-11` | DMAのコピー完了と通知待ちの独立実習・8入力ZIP・fresh証跡検証を追加 |
 | `1.1.9` | `2026-10-11` | メールボックス容量・満杯応答の独立実習と8入力ZIPを追加。既存入口・履歴を保持 |
 | `1.1.8` | `2026-10-11` | SRAMポート数の独立実習と8入力ZIPを追加。既存入口と履歴を保持 |
@@ -48,7 +49,7 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信とメモリ読
 
 ## 現在使える範囲
 
-入門・Viewer・調停・受信フィルタ・受信処理遅延の実習はClassical CANの`can.cc.ideal.v1`です。「CAN FDのデータ速度比較」は、外部から与える位相bit数を使う`can.fd.precomputed.v1`の実習です。Ethernet配送期限の実習は`ethernet.l2.qos.v1`です。Gateway処理遅延の実習は`can.cc.multibus.v1`を正式v1.1.4で実測し、別の[Gateway実習入力ZIP](downloads/gateway-delay-inputs.zip)を使います。SRAMの実習は`memory.ipc.transaction.v1`を正式v1.1.4で実測し、[SRAM実習入力ZIP](downloads/sram-ports-inputs.zip)を使います。メールボックスの実習も`memory.ipc.transaction.v1`を正式v1.1.4で実測し、[独立入力ZIP](downloads/mailbox-capacity-inputs.zip)を使います。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、外部計算位相bit数を使うCAN FD、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。READMEの古い「予定」表記だけでは実装有無を判定しません。[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)と対象タグの実装を基準にします。
+入門・Viewer・調停・受信フィルタ・受信処理遅延の実習はClassical CANの`can.cc.ideal.v1`です。「CAN FDのデータ速度比較」は、外部から与える位相bit数を使う`can.fd.precomputed.v1`の実習です。Ethernet配送期限の実習は`ethernet.l2.qos.v1`です。Gateway処理遅延の実習は`can.cc.multibus.v1`を正式v1.1.4で実測し、別の[Gateway実習入力ZIP](downloads/gateway-delay-inputs.zip)を使います。SRAMの実習は`memory.ipc.transaction.v1`を正式v1.1.4で実測し、[SRAM実習入力ZIP](downloads/sram-ports-inputs.zip)を使います。メールボックスの実習も`memory.ipc.transaction.v1`を正式v1.1.4で実測し、[独立入力ZIP](downloads/mailbox-capacity-inputs.zip)を使います。現行ソースには複数CANバスとGateway、EthernetとQoS/VLAN/媒体拡張、外部計算位相bit数を使うCAN FD、AXI/SoC/AHB/NoC/メモリ・IPCの初期transaction profile、NED editorとViewerもあります。実習入力は各ページの配布ZIPまたはmainの`examples/guide`から取得します。profileの提供状態は各記事の対象タグ（[v1.1.3 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.3)／[v1.1.4 Release](https://github.com/hideki-ozu/DIR-Simulator/releases/tag/v1.1.4)）と実装で確認してください。
 
 規格全体への適合や100万要求の性能受入は、この実習が証明する範囲に含みません。CAN FDは外部算定位相bit数を用いる`structural-only`の時間評価で、任意フレームの完全wire codecや完全ISO波形適合を保証しません。
 

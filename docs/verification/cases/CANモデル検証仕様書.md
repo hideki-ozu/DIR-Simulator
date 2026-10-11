@@ -1,12 +1,13 @@
 # CANモデル検証仕様書
 
-文書バージョン：`1.0.3`
-対象GitHubバージョン：`v1.0.0`
+文書バージョン：`1.0.4`
+対象GitHubバージョン：`v1.1.4`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.0.4` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.0.3` | `2026-10-08` | PR #37レビュー対応で時間・RSSの目標を参考計測へ変更し、必須合否から除外。正しさ・再現性と取得時の証跡を維持 |
 | `1.0.2` | `2026-10-03` | Issue #4対応：外部比較結果への参照を削除し、独立した解析・製品試験の証跡を維持 |
 | `1.0.1` | `2026-10-03` | レビュー修正：実施済みCAN製品試験と静的検証、未確認の受け入れ範囲を区別 |
@@ -245,7 +246,7 @@
 | 境界レビュー | CAN固有CRC/format/idが共通scheduler比較キーに入らず、型codec・優先規則・BusContextへ閉じること。別BusContextをunit testで二個構築し一方の状態更新が他方へ影響0であること。現profileの二busネットワーク入力は準備失敗として維持する |
 | 追加拒否 | remote/FD/XL/error injection/retry/TEC/REC/passive/bus-off/seed/distribution設定を各1件与え未対応入力として準備失敗。ACKなし成功の合成や未知profileのfallbackがないことを確認する |
 | 判定範囲 | 本caseは小規模のCAN連携とprofile境界を担当する。[品質・配布方針](../../品質・配布方針.md)の中規模32ノード性能試験は[DIR-TEST-0084](利用フロー・品質検証仕様書.md#dir-test-0084)へ分担する。注：中規模のwall・RSSは参考計測として保存し、必須の合否条件から除外する |
-| 実行結果 | 8fixtureの製品統合試験と既定profileの回帰を実施済み。公開Registry/Envelope拡張API、完全な再現metadata、上記すべての未対応設定の拒否は適合完了としていない。性能測定・ISO規格適合試験は未実施 |
+| 実行結果 | 8fixtureの製品統合試験と既定profileの回帰を実施済み。公開Registry/Envelope拡張API、完全な再現metadata、上記すべての未対応設定の拒否は適合完了としていない。この初回検証記録には性能測定・ISO規格適合試験を含めない |
 
 ## 7. 実行記録
 
@@ -258,3 +259,8 @@
 ### DIR-TEST-0004の設定と負荷の統合確認
 
 同じ[demo.Main](../fixtures/can/models/demo/Main.ned)を二つのINIで使い、[delay-filter.ini](../fixtures/can/delay-filter.ini)のT=300us・bitrate=500kbps・a.txProcessingDelay=3usを基準とする。変更側はa.txProcessingDelayだけを5usへ変える。全generatorと接続は同一で、request a:0のgeneratedは両方0、ready/SOF/EOF/release/受信時刻は変更側で2us後ろへ移る。b.rxProcessingDelay=7us、c.rxFilter=none、経路delayは保持される。準備で確定した値、factoryへ渡る値、発火後の値、結果metadataを照合し、DIR-REQ-0006・0007・0024の負荷側の分担を確認する。全体の操作・出力と独立時刻値は[DIR-TEST-0080](利用フロー・品質検証仕様書.md#dir-test-0080)を併用する。製品実行は未実施。
+
+
+後続の製品回帰・全INIのCLI/出力/Viewer確認は[2026-10-08受け入れ実施記録](../results/acceptance-2026-10-08.md)へ記録した。個別条件への対応と未確認の範囲は同記録の[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を参照する。本文の初回検証記録は取得時点の証跡であり、後続試験の成功を全内部注入・規格適合・全受け入れ条件の合格へ読み替えない。
+
+CANの100万要求については、後続の[出力最適化統合後の完走記録](../results/can-million-integrated-2026-10-08.md)を参照する。WSL2の3負荷各1回の観測で、3条件とも出力確定までの時間目標は未達だった。小規模の本モデル検証や完走時のRSS観測だけで性能受け入れを合格にしない。

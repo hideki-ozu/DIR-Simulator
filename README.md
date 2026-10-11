@@ -1,13 +1,14 @@
 # DIR Simulator
 
-文書バージョン：`1.1.16`
-対象GitHubバージョン：`v1.1.4`（公開候補）
+文書バージョン：`1.1.17`
+対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.17` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.16` | `2026-10-11` | DMAのコピー完了と通知待ちの独立実習・8入力ZIP・fresh証跡検証を追加 |
 | `1.1.15` | `2026-10-11` | メールボックス容量の1変数実習、正式v1.1.4実測・実Viewer・独立ZIPへの入口を追加 |
 | `1.1.14` | `2026-10-11` | SRAMポート数の1変数実習、正式v1.1.4の測定・実Viewer・独立ZIPへの入口を追加 |
@@ -38,7 +39,7 @@
 
 文書ID：`readme`
 
-Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。公開版`v1.1.3`にはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加しています。本PRは公開拡張API、CAN↔Ethernet変換・動的制御・TSN、CAN/Gatewayの大規模出力処理を追加し、次の公開版を`v1.1.4`とします。公開タグとPRの提供状態を分けて記載します。
+Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパッケージ版は既存どおり`0.1.0`で、GitHub版と分けて管理します。VLAN・静的multicast制御は`v1.1.1`、Ethernet媒体拡張・100BASE-T1・CAN FDは`v1.1.2`でmainへマージ済みです。公開版`v1.1.3`にはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象モデルを追加しています。公開済み`v1.1.4`には公開拡張API、CAN↔Ethernet変換・動的制御・TSN、CAN/Gatewayの大規模出力処理を追加しました。mainにはその後の採用物台帳・配布照合の修正も含まれます。公開タグとmainの提供状態を分けて記載します。
 
 [SRAMのポート数と読み出し待ち時間](docs/guide/SRAMのポート数と読み出し待ち時間.md)では、正式v1.1.4で同時読出し3件を1変数比較できます。[独立入力ZIP](docs/guide/downloads/sram-ports-inputs.zip)を配布しています。
 
@@ -46,7 +47,7 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 
 [DMAのコピー完了と通知待ち](docs/guide/DMAのコピー完了と通知待ち.md)では、通知時間だけを変え、データ書き込み完了と親要求の通知を正式v1.1.4の実測で分けます。[8入力ZIP](docs/guide/downloads/dma-notification-inputs.zip)を配布しています。
 
-初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。初回公開はこの構成をmainへ反映した後です。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
+初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。ガイドは公開済みです。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
 
 [Ethernet配送期限と遅延判定の比較](docs/guide/Ethernet配送期限と遅延判定の比較.md)では、期限だけを1psずつ変えて、同じ配送遅延に対する超過判定を実測で比較します。入力基礎v1.1.3と実測版v1.1.4を区別し、[8入力のZIP](docs/guide/downloads/ethernet-deadline-inputs.zip)と実Viewer画像を掲載しています。
 
@@ -62,7 +63,7 @@ DIR Simulatorは、CAN／CAN FD・Ethernet・SoC通信・メモリ・IPCと接�
 3. **Runtime（実行）** — Rustネイティブのシミュレーションモジュールと実行エンジン
 
 
-CAN↔Ethernet変換、Ethernet動的制御、TSNの初期抽象profileを本PRで追加します。共通CLI、結果出力、Viewerで利用できます。[製品検証記録](docs/verification/results/network-extension-product-2026-10-07.json)と[受け入れ検証記録](docs/verification/results/acceptance-2026-10-08.md)に実施範囲を保存し、予定公開版は`v1.1.4`です。
+CAN↔Ethernet変換、Ethernet動的制御、TSNの初期抽象profileを公開版`v1.1.4`で追加しました。共通CLI、結果出力、Viewerで利用できます。[製品検証記録](docs/verification/results/network-extension-product-2026-10-07.json)と[受け入れ検証記録](docs/verification/results/acceptance-2026-10-08.md)に実施範囲を保存し、公開版は`v1.1.4`です。
 
 | 分野 | 詳細仕様 | 詳細設計 | 検証ケース |
 | --- | --- | --- | --- |
@@ -75,7 +76,7 @@ CAN↔Ethernet変換、Ethernet動的制御、TSNの初期抽象profileを本PR�
 CANノードと共有バスの通信を仮想時刻上で実行し、負荷・ビットレート・容量の違いによる遅延、競合、バッファ使用量と性能を比較します。
 構造をNED、実験条件をINI、振る舞いをRustで記述し、時系列・集計値をCSVとJSONで取得できます。
 
-基準モデルはClassical CANです。v0.1は単一CANを提供し、v1.0.0ではGW・複数CANバスの実装と製品試験を追加しています。現行の開発ソースではEthernetのEndpoint・Link・Switch、全二重L2とQoSを追加しています。開発中ソースにはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象profileも追加しています。各profileの初期機能を固定し、追加機能は版付き登録契約で拡張します。
+基準モデルはClassical CANです。v0.1は単一CANを提供し、v1.0.0ではGW・複数CANバスの実装と製品試験を追加しています。現行の開発ソースではEthernetのEndpoint・Link・Switch、全二重L2とQoSを追加しています。現行ソースにはAXI・SoC共有バス・AHB・NoC・メモリ／IPCの初期抽象profileも追加しています。各profileの初期機能を固定し、追加機能は版付き登録契約で拡張します。
 初期モデルは標準11bit・拡張29bitのClassical CANデータフレームを扱う`can.cc.ideal.v1`です。内容からCRC・stuff bitを求め、理想ACKを扱います。詳細は[CANモデル仕様](docs/specs/models/CANモデル詳細機能仕様書.md)、判断履歴は[解決済みTBD台帳](docs/要件定義書.md#6-未確定事項不足の管理)に記載しています。
 
 ## CANサンプルを実行する
@@ -200,7 +201,7 @@ mkdir -p /tmp/dir-editor-exports
 
 標準11bit／拡張29bitのClassical CANデータフレーム、CRC-15、内容依存ビットスタッフィング、優先度仲裁、理想ACK、同報、有限キュー、受信フィルタ、固定伝搬・処理遅延、明示列／周期負荷を実装しています。`can.cc.ideal.v1`は単一バス、`can.cc.multibus.v1`は1個以上の独立バスと任意のGWを扱い、各バスに2個以上のControllerが必要です。NEDは宣言・スカラーポート・接続・compound展開の対応サブセットを読み込みます。
 
-開発中ソースは汎用`Registry`／`Envelope`／`Context`拡張API、位置付きの構造化診断、採用元と確定設定を含む再現メタデータ、準備失敗の5ファイル公開を備えます。観測点は4,096件を境に一時JSONLへ退避し、結果公開時に読み出します。既存の組込み13 profileは専用エンジンをアダプターとして使い、追加3 profileと外部登録モデルは共通エンジンで実行します。[100万要求のWSL2実測](docs/verification/results/can-million-performance-2026-10-06.json)では2 GiBのメモリ目標を超過し、出力確定まで完了しませんでした。その測定後、CAN/Gatewayの完了済み台帳を一時ファイルへ退避し、時間順の寄与を増分集計する出力経路を追加しました。窓ごとの全件再走査と全出力行のメモリ保持を避け、正規順序への整列は上限付きの外部ソートで行います。CLIのrun報告にはイベント処理のみの実時間を追加し、検出可能な予約メモリの確保失敗は構造化診断へ変換します。[逐次処理改修後の測定](docs/verification/results/can-streaming-2026-10-06.json)では3,200要求の3条件が完了し、100万要求の通常負荷は180秒で中断しました。その後、並べ替え行と時刻付き寄与のバイナリ化、順序検査付き2系列マージ、JSON/CSV同時出力、添字による集計を製品へ統合しました。[統合後の100万要求完走実測](docs/verification/results/can-million-integrated-2026-10-08.md)では通常／高負荷／過負荷が754.75／740.48／592.35秒、最大RSSは47.41／49.06／47.88 MiBでした。WSL2の各条件1回の完走観測でメモリは2 GiB以内、時間は120秒の目標未達です。反復再現性とnative基準機での測定は未検証です。PR #37のレビュー対応で性能目標を参考計測に変更し、120秒・2 GiBの数値を受け入れ・PR・公開の必須合否条件から外しました。正しさ・件数保存・再現性・成果物整合の条件は維持します。CANエラー状態・再送、内容依存CAN FD wire codec、未対応の他プロトコルは将来対象です。拡張runtimeの検証範囲は[実行記録](docs/verification/results/extension-runtime-2026-10-05.json)で確認できます。
+現行ソースは汎用`Registry`／`Envelope`／`Context`拡張API、位置付きの構造化診断、採用元と確定設定を含む再現メタデータ、準備失敗の5ファイル公開を備えます。観測点は4,096件を境に一時JSONLへ退避し、結果公開時に読み出します。既存の組込み13 profileは専用エンジンをアダプターとして使い、追加3 profileと外部登録モデルは共通エンジンで実行します。[100万要求のWSL2実測](docs/verification/results/can-million-performance-2026-10-06.json)では2 GiBのメモリ目標を超過し、出力確定まで完了しませんでした。その測定後、CAN/Gatewayの完了済み台帳を一時ファイルへ退避し、時間順の寄与を増分集計する出力経路を追加しました。窓ごとの全件再走査と全出力行のメモリ保持を避け、正規順序への整列は上限付きの外部ソートで行います。CLIのrun報告にはイベント処理のみの実時間を追加し、検出可能な予約メモリの確保失敗は構造化診断へ変換します。[逐次処理改修後の測定](docs/verification/results/can-streaming-2026-10-06.json)では3,200要求の3条件が完了し、100万要求の通常負荷は180秒で中断しました。その後、並べ替え行と時刻付き寄与のバイナリ化、順序検査付き2系列マージ、JSON/CSV同時出力、添字による集計を製品へ統合しました。[統合後の100万要求完走実測](docs/verification/results/can-million-integrated-2026-10-08.md)では通常／高負荷／過負荷が754.75／740.48／592.35秒、最大RSSは47.41／49.06／47.88 MiBでした。WSL2の各条件1回の完走観測でメモリは2 GiB以内、時間は120秒の目標未達です。反復再現性とnative基準機での測定は未検証です。PR #37のレビュー対応で性能目標を参考計測に変更し、120秒・2 GiBの数値を受け入れ・PR・公開の必須合否条件から外しました。正しさ・件数保存・再現性・成果物整合の条件は維持します。CANエラー状態・再送、内容依存CAN FD wire codec、未対応の他プロトコルは将来対象です。拡張runtimeの検証範囲は[実行記録](docs/verification/results/extension-runtime-2026-10-05.json)で確認できます。
 
 ```bash
 cargo test --locked
@@ -241,7 +242,7 @@ CAN/GWの動作はRust製品試験と独立した静的期待値の照合、ビ�
 
 ## Ethernetサンプルを実行する
 
-開発ソースは`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`・`ethernet.l2.vlan.v1`に対応します。全二重の方向別送信、Ethernet IIのpadding/FCS、静的FDB、broadcast・未知unicastのflood、有限キューを扱います。QoS profileは明示時刻・周期・バースト負荷、8優先度のFIFO／strict priority、待機frame数・MAC byte容量、フロー別遅延・期限超過・経路内訳を追加します。VLAN profileは単一0x8100タグ、PVID/admit/member設定、VLAN別FDB・静的group経路・Endpoint購読、hopごとのwire長・PCP分類を追加します。
+現行ソースは`ethernet.l2.store-forward.v1`・`ethernet.l2.qos.v1`・`ethernet.l2.vlan.v1`に対応します。全二重の方向別送信、Ethernet IIのpadding/FCS、静的FDB、broadcast・未知unicastのflood、有限キューを扱います。QoS profileは明示時刻・周期・バースト負荷、8優先度のFIFO／strict priority、待機frame数・MAC byte容量、フロー別遅延・期限超過・経路内訳を追加します。VLAN profileは単一0x8100タグ、PVID/admit/member設定、VLAN別FDB・静的group経路・Endpoint購読、hopごとのwire長・PCP分類を追加します。
 
 ```bash
 cargo build --locked -p dir-simulator
@@ -252,7 +253,7 @@ cargo build --locked -p dir-simulator
 
 [unicast.ini](examples/ethernet/unicast.ini)、[duplex.ini](examples/ethernet/duplex.ini)、[qos-priority.ini](examples/ethernet/qos-priority.ini)、[qos-periodic-burst.ini](examples/ethernet/qos-periodic-burst.ini)、[vlan-unicast.ini](examples/ethernet/vlan-unicast.ini)、[vlan-multicast.ini](examples/ethernet/vlan-multicast.ini)を同梱します。結果はschema2の`simulation.model_records`に元frame・方向別copy・受信を分けて保存します。viewerはEndpoint／Switch構成、方向別送信、copy親子関係、8classキュー、フロー指標を表示します。ステップ操作は移動先の直前区間を再表示し、連続再生は線を強調します。実績arrivalがないcopyから受信を作りません。
 
-詳細は[L2仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md)、[負荷・QoS仕様](docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[負荷・QoS設計](docs/design/Ethernet負荷・QoS詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)を参照してください。VLAN・静的multicast制御はv1.1.1でmainへマージ済みです。[詳細仕様](docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)・[設計と実装順](docs/design/EthernetVLAN・マルチキャスト詳細設計書.md#implementation-order)・[検証手順](docs/verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)へ入力・処理・schemaと実行記録を集約しています。VLAN画面ではVLAN表示filter、source/hop priority・タグ・FCS・MAC長、静かなPortのpolicy/group設定を確認できます。表示filterは集計の母数を変えません。媒体別PHY・半二重とCAN FDは開発中ソースに追加しています。CAN↔Ethernet変換、動的制御・TSNの初期profileも開発中ソースへ追加しています。公開Registry/Envelope APIは開発中ソースへ追加済みです。IEEE認証や性能検証の完了を示すものではありません。
+詳細は[L2仕様](docs/specs/models/Ethernetモデル詳細機能仕様書.md)、[負荷・QoS仕様](docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md)、[負荷・QoS設計](docs/design/Ethernet負荷・QoS詳細設計書.md)、[検証仕様](docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)を参照してください。VLAN・静的multicast制御はv1.1.1でmainへマージ済みです。[詳細仕様](docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md)・[設計と実装順](docs/design/EthernetVLAN・マルチキャスト詳細設計書.md#implementation-order)・[検証手順](docs/verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)へ入力・処理・schemaと実行記録を集約しています。VLAN画面ではVLAN表示filter、source/hop priority・タグ・FCS・MAC長、静かなPortのpolicy/group設定を確認できます。表示filterは集計の母数を変えません。媒体別PHY・半二重とCAN FDは現行ソースに追加しています。CAN↔Ethernet変換、動的制御・TSNの初期profileも現行ソースへ追加しています。公開Registry/Envelope APIは現行ソースへ追加済みです。IEEE認証や性能検証の完了を示すものではありません。
 
 VLANの実行例：
 
@@ -324,7 +325,7 @@ DIRは、OMNeT++の実装コードを移植するのではなく、公開ドキ�
 | [品質・配布方針](docs/品質・配布方針.md) | 性能・精度・出自管理 |
 | [将来拡張計画](docs/将来拡張計画.md) | v1.0.0のGW・複数バスと他プロトコルへの境界 |
 
-21詳細機能仕様、入力・結果処理を含む17詳細設計と利用フロー・品質を含む18検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。開発中ソースにはCAN FD・Ethernet媒体拡張・100BASE-T1、AXI・SoC/AHB/NoC・メモリ/IPCも追加しています。残るモデルの製品実装・実行試験、および各規格全体への対応は今後の作業です。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
+21詳細機能仕様、入力・結果処理とCAN出力最適化を含む18詳細設計と利用フロー・品質を含む18検証仕様、各モデルの入力fixture・独立期待値を作成しました。Classical CANとGW・複数CANバス、Ethernet全二重L2・QoS・VLANの実装と自動試験を追加しました。現行ソースにはCAN FD・Ethernet媒体拡張・100BASE-T1、AXI・SoC/AHB/NoC・メモリ/IPCも追加しています。16組込みprofileの初期抽象モデルを提供し、モデル別に製品試験の実施範囲を記録しています。全受け入れ条件の充足と各規格全体への対応は別に追跡します。文書の正式名とファイル名をそろえ、自動生成レポートを除く各プロジェクト文書の冒頭に更新履歴を記載し、内容差分はGitで管理します。文書バージョンと更新履歴は、[push時の運用](docs/ドキュメント作成・運用規約.md#document-version-at-push)に従い、前回push以降の変更を文書ごとに一改訂へまとめ、push準備時に一度更新してコミットします。
 
 図の編集元（`.puml`）と表示用SVGは `docs/diagrams/<文書ID>/` に保存しています。ローカルのPlantUMLで全図を更新・確認できます。
 
@@ -390,7 +391,7 @@ python3 docs/verification/fixtures/can/verify_vectors.py
 
 ## 当初対象の網羅
 
-当初の15対象と追加した10BASE-T・1000BASE-T1は、0.1.0のClassical CANと[将来対応予定の16対象](docs/要件定義書.md#original-target-coverage)に分けて管理し、将来対応予定表で有効要件へ対応付けています。対象範囲と段階的な実装順序を分け、CAN FD・100BASE-T1・SoC／AHB／NoC・DDR／SRAM・共有メモリIPC／DMA／メールボックスIPCも要件から検証ケースまで規定します。
+当初の15対象と追加した10BASE-T・1000BASE-T1は、0.1.0のClassical CANと[提供する16対象](docs/要件定義書.md#original-target-coverage)に分けて管理し、モデル一覧表で有効要件へ対応付けています。対象範囲と段階的な実装順序を分け、CAN FD・100BASE-T1・SoC／AHB／NoC・DDR／SRAM・共有メモリIPC／DMA／メールボックスIPCも要件から検証ケースまで規定します。
 
 | 対象 | 仕様 | 設計 | 検証 |
 | --- | --- | --- | --- |
@@ -398,7 +399,7 @@ python3 docs/verification/fixtures/can/verify_vectors.py
 | SoC・AHB・NoC | [詳細仕様](docs/specs/models/SoC・AHB・NoC詳細機能仕様書.md) | [詳細設計](docs/design/SoC・AHB・NoC詳細設計書.md) | [検証仕様](docs/verification/cases/SoC・AHB・NoC検証仕様書.md) |
 | DDR・SRAM・共有メモリIPC・DMA・メールボックスIPC | [詳細仕様](docs/specs/models/メモリ・IPC詳細機能仕様書.md) | [詳細設計](docs/design/メモリ・IPC詳細設計書.md) | [検証仕様](docs/verification/cases/メモリ・IPC検証仕様書.md) |
 
-CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。CAN FD、Ethernet媒体v2・100BASE-T1も開発中ソースに追加しています。AXI、SoC/AHB/NoC、DDR/SRAM、共有メモリIPC/DMA/メールボックスIPCは組込み実装と独立fixtureによる製品実行照合を追加しました。[製品検証記録](docs/verification/results/soc-memory-product-2026-10-05.json)に実施範囲を保存します。
+CAN FDの初期profileは、証跡付きの位相別bit数を入力する時間評価モデルです。Classical CANの内容依存CRC・stuffing計算とは再現範囲を分けて記録します。CAN FD、Ethernet媒体v2・100BASE-T1も現行ソースに追加しています。AXI、SoC/AHB/NoC、DDR/SRAM、共有メモリIPC/DMA/メールボックスIPCは組込み実装と独立fixtureによる製品実行照合を追加しました。[製品検証記録](docs/verification/results/soc-memory-product-2026-10-05.json)に実施範囲を保存します。
 
 ## Ethernet媒体拡張とCAN FD（v1.1.2）
 
@@ -456,12 +457,12 @@ cargo run --locked -p dir-simulator -- view --input /tmp/dir-tsn-tas/results.jso
 
 Viewerでは動的policy表・制御履歴・visit/copy、TSN gate/credit/token・阻止理由、変換origin/branchとCAN/Ethernetの物理経路を確認できます。時間上限による正常停止は`partial=false`で、予定時刻と実績を分けて表示します。停止前に未到着の受信を補完しません。
 
-今回のv1.1.4向けPRの最新main統合、文書改訂、現行Rust/Node/Python・CLI/Viewer・ガイド検証は[PR準備記録](docs/verification/results/v1.1.4-pr-2026-10-08.md)へ保存します。100万要求の測定証跡は取得時の固定ソースのまま保持し、取得時の時間目標未達と反復・native基準機未測定を明記しています。現在の性能計測は参考情報として保持します。
+公開版v1.1.4向けPR準備時のmain統合、文書改訂、Rust/Node/Python・CLI/Viewer・ガイド検証は[PR準備記録](docs/verification/results/v1.1.4-pr-2026-10-08.md)へ保存します。100万要求の測定証跡は取得時の固定ソースのまま保持し、取得時の時間目標未達と反復・native基準機未測定を明記しています。現在の性能計測は参考情報として保持します。
 
 PR #37レビュー4件の再現・修正と性能方針変更は[レビュー対応の検証記録](docs/verification/results/pr37-review-2026-10-08.md)へ保存します。
 
 
-## v1.1.4の公開候補
+## v1.1.4の公開版と確認範囲
 
 v1.1.4は、公開Registry API・構造化診断・再現メタデータ、CAN↔Ethernet変換・動的Ethernet・TSN、CAN出力改善を含むソース配布版です。動作確認対象はWSL上のUbuntu 24.04 LTS x86_64です。
 

@@ -1,13 +1,14 @@
 # メモリ・IPC詳細設計書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.2`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.1` | `2026-10-08` | メモリ・IPCの公開Registry組込みアダプターと専用競合・台帳処理、共通APIと固有検証の境界を追記 |
 | `1.1.0` | `2026-10-05` | 本書の初期抽象profileの組込み実装・製品照合とv1.1.3向け提供範囲を記録 |
 | `1.0.0` | `2026-10-03` | 文書版を1.0.0、対象タグをv1.0.0に統一 |
@@ -18,7 +19,7 @@
 
 | 項目 | 契約 |
 | --- | --- |
-| 構造 | `MemoryIpcProfile`はprepareでNodeHandle、immutable request、geometry、actor集合とFIFO容量を確定する。`Coordinator`はDDR/SRAM stateとIPC/DMA stateを所有し共通Context/journalへ差分を提出する。開発中ソースで組込み実装を提供 |
+| 構造 | `MemoryIpcProfile`はprepareでNodeHandle、immutable request、geometry、actor集合とFIFO容量を確定する。`Coordinator`はDDR/SRAM stateとIPC/DMA stateを所有し共通Context/journalへ差分を提出する。v1.1.3で組込み実装を公開済み |
 | 準備 | 配置を正規path順に解決し型とconfig集合を一対一照合。全workloadをT以後も検証。node/op、geometry、初期範囲、actor、DMA参照の診断をsource順で確定し、成功後だけ初期memory/slot/mailbox/engine行を一括commitする |
 | dispatch | 共通runtimeのphase0/1/2を使う。同資源の同時刻completionを一つのbatchとしてordinal順に処理。phase1 Offerはawaiting_admission行とintentをcommitする。phase2 dirty coordinatorは全intentを仕様の(root generator,ordinal,source rank,chunk,operation)で全順序化してadmissionし、その後に資源path順でdispatchする。callbackが予約するphase1はphase0/1起点なら同delta、phase2起点なら次deltaであり、共通Context規則をそのまま使う。注：他資源の関数を再帰実行する方式は対象外 |
 | 安全な効果 | callback内でchecked時刻とcodecを検証→state差分/次timer/metric/ModelRecordを構築→journal commit。失敗時はbatch以前の公開snapshotを使用し停止。予約とowner変更の片方だけを公開する処理は対象外（注） |

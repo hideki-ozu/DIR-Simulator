@@ -1,13 +1,14 @@
 # GWモデル検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.1`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-08` | GW検証取得時点の準備失敗・位置情報の状態と、後続共通診断・成果物の検証範囲を区別 |
 | `1.0.1` | `2026-10-03` | Issue #4対応：外部比較結果・ログ依存の検証記述を削除し、DIR独立検証との境界を整理 |
 | `1.0.0` | `2026-10-03` | 有限RX・TX受理待ち、分岐、停止境界、Busゲート名自由化と比較証跡を追加。文書版を1.0.0、対象タグをv1.0.0に統一 |
@@ -236,3 +237,6 @@ v1.0.0のBusゲート名自由化について、旧名・任意名での実行�
 | v1.0.0 Bus命名自由化 | delay fixtureのBusゲートを任意名・旧名へそれぞれ変更し、各ControllerのBus所属・非ゼロ経路遅延と実行イベント・転送記録・計測値が元入力と一致することを確認。入出力の役割は名前や宣言順によらず方向で決定する。元入力snapshot/hashと名前を含む接続識別は改名に従う。Bus間で受信経路を交換した片側別Bus接続と、Bus間の直接接続は準備失敗とする |
 | コマンド | `python3 docs/verification/fixtures/can/verify_vectors.py`とGW checker、`python3 scripts/check_traceability.py --strict --requirement DIR-REQ-0123`。親子全体の追跡は0124～0132もstrict対象へ含める。実装後は両profileを同一buildで実行 |
 | 実行結果 | [改訂後記録](../results/gateway-rx-buffer-2026-10-03.json)で既定CANの既存Rust試験と改訂全GW fixture、schema1/2ビューア操作が同一buildで合格。[GW製品試験](../../../crates/dir-simulator/tests/gateway.rs)には、旧名と任意Busゲート名での接続・経路遅延・実行結果の一致、片側別Bus接続とBus間の直接接続の拒否を確認する試験を含む。公開Registry/Envelopeのdescriptor・codec API適合は未実施 |
+
+
+後続の製品回帰・全INIのCLI/出力/Viewer確認は[2026-10-08受け入れ実施記録](../results/acceptance-2026-10-08.md)へ記録した。個別条件への対応と未確認の範囲は同記録の[coverage review](../results/acceptance-2026-10-08/coverage-review.json)を参照する。本文の初回検証記録は取得時点の証跡であり、後続試験の成功を全内部注入・規格適合・全受け入れ条件の合格へ読み替えない。

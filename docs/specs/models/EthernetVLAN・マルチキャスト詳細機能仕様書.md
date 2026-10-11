@@ -1,18 +1,19 @@
 # EthernetVLAN・マルチキャスト詳細機能仕様書
 
-文書バージョン：`1.1.2`
-対象GitHubバージョン：`main @ 2f1e60b`
-予定公開版：`v1.1.4`（本PR。対象コミットは公開済みmainの基準）
+文書バージョン：`1.1.3`
+対象GitHubバージョン：`v1.1.4`
+公開版：`v1.1.4`（公開済み）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.3` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.2` | `2026-10-08` | 静的VLAN契約と、動的学習・snooping・VID登録・STPおよびTSNの別profileへの詳細化境界を追記。追加profileの実装・製品検証状態を更新 |
 | `1.1.1` | `2026-10-04` | 初版：単一VLANタグ・Port policy・VLAN別交換・静的multicast・購読・hop別観測の実装契約と製品試験参照を確定。利用者指定の文書版1.1.1で初回push |
 
 文書ID：`spec-ethernet-vlan`
-文書状態：v1.1.1向けPR版。入力・runtime・結果・viewerを実装。製品試験の実施範囲は[検証仕様](../../verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)と[実行記録](../../verification/results/ethernet-vlan-2026-10-04.json)で管理する。
+文書状態：v1.1.1で公開済み。入力・runtime・結果・viewerを実装。製品試験の実施範囲は[検証仕様](../../verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)と[実行記録](../../verification/results/ethernet-vlan-2026-10-04.json)で管理する。
 
 ## 1. 対象と選択
 
