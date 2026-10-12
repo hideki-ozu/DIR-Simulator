@@ -104,6 +104,9 @@ struct Shared {
     binary: PathBuf,
     binary_hash: String,
     launch_worker: bool,
+    viewer_inventory: Mutex<()>,
+    #[cfg(test)]
+    fail_publication_sync: AtomicBool,
 }
 struct Lifetime {
     shared: Weak<Shared>,
@@ -368,6 +371,9 @@ impl RunManager {
             binary,
             binary_hash,
             launch_worker: cfg!(not(test)) || worker_binary.is_some(),
+            viewer_inventory: Mutex::new(()),
+            #[cfg(test)]
+            fail_publication_sync: AtomicBool::new(false),
         });
         if owner {
             recover_cleanup(&shared)?;
@@ -376,6 +382,7 @@ impl RunManager {
         if owner {
             for r in records.values_mut() {
                 recover_record(&shared, r)?;
+                cleanup::recover_viewers(&shared, r)?;
             }
         }
         shared.state.lock().unwrap().records = records;
@@ -456,8 +463,29 @@ impl RunManager {
         }
         Ok(bytes)
     }
+    #[cfg(test)]
+    pub(super) fn fail_next_publication_sync(&self) {
+        self.shared
+            .fail_publication_sync
+            .store(true, Ordering::Release);
+    }
+    fn recover_pending(&self, state: &mut State) -> Result<()> {
+        self.mutation()?;
+        for (key, record) in state.pending.clone() {
+            verify_owner(&self.shared, &record)?;
+            persist(&self.shared, &record)?;
+            Directory::open(&self.shared.root)?.sync()?;
+            state.records.insert(record.run_id.clone(), record);
+            state.pending.remove(&key);
+        }
+        self.shared.wake.notify_all();
+        Ok(())
+    }
     pub(crate) fn check_capacity(&self, project: &ProjectSnapshot) -> Result<()> {
-        let state = self.shared.state.lock().unwrap();
+        let mut state = self.shared.state.lock().unwrap();
+        // New HTTP commands reach this preflight even when the previous error
+        // is terminal in the ledger. Publish only after durability is repaired.
+        self.recover_pending(&mut state)?;
         self.capacity_locked(project, &state).map(|_| ())
     }
     pub(crate) fn create_run(
@@ -479,6 +507,7 @@ impl RunManager {
             return Err(invalid("Run stamp or timeout mismatch"));
         }
         let mut state = self.shared.state.lock().unwrap();
+        self.recover_pending(&mut state)?;
         let command_key = (stamp.session_id.clone(), stamp.command_id.clone());
         if let Some(pending) = state.pending.get(&command_key).cloned() {
             if pending.stamp != stamp || pending.wall_timeout_ms != timeout.to_string() {
@@ -598,9 +627,21 @@ impl RunManager {
                 .unwrap()
                 .pending
                 .insert(command_key.clone(), r.clone());
-            if let Err(error) =
-                Directory::open(&self.shared.root)?.rename_child(&staging, &id, &r.owner)
-            {
+            let publication =
+                Directory::open(&self.shared.root)?.rename_child(&staging, &id, &r.owner);
+            #[cfg(test)]
+            let publication = publication.and_then(|()| {
+                if self
+                    .shared
+                    .fail_publication_sync
+                    .swap(false, Ordering::AcqRel)
+                {
+                    Err(invalid("Injected post-rename fsync failure"))
+                } else {
+                    Ok(())
+                }
+            });
+            if let Err(error) = publication {
                 if verify_owner(&self.shared, &r).is_err() {
                     self.shared
                         .state

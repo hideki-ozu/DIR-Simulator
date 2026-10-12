@@ -1,12 +1,15 @@
 # NED-editor仕様書
 
-文書バージョン：`1.1.2`
-対象GitHubバージョン：`v1.1.5`
+文書バージョン：`1.1.5`
+対象GitHubバージョン：`main @ dbcbcc5`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.5` | `2026-10-12` | Viewer回収snapshotと遅延応答の競合を直列化し、旧422のbarrier再現と修正後成功を記録 |
+| `1.1.4` | `2026-10-12` | ユーザーのPR69マージ後のmainを対象に更新し、未リリース修正の基準を明示 |
+| `1.1.3` | `2026-10-12` | PR #69追補：Viewer期限切れの再準備、公開pendingの耐久化再試行、参照終了後の所有HTML回収と回帰検証 |
 | `1.1.2` | `2026-10-12` | 新規NED・設定JSON、実体型の専用化、一括リネーム、固定入力の実行・Viewer連携と検証範囲を反映。対象タグをv1.1.5へ更新 |
 | `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-10` | 動作確認・受入範囲をWSL上のUbuntu 24.04 LTS x86_64へ統一。Ubuntu native比較・Windows native単独確認を現在の必須条件から除外し、同一環境の検証と過去証跡を維持 |
@@ -1550,3 +1553,19 @@ PLAYWRIGHT_MODULE=/path/to/matching/playwright DIR_SIMULATOR_BIN="$PWD/target/de
 ```
 
 第23.2節の43ケースは条件を含む受入設計であり、番号全件の全条件を合格扱いにしていない。各freeze/manifest/応答境界での実process kill、全取消raceの固定barrier、実ENOSPC・4 GiB OOM・1 GiB出力・soft quota超過の網羅、全上限の境界±1byte、実電源断、別ブラウザ、大規模性能は本記録の証拠に含まれない。強制停止時の部分export/resumeも提供契約に含めない。文書のstrict traceability、生成物、リンク、図の検査は文書構造の確認として扱う。
+
+## PR #69 の不具合修正追補（未リリース）
+
+この追補は `pr69-runtime-viewer-fixes` の修正である。既存の `v1.1.5` 注釈タグは初回head `47cdd531…` を指し、この修正を含まない。正式リリース・タグ付替え・マージ・Issueクローズは本作業に含めない。作者の `c23855a` にある実flock解放を待つrestart fixtureを保持し、runtime `Lifetime::drop` は変更しない。
+
+Viewerの期限は発行から1時間。保存された `expires_at_ms` を現在時刻と比較し、期限到達時はURLキャッシュを除いて「Viewerを準備」を表示する。既存pollによる同一run一覧の再描画でも期限判定を先に行い、描画キャッシュを無効化する。背景タブなどpoll停止中に古いリンクをクリックした場合も通常の別タブ移動を防いで再準備操作へ戻す。再準備は明示操作であり、read-onlyや実行中の操作制限は維持する。
+
+run公開rename後のfsync失敗は最初のcommandの終端エラーを維持する。後続の容量確認・create経路はpendingの所有dirを照合し、recordを再永続化し、親dirのsync成功後だけrecordsへ移す。同commandのHTTP ledger再送は既存の終端結果を返し、追加runを生成しない。別commandも受付に進めるが、通常のキュー・容量・writer制限は引き続き適用する。同期が再び失敗した場合はpendingを保護し、実行可能なrecordへ移さない。
+
+HTMLの各生成を所有identityと結び付ける。失敗・取消ではworker終了後に所有出力だけを回収し、revoke・期限切れではrouteの参照を解放する。受理済みHTTP応答は同じ所有参照とleaseを保持し、最後の応答が終了するまでHTMLを回収しない。回収は検証済みrun配下の単一ファイルについてopen FDとpathのdev/ino・通常ファイル・link数を照合する。結果本体・入力・未知ファイル・差替えられたファイルを削除しない。inventory更新前に回収が中断し、既知ファイルが既に消えている場合は次回にinventoryを修復できる。
+
+旧サービスの応答が残る場合はleaseを優先する。起動・再準備・最後の所有参照終了時に、参照がない既知の旧生成だけを再試行する。identity未確定の予約や不一致を削除権限として扱わない。再帰的な削除対象を広げない。実装は `input.js` / `view.js`、run managerのpending復旧、Viewer所有参照、storageの単一identity削除へ分担する。inventoryの同期はrun状態mutexとは別のmutexを使い、状態を保持した失効からの回収で再帰lockを作らない。
+
+回帰は [検証報告](../../verification/results/pr69-fixes-2026-10-12/report.md) を参照する。期限境界の時計制御、HTTP終端再送と新command、20世代の最終参照回収、未知identity・中断回収・lease保護を検証する。過去の全43受入ケースや性能条件の完全合格を新たに主張するものではない。
+
+Viewerの旧世代回収はinventory snapshotからbatch完了まで同じmutexを保持する。遅延した最後の応答による二度目の回収は、inventoryとファイルが両方不存在の場合だけ削除なしで成功する。同名の未知ファイルがあれば拒否する。旧公開cleanupへbarrierだけを加えた同じ試験はUnknown Viewer allocation/422で失敗し、修正版は成功。全target clippyも成功。Issue #75で追跡しクローズしない。

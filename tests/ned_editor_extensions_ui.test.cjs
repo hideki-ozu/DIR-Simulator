@@ -267,7 +267,7 @@ test('run artifact download turns an HTTP failure into an ApiError with server d
   });
 });
 
-function runRenderer() {
+function runRenderer(clock = Date) {
   const fs = require('node:fs');
   const vm = require('node:vm');
   const nodes = new Map();
@@ -291,10 +291,26 @@ function runRenderer() {
     getElementById(id) { if (!nodes.has(id)) nodes.set(id, new Element('div')); return nodes.get(id); },
     querySelectorAll() { return []; },
   };
-  const context = {document, NEDEditorInput: I};
+  const context = {document, NEDEditorInput: I, Date: clock};
   vm.runInNewContext(fs.readFileSync(require.resolve('../crates/dir-simulator/src/tool/ned-editor/assets/view.js'), 'utf8'), context);
   return {nodes, render: (app, client, callbacks = {}) => context.NEDEditorView.render(app, client, callbacks)};
 }
+
+test('Viewer expires exactly at its deadline, invalidates the render cache and permits preparation', () => {
+  let now=1000;
+  class Clock extends Date { static now() {return now;} }
+  const h=runRenderer(Clock), app={buffers:new Map(),breadcrumbs:[],scopeGeneration:'1',typeKey:null,fileId:null,
+    view:{files:[],outputs:[]},runsReadonly:false,viewerURLs:new Map([['run',{url:'http://127.0.0.1:2/cap',expires:'2000'}]]),
+    runs:[{run_id:'run',phase:'completed',artifact_state:'published',viewer_state:'ready'}]};
+  const callbacks={prepareViewer(){}};
+  const actions=()=>h.nodes.get('runs').children[0].children.find(node=>node.className==='run-actions').children;
+  h.render(app,{writer:true},callbacks);assert(actions().some(node=>node.tagName==='a'));
+  now=1999;h.render(app,{writer:true},callbacks);assert(actions().some(node=>node.tagName==='a'));
+  now=2000;h.render(app,{writer:true},callbacks);
+  assert(!actions().some(node=>node.tagName==='a'),'expired links must disappear without changing server rows');
+  assert(actions().some(node=>node.textContent==='Viewerを準備'&&!node.disabled));
+  assert.equal(app.viewerURLs.has('run'),false);
+});
 
 function renderedText(node) {
   return [node.textContent || '', ...(node.children || []).map(renderedText)].join('');
