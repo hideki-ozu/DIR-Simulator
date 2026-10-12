@@ -383,6 +383,33 @@ impl Directory {
     }
     /// Unknown descendants and inode substitutions are retained even after a
     /// partially completed previous deletion. Missing inventoried files are okay.
+    pub(crate) fn remove_file_checked(&self, n: &str, expected: &Identity) -> Result<()> {
+        name(OsStr::new(n))?;
+        self.verify()?;
+        let stat = match fs::statat(self.fd(), n, AtFlags::SYMLINK_NOFOLLOW) {
+            Ok(stat) => stat,
+            Err(error) if error == rustix::io::Errno::NOENT => return Ok(()),
+            Err(error) => return Err(EditorError::io(&self.path, error)),
+        };
+        if identity(&stat) != *expected
+            || stat.st_nlink != 1
+            || fs::FileType::from_raw_mode(stat.st_mode) != fs::FileType::RegularFile
+        {
+            return Err(invalid("Viewer cleanup identity or file type changed"));
+        }
+        let file = self.open_file(n)?;
+        let opened = fs::fstat(&file).map_err(|e| EditorError::io(&self.path, e))?;
+        let current = fs::statat(self.fd(), n, AtFlags::SYMLINK_NOFOLLOW)
+            .map_err(|e| EditorError::io(&self.path, e))?;
+        if identity(&opened) != *expected
+            || identity(&current) != *expected
+            || current.st_nlink != 1
+        {
+            return Err(invalid("Viewer cleanup identity changed while opening"));
+        }
+        fs::unlinkat(self.fd(), n, AtFlags::empty()).map_err(|e| EditorError::io(&self.path, e))?;
+        self.sync()
+    }
     pub(crate) fn remove_child_checked(
         &self,
         n: &str,

@@ -371,7 +371,8 @@
   function renderRuns(app,client,callbacks,disabled) {
     const list=$('runs');
     $('runs-status').textContent=app.runError || (app.runsReadonly ? '別のサービスが実行を管理しています。この画面では結果を参照できます。' : '実行対象を固定した後も編集を続けられます。');
-    const key=JSON.stringify([app.runs || [], [...(app.viewerURLs || [])], app.runsReadonly,disabled,
+    for (const run of app.runs || []) root.NEDEditorInput?.currentViewer(app,run.run_id,Date.now());
+    const key=JSON.stringify([...(app.expiredViewers || []), app.runs || [], [...(app.viewerURLs || [])], app.runsReadonly,disabled,
       app.view?.project_instance_id,app.view?.input_revision,app.view?.input_digest]);
     const previous=runRenderStates.get(list);
     if (previous?.key===key && previous.callbacks===callbacks) {
@@ -399,8 +400,9 @@
       const actions=element('div',null,'run-actions'), locked=disabled || app.runsReadonly;
       if (active && !['verifying','stopping'].includes(run.phase)) actions.append(button('停止',()=>callbacks.stopRun(run),'',locked));
       if (published) {
-        const viewer=app.viewerURLs?.get(run.run_id);
-        if (viewer) {const link=element('a','Viewerを開く','button');link.href=viewer.url;link.target='_blank';link.rel='noopener noreferrer';link.title='閲覧リンクは発行から1時間有効です。';actions.append(link);actions.append(button('閲覧リンクを失効',()=>callbacks.revokeViewer(run),'',locked));}
+        const viewer=root.NEDEditorInput?.currentViewer(app,run.run_id,Date.now());
+        if (app.expiredViewers?.has(run.run_id)) card.append(element('p','閲覧リンクの期限が切れました。Viewerを準備し直してください。','hint'));
+        if (viewer) {const link=element('a','Viewerを開く','button');link.href=viewer.url;link.target='_blank';link.rel='noopener noreferrer';link.title='閲覧リンクは発行から1時間有効です。';link.addEventListener('click',event=>{if(root.NEDEditorInput?.currentViewer(app,run.run_id,Date.now())?.url!==viewer.url){event.preventDefault();renderRuns(app,client,callbacks,disabled);}});actions.append(link);actions.append(button('閲覧リンクを失効',()=>callbacks.revokeViewer(run),'',locked));}
         else actions.append(button(run.viewer_state==='failed' ? 'Viewerを再準備' : 'Viewerを準備',()=>callbacks.prepareViewer(run),'',locked));
         actions.append(button('結果ファイルを取得',()=>callbacks.downloadResults(run)));
       }

@@ -5,7 +5,7 @@ fn read_inventory(dir: &Directory, name: &str) -> Result<Vec<OwnedEntry>> {
     serde_json::from_slice(&dir.read(name, CONTROL_LIMIT)?).map_err(|e| invalid(e.to_string()))
 }
 pub(super) fn reserve_viewer(shared: &Shared, record: &RunRecord, name: &str) -> Result<()> {
-    let _state = shared.state.lock().unwrap();
+    let _inventory = shared.viewer_inventory.lock().unwrap();
     let control = verify_owner(shared, record)?.child("control")?;
     let mut names: BTreeMap<String, Option<Identity>> = if control
         .names()?
@@ -29,7 +29,7 @@ pub(super) fn finish_viewer(
     name: &str,
     file: &File,
 ) -> Result<()> {
-    let _state = shared.state.lock().unwrap();
+    let _inventory = shared.viewer_inventory.lock().unwrap();
     let control = verify_owner(shared, record)?.child("control")?;
     let mut names: BTreeMap<String, Option<Identity>> =
         serde_json::from_slice(&control.read("viewer-inventory.json", CONTROL_LIMIT)?)
@@ -53,6 +53,80 @@ pub(super) fn finish_viewer(
         }),
     );
     control.replace("viewer-inventory.json", &encode(&names)?)
+}
+pub(super) fn remove_viewer(
+    shared: &Shared,
+    record: &RunRecord,
+    name: &str,
+    identity: &Identity,
+) -> Result<()> {
+    let _inventory = shared.viewer_inventory.lock().unwrap();
+    remove_viewer_locked(shared, record, name, identity)
+}
+fn remove_viewer_locked(
+    shared: &Shared,
+    record: &RunRecord,
+    name: &str,
+    identity: &Identity,
+) -> Result<()> {
+    let root = verify_owner(shared, record)?;
+    let control = root.child("control")?;
+    let mut names: BTreeMap<String, Option<Identity>> =
+        serde_json::from_slice(&control.read("viewer-inventory.json", CONTROL_LIMIT)?)
+            .map_err(|e| invalid(e.to_string()))?;
+    let Some(expected) = names.get(name) else {
+        // A concurrent owner can arrive after authenticated reclamation. Missing
+        // inventory is not deletion authority: only an absent file is a no-op.
+        if root
+            .child("viewer")?
+            .names()?
+            .iter()
+            .any(|entry| entry == name)
+        {
+            return Err(invalid("Unknown Viewer allocation"));
+        }
+        return Ok(());
+    };
+    if expected.as_ref().is_some_and(|value| value != identity) {
+        return Err(invalid("Viewer cleanup identity changed"));
+    }
+    root.child("viewer")?.remove_file_checked(name, identity)?;
+    names.remove(name);
+    control.replace("viewer-inventory.json", &encode(&names)?)
+}
+pub(super) fn recover_viewers(shared: &Shared, record: &RunRecord) -> Result<()> {
+    recover_viewers_with_snapshot(shared, record, || {})
+}
+pub(super) fn recover_viewers_with_snapshot(
+    shared: &Shared,
+    record: &RunRecord,
+    after_snapshot: impl FnOnce(),
+) -> Result<()> {
+    // A response from an older service can outlive coordinator shutdown. Never
+    // reclaim persisted generations while any cross-process read lease exists.
+    let Ok(_lease) = reference_lock(shared, &record.run_id, true) else {
+        return Ok(());
+    };
+    let _inventory = shared.viewer_inventory.lock().unwrap();
+    let control = verify_owner(shared, record)?.child("control")?;
+    if !control
+        .names()?
+        .iter()
+        .any(|name| name == "viewer-inventory.json")
+    {
+        return Ok(());
+    }
+    let names: BTreeMap<String, Option<Identity>> =
+        serde_json::from_slice(&control.read("viewer-inventory.json", CONTROL_LIMIT)?)
+            .map_err(|e| invalid(e.to_string()))?;
+    after_snapshot();
+    for (name, identity) in names {
+        // An uncompleted reservation is never authority to remove an unknown file.
+        if let Some(identity) = identity {
+            remove_viewer_locked(shared, record, &name, &identity)?;
+        }
+    }
+    Ok(())
 }
 fn decimal_tail(s: &str) -> bool {
     !s.is_empty() && s.bytes().all(|b| b.is_ascii_digit())

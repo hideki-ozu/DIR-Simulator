@@ -4,10 +4,48 @@ use std::io::Read;
 use std::os::unix::fs::FileExt;
 use tiny_http::{Header, Request, Response, Server, StatusCode};
 
+// The last route/accepted response owns reclamation of this exact generation.
+// Inventory locking is separate from run-state locking: revocation holds State.
+pub(super) struct OwnedViewer {
+    shared: Weak<Shared>,
+    record: RunRecord,
+    name: String,
+    identity: Identity,
+}
+impl OwnedViewer {
+    pub(super) fn new(
+        shared: &Arc<Shared>,
+        record: &RunRecord,
+        name: &str,
+        file: &File,
+    ) -> Result<Arc<Self>> {
+        let stat = rustix::fs::fstat(file).map_err(|e| invalid(e.to_string()))?;
+        Ok(Arc::new(Self {
+            shared: Arc::downgrade(shared),
+            record: record.clone(),
+            name: name.into(),
+            identity: Identity {
+                dev: stat.st_dev,
+                ino: stat.st_ino,
+            },
+        }))
+    }
+}
+impl Drop for OwnedViewer {
+    fn drop(&mut self) {
+        if let Some(shared) = self.shared.upgrade() {
+            let _ = cleanup::remove_viewer(&shared, &self.record, &self.name, &self.identity);
+            // Also retry crash leftovers once all global response/render leases
+            // are gone. Unknown identities remain protected by recovery checks.
+            let _ = cleanup::recover_viewers(&shared, &self.record);
+        }
+    }
+}
 struct ActiveRoute {
     file: File,
     // An independent shared flock prevents another process deleting this run.
     _lease: File,
+    owner: Option<Arc<OwnedViewer>>,
 }
 struct Route {
     deadline: Instant,
@@ -122,6 +160,7 @@ impl ViewerService {
             active: Some(ActiveRoute {
                 file: generated.file,
                 _lease: generated.lease,
+                owner: generated.owner,
             }),
             html_sha256: sha.clone(),
             csp: generated.csp,
@@ -213,6 +252,7 @@ struct ViewerBody {
     // Accepted responses remain a cross-process reference until transmission ends.
     _lease: File,
     offset: u64,
+    _owner: Option<Arc<OwnedViewer>>,
 }
 impl Read for ViewerBody {
     fn read(&mut self, bytes: &mut [u8]) -> std::io::Result<usize> {
@@ -260,6 +300,7 @@ fn serve(request: Request, host: &str, routes: &Routes) {
                             file,
                             _lease: lease,
                             offset: 0,
+                            _owner: active.owner.clone(),
                         },
                         size,
                     ))
@@ -320,6 +361,7 @@ struct GeneratedViewer {
     lease: File,
     html_sha256: String,
     csp: String,
+    owner: Option<Arc<OwnedViewer>>,
 }
 struct RenderReference(Arc<Shared>);
 impl Drop for RenderReference {
@@ -344,7 +386,8 @@ fn generation_current(generations: &BTreeMap<String, u64>, id: &str, generation:
 }
 pub(super) fn build(manager: &RunManager, id: &str) -> Result<Value> {
     manager.mutation()?;
-    manager.record(id)?;
+    let existing = manager.record(id)?;
+    cleanup::recover_viewers(&manager.shared, &existing)?;
     let (record, generation, pin) = {
         let mut state = manager.shared.state.lock().unwrap();
         if manager.shared.shutdown.load(Ordering::Acquire) {
@@ -393,6 +436,7 @@ pub(super) fn build(manager: &RunManager, id: &str) -> Result<Value> {
         let name = random_id("viewer-")? + ".html";
         cleanup::reserve_viewer(&manager.shared, &record, &name)?;
         let output = viewer.create_output(&name)?;
+        let owner = OwnedViewer::new(&manager.shared, &record, &name, &output)?;
         cleanup::finish_viewer(&manager.shared, &record, &name, &output)?;
         let artifact =
             render_with_limits(&manager.shared, &record, &source.file, &output, generation)?;
@@ -411,6 +455,7 @@ pub(super) fn build(manager: &RunManager, id: &str) -> Result<Value> {
             lease: reference_lock(&manager.shared, id, false)?,
             html_sha256: artifact.sha256,
             csp: policy(&artifact.script_hashes),
+            owner: Some(owner),
         })
     })();
     let mut state = manager.shared.state.lock().unwrap();
@@ -556,6 +601,7 @@ mod tests {
                     file,
                     lease: lock,
                     csp: policy(&["'sha256-abc='".into()]),
+                    owner: None,
                 })
                 .unwrap();
             let path = lease
@@ -663,6 +709,7 @@ mod tests {
             active: Some(ActiveRoute {
                 file: File::open(directory.join("html")).unwrap(),
                 _lease: pin,
+                owner: None,
             }),
             html_sha256: String::new(),
             csp: String::new(),
@@ -674,6 +721,7 @@ mod tests {
                 file: active.file.try_clone().unwrap(),
                 _lease: active._lease.try_clone().unwrap(),
                 offset: 0,
+                _owner: active.owner.clone(),
             }
         };
         let routes = Arc::new(Mutex::new(BTreeMap::from([(
@@ -757,6 +805,7 @@ mod tests {
                 file,
                 lease: pin,
                 csp: policy(&["'sha256-abc='".into()]),
+                owner: None,
             })
             .unwrap();
         let second_path = second

@@ -410,6 +410,16 @@
     const stamp=run.source_stamp || run.stamp;
     return !stamp || stamp.project_instance_id!==view?.project_instance_id || stamp.input_digest!==view?.input_digest || String(stamp.input_revision)!==String(view?.input_revision);
   }
+  function currentViewer(app, id, now = Date.now()) {
+    const viewer=app.viewerURLs?.get(id);
+    if (!viewer) return null;
+    const raw=viewer.expires;
+    const deadline=typeof raw==='number' || (typeof raw==='string' && /^[0-9]+$/.test(raw)) ? Number(raw) : Date.parse(raw);
+    if (Number.isSafeInteger(deadline) && now < deadline) return viewer;
+    app.viewerURLs.delete(id);
+    (app.expiredViewers ||= new Set()).add(id);
+    return null;
+  }
   function viewerURL(value, editorOrigin) {
     const url=new URL(value);
     if (url.protocol!=='http:' || url.hostname!=='127.0.0.1' || !url.port || url.username || url.password || url.origin===editorOrigin || url.hash) throw new Error('Viewerの閲覧先を確認できません。');
@@ -496,6 +506,7 @@
     async function prepareViewer(run) {
       const envelope=await perform('build_viewer',{run_id:run.run_id});
       const result=envelope?.result?.run;
+      app.expiredViewers?.delete(run.run_id);
       if (result?.url) app.viewerURLs.set(run.run_id,{url:viewerURL(result.url,root.location.origin),expires:result.expires_at || result.expires_at_utc || result.expires_at_ms});
       await refreshRuns();
     }
@@ -1145,5 +1156,5 @@
       await refresh(); if (app.view?.capabilities?.start_run) await refreshRuns(); poll();
     } catch (error) { notice(errorMessage(error)); render(); }
   }
-  return { MAX_BODY, utf8Length, validUnicode, shadow, visiblePatch, byteToCaret, TextBuffer, sourceHash, acknowledgeSource, encodeBody, ApiError, Api, CommandClient, succeeded, acceptView, sessionQuery, instanceScope, childInstance, resetProjectScope, placementChoices, channelChoices, canPairCandidates, controllerChoices, gatewayNodeChoices, gatewayPortChoices, gatewayPayload, workloadPayload, gatePayload, settingsSnapshot, assertSettingsSnapshot, reconcileCapturedFiles, collectPlanPages, editImpactDescription, runIsPast, viewerURL, start };
+  return { MAX_BODY, utf8Length, validUnicode, shadow, visiblePatch, byteToCaret, TextBuffer, sourceHash, acknowledgeSource, encodeBody, ApiError, Api, CommandClient, succeeded, acceptView, sessionQuery, instanceScope, childInstance, resetProjectScope, placementChoices, channelChoices, canPairCandidates, controllerChoices, gatewayNodeChoices, gatewayPortChoices, gatewayPayload, workloadPayload, gatePayload, settingsSnapshot, assertSettingsSnapshot, reconcileCapturedFiles, collectPlanPages, editImpactDescription, runIsPast, currentViewer, viewerURL, start };
 });
