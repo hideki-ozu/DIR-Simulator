@@ -1,0 +1,44 @@
+@startuml tool-ned-editor-spec--instance-type-detach--component
+' Document: ../../tools/ned-editor/NED-editor仕様書.md
+' Section: 後段拡張・選択した実体の型複製
+' Purpose: 共有祖先の複製と既存network内の再結合によって実体パスを保つ
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam ArrowColor #475569
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #64748B
+skinparam noteBackgroundColor #FFFBEA
+left to right direction
+title 選択実体の型を独立化
+package "変更前" {
+  component "Net\na: Rack\nb: Rack" as BN
+  component "Rack\nunit: Device" as BR
+  component "Device" as BD
+  BN --> BR : a / b
+  BR --> BD : unit
+}
+package "変更後" {
+  component "Net（名前を保持）\na: RackForA\nb: Rack" as AN
+  component "RackForA（複製）\nunit: DeviceForA" as AR2
+  component "DeviceForA（複製）" as AD2
+  component "Rack（原型）\nunit: Device" as AR
+  component "Device（原型）" as AD
+  AN --> AR2 : a
+  AR2 --> AD2 : unit
+  AN --> AR : b
+  AR --> AD : unit
+}
+BN -[hidden]-> AN
+note bottom of AR2
+  選択実体 Net.a.unit の型だけ独立化。
+  子名・実体パス・値・結線を保持。
+  INI / Gateway / workload の参照先も保持。
+end note
+note bottom of AR
+  非選択実体 Net.b.unit は原型を使用。
+  原型の宣言と配置を変更しない。
+end note
+@enduml

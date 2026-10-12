@@ -4,22 +4,30 @@ mod builtin;
 mod commands;
 mod composition;
 mod controller;
+mod file_creation;
 mod input;
 mod layout;
 mod model;
 mod output;
+mod refactor;
+mod refactor_symbols;
+mod run_control;
+mod run_snapshot;
 mod server;
 mod settings;
 mod source_index;
 mod template;
 mod view;
+mod viewer_worker;
 
 use crate::types::Diagnostic;
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::path::PathBuf;
 
+pub use run_control::worker::hidden_worker;
 pub use server::{EditorOptions, serve};
+pub use viewer_worker::hidden_viewer_worker;
 
 pub(crate) type Result<T> = std::result::Result<T, EditorError>;
 

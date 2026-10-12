@@ -9,6 +9,14 @@ fn diagnostic(d: &Diagnostic) {
     eprintln!("{}", dir_simulator::output::diagnostic_json(d));
 }
 fn execute(args: &[String]) -> Result<u8, Diagnostic> {
+    if args == ["--ned-editor-viewer-worker"] {
+        dir_simulator::tool::ned_editor::hidden_viewer_worker()?;
+        return Ok(0);
+    }
+    if args == ["--ned-editor-run-worker"] {
+        dir_simulator::tool::ned_editor::hidden_worker()?;
+        return Ok(0);
+    }
     if args.first().is_some_and(|a| a == "ned-editor") {
         if args.len() == 2 && args[1] == "--help" {
             println!(

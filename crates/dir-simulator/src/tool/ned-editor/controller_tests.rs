@@ -1114,3 +1114,9 @@ fn save_completion_retains_new_recovery_enumeration_error() {
     assert_eq!(c.diagnostics.len(), 1);
     assert_eq!(c.diagnostics[0]["code"], "E-RECOVERY-ENUM");
 }
+
+#[path = "edit_plan_tests.rs"]
+mod edit_plan_tests;
+
+#[path = "run_command_tests.rs"]
+mod run_command_tests;

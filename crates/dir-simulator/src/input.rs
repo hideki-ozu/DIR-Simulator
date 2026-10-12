@@ -10,10 +10,16 @@ mod json_diagnostics;
 mod memory_ipc;
 mod network;
 mod provenance;
+mod references;
 use json_diagnostics::JsonDocument;
 pub(crate) use json_diagnostics::parse_json;
 pub(crate) use provenance::effective_value_provenance;
 pub use provenance::{PreparedProvenance, RunIdentity, capture_provenance};
+pub use references::{
+    ReferenceChannel, ReferenceDeclaration, ReferenceInspection, ReferenceInstance,
+    ReferenceMemberKind, ReferenceSegment, ReferenceSyntaxKind, ReferenceTarget,
+    ReferenceUnsupported, ResolvedReferenceUse, inspect_references_with_source,
+};
 pub(crate) mod ned;
 mod soc;
 
@@ -824,7 +830,7 @@ pub fn prepare_with_source(
     cwd: &Path,
     source: &dyn InputSource,
 ) -> Result<PreparedSimulation> {
-    let mut prepared = prepare_with_source_inner(config_path, cwd, source)?;
+    let mut prepared = prepare_with_source_inner(config_path, cwd, source, None)?;
     prepared.common.provenance = capture_provenance(&prepared)?;
     Ok(prepared)
 }
@@ -832,6 +838,7 @@ fn prepare_with_source_inner(
     config_path: &Path,
     cwd: &Path,
     source: &dyn InputSource,
+    mut evidence: Option<&mut references::Evidence>,
 ) -> Result<PreparedSimulation> {
     let config = absolute(config_path, cwd);
     let base = config
@@ -959,6 +966,9 @@ fn prepare_with_source_inner(
                     declarations.insert(name, declaration);
                 }
             }
+        }
+        if let Some(evidence) = evidence.as_deref_mut() {
+            evidence.declarations(&declarations);
         }
         let overrides = ini
             .general
@@ -1329,7 +1339,18 @@ fn prepare_with_source_inner(
                 memory_ipc: None,
             });
         }
-        let resolved = can::resolve(&declarations, network, &overrides, &ini.channels, &profile)?;
+        let resolved = if let Some(evidence) = evidence.as_deref_mut() {
+            can::resolve_with_references(
+                &declarations,
+                network,
+                &overrides,
+                &ini.channels,
+                &profile,
+                Some((evidence, &ini)),
+            )?
+        } else {
+            can::resolve(&declarations, network, &overrides, &ini.channels, &profile)?
+        };
         let mut model_config_path = None;
         let gateways = if profile == "can.cc.multibus.v1" {
             let path = string_literal(ini.required("model-config")?)?;
@@ -1337,12 +1358,22 @@ fn prepare_with_source_inner(
             let path = absolute(Path::new(&path), base);
             let content = read_file(&path, &mut snapshots, source)?;
             model_config_path = Some(path.clone());
-            gateway::parse(
-                &content,
-                &resolved.controllers,
-                &resolved.controller_buses,
-                &resolved.module_paths,
-            )
+            (if let Some(evidence) = evidence.as_deref_mut() {
+                gateway::parse_with_references(
+                    &content,
+                    &resolved.controllers,
+                    &resolved.controller_buses,
+                    &resolved.module_paths,
+                    Some((evidence, &path)),
+                )
+            } else {
+                gateway::parse(
+                    &content,
+                    &resolved.controllers,
+                    &resolved.controller_buses,
+                    &resolved.module_paths,
+                )
+            })
             .map_err(|mut e| {
                 e.message = format!("{}: {}", path.display(), e.message);
                 e.with_source(&path)
@@ -1357,11 +1388,12 @@ fn prepare_with_source_inner(
             let path = absolute(Path::new(&path), base);
             let content = read_file(&path, &mut snapshots, source)?;
             workload_path = Some(path.clone());
-            can::workload(
+            can::workload_with_references(
                 &content,
                 &resolved.controllers,
                 &resolved.controller_buses,
                 &profile,
+                evidence.map(|e| (e, path.as_path())),
             )
             .map_err(|mut e| {
                 e.message = format!("{}: {}", path.display(), e.message);

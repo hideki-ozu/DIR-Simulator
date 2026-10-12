@@ -11,6 +11,10 @@
   const commandLabel = kind => labels[kind] || '処理';
   labels.new_project = '新規プロジェクト作成';
   Object.assign(labels, { create_module: '複合モジュール作成', add_gates: 'gate追加', delete_gate: 'gate削除', add_port: '境界ポート追加', set_gateway: 'Gateway設定', delete_gateway: 'Gateway設定解除', set_workload: '送信設定', set_project_settings: 'ネットワーク設定', set_instance_parameter: '実体値設定' });
+  Object.assign(labels, { create_file: '新規入力ファイル', rename_symbols: '一括リネーム', detach_instance_type: '実体の型を独立化', preview_edit: '変更計画の作成', apply_edit_plan: '変更計画の適用' });
+  Object.assign(labels, {start_run:'実行対象の固定',cancel_run:'実行の停止',build_viewer:'Viewerの準備',delete_run:'実行結果の削除',revoke_viewer:'閲覧リンクの失効'});
+  const runPhases={queued:'実行待ち',preparing:'実行準備中',running:'実行中',verifying:'結果の照合中',completed:'完了',partial:'部分結果',prepare_failed:'入力の検証に失敗',execution_failed:'実行失敗',output_failed:'結果の出力に失敗',stopping:'停止処理中',cancelled:'停止済み',timed_out:'時間上限で停止',resource_limited:'資源上限で停止',interrupted:'実行が中断されました',integrity_failed:'結果の照合に失敗'};
+  const runRenderStates=new WeakMap();
   function sourceRole(file) {
     const roles = { ned: 'NED', config: 'INI 設定', workload: 'JSON ワークロード', model_config: 'JSON モデル設定' };
     return roles[file?.role] || 'NED';
@@ -60,7 +64,7 @@
     const syntax = (view.files || []).map(f => f.syntax);
     if (syntax.some(s => ['error', 'invalid', 'syntax_invalid', 'syntax_error', 'failed'].includes(s)) || view.analysis === 'syntax_error') return '構文エラー・ソースを修正してください';
     if (syntax.some(s => ['pending', 'parsing'].includes(s)) || ['pending', 'parsing'].includes(view.analysis)) return '構文解析中';
-    const analysis = { ready: '実行準備OK', valid: '実行準備OK', failed: '全体検証NG', invalid: '全体検証NG', unchecked: '全体未検証', unvalidated: '全体未検証', unverified: '全体未検証', stale: '全体未検証', idle: '全体未検証' };
+    const analysis = { ready: '実行準備OK', valid: '実行準備OK', failed: '全体検証NG', invalid: '全体検証NG', semantic_error:'全体検証NG', unchecked: '全体未検証', unvalidated: '全体未検証', unverified: '全体未検証', stale: '全体未検証', idle: '全体未検証' };
     return analysis[view.analysis] || '全体未検証';
   }
   function capability(view, kind) {
@@ -265,6 +269,9 @@
     $('save-as').disabled ||= !(view.export_roots || []).length;
     $('reload').disabled ||= view.project_origin === 'new';
     $('new-project').disabled ||= !(view.templates || []).length;
+    $('run-simulation').disabled ||= !(view.files || []).length || app.runsReadonly;
+    for (const id of ['create-file','rename-symbols','detach-instance']) $(id).disabled ||= pending || app.scopeLoading;
+    $('detach-instance').disabled ||= !selectedInstance(app) || !['simple','module'].includes(selectedInstance(app)?.kind);
     const compound = ['module', 'network'].includes(graph?.kind);
     $('create-module').disabled ||= !compound;
     $('add-port').disabled ||= graph?.kind !== 'module';
@@ -284,15 +291,20 @@
     const fileList = $('files'); fileList.replaceChildren();
     for (const file of view.files || []) {
       const local = app.buffers.get(file.id);
-      const row = button('', () => callbacks.file(file), file.id === app.fileId ? 'active' : '');
+      const row = button('', () => callbacks.file(file), file.id === app.fileId ? 'active' : '', !!app.operation);
       if (file.dirty || local?.pending) row.append(element('span', '● ', 'dirty-mark'));
       row.append(element('span', file.path)); row.title = file.path;
       row.append(element('small', sourceSyntax(file))); fileList.append(row);
     }
+    for (const local of app.buffers.values()) if (local.orphaned) {
+      const row = button('保持された未送信入力', () => callbacks.file({id:local.fileId}), local.fileId === app.fileId ? 'active' : '', !!app.operation);
+      row.append(element('small','ファイルは編集モデルから除かれました')); fileList.append(row);
+      fileList.append(button('保持した入力を閉じる',()=>callbacks.discardOrphan(local.fileId)));
+    }
     const types = $('types'); types.replaceChildren();
     for (const type of view.types || []) {
       if (app.filter && !type.name.toLowerCase().includes(app.filter.toLowerCase())) continue;
-      const row = button(type.name, () => callbacks.type(type), !app.instancePath && type.key === app.typeKey ? 'active' : '');
+      const row = button(type.name, () => callbacks.type(type), !app.instancePath && type.key === app.typeKey ? 'active' : '', !!app.operation);
       row.append(element('small', type.kind)); types.append(row);
     }
     const instances = $('instances'); instances.replaceChildren();
@@ -300,7 +312,7 @@
     for (const instance of filteredInstances(view.instances || [], app.instanceFilter)) {
       const type = typesByKey.get(instance.type_key), unresolved = instance.unresolved || !type || type.name !== instance.type_name;
       const depth = Math.min(8, Math.max(0, Math.trunc(finite(instance.depth, 0))));
-      const row = button(instance.path.split('.').pop() + ' · ' + instance.type_name, () => callbacks.instance(instance), 'instance-row depth-' + depth + (instance.path === app.instancePath ? ' active' : ''), unresolved);
+      const row = button(instance.path.split('.').pop() + ' · ' + instance.type_name, () => callbacks.instance(instance), 'instance-row depth-' + depth + (instance.path === app.instancePath ? ' active' : ''), unresolved || !!app.operation);
       row.dataset.instancePath = instance.path;
       row.title = instance.path + (unresolved ? '（型が未解決）' : instance.cycle ? '（循環参照・展開停止）' : '');
       if (instance.path === app.instancePath) row.setAttribute('aria-current', 'true');
@@ -328,7 +340,7 @@
       source.setSelectionRange(Math.min(start, source.value.length), Math.min(end, source.value.length)); source.scrollTop = top; source.scrollLeft = left;
     } else if (!b && !app.buffers.has(app.fileId)) $('source-editor').value = '';
     const file = (view.files || []).find(f => f.id === app.fileId);
-    $('source-title').textContent = file?.path || 'ソース';
+    $('source-title').textContent = b?.orphaned ? '除かれたファイルの未送信入力（保持）' : file?.path || 'ソース';
     const inputState = b?.composing ? 'IME変換中・反映待ち' : b?.blocked ? '入力を保持・反映停止' : b?.sent ? '入力を反映中' : b?.pending ? '未送信の入力' : readonly ? '参照専用' : '入力を反映済み';
     $('source-state').textContent = file ? sourceSyntax(file) + ' · ' + inputState : inputState;
     $('source-editor').setAttribute('aria-label', sourceRole(file) + 'ソース編集');
@@ -339,7 +351,7 @@
     $('graph-title').textContent = graph?.type_name || '構成図';
     $('graph-state').textContent = app.scopeLoading ? '選択した対象を読込中' : graph?.stale ? '過去の正常な図・現在のソースと不一致' : instanceStructuralBlocked(app) ? '階層が未解決または循環参照・構造編集は利用できません' : pending ? '未反映の入力あり・図の編集は反映後に利用できます' : graph ? (app.instancePath ? app.instancePath + ' · 共有型定義の直下構造' : '型定義の直下構造') : '型を選択してください';
     const breadcrumbs = $('breadcrumbs'); breadcrumbs.replaceChildren();
-    app.breadcrumbs.forEach((item, index) => { breadcrumbs.append(button(item.name, () => callbacks.breadcrumb(index)), element('span', '›')); });
+    app.breadcrumbs.forEach((item, index) => { breadcrumbs.append(button(item.name, () => callbacks.breadcrumb(index), '', !!app.operation), element('span', '›')); });
     $('graph-empty').hidden = !!graph;
     scene.app = app; scene.callbacks = callbacks;
     const scope = (view.project_name || '') + ':' + app.scopeGeneration + ':' + app.typeKey + ':' + (app.instancePath || '');
@@ -349,10 +361,65 @@
     renderProperties(app, callbacks, graphDisabled);
     renderDiagnostics(app, callbacks);
     renderRecovery(view, callbacks, client);
+    renderRuns(app,client,callbacks,generalDisabled);
     const capabilities = $('capabilities'); capabilities.replaceChildren();
     capabilities.append(element('p', '通信上限: ' + textValue(view.limits?.body_bytes) + ' bytes'), element('p', '履歴上限: ' + textValue(view.limits?.history_bytes) + ' bytes / ' + textValue(view.limits?.history_operations) + ' 操作'));
     for (const [kind, cap] of Object.entries(view.capabilities || {})) {
       if (cap.enabled === false) capabilities.append(element('p', commandLabel(kind) + ': ' + (cap.reason || '利用不可')));
+    }
+  }
+  function renderRuns(app,client,callbacks,disabled) {
+    const list=$('runs');
+    $('runs-status').textContent=app.runError || (app.runsReadonly ? '別のサービスが実行を管理しています。この画面では結果を参照できます。' : '実行対象を固定した後も編集を続けられます。');
+    const key=JSON.stringify([app.runs || [], [...(app.viewerURLs || [])], app.runsReadonly,disabled,
+      app.view?.project_instance_id,app.view?.input_revision,app.view?.input_digest]);
+    const previous=runRenderStates.get(list);
+    if (previous?.key===key && previous.callbacks===callbacks) {
+      updateRunElapsed(list);return;
+    }
+    runRenderStates.set(list,{key,callbacks});list.replaceChildren();
+    for (const run of app.runs || []) {
+      const card=element('article',null,'run-card');card.dataset.runId=run.run_id;card.dataset.phase=run.phase;
+      const stamp=run.source_stamp || run.stamp || {}, active=['queued','preparing','running','verifying','stopping'].includes(run.phase), published=run.artifact_state==='published';
+      card.append(element('h3',runPhases[run.phase] || '不明な実行状態'));
+      card.append(element('p','入力の版 ' + textValue(stamp.revision) + ' / 入力 ' + textValue(stamp.input_revision) + (stamp.dirty_at_start ? ' · 未保存の編集を含む' : '') + (root.NEDEditorInput?.runIsPast(app.view,run) ? ' · 過去の入力の結果' : ''),'run-source'));
+      const started=Date.parse(run.started_at_utc || ''), ended=Date.parse(run.ended_at_utc || '');
+      if (Number.isFinite(started)) {
+        const elapsed=element('p',runElapsed(started,ended),'hint');elapsed.dataset.elapsedStarted=String(started);
+        if(Number.isFinite(ended))elapsed.dataset.elapsedEnded=String(ended);card.append(elapsed);
+      }
+      if (run.report) card.append(element('p','終了理由: ' + textValue(run.report.termination) + ' · 確定イベント: ' + textValue(run.report.committed_events)));
+      if (run.recovered_result) card.append(element('p','公開済み結果を回復しました。実測できなかった値は空欄です。','hint'));
+      if (run.stop_reason) card.append(element('p','停止理由: ' + ({cancel:'停止要求',timeout:'時間上限',resource_limit:'資源上限',service_shutdown:'サービス終了'}[run.stop_reason] || run.stop_reason),'hint'));
+      if (run.viewer_state==='failed') card.append(element('p','結果は生成済みです。Viewerを表示できませんでした。','field-error'));
+      for (const row of run.diagnostics || []) {
+        const diagnostic=row.diagnostic || row.error || row;
+        card.append(element('p',(row.phase ? row.phase + ': ' : '') + (diagnostic.code ? diagnostic.code + ': ' : '') + textValue(diagnostic.message),'field-error'));
+      }
+      const actions=element('div',null,'run-actions'), locked=disabled || app.runsReadonly;
+      if (active && !['verifying','stopping'].includes(run.phase)) actions.append(button('停止',()=>callbacks.stopRun(run),'',locked));
+      if (published) {
+        const viewer=app.viewerURLs?.get(run.run_id);
+        if (viewer) {const link=element('a','Viewerを開く','button');link.href=viewer.url;link.target='_blank';link.rel='noopener noreferrer';link.title='閲覧リンクは発行から1時間有効です。';actions.append(link);actions.append(button('閲覧リンクを失効',()=>callbacks.revokeViewer(run),'',locked));}
+        else actions.append(button(run.viewer_state==='failed' ? 'Viewerを再準備' : 'Viewerを準備',()=>callbacks.prepareViewer(run),'',locked));
+        actions.append(button('結果ファイルを取得',()=>callbacks.downloadResults(run)));
+      }
+      if (!published && (run.diagnostics || []).some(row=>row.diagnostic?.details_artifact==='large-worker-response')) actions.append(button('診断ファイルを取得',()=>callbacks.downloadResults(run)));
+      actions.append(button('実行時の原文',()=>callbacks.showRunInput(run)));
+      if (!active) actions.append(button('実行を削除',()=>callbacks.deleteRun(run),'danger',locked));
+      card.append(actions);
+      const details=element('details'), summary=element('summary','実行の出典');details.append(summary);fields(details,[['run ID',run.run_id],['snapshot',stamp.snapshot_id],['入力SHA-256',stamp.input_digest],['開始時刻',run.started_at_utc],['実時間上限(ms)',run.wall_timeout_ms]]);card.append(details);
+      list.append(card);
+    }
+    if (!list.childElementCount) list.append(element('p','実行履歴はまだありません。','hint'));
+  }
+  function runElapsed(started,ended) {
+    const seconds=Math.max(0,Math.floor(((Number.isFinite(ended) ? ended : Date.now())-started)/1000));
+    return '経過 ' + Math.floor(seconds/60) + '分' + (seconds%60) + '秒';
+  }
+  function updateRunElapsed(list) {
+    for(const row of list.querySelectorAll?.('[data-elapsed-started]') || []) {
+      row.textContent=runElapsed(Number(row.dataset.elapsedStarted),row.dataset.elapsedEnded ? Number(row.dataset.elapsedEnded) : NaN);
     }
   }
   function renderProperties(app, callbacks, graphDisabled) {

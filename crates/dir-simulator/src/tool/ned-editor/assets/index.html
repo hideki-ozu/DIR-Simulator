@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <link rel="icon" href="data:,">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="light">
@@ -20,6 +21,7 @@
     <button id="new-project" data-command="new_project" disabled>新規プロジェクト…</button><span class="separator"></span>
     <button id="undo" data-command="undo" disabled>↶ 元に戻す</button><button id="redo" data-command="redo" disabled>↷ やり直す</button>
     <span class="separator"></span><button id="validate" data-command="validate" disabled>エラーチェック</button>
+    <button id="run-simulation" data-command="start_run" disabled>現在の入力を実行…</button>
     <button id="save-as" class="primary" data-command="save_as_project" disabled>別フォルダに保存</button>
     <button id="overwrite" data-command="overwrite_project" disabled>上書き保存…</button><button id="reload" data-command="reload" disabled>元から再読込…</button>
     <button id="project-settings" data-command="set_project_settings" disabled>ネットワーク設定</button><button id="gateway-settings" data-command="set_gateway" disabled>Gateway設定</button><button id="workload-settings" data-command="set_workload" disabled>送信設定</button>
@@ -30,6 +32,7 @@
   <main class="workspace">
     <aside class="sidebar" aria-label="プロジェクトナビゲーション">
       <section><h2>ファイル</h2><div id="files" class="navigation"></div></section>
+      <section><h2>入力の追加・整理</h2><button id="create-file" data-command="create_file" disabled>新規入力ファイル…</button><button id="rename-symbols" data-command="rename_symbols" disabled>一括リネーム…</button><button id="detach-instance" data-command="detach_instance_type" disabled>この実体の型を独立化…</button><p class="hint">変更計画を確認してから適用します。一回のUndoで戻せます。</p></section>
       <section><h2>インスタンス階層</h2><p class="hint">networkの実際の階層です。INI上書きと実効値を参照できます。</p><input id="instance-filter" type="search" placeholder="パス・型名で検索" aria-label="インスタンスのパス・型名で検索"><div id="instances" class="navigation" aria-label="インスタンス階層"></div></section>
       <section><h2>型定義</h2><input id="type-filter" type="search" placeholder="型名で検索" aria-label="型名で検索"><div id="types" class="navigation"></div></section>
       <section><h2>配置パレット</h2><p class="hint">標準部品を配置すると、必要な型定義をプロジェクトに追加します。channelは接続時に選択します。</p><h3>標準部品</h3><div id="builtin-palette" class="palette"></div><h3>プロジェクトの型</h3><div id="palette" class="palette"></div></section>
@@ -58,6 +61,7 @@
     </aside>
   </main>
   <section class="diagnostics-pane" aria-labelledby="diagnostics-title"><div class="pane-heading"><h2 id="diagnostics-title">診断 <span id="diagnostic-count">0</span></h2><span class="hint">位置を持つ診断を選択するとソースへ移動します。</span></div><div id="diagnostics" role="log" aria-live="polite"></div></section>
+  <section class="runs-pane" aria-labelledby="runs-title"><div class="pane-heading"><h2 id="runs-title">実行履歴</h2><button id="refresh-runs">履歴を更新</button></div><p id="runs-status" class="hint"></p><div id="runs" class="run-list" aria-live="polite"></div></section>
   <footer id="status" role="status" aria-live="polite">接続中…</footer>
   <dialog id="editor-dialog"><form id="dialog-form"><div class="dialog-heading"><h2 id="dialog-title"></h2><button id="dialog-close" type="button" aria-label="閉じる">×</button></div><div id="dialog-body"></div><p id="dialog-error" class="field-error" role="alert" hidden></p><div class="dialog-actions"><button id="dialog-cancel" type="button">キャンセル</button><button id="dialog-submit" type="submit" class="primary">実行</button></div></form></dialog>
 </body>

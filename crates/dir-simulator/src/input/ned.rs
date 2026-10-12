@@ -203,6 +203,7 @@ pub struct Parameter {
     default: Option<String>,
     span: SourceSpan,
     default_span: Option<SourceSpan>,
+    name_span: SourceSpan,
     attributes: BTreeMap<String, Attribute>,
 }
 #[derive(Clone, Debug)]
@@ -213,6 +214,10 @@ pub struct Connection {
     start_span: SourceSpan,
     end_span: SourceSpan,
     channel_span: Option<SourceSpan>,
+    channel_segments: Option<Vec<SourceSpan>>,
+    channel_dots: Option<Vec<SourceSpan>>,
+    start_segments: Vec<SourceSpan>,
+    end_segments: Vec<SourceSpan>,
 }
 #[derive(Clone, Debug)]
 pub struct Declaration {
@@ -228,8 +233,15 @@ pub struct Declaration {
     span: SourceSpan,
     name_span: SourceSpan,
     child_spans: BTreeMap<String, SourceSpan>,
+    child_name_spans: BTreeMap<String, SourceSpan>,
+    child_type_segments: BTreeMap<String, Vec<SourceSpan>>,
+    child_type_dots: BTreeMap<String, Vec<SourceSpan>>,
+    gate_spans: BTreeMap<String, SourceSpan>,
 }
 impl Parameter {
+    pub fn name_span(&self) -> &SourceSpan {
+        &self.name_span
+    }
     pub fn attributes(&self) -> &BTreeMap<String, Attribute> {
         &self.attributes
     }
@@ -250,6 +262,27 @@ impl Parameter {
     }
 }
 impl Connection {
+    pub fn start_span(&self) -> &SourceSpan {
+        &self.start_span
+    }
+    pub fn end_span(&self) -> &SourceSpan {
+        &self.end_span
+    }
+    pub fn channel_span(&self) -> Option<&SourceSpan> {
+        self.channel_span.as_ref()
+    }
+    pub fn channel_dots(&self) -> Option<&[SourceSpan]> {
+        self.channel_dots.as_deref()
+    }
+    pub fn channel_segments(&self) -> Option<&[SourceSpan]> {
+        self.channel_segments.as_deref()
+    }
+    pub fn start_segments(&self) -> &[SourceSpan] {
+        &self.start_segments
+    }
+    pub fn end_segments(&self) -> &[SourceSpan] {
+        &self.end_segments
+    }
     pub fn start(&self) -> &str {
         &self.start
     }
@@ -261,6 +294,21 @@ impl Connection {
     }
 }
 impl Declaration {
+    pub fn child_type_span(&self, child: &str) -> Option<&SourceSpan> {
+        self.child_spans.get(child)
+    }
+    pub fn child_name_span(&self, child: &str) -> Option<&SourceSpan> {
+        self.child_name_spans.get(child)
+    }
+    pub fn child_type_dots(&self, child: &str) -> Option<&[SourceSpan]> {
+        self.child_type_dots.get(child).map(Vec::as_slice)
+    }
+    pub fn child_type_segments(&self, child: &str) -> Option<&[SourceSpan]> {
+        self.child_type_segments.get(child).map(Vec::as_slice)
+    }
+    pub fn gate_span(&self, gate: &str) -> Option<&SourceSpan> {
+        self.gate_spans.get(gate)
+    }
     pub fn attributes(&self) -> &BTreeMap<String, Attribute> {
         &self.attributes
     }
@@ -552,6 +600,10 @@ impl Parser<'_> {
             span: self.span(declaration_start, self.cursor),
             name_span,
             child_spans: BTreeMap::new(),
+            child_name_spans: BTreeMap::new(),
+            child_type_segments: BTreeMap::new(),
+            child_type_dots: BTreeMap::new(),
+            gate_spans: BTreeMap::new(),
         };
         let mut last_section = 0;
         while !self.eat("}") {
@@ -607,7 +659,9 @@ impl Parser<'_> {
                             if !matches!(scalar.as_str(), "int" | "double" | "bool" | "string") {
                                 return Err(self.fail_previous("unsupported parameter type"));
                             }
+                            let name_start = self.cursor;
                             let name = self.id()?;
+                            let name_span = self.span(name_start, self.cursor);
                             let mut unit = None;
                             let mut attributes = BTreeMap::new();
                             while self.peek() == "@" {
@@ -656,6 +710,7 @@ impl Parser<'_> {
                                         default,
                                         span: self.span(parameter_start, self.cursor),
                                         default_span,
+                                        name_span,
                                         attributes,
                                     },
                                 )
@@ -670,7 +725,11 @@ impl Parser<'_> {
                         if !matches!(direction.as_str(), "input" | "output") {
                             return Err(self.fail_previous("expected input/output scalar gate"));
                         }
+                        let name_start = self.cursor;
                         let name = self.id()?;
+                        declaration
+                            .gate_spans
+                            .insert(name.clone(), self.span(name_start, self.cursor));
                         self.expect(";")?;
                         if declaration
                             .gates
@@ -681,10 +740,28 @@ impl Parser<'_> {
                         }
                     }
                     3 => {
+                        let name_start = self.cursor;
                         let name = self.id()?;
+                        declaration
+                            .child_name_spans
+                            .insert(name.clone(), self.span(name_start, self.cursor));
                         self.expect(":")?;
                         let child_start = self.cursor;
                         let child_type = self.name(true)?;
+                        declaration.child_type_dots.insert(
+                            name.clone(),
+                            (child_start + 1..self.cursor)
+                                .step_by(2)
+                                .map(|i| self.span(i, i + 1))
+                                .collect(),
+                        );
+                        declaration.child_type_segments.insert(
+                            name.clone(),
+                            (child_start..self.cursor)
+                                .step_by(2)
+                                .map(|i| self.span(i, i + 1))
+                                .collect(),
+                        );
                         declaration
                             .child_spans
                             .insert(name.clone(), self.span(child_start, self.cursor));
@@ -698,6 +775,10 @@ impl Parser<'_> {
                         let start_cursor = self.cursor;
                         let start = self.name(false)?;
                         let start_span = self.span(start_cursor, self.cursor);
+                        let start_segments = (start_cursor..self.cursor)
+                            .step_by(2)
+                            .map(|i| self.span(i, i + 1))
+                            .collect();
                         if start.split('.').count() > 2 {
                             return Err(self.fail("endpoint must be direct child.gate or own gate"));
                         }
@@ -705,7 +786,23 @@ impl Parser<'_> {
                         let middle_cursor = self.cursor;
                         let middle = self.name(false)?;
                         let middle_span = self.span(middle_cursor, self.cursor);
-                        let (channel, end, channel_span, end_span) = if self.eat("-->") {
+                        let middle_dots = (middle_cursor + 1..self.cursor)
+                            .step_by(2)
+                            .map(|i| self.span(i, i + 1))
+                            .collect();
+                        let middle_segments = (middle_cursor..self.cursor)
+                            .step_by(2)
+                            .map(|i| self.span(i, i + 1))
+                            .collect();
+                        let (
+                            channel,
+                            end,
+                            channel_span,
+                            channel_segments,
+                            channel_dots,
+                            end_span,
+                            end_segments,
+                        ) = if self.eat("-->") {
                             if !middle.contains('.') {
                                 return Err(self.fail("channel must be fully qualified"));
                             }
@@ -715,10 +812,16 @@ impl Parser<'_> {
                                 Some(middle),
                                 end,
                                 Some(middle_span),
+                                Some(middle_segments),
+                                Some(middle_dots),
                                 self.span(end_cursor, self.cursor),
+                                (end_cursor..self.cursor)
+                                    .step_by(2)
+                                    .map(|i| self.span(i, i + 1))
+                                    .collect(),
                             )
                         } else {
-                            (None, middle, None, middle_span)
+                            (None, middle, None, None, None, middle_span, middle_segments)
                         };
                         if end.split('.').count() > 2 {
                             return Err(self.fail("endpoint must be direct child.gate or own gate"));
@@ -731,6 +834,10 @@ impl Parser<'_> {
                             start_span,
                             end_span,
                             channel_span,
+                            channel_segments,
+                            channel_dots,
+                            start_segments,
+                            end_segments,
                         });
                     }
                     _ => unreachable!(),
@@ -1253,6 +1360,20 @@ impl Resolved<'_> {
                     .map(|channel| (edge.id.as_str(), &self.types[channel]))
             })
             .collect()
+    }
+    pub(crate) fn reference_channels(
+        &self,
+    ) -> impl Iterator<Item = (&str, &Declaration, &str, &str)> {
+        self.expanded.edges.iter().filter_map(|(start, edge)| {
+            edge.channel.as_ref().map(|qname| {
+                (
+                    edge.id.as_str(),
+                    &self.types[qname],
+                    start.as_str(),
+                    edge.end.as_str(),
+                )
+            })
+        })
     }
     pub(crate) fn declaration(&self, instance: &str) -> &Declaration {
         &self.types[&self.expanded.instances[instance]]
