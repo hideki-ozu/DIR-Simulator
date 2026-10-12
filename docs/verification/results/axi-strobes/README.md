@@ -1,6 +1,6 @@
 # AXIストローブ実習検証記録
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.4`  
 実測ソースcommit：`b45515644dfc65c205216d564d5bf7ef00280622`  
 文書ID：`verification-guide-axi-strobes`  
@@ -10,6 +10,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-12` | PR67通常main統合で共有メモリとAXIの両サンプル・サイト・画像不変を再照合 |
 | `1.1.0` | `2026-10-12` | AXIのWSTRB比較・隔離ZIP・実Viewer・metadata/nav件数・サイト検証を記録 |
 
 基準mainは `dbcbcc549e737c6dd68d544bf61f53ce5811bba7`。正式Release/tag v1.1.4を再取得し、clean正式CLIをWSL Ubuntu 24.04で使用した。v1.1.5はタグのみでRelease未公開として区別した。PR67は別の共有メモリ記事、PR73はNED run/Viewer修正で、本記事と同じ製品ソースの編集はしていない。共通文書の将来の統合では各記事・履歴を保持する必要がある。
@@ -28,3 +29,7 @@
 [measurements.json](measurements.json)、[viewer-browser.json](viewer-browser.json)、[site-browser.json](site-browser.json)に公開証拠を保存する。raw出力・ローカルパス・一時サイト画像はGit対象外。最終head CIとProject非完了状態はPR本文に記録する。
 
 制約：整列1 beat・Manager1・正常アドレス・固定READY。error・容量超過・競合・複数beat/Manager・途中打切り・native・RTL/電気的適合・実機性能は未検証。画像生成・マージ・auto-merge・close・タグRelease変更・デプロイは行わない。
+
+## PR67のmain通常統合時の再検証
+
+上記は初回の保存snapshotである。main `87dad08a5538f7d7942f73930ec3995a6b88e273` とPR67を通常統合した時点で、共有メモリとAXIを含む17ページ（15記事＋入口/ライセンス2）・404込み18 HTML・1024参照・10 ZIPへ拡張した。正式v1.1.4の両サンプルを36 CLI操作と隔離ZIPで再実行し、各々の元simulationと全条件一致を確認した。Viewer画像・読者本文・サンプルは元のbyte/hashを保持して再撮影しない。metadata/nav検査・日本語検索・390px・関連59テスト・strict traceability・生成鮮度の結果はPR67本文で識別する。新しいサイト報告と過去のViewer画像証拠を混同しない。
