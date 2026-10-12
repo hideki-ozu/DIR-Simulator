@@ -22,7 +22,7 @@ jobs:
   rust:
     name: Rust ledger identity regression
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -70,7 +70,7 @@ jobs:
               assert hashlib.sha256(data).hexdigest() == entry['sha256']
           print('PASS: actual ledger hash/document version, metadata reference and manifest files')
           PY
-          DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control -- --ignored --nocapture
+          DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control -- --ignored --nocapture --test-threads=1
       - name: Viewer model and browser regression
         run: |
           node --version

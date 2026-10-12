@@ -1,6 +1,6 @@
 # PR #69 不具合修正検証
 
-文書バージョン：`1.1.2`
+文書バージョン：`1.1.3`
 対象GitHubバージョン：`main @ dbcbcc5`
 文書ID：`verify-pr69-fixes-2026-10-12`
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.3` | `2026-10-12` | CIの並列実ワーカーsmoke期限失敗を記録し、資源制約gateを直列化。個別期限・期待値を維持し追加検証分の全体job予算を30分へ更新 |
 | `1.1.2` | `2026-10-12` | mainへのbase移行後に依存ブランチ向けCI条件を撤去した事実を明示し、初回構成との区別を補正 |
 | `1.1.1` | `2026-10-12` | Viewer回収snapshotと遅延応答の競合を直列化し、旧422のbarrier再現と修正後成功を記録 |
 | `1.1.0` | `2026-10-12` | Issue #74：予定GitHub版1.1系へ文書MAJOR.MINORを訂正しPATCH0から開始。公開済み1.0.0履歴を保持。ユーザーのPR69マージ後のmainと検証対象を区別 |
@@ -37,3 +38,5 @@ HTTPとHTMLの追加回帰は、隔離treeで新しい復旧・回収だけを�
 最終LF libraryは430 PASS / 5 ignored。5件は同じ最終ビルドを指定して明示実行し、5 PASS / 0 ignored。初回force-kill試験はSIGTERM(15)を観測しSIGKILL(9)期待で失敗。SIGSTOP送信が停止到達を保証しないため、pidfd waitid(STOPPED|NOWAIT|NOHANG)でkernelの停止を確認してからcancelする試験同期へ変更した。SIGKILL期待・runtime停止処理・作者のrestart同期は維持。文書40試験・strict（231要件/60機能/274 nodes/エラー0）、MkDocs strict・16 HTML/875リンクはPASS。
 
 Viewerの旧世代回収はinventory snapshotからbatch完了まで同じmutexを保持する。遅延した最後の応答による二度目の回収は、inventoryとファイルが両方不存在の場合だけ削除なしで成功する。同名の未知ファイルがあれば拒否する。旧公開cleanupへbarrierだけを加えた同じ試験はUnknown Viewer allocation/422で失敗し、修正版は成功。全target clippyも成功。Issue #75で追跡しクローズしない。
+
+CI run 38240448987はworkspace・clippy・製品ledgerを通過後、並列の明示5件のsmokeで15秒時点runningとなり失敗した（4 PASS / 1 FAIL）。ローカルでは5件成功していたが、CIでの成功を先取りしない。資源制約を扱う実ワーカーgateは `--test-threads=1` で直列実行し、個別15秒期限・SIGKILL期待を維持する。全体jobは既存workspaceに明示5件とNED UI/ブラウザgateを追加した予算として30分にする。単なるsleep延長・期待値緩和は行わない。最終headの実行結果はPRで確認する。
