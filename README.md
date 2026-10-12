@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.18`
+文書バージョン：`1.1.19`
 対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.19` | `2026-10-12` | AXI書き込みストローブの独立実習・8入力ZIP・実Viewer・metadata/ページ数検査を追加 |
 | `1.1.18` | `2026-10-11` | DDRリフレッシュ時間の独立実習・8入力ZIP・実Viewer・fresh証跡検証を追加 |
 | `1.1.17` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.16` | `2026-10-11` | DMAのコピー完了と通知待ちの独立実習・8入力ZIP・fresh証跡検証を追加 |
@@ -49,6 +50,8 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [DMAのコピー完了と通知待ち](docs/guide/DMAのコピー完了と通知待ち.md)では、通知時間だけを変え、データ書き込み完了と親要求の通知を正式v1.1.4の実測で分けます。[8入力ZIP](docs/guide/downloads/dma-notification-inputs.zip)を配布しています。
 
 [DDRのリフレッシュと読み出し待ち](docs/guide/DDRのリフレッシュと読み出し待ち.md)では、リフレッシュ時間だけを変え、先行読み出し・開行リセット・次要求の待ちを正式v1.1.4の実測で読みます。[8入力ZIP](docs/guide/downloads/ddr-refresh-inputs.zip)を配布しています。
+
+[AXIの書き込みストローブと部分更新](docs/guide/AXIの書き込みストローブと部分更新.md)では、WSTRBだけを変え、OKAY応答と更新バイトを正式v1.1.4で比較します。[8入力ZIP](docs/guide/downloads/axi-strobes-inputs.zip)を配布しています。
 
 初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。ガイドは公開済みです。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
 

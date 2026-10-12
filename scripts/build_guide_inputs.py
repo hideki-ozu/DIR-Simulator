@@ -40,6 +40,7 @@ def main():
     build(ROOT / 'examples/guide/mailbox-capacity', OUTPUT.with_name('mailbox-capacity-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/dma-notification', OUTPUT.with_name('dma-notification-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ddr-refresh', OUTPUT.with_name('ddr-refresh-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/axi-strobes', OUTPUT.with_name('axi-strobes-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':
