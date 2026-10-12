@@ -1,13 +1,14 @@
 # PR #69 不具合修正検証
 
-文書バージョン：`1.0.0`
-対象GitHubバージョン：`feat/ned-editor-extensions-v1.1.5 @ c23855a`
+文書バージョン：`1.1.0`
+対象GitHubバージョン：`main @ dbcbcc5`
 文書ID：`verify-pr69-fixes-2026-10-12`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.0` | `2026-10-12` | Issue #74：予定GitHub版1.1系へ文書MAJOR.MINORを訂正しPATCH0から開始。公開済み1.0.0履歴を保持。ユーザーのPR69マージ後のmainと検証対象を区別 |
 | `1.0.0` | `2026-10-12` | Issue #70〜72 の境界・参照・耐久化の修正と実行検証、既存CI修正との責務分離を記録 |
 
 ## 依存・所有
@@ -17,6 +18,10 @@
 Issue [#70](https://github.com/hideki-ozu/DIR-Simulator/issues/70) は期限キャッシュ、[#71](https://github.com/hideki-ozu/DIR-Simulator/issues/71) はHTTP終端ledgerと公開pending、[#72](https://github.com/hideki-ozu/DIR-Simulator/issues/72) は所有HTMLの寿命を担当する。追加機能・結果schema・モデル指標の変更ではない。
 
 ## 実行検証
+
+PR #69 はユーザーにより main `dbcbcc549e737c6dd68d544bf61f53ce5811bba7` へマージされたため、修正PR #73 のbaseをmainへ変更した。通常mergeで追従し、履歴書換えは行わない。文書版の訂正は [Issue #74](https://github.com/hideki-ozu/DIR-Simulator/issues/74) で追跡する。元1.0.0は誤った系列で公開した履歴として保持する。
+
+HTTPとHTMLの追加回帰は、隔離treeで新しい復旧・回収だけを無効化した旧挙動で、それぞれ503対200、最終参照後のファイル残存によりFAILした。修正版の同じ試験はPASS。test hook/所有参照harnessを加えた再現であり、旧headの無改造実行とは区別する。
 
 - `ned_editor_extensions_ui.test.cjs` の期限境界試験は修正前 FAIL（期限到達後もanchorあり）、修正後 PASS。既存NED UI/recoveryと合わせ81試験 PASS。
 - 実Chromiumの `ned_editor_viewer_expiry_browser.test.cjs` は公開済みc23855aのinput/viewを読み同じ時計試験で FAIL、修正版で PASS。1時間を実時間待たず、期限直前/到達、同run再描画、pollなしの古いanchorクリック、再準備2回、read-only維持、別タブ遷移防止を確認。準備応答はこのUI境界試験では制御したcallbackを使う。
