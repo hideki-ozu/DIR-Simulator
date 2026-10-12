@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "verification_date": "2026-10-12",
+  "scope": "Supplement checker and negative regression sources; no legal compliance or adoption approval",
+  "source_sha256": {
+    "scripts/check_third_party_notices.py": "b38297b2ff7a8973c2dc59b33dfacf6a4838f0668b9ddda2a86b4dae44742e38",
+    "tests/test_third_party_notices.py": "67133889222fd511c42c9af034ce8c4c89b2276e408d955955105d83542ad558"
+  },
+  "python_tests": {
+    "command": "python3 tests/test_third_party_notices.py",
+    "passed": 19,
+    "failed": 0
+  },
+  "notice_checker": {
+    "command": "python3 scripts/check_third_party_notices.py --guide-dir build/guide",
+    "historical_packages": 42,
+    "supplemental_packages": 2,
+    "current_packages": 44
+  },
+  "supplement_manifest_sha256": "c475a38df8004066569236a7e22aaee4a761c3d8438e23fb1fa5c5c7aa6eb9e1",
+  "evidence_origin": "Source hashes collected with Python hashlib.sha256 after the recorded checker and unittest commands"
+}

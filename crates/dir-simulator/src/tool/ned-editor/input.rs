@@ -82,6 +82,11 @@ pub(crate) struct ProjectSnapshot {
 }
 impl ProjectSnapshot {
     pub fn refresh_inputs(&mut self) {
+        if let Some(config) = self.file_by_path(&self.config) {
+            if let Ok(header) = inspect_config(&config.text, &self.config, &self.cwd) {
+                self.header = header;
+            }
+        }
         let directories: Vec<_> = self
             .directories
             .keys()
@@ -104,11 +109,6 @@ impl ProjectSnapshot {
                 }
             }
             captured.sort_by(|a, b| a.0.cmp(&b.0));
-        }
-        if let Some(config) = self.file_by_path(&self.config) {
-            if let Ok(header) = inspect_config(&config.text, &self.config, &self.cwd) {
-                self.header = header;
-            }
         }
     }
     pub fn ned_files(&self) -> impl Iterator<Item = &CapturedFile> {
@@ -558,4 +558,251 @@ pub(crate) fn load_project(config: &Path, cwd: &Path) -> Result<ProjectSnapshot>
         "Input changed during all three read attempts",
         409,
     ))
+}
+
+fn caseless_path(path: &Path) -> String {
+    // Use a conservative Unicode caseless key, including expanding folds such
+    // as sharp-s and ligatures, independently of the filesystem case rules.
+    path.to_string_lossy()
+        .chars()
+        .flat_map(char::to_lowercase)
+        .flat_map(char::to_uppercase)
+        .flat_map(char::to_lowercase)
+        .collect()
+}
+
+/// Validate a prospective path using only captured observations. Missing parent
+/// directories are virtual; existing non-directories and reserved layout paths
+/// must never be replaced by them.
+pub(crate) fn validate_new_path(project: &ProjectSnapshot, path: &Path) -> Result<()> {
+    let invalid = || EditorError::new("E-EDITOR-CREATE-FILE", "Captured path collision", 422);
+    let fold = caseless_path;
+    // Logical NED roots are distinct namespaces even if their physical names
+    // differ only by case on a case-sensitive filesystem.
+    let case_root = project
+        .header
+        .roots
+        .iter()
+        .find(|root| path.starts_with(root))
+        .map(|root| root.as_path())
+        .or_else(|| project.config.parent());
+    for ancestor in path.ancestors() {
+        if let Some(kind) = project.metadata.get(ancestor) {
+            if ancestor == path || *kind != InputKind::Directory {
+                return Err(invalid());
+            }
+        }
+        if project.files.values().any(|f| f.path == ancestor)
+            || project.layouts.values().any(|l| l.path == ancestor)
+            || (ancestor == path && project.directories.contains_key(ancestor))
+        {
+            return Err(invalid());
+        }
+        let folded = fold(ancestor);
+        let inside_root =
+            case_root.is_some_and(|root| ancestor != root && ancestor.starts_with(root));
+        if inside_root
+            && project
+                .metadata
+                .keys()
+                .chain(project.directories.keys())
+                .chain(project.files.values().map(|f| &f.path))
+                .chain(project.layouts.values().map(|l| &l.path))
+                .any(|known| {
+                    known != ancestor
+                        && case_root.is_some_and(|root| known.starts_with(root))
+                        && fold(known) == folded
+                })
+        {
+            return Err(invalid());
+        }
+        if let (Some(parent), Some(name)) = (ancestor.parent(), ancestor.file_name()) {
+            if let Some(entries) = project.directories.get(parent) {
+                for (known, kind) in entries {
+                    if inside_root
+                        && caseless_path(Path::new(known)) == caseless_path(Path::new(name))
+                        && (known != name || ancestor == path || *kind != InputKind::Directory)
+                    {
+                        return Err(invalid());
+                    }
+                }
+            }
+        }
+    }
+    // A captured descendant also reserves a directory even when its metadata
+    // was not materialized (for example a layout sidecar).
+    if project
+        .metadata
+        .keys()
+        .chain(project.directories.keys())
+        .chain(project.files.values().map(|f| &f.path))
+        .chain(project.layouts.values().map(|l| &l.path))
+        .any(|known| known.starts_with(path))
+    {
+        return Err(invalid());
+    }
+    Ok(())
+}
+
+pub(crate) fn relative_path(raw: &str, extension: &str) -> Result<PathBuf> {
+    if raw.is_empty()
+        || raw.contains(['\0', '\\'])
+        || raw.starts_with('/')
+        || raw
+            .split('/')
+            .any(|s| s.is_empty() || s == "." || s == "..")
+        || Path::new(raw).is_absolute()
+        || raw.as_bytes().get(1) == Some(&b':')
+        || Path::new(raw).extension().is_none_or(|e| e != extension)
+    {
+        return Err(EditorError::new(
+            "E-EDITOR-CREATE-FILE",
+            "Invalid relative path",
+            422,
+        ));
+    }
+    Ok(PathBuf::from(raw))
+}
+
+pub(crate) fn ned_package(relative: &Path) -> Result<String> {
+    let package = relative
+        .parent()
+        .unwrap_or(Path::new(""))
+        .components()
+        .map(|c| c.as_os_str().to_string_lossy())
+        .collect::<Vec<_>>()
+        .join(".");
+    if package.is_empty()
+        || !package
+            .split('.')
+            .all(|s| crate::input::identifier(s) && !crate::input::reserved(s))
+    {
+        return Err(EditorError::new(
+            "E-EDITOR-CREATE-FILE",
+            "NED requires a nonempty identifier package directory",
+            422,
+        ));
+    }
+    Ok(package)
+}
+
+pub(crate) fn new_layout_capture(file: &CapturedFile) -> LayoutCapture {
+    LayoutCapture {
+        path: file.path.with_file_name(format!(
+            "{}.layout.json",
+            file.path.file_name().unwrap().to_string_lossy()
+        )),
+        raw: None,
+        hash: None,
+        stat: None,
+        adopted: None,
+        warning: None,
+    }
+}
+
+/// The model boundary independently checks role/root/package and singleton
+/// occupancy, including callers other than the new-file planner.
+pub(crate) fn validate_added_file(project: &ProjectSnapshot, file: &CapturedFile) -> Result<()> {
+    let invalid = |message| EditorError::new("E-EDITOR-CREATE-FILE", message, 422);
+    if file.id.is_empty()
+        || project.files.contains_key(&file.id)
+        || file.stat.is_some()
+        || file.roles.len() != 1
+        || file.hash != hash(file.text.as_bytes())
+        || file.origin_hash != hash(file.origin_text.as_bytes())
+        || file.text != file.origin_text
+    {
+        return Err(invalid("Invalid generated file identity or baseline"));
+    }
+    validate_new_path(project, &file.path)?;
+    match &file.roles[0] {
+        FileRole::Config => return Err(invalid("Config additions are unsupported")),
+        FileRole::Ned {
+            root_index,
+            relative,
+            package,
+        } => {
+            let raw = relative
+                .to_str()
+                .ok_or_else(|| invalid("Invalid NED path"))?;
+            relative_path(raw, "ned")?;
+            let root = project
+                .header
+                .roots
+                .get(*root_index)
+                .ok_or_else(|| invalid("Unknown NED root"))?;
+            if root.join(relative) != file.path || &ned_package(relative)? != package {
+                return Err(invalid("NED role/root/package mismatch"));
+            }
+            validate_new_path(project, &new_layout_capture(file).path)?;
+            parse_ned(&file.text, &file.path, package)
+                .map_err(|d| EditorError::common("E-EDITOR-CREATE-FILE", d))?;
+        }
+        role @ (FileRole::Workload | FileRole::ModelConfig) => {
+            if project.files.values().any(|f| f.roles.contains(role))
+                || (*role == FileRole::Workload && project.header.workload.is_some())
+                || (*role == FileRole::ModelConfig && project.header.model_config.is_some())
+            {
+                return Err(invalid("Singleton JSON role is already occupied"));
+            }
+            let parent = project
+                .config
+                .parent()
+                .ok_or_else(|| invalid("Config parent missing"))?;
+            let relative = file
+                .path
+                .strip_prefix(parent)
+                .map_err(|_| invalid("JSON must be under config parent"))?;
+            relative_path(
+                relative
+                    .to_str()
+                    .ok_or_else(|| invalid("Invalid JSON path"))?,
+                "json",
+            )?;
+            if project
+                .header
+                .roots
+                .iter()
+                .any(|root| file.path.starts_with(root))
+            {
+                return Err(invalid("JSON cannot be inside a NED root"));
+            }
+        }
+    }
+    Ok(())
+}
+
+pub(crate) fn parse_current_inputs(
+    project: &ProjectSnapshot,
+) -> Result<BTreeMap<String, ParsedNed>> {
+    let config = project
+        .file_by_path(&project.config)
+        .ok_or_else(|| EditorError::new("E-EDITOR-CREATE-FILE", "Missing config", 422))?;
+    inspect_config(&config.text, &project.config, &project.cwd)
+        .map_err(|d| EditorError::common("E-EDITOR-CREATE-FILE", d))?;
+    let mut parsed = BTreeMap::new();
+    let mut names = std::collections::BTreeSet::new();
+    for file in project.ned_files() {
+        let package = file
+            .roles
+            .iter()
+            .find_map(|r| match r {
+                FileRole::Ned { package, .. } => Some(package),
+                _ => None,
+            })
+            .unwrap();
+        let ned = parse_ned(&file.text, &file.path, package)
+            .map_err(|d| EditorError::common("E-EDITOR-CREATE-FILE", d))?;
+        for declaration in ned.declarations() {
+            if !names.insert(declaration.name().to_owned()) {
+                return Err(EditorError::new(
+                    "E-EDITOR-CREATE-FILE",
+                    "Duplicate fully qualified declaration",
+                    422,
+                ));
+            }
+        }
+        parsed.insert(file.id.clone(), ned);
+    }
+    Ok(parsed)
 }

@@ -6,7 +6,7 @@ use serde_json::{Value, json};
 use std::collections::BTreeMap;
 use std::io::Read;
 use std::path::PathBuf;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use tiny_http::{Header, Method, Request, Response, Server, StatusCode};
 
@@ -199,10 +199,64 @@ fn route(mut request: Request, shared: &Shared, host: &str, secret: &str) {
         Ok(path) => path,
         Err(e) => return failure(request, e),
     };
+    // Binary artifact dispatch runs after the same Host, Origin and session gates
+    // as every editor API. The download owns a validated descriptor and lease.
+    if method == "GET" && decoded_path.starts_with("/api/runs/") {
+        let parts: Vec<_> = decoded_path.split('/').collect();
+        if parts.len() == 6 && parts[4] == "artifacts" {
+            if !query.is_empty() {
+                return failure(
+                    request,
+                    EditorError::new(
+                        "E-EDITOR-HTTP",
+                        "Artifact downloads have no query parameters",
+                        400,
+                    ),
+                );
+            }
+            let runs = shared.lock().unwrap().runs.clone();
+            return match runs.download(parts[3], parts[5]) {
+                Ok(download) => {
+                    let length = usize::try_from(download.bytes).ok();
+                    let headers = vec![
+                        header("Content-Type", download.content_type),
+                        header("ETag", &format!("\"{}\"", download.sha256)),
+                        header(
+                            "Content-Disposition",
+                            &format!("attachment; filename=\"{}\"", download.filename),
+                        ),
+                        header("Cache-Control", "no-store"),
+                        header("Referrer-Policy", "no-referrer"),
+                        header("X-Content-Type-Options", "nosniff"),
+                        header(
+                            "Content-Security-Policy",
+                            "default-src 'none'; frame-ancestors 'none'",
+                        ),
+                    ];
+                    let _ = request.respond(Response::new(
+                        StatusCode(200),
+                        headers,
+                        download,
+                        length,
+                        None,
+                    ));
+                }
+                Err(error) => failure(request, error),
+            };
+        }
+    }
     let (status, value) = Controller::handle(shared, &method, &decoded_path, &query, body);
     json_response(request, status, value);
 }
 fn start(options: EditorOptions) -> Result<()> {
+    let stopping = Arc::new(AtomicBool::new(false));
+    let mut signals = ShutdownSignals(Vec::new());
+    for signal in [signal_hook::consts::SIGINT, signal_hook::consts::SIGTERM] {
+        signals.0.push(
+            signal_hook::flag::register(signal, stopping.clone())
+                .map_err(|e| EditorError::new("E-EDITOR-START", e.to_string(), 500))?,
+        );
+    }
     let cwd = std::env::current_dir()
         .map_err(|e| EditorError::new("E-EDITOR-START", e.to_string(), 500))?;
     let export = absolute(options.export_root.as_deref().unwrap_or(&cwd), &cwd);
@@ -232,7 +286,13 @@ fn start(options: EditorOptions) -> Result<()> {
         json!({"schema_version":1,"status":"listening","url":format!("http://{host}/#session={secret}")})
     );
     let active = Arc::new(AtomicUsize::new(0));
-    for request in server.incoming_requests() {
+    while !stopping.load(Ordering::Acquire) {
+        let Some(request) = server
+            .recv_timeout(std::time::Duration::from_millis(200))
+            .map_err(|e| EditorError::new("E-EDITOR-HTTP", e.to_string(), 500))?
+        else {
+            continue;
+        };
         if active.fetch_add(1, Ordering::AcqRel) >= 256 {
             active.fetch_sub(1, Ordering::AcqRel);
             failure(
@@ -250,7 +310,21 @@ fn start(options: EditorOptions) -> Result<()> {
             active.fetch_sub(1, Ordering::AcqRel);
         });
     }
+    let runs = shared
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .runs
+        .clone();
+    runs.shutdown();
     Ok(())
+}
+struct ShutdownSignals(Vec<signal_hook::SigId>);
+impl Drop for ShutdownSignals {
+    fn drop(&mut self) {
+        for id in self.0.drain(..) {
+            signal_hook::low_level::unregister(id);
+        }
+    }
 }
 pub fn serve(options: EditorOptions) -> std::result::Result<(), Diagnostic> {
     start(options).map_err(|e| Diagnostic::prepare(e.to_string()))

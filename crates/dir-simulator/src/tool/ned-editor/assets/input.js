@@ -142,6 +142,11 @@
         return data;
       } finally { clearTimeout(timeout); }
     }
+    async download(path) {
+      const response=await this.fetcher(path,{method:'GET',headers:{'X-Editor-Session':this.secret},cache:'no-store',credentials:'same-origin'});
+      if (!response.ok) {let data; try {data=await response.json();}catch (_) {data={};} throw new ApiError(data.message || '結果を取得できませんでした。',response.status,data);}
+      return response.blob();
+    }
   }
   function succeeded(envelope) {
     const status = envelope.operation_status;
@@ -354,6 +359,63 @@
     }
   }
 
+  function reconcileCapturedFiles(app, next) {
+    const ids = new Set((next.files || []).map(file => file.id));
+    let changed = false;
+    for (const [id, buffer] of app.buffers) {
+      if (ids.has(id)) { if (buffer.orphaned) { buffer.orphaned = false; buffer.blocked = null; } continue; }
+      if (buffer.pending || buffer.composing || buffer.sent) {
+        buffer.orphaned = true; buffer.blocked = 'ファイルが編集モデルから除かれました。原文を保持しています。必要な内容をコピーしてから閉じてください。';
+      } else app.buffers.delete(id);
+    }
+    const parsed = (next.files || []).filter(file=>file.role==='ned').every(file=>file.syntax==='parsed');
+    if (!app.buffers.get(app.fileId)?.orphaned && parsed && Array.isArray(next.instances) && Array.isArray(next.types)) {
+      if (app.instancePath) {
+        const instance = next.instances.find(instance=>instance.path===app.instancePath && !instance.unresolved && instance.type_key);
+        const type = instance && next.types.find(type=>type.key===instance.type_key && type.name===instance.type_name);
+        if (type) {
+          if (app.fileId !== type.file_id || app.typeKey !== type.key) {
+            app.fileId=type.file_id; app.typeKey=type.key; app.selection=null; app.breadcrumbs=[]; changed=true;
+          }
+        } else { app.instancePath=null; app.typeKey=null; app.selection=null; app.breadcrumbs=[]; changed=true; }
+      } else if (app.typeKey && !next.types.some(type=>type.key===app.typeKey)) {
+        app.typeKey=null; app.selection=null; app.breadcrumbs=[]; changed=true;
+      }
+    }
+    if (app.fileId && !ids.has(app.fileId) && !app.buffers.get(app.fileId)?.orphaned) {
+      app.fileId = null; app.typeKey = null; if (parsed) app.instancePath = null; app.selection = null; app.breadcrumbs = []; changed=true;
+    }
+    if (changed) app.scopeGeneration = (BigInt(app.scopeGeneration) + 1n).toString();
+    return changed;
+  }
+  async function collectPlanPages(fetchPage, first) {
+    const plan = { ...first, impacts: [...(first.impacts || [])] }, seen = new Set();
+    let cursor = first.next_cursor;
+    while (cursor !== null && cursor !== undefined) {
+      if (seen.has(cursor)) throw new Error('変更計画のページが重複しています。再表示してください。');
+      seen.add(cursor);
+      const page = await fetchPage(cursor);
+      if (page.plan_id !== first.plan_id || page.plan_digest !== first.plan_digest || page.session_id !== first.session_id || page.writer_epoch !== first.writer_epoch) throw new Error('変更計画が切り替わりました。再表示してください。');
+      plan.impacts.push(...(page.impacts || [])); cursor = page.next_cursor;
+    }
+    return plan;
+  }
+  function editImpactDescription(impact) {
+    if (impact.kind === 'added_file') return '新規ファイル: ' + impact.path;
+    if (impact.kind === 'layout') return '配置の変更: ' + (impact.path || 'NEDの配置情報');
+    return '原文の変更: ' + impact.path + '\n' + impact.before_hash + ' → ' + impact.after_hash;
+  }
+
+  function runIsPast(view, run) {
+    const stamp=run.source_stamp || run.stamp;
+    return !stamp || stamp.project_instance_id!==view?.project_instance_id || stamp.input_digest!==view?.input_digest || String(stamp.input_revision)!==String(view?.input_revision);
+  }
+  function viewerURL(value, editorOrigin) {
+    const url=new URL(value);
+    if (url.protocol!=='http:' || url.hostname!=='127.0.0.1' || !url.port || url.username || url.password || url.origin===editorOrigin || url.hash) throw new Error('Viewerの閲覧先を確認できません。');
+    return url.href;
+  }
+
   async function start(root) {
     const document = root.document;
     if (!document) return;
@@ -366,7 +428,8 @@
     const app = {
       view: null, fileId: null, typeKey: null, instancePath: null, scopeGeneration: '1', buffers: new Map(),
       selection: null, breadcrumbs: [], operation: null, flushPromise: null, timer: null,
-      filter: '', instanceFilter: '', pendingText: null, refreshBusy: false, gesture: null, scopeLoading: false
+      filter: '', instanceFilter: '', pendingText: null, refreshBusy: false, gesture: null, scopeLoading: false,
+      runs:[], runsReadonly:false, runRefreshBusy:false, runError:'', viewerURLs:new Map()
     };
     const api = new Api(secret), client = new CommandClient(api, () => render());
     const buffer = () => app.buffers.get(app.fileId);
@@ -384,6 +447,7 @@
       app.projectReplaced = false;
       app.scopeLoading = false;
       app.view = next; client.revision = String(next.revision);
+      const removedSelection = reconcileCapturedFiles(app,next);
       if (next.writer && BigInt(next.writer.epoch) >= BigInt(client.writerEpoch)) {
         client.writer = next.writer.client_id === client.clientId;
         client.writerEpoch = String(next.writer.epoch);
@@ -394,6 +458,7 @@
         if (!app.buffers.has(source.file_id)) app.buffers.set(source.file_id, new TextBuffer(source.file_id, source.text, source.hash));
         else app.buffers.get(source.file_id).adopt(source.text, source.hash);
       }
+      if (removedSelection) return refresh();
       if (!app.fileId && next.source) app.fileId = next.source.file_id;
       if (!app.typeKey && next.graph) app.typeKey = next.graph.type_key;
       if ((replaced || !app.fileId || (initial && !app.typeKey)) && next.files?.length) {
@@ -403,6 +468,55 @@
         return refresh();
       }
       render(); return true;
+    }
+    async function refreshRuns() {
+      if (app.runRefreshBusy) return;
+      app.runRefreshBusy=true;
+      try {
+        const rows=[],seen=new Set(); let cursor=null;
+        do {
+          const query=cursor ? '?' + new URLSearchParams({cursor}) : '';
+          const page=await api.request('/api/runs' + query);
+          if (page.session_id!==client.sessionId) throw new Error('実行履歴のセッションが変わりました。');
+          app.runsReadonly=!!page.readonly;
+          rows.push(...(page.runs || [])); cursor=page.next_cursor;
+          if (cursor && seen.has(cursor)) throw new Error('実行履歴のページを読み取れません。');
+          if (cursor) seen.add(cursor);
+        } while(cursor);
+        app.runs=rows.sort((a,b)=>BigInt(a.created_ms || '0')>BigInt(b.created_ms || '0') ? -1 : BigInt(a.created_ms || '0')<BigInt(b.created_ms || '0') ? 1 : String(a.run_id).localeCompare(String(b.run_id)));
+        app.runError='';
+      } catch(error) {app.runError=errorMessage(error);} finally {app.runRefreshBusy=false; render();}
+    }
+    async function startRun() {
+      const answer=await V.dialog({title:'現在の編集内容を実行',submit:'実行',text:'未保存の入力も実行できます。入力の固定が終わると、そのまま編集を続けられます。',fields:[{id:'run-timeout-seconds',label:'実時間の上限（秒）',value:'600',required:true,pattern:'[0-9]+',hint:'1〜3600秒。待機時間は含めません。'}],validate:answer=>integer(answer['run-timeout-seconds'],'実時間の上限',3600,1)});
+      if (!answer) return;
+      await perform('start_run',{wall_timeout_ms:String(integer(answer['run-timeout-seconds'],'実時間の上限',3600,1)*1000)});
+      await refreshRuns();
+    }
+    async function prepareViewer(run) {
+      const envelope=await perform('build_viewer',{run_id:run.run_id});
+      const result=envelope?.result?.run;
+      if (result?.url) app.viewerURLs.set(run.run_id,{url:viewerURL(result.url,root.location.origin),expires:result.expires_at || result.expires_at_utc || result.expires_at_ms});
+      await refreshRuns();
+    }
+    async function downloadResults(run) {
+      const listing=await api.request('/api/runs/' + encodeURIComponent(run.run_id) + '/artifacts');
+      const entries=listing.artifacts || [];
+      if (!entries.length) throw new Error('取得できる結果がありません。');
+      const choice=await V.dialog({title:'結果ファイルを取得',submit:'取得',text:'結果と出典を個別に取得できます。実行時の入力原文はこの一覧へ同梱しません。',fields:[{id:'run-artifact',label:'ファイル',choices:entries.map(artifact=>({value:artifact.artifact_id,label:artifact.filename + ' · ' + artifact.bytes + ' bytes'}))}]});
+      if (!choice) return;
+      const artifact=entries.find(artifact=>artifact.artifact_id===choice['run-artifact']);
+      const path='/api/runs/' + encodeURIComponent(run.run_id) + '/artifacts/' + encodeURIComponent(artifact.artifact_id);
+      const blob=await api.download(path), url=root.URL.createObjectURL(blob), link=document.createElement('a');
+      link.href=url;link.download=artifact.filename;link.rel='noreferrer';document.body.append(link);link.click();link.remove();root.setTimeout(()=>root.URL.revokeObjectURL(url),1000);
+    }
+    async function showRunInput(run) {
+      const listing=await api.request('/api/runs/' + encodeURIComponent(run.run_id) + '/inputs');
+      const files=listing.files || [];
+      const choice=await V.dialog({title:'実行時の入力原文',submit:'原文を表示',fields:[{id:'run-input-file',label:'固定したファイル',choices:files.map(file=>({value:file.file_id || file.id,label:file.original_logical_path || file.path}))}]});
+      if (!choice) return;
+      const file=await api.request('/api/runs/' + encodeURIComponent(run.run_id) + '/input/' + encodeURIComponent(choice['run-input-file']));
+      await V.dialog({title:'実行時の原文（参照専用）',submit:'閉じる',text:file.original_logical_path + '\nSHA-256: ' + file.frozen_hash,pre:file.text});
     }
     async function navigate(fileId, typeKey, trail, instancePath = null) {
       app.fileId = fileId; app.typeKey = typeKey || null; app.instancePath = instancePath; app.selection = null;
@@ -475,7 +589,7 @@
         if (options.snapshot) {
           app.operation = '設定の確認'; render();
           await refresh(); assertSettingsSnapshot(app, client, options.snapshot);
-        } else if (!options.recovery) await flushAll();
+        } else if (!options.recovery && !['cancel_run','build_viewer','revoke_viewer','delete_run'].includes(kind)) await flushAll();
         app.operation = V.commandLabel(kind); render();
         if (options.structural && (!app.view?.graph || app.view.graph.stale || V.instanceStructuralBlocked(app))) throw new Error('現在のソースに対応する構成図と、解決済みの階層を選択してください。');
         let impact;
@@ -518,7 +632,8 @@
         }
         if (kind === 'new_project') resetProjectScope(app);
         await refresh(); notice(envelope.message || V.commandLabel(kind) + 'が完了しました。');
-        return true;
+        client.lastEnvelope=envelope;
+        return envelope;
       } finally {
         try { await refresh(); } catch (_) { /* visible error is reported by the caller */ }
         app.operation = null; render(); debounce();
@@ -541,6 +656,112 @@
         b.blocked = null;
       }
       await refresh(); await flushAll(); notice('入力を反映しました。');
+    }
+    async function fetchEditPlan(id) {
+      const query = new URLSearchParams({client_id:client.clientId,writer_epoch:client.writerEpoch});
+      const route = '/api/edit-plans/' + encodeURIComponent(id);
+      const first = await api.request(route + '?' + query);
+      return collectPlanPages(cursor => { const pageQuery = new URLSearchParams(query); pageQuery.set('cursor',cursor); return api.request(route + '?' + pageQuery); },first);
+    }
+    async function performEdit(operation, payload, options = {}) {
+      if (app.operation || client.inflight || client.uncertain || !client.writer) throw new Error('編集権限と処理中の操作を確認してください。');
+      app.operation = '入力反映待ち'; render();
+      try {
+        await flushAll(); await refresh();
+        if (options.snapshot) assertSettingsSnapshot(app,client,options.snapshot);
+        app.operation = '変更計画の作成'; render();
+        const preview = await client.send('preview_edit',{operation,operation_payload:payload});
+        let plan = await fetchEditPlan(preview.result?.plan_id);
+        if (options.adjust) {
+          const adjusted = await options.adjust(plan,payload);
+          if (!adjusted) return false;
+          if (JSON.stringify(adjusted) !== JSON.stringify(payload)) {
+            const preview = await client.send('preview_edit',{operation,operation_payload:adjusted});
+            plan = await fetchEditPlan(preview.result?.plan_id);
+          }
+        }
+        const apply = {plan_id:plan.plan_id,plan_digest:plan.plan_digest};
+        const confirmation = await api.request('/api/confirmations',{client_id:client.clientId,writer_epoch:client.writerEpoch,base_revision:client.revision,kind:'apply_edit_plan',payload:apply});
+        if (confirmation.plan_digest !== plan.plan_digest) throw new Error('確認対象の計画が変更されました。開き直してください。');
+        const diff = plan.impacts.map(impact => editImpactDescription(impact) + '\n--- 変更前 ---\n' + (typeof impact.before === 'string' ? impact.before : JSON.stringify(impact.before,null,2)) + '\n--- 変更後 ---\n' + (typeof impact.after === 'string' ? impact.after : JSON.stringify(impact.after,null,2))).join('\n\n');
+        const answer = await V.dialog({title:'変更計画を確認',submit:'確認して適用',text:plan.save_shape_effect === 'new_save_as_required' ? '入力ファイルが増えます。保存は新しい別フォルダへ行ってください。' : '表示した参照・原文・配置を一回の操作として変更します。',impacts:plan.impacts.map(editImpactDescription),pre:diff});
+        if (!answer) return false;
+        app.operation = '変更計画の適用'; render();
+        const oldInstance = app.instancePath, oldType = app.view.types?.find(type => type.key === app.typeKey);
+        const envelope = await client.send('apply_edit_plan',apply,confirmation.confirmation);
+        await refresh();
+        if (oldInstance) {
+          const path = plan.instance_remap?.find(row => row.before === oldInstance)?.after || oldInstance;
+          const instance = app.view.instances?.find(instance=>instance.path===path);
+          if (instance) await navigateInstance(instance,[]);
+        } else if (oldType) {
+          const remap = plan.symbol_remap?.find(row => row.before?.kind === 'type' && row.before?.owner === oldType.name);
+          const name = remap?.after?.owner || oldType.name;
+          const type = app.view.types?.find(type => type.name === name && type.file_id === oldType.file_id);
+          if (type) await navigate(type.file_id,type.key,[]);
+        }
+        notice(envelope.message || '変更計画を適用しました。'); return true;
+      } finally {
+        try { await refresh(); } catch (_) { /* command state and local text are retained */ }
+        app.operation = null; render(); debounce();
+      }
+    }
+    async function createFile() {
+      const templates = (app.view.file_templates || []).filter(template => template.role === 'ned' || (template.role === 'workload' ? !app.view.files?.some(file=>file.role==='workload') : !app.view.files?.some(file=>file.role==='model_config')));
+      if (!templates.length) throw new Error('利用できるファイルテンプレートがありません。');
+      const choice = await V.dialog({title:'新規入力ファイル',submit:'場所を指定',fields:[{id:'new-file-template',label:'作成する内容',choices:templates.map(template=>({value:template.id,label:template.label}))}]});
+      if (!choice) return;
+      const template = templates.find(template=>template.id===choice['new-file-template']), ned = template.role === 'ned';
+      const fields = [
+        ...(ned ? [{id:'new-file-root',label:'NEDルート',choices:app.view.ned_roots.map(root=>({value:root.id,label:root.path}))}] : []),
+        {id:'new-file-path',label:'相対ファイル名',required:true,value:ned ? 'editor/NewType.ned' : template.role === 'workload' ? 'workload-new.json' : 'gateway-new.json',hint:ned ? '親フォルダからpackageを決めます。例: demo/NewType.ned' : 'INIがあるフォルダからの相対名です。'},
+        ...(ned ? [{id:'new-file-name',label:'型名',required:true,value:'NewType',pattern:'[A-Za-z_][A-Za-z0-9_]*'}] : []),
+        {id:'new-file-newline',label:'改行',choices:[{value:'LF',label:'LF'},{value:'CRLF',label:'CRLF'}]},
+        {id:'new-file-bom',label:'UTF-8 BOM',choices:[{value:'false',label:'なし'},{value:'true',label:'あり'}]}
+      ];
+      const answer = await V.dialog({title:'新規ファイルの場所と名前',submit:'計画を表示',fields});
+      if (!answer) return;
+      const payload = {role:template.role,relative_path:answer['new-file-path'],template_id:template.id,format:{newline:answer['new-file-newline'],bom:answer['new-file-bom']==='true'}};
+      if (ned) { payload.root_id=answer['new-file-root']; payload.declaration={kind:template.kind,local_name:answer['new-file-name']}; }
+      await performEdit('create_file',payload);
+    }
+    async function renameSymbols() {
+      if (!client.writer || client.uncertain || client.inflight || app.operation) throw new Error('編集権限と処理中の操作を確認してください。');
+      await flushAll(); await refresh();
+      const symbols = app.view.refactor_symbols || [], snapshot = settingsSnapshot(app,client);
+      if (!symbols.length) throw new Error('名前を変更できる宣言がありません。');
+      const choices = symbols.map(symbol=>({value:symbol.id,label:symbol.owner + ' · ' + symbol.kind + ' · ' + symbol.name}));
+      const answer = await V.dialog({title:'一括リネーム',submit:'計画を表示',text:'変更する宣言と最終名を指定します。名前の交換も同じ操作で指定できます。',sections:[{id:'renames',label:'名前の変更',rowLabel:'宣言',rows:[{}],addLabel:'変更を追加',fields:[{id:'symbol',label:'宣言',choices},{id:'name',label:'新しい名前',required:true,pattern:'[A-Za-z_][A-Za-z0-9_]*'}]}],validate:answer=>{
+        if (!answer.renames.length || answer.renames.length > 1000) throw new Error('1〜1000件の変更を指定してください。');
+        if (new Set(answer.renames.map(row=>row.symbol)).size !== answer.renames.length) throw new Error('同じ宣言を複数回指定できません。');
+      }});
+      if (!answer) return;
+      const entries = answer.renames.map(row=>({target_symbol_id:row.symbol,expected_old_name:symbols.find(symbol=>symbol.id===row.symbol).name,new_local_name:row.name}));
+      await performEdit('rename_symbols',{entries},{snapshot});
+    }
+    async function detachInstance() {
+      if (!client.writer || client.uncertain || client.inflight || app.operation) throw new Error('編集権限と処理中の操作を確認してください。');
+      await flushAll(); await refresh();
+      const instance = V.selectedInstance(app), snapshot = settingsSnapshot(app,client);
+      if (!instance || !['simple','module'].includes(instance.kind)) throw new Error('インスタンス階層から独立化する実体を選択してください。');
+      const files = app.view.files.filter(file=>file.role==='ned');
+      const answer = await V.dialog({title:'実体の型の複製先',submit:'計画を表示',text:instance.path + ' の型を独立化します。必要な共有祖先も複製し、実体パスと結線を保持します。',fields:[{id:'clone-destination',label:'複製先',value:'existing:' + app.fileId,choices:[...files.map(file=>({value:'existing:' + file.id,label:file.path})),{value:'new_ned',label:'新しいNEDファイル'}]}]});
+      if (!answer) return;
+      let destination;
+      if (answer['clone-destination'] === 'new_ned') {
+        const location = await V.dialog({title:'型の複製先NED',submit:'計画を表示',fields:[{id:'clone-root',label:'NEDルート',choices:app.view.ned_roots.map(root=>({value:root.id,label:root.path}))},{id:'clone-path',label:'相対ファイル名',value:'editor/Detached.ned',required:true},{id:'clone-newline',label:'新しい区切りの改行',choices:[{value:'LF',label:'LF'},{value:'CRLF',label:'CRLF'}]},{id:'clone-bom',label:'UTF-8 BOM',choices:[{value:'false',label:'なし'},{value:'true',label:'あり'}]}]});
+        if (!location) return;
+        destination = {kind:'new_ned',root_id:location['clone-root'],relative_path:location['clone-path'],format:{newline:location['clone-newline'],bom:location['clone-bom']==='true'}};
+      } else destination = {kind:'existing_ned',file_id:answer['clone-destination'].slice('existing:'.length)};
+      const payload = {instance_id:instance.instance_id,expected_type_id:instance.type_id,destination,clone_names:[],ancestor_names:[]};
+      await performEdit('detach_instance_type',payload,{snapshot,adjust:async (plan,payload)=>{
+        const clones = (plan.semantic_evidence?.clone_names || []).slice(0,1), ancestors = plan.semantic_evidence?.ancestor_names || [];
+        const fields = [...clones.map((entry,index)=>({id:'clone-name-' + index,label:'複製する型: ' + (app.view.refactor_symbols?.find(symbol=>symbol.id===entry.source_type_id)?.owner || instance.type_name),value:entry.proposed_local_name,required:true,pattern:'[A-Za-z_][A-Za-z0-9_]*'})),...ancestors.map((entry,index)=>({id:'ancestor-name-' + index,label:'共有祖先: ' + (app.view.instances?.find(instance=>instance.instance_id===entry.owner_instance_id)?.path || '親の型'),value:entry.proposed_local_name,required:true,pattern:'[A-Za-z_][A-Za-z0-9_]*'}))];
+        if (!fields.length) return payload;
+        const names = await V.dialog({title:'複製する型の名前',submit:'変更計画を確認',text:'選択実体に必要な型と共有祖先です。元の型は保持します。',fields});
+        if (!names) return null;
+        return {...payload,clone_names:clones.map((entry,index)=>({...entry,proposed_local_name:names['clone-name-' + index]})),ancestor_names:ancestors.map((entry,index)=>({...entry,proposed_local_name:names['ancestor-name-' + index]}))};
+      }});
     }
     async function queryCommand() {
       const text = app.pendingText, kind = client.uncertain?.kind;
@@ -807,11 +1028,28 @@
     }
     const safe = fn => (...args) => Promise.resolve().then(() => fn(...args)).catch(error => { notice(errorMessage(error)); render(); });
     const callbacks = {
+      stopRun:safe(async run=>{await perform('cancel_run',{run_id:run.run_id});await refreshRuns();}),
+      prepareViewer:safe(prepareViewer),downloadResults:safe(downloadResults),showRunInput:safe(showRunInput),
+      revokeViewer:safe(async run=>{await perform('revoke_viewer',{run_id:run.run_id});app.viewerURLs.delete(run.run_id);await refreshRuns();}),
+      deleteRun:safe(async run=>{
+        const answer=await V.dialog({title:'実行結果を削除',submit:'この実行を削除',text:'実行時入力・結果・出典を削除します。入力の編集履歴には影響しません。Viewerの閲覧リンクは先に閉じて失効してください。'});
+        if (answer) {await perform('delete_run',{run_id:run.run_id});app.viewerURLs.delete(run.run_id);await refreshRuns();}
+      }),
       file: safe(file => navigate(file.id, null, [])),
+      discardOrphan: safe(async id => {
+        const b = app.buffers.get(id); if (!b?.orphaned) return;
+        const generation = b.generation;
+        const answer = await V.dialog({title:'保持した未送信入力を閉じる',submit:'この入力を閉じる',text:'必要な内容をコピーしてから閉じてください。編集モデルにはこのファイルが存在しません。',pre:b.raw});
+        if (!answer) return;
+        if (!b.orphaned || b.generation !== generation) throw new Error('確認中に入力が変わりました。開き直してください。');
+        app.buffers.delete(id); if (app.fileId === id) { app.fileId=null; app.typeKey=null; app.instancePath=null; }
+        await refresh();
+      }),
       type: safe(type => navigate(type.file_id, type.key, [])),
       instance: safe(instance => navigateInstance(instance)),
       select: selection => { app.selection = selection; render(); },
       openNode: safe(node => {
+        if (app.operation) { notice('処理中の操作の完了を待ってください。'); return; }
         if (app.scopeLoading || !graph()) { notice('選択した対象の読込完了を待ってください。'); return; }
         const trail = [...app.breadcrumbs, { fileId: app.fileId, typeKey: app.typeKey, instancePath: app.instancePath, name: app.instancePath || graph().type_name || app.typeKey }];
         if (app.instancePath) {
@@ -846,6 +1084,9 @@
     $('undo').onclick = safe(() => perform('undo', {})); $('redo').onclick = safe(() => perform('redo', {}));
     $('validate').onclick = safe(() => perform('validate', {})); $('save-as').onclick = safe(saveAs);
     $('new-project').onclick = safe(newProject);
+    $('create-file').onclick = safe(createFile);
+    $('run-simulation').onclick=safe(startRun);$('refresh-runs').onclick=safe(refreshRuns);
+    $('rename-symbols').onclick = safe(renameSymbols); $('detach-instance').onclick = safe(detachInstance);
     $('project-settings').onclick = safe(projectSettings); $('gateway-settings').onclick = safe(gatewaySettings); $('workload-settings').onclick = safe(workloadSettings);
     $('create-module').onclick = safe(createModule); $('add-gates').onclick = safe(addGates); $('delete-gate').onclick = safe(deleteGate); $('add-port').onclick = safe(addPort);
     $('overwrite').onclick = safe(overwrite); $('reload').onclick = safe(() => perform('reload', {}));
@@ -894,15 +1135,15 @@
     // Same-revision parse completion can change the projection. Poll read-only state without changing scope.
     const poll = async () => {
       try {
-        if (!document.hidden && !app.refreshBusy && !app.gesture) { app.refreshBusy = true; await refresh(); }
+        if (!document.hidden && !app.refreshBusy && !app.gesture) { app.refreshBusy = true; await refresh(); if (app.view?.capabilities?.start_run) await refreshRuns(); }
       } catch (_) { /* command failures are surfaced immediately; passive polling is quiet */ }
       finally { app.refreshBusy = false; root.setTimeout(poll, 1800); }
     };
     if (!secret) { notice('起動時に表示されたURLを開いてください。接続情報がありません。'); return; }
     try {
       client.register(await api.request('/api/writer', { action: 'register' }));
-      await refresh(); poll();
+      await refresh(); if (app.view?.capabilities?.start_run) await refreshRuns(); poll();
     } catch (error) { notice(errorMessage(error)); render(); }
   }
-  return { MAX_BODY, utf8Length, validUnicode, shadow, visiblePatch, byteToCaret, TextBuffer, sourceHash, acknowledgeSource, encodeBody, ApiError, Api, CommandClient, succeeded, acceptView, sessionQuery, instanceScope, childInstance, resetProjectScope, placementChoices, channelChoices, canPairCandidates, controllerChoices, gatewayNodeChoices, gatewayPortChoices, gatewayPayload, workloadPayload, gatePayload, settingsSnapshot, assertSettingsSnapshot, start };
+  return { MAX_BODY, utf8Length, validUnicode, shadow, visiblePatch, byteToCaret, TextBuffer, sourceHash, acknowledgeSource, encodeBody, ApiError, Api, CommandClient, succeeded, acceptView, sessionQuery, instanceScope, childInstance, resetProjectScope, placementChoices, channelChoices, canPairCandidates, controllerChoices, gatewayNodeChoices, gatewayPortChoices, gatewayPayload, workloadPayload, gatePayload, settingsSnapshot, assertSettingsSnapshot, reconcileCapturedFiles, collectPlanPages, editImpactDescription, runIsPast, viewerURL, start };
 });

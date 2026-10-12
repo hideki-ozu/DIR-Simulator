@@ -1,0 +1,59 @@
+@startuml tool-ned-editor-spec--run-snapshot-viewer--sequence
+' Document: ../../tools/ned-editor/NED-editor仕様書.md
+' Section: 後段拡張・固定snapshotの実行とViewer連携
+' Purpose: start_runコマンド終端と長時間runの終端を分け、独立Viewerへ接続する
+skinparam backgroundColor white
+skinparam defaultFontName Noto Sans CJK JP
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam ArrowColor #475569
+skinparam participantBackgroundColor #EFF6FF
+skinparam participantBorderColor #64748B
+skinparam noteBackgroundColor #FFFBEA
+title 固定snapshotの実行とViewer
+participant "B2 UI" as UI
+participant "B7 操作統括" as APP
+participant "B3 モデル" as MODEL
+participant "B4 run領域" as STORE
+participant "独立worker\nB5 / 共通run" as WORK
+participant "制限付きViewer worker" as RENDER
+participant "別originのViewer" as VIEW
+UI -> UI : IME確定・未送信編集のackを待つ
+UI -> APP : start_run(base_revision)
+APP -> MODEL : 入力stampとsnapshotを固定
+MODEL --> APP : 不変snapshot（入力handleなし）
+APP --> UI : 202（freeze jobを受領）
+APP -> STORE : snapshot bundle / run台帳を耐久化
+STORE --> APP : run_id / commit marker
+APP --> UI : command終端200 / run_created
+note over UI,MODEL
+  ここから編集・Undo・保存を再開できる。
+  実行はdirty・保存基準・履歴を変更しない。
+end note
+APP -> WORK : 所有FDからbundleを検証して起動
+WORK -> WORK : SnapshotInputSourceで共通prepare
+alt prepare成功
+  WORK -> WORK : run_with_diagnostics
+  WORK -> STORE : 既存schemaの結果・manifestを公開
+  WORK --> APP : 構造化Report / Failure
+  APP -> STORE : artifactサイズ・hash・出典を照合
+  STORE --> APP : 整合した結果 / 診断
+  APP --> UI : run終端（通常 / partial / 失敗）
+  UI -> APP : build_viewer(run_id)
+  APP -> RENDER : 検査済み入力・新規出力FDを渡す
+  RENDER -> RENDER : 共通Viewerで派生HTMLを生成
+  RENDER -> STORE : HTMLを書込・fsync
+  RENDER --> APP : HTML / script hash
+  APP -> APP : wait/reap・HTML identity/hash照合
+  APP -> VIEW : 別port・読取capability・hash CSP
+  APP --> UI : 認証済みAPIで閲覧URLを返す
+  UI -> VIEW : 新規タブ（noopener / noreferrer）
+else prepare失敗
+  WORK --> APP : 固定入力の診断 / prepare_failed
+  APP --> UI : 実行時原文へ対応する診断
+end
+note over APP,WORK
+  停止は独立workerを終了させる。
+  整合manifestなしの残骸をpartial結果にしない。
+end note
+@enduml
