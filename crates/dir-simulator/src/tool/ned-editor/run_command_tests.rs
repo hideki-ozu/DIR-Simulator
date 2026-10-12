@@ -156,3 +156,23 @@ fn project_generation_changes_only_on_successful_replacement() {
         before
     );
 }
+
+#[test]
+fn failed_publication_terminal_replay_allows_new_http_command_after_durable_repair() {
+    let f = Fixture::new();
+    f.shared.lock().unwrap().runs.fail_next_publication_sync();
+    let request = f.command("start_run", json!({}));
+    let (status, accepted) = f.send(request.clone());
+    assert_eq!(status, 202);
+    let failed = terminal(&f.shared, &accepted);
+    assert_ne!(failed["operation_status"], 200);
+    for _ in 0..5 {
+        assert_eq!(f.send(request.clone()).1, failed);
+    }
+    let fresh = f.execute("start_run", json!({}));
+    assert_eq!(fresh["operation_status"], 200, "{fresh}");
+    let rows = get(&f, "/api/runs").1;
+    assert_eq!(rows["runs"].as_array().unwrap().len(), 2);
+    assert_eq!(f.send(request).1, failed);
+    assert_eq!(get(&f, "/api/runs").1["runs"].as_array().unwrap().len(), 2);
+}

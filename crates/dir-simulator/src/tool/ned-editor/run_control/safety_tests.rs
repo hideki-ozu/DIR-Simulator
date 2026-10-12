@@ -1,6 +1,92 @@
 use super::*;
 
 #[test]
+fn obsolete_viewer_generations_are_reclaimed_after_the_last_response_reference() {
+    use std::io::Write;
+    let f = Fixture::new();
+    let m = f.manager();
+    let id = f.create(&m, "one");
+    m.cancel(&id).unwrap();
+    let record = m.record(&id).unwrap();
+    let viewer = verify_owner(&m.shared, &record)
+        .unwrap()
+        .child("viewer")
+        .unwrap();
+    for generation in 0..20 {
+        let name = format!("viewer-{generation}.html");
+        cleanup::reserve_viewer(&m.shared, &record, &name).unwrap();
+        let mut file = viewer.create_output(&name).unwrap();
+        let owner = viewer_server::OwnedViewer::new(&m.shared, &record, &name, &file).unwrap();
+        cleanup::finish_viewer(&m.shared, &record, &name, &file).unwrap();
+        file.write_all(b"partial failed or obsolete HTML").unwrap();
+        let path = m.shared.root.join(&id).join("viewer").join(&name);
+        let response = (
+            file.try_clone().unwrap(),
+            reference_lock(&m.shared, &id, false).unwrap(),
+            owner.clone(),
+        );
+        drop(file);
+        drop(owner);
+        assert!(
+            path.exists(),
+            "An accepted response must retain its own generation"
+        );
+        assert_eq!(m.delete(&id).unwrap_err().status, 503);
+        drop(response);
+        assert!(
+            !path.exists(),
+            "The last reader must reclaim this owned generation"
+        );
+    }
+    assert!(viewer.names().unwrap().is_empty());
+    let inventory: BTreeMap<String, Option<Identity>> = serde_json::from_slice(
+        &verify_owner(&m.shared, &record)
+            .unwrap()
+            .child("control")
+            .unwrap()
+            .read("viewer-inventory.json", CONTROL_LIMIT)
+            .unwrap(),
+    )
+    .unwrap();
+    assert!(inventory.is_empty());
+}
+
+#[test]
+fn viewer_recovery_reconciles_missing_files_but_preserves_unknown_and_replaced_files() {
+    let f = Fixture::new();
+    let m = f.manager();
+    let id = f.create(&m, "one");
+    m.cancel(&id).unwrap();
+    let record = m.record(&id).unwrap();
+    let viewer = verify_owner(&m.shared, &record)
+        .unwrap()
+        .child("viewer")
+        .unwrap();
+    cleanup::reserve_viewer(&m.shared, &record, "owned.html").unwrap();
+    let file = viewer.create_output("owned.html").unwrap();
+    cleanup::finish_viewer(&m.shared, &record, "owned.html", &file).unwrap();
+    let path = m.shared.root.join(&id).join("viewer/owned.html");
+    fs::remove_file(&path).unwrap();
+    cleanup::recover_viewers(&m.shared, &record).unwrap();
+    cleanup::reserve_viewer(&m.shared, &record, "unknown.html").unwrap();
+    viewer.create("unknown.html", b"preserve").unwrap();
+    cleanup::recover_viewers(&m.shared, &record).unwrap();
+    assert!(m.shared.root.join(&id).join("viewer/unknown.html").exists());
+    cleanup::reserve_viewer(&m.shared, &record, "replaced.html").unwrap();
+    let file = viewer.create_output("replaced.html").unwrap();
+    let owner =
+        viewer_server::OwnedViewer::new(&m.shared, &record, "replaced.html", &file).unwrap();
+    cleanup::finish_viewer(&m.shared, &record, "replaced.html", &file).unwrap();
+    let path = m.shared.root.join(&id).join("viewer/replaced.html");
+    fs::remove_file(&path).unwrap();
+    fs::write(&path, b"external replacement").unwrap();
+    drop(owner);
+    assert_eq!(fs::read(&path).unwrap(), b"external replacement");
+    assert!(cleanup::recover_viewers(&m.shared, &record).is_err());
+    drop(file);
+}
+
+#[test]
 fn monitored_limits_stop_even_when_durable_record_cannot_be_written() {
     for reason in ["timeout", "resource_limit"] {
         let f = Fixture::new();

@@ -2,7 +2,7 @@ name: Release audit regression
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, feat/ned-editor-extensions-v1.1.5]
     paths:
       - 'crates/**'
       - 'docs/third-party/**'
@@ -13,6 +13,7 @@ on:
       - 'tests/viewer_model.test.cjs'
       - 'tests/viewer_browser.cjs'
       - 'tests/viewer_fixtures.cjs'
+      - 'tests/ned_editor_*.cjs'
 
 permissions:
   contents: read
@@ -69,6 +70,7 @@ jobs:
               assert hashlib.sha256(data).hexdigest() == entry['sha256']
           print('PASS: actual ledger hash/document version, metadata reference and manifest files')
           PY
+          DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control -- --ignored --nocapture
       - name: Viewer model and browser regression
         run: |
           node --version
@@ -77,6 +79,8 @@ jobs:
           "$RUNNER_TEMP/viewer-tests/node_modules/.bin/playwright" install --with-deps chromium
           node --test tests/viewer_model.test.cjs
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node tests/viewer_browser.cjs
+          node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs
+          NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node --test tests/ned_editor_viewer_expiry_browser.test.cjs
       - name: Audit checker and comparison selftests
         run: |
           python3 scripts/check_third_party_notices.py

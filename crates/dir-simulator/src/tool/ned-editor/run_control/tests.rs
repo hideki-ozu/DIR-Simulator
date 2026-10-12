@@ -566,7 +566,8 @@ fn post_rename_fsync_failure_keeps_one_assigned_identity_on_retry() {
         .unwrap()
         .run_id
         .clone();
-    assert_eq!(m.check_capacity(&f.project).unwrap_err().status, 503);
+    assert!(!m.shared.state.lock().unwrap().pending.is_empty());
+    m.check_capacity(&f.project).unwrap();
     assert_eq!(f.create(&m, "one"), pending);
     assert_eq!(m.list(None).unwrap()["runs"].as_array().unwrap().len(), 1);
     assert!(m.shared.state.lock().unwrap().pending.is_empty());
@@ -811,6 +812,28 @@ fn real_worker_prepare_failure_timeout_force_kill_and_shutdown() {
             let pidfd =
                 rustix::process::pidfd_open(pid, rustix::process::PidfdFlags::empty()).unwrap();
             rustix::process::pidfd_send_signal(&pidfd, rustix::process::Signal::Stop).unwrap();
+            // Sending SIGSTOP is not an acknowledgement of the stopped state.
+            // Do not race cancellation's SIGTERM against pending stop delivery.
+            use std::os::fd::AsFd;
+            let deadline = Instant::now() + Duration::from_secs(20);
+            loop {
+                let stopped = rustix::process::waitid(
+                    rustix::process::WaitId::PidFd(pidfd.as_fd()),
+                    rustix::process::WaitidOptions::STOPPED
+                        | rustix::process::WaitidOptions::NOWAIT
+                        | rustix::process::WaitidOptions::NOHANG,
+                )
+                .unwrap()
+                .is_some_and(|status| status.stopped());
+                if stopped {
+                    break;
+                }
+                assert!(
+                    Instant::now() < deadline,
+                    "Worker did not acknowledge SIGSTOP"
+                );
+                std::thread::yield_now();
+            }
             m.cancel(&id).unwrap();
         } else if kind == "shutdown" {
             await_phase(&m, &id, |r| r.phase == "running");
