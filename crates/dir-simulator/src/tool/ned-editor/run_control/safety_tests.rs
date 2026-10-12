@@ -1,6 +1,59 @@
 use super::*;
 
 #[test]
+fn viewer_recovery_snapshot_serializes_late_response_reclamation() {
+    let f = Fixture::new();
+    let m = f.manager();
+    let id = f.create(&m, "one");
+    m.cancel(&id).unwrap();
+    let record = m.record(&id).unwrap();
+    let viewer = verify_owner(&m.shared, &record)
+        .unwrap()
+        .child("viewer")
+        .unwrap();
+    cleanup::reserve_viewer(&m.shared, &record, "race.html").unwrap();
+    let file = viewer.create_output("race.html").unwrap();
+    cleanup::finish_viewer(&m.shared, &record, "race.html", &file).unwrap();
+    let stat = rustix::fs::fstat(&file).unwrap();
+    let identity = Identity {
+        dev: stat.st_dev,
+        ino: stat.st_ino,
+    };
+    let (snapshot_tx, snapshot_rx) = std::sync::mpsc::channel();
+    let (release_tx, release_rx) = std::sync::mpsc::channel();
+    let other = m.clone();
+    let other_record = record.clone();
+    let recovery = std::thread::spawn(move || {
+        cleanup::recover_viewers_with_snapshot(&other.shared, &other_record, || {
+            snapshot_tx.send(()).unwrap();
+            release_rx.recv().unwrap();
+        })
+    });
+    snapshot_rx.recv_timeout(Duration::from_secs(5)).unwrap();
+    let protected = m.shared.viewer_inventory.try_lock().is_err();
+    if !protected {
+        // Reproduce the original schedule: final response cleanup removes X
+        // after prepare has snapshotted X but before its batch starts.
+        cleanup::remove_viewer(&m.shared, &record, "race.html", &identity).unwrap();
+    }
+    // Always release/join before asserting, including a regression failure.
+    release_tx.send(()).unwrap();
+    recovery.join().unwrap().unwrap();
+    assert!(
+        protected,
+        "Inventory snapshot and batch must share one lock"
+    );
+    cleanup::remove_viewer(&m.shared, &record, "race.html", &identity).unwrap();
+    assert!(viewer.names().unwrap().is_empty());
+    viewer.create("race.html", b"unknown replacement").unwrap();
+    assert!(cleanup::remove_viewer(&m.shared, &record, "race.html", &identity).is_err());
+    assert_eq!(
+        viewer.read("race.html", 100).unwrap(),
+        b"unknown replacement"
+    );
+}
+
+#[test]
 fn obsolete_viewer_generations_are_reclaimed_after_the_last_response_reference() {
     use std::io::Write;
     let f = Fixture::new();
