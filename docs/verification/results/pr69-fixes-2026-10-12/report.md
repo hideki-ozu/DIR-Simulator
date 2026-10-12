@@ -1,6 +1,6 @@
 # PR #69 不具合修正検証
 
-文書バージョン：`1.1.1`
+文書バージョン：`1.1.2`
 対象GitHubバージョン：`main @ dbcbcc5`
 文書ID：`verify-pr69-fixes-2026-10-12`
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-12` | mainへのbase移行後に依存ブランチ向けCI条件を撤去した事実を明示し、初回構成との区別を補正 |
 | `1.1.1` | `2026-10-12` | Viewer回収snapshotと遅延応答の競合を直列化し、旧422のbarrier再現と修正後成功を記録 |
 | `1.1.0` | `2026-10-12` | Issue #74：予定GitHub版1.1系へ文書MAJOR.MINORを訂正しPATCH0から開始。公開済み1.0.0履歴を保持。ユーザーのPR69マージ後のmainと検証対象を区別 |
 | `1.0.0` | `2026-10-12` | Issue #70〜72 の境界・参照・耐久化の修正と実行検証、既存CI修正との責務分離を記録 |
@@ -31,7 +32,7 @@ HTTPとHTMLの追加回帰は、隔離treeで新しい復旧・回収だけを�
 - Windows checkoutをWSLから使う全libraryと実NEDブラウザの初回は改行依存試験で失敗。INIのCRLFを既存fixtureが再びCRLFへ変換しbare CRとなる例と、INIの期待末尾LF/実際CRLFの差を確認。試験期待値を変更せず、`git -c core.autocrlf=false archive` の隔離正本へ修正を重ねて再実行する。リポジトリ設定・取得済み証跡の元bytesは変えない。
 - LF正本と同じ正本からビルドしたCLIによる実NED後段ブラウザ回帰は PASS。新規入力/COW/rename/Undo/Redo/export/CLI validate-run、公開・過去・partial run、Viewer step/revoke/deleteまで既存gateを実行した。機密URLをredactする既存evidence出力を利用し、秘密値は本報告へ保存しない。
 
-最終library/明示実ワーカー・loopback/文書・remote exact-head CIはPR本文へ実行結果を記録する。CIのチェック名・permissions・main pushの条件は保持し、依存baseへのpull_request triggerとNED UI回帰だけを既存workflowへ加える。マージ、auto-merge、release/tag/deploy、Issue/PRクローズは実行しない。
+最終library/明示実ワーカー・loopback/文書・remote exact-head CIはPR本文へ実行結果を記録する。初回の依存base向けpull_request条件は、ユーザーのPR69マージ後のmainへのbase移行時に撤去した。現在のbranch条件は元のmainのみである。チェック名・permissions・main push条件は保持し、NED UI回帰と明示実ワーカー・loopback試験を既存workflowへ加える。マージ、auto-merge、release/tag/deploy、Issue/PRクローズは実行しない。
 
 最終LF libraryは430 PASS / 5 ignored。5件は同じ最終ビルドを指定して明示実行し、5 PASS / 0 ignored。初回force-kill試験はSIGTERM(15)を観測しSIGKILL(9)期待で失敗。SIGSTOP送信が停止到達を保証しないため、pidfd waitid(STOPPED|NOWAIT|NOHANG)でkernelの停止を確認してからcancelする試験同期へ変更した。SIGKILL期待・runtime停止処理・作者のrestart同期は維持。文書40試験・strict（231要件/60機能/274 nodes/エラー0）、MkDocs strict・16 HTML/875リンクはPASS。
 
