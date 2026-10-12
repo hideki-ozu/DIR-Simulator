@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "write",
+      "kind": "axi.explicit.v1",
+      "node": "Main.m0",
+      "times": [
+        "0ps"
+      ],
+      "transaction": {
+        "operation": "write",
+        "address": 4096,
+        "beats": 1,
+        "write_data": [
+          "11223344"
+        ],
+        "write_strobes": [
+          5
+        ]
+      }
+    },
+    {
+      "id": "read",
+      "kind": "axi.explicit.v1",
+      "node": "Main.m0",
+      "times": [
+        "50ns"
+      ],
+      "transaction": {
+        "operation": "read",
+        "address": 4096,
+        "beats": 1
+      }
+    }
+  ]
+}

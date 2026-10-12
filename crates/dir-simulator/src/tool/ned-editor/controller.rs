@@ -3,6 +3,8 @@ use super::analysis::{parse_project, prepare, shapes};
 use super::input::{FileRole, ProjectSnapshot, load_project};
 use super::model::EditorSession;
 use super::output::{SaveOutcome, SaveReport, TargetRegistry, build_plan, recover, save_plan};
+use super::refactor::{EditPlan, PLAN_TTL};
+use super::run_control::{RunManager, RunStamp};
 use super::{EditorError, Result, hash, random_id};
 use serde::de::{self, Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
 use serde_json::{Value, json};
@@ -186,6 +188,13 @@ fn settings_kind(kind: &str) -> bool {
 }
 fn validate_payload(kind: &str, p: &Value) -> Result<()> {
     match kind {
+        "start_run" => super::run_control::validate_run_payload(p)?,
+        "cancel_run" | "build_viewer" | "delete_run" | "revoke_viewer" => {
+            fields(p, &["run_id"], &[])?;
+            text_fields(p, &["run_id"])?;
+        }
+        "preview_edit" => super::refactor::validate_preview_payload(p)?,
+        "apply_edit_plan" => super::refactor::validate_apply_payload(p)?,
         "create_module" => {
             fields(
                 p,
@@ -507,6 +516,16 @@ struct Stamp {
     context_epoch: u64,
     snapshot: String,
 }
+struct StoredEditPlan {
+    plan: Option<EditPlan>,
+    id: String,
+    digest: String,
+    created: Instant,
+    client: String,
+    epoch: u64,
+    stamp: Stamp,
+    applied: bool,
+}
 impl Stamp {
     fn of(m: &EditorSession) -> Self {
         Self {
@@ -577,6 +596,7 @@ impl Command {
 }
 
 pub(crate) struct Controller {
+    pub runs: RunManager,
     pub session_id: String,
     pub model: Option<EditorSession>,
     pub registry: TargetRegistry,
@@ -594,6 +614,9 @@ pub(crate) struct Controller {
     jobs: BTreeMap<String, Value>,
     expired_jobs: VecDeque<String>,
     confirmations: BTreeMap<String, Confirmation>,
+    edit_plan: Option<StoredEditPlan>,
+    expired_edit_plans: VecDeque<String>,
+    observed_runs: BTreeMap<String, String>,
     parse_running: bool,
     parse_pending: Option<Instant>,
     recovery_stamps: BTreeMap<String, (Stamp, String, String)>,
@@ -646,7 +669,13 @@ impl Controller {
             .map(|m| m.project.config.clone())
             .or(config)
             .unwrap_or_else(|| cwd.join("project.ini"));
+        let input_regions = model
+            .as_ref()
+            .map(|model| model.project.input_regions())
+            .unwrap_or_default();
+        let runs = RunManager::open(registry.state_root(), &input_regions)?;
         Ok(Self {
+            runs,
             session_id: random_id("session-")?,
             model,
             registry,
@@ -664,6 +693,9 @@ impl Controller {
             jobs: BTreeMap::new(),
             expired_jobs: VecDeque::new(),
             confirmations: BTreeMap::new(),
+            edit_plan: None,
+            expired_edit_plans: VecDeque::new(),
+            observed_runs: BTreeMap::new(),
             parse_running: false,
             parse_pending: None,
             recovery_stamps: BTreeMap::new(),
@@ -676,6 +708,73 @@ impl Controller {
     }
     fn changed(&mut self) {
         self.view_sequence = self.view_sequence.saturating_add(1);
+        if let Some(record) = &mut self.edit_plan {
+            if record.epoch != self.writer_epoch
+                || self
+                    .model
+                    .as_ref()
+                    .is_none_or(|model| !record.stamp.matches(model))
+            {
+                record.plan = None;
+            }
+        }
+    }
+    fn expire_edit_plan(&mut self) {
+        if let Some(record) = &mut self.edit_plan {
+            if record.created.elapsed() >= PLAN_TTL {
+                record.plan = None;
+            }
+        }
+    }
+    fn current_edit_plan(&self, id: &str, digest: Option<&str>, client: &str) -> Result<&EditPlan> {
+        let record = self
+            .edit_plan
+            .as_ref()
+            .filter(|record| record.id == id)
+            .ok_or_else(|| {
+                let expired = self.expired_edit_plans.iter().any(|old| old == id);
+                EditorError::new(
+                    if expired {
+                        "E-EDITOR-EXPIRED"
+                    } else {
+                        "E-EDITOR-UNKNOWN"
+                    },
+                    "Edit plan is unavailable",
+                    if expired { 410 } else { 404 },
+                )
+            })?;
+        if record.created.elapsed() >= PLAN_TTL {
+            return Err(EditorError::new(
+                "E-EDITOR-EXPIRED",
+                "Edit plan expired",
+                410,
+            ));
+        }
+        if record.applied {
+            return Err(EditorError::new(
+                "E-EDITOR-PLAN-APPLIED",
+                "Edit plan was already applied; consult the original command",
+                409,
+            ));
+        }
+        if record.client != client
+            || record.epoch != self.writer_epoch
+            || self
+                .model
+                .as_ref()
+                .is_none_or(|model| !record.stamp.matches(model))
+            || digest.is_some_and(|digest| digest != record.digest)
+        {
+            return Err(EditorError::new(
+                "E-EDITOR-REVISION",
+                "Edit plan no longer matches the current writer/model",
+                409,
+            ));
+        }
+        record
+            .plan
+            .as_ref()
+            .ok_or_else(|| EditorError::new("E-EDITOR-REVISION", "Edit plan was invalidated", 409))
     }
     fn envelope(
         &self,
@@ -747,8 +846,105 @@ impl Controller {
         query: &BTreeMap<String, String>,
         body: Option<Value>,
     ) -> (u16, Value) {
+        shared
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .expire_edit_plan();
         if method == "GET" {
             let c = shared.lock().unwrap_or_else(|e| e.into_inner());
+            if path == "/api/runs" || path.starts_with("/api/runs/") {
+                let runs = c.runs.clone();
+                drop(c);
+                let result = (|| {
+                    if path == "/api/runs" {
+                        if query.keys().any(|key| key != "cursor") {
+                            return Err(malformed("Unknown run-list query field"));
+                        }
+                        return runs.list(query.get("cursor").map(String::as_str));
+                    }
+                    if !query.is_empty() {
+                        return Err(malformed("Unexpected run query"));
+                    }
+                    let segments: Vec<_> = path
+                        .strip_prefix("/api/runs/")
+                        .unwrap()
+                        .split('/')
+                        .collect();
+                    match segments.as_slice() {
+                        [id] => runs.get(id),
+                        [id, "inputs"] => runs.inputs(id),
+                        [id, "artifacts"] => runs.artifacts(id),
+                        [id, "input", file_id] => runs.source(id, file_id),
+                        _ => Err(EditorError::new("E-EDITOR-ROUTE", "Unknown run route", 404)),
+                    }
+                })();
+                let mut c = shared.lock().unwrap_or_else(|e| e.into_inner());
+                return match result {
+                    Ok(mut value) => {
+                        if path == "/api/runs"
+                            || !path.contains("/input/") && !path.contains("/artifacts")
+                        {
+                            let key = format!("{path}:{:?}", query.get("cursor"));
+                            let digest = hash(
+                                serde_json::to_string(&value)
+                                    .expect("Run response serializes")
+                                    .as_bytes(),
+                            );
+                            if c.observed_runs.get(&key) != Some(&digest) {
+                                if c.observed_runs.len() >= LEDGER_LIMIT {
+                                    c.observed_runs.clear();
+                                }
+                                c.observed_runs.insert(key, digest);
+                                c.changed();
+                            }
+                        }
+                        value["session_id"] = c.session_id.clone().into();
+                        value["view_sequence"] = c.view_sequence.to_string().into();
+                        (200, value)
+                    }
+                    Err(e) => c.reject(e, None),
+                };
+            }
+            if let Some(id) = path.strip_prefix("/api/edit-plans/") {
+                let result = (|| {
+                    if query
+                        .keys()
+                        .any(|key| !matches!(key.as_str(), "client_id" | "writer_epoch" | "cursor"))
+                    {
+                        return Err(malformed("Unknown edit-plan query field"));
+                    }
+                    let client = query
+                        .get("client_id")
+                        .ok_or_else(|| malformed("Missing client_id"))?;
+                    let epoch = query
+                        .get("writer_epoch")
+                        .ok_or_else(|| malformed("Missing writer_epoch"))?;
+                    let epoch = decimal(&json!({"writer_epoch":epoch}), "writer_epoch")?;
+                    c.writer_check(client, epoch)?;
+                    let plan = c.current_edit_plan(id, None, client)?;
+                    let offset = if let Some(cursor) = query.get("cursor") {
+                        let (digest, offset) = cursor
+                            .split_once(':')
+                            .ok_or_else(|| malformed("Invalid plan cursor"))?;
+                        if digest != plan.digest {
+                            return Err(malformed("Cursor refers to a different plan"));
+                        }
+                        let offset = decimal(&json!({"offset":offset}), "offset")?;
+                        usize::try_from(offset)
+                            .map_err(|_| malformed("Plan cursor is too large"))?
+                    } else {
+                        0
+                    };
+                    let mut page = plan.page(offset)?;
+                    page["session_id"] = c.session_id.clone().into();
+                    page["writer_epoch"] = c.writer_epoch.to_string().into();
+                    Ok(page)
+                })();
+                return match result {
+                    Ok(value) => (200, value),
+                    Err(e) => c.reject(e, None),
+                };
+            }
             if path == "/api/session" {
                 return (200, super::view::project(&c, query));
             }
@@ -1029,6 +1225,85 @@ impl Controller {
         ) {
             return c.reject(e, Some(&command.id));
         }
+        if command.kind == "start_run" {
+            if c.busy.is_some() {
+                return c.reject(
+                    EditorError::new("E-EDITOR-BUSY", "An operation is in progress", 409),
+                    Some(&command.id),
+                );
+            }
+            if let Err(e) = c.writable("start_run") {
+                return c.reject(e, Some(&command.id));
+            }
+            let Some(model) = c.model.as_ref() else {
+                return c.reject(
+                    EditorError::new(
+                        "E-EDITOR-NO-PROJECT",
+                        "Create or load a project before running",
+                        409,
+                    ),
+                    Some(&command.id),
+                );
+            };
+            let stamp = Stamp::of(model);
+            if stamp.revision != command.base_revision {
+                return c.reject(
+                    EditorError::new("E-EDITOR-REVISION", "The model changed before running", 409),
+                    Some(&command.id),
+                );
+            }
+            let project = model.project.clone();
+            let runs = c.runs.clone();
+            let epoch = c.writer_epoch;
+            drop(c);
+            let admission = runs.check_capacity(&project);
+            c = shared.lock().unwrap_or_else(|e| e.into_inner());
+            if let Some(entry) = c.ledger.get(&command.id) {
+                if entry.request != request {
+                    return c.reject(
+                        EditorError::new(
+                            "E-EDITOR-SEQUENCE",
+                            "Command ID was reused with different contents",
+                            409,
+                        ),
+                        Some(&command.id),
+                    );
+                }
+                return (
+                    entry.response["operation_status"].as_u64().unwrap_or(500) as u16,
+                    entry.response.clone(),
+                );
+            }
+            if let Err(e) = c.writer_check(&command.client, epoch) {
+                return c.reject(e, Some(&command.id));
+            }
+            if c.busy.is_some() || c.model.as_ref().is_none_or(|model| !stamp.matches(model)) {
+                return c.reject(
+                    EditorError::new(
+                        "E-EDITOR-REVISION",
+                        "Run admission no longer matches the editor",
+                        409,
+                    ),
+                    Some(&command.id),
+                );
+            }
+            let client = &c.clients[&command.client];
+            if client.inflight.is_some()
+                || client.high_watermark.checked_add(1) != Some(command.sequence)
+            {
+                return c.reject(
+                    EditorError::new(
+                        "E-EDITOR-SEQUENCE",
+                        "Run sequence changed during admission",
+                        409,
+                    ),
+                    Some(&command.id),
+                );
+            }
+            if let Err(e) = admission {
+                return c.reject(e, Some(&command.id));
+            }
+        }
         if c.clients.values().filter(|l| l.inflight.is_some()).count() >= 256 {
             return c.reject(
                 EditorError::new("E-EDITOR-BUSY", "Command queue is full", 503),
@@ -1062,7 +1337,16 @@ impl Controller {
                 ));
             }
             if c.model.is_none()
-                && !matches!(command.kind.as_str(), "reload" | "recover" | "new_project")
+                && !matches!(
+                    command.kind.as_str(),
+                    "reload"
+                        | "recover"
+                        | "new_project"
+                        | "cancel_run"
+                        | "build_viewer"
+                        | "delete_run"
+                        | "revoke_viewer"
+                )
             {
                 return Err(EditorError::new(
                     "E-EDITOR-NO-PROJECT",
@@ -1078,6 +1362,27 @@ impl Controller {
         let mut authorized_digest = None;
         let mut replace_layout = false;
         let confirmation = (|| {
+            if command.kind == "apply_edit_plan" {
+                let plan = c.current_edit_plan(
+                    field(&command.payload, "plan_id")?,
+                    Some(field(&command.payload, "plan_digest")?),
+                    &command.client,
+                )?;
+                let expected_digest = plan.digest.clone();
+                let confirmation = c.consume_confirmation(
+                    command.impact_ack.as_deref(),
+                    &command.kind,
+                    &command.payload,
+                    command.base_revision,
+                )?;
+                if confirmation.plan_digest.as_ref() != Some(&expected_digest) {
+                    return Err(EditorError::new(
+                        "E-EDITOR-CONFIRMATION",
+                        "Confirmation refers to a different edit plan",
+                        409,
+                    ));
+                }
+            }
             if (graph_kind(&command.kind) || settings_kind(&command.kind))
                 && command.kind != "set_layout"
             {
@@ -1212,6 +1517,47 @@ impl Controller {
             Err(e) => return c.finish(&command, Err(e), false, None),
         };
         let stamp = c.model.as_ref().map(Stamp::of);
+        let runs = c.runs.clone();
+        let run_stamp = if command.kind == "start_run" {
+            let model = c.model.as_ref().expect("Run requires model");
+            Some(RunStamp {
+                session_id: c.session_id.clone(),
+                command_id: command.id.clone(),
+                project_instance_id: model.project_instance_id.clone(),
+                revision: model.revision.to_string(),
+                input_revision: model.input_revision.to_string(),
+                snapshot_id: model.project.id.clone(),
+                input_digest: model.project.input_digest(),
+                origin: match &model.project.origin {
+                    super::input::ProjectOrigin::Disk => {
+                        json!({"kind":"disk","config":model.project.config})
+                    }
+                    super::input::ProjectOrigin::New { template, name } => {
+                        json!({"kind":"new","template":template,"name":name})
+                    }
+                },
+                dirty_at_start: model.dirty(),
+            })
+        } else {
+            None
+        };
+        let edit_model = if matches!(command.kind.as_str(), "preview_edit" | "apply_edit_plan") {
+            c.model.clone()
+        } else {
+            None
+        };
+        let edit_plan = if command.kind == "apply_edit_plan" {
+            match c.current_edit_plan(
+                field(&command.payload, "plan_id").expect("Validated plan ID"),
+                Some(field(&command.payload, "plan_digest").expect("Validated plan digest")),
+                &command.client,
+            ) {
+                Ok(plan) => Some(plan.clone()),
+                Err(e) => return c.finish(&command, Err(e), false, None),
+            }
+        } else {
+            None
+        };
         let project = c.model.as_ref().map(|m| m.project.clone());
         let registry = c.registry.clone();
         let config = c.config.clone();
@@ -1245,6 +1591,10 @@ impl Controller {
                     run_operation(
                         &worker_command,
                         OperationInput {
+                            runs,
+                            run_stamp,
+                            edit_model,
+                            edit_plan,
                             project,
                             input_revision,
                             registry,
@@ -1445,6 +1795,7 @@ impl Controller {
                         | "replace_layout"
                         | "reload"
                         | "new_project"
+                        | "apply_edit_plan"
                 )
             {
                 return Err(malformed("This command does not need confirmation"));
@@ -1497,6 +1848,47 @@ impl Controller {
             );
         }
         let model = c.model.as_ref().unwrap();
+        if kind == "apply_edit_plan" {
+            let plan = match c.current_edit_plan(
+                body["payload"]["plan_id"]
+                    .as_str()
+                    .expect("Validated plan ID"),
+                Some(
+                    body["payload"]["plan_digest"]
+                        .as_str()
+                        .expect("Validated plan digest"),
+                ),
+                body["client_id"].as_str().expect("Validated client"),
+            ) {
+                Ok(plan) => plan,
+                Err(e) => return c.reject(e, None),
+            };
+            let digest = plan.digest.clone();
+            let impacts = plan.page(0).expect("First page is valid");
+            let nonce = match random_id("confirmation-") {
+                Ok(nonce) => nonce,
+                Err(e) => return c.reject(e, None),
+            };
+            let epoch = c.writer_epoch;
+            if c.confirmations.len() >= LEDGER_LIMIT {
+                c.confirmations.clear();
+            }
+            c.confirmations.insert(
+                nonce.clone(),
+                Confirmation {
+                    epoch,
+                    revision,
+                    kind,
+                    payload_digest: payload_digest(&body["payload"]),
+                    plan_digest: Some(digest.clone()),
+                    replace_layout: false,
+                },
+            );
+            return (
+                200,
+                json!({"confirmation":nonce,"plan_digest":digest,"impacts":impacts["impacts"],"requires_layout_confirmation":false}),
+            );
+        }
         let project = model.project.clone();
         let stamp = Stamp::of(model);
         let epoch = c.writer_epoch;
@@ -1736,6 +2128,49 @@ impl Controller {
                 ));
             }
             match work {
+                Work::RunResult(value) => {
+                    extra = Some(value);
+                }
+                Work::EditPreview(plan) => {
+                    let stamp = stamp.expect("Preview requires model").clone();
+                    let id = plan.id.clone();
+                    let digest = plan.digest.clone();
+                    if let Some(old) = self.edit_plan.take() {
+                        self.expired_edit_plans.push_back(old.id);
+                        while self.expired_edit_plans.len() > LEDGER_LIMIT {
+                            self.expired_edit_plans.pop_front();
+                        }
+                    }
+                    self.edit_plan = Some(StoredEditPlan {
+                        created: plan.created,
+                        plan: Some(plan),
+                        id: id.clone(),
+                        digest: digest.clone(),
+                        client: command.client.clone(),
+                        epoch: self.writer_epoch,
+                        stamp,
+                        applied: false,
+                    });
+                    extra =
+                        Some(json!({"status":"edit_previewed","plan_id":id,"plan_digest":digest}));
+                }
+                Work::EditApplied(model, id) => {
+                    let record = self.edit_plan.as_mut().ok_or_else(|| {
+                        EditorError::new("E-EDITOR-PLAN", "Edit plan disappeared", 409)
+                    })?;
+                    if record.id != id || record.applied || record.created.elapsed() >= PLAN_TTL {
+                        return Err(EditorError::new(
+                            "E-EDITOR-PLAN",
+                            "Edit plan is no longer applicable",
+                            409,
+                        ));
+                    }
+                    record.applied = true;
+                    record.plan = None;
+                    self.model = Some(*model);
+                    applied = true;
+                    extra = Some(json!({"status":"edit_applied","plan_id":id}));
+                }
                 Work::Graph(batch) => {
                     if batch.snapshot_id != stamp.unwrap().snapshot {
                         return Err(EditorError::new(
@@ -1940,6 +2375,9 @@ impl Controller {
 }
 
 enum Work {
+    RunResult(Value),
+    EditPreview(EditPlan),
+    EditApplied(Box<EditorSession>, String),
     New(ProjectSnapshot),
     Graph(super::analysis::AnalysisBatch),
     Validated(
@@ -1984,6 +2422,10 @@ fn check_target_kind(registry: &TargetRegistry, id: &str, kind: &str) -> Result<
     Ok(())
 }
 struct OperationInput {
+    runs: RunManager,
+    run_stamp: Option<RunStamp>,
+    edit_model: Option<EditorSession>,
+    edit_plan: Option<EditPlan>,
     project: Option<ProjectSnapshot>,
     input_revision: u64,
     registry: TargetRegistry,
@@ -1994,6 +2436,10 @@ struct OperationInput {
 }
 fn run_operation(command: &Command, input: OperationInput) -> Result<Work> {
     let OperationInput {
+        runs,
+        run_stamp,
+        edit_model,
+        edit_plan,
         project,
         input_revision,
         mut registry,
@@ -2008,6 +2454,39 @@ fn run_operation(command: &Command, input: OperationInput) -> Result<Work> {
         )));
     }
     match command.kind.as_str() {
+        "start_run" => {
+            let id = runs.create_run(
+                project.as_ref().expect("Run requires project"),
+                run_stamp.expect("Run requires stamp"),
+                super::run_control::wall_timeout_ms(&command.payload)?,
+            )?;
+            Ok(Work::RunResult(json!({"status":"run_created","run_id":id})))
+        }
+        "cancel_run" | "build_viewer" | "delete_run" | "revoke_viewer" => {
+            let id = field(&command.payload, "run_id")?;
+            let result = match command.kind.as_str() {
+                "cancel_run" => runs.cancel(id),
+                "build_viewer" => runs.build_viewer(id),
+                "delete_run" => runs.delete(id),
+                _ => runs.revoke_viewer(id),
+            }?;
+            Ok(Work::RunResult(
+                json!({"status":format!("{}_accepted",command.kind),"run_id":id,"run":result}),
+            ))
+        }
+        "preview_edit" => Ok(Work::EditPreview(EditPlan::build(
+            edit_model.as_ref().expect("Preview requires model"),
+            &command.payload,
+        )?)),
+        "apply_edit_plan" => {
+            let plan = edit_plan
+                .as_ref()
+                .expect("Apply requires an authorized plan");
+            Ok(Work::EditApplied(
+                Box::new(plan.apply(edit_model.as_ref().expect("Apply requires model"))?),
+                plan.id.clone(),
+            ))
+        }
         "new_project" => Ok(Work::New(super::template::new_project(
             field(&command.payload, "template")?,
             field(&command.payload, "project_name")?,

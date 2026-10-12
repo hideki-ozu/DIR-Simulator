@@ -40,6 +40,15 @@ pub(super) fn parse(
     buses: &[usize],
     modules: &[String],
 ) -> Result<Vec<Gateway>> {
+    parse_with_references(content, controllers, buses, modules, None)
+}
+pub(super) fn parse_with_references(
+    content: &str,
+    controllers: &[Controller],
+    buses: &[usize],
+    modules: &[String],
+    mut evidence: Option<(&mut super::references::Evidence, &std::path::Path)>,
+) -> Result<Vec<Gateway>> {
     let document = JsonDocument::parse(content)?;
     let _scope = document.enter("model_config_invalid");
     let value = &document.value;
@@ -53,7 +62,7 @@ pub(super) fn parse(
     let mut gateways = Vec::new();
     let mut nodes = BTreeSet::new();
     let mut assigned = BTreeSet::new();
-    for value in array(root, "gateways")? {
+    for (index, value) in array(root, "gateways")?.iter().enumerate() {
         let _object_scope = super::json_diagnostics::scoped_value(value);
         let obj = object(
             value,
@@ -180,6 +189,34 @@ pub(super) fn parse(
         routes.sort_by(|a, b| {
             (a.ingress, &a.format, a.id_min, &a.id).cmp(&(b.ingress, &b.format, b.id_min, &b.id))
         });
+        if let Some((evidence, path)) = evidence.as_mut() {
+            let pointer = format!("/gateways/{index}");
+            evidence.json_instance(&document, path, &format!("{pointer}/node"), node)?;
+            for (i, port) in array(obj, "ports")?.iter().enumerate() {
+                evidence.json_instance(
+                    &document,
+                    path,
+                    &format!("{pointer}/ports/{i}"),
+                    port.as_str().unwrap(),
+                )?;
+            }
+            for (i, route) in array(obj, "routes")?.iter().enumerate() {
+                evidence.json_instance(
+                    &document,
+                    path,
+                    &format!("{pointer}/routes/{i}/ingress"),
+                    route["ingress"].as_str().unwrap(),
+                )?;
+                for (j, port) in route["egress"].as_array().unwrap().iter().enumerate() {
+                    evidence.json_instance(
+                        &document,
+                        path,
+                        &format!("{pointer}/routes/{i}/egress/{j}"),
+                        port.as_str().unwrap(),
+                    )?;
+                }
+            }
+        }
         gateways.push(Gateway {
             node: node.into(),
             ports,

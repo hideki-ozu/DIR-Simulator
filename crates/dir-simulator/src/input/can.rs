@@ -219,6 +219,16 @@ pub(super) fn resolve(
     channels: &BTreeMap<String, BTreeMap<String, String>>,
     profile: &str,
 ) -> Result<Resolved> {
+    resolve_with_references(types, network, overrides, channels, profile, None)
+}
+pub(super) fn resolve_with_references(
+    types: &BTreeMap<String, Declaration>,
+    network: &str,
+    overrides: &BTreeMap<String, String>,
+    channels: &BTreeMap<String, BTreeMap<String, String>>,
+    profile: &str,
+    evidence: Option<(&mut super::references::Evidence, &super::Ini)>,
+) -> Result<Resolved> {
     let rules = CanRules { profile };
     let resolved = ned::resolve(types, network, overrides, &rules)?;
     let (buses, controllers) = resolved.instances().fold(
@@ -231,7 +241,11 @@ pub(super) fn resolve(
     );
     require_instance_counts(buses, controllers, profile)?;
     let channel_delays = resolved.resolve_channels(channels, &rules)?;
-    resolve_prepared(&resolved, &channel_delays, profile)
+    let prepared = resolve_prepared(&resolved, &channel_delays, profile)?;
+    if let Some((evidence, ini)) = evidence {
+        evidence.topology(types, &resolved, ini);
+    }
+    Ok(prepared)
 }
 pub(super) fn resolve_prepared(
     resolved: &ned::Resolved<'_>,
@@ -374,6 +388,15 @@ pub(super) fn workload(
     buses: &[usize],
     profile: &str,
 ) -> Result<Vec<Generator>> {
+    workload_with_references(content, controllers, buses, profile, None)
+}
+pub(super) fn workload_with_references(
+    content: &str,
+    controllers: &[crate::types::Controller],
+    buses: &[usize],
+    profile: &str,
+    mut evidence: Option<(&mut super::references::Evidence, &std::path::Path)>,
+) -> Result<Vec<Generator>> {
     let document = JsonDocument::parse(content)?;
     let root = document.object(
         "",
@@ -456,6 +479,9 @@ pub(super) fn workload(
                         .with_detail("expected", "Controller instance"),
                 )
             })?;
+        if let Some((evidence, path)) = evidence.as_mut() {
+            evidence.json_instance(&document, path, &format!("{pointer}/node"), node)?;
+        }
         let frame = generator.get("frame").ok_or_else(|| {
             document.annotate(
                 &format!("{pointer}/frame"),

@@ -44,10 +44,20 @@ pub(crate) fn project(c: &Controller, q: &BTreeMap<String, String>) -> Value {
     value["templates"] = json!(super::template::templates());
     value["catalog"] = json!(super::template::catalog());
     let Some(m) = &c.model else {
+        value["capabilities"] = json!({
+            "start_run":{"enabled":false,"reason":"新規プロジェクトを作成するか入力を読み込んでください"},
+            "create_file":{"enabled":false,"reason":"プロジェクトがありません"},
+            "rename_symbols":{"enabled":false,"reason":"プロジェクトがありません"},
+            "detach_instance_type":{"enabled":false,"reason":"プロジェクトがありません"}
+        });
         return value;
     };
     value["revision"] = json!(m.revision.to_string());
     value["input_revision"] = json!(m.input_revision.to_string());
+    value["project_instance_id"] = json!(m.project_instance_id);
+    value["snapshot_id"] = json!(m.project.id);
+    value["input_digest"] = json!(m.project.input_digest());
+    value["capabilities"]["start_run"] = json!({"enabled":true,"reason":""});
     value["dirty"] = json!(m.dirty());
     value["never_exported"] = json!(m.never_exported);
     value["network"] = json!(m.project.header.network);
@@ -73,6 +83,50 @@ pub(crate) fn project(c: &Controller, q: &BTreeMap<String, String>) -> Value {
             .into_owned(),
     });
     value["capabilities"] = json!({"reload":{"enabled":!new,"reason":if new {"新規プロジェクトはまだ読込元がありません"}else{""}}});
+    value["capabilities"]["start_run"] = json!({"enabled":true,"reason":""});
+    let parsed = m
+        .project
+        .ned_files()
+        .all(|file| m.current_parse(&file.id).is_ok());
+    value["capabilities"]["create_file"] =
+        json!({"enabled":parsed,"reason":if parsed {""}else{"NEDの構文を修正してください"}});
+    value["ned_roots"] = json!(
+        m.project
+            .header
+            .roots
+            .iter()
+            .enumerate()
+            .map(|(index, path)| json!({"id":format!("ned-root-{index}"),"path":path}))
+            .collect::<Vec<_>>()
+    );
+    value["file_templates"] = json!([
+        {"id":"ned.module_empty","role":"ned","kind":"module","label":"空のmodule"},
+        {"id":"ned.network_empty","role":"ned","kind":"network","label":"空のnetwork"},
+        {"id":"ned.controller","role":"ned","kind":"simple","label":"Controller"},
+        {"id":"ned.bus","role":"ned","kind":"simple","label":"Bus"},
+        {"id":"ned.channel_fixed_delay","role":"ned","kind":"channel","label":"固定遅延channel"},
+        {"id":"json.workload_empty","role":"workload","label":"空の送信設定JSON"},
+        {"id":"json.gateway_empty","role":"model_config","label":"空のGateway設定JSON"}
+    ]);
+    value["refactor_symbols"] = json!(super::refactor::symbols(m));
+    let refactoring = parsed
+        && matches!(
+            m.project
+                .header
+                .profile
+                .as_deref()
+                .unwrap_or("can.cc.ideal.v1"),
+            "can.cc.ideal.v1" | "can.cc.multibus.v1"
+        );
+    for kind in ["rename_symbols", "detach_instance_type"] {
+        value["capabilities"][kind] = json!({"enabled":refactoring,"reason":if refactoring {""}else{"構文が成立したClassical CAN / Multibus入力を選択してください"}});
+    }
+    if m.project.header.profile.as_deref() != Some("can.cc.multibus.v1") {
+        value["file_templates"]
+            .as_array_mut()
+            .expect("Template list")
+            .retain(|template| template["id"] != "json.gateway_empty");
+    }
     value["outputs"] = json!(
         c.registry
             .targets()
@@ -145,6 +199,23 @@ pub(crate) fn project(c: &Controller, q: &BTreeMap<String, String>) -> Value {
             &mut BTreeSet::new(),
             &mut instances,
         );
+    }
+    let input_digest = m.project.input_digest();
+    for instance in &mut instances {
+        if let (Some(path), Some(qname)) =
+            (instance["path"].as_str(), instance["type_name"].as_str())
+        {
+            let id = super::refactor::instance_id_from_digest(&input_digest, path);
+            let type_id = super::refactor::symbol_id(
+                &m.project,
+                qname,
+                "type",
+                qname.rsplit('.').next().unwrap_or(qname),
+            )
+            .ok();
+            instance["instance_id"] = id.into();
+            instance["type_id"] = json!(type_id);
+        }
     }
     value["instances"] = json!(instances);
     let file = q

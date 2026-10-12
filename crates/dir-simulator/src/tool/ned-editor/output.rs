@@ -362,6 +362,9 @@ pub(crate) struct TargetRegistry {
     collection_errors: BTreeMap<String, EditorError>,
 }
 impl TargetRegistry {
+    pub fn state_root(&self) -> &Path {
+        &self.state_root
+    }
     pub fn open(export_root: &Path, state_root: &Path) -> Result<Self> {
         let cwd = std::env::current_dir().map_err(|e| EditorError::io(export_root, e))?;
         let export_root = absolute(export_root, &cwd);

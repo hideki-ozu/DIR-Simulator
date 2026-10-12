@@ -1,11 +1,15 @@
 use super::analysis::{AnalysisBatch, DeclarationShape, shapes, type_key};
-use super::input::{CapturedFile, FileRole, ProjectSnapshot};
+use super::input::{
+    CapturedFile, FileRole, LayoutCapture, ProjectSnapshot, new_layout_capture,
+    parse_current_inputs, validate_added_file,
+};
 use super::layout::LayoutDocument;
 use super::{EditorError, Result, hash, random_id};
 use crate::types::PreparedSimulation;
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
 use std::ops::Range;
+use std::path::PathBuf;
 use std::sync::Arc;
 
 const HISTORY_BYTES: usize = 32 * 1024 * 1024;
@@ -17,8 +21,14 @@ pub(crate) struct TextPatch {
     pub replacement: String,
 }
 #[derive(Clone, Debug)]
+pub(crate) struct AddedFileBundle {
+    pub file: CapturedFile,
+    pub initial_layout_capture: Option<LayoutCapture>,
+    pub generated_directories: Vec<PathBuf>,
+}
+#[derive(Clone, Debug)]
 pub(crate) struct HistoryEntry {
-    pub added: Vec<CapturedFile>,
+    pub added: Vec<AddedFileBundle>,
     pub forward: Vec<TextPatch>,
     pub reverse: Vec<TextPatch>,
     pub layouts: Vec<(String, Option<LayoutDocument>, Option<LayoutDocument>)>,
@@ -26,6 +36,7 @@ pub(crate) struct HistoryEntry {
 }
 #[derive(Clone)]
 pub(crate) struct EditorSession {
+    pub project_instance_id: String,
     pub project: ProjectSnapshot,
     pub revision: u64,
     pub input_revision: u64,
@@ -109,6 +120,7 @@ impl EditorSession {
             .map(|f| (f.id.clone(), "parsed".into()))
             .collect();
         Self {
+            project_instance_id: project.id.clone(),
             project,
             revision: 1,
             input_revision: 1,
@@ -230,35 +242,51 @@ impl EditorSession {
         added: Vec<CapturedFile>,
     ) -> Result<bool> {
         let mut entry = HistoryEntry {
-            added,
+            added: vec![],
             forward: vec![],
             reverse: vec![],
             layouts: vec![],
             retained_bytes: 0,
         };
-        let mut paths = std::collections::BTreeSet::new();
-        for file in &entry.added {
-            if self.project.files.contains_key(&file.id)
-                || self.project.file_by_path(&file.path).is_some()
-                || !paths.insert(file.path.clone())
-                || file.stat.is_some()
-                || file
-                    .roles
-                    .iter()
-                    .any(|r| matches!(r, FileRole::Ned { .. } | FileRole::Config))
-            {
-                return Err(EditorError::new(
-                    "E-EDITOR-PATCH",
-                    "Invalid new settings file",
-                    422,
-                ));
-            }
+        if !added.is_empty() {
+            parse_current_inputs(&self.project)?;
+        }
+        let mut candidate = self.project.clone();
+        for file in added {
+            validate_added_file(&candidate, &file)?;
+            let initial_layout_capture = file
+                .roles
+                .iter()
+                .any(|r| matches!(r, FileRole::Ned { .. }))
+                .then(|| new_layout_capture(&file));
             entry.retained_bytes = entry
                 .retained_bytes
                 .checked_add(file.text.len())
                 .ok_or_else(|| {
                     EditorError::new("E-EDITOR-HISTORY-LIMIT", "History size overflow", 413)
                 })?;
+            if let Some(capture) = &initial_layout_capture {
+                candidate.layouts.insert(file.id.clone(), capture.clone());
+            }
+            candidate.files.insert(file.id.clone(), file.clone());
+            let before = candidate
+                .directories
+                .keys()
+                .chain(candidate.metadata.keys())
+                .cloned()
+                .collect::<std::collections::BTreeSet<_>>();
+            candidate.refresh_inputs();
+            let generated_directories = candidate
+                .directories
+                .keys()
+                .filter(|p| !before.contains(*p))
+                .cloned()
+                .collect();
+            entry.added.push(AddedFileBundle {
+                file,
+                initial_layout_capture,
+                generated_directories,
+            });
         }
         for (id, new) in text {
             let old = self
@@ -266,6 +294,16 @@ impl EditorSession {
                 .files
                 .get(&id)
                 .ok_or_else(|| EditorError::new("E-EDITOR-PATCH", "Unknown file", 422))?;
+            if entry.forward.iter().any(|p| p.file_id == id) {
+                return Err(EditorError::new(
+                    "E-EDITOR-PATCH",
+                    "Duplicate text target",
+                    422,
+                ));
+            }
+            let candidate_file = candidate.files.get_mut(&id).unwrap();
+            candidate_file.hash = hash(new.as_bytes());
+            candidate_file.text = new.clone().into();
             if old.text.as_ref() != new {
                 let (forward, reverse) = patch_pair(&id, &old.text, &new);
                 entry.retained_bytes = entry
@@ -279,17 +317,27 @@ impl EditorSession {
             }
         }
         for (id, new) in layout {
-            let old = self
-                .project
+            let old = candidate
                 .layouts
                 .get(&id)
                 .ok_or_else(|| EditorError::new("E-EDITOR-LAYOUT", "Unknown layout", 422))?
                 .adopted
                 .clone();
+            if entry.layouts.iter().any(|(target, _, _)| target == &id) {
+                return Err(EditorError::new(
+                    "E-EDITOR-LAYOUT",
+                    "Duplicate layout target",
+                    422,
+                ));
+            }
             if old != new {
-                entry.retained_bytes += serde_json::to_vec(&(&old, &new))
+                let bytes = serde_json::to_vec(&(&old, &new))
                     .map_err(|e| EditorError::new("E-EDITOR-LAYOUT", e.to_string(), 422))?
                     .len();
+                entry.retained_bytes =
+                    entry.retained_bytes.checked_add(bytes).ok_or_else(|| {
+                        EditorError::new("E-EDITOR-HISTORY-LIMIT", "History size overflow", 413)
+                    })?;
                 entry.layouts.push((id, old, new));
             }
         }
@@ -302,6 +350,34 @@ impl EditorSession {
                 "One edit exceeds the 32 MiB undo limit",
                 413,
             ));
+        }
+        if !entry.added.is_empty() {
+            let config = candidate.file_by_path(&candidate.config).unwrap();
+            let header =
+                crate::input::inspect_config(&config.text, &candidate.config, &candidate.cwd)
+                    .map_err(|d| EditorError::common("E-EDITOR-CREATE-FILE", d))?;
+            if header.roots != self.project.header.roots {
+                return Err(EditorError::new(
+                    "E-EDITOR-CREATE-FILE",
+                    "An addition cannot change NED roots",
+                    422,
+                ));
+            }
+            for bundle in &entry.added {
+                let reference = match bundle.file.roles[0] {
+                    FileRole::Workload => header.workload.as_ref(),
+                    FileRole::ModelConfig => header.model_config.as_ref(),
+                    _ => continue,
+                };
+                if reference != Some(&bundle.file.path) {
+                    return Err(EditorError::new(
+                        "E-EDITOR-CREATE-FILE",
+                        "Added JSON must have its matching INI reference",
+                        422,
+                    ));
+                }
+            }
+            parse_current_inputs(&candidate)?;
         }
         self.apply_entry(&entry, false)?;
         for removed in self.history.drain(self.cursor..) {
@@ -324,27 +400,9 @@ impl EditorSession {
             &entry.forward
         };
         let mut project = self.project.clone();
-        for file in &entry.added {
-            if reverse {
-                if project
-                    .files
-                    .get(&file.id)
-                    .is_none_or(|current| current.hash != file.hash)
-                {
-                    return Err(EditorError::new(
-                        "E-EDITOR-PATCH",
-                        "Added file history precondition failed",
-                        409,
-                    ));
-                }
-                project.files.remove(&file.id);
-                project.metadata.remove(&file.path);
-                if let (Some(parent), Some(name)) = (file.path.parent(), file.path.file_name()) {
-                    if let Some(entries) = project.directories.get_mut(parent) {
-                        entries.retain(|(n, _)| n != name);
-                    }
-                }
-            } else {
+        if !reverse {
+            for bundle in &entry.added {
+                let file = &bundle.file;
                 if project.files.contains_key(&file.id)
                     || project.file_by_path(&file.path).is_some()
                 {
@@ -353,6 +411,16 @@ impl EditorSession {
                         "Added file already exists",
                         409,
                     ));
+                }
+                if let Some(capture) = &bundle.initial_layout_capture {
+                    if project.layouts.contains_key(&file.id) {
+                        return Err(EditorError::new(
+                            "E-EDITOR-PATCH",
+                            "Added layout already exists",
+                            409,
+                        ));
+                    }
+                    project.layouts.insert(file.id.clone(), capture.clone());
                 }
                 project.files.insert(file.id.clone(), file.clone());
             }
@@ -397,19 +465,85 @@ impl EditorSession {
             }
             l.adopted = replacement.clone();
         }
+        if reverse {
+            for bundle in entry.added.iter().rev() {
+                let file = &bundle.file;
+                if project
+                    .files
+                    .get(&file.id)
+                    .is_none_or(|current| current.hash != file.hash)
+                {
+                    return Err(EditorError::new(
+                        "E-EDITOR-PATCH",
+                        "Added file history precondition failed",
+                        409,
+                    ));
+                }
+                project.files.remove(&file.id);
+                project.parsed.remove(&file.id);
+                project.layouts.remove(&file.id);
+                project.metadata.remove(&file.path);
+                if let (Some(parent), Some(name)) = (file.path.parent(), file.path.file_name()) {
+                    if let Some(entries) = project.directories.get_mut(parent) {
+                        entries.retain(|(n, _)| n != name);
+                    }
+                }
+                for dir in bundle.generated_directories.iter().rev() {
+                    if project
+                        .directories
+                        .get(dir)
+                        .is_some_and(|entries| entries.is_empty())
+                        && !project.files.values().any(|f| f.path.starts_with(dir))
+                        && !project.layouts.values().any(|l| l.path.starts_with(dir))
+                    {
+                        project.directories.remove(dir);
+                        project.metadata.remove(dir);
+                        if let (Some(parent), Some(name)) = (dir.parent(), dir.file_name()) {
+                            if let Some(entries) = project.directories.get_mut(parent) {
+                                entries.retain(|(n, _)| n != name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         let revision = self
             .revision
             .checked_add(1)
             .ok_or_else(|| EditorError::new("E-EDITOR-REVISION", "Revision overflow", 409))?;
-        if !patches.is_empty() || !entry.added.is_empty() {
+        let input_changed = !patches.is_empty() || !entry.added.is_empty();
+        let input_revision = self
+            .input_revision
+            .checked_add(u64::from(input_changed))
+            .ok_or_else(|| EditorError::new("E-EDITOR-REVISION", "Input revision overflow", 409))?;
+        if input_changed {
             project.id = random_id("snapshot-")?;
-            self.input_revision = self.input_revision.checked_add(1).ok_or_else(|| {
-                EditorError::new("E-EDITOR-REVISION", "Input revision overflow", 409)
-            })?;
+        }
+        if !reverse {
+            for bundle in &entry.added {
+                if let FileRole::Ned { package, .. } = &bundle.file.roles[0] {
+                    let file = &bundle.file;
+                    let parsed = crate::input::parse_ned(&file.text, &file.path, package)
+                        .map_err(|d| EditorError::common("E-EDITOR-CREATE-FILE", d))?;
+                    project.parsed.insert(file.id.clone(), parsed);
+                }
+            }
         }
         project.refresh_inputs();
         self.project = project;
         self.revision = revision;
+        self.input_revision = input_revision;
+        for bundle in &entry.added {
+            let id = &bundle.file.id;
+            if reverse {
+                self.syntax.remove(id);
+                self.parsed_hashes.remove(id);
+                self.diagnostics.retain(|d| d["file_id"] != *id);
+            } else if bundle.initial_layout_capture.is_some() {
+                self.syntax.insert(id.clone(), "pending".into());
+                self.parsed_hashes.remove(id);
+            }
+        }
         if !patches.is_empty() || !entry.added.is_empty() {
             self.prepared = None;
             self.analysis = "pending".into();
@@ -488,6 +622,7 @@ impl EditorSession {
         self.never_exported = false;
     }
     pub fn reload(&mut self, project: ProjectSnapshot) -> Result<()> {
+        let project_instance_id = random_id("project-")?;
         let revision = self
             .revision
             .checked_add(1)
@@ -503,6 +638,7 @@ impl EditorSession {
         let last_output = self.last_output.clone();
         let never_exported = self.never_exported;
         *self = Self::new(project);
+        self.project_instance_id = project_instance_id;
         self.revision = revision;
         self.input_revision = input_revision;
         self.context_epoch = epoch;

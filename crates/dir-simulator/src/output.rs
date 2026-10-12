@@ -21,8 +21,13 @@ mod registered;
 pub(crate) mod reservation;
 mod soc;
 mod stream;
+mod validation;
 pub(crate) use preparation::export_preparation_failure;
 pub(crate) use preparation::profile_catalog;
+pub(crate) use validation::{
+    ArtifactIdentity, ResultBundleExpectation, ResultInputEvidence, ResultReportEvidence,
+    ValidatedArtifact, ValidatedResultBundle, result_input_evidence, validate_result_bundle,
+};
 
 const PROFILE: &str = "can.cc.ideal.v1";
 

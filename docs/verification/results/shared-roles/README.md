@@ -1,6 +1,6 @@
 # 共有メモリactor実習検証記録
 
-文書バージョン：`1.1.0`  
+文書バージョン：`1.1.1`  
 対象GitHubバージョン：`v1.1.4`  
 実測ソースcommit：`b45515644dfc65c205216d564d5bf7ef00280622`  
 文書ID：`verification-guide-shared-roles`  
@@ -10,6 +10,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-12` | 第3push。main/AXI通常統合後のCLI・サイト・ZIP・metadata・両履歴の再検証を追記 |
 | `1.1.0` | `2026-10-12` | 共有メモリのactor比較・隔離ZIP・実Viewer・fresh証跡・metadata・サイト検証を記録 |
 
 基準mainは `c20e5845f39e032b6a7524efc2e26d74b4dfccdb`。正式Release/tagを再取得し、clean v1.1.4のCLIをWSL Ubuntu 24.04で使用した。正式タグと、その後のmainの提供状態を区別した。画像生成は使用せず、公開サンプルで実Viewerを撮影した。
@@ -27,3 +28,7 @@
 [measurements.json](measurements.json)、[viewer-browser.json](viewer-browser.json)、[site-browser.json](site-browser.json)に公開証拠を保存する。raw出力・ローカルパス・一時サイト画面はGit対象外。最終fresh出力のパス・exact head CI・Projectの非完了進行状態はPR本文で確認する。
 
 制約：slot1個・公開/取得各1回。競合・複数slot/consumer・full/empty・途中打切り・両役割登録は未検証。Windows native・CPU cache/fence・物理共有RAM・OS認証/security分離・実機性能も未検証。マージ・auto-merge・close・デプロイは実施しない。
+
+## 第3push：最新mainとの通常統合
+
+前段の17 HTML/16ページ/949参照・ライセンス9件・Chromium149等は初回の保存snapshotである。今回main `87dad08a5538f7d7942f73930ec3995a6b88e273` を通常取り込みし、AXIと共有メモリをともに残してnav17（15記事＋入口/ライセンス2）・HTML18・全10 ZIPへ統合する。README1.1.20、入口1.1.14、統合手順1.1.17、今回追記した本記録1.1.1とし、両分岐の全履歴を保持する。読者本文・サンプル・Viewer PNGの内容は変更しない。最新のCLI/ZIP・サイト・metadata/nav・traceability・生成鮮度・ライセンスの実施結果と未実施範囲をPR本文へ記録し、過去のsnapshotを今回の再実行と混同しない。

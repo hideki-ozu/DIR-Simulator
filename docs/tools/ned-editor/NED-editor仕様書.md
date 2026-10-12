@@ -1,12 +1,16 @@
 # NED-editor仕様書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`v1.1.4`
+文書バージョン：`1.1.5`
+対象GitHubバージョン：`main @ dbcbcc5`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.5` | `2026-10-12` | Viewer回収snapshotと遅延応答の競合を直列化し、旧422のbarrier再現と修正後成功を記録 |
+| `1.1.4` | `2026-10-12` | ユーザーのPR69マージ後のmainを対象に更新し、未リリース修正の基準を明示 |
+| `1.1.3` | `2026-10-12` | PR #69追補：Viewer期限切れの再準備、公開pendingの耐久化再試行、参照終了後の所有HTML回収と回帰検証 |
+| `1.1.2` | `2026-10-12` | 新規NED・設定JSON、実体型の専用化、一括リネーム、固定入力の実行・Viewer連携と検証範囲を反映。対象タグをv1.1.5へ更新 |
 | `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-10` | 動作確認・受入範囲をWSL上のUbuntu 24.04 LTS x86_64へ統一。Ubuntu native比較・Windows native単独確認を現在の必須条件から除外し、同一環境の検証と過去証跡を維持 |
 | `1.0.2` | `2026-10-04` | NED editor追加に伴うGitHub版v1.0.1を対象に更新。GitHubのPATCH変更のため文書版は維持 |
@@ -16,9 +20,9 @@
 
 文書ID：`tool-ned-editor-spec`
 
-文書状態：実装とレビュー補正に対応。第1節は合意済み方針、第2節以降はその方針に基づく設計。ブロック別に型・API・状態遷移・処理手順・異常時の契約まで詳細化した。7ブロックを実装し、実装試験の証拠と適用範囲を第15節へ記録する。
+文書状態：第1～17節は既存機能の設計・実装と、その時点のレビュー・試験証拠を保持する。第18～23節はv1.1.5で追加した後段拡張の契約と受入条件。実装の存在、実際に通した試験、受入ケース全条件の合格を区別し、追加分の検証範囲は第23.3節に記録する。
 
-文書版はレビュー補正を含む。対象タグv1.0.1はNED editor追加を含む公開版を示す。
+NED editorはv1.0.1で追加された。第18～23節の後段拡張は冒頭の対象タグ`v1.1.5`に含まれる。追加機能を使うには`v1.1.5`のソースからビルドする。既存の`v1.1.4`タグは維持する。
 
 本書は機能仕様、内部設計、設計判断、受入条件を一冊で管理する。[取扱説明書](NED-editor取扱説明書.md)は提供状況と利用手順を管理する。
 
@@ -38,7 +42,7 @@ NEDの構造を図とソースで確認・編集し、DIR Simulatorへ渡す入�
 | ファイル出力の条件 | 保存前の全体検証にエラーがあれば書き出さず、診断を表示する |
 | 編集と保存 | 読込後はファイルを閉じ、内部モデルを編集する。通常はINI・関連JSONを含むプロジェクト一式を別フォルダへ保存し、上書きは明示的に選ぶ |
 
-NED文法は[NED詳細機能仕様書](../../specs/NED詳細機能仕様書.md)、実験条件は[設定詳細機能仕様書](../../specs/設定詳細機能仕様書.md)、GWの経路は[GWモデル詳細機能仕様書](../../specs/models/GWモデル詳細機能仕様書.md)を参照する。本書でこれらの文法や結果schemaを再定義しない。新しい要求・機能IDの割当と正式な工程別追跡は未整備であり、既存トレーサビリティ検査の合格を本ツールの仕様完備・実装合格と扱わない。
+NED文法は[NED詳細機能仕様書](../../specs/NED詳細機能仕様書.md)、実験条件は[設定詳細機能仕様書](../../specs/設定詳細機能仕様書.md)、GWの経路は[GWモデル詳細機能仕様書](../../specs/models/GWモデル詳細機能仕様書.md)を参照する。本書でこれらの文法や結果schemaを再定義しない。`NE-D`・`NE-C`・`NE-X`・`NE-XC`は本ツール内の設計・検証識別子として管理する。シミュレータの正式な要求ID、実行時trace ID、モデルのgenerator/route IDとは別であり、既存DIR要求IDを別の意味へ流用しない。既存トレーサビリティ検査の合格は、本ツールの動作試験や受入条件全体の合格を意味しない。
 
 ## 2. 設計の前提と初期版
 
@@ -51,12 +55,12 @@ NED文法は[NED詳細機能仕様書](../../specs/NED詳細機能仕様書.md)�
 | プロジェクト | 既存INIの読込または内部テンプレートからの新規作成。1プロセス1プロジェクト、1編集クライアント。新規作成時は現在のモデルを明示確認して置き換える |
 | 編集対象 | B3に取り込んだNED・INI・workload・model-config JSONの原文と配置情報。入力参照パスの変更は外部変更とReloadへ分離する。別フォルダ出力では現在JSONを複製し、出力INIの参照パスだけ調整する |
 | 図の操作 | 型内の子配置・削除、gate間の結線・削除・再接続、module型・境界ポート・Bus gate組の追加、パラメータdefault編集、移動・整列。対応NED全体はソースでも編集できる |
-| 型操作の境界 | paletteは読込済みsimple/moduleと全標準部品。新規module型は現在のNEDへ追加する。型名／package変更・ファイル移動・共有祖先の複製は図操作の範囲外 |
+| 型操作の境界 | paletteは読込済みsimple/moduleと全標準部品。新規module型は現在のNEDへ追加する。型名変更と共有祖先の複製は第20・21節の独立した計画操作を使う。package変更・既存ファイル移動は対象外 |
 | CAN補助 | 空きgateがある場合にTX/RXの2接続を一操作で作る。Bus型へのgate自動増設は行わない |
 | 保存 | 基本操作は別フォルダへのプロジェクト保存。未編集のNED・INI・関連JSONも含めて出力し、保存前のチェックに合格した内容だけ書き出す。元または既存の出力プロジェクトへの上書きは別操作とする |
 | 正式判定 | 共通パーサーと既存の実行準備処理を正とする。図の表示成功と実行可能性は別に表示する |
 | 設定フォーム | 実行制限、実体別INI上書き、Gatewayのports/routes・容量・遅延、explicit/periodic送信定義。通常のINI/JSONに反映し履歴へ含める |
-| 後段へ分離 | 任意の新規ファイル作成、実体固有の型複製、一括リネーム、シミュレーション実行とviewer連携 |
+| 後段拡張 | v1.1.5に新規入力ファイル作成、実体固有の型複製、一括リネーム、固定入力の実行とViewer連携を実装。[第18～23節](#editor-extension-design)に契約と検証範囲を記載 |
 
 現在の動作確認対象はWSL上のUbuntu 24.04 LTS x86_64のサービスとChromium系ブラウザとする。Ubuntu nativeとの比較とWindows native単独確認は現在の要件・受入・公開必須条件に含めない。WindowsブラウザでViewerを開く手順は維持し、ブラウザの検証版を実施記録へ残す。HTTPライブラリ等の具体的な依存版は実装時にRust 1.85.0との適合を確認して固定する。これは配信実装の選定であり、下記のブロック責務・保存契約を変える理由にはしない。
 
@@ -1018,7 +1022,7 @@ crates/dir-simulator/src/tool/ned-editor/
 | layoutを別保存する | 座標変更をNEDの意味変更に混ぜず、既存文法を拡張しない |
 | ファイルごとの原子的保存＋復旧 | 複数ファイルを同時置換できるという誤った保証を避け、途中状態を説明できる |
 
-ブロック別の実装契約は[詳細設計項目](#detailed-design-map)へ整理し、実装の検証証拠は第15節へ記録する。大規模入力の性能目標・ブラウザ版ごとの適合範囲は実測して別途定め、現時点では保証値を掲げない。正式な要件・機能・工程traceへの登録は未整備のままであり、本書はそれを完了扱いにしない。[取扱説明書](NED-editor取扱説明書.md)に利用可能な起動・操作・復旧手順を記載する。
+ブロック別の実装契約は[詳細設計項目](#detailed-design-map)へ整理し、実装の検証証拠は第15節へ記録する。大規模入力の性能目標・ブラウザ版ごとの適合範囲は実測して別途定め、現時点では保証値を掲げない。ツール内の設計・検証IDは第1節のローカル規則で管理し、正式DIR要求やシミュレータtraceの採番へ転用しない。[取扱説明書](NED-editor取扱説明書.md)に利用可能な起動・操作・復旧手順を記載する。
 
 <a id="implementation-evidence"></a>
 
@@ -1094,3 +1098,474 @@ B6の投影へkind/implementation、gate_editable、gateway_settings、workload�
 
 [実ブラウザのUI組立試験](../../../tests/ned_editor_composition_browser.test.cjs)は、空のMultibusを新規作成し、Router module・3境界ポート・3Bus・3外部Controller・結線・実体別上書き・Gatewayの複数出口への経路・送信設定・実行制限をUIで作った。Busのgate組追加・削除もUIから実行した。原文入力やAPIの変更要求を試験から直接送らず、保存した一式のCLI validate/runを実行し、native 1要求、Gatewayコピー2要求、全3件成功、payload長・CRC・直列化長の保持を確認した。結果JSONの出典workloadは`01020304`と一致する。既存の[ブラウザ往復試験](../../../tests/ned_editor_browser.test.cjs)も成功した。この確認は当該3Busシナリオの動作証拠であり、性能・汎用OMNeT++文法・ブラウザ間適合を証明しない。
 
+<a id="editor-extension-design"></a>
+
+## 18. 後段拡張の設計範囲と共通契約
+
+本節から第23節はv1.1.5の後段拡張実装に対応する。設計開始時の基準は`main @ f4f284c`で、新規入力ファイル、実体型の独立化、一括リネーム、実行・Viewer連携を追加した。第1～17節の過去の試験結果を追加分の合格証拠へ転用せず、実施済みの確認と残る受入条件を第23.3節で区別する。
+
+### 18.1. 対象と固定ID
+
+以下の`NE-X01`～`NE-X06`と第23節の`NE-XC01`～`NE-XC43`は、既存の`NE-D`・`NE-C`と同じ本書内の固定設計・検証識別子である。ツール実装・受入条件の対応を示し、シミュレータの要求IDや実行trace IDを新設・置換するものではない。採番を別の未着手前提として残さず、各ケースの合否は当該機能の実測証拠で判断する。
+
+| 設計ID | 対象 | 担当ブロック | 設計節 |
+| --- | --- | --- | --- |
+| NE-X01 | 追加操作の計画・確認・一括commit | B2/B3/B5/B7 | 本節、第19～21節 |
+| NE-X02 | 新規NED・設定JSONファイルの作成 | B1/B3/B4/B5/B7 | [第19節](#editor-create-files) |
+| NE-X03 | 選択した実体だけの型複製 | B2/B3/B5/B7 | [第20節](#editor-clone-instance) |
+| NE-X04 | 型・子・gate・parameterの一括リネーム | B2/B3/B5/B7 | [第21節](#editor-batch-rename) |
+| NE-X05 | 固定snapshotからの非同期実行 | B3/B4/B5/B7 | [第22節](#editor-run-viewer) |
+| NE-X06 | 結果の照合と独立Viewerへの接続 | B2/B4/B6/B7 | [第22節](#editor-run-viewer) |
+
+7ブロックを維持し、追加のworker・索引・計画は既存ブロックの補助実装とする。既存NED文法、受理条件、モデルの意味、CLIの通常操作、結果schemaを変更しない。共通側には読取参照API、既存意味処理を再利用する結果検査、CSP情報付きViewer生成入口を追加し、snapshot受渡しを使う。追加入口と既存互換入口を各節で区別する。
+
+型複製・リネームの初期対応profileは`can.cc.ideal.v1`と`can.cc.multibus.v1`とする。他profileのmodel-configをGateway schemaとして解釈しない。新規NED作成は現行共通parserの文法に従い、実行・Viewerは共通prepareと既存Viewerが受理するprofileを使う。モデル別の専用テンプレート・設定フォーム追加は今回の4拡張に含めない。
+
+### 18.2. 既存操作との境界
+
+第19～21節の追加操作は原文・ファイル集合・必要な配置差分を内部モデルで一括変更し、ディスクへ書き込まない。保存は第8節のB4だけが行う。ファイル集合を増減させた後に集合が一致しない元入力／管理済み出力への上書きは従来どおり拒否し、新しい保存先へのSaveAsを案内する。保存済みファイルをUndoで内部モデルから外しても、既存出力を自動削除しない。
+
+実行は固定した入力から別のrun領域へ結果を出力する。runの作成・成功・停止・Viewer生成は、編集モデルのdirty、保存checkpoint、入力revision、Undo履歴を変更しない。B4の通常保存とrun領域の出力完了を混同しない。実行結果は実行時の入力stampを持ち、後から編集したモデルへ現在の検証結果として採用しない。
+
+第1～17節の共通parseと位置索引に基づく局所編集を継承する。リネームの参照更新は意味上の参照だけを対象とし、コメント、説明属性、frame payload、JSONの独立したIDを名前の一致だけで書き換えない。読取証拠を得られない参照・曖昧な解決を推測で補わず、追加操作全体を無変更で拒否する。
+
+### 18.3. 版・確認・履歴
+
+UIはIME確定と全未送信原文の終端ackを待ってから計画を要求する。計画はsession、writer epoch、revision、input_revision、snapshot ID、context epoch、関係ファイルのhash、型付き操作payloadへ結び付ける。計画は変更箇所・影響実体・新規ファイル・設定参照・配置の移送・必要なSaveAsを表示し、その内容への確認値を得てから適用する。
+
+プレビューはモデルとディスクを変更しない。適用時にすべての前提と候補の意味対応を再照合し、古い計画なら再プレビューを要求する。確認中の原文入力・別タブへのwriter切替・layout変更も古いrevisionの計画を成立させない。通信結果が不明なら既存command/jobを照会し、新IDで同じ変更を自動再送しない。
+
+成功した追加操作は一つのtransaction・一つの履歴となり、revision/input_revision/contextの更新は第4節に従う。原文patch、追加ファイルのbytesとID・役割・仮想directory、配置の旧新値を同じ履歴で復元する。単独32 MiBを超える変更は無変更拒否、合計32 MiB／200操作の履歴制限は保持する。Redoでfile IDを再採番しない。解析・保存失敗、取消、拒否、実変更のない操作で既存Redoを破棄しない。
+
+新しいコマンド・照会は第10節のsecret/Host/Origin検査、writer lease、64 bit整数の十進文字列、sequenceとledger、未知field・duplicate JSON拒否を継承する。新機能の可否はEditorViewの追加`capabilities`で示す。現行commandのpayloadやschema 1の意味を変えず、新しいkindは対応UIだけが送る。追加DTO・endpointはv1.1.5のサービスで利用できる。既存のv1.1.4のサービスには追加していない。
+
+
+### 18.4. 型付き参照索引
+
+共通inputの読取専用`inspect_references_with_source(config,cwd,source)`は、通常prepareと同じ取得・検証順で`ReferenceInspection { prepared, declarations, instances, channels, uses, unsupported }`を返す。固定snapshotの全NED、INI、取得済み関連JSONを使い、追加のディスク読込は行わない。UI表示名や未知のJSON文字列一致を意味解決に使わない。
+
+共通側の宣言はqname・kind・package・宣言/name spanと読取専用`Declaration`、実体は展開path・type qname・parent path・child targetを保持する。エディタの`symbol-…` IDはfile ID・宣言ordinal・source hash・member kind/nameのtupleのSHA-256、`instance-…` IDはinput digestと解決済みpathのSHA-256から作る。型表示キーは別の`file_id|ordinal|qname`である。どれも変更前snapshotの選択を識別するIDで、編集を跨ぐ永続IDではない。planは旧新symbol DTOと実体pathのremapを返す。file IDは同一セッションの編集・Undo/Redo・保存で維持する。
+
+各`ResolvedReferenceUse`は`syntax_kind, span, source_segments, target, instance_path?, json_pointer?, decoded_value, segments`を持つ。spanは論理source pathとBOMを含む原文UTF-8の半開byte区間。JSONは引用符込みstring token全体を表し、decoded_valueはそのJSON値をdecodeした文字列、segmentsのoffsetはdecoded UTF-8に対する解決済みpath segmentを表す。qualified NED名はidentifier/dot tokenのspanを共通parserから取得し、comment・空白をまたぐ全rangeの置換を避ける。共通側にfile ID/hashを重複管理せず、B5が捕捉ファイルへ対応させる。
+
+| 参照種別 | 対象・更新箇所 |
+| --- | --- |
+| 型宣言/型使用 | 宣言name、全submodule型、connectionのchannel型、INI network値 |
+| メンバー宣言/使用 | 全submodule名、gate名、parameter名、own gateと直接child/gateの解決済み端点 |
+| 実体path | INI完全パラメータキー、Channel節IDのparent/start endpoint、schemaがpathとして宣言するJSON値 |
+| 設定ID | generator/route等のID。本操作では変更せず、値と配列順を意味比較する |
+| 記述文字列 | comment、display、description、任意string値、`@class`の実装識別子。参照索引で名前一致置換しない |
+
+NEDは共通resolverの成功後、INIは既存のkey/value/section span、CAN workloadとGateway JSONは既存schema処理で解決したJSON pointerとtoken spanを採取する。共通JSON索引はserdeの厳格parseと重複キー検査を使う。参照採取の有無で通常prepareの結果・エラー順・取得順を変えない。
+
+取得済み全宣言の参照を調べる。選択networkの実体展開に加えて未使用型の子型/channel使用も検査する。参照に曖昧さ、未解決、未対応schema/path形式、source-span非対応、重複JSONキーがあればリネーム/実体複製を拒否する。使用中のサブツリーだけ成功したことを全体の安全性の代わりにしない。未使用型の循環も共通側の検証に従う。未知の文字列を参照と決めつけない一方、参照を含み得る未対応schemaはunsupportedとして拒否する。
+
+一括リネームと実体固有化の初期対応profileは現行GUI対象の`can.cc.ideal.v1`と`can.cc.multibus.v1`に限定し、JSONの初期受入対象もその共通側が参照を分類できたschemaに限定する。CAN workloadの`generators[].node`、Multibus model-configの`gateways[].node` / `ports[]` / `routes[].ingress` / `egress[]`を採取する。他のprofileについては、その既存prepareが認識する全path参照を索引化し受入試験を追加してから有効化する。未対応profileでは機能ボタンと診断に理由を表示し、全profile対応と表記しない。JSONファイル全体の再pretty-printによる参照更新は禁止。
+
+### 18.5. 計画のDTOと適用手順
+
+HTTP operation payloadは次の形を使う。command envelopeは第10節の既存fieldをそのまま使う。
+
+```text
+PreviewEditPayload {
+  operation: create_file | detach_instance_type | rename_symbols,
+  operation_payload: operation-specific DTO
+}
+ApplyEditPlanPayload { plan_id, plan_digest }
+```
+
+`POST /api/commands`のkind=`preview_edit`は202 jobを受領し、終端envelopeの`result`に`{status:"edit_previewed",plan_id,plan_digest}`を返す。同clientはその終端まで次sequenceへ進まない。previewは固定clone上で構築し、現在モデルのrevision/history/dirtyとディスクを変えない。
+
+`GET /api/edit-plans/<plan_id>?client_id=…&writer_epoch=…`で同writerの計画を取得する。実際の応答は`schema_version, session_id, writer_epoch, plan_id, plan_digest, snapshot_id, input_digest, base_revision, input_revision, context_epoch, operation, normalized_payload, added_files, symbol_remap, instance_remap, semantic_evidence, save_shape_effect, analysis, diagnostics, impact_count, expires_in_ms, impacts, next_cursor`。`symbol_remap`は`{before:{id,owner,kind,name,type_key},after:{…}}`、`instance_remap`は`{before:<旧path>,after:<新path>}`。`impacts`はsource/added_file/layoutごとの旧新原文・配置とhashを含み、cursor=`<固定digest>:<offset>`で最大200項目ずつ取得する。内部の`EditChanges`やpatch/hash前提、履歴保持量を応答DTOと混同しない。
+
+UIは全ページの旧新原文・配置と追加ファイル、symbol/instance対応、必要なSaveAsを確認する。`POST /api/confirmations`へkind=`apply_edit_plan`、同じApplyEditPlanPayloadとclient/epoch/base_revisionを渡し、返されたconfirmation nonceをcommandの`impact_ack`に添えてkind=`apply_edit_plan`を送る。成功終端の`result`は`{status:"edit_applied",plan_id}`。追加NEDのIDはplan内で予約し、適用時に初めてsnapshotへ採用する。
+
+plan digestはdomainを付けたschema付きJSONから計算し、summary・影響旧新bytes・追加ID/path/role/hash・配置・意味対応と候補fingerprintへ結び付ける。適用時にsession/writer epoch/revision/input_revision/context epoch/snapshot/input digestを照合し、同じ候補を再prepareしてdigestと期待input digestを検査する。別payloadへの確認値流用、確認中の編集/layout変更/Undo/Reload/writer交代は拒否し、古い計画は409として再previewを要求する。UIはIME確定と全未送信原文の終端ack後にpreviewする。
+
+commitはB3の一回のtransaction。構文・前提・操作別の意味確認・32MiBチェックがすべて通るまで現在modelを変更しない。型複製とリネームはbefore/afterの共通prepare成功と意味対応を必須とする。新規ファイルは第19.1節に従い、未接続などの意味エラーを持つ編集中モデルにも追加でき、診断と実行・保存の可否を別に保持する。200履歴/32MiBを維持し、1操作分が32MiB超なら413で全体拒否、ちょうど32MiBは許可。履歴合計を超えたときは既存方針で古い履歴を落とす。
+
+追加計画の初期上限はrename対象1,000件、複製宣言64件・祖先経路64段、追加ファイル64件（複製祖先を含む）、正規化して保存するplanの符号化量64MiBとする。生成途中にも件数と累積bytesを検査し、超過は413 `E-EDITOR-PLAN-LIMIT`でモデル無変更。これはplanの上限で、現行HTTP body上限64MiB、履歴上限32MiBとは別。parser/prepareの作業メモリまで64MiB以内と保証する値ではない。同writerにpreview job一件と未適用plan一件だけを許し、新planで旧planを置換する。planは発行から10分、または版/epoch変更・session終了で適用不可となる。版/epoch変更では大きな候補を破棄しても、期限までID/digestと無効化理由を残し409を返す。10分期限切れまたは新planへの置換で整理したIDは410とする。旧sessionのcommand拒否は第10節を優先する。
+
+確認ダイアログの取消はUIがplanを破棄する操作。preview受領後ならそのjobの終端を照会してsequenceを同期し、applyを送らない。apply受領後にダイアログを閉じても取消と扱わず、終端結果を取得し、appliedなら明示Undoを使う。別の取消commandでin-flight制限を迂回しない。panic/parse/resolve/保存失敗を部分成功にしない。二重command_idはledgerの結果を再送し、同ID異payloadを拒否。適用済みplanは同commandのledger再送だけを許し、新command IDでの再適用は409。再送時にファイルIDや複製名を発行し直さない。
+
+### 18.6. 実装対応表
+
+| 責務 | 現在の実装と境界 |
+| --- | --- |
+| B1/B3 ファイル候補・履歴 | [file_creation.rs](../../../crates/dir-simulator/src/tool/ned-editor/file_creation.rs)と[input.rs](../../../crates/dir-simulator/src/tool/ned-editor/input.rs)がrole/root/package/path/型名を照合。[model.rs](../../../crates/dir-simulator/src/tool/ned-editor/model.rs)の`AddedFileBundle`がNEDのlayout capture、parsed/syntax、metadata、生成directoryを原文と同じ履歴で採用・除去・復元する |
+| B5 共通参照証拠 | [input/references.rs](../../../crates/dir-simulator/src/input/references.rs)、共通NED parser/resolver、INIとモデル別JSON処理で全宣言・実体・channel・typed usesを取得する。独自受理文法を作らない |
+| B5 候補と意味比較 | [refactor_symbols.rs](../../../crates/dir-simulator/src/tool/ned-editor/refactor_symbols.rs)と配下detach/semanticが同時rename、共有祖先COW、局所token patch、型付き旧新比較、layout変換を行う |
+| B7 計画・確認・採用 | [refactor.rs](../../../crates/dir-simulator/src/tool/ned-editor/refactor.rs)がimmutableな`EditPlan`を作り、[controller.rs](../../../crates/dir-simulator/src/tool/ned-editor/controller.rs)の既存job/ledger/confirmationから一回だけ採用する |
+| B2/B6 操作と表示 | [assets/input.js](../../../crates/dir-simulator/src/tool/ned-editor/assets/input.js)と[view.js](../../../crates/dir-simulator/src/tool/ned-editor/assets/view.js)が新規ファイル、型独立化、rename dialog、全影響確認、選択remapとrunカードを扱う。機能可否はcapabilitiesで表示する |
+| B4 保存 | 既存[output.rs](../../../crates/dir-simulator/src/tool/ned-editor/output.rs)が役割/root順/相対pathから入力ID→出力path群を作る。集合が違う元入力/管理済み出力へは`E-TARGET-SHAPE`を返し、新規SaveAsを要求する |
+| B4/B7 実行 | [run_snapshot.rs](../../../crates/dir-simulator/src/tool/ned-editor/run_snapshot.rs)が原文bundleを耐久化・復元。[run_control.rs](../../../crates/dir-simulator/src/tool/ned-editor/run_control.rs)と配下storage/worker/viewer_serverがrun台帳、専用process、停止/回復、artifact FD、独立Viewerを管理する |
+| 共通出力/Viewer | [output/validation.rs](../../../crates/dir-simulator/src/output/validation.rs)が期待identityと出典を照合。[tool/viewer.rs](../../../crates/dir-simulator/src/tool/viewer.rs)の`write_with_policy`が自己完結HTMLとCSP hashを返す。既存`write`とCLIの意味は維持する |
+
+INIは完全な実体path+parameterだけを照合し、wildcardや先勝ち/後勝ちルールを追加しない。型表示キーとlayout types/nodes keyはrenameの最終mapへ対応させ、位置/collapsed/未知extraは保持する。既存保存先へ追加ファイルを黙って公開する機能は追加していない。
+
+<a id="editor-create-files"></a>
+
+## 19. 新規入力ファイルの作成（NE-X02）
+
+### 19.1. 許可roleと除外
+
+許可するのは `Ned`、まだ存在しない単一の`Workload`、まだ存在しない単一の`ModelConfig`。理由は現行ProjectSnapshotとB4で解釈/再現可能な入力役割がこの3つであり、Workload/ModelConfig追加はsettings.rsの既存経路にもあるため。`Config`追加は不可：現行sessionは1つのconfig/cwd/networkを持ち、2つ目のINIの選択・切替・保存を定義していない。layoutはNEDに従属するメタデータとして自動作成し、ユーザーが任意roleのファイルとして追加しない。結果、任意テキスト、binary、外部include、既存ファイルの移動/削除/置換は除外。
+
+```text
+CreateFile {
+  role: ned | workload | model_config,
+  root_id?: logical_root_id,
+  relative_path: string,
+  template_id: registered_template_id,
+  declaration?: { kind, local_name },
+  format: { newline: LF|CRLF, bom: bool }
+}
+```
+
+root_idは取得済みroot順に対応する`ned-root-<index>`。内部で既存root_indexへ対応し、UIから絶対pathや任意packageを受け取らない。NEDは既存root内の相対pathにのみ追加可能。新規論理root追加・ned-path変更は対象外。相対pathは空/絶対/`..`/`.`/空segment/NULを拒否し、platform正規化後もroot内であることを検査する。NEDは`.ned`、JSONは`.json`。ファイル/ディレクトリ衝突、既知symlink/非通常項目、複数roleの衝突、予約pathを拒否する。OS上のcase sensitivityに頼らず同root内case-fold衝突も拒否し、異なるrootの同相対pathは許可する。ただし完全修飾型名の重複はrootが異なっても拒否。
+
+NED packageはrelative parent componentsから導出する。現行共通parseは非空packageを必須とするため、root直下の`Foo.ned`は拒否し、例`demo/Foo.ned`→`package demo;`とする。識別子は共通lexer/parse規則で検証する。空NEDはparse不正なので空ファイルを作らず、登録templateから少なくとも1宣言を生成する。複製型や新規module用templateは一意型名を含む。新規network宣言の追加は可だがactive networkへの切替はこの操作に含めない。NED追加の前提は取得済みNEDの構文解析とINI inspectの成功、path/role/完全型名の衝突がないこととする。未接続・Bus不足などの意味エラーは追加を妨げず、候補の全体prepare結果を診断として記録し、成功するまで保存は無書込で拒否する。実行要求は第22節の固定runを作成してworkerでprepare_failedとし、simulateと結果exportを呼ばない。追加宣言で既存の未解決型が解決する場合は利用箇所をプレビューに表示する。既存原文の非対象bytesは保持し、追加ファイル操作を既存実行の意味同値性の証明とは扱わない。
+
+JSONはconfig parentを論理rootとする相対pathへ生成し、NED root内への配置と既存role占有を拒否する。使用中profileのschemaに適合する初期値が生成できるtemplateのみ提供し、INIのworkload/model-config値をその相対pathへ一緒に追加する。既存参照先の交換はしない。NEDは既存rootの探索対象となるためINIに個別ファイル名を追加しない。新規subdirectoryはsnapshot metadataにのみ生成する。
+
+初期の登録templateは`ned.module_empty`、`ned.network_empty`、`ned.controller`、`ned.bus`、`ned.channel_fixed_delay`、`json.workload_empty`、`json.gateway_empty`とする。NEDのController/Busは現在profileの標準部品定義を再利用し、完全型名と必要な型使用を指定先packageへ解決する。空module/networkは構文が成立する途中状態を作る。両JSONは`schema_version: 1`を持ち、workloadは`generators: []`、Gateway JSONは`gateways: []`を作り、後者はMultibusでのみ提供する。登録IDと期待role・宣言kindをサーバーが照合し、任意のテンプレートpathを受け取らない。
+
+### 19.2. B3モデル・履歴
+
+`CapturedFile`のidは予約時にサーバー生成し、plan再送/Undo/Redo/保存で同じ値を使う。削除後の別操作で同pathを再作成したファイルは別オブジェクトとし、新規ファイルには非再利用の不透明IDを必ず使う。取得済みファイルの現行IDを変更しない。新規file.stat=None、origin bytes/hashは生成時bytes、ディスクbaselineはAbsent。新規物のoriginが非空であることと保存済みであることを混同しない。
+
+`HistoryEntry`の追加記録を`AddedFileBundle { file, initial_layout_capture?, generated_directories[] }`へ拡張し、NED追加とlayout・metadata・directory差分を一括で可逆化する。addedファイルを同じtransactionの既存text patch対象にせず、最終bytesを追加記録に格納する。layout before/afterはcapture自体の有無を扱えるようにする。
+
+Undo時はファイル本体・新規layout・parsed/parsed_hashes/syntax/診断を除去し、今回だけ生成した空仮想directoryのみ除去する。元の捕捉directoryと他ファイルが使う親directoryは残す。Redoは同じfile_idとbytes/layoutを復元し解析pendingに戻す。既存`refresh_inputs`はmetadataをextendするので、除去時に単にrefreshするだけでは消えたdirを残す。この差分を明示管理する。追加ファイルへの後続編集をUndoした後で追加自体をUndoすると、初期hash前提が一致する。
+
+### 19.3. 保存とbaseline
+
+Create/clone/renameはディスクを読み書きしない（読み込んだsnapshotのみが入力）。初回SaveAsは通常B4の登録済み出力root、path検証、lock、Before::Absent、衝突検査、manifest/復旧を使用する。編集時の仮想pathが空いていると判断しても保存時の空きは保証しない。
+
+B4 planに`input_file_id -> [{role, output_path}]`の明示mappingを返し、UI/実行連携がbasenameや新しい出力pathからIDを推測しないようにする。持続する保存targetは既存のroot順+相対path/roleで照合し、Reloadで取り直したIDに依存しない。保存は入力ID/pathを出力ID/pathへ置換せず、現在入力snapshotを保ったままcheckpointを更新する。ここでのfile_idの持続範囲は同一session/履歴であり、再起動を跨ぐ永続ファイル識別機構は追加しない。
+
+既存targetに追加後の集合が適合しなければ`E-TARGET-SHAPE`で新規SaveAsのみ。保存後に新規ファイルをUndoしてもディスクの保存済みファイルを削除しない。モデルはdirtyとなり、同targetへの保存は集合差で拒否、新規SaveAsを案内する。Redoで保存時の内容集合へ戻ればdirty=falseとなり、同targetへの再保存が可能。保存checkpoint/出力baselineはUndoの対象外。B4のクラッシュ復旧と編集履歴を一緒に巻き戻さない。
+
+<a id="editor-clone-instance"></a>
+
+## 20. 選択した実体の型複製（NE-X03）
+
+### 20.1. 対象・DTO
+
+選択network配下の実体simple/moduleだけを対象とする。型図の単純Duplicateとは区別して「この実体の型を独立化」と表示する。実体がない型、network root自体、channel、循環/未解決、非表示の未対応モデルは拒否。
+
+```text
+DetachInstanceType {
+  instance_id,
+  expected_type_id,
+  destination: {kind:"existing_ned", file_id}
+             | {kind:"new_ned", root_id, relative_path, format:{newline,bom}},
+  clone_names: [{source_type_id, proposed_local_name}],
+  ancestor_names?: [{owner_instance_id, proposed_local_name}]
+}
+```
+
+clone_names/ancestor_namesの空配列を初回previewの既定名提案として受け付ける。semantic_evidenceのclone_names/ancestor_names/bindings/stopping_bindingで必要祖先・提案名・共有性と停止点を示し、利用者が複製名を調整したらplanを再発行する。複製配置は原型entryをコピーする。自動suffixは決定的な提案に留め、commit中に名前衝突を自動回避しない。複製先packageを導出し、型参照は共通resolverが同じ宣言へ解決する修飾名で出力する。原型のpackage宣言や既存ファイルの配置を変えない。
+
+### 20.2. 共有祖先の複製と停止条件
+
+![選択実体の型の独立化](../../diagrams/tool-ned-editor-spec/tool-ned-editor-spec--instance-type-detach--component.svg)
+
+[図のソース](../../diagrams/tool-ned-editor-spec/tool-ned-editor-spec--instance-type-detach--component.puml)
+
+例：`Net.a: Rack`と`Net.b: Rack`、`Rack.unit: Device`があり、`Net.a.unit`だけ独立化する。以下は同じpackageへの複製例。別packageへ複製する場合はコピー内部の子型/channel型参照も必要に応じ修飾し、元と同じ宣言へ解決することを検証する。名前token以外を無条件にそのまま使って解決先を変えない。
+
+1. Device宣言の原文区間をコピーし`DeviceForA`を作る。名前tokenだけ変更し、内部子型・channel・parameter/gate/属性・commentは保持する。
+2. `Rack.unit`の型をそのまま変更するとNet.bにも及ぶため、Rackを`RackForA`へコピーし、コピー内のunit型参照だけDeviceForAへ変更する。
+3. Netのaの型参照だけRackForAへ変更する。b/Rack/Deviceの原文は不変。
+4. a/unit等の子名・接続端点を変更しないため、`Net.a.unit`という実体path、INI/JSONの参照、外側結線は不変。
+
+各親型について「選択network内の展開が当該owner実体1件だけ」かつ「当該ownerへの構文上の利用辺以外に全取得済み宣言からの利用がない」場合だけ、その型の選択child型参照を既存定義上で変更して停止できる。未使用型からの参照も共有と見なす。共有なら親をコピーしてさらに上へ進む。共有性を証明できないときは拒否し、推測で停止しない。複製経路の深さ/数は第18.5節の新規plan上限を適用する。共通側に存在しない展開限度を既存の保証として使わない。
+
+最悪時は選択networkまでたどり、既存networkの該当child型参照を書き換えて止める。networkはsubmodule型として使えない共通規則と、sessionのactive networkが1つであることに依拠する。networkの名前を変更/複製するとroot実体pathが短名由来で変わるため、実体path保持を目的とする本操作ではnetwork宣言自体を別名複製しない。「networkまでCOW」とは親伝播とroot接続更新まで含む意味で、network renameは含まない。複数NED rootと複数network宣言があってもactive networkは1つ。他のnetwork宣言の子型参照を変更しない。捕捉していない外部プロジェクトへ影響がないという保証はしない。
+
+対象が元から非共有でも明示要求に従い対象型は複製する。内部子型まで再帰的に全部deep-copyはしない。複製後、内部共有子の独立化が必要ならその実体に同じ操作を行う。1要求1実体に限定し、複数対象間の共有祖先重複最適化は実装しない。
+
+### 20.3. 原文・配置・意味
+
+宣言の正確なspanをコピーする。宣言内部のcommentはコピー、直前のfile-level commentは暗黙に奪わず元に残す。移動先が別ファイルでもコピー部分の既存改行は保持し、挿入separatorのみ移動先の規約に従う。BOMはファイル先頭にだけ置く。layoutの原型entryを複製型のentryへコピーし、子名が同じなのでnode座標を維持、原型entryは残す。別NEDへ複製するときはdestination layoutへ移送しsource_fileは宛先basename、未知extra fieldsを保持する。対象型entryに既存衝突があれば拒否し上書きしない。
+
+semantic evidenceは、全実体path集合、gate方向/接続、channel設定、解決済みparameter値、実装class、workload/routeの参照先/ID/順序が完全一致すること。変更許容集合は追加宣言、計画した実体から参照する宣言の対応、共有性を否定した既存親宣言の指定child型参照、active networkの指定child型参照に限る。既存親を直接patchする停止点とその共有性の証拠もplanへ列挙する。複製元として残す対象型と共有祖先の宣言bytesは不変、非選択実体は元の宣言対応への束縛を保持する。ファイルhash更新で内部DeclarationIdが変わる場合はbefore/after対応表で照合し、ID文字列の一致を求めない。prepareのhashや記録された型名そのものを丸ごと比較して不一致を誤判定しない。parse/prepareが成功しただけでは実体限定性の証明としない。
+
+<a id="editor-batch-rename"></a>
+
+## 21. 一括リネーム（NE-X04）
+
+### 21.1. スコープを固定する
+
+一括対象は取得済みNEDの型宣言（simple/module/channel/networkのローカル型名）、型に所有されるsubmodule名、gate名、parameter名。型のpackageは固定。submodule変更は型定義の編集であり、その型を使う全実体のpathが変更される。単一実体だけの名前変更を要求する場合は先に実体固有化を実行し、その型内のmemberを変更する。package変更、既存file移動/rename、JSON generator/route ID変更、任意文字列置換、regex置換、標準実装class名変更は対象外。
+
+```text
+RenameSymbols {
+  entries: [{ target_symbol_id, expected_old_name, new_local_name }]
+}
+```
+
+対象は画面で解決済みsymbolを選ぶ。入力順を操作の意味にせず、全旧ID→全最終名を同時に適用する。同一targetの重複、空/new名不正、同種所有者内の最終name衝突、複数rootを跨ぐ型完全名衝突を事前拒否。A→B/B→Aや3要素cycleは最終namespaceに衝突がなければ許可し、一時名を原文や履歴へ公開しない。submodule/gate/parameterの各namespaceと相互制約は共通parse/resolveに従い、エディタ独自の「別種なら常に許可」を作らない。
+
+### 21.2. 更新規則
+
+- 型：宣言name token、全取得済み型使用、channel型参照、INI network値をsymbol解決で更新する。network renameはactive root実体の短名も変わるので、実体path mappingを共通展開から作り、関連全参照を更新する。非active network renameはその宣言/型参照だけが対象。
+- submodule：所有型のchild名、所有型connectionのchild segment、展開した全利用実体のpathと子孫prefix、Channel ID、INI/JSONの型付き参照を更新する。文字列starts_withのみでprefix置換せずpath segment ID列の対応で更新し、`a`を変更しても`aa`を変更しない。
+- gate：自身のgate宣言、自身のconnection端点、対象型をchildとして使う全親の該当child.gate endpoint、Channel ID中のstart gateを更新する。endpoint解決でown gateとchild gateを区別する。
+- parameter：所有型parameter宣言、該当型の全展開実体を指すINI完全キーのparameter segmentを更新。任意文字列defaultをparameter参照として扱わない。標準classのschemaが固定名を要求するparameter/gateは改名できない場合があるため、共通schemaの制約をpreviewで検査し、固定名の変更は具体的な理由で拒否する。`@class`を同時に変えて制約を迂回しない。
+- workload/model-config：前記型付きJSON参照位置の値のみJSON正規escapeを使ってpatch。generator ID、route ID、タイミング・数値・配列順・未知の非参照項目は保持する。現行CAN/Gateway schemaは完全path一致で解決し、bare aliasや未知pathを受け付けない。JSONはschemaで分類した値とpointerを再照合する。
+- layout：型名keyとchild node keyを同時変換して最終衝突を検査する。型変更とchild変更の同時指定は合成mapを一度適用する。位置/collapsed/未知extraを維持。stale entryが新keyと衝突する場合は勝手に捨てず拒否し、layoutの既存修復フローを案内する。`source_file`は既存ファイル名が変わらないので変更しない。
+
+### 21.3. wildcard・優先順位・未解決参照
+
+現行共通INIではwildcardキーは受理しない。`input.rs`のIni::parseがpath_name検査で`unknown_parameter`として拒否し、resolverも完全な実体path一致のみである。`*.x`/`**.x`などがあるsnapshotは診断を示して一括操作を拒否する。pattern展開やexact overrideの自動追加で動作を補償しない。今回、wildcard構文、matcher、優先順位を新設しない。元が有効なら、rename後もexact assignment→NED default→model defaultという既存の値選択と値を保持する。INIキー/Channel IDが同じ最終keyへ収束する場合は、値が等しくても重複として拒否する。
+
+将来共通INI側にpatternが追加された場合、この機能をそのまま有効としない。共通側から各ruleのmatch集合、順序、winnerの証拠を取得し、rename対応後に同じ実体に同じwinner/valueが適用されることを証明できるAPIと受入試験が揃うまでunsupportedにする。現時点で未知のpattern優先順位を本設計が決めたことにはしない。
+
+### 21.4. 意味保存と局所patch
+
+全patchはbefore snapshotのspan上で作り、同一spanは最終置換値が同じときだけ統合し、競合/重なりを拒否。file単位で降順適用し、UTF-8境界/hashを検査する。コピー区間内の差分と既存区間の差分を混同しない。既存ファイルのpatch範囲外bytesはBOM/CRLF/comment/空白/文字列を含め完全一致することを検査する。新規生成ファイルだけtemplateのformat規則で組み立てる。
+
+renameはidentity mappingによるalpha-equivalenceを要求する。before/afterの宣言・実体・gate・parameter・connection・JSON参照・INI値の対応を全単射で比較し、変更対象以外の名前/型/値/結線/順序は同じ。実行上派生するpath由来IDは明示mapに含める。`prepare_with_source`成功と、この構造比較の双方が必要。入力hash/manifest provenance/型やpath由来の表示IDは変更が当然あり得るため同一hashは要件にしない。 Multibusのlexical bus順が変わる場合は、各before/afterで`PreparedCan.bus_id/bitrate == buses[0]`の派生関係を確認し、全busの対応path→bitrate、controller→bus/Gateway、入力値と採用出典を別比較する。この表示用2fieldに実差がある場合だけsemantic_evidenceへ列挙し、他のruntime差を許容しない。比較から何を除外したかはsemantic_evidenceに型付きで列挙し、任意フィールドを無差別に除外しない。
+
+<a id="editor-run-viewer"></a>
+
+## 22. シミュレーション実行とViewer連携（NE-X05・06）
+
+本節の実行・結果照合・Viewer連携はv1.1.5に実装した。既存7ブロック、保存／復旧、原文snapshot、単調revision/input_revision、writer epoch、command ledger、202 job、32 MiB Undoの契約を維持する。実施済み試験と未確認の境界は第23.3節で管理する。
+
+### 22.1. 共通入口と追加した能力
+
+| 区分 | 確認した入口・責務 |
+|---|---|
+| 現行B5 | `analysis::prepare(&ProjectSnapshot) -> Result<PreparedSimulation, Diagnostic>` は共通 `prepare_with_source(&project.config, &project.cwd, &project.source())` に委譲する。取得済み入力を使える |
+| 現行実行 | 公開 `run_with_diagnostics(PreparedSimulation, &Path) -> Result<RunReport, Box<RunFailure>>`。同期呼出しで、取消token・進捗callback・resumeはない |
+| 現行結果 | `RunReport` の `manifest_path/output_path/partial/termination/exit_code/committed_events/finish_ps/last_event_time_ps/diagnostics` を用いる。diagnosticsはSerializeでskipされるのでworker応答には明示して別途含める |
+| 現行失敗 | `RunFailure.diagnostic/prior_diagnostics/original_termination` を失わない。実行診断に続く公開失敗も保持する |
+| 現行Viewer | 公開 `viewer::write(input: &Path, output: &Path) -> Result<PathBuf, Diagnostic>`。schema 1/2と対応profileを確認し、新規自己完結HTMLを上書きせず公開する。HTTP server、結果manifest検証、再生全レコード検証はこのAPIの機能ではない |
+| 現行CLI | validateはディスクに対してprepare、runはrun_config、viewはviewer::write。viewはブラウザを起動しない。CLI runの終了コードだけから公開済みartifactを判定しない |
+| 後段拡張 | RunSnapshotの耐久化・復元codec、RunCoordinator、内部workerプロトコル、run台帳、artifact整合検査、独立Viewer配信、CSP情報を返すViewer生成入口。公開既存APIは互換維持 |
+
+B7がfreeze・台帳・実行worker・状態遷移を統括し、B4が独立run領域のファイルI/Oと所有identityを管理、B5が同じ共通prepareを呼ぶ。B2は操作要求、B6はrunカードを表示、B3はsnapshotを提供する。第8ブロックや別パーサーは設けない。run領域管理はB4の追加責務だが、既存SavePlanや保存journalの完了を偽装しない。
+
+### 22.2. 実行前提とUI操作
+
+「現在の編集内容を実行」を追加する。B2は既存flushAllでIME終了と全変更の終端ackを待ち、確定したbase_revisionを送る。writerであること、通常編集状態であること、B4が復旧専用状態でないこと、プロジェクトが存在することをB7が検査する。先行保存／Reload／編集jobが実行中なら既存busy契約に従い未受領409とし、順序を追い越さない。
+
+保存済みであることは前提にしない。ディスク由来のdirty入力、新規Untitled、未保存追加ファイルも、取得済みsnapshotに必要入力が揃い共通prepareに合格すれば実行できる。構文／意味不正は実行runのprepare_failedとなり、原文は保持する。読込元を削除した後も同じsnapshotから実行可能であり、元入力を再読込・存在確認しない。snapshotに存在しない入力をディスクから補うことは禁止する。
+
+画面には「実行対象: revision R / input_revision I / 未保存の編集を含む」、snapshot ID、input digest、実行開始時刻、経過時間、状態、結果公開状態を表示する。進捗率と実行中イベント数は現行APIで取得できないので推測表示しない。freeze完了後は通常編集・Undo・保存・Reload・新規作成を続けられる。現在のinput stampがrunと異なると「過去の入力の結果」を表示する。layoutだけの変更は入力差分に数えない。実行はdirtyや保存基準を更新せず、Undo履歴へ入れず、revision/input_revisionを増加させない。
+
+操作は「実行」「停止」「結果をViewerで開く」「結果一式を取得」。Viewerは公開・整合確認済み結果だけで有効にする。「保存して実行」を独立の暗黙保存動作にしない。必要なら利用者が既存保存を完了した後に実行する。結果カードと診断はrun専用に保持し、後続編集の正式検証結果を上書きしない。
+
+![固定snapshotの実行とViewer連携](../../diagrams/tool-ned-editor-spec/tool-ned-editor-spec--run-snapshot-viewer--sequence.svg)
+
+[図のソース](../../diagrams/tool-ned-editor-spec/tool-ned-editor-spec--run-snapshot-viewer--sequence.puml)
+
+### 22.3. freeze、耐久化、入力と出力の対応
+
+B7の短い直列化区間で `{session_id, command_id, project_instance_id, revision, input_revision, snapshot_id, input_digest, origin, dirty_at_start}` と `Arc<ProjectSnapshot>` を固定する。project_instance_idはNewProjectと成功Reloadで新規発行するモデル世代の識別に追加し、runには固定時の世代を残す。失敗したNew/Reloadで世代を変更しない。snapshotコピーの書込みとworker実行中にB3 lockを保持しない。
+
+サービス起動時の `--state-root` 配下に所有者専用0700の `runs/<run_id>/` をcreate_new相当で確保する。子構成は `input/`（原文bundle）、`control/`（台帳・worker応答）、`result/`（既存export専用）、`viewer/`（派生HTML）とする。run_idは推測困難な新規IDで、ブラウザからパスを指定しない。resultは未作成または空で既存reserve_outputへ渡す。入力／保存先／他runと重ならないことを起動時と作成時に検査し、symlink・外部hardlink・未知所有物を拒否する。競合先を掃除して空にしない。
+
+RunSnapshot codec（新規内部API）は原文UTF-8 bytesを変更せず、論理config/cwd、root順、directory entry/種別、metadata、file ID・役割・論理path・hashを保存する。blob名はpathの流用ではなくfile IDに対応する不透明IDとし、論理pathはデータとしてのみ扱う。全入力を長さ付きschema付きdigestで束ね、ファイルと台帳をfsyncし、最後にsnapshot commit markerをatomic publishする。layoutは入力digestに混ぜず、必要な表示出典として別保存する。解析済みRust構造やPreparedSimulationそのものは直列化せずworker側で共通parse/prepareを再実行する。
+
+対応表は `{file_id, roles, original_logical_path, original_hash_at_load, frozen_hash, bundle_blob_id}`。原文はINIの参照pathを含め書換えない。workerはbundleからSnapshotInputSourceを再構築し、論理config/cwdを渡す。論理絶対pathが元環境を指していても、read/metadata/read_dirはbundleのみから返す。この方式で入力削除後も実行し、共通出力common.inputsのpathとhashを保持する。パスの再配置が必要な可搬入力保存は既存B4 SaveAsの別操作とし、run内bundleをそのまま `run --config` で読めるとは説明しない。
+
+B7が耐久化したrun_idを共通実行のidentityにも使う。worker起動時刻を先にcontrol台帳へ耐久化し、共通prepare成功後に内部workerが`PreparedSimulation.common.run_identity = Some(RunIdentity { run_id, started_at_utc })`を設定してからrun_with_diagnosticsへ渡す。これはcrate内の既存fieldを使う追加workerの処理であり、通常CLIのidentity生成を変更しない。commonの新しい乱数IDをeditor IDへ事後に読み替えない。prepare失敗時はeditor run_idと診断だけを保持し、存在しないengine結果を作らない。worker応答にもこのidentityと、共通prepareが実際に取得した`common.inputs`の順序付きpath/hashを含める。
+
+結果schemaを変更しない。`control/provenance.json` に上記stamp、対応表、実行バイナリversionとSHA-256、snapshot codec version、実行制限、開始終了時刻、結果manifest SHA-256、worker終了状況を保存する。result内manifestへ独自ファイルを後付けしない。結果ダウンロードはresultとprovenanceを兄弟ディレクトリとする。原文bundleの取得は別操作とし、結果だけの取得へ元入力を自動同梱しない。
+
+### 22.4. コマンド・runジョブ・再送
+
+既存202の「同一clientはそのjobの終端まで次の変更を送らない」を維持するため、StartRunコマンドのjobと長時間runを分離する。
+
+1. `/api/commands` の `kind: "start_run"` を既存command envelopeで受領し、短いfreeze/耐久化jobとして202を返す。この時点ではrunの実行開始を保証しない。
+2. snapshotと開始台帳が耐久化され、run_idを一度だけ割当てた時点で、このcommand/jobを200終端 `status: "run_created", run_id` とする。ここから次の編集を送れる。
+3. 長時間状態は `/api/runs/<run_id>` で照会する。command終端とrun終端をUIで混同しない。runのprepareはこの後にworkerで実行する。
+
+同一command IDと同一payload hashは既存ledgerの同一応答を返し、別workerを作らない。同一IDで異なるpayloadは409。受領前の上限超過は503/413でrunを作らない。freeze中の障害はcommandを失敗終端させ、所有が確認された未公開一時物だけ回収する。再起動前に耐久化済みの開始commandは回復一覧へ載せ、同じrunを照会できるようにする。旧session/epochの変更再送は拒否し、新writerで新command IDを作らずに履歴runを確認できる。クライアントへcommand終端を返す前にrun_idの対応を耐久化する。
+
+POST例（識別子名は既存envelopeへ揃える）:
+
+```json
+{"schema_version":1,"command_id":"client-A:14","session_id":"session-S","client_id":"client-A","writer_epoch":"2","client_sequence":"14","base_revision":"41","kind":"start_run","payload":{"wall_timeout_ms":"600000"}}
+```
+
+| 実装したHTTP操作 | 契約 |
+|---|---|
+| GET `/api/runs` | 当該state rootのrun一覧をcursorで50件ずつ返す。原文・secretを含めない |
+| GET `/api/runs/<id>` | stamp、phase、stop_reason、report、diagnostics、artifact_state、viewer_state。64bit値は十進文字列、Reportのexit_codeも既存値を意味変更しない |
+| POST `/api/commands` kind=`cancel_run` | payload `{run_id}`、現writer/epochとsequenceを検査。cancel要求の耐久化までの短いjob。終端runならno-op。取消受付はworker停止完了ではない |
+| POST `/api/commands` kind=`build_viewer` | payload `{run_id}`。公開結果hash固定で派生生成を一度実行。再送は同じviewer job。Viewer失敗でrun成功を取り消さない |
+| GET `/api/runs/<id>/inputs` | 固定入力のfile ID・original logical path・frozen hashの一覧。原文は別照会で取得する |
+| GET `/api/runs/<id>/input/<file_id>` | frozen原文を`readonly=true`で返す。現在編集中の原文を置き換えない |
+| GET `/api/runs/<id>/artifacts` | 整合確認済み結果ファイルとprovenance.jsonの許可一覧。artifact ID・bytes・hash・認証付き取得URLを返す |
+| GET `/api/runs/<id>/artifacts/<artifact_id>` | 台帳の許可リストからFDを開きhash/identityを確認するダウンロード。パス／任意filenameを受け付けない |
+| POST `/api/commands` kind=`revoke_viewer` / `delete_run` | payload `{run_id}`。閲覧capabilityの失効／終端runの明示削除。active runやダウンロード/Viewer参照中の削除は拒否 |
+
+結果の取得は上記一覧からファイルを個別に選ぶ。結果ZIPを自動生成せず、固定入力原文も結果へ同梱しない。原文表示と結果/provenance取得は別操作である。
+
+既存 `/api/jobs/<id>` はfreeze、cancel、Viewer生成のcommand jobを照会する。run状態更新はview_sequenceを進めるがB3 revisionを進めない。unknown=404、既知の削除済み／期限切れ=410。既存secret/Host/Origin検査を全editor APIへ適用する。
+
+### 22.5. worker、並行性、状態遷移と終端
+
+内部workerは同じ実行ファイルをshellを介さず`--ned-editor-run-worker`で起動し、stdin/stdoutの4byte長付きJSONで検査済みrun IDとbundle情報を渡す。snapshotを検証→B5 prepare→既存run_with_diagnostics→構造化応答の順。workerプロトコルはlength付きJSONで上限を持ち、stdoutの人間向けログを解析しない。秘密のeditor session値は引数・環境・bundle・結果に渡さない。
+
+| phase | 遷移条件 |
+|---|---|
+| queued | run_createdの耐久化後。worker slot待ち |
+| preparing | bundle検査と共通prepare中。失敗はprepare_failed |
+| running | PreparedSimulationを既存runへ引渡し済み |
+| verifying | workerが閉じた結果と応答を検査。ここでは新cancelをno-opとする |
+| completed / partial | RunReportと結果manifest・必要artifactが整合。partialはreport.partial=trueに従う |
+| prepare_failed / execution_failed / output_failed | prepare診断／RunFailureと公開失敗／worker応答に従う。reportがないとき独自のRunReportを捏造しない |
+| stopping | cancel/timeout/resource_limit/service_shutdownの停止理由を先着一つ耐久化し、workerへ停止処理 |
+| cancelled / timed_out / resource_limited / interrupted | 公開済み整合結果がない状態で停止確定。artifact_state=unpublished |
+| integrity_failed | manifestと応答またはartifact hashが不一致。Viewerは禁止し、所有物を保全 |
+
+終了raceはB7の一つのrun lockで決める。worker完了の受理が先ならverifyingへ、停止受付が先ならstoppingへ進める。ただし停止中でもworker終了後に完全なmanifestが残れば検査する。応答が失われた場合も第22.6節のmanifest-only回復を適用し、復元できない測定値はnull、worker応答はunavailableとして保持する。妥当な結果があればreportに従いcompleted/partialとし、stop_reasonと「停止要求前後に結果公開が完了」を別表示する。停止理由だけで結果partial=trueに書換えない。
+
+現行APIに協調中断はない。初期実装ではSIGTERM、2秒後SIGKILLでprocess groupを停止して必ずwait/reapする。途中結果のexportやresumeは保証しない。強制終了でspoolや一部JSONが残ってもmanifest未公開なら結果として扱わない。安定した部分結果を取消時にも生成する能力は将来の別API `run_with_control` と各runtimeの協調停止設計が必要であり、本設計の実装範囲へ黙って含めない。
+
+wall timeoutはworker起動からprepare・simulate・exportを通して測り既定10分、要求範囲1秒〜60分。queued時間はwall timeoutへ含めず、画面は実行待ちのphaseとして表示する。サービス全体worker同時実行1、待機run最大2、freeze処理1。凍結入力は1run当たり256 MiB・10,000ファイルまで、合計pin済みsnapshot 512 MiBまで。Undo 32 MiBとは独立に課金し、受領前に判定する。追加容量に余裕がなければ503、単独超過413。実装初期の運用上限で、性能保証値ではない。
+
+WSL Ubuntu対象workerにOSのaddress space上限4 GiB、単一ファイル上限1 GiBを適用する。これらはworker専用のhard上限であり、設定不能なら実行受付を拒否する。run領域総量2 GiB、state root runs総量10 GiBは事前受付確認と1秒ごとのsoft監視で扱い、超過検知時は新規受付停止・対象worker停止へ進む。一時超過と他processによる容量消費は防げず、hard総量quotaや共通exportへのquota追加は今回の初期設計に含めない。ENOSPCは既存の出力失敗として保全・報告する。stdout/stderrログは各1 MiBの末尾ring、構造化応答は8 MiB上限。超過したworker応答全体はprivate controlの`large-worker-response.json`へ保全する。prepare失敗・実行/公開失敗はcode・位置・元の終了理由を持つ上限付き要約で元の分類を維持し、全診断のartifact ID・hash・bytesを返す。要約は32 KiB以下、prior診断の要約合計は1 MiB以下とし、全件は保全ファイルに残す。認証済みartifact一覧・取得では要約のhash/bytesと所有FDを照合して全診断を取得できる。Report全体が輸送上限を超える場合は保全通知を返し、公開manifestから復元可能な結果だけ回復する。run結果は自動削除せず容量満杯時に受付停止し、明示削除だけで解放する。削除は現writer・対象run終端・ダウンロード/Viewer参照なしを確認する別commandとする。台帳の軽量tombstoneは残す。
+
+サービスはSIGINT/SIGTERMを受けると新規受付を止め、active workerをstoppingへ、上記停止猶予後reapする。時間・資源上限による停止は台帳I/O失敗でも物理的な停止を継続し、耐久化できなかった診断を区別する。Viewer生成も終了フラグと登録lockを再照合し、生成workerの回収が終わるまで終了しない。異常終了時はworkerの親死検知を設定し孤児実行を防ぐ。run統括はstate root内の`runs/.coordinator.lock`を排他取得した一processだけが行う。他processが保持中は追加実行・取消・Viewer生成・削除をbusyとし、通常の編集/保存には既存の排他規則を使う。再起動したlock所有者は所有identityと耐久化台帳・manifest・worker応答を突合せ、完了結果は回復、公開なしactiveはinterrupted、queuedはinterruptedとして自動再実行しない。PIDだけを根拠に無関係processへsignalを送らない。B4の既存保存復旧を優先し、run清掃で保存journalへ触れない。
+
+### 22.6. 結果判定、診断、出典
+
+RunReport Okは必ずしも成功ではない。現行runの `prep_failed=>exit_code 2`、`partial=>3`、それ以外0を保持し、terminationの文字列もそのまま表示する。未知terminationは「未知の終了理由」と表示し、勝手に正常分類しない。共通result出力のmanifest-last契約を利用し、manifestに列挙されたartifactを閉じた状態でschema・サイズ・hash確認する。パスはresult配下の許可相対pathだけとし、絶対path、`..`、symlinkを拒否する。共通outputの`validate_result_bundle`でschema・期待出典・manifest許可artifactを検査し、エディタ専用schema判定を作らない。
+
+結果validatorはまず耐久化済みの期待run_idとmanifest/resultsのidentityを照合し、workerのcommon.inputsとfrozen入力対応表のpath/hash、結果metadataの入力出典も共通側の正規化で照合する。取得した入力はすべて固定bundleに存在して同じhashであることを求める。common.inputsの取得順はworker応答へ保持し、結果metadataは現行のlogical_path順へのsortと正規化に従って比較する。metadataの順序/schemaを変更しない。未取得の補助blobまで結果の入力として捏造しない。Report、manifest、results内のtermination／partialがschema上存在する範囲で一致することも検査する。別runの内部整合した一式でも期待identity/入力出典に合わなければintegrity_failedとする。結果公開の証拠がmanifestのみ残りworker応答が失われた場合は、共通結果readerで復元可能な値だけ取得し、reportはnull、復元した結果証拠は`recovered_result`へ分け、worker_responseは`unavailable`とする。根拠のない成功Reportを生成しない。
+
+診断は `{run_id, source_stamp, phase, diagnostic}` として保存する。実行診断、公開診断、Viewer生成診断は起源を分ける。RunFailureのprior_diagnostics→diagnosticの順とcodeを維持する。「実行時の原文」は固定bundleのfile ID/hashからファイルを選ぶ読取専用表示で、現在の原文を変更しない。診断から現在ソースへ自動移動する機能と混同しない。入力由来のメッセージをHTMLとして挿入しない。
+
+### 22.7. Viewer生成・独立配信の境界
+
+result整合検査後、同一バイナリの制限付きViewer workerで共通`render_input_with_policy`を呼ぶ。OSのaddress space 4 GiB・単一出力1 GiB、生成実時間10分を上限とし、大きな結果のJSON展開は編集プロセスへ持ち込まない。親は検査済み入力FDと原子的に新規作成した出力FDを回収まで保持し、子は親のproc FDから複製して原pathを再解決しない。出力identityを生成前に記録し、生成後のidentity/hashも照合する。既存HTMLは上書きしない。Viewerは編集画面へ埋め込まず、独立した127.0.0.1の別ポートで配信し、新規タブを `noopener,noreferrer` で開く。エディタのwriter権限やsession secretをViewerへ渡さない。Viewerは入力編集APIを提供しない。URLはrun IDと別に生成した256bitの読取専用capabilityを含むopaque pathとし、対象の一つのHTMLのみ読める。capabilityはアクセスログに記録せず、provenance/HTML/結果ファイルへ埋め込まない。明示失効・サービス再起動で破棄し、新URLは認証済みeditor API経由で取得する。TTLは発行後1時間とし、期限後は410。履歴に残るURLが読取権限を持つことをUIで明示する。
+
+Viewer listenerはHostの唯一値を実際の127.0.0.1:portに完全一致で検査し、listenはloopback限定。GET/HEADのみ、未知path拒否、directory listing／任意path配信禁止。Originがある場合は自身のoriginだけを許可し、通常のtop-level navigationのOrigin欠落を許可する。CORS許可headerを付けない。`Cache-Control: no-store`、`Referrer-Policy: no-referrer`、`X-Content-Type-Options: nosniff`、`Cross-Origin-Opener-Policy: same-origin` を付ける。editor originと同一にせず、editor側のHost/Origin/secret検査も維持する。
+
+既存editor CSPのscript-src selfでは自己完結Viewerのinline scriptを実行できない。共通Viewerの公開API `write_with_policy(input, output) -> ViewerArtifact {path, sha256, script_hashes, style_hashes}`と内部の`render_input_with_policy`は同じrenderを使う。render時に実際に出力する固定script本文のSHA-256を返し、従来writeは同実装に委譲してpathだけ返す。結果JSONを実行scriptへ変換しない。HTTP CSPは `default-src 'none'; script-src <生成時のsha256一覧>; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'` とする。style-srcのinline許可は既存Viewerの動的style属性へ対応するためViewer originに限定する。scriptのunsafe-inline/unsafe-evalは許可しない。生成HTML内のJSON閉じタグ対策を保持する。ViewerArtifactのscript_hashes/style_hashesは出力本文から算出した引用符付きCSP source expressionであり、固定asset以外のscript実行を許可しない。
+
+Viewer失敗／非対応profile／ブラウザ側レコード検証失敗は「結果は生成済み、Viewerで表示不可」とする。結果ファイルは維持し、run自体の正常／部分終了と別に扱う。Viewer生成成功は再生検証成功を保証しない。
+
+<a id="editor-extension-verification"></a>
+
+## 23. 実装順と追加拡張の受入検証
+
+### 23.1. 実装への割当と順序
+
+`NE-X`・`NE-XC`は第18.1節のローカルID規則で実装・受入へ対応させる。正式DIR要求IDを新設せず、生成済みtraceability文書を手編集しない。実装順の各段階は第18.6節の補助モジュールへ割り当てた。
+
+1. 共通inputのspan/解決証拠APIを通常prepareへ任意collectorとして追加し、取得済み全宣言とNED/INI/JSONを分類する。
+2. B5の同時symbol/path対応と型付き意味比較、B3の追加NED bundle・履歴/metadata/layout lifecycleを実装する。
+3. 新規NED/欠落JSON候補をB1 template→B5 parse/prepare→B3一括採用へ接続し、集合変更後のSaveAsを表示する。
+4. 一括renameの全参照更新と実体COWの共有祖先解析・停止binding・コピー・layout保持を局所patchで実装する。
+5. B7 preview/job/confirmation/ledgerへ接続し、B2/B6が原文・配置の全影響と必要な名前を確認して一回だけ適用する。
+6. B4 RunSnapshot codec・台帳とB7の固定job、専用worker、停止/回復を追加し、command終端とrun終端を分ける。
+7. 共通artifact validator/CSP付きViewerへ接続し、別originの閲覧、固定原文、結果/provenanceの個別取得を提供する。
+
+実装の存在と受入証拠を区別する。Rust固定版のformat/clippy/locked tests、既存保存復旧・UI・実ブラウザ回帰と下表の境界ケースは、実施した条件を第23.3節へ記録して提供範囲を判断する。機能追加で第8ブロックや別のmodel/parser/validatorを作らず、既存settingsのJSON整形経路をrenameに流用しない。
+
+### 23.2. 受入ケースと必要な証拠
+
+以下の43ケースは受入条件の定義であり、表の存在は全43件の全条件を実施・合格した証拠ではない。実装試験と各ケースの条件・未確認範囲の対応は第23.3節に記載する。本文のNE-X01～06の分担と対応させる。各ケースは入力一式・実行バイナリ版/hash・原文と出力のhash・操作command/run ID・診断・履歴/状態を残す。ブラウザ試験は版と固定状態の画面証跡を記録する。
+
+| ケースID | 対象設計 | 区分 | 入力・操作 | 期待結果 |
+| --- | --- | --- | --- | --- |
+| NE-XC01 | NE-X02 | 正常 | root 2の`pkg/New.ned`を作成 | root 1無変更、package=pkg、parse成功、既存network意味不変、1履歴、ディスク無変更 |
+| NE-XC02 | NE-X02 | 正常 | 欠落workload/model-configをschema templateで作成 | JSON+INIが同時追加、prepare成功、Undoで両方戻る |
+| NE-XC03 | NE-X02 | 境界 | 同相対pathを別rootに追加、異なる完全型名 | 許可。完全型名が同じなら全体拒否 |
+| NE-XC04 | NE-X02 | 異常 | root直下空package、空NED、絶対path、traversal、symlink、case-fold衝突、既存role | 422、files/metadata/directories/history/revision完全不変 |
+| NE-XC05 | NE-X02 | 正常 | 作成→編集→Undo×2→Redo×2 | ID同一、各段bytes一致、parsed/layout/仮想dirに残骸なし |
+| NE-XC06 | NE-X02 | 境界 | 作成→SaveAs→Undo→同target保存→Redo | Undoはdisk無変更、保存はshape拒否、Redoでcheckpoint一致しdirty解消 |
+| NE-XC07 | NE-X02 | 異常 | preview後に出力予定pathを外部作成、SaveAs | B4で衝突拒否、既存fileを上書きしない |
+| NE-XC08 | NE-X03 | 正常 | Net.a/Net.bがRack共有、a.unitだけ固有化 | Device/RackのコピーとNet.a再結合、b原型維持、全path/値/結線同一 |
+| NE-XC09 | NE-X03 | 境界 | 共有が数階層、別rootの祖先、別networkから利用 | 必要階層をnetworkまで計画、非active networkは不変 |
+| NE-XC10 | NE-X03 | 境界 | 親が唯一利用/未使用型からも利用 | 唯一利用のみ既存親の指定child型参照をpatchして停止可、その前後対応を意味証拠へ記録。未使用型利用があればコピー継続 |
+| NE-XC11 | NE-X03 | 正常 | 別packageのNEDへ型と祖先コピー、原型に配置/extraあり | 子型/channel型の必要な修飾で元の解決先を保持、destinationに座標コピー、source配置保持、source_file妥当、Undo完全復元 |
+| NE-XC12 | NE-X03 | 異常 | network root/channel/未解決型/名前衝突/限度超 | 候補全体拒否、原型を部分変更しない |
+| NE-XC13 | NE-X04 | 正常 | 型+child+gate+parameterを一括変更 | NED/INI/Channel/JSON/layout全参照更新、非参照文字列/comment原文保持 |
+| NE-XC14 | NE-X04 | 境界 | A/B交換、3名cycle、親子両方rename | 全最終mapで成功、一時名なし、1履歴、逆変換完全一致 |
+| NE-XC15 | NE-X04 | 正常 | active network名変更 | root pathと全子孫参照/Channel ID更新、解決値/経路/設定ID保持 |
+| NE-XC16 | NE-X04 | 境界 | aとaa、同名memberの別owner、未使用型の参照 | ID/segmentに基づき対象だけ更新、未使用型内の型参照も漏れなし |
+| NE-XC17 | NE-X04 | 異常 | wildcard INI/重複key/未解決参照/未対応schema/曖昧alias | 理由付き拒否。exact override補償や文字列置換なし |
+| NE-XC18 | NE-X04 | 異常 | 最終symbol/INI/Channel/layout key衝突 | previewで拒否、値が等しくても勝手に統合しない |
+| NE-XC19 | NE-X01 | 境界 | BOM、CRLF、混在改行、非ASCII comment、JSON escaped path | patch外bytes同一、span境界妥当、意味比較成功 |
+| NE-XC20 | NE-X01 | 異常 | preview後編集/Undo/Reload/writer交代 | 古いcommitは409、再preview必要 |
+| NE-XC21 | NE-X01 | 境界 | 1操作32MiB丁度/1byte超、履歴200/201、plan/追加file/rename件数の境界、10分失効 | 既存履歴限度と新設plan限度を別に検査し、超過操作はatomic拒否、失効planは410 |
+| NE-XC22 | NE-X01 | 正常 | 同command再送/別payload再送/preview中ダイアログ取消/apply受領後閉じる/適用済みplanを別ID再送/候補panic | ledger再送、一回だけ採用、異payloadと別ID再適用拒否。preview取消は終端ack待ちでapplyせず、apply後は結果取得と明示Undo。未採用時無変更 |
+| NE-XC23 | NE-X01 | 正常 | 追加込みSaveAsの各B4 fault point | manifest復旧の前後状態一致、入力ID→複数出力対応保持、入力snapshotを出力pathへ改名しない |
+| NE-XC24 | NE-X05 | 正常 | 第22節の条件で操作・失敗を再現 | 保存済みbaselineを実行しCLIと既存正規化比較で結果同等。manifest、records、metrics、diagnosticsとViewer再生を確認する |
+| NE-XC25 | NE-X05 | 未保存 | 第22節の条件で操作・失敗を再現 | dirty原文／Untitled／新規ファイルを実行。run出典は編集hash、元ディスク不変、dirtyと保存基準不変 |
+| NE-XC26 | NE-X05 | 入力削除 | 第22節の条件で操作・失敗を再現 | load後に全元入力を削除して実行成功。未知snapshot pathはディスクに同名ファイルがあっても失敗 |
+| NE-XC27 | NE-X05 | freeze | 第22節の条件で操作・失敗を再現 | 実行受付後に入力編集・Undo・Reload・新規作成。runは固定内容、現在の診断は汚染されず、古い結果表示が正しい |
+| NE-XC28 | NE-X05 | flush | 第22節の条件で操作・失敗を再現 | IME途中、未ack入力、flush失敗中はrun作成しない。全部ack後の版のみ取得 |
+| NE-XC29 | NE-X05 | prepare失敗 | 第22節の条件で操作・失敗を再現 | 構文／意味エラーを別々に投入。原文保持、run prepare_failed、worker simulate未呼出し、位置は固定原文へ対応 |
+| NE-XC30 | NE-X05 | 部分結果 | 第22節の条件で操作・失敗を再現 | イベント上限等でreport.partial=true。exit_code 3、実termination、manifest整合、Viewerは存在するレコードのみ再生 |
+| NE-XC31 | NE-X05 | 公開失敗 | 第22節の条件で操作・失敗を再現 | ENOSPC/権限失敗を実行診断の後に注入。prior_diagnosticsとoriginal_terminationを保持、manifestなしならViewer不可 |
+| NE-XC32 | NE-X05 | 再送 | 第22節の条件で操作・失敗を再現 | 応答紛失後同commandを100回再送してrun/workerは1件。ID同一payload異なる場合409。freeze/job終端まで次のcommandを送らない |
+| NE-XC33 | NE-X05 | 取消race | 第22節の条件で操作・失敗を再現 | queued取消、prepare中、simulate中、export中、verifying入り口、manifest公開後・応答送信前の停止を固定barrierで再現。必ず一つの終端、workerをreap、manifestの有無と整合を正しく分類 |
+| NE-XC34 | NE-X05 | timeout/制限 | 第22節の条件で操作・失敗を再現 | 1秒・60分境界、範囲外、memory/file/総量soft監視/log上限を検査。制限でエディタ本体が停止しない |
+| NE-XC35 | NE-X05 | 再起動 | 第22節の条件で操作・失敗を再現 | freeze commit前後、run_created ack前後、manifest前後、worker応答前後、取消記録前後でkill。二重実行せず回復・interrupted・保全へ分類 |
+| NE-XC36 | NE-X05 | 出力競合 | 第22節の条件で操作・失敗を再現 | 同run ID、既存非空ディレクトリ、symlink差替え、外部hardlink、unknown entryを注入。入力／他run／保存復旧物を変更しない |
+| NE-XC37 | NE-X05 | 同時実行 | 第22節の条件で操作・失敗を再現、同じstate rootで2サービス起動 | 1実行+2待機、次の受付503、待機取消でslot解放。pin容量の境界±1byte。Undo 32 MiBとrun容量は独立。coordinator lock非所有者のrun変更はbusy、通常編集/保存は継続 |
+| NE-XC38 | NE-X06 | tamper | 第22節の条件で操作・失敗を再現 | artifact/manifest/応答hash変更、別runの内部整合した結果一式への交換、絶対path/../symlink参照を注入。integrity_failed、HTTPで漏洩せずViewer無効 |
+| NE-XC39 | NE-X06 | Viewer境界 | 第22節の条件で操作・失敗を再現 | 不正Host、複数Host、異origin、editor secretだけのViewerアクセス、Viewer capabilityでeditor操作、CORS要求を拒否。capability失効・TTL・再起動を検査 |
+| NE-XC40 | NE-X06 | Viewer CSP | 第22節の条件で操作・失敗を再現 | NED名・診断・結果文字列にHTML/script閉じタグを含める。実ブラウザでコード実行なし、CSP違反なく通常操作、外部通信なし、window.openerなし |
+| NE-XC41 | NE-X05 / NE-X06 | 表示証跡 | 第22節の条件で操作・失敗を再現 | 通常・部分・古い入力・Viewer失敗の画面を実ブラウザで固定状態撮影。実施時のブラウザ版・結果path・hashを記録 |
+| NE-XC42 | NE-X02 | 編集中 | 空のMultibusで新規module NEDを作成 | 構文成立なら追加成功、全体prepare失敗を表示。保存は無書込拒否、実行要求はbundle/台帳を耐久化してprepare_failed、simulate/結果exportなし。修正後は同じfile IDで成功 |
+| NE-XC43 | NE-X01 / NE-X04 / NE-X05 / NE-X06 | 全体GUI | 新規NED→実体固有化→型/子名交換→未保存実行→Viewer | すべてUI操作で一貫した実体・設定を保持し、編集履歴と実行出典を照合。保存復旧の現行回帰も合格 |
+
+Rust 1.85.0のfmt/clippy/locked tests、既存NED editorモデル・UI・保存復旧・実ブラウザ、共通prepare/run/output/Viewerの回帰を実施条件ごとに確認する。設計文書・リンク・図・traceabilityの一致は文書の構造確認であり、追加APIの動作や上のケースの合格を証明しない。
+
+### 23.3. 実装と検証記録（2026-10-12）
+
+4拡張をv1.1.5へ実装した。対象role、profile、rename kind、保存集合、停止・部分性、Viewerの権限境界は第18～22節に従う。省略されたmodel-profileは共通prepareと同じClassical CANとして扱う。公開済み`v1.1.4`タグは移動していない。
+
+| 対象 | 実施した確認 | 再実行する試験 |
+| --- | --- | --- |
+| NE-X01 / NE-X02 | previewは無変更、writer/版/digest/確認/期限/ledgerの照合、一回の採用、新規NED/JSON+INIの履歴・配置・仮想directory・ID復元、保存checkpointとshape拒否。保持した未送信原文もファイル消滅で破棄しない | [file creation](../../../crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs)、[edit plan](../../../crates/dir-simulator/src/tool/ned-editor/edit_plan_tests.rs)、[plan本体](../../../crates/dir-simulator/src/tool/ned-editor/refactor.rs)、[UI](../../../tests/ned_editor_extensions_ui.test.cjs) |
+| NE-X03 / NE-X04 | 全取得済み宣言の型付き参照、共有/唯一親・未使用型/別network・別packageのCOW、名前交換、INI/Channel/JSON/layoutの局所更新、comment/escaped JSON保持、prepareと型付き意味比較、Undo/Redoと選択再結合 | [common references](../../../crates/dir-simulator/src/input/references/tests.rs)、[refactor](../../../crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs)、[UI browser](../../../tests/ned_editor_extensions_browser.test.cjs) |
+| NE-X05 | 固定bundleの全元入力削除後のprepare/run、未知pathの無fallback、dirty/履歴保持、100回のcommand再送で一run、容量拒否のsequence未消費、queued取消、実workerのprepare失敗/timeout/停止/SIGKILL/reap、再起動の回復・中断、台帳書込失敗でも監視停止 | [snapshot codec](../../../crates/dir-simulator/src/tool/ned-editor/run_snapshot/tests.rs)、[run commands](../../../crates/dir-simulator/src/tool/ned-editor/run_command_tests.rs)、[run control](../../../crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs)、[shutdown](../../../tests/ned_editor_run_shutdown.test.cjs) |
+| NE-X06 | 期待Run ID/入力出典/artifact/manifest・Reportの照合、異run/改ざん/不正pathの拒否、manifest-only回復、参照中削除拒否と未知所有物保全、ViewerのHost/Origin/CSP/GET/HEAD/失効/期限、巨大prepare診断の要約・全診断取得・再起動 | [result validator](../../../crates/dir-simulator/src/output/validation.rs)、[Viewer server](../../../crates/dir-simulator/src/tool/ned-editor/run_control/viewer_server.rs)、[safety](../../../crates/dir-simulator/src/tool/ned-editor/run_control/safety_tests.rs)、[large response](../../../crates/dir-simulator/src/tool/ned-editor/run_control/large_response_tests.rs) |
+
+[追加ブラウザ試験](../../../tests/ned_editor_extensions_browser.test.cjs)は、新規NED→別ファイルCOW→型renameとchild名交換→同一ファイルCOWとUndo/Redo→SaveAs→CLI validate/run→元入力削除→通常のUI実行→未保存INI編集と部分実行→別originのViewer再生→失効→実行削除を通した。適用完了前の選択変更は待機し、変更のないpollで実行カードを置換しない。通常クリックによる削除を確認している。
+
+実施ブラウザはChromium `153.0.8010.12`、実行バイナリSHA-256は`e67d32738166c6e2de39401fef0246638f6601d6b8e550a39ea8754d6de99cdf`。一時証跡は`/tmp/dir-ned-extension-browser-IGcqXK/evidence/evidence.json`で、元入力/保存出力/result artifactのhash、固定run出典、browser版、画面hashを記録した。通常・過去入力・部分結果の画面とViewerの`0 → 238000000 ps`へのstepを撮影し、opener=null、CSP/consoleエラーなし、失効後410、削除後一覧から消失・個別照会410を確認した。証跡にeditor secretやViewer capability URLは保存しない。この一時フォルダはGit管理・配布資産ではなく、再生成は上記試験で行う。
+
+既存の[editor browser](../../../tests/ned_editor_browser.test.cjs)と[composition browser](../../../tests/ned_editor_composition_browser.test.cjs)も同じバイナリで成功した。Rust固定版のformat・全target Clippy・locked tests、Nodeのeditor UI/保存復旧/追加UI、各Viewer model、通常Viewer CLIの互換回帰を確認した。明示実行を要するworker/socket試験は新しくビルドした同一バイナリを指定して実行する。
+
+```bash
+cargo fmt --all -- --check
+cargo clippy --locked -p dir-simulator --all-targets -- -D warnings
+cargo test --locked -p dir-simulator
+cargo build --locked -p dir-simulator --bin dir-simulator
+DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" cargo test --locked -p dir-simulator --lib -- --ignored
+DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_run_shutdown.test.cjs
+node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs
+DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/*viewer_model.test.cjs
+PLAYWRIGHT_MODULE=/path/to/matching/playwright DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_extensions_browser.test.cjs
+```
+
+第23.2節の43ケースは条件を含む受入設計であり、番号全件の全条件を合格扱いにしていない。各freeze/manifest/応答境界での実process kill、全取消raceの固定barrier、実ENOSPC・4 GiB OOM・1 GiB出力・soft quota超過の網羅、全上限の境界±1byte、実電源断、別ブラウザ、大規模性能は本記録の証拠に含まれない。強制停止時の部分export/resumeも提供契約に含めない。文書のstrict traceability、生成物、リンク、図の検査は文書構造の確認として扱う。
+
+## PR #69 の不具合修正追補（未リリース）
+
+この追補は `pr69-runtime-viewer-fixes` の修正である。既存の `v1.1.5` 注釈タグは初回head `47cdd531…` を指し、この修正を含まない。正式リリース・タグ付替え・マージ・Issueクローズは本作業に含めない。作者の `c23855a` にある実flock解放を待つrestart fixtureを保持し、runtime `Lifetime::drop` は変更しない。
+
+Viewerの期限は発行から1時間。保存された `expires_at_ms` を現在時刻と比較し、期限到達時はURLキャッシュを除いて「Viewerを準備」を表示する。既存pollによる同一run一覧の再描画でも期限判定を先に行い、描画キャッシュを無効化する。背景タブなどpoll停止中に古いリンクをクリックした場合も通常の別タブ移動を防いで再準備操作へ戻す。再準備は明示操作であり、read-onlyや実行中の操作制限は維持する。
+
+run公開rename後のfsync失敗は最初のcommandの終端エラーを維持する。後続の容量確認・create経路はpendingの所有dirを照合し、recordを再永続化し、親dirのsync成功後だけrecordsへ移す。同commandのHTTP ledger再送は既存の終端結果を返し、追加runを生成しない。別commandも受付に進めるが、通常のキュー・容量・writer制限は引き続き適用する。同期が再び失敗した場合はpendingを保護し、実行可能なrecordへ移さない。
+
+HTMLの各生成を所有identityと結び付ける。失敗・取消ではworker終了後に所有出力だけを回収し、revoke・期限切れではrouteの参照を解放する。受理済みHTTP応答は同じ所有参照とleaseを保持し、最後の応答が終了するまでHTMLを回収しない。回収は検証済みrun配下の単一ファイルについてopen FDとpathのdev/ino・通常ファイル・link数を照合する。結果本体・入力・未知ファイル・差替えられたファイルを削除しない。inventory更新前に回収が中断し、既知ファイルが既に消えている場合は次回にinventoryを修復できる。
+
+旧サービスの応答が残る場合はleaseを優先する。起動・再準備・最後の所有参照終了時に、参照がない既知の旧生成だけを再試行する。identity未確定の予約や不一致を削除権限として扱わない。再帰的な削除対象を広げない。実装は `input.js` / `view.js`、run managerのpending復旧、Viewer所有参照、storageの単一identity削除へ分担する。inventoryの同期はrun状態mutexとは別のmutexを使い、状態を保持した失効からの回収で再帰lockを作らない。
+
+回帰は [検証報告](../../verification/results/pr69-fixes-2026-10-12/report.md) を参照する。期限境界の時計制御、HTTP終端再送と新command、20世代の最終参照回収、未知identity・中断回収・lease保護を検証する。過去の全43受入ケースや性能条件の完全合格を新たに主張するものではない。
+
+Viewerの旧世代回収はinventory snapshotからbatch完了まで同じmutexを保持する。遅延した最後の応答による二度目の回収は、inventoryとファイルが両方不存在の場合だけ削除なしで成功する。同名の未知ファイルがあれば拒否する。旧公開cleanupへbarrierだけを加えた同じ試験はUnknown Viewer allocation/422で失敗し、修正版は成功。全target clippyも成功。Issue #75で追跡しクローズしない。
