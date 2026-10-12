@@ -147,8 +147,7 @@ fn actual_giant_unknown_network_prepare_failure_remains_prepare_failed_after_res
         record.started_at_utc = Some(utc());
         persist(&manager.shared, record).unwrap();
     }
-    drop(manager);
-    let restarted = fixture.manager();
+    let restarted = fixture.restart(manager);
     let record = restarted.get(&id).unwrap();
     assert_eq!(record["phase"], "prepare_failed");
     assert_eq!(record["artifact_state"], "unpublished");

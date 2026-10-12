@@ -30,6 +30,38 @@ impl Fixture {
     fn manager(&self) -> RunManager {
         RunManager::open(&self.root.join("state"), &self.project.input_regions()).unwrap()
     }
+    fn close_manager(&self, manager: RunManager) {
+        let lock = Directory::open(&manager.shared.root)
+            .unwrap()
+            .open_file(".coordinator.lock")
+            .unwrap();
+        drop(manager);
+        // `finished` is notified before the detached coordinator drops its Shared
+        // Arc. Recovery requires the actual coordinator lock to be released.
+        let deadline = Instant::now() + Duration::from_secs(20);
+        loop {
+            match rustix::fs::flock(&lock, rustix::fs::FlockOperation::NonBlockingLockExclusive) {
+                Ok(()) => break,
+                Err(error) if error == rustix::io::Errno::WOULDBLOCK => {
+                    assert!(
+                        Instant::now() < deadline,
+                        "Timed out waiting for the previous coordinator lock to be released"
+                    );
+                    std::thread::yield_now();
+                }
+                Err(error) => panic!("Cannot acquire the released coordinator lock: {error}"),
+            }
+        }
+    }
+    fn restart(&self, manager: RunManager) -> RunManager {
+        self.close_manager(manager);
+        let restarted = self.manager();
+        assert!(
+            restarted.shared.owner,
+            "Restart must acquire coordinator ownership"
+        );
+        restarted
+    }
     fn stamp(&self, command: &str) -> RunStamp {
         RunStamp {
             session_id: "session".into(),
@@ -253,8 +285,18 @@ fn restart_never_reruns_queued_and_recovers_published_manifest() {
     let queued = f.create(&m, "queued");
     let done = f.create(&m, "done");
     f.publish(&m, &done, false, false);
+    // Hold the old Shared alive to deterministically reproduce the interval
+    // between the finished notification and the coordinator lock's release.
+    let shared = m.shared.clone();
     drop(m);
-    let m = f.manager();
+    assert!(shared.state.lock().unwrap().finished);
+    let readonly = f.manager();
+    assert!(!readonly.shared.owner);
+    assert_eq!(readonly.get(&queued).unwrap()["phase"], "interrupted");
+    assert_eq!(readonly.get(&done).unwrap()["phase"], "running");
+    assert_eq!(readonly.cancel(&done).unwrap_err().status, 503);
+    drop(shared);
+    let m = f.restart(readonly);
     assert_eq!(m.get(&queued).unwrap()["phase"], "interrupted");
     assert_eq!(m.get(&done).unwrap()["phase"], "completed");
     assert!(m.get(&done).unwrap()["report"].is_null());
@@ -325,8 +367,7 @@ fn staged_creation_and_tombstoned_deletion_recover_without_loading_partial_recor
     // Simulate deletion interrupted after removing its record; tombstone owns cleanup.
     fs::remove_file(m.shared.root.join(&id).join("control/record.json")).unwrap();
     drop(root);
-    drop(m);
-    let m = f.manager();
+    let m = f.restart(m);
     assert_eq!(m.get(&id).unwrap_err().status, 410);
     assert!(!m.shared.root.join(&id).exists());
     let root = Directory::open(&m.shared.root).unwrap();
@@ -342,8 +383,7 @@ fn staged_creation_and_tombstoned_deletion_recover_without_loading_partial_recor
     stage.mkdir("input").unwrap();
     drop(stage);
     drop(root);
-    drop(m);
-    let m = f.manager();
+    let m = f.restart(m);
     assert!(!m.shared.root.join(format!(".freeze-{staged_id}")).exists());
 }
 #[test]
@@ -584,7 +624,7 @@ fn unknown_descendants_are_preserved_before_delete_and_during_tombstone_recovery
         .unwrap();
     fs::write(&unknown, b"still-preserve").unwrap();
     let path = m.shared.root.clone();
-    drop(m);
+    f.close_manager(m);
     assert!(RunManager::open(&f.root.join("state"), &f.project.input_regions()).is_err());
     assert_eq!(
         fs::read(path.join(id).join("result/unknown")).unwrap(),
