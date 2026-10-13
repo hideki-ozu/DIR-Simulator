@@ -51,6 +51,7 @@ fn runtime_reason(error: &ModelError) -> &'static str {
         "model callback panicked" => "model_panic",
         "unknown destination"
         | "record identity changed or time regressed"
+        | "model record data must be an object"
         | "channel is outside this model's connections"
         | "unknown channel"
         | "unregistered channel capability schema/version"
@@ -70,6 +71,9 @@ fn runtime_reason(error: &ModelError) -> &'static str {
     }
 }
 fn record_key(record: &ModelRecord) -> ModelResult<String> {
+    if !record.data.is_object() {
+        return Err("model record data must be an object".into());
+    }
     let capacity = record
         .schema
         .name
@@ -1197,6 +1201,66 @@ mod tests {
         assert_eq!(arena.dirty, [(8, 0)]);
         assert!(arena.records.is_empty());
         assert!(snapshot.registered.unwrap().deliveries.is_empty());
+    }
+    #[test]
+    fn staged_non_object_record_preserves_committed_journal_and_reservations() {
+        let prepared = network_prepared();
+        let mut snapshot = Snapshot::empty(&prepared);
+        snapshot.registered = Some(RegisteredSnapshot::default());
+        let prefix = ModelRecord {
+            schema: Schema::new("ethernet.dynamic.policy", 1),
+            id: "test".into(),
+            subject: "@network".into(),
+            time_ps: 6,
+            data: serde_json::json!({"state":"committed"}),
+        };
+        let name = record_key(&prefix).unwrap();
+        snapshot
+            .registered
+            .as_mut()
+            .unwrap()
+            .model_records
+            .insert(name.clone(), prefix.clone());
+        let mut arena = NetworkArena {
+            queue: vec![(
+                (7, 0, 2, 3),
+                Work::Arbitration {
+                    owner: "@network".into(),
+                    resource: "network".into(),
+                },
+            )],
+            dirty: vec![(8, 0)],
+            records: vec![(name, prefix.clone())],
+        };
+        let mut invalid = prefix.clone();
+        invalid.time_ps = 7;
+        invalid.data = serde_json::json!(5);
+        let batch = EffectBatch {
+            effects: vec![
+                Effect::Arbitration("network".into()),
+                Effect::Record(invalid),
+            ],
+        };
+        let error = arena
+            .prepare((7, 0, 2, 3), batch, 11, 12, &mut snapshot, false)
+            .err()
+            .unwrap();
+        assert_eq!(runtime_reason(&error), "invalid_event");
+        assert_eq!(arena.queue.len(), 1);
+        assert_eq!(arena.queue[0].0, (7, 0, 2, 3));
+        assert_eq!(arena.dirty, [(8, 0)]);
+        assert_eq!(arena.records.len(), 1);
+        assert_eq!(arena.records[0].1.data, prefix.data);
+        assert!(snapshot.common.points.is_empty());
+        assert_eq!(
+            snapshot
+                .registered
+                .unwrap()
+                .model_record("ethernet.dynamic.policy", "test")
+                .unwrap()
+                .data,
+            prefix.data
+        );
     }
     #[test]
     fn staged_never_eligible_retains_queue_without_infinite_gate_ticks() {

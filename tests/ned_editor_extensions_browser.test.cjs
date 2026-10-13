@@ -740,6 +740,119 @@ async function main() {
     assert.equal(deletedResponse.status, 410, 'Deleted run records should return HTTP 410 Gone.');
     assert.equal((await readRuns()).some(run => run.run_id === partialRunId), false);
     evidence.partial_ui_run.deleted_from_api = true;
+
+    // Keep an actual prepare-failed run across edits and project replacement.
+    // Its diagnostics and fixed input belong to the run card, while the current
+    // diagnostics pane continues to describe only the current editor input.
+    await page.locator('#files button').filter({hasText: 'Main.ned'}).first().click();
+    await page.waitForFunction(() => document.getElementById('source-title').textContent.endsWith('Main.ned'));
+    const mainBeforeFailure = await viewForFile(mainFile.id);
+    const semanticFailureText = mainBeforeFailure.source.text.replace(/a\s*:\s*demo\.Controller\s*;/, 'a: demo.Missing;');
+    assert.notEqual(semanticFailureText, mainBeforeFailure.source.text);
+    const beforeFailureEdit = await rootView();
+    await page.locator('#source-editor').fill(semanticFailureText);
+    const failedInputView = await waitView(current => BigInt(current.input_revision) > BigInt(beforeFailureEdit.input_revision), 'Semantic failure source edit');
+    assert.deepEqual(failedInputView.diagnostics, [], 'This syntactically valid edit should not carry old semantic diagnostics.');
+    const failedRunId = await startRunFromUi();
+    const failedRun = await waitRun(failedRunId, 'Semantic prepare failure');
+    assert.equal(failedRun.phase, 'prepare_failed');
+    assert.equal(failedRun.artifact_state, 'unpublished');
+    assert.equal(failedRun.report, null);
+    assert.equal(failedRun.diagnostics.length, 1);
+    assert.equal(failedRun.diagnostics[0].diagnostic.reason, 'unknown_type');
+    const failedCard = page.locator(`#runs article.run-card[data-run-id="${failedRunId}"]`);
+    const isolationStages = [];
+    const assertRunIsolation = async (stage, past) => {
+      await page.locator('#refresh-runs').click();
+      await page.waitForFunction(({id, past}) => {
+        const card = document.querySelector('#runs article.run-card[data-run-id="' + id + '"]');
+        return card?.dataset.phase === 'prepare_failed' &&
+          card.querySelector('.run-source').textContent.includes('過去の入力の結果') === past &&
+          document.getElementById('diagnostic-count').textContent === '0';
+      }, {id: failedRunId, past});
+      const current = await rootView();
+      assert.deepEqual(current.diagnostics, [], `${stage}: old run diagnostics contaminated current input.`);
+      const run = await readRun(failedRunId);
+      assert.deepEqual(run.source_stamp, failedRun.source_stamp, `${stage}: run stamp changed.`);
+      assert.deepEqual(run.diagnostics, failedRun.diagnostics, `${stage}: run diagnostics changed.`);
+      const frozen = await apiJson(`/api/runs/${failedRunId}/input/${mainFile.id}`);
+      assert.equal(frozen.text, semanticFailureText, `${stage}: frozen input changed.`);
+      assert.equal(frozen.frozen_hash, sha256(Buffer.from(semanticFailureText, 'utf8')));
+      assert.match(await failedCard.innerText(), /demo\.Missing/);
+      assert.doesNotMatch(await page.locator('#diagnostics').innerText(), /demo\.Missing/);
+      isolationStages.push({stage, past_input: past, current_diagnostics: current.diagnostics.length, current_project_instance_id: current.project_instance_id, current_input_revision: current.input_revision, frozen_sha256: frozen.frozen_hash});
+    };
+    await assertRunIsolation('prepare-failed-current-input', false);
+    await page.locator('#source-editor').fill(mainBeforeFailure.source.text);
+    await waitView(current => current.input_digest !== failedInputView.input_digest, 'Repair after frozen prepare failure');
+    await assertRunIsolation('later-edit', true);
+    await page.locator('#undo').click();
+    await waitView(current => current.input_digest === failedInputView.input_digest && BigInt(current.input_revision) > BigInt(failedInputView.input_revision), 'Undo after frozen prepare failure');
+    await assertRunIsolation('undo', true);
+
+    // Restore only the test's copied, hash-verified baseline for a real Reload.
+    // Frozen runs were already executed/read with that source tree absent.
+    for (const [source, destination] of fixtureFiles) {
+      fs.mkdirSync(path.dirname(path.join(input, destination)), {recursive: true});
+      fs.copyFileSync(path.join(repo, source), path.join(input, destination));
+    }
+    assert.deepEqual(snapshotTree(input), inputBefore);
+    const beforeReload = await rootView();
+    await page.locator('#reload').click();
+    await waitDialog('元から再読込');
+    await page.locator('#dialog-submit').click();
+    await waitView(current => current.project_instance_id !== beforeReload.project_instance_id, 'Reload after frozen prepare failure');
+    await assertRunIsolation('reload', true);
+    await page.locator('#new-project').click();
+    await waitDialog('新規プロジェクト');
+    await page.locator('#project-template').selectOption('can');
+    await page.locator('#project-name-input').fill('LaterProject');
+    await page.locator('#dialog-submit').click();
+    await waitDialog('新規プロジェクトを作成');
+    const beforeNew = await rootView();
+    await page.locator('#dialog-submit').click();
+    await waitView(current => current.project_instance_id !== beforeNew.project_instance_id, 'New project after frozen prepare failure');
+    await assertRunIsolation('new-project', true);
+    await page.locator('#create-file').click();
+    await waitDialog('新規入力ファイル');
+    await chooseOption('#new-file-template', item => item.value === 'ned.module_empty', 'Empty NED template is unavailable after New.');
+    await page.locator('#dialog-submit').click();
+    await waitDialog('新規ファイルの場所と名前');
+    await chooseOption('#new-file-root', item => true, 'New project has no NED root.');
+    await page.locator('#new-file-path').fill('later/AfterRun.ned');
+    await page.locator('#new-file-name').fill('AfterRun');
+    await page.locator('#dialog-submit').click();
+    await waitDialog('変更計画を確認');
+    await page.locator('#dialog-submit').click();
+    await waitView(current => current.files.some(file => file.path.endsWith('AfterRun.ned')), 'File creation after frozen prepare failure');
+    await assertRunIsolation('create-file', true);
+    await addScreenshot('past-prepare-failed-run-current-diagnostics-isolated.png');
+    evidence.failed_run_isolation = {run_id: failedRunId, phase: failedRun.phase, diagnostic_reason: failedRun.diagnostics[0].diagnostic.reason, frozen_source_sha256: sha256(Buffer.from(semanticFailureText, 'utf8')), stages: isolationStages};
+    assert.deepEqual(snapshotTree(input), inputBefore, 'Later UI operations changed the restored source fixture.');
+    assert.deepEqual(snapshotTree(outputProject), savedTree, 'Later UI operations changed the saved CLI baseline.');
+
+    // A local test-owned artifact mismatch safely exercises the real Viewer
+    // failure UI. Preserve its original bytes/hash alongside the tamper hash.
+    const normalResultPath = path.join(state, 'runs', normalRunId, 'result/results.json');
+    const originalNormalBytes = fs.readFileSync(normalResultPath);
+    fs.writeFileSync(path.join(evidenceDir, 'normal-results-before-viewer-failure.json'), originalNormalBytes);
+    fs.appendFileSync(normalResultPath, '\n');
+    const normalCard = page.locator(normalCardSelector);
+    await normalCard.getByRole('button', {name: 'Viewerを準備', exact: true}).click();
+    await page.waitForFunction(id => {
+      const card = document.querySelector('#runs article.run-card[data-run-id="' + id + '"]');
+      return card?.textContent.includes('結果は生成済みです。Viewerを表示できませんでした。') &&
+        [...card.querySelectorAll('button')].some(button => button.textContent === 'Viewerを再準備') && !card.querySelector('a');
+    }, normalRunId);
+    const failedViewerRun = await readRun(normalRunId);
+    assert.equal(failedViewerRun.viewer_state, 'failed');
+    assert.equal(failedViewerRun.phase, 'completed');
+    assert.ok(failedViewerRun.diagnostics.some(row => row.phase === 'viewer' && row.error?.code === 'E-EDITOR-RUN-INTEGRITY'));
+    assert.deepEqual((await rootView()).diagnostics, [], 'Historical Viewer failure contaminated current project diagnostics.');
+    await page.waitForFunction(() => document.getElementById('diagnostic-count').textContent === '0');
+    assert.doesNotMatch(await page.locator('#diagnostics').innerText(), /artifact size or SHA-256 mismatch/);
+    await addScreenshot('viewer-failed-integrity-mismatch.png');
+    evidence.viewer_failure = {run_id: normalRunId, viewer_state: failedViewerRun.viewer_state, phase: failedViewerRun.phase, error_code: 'E-EDITOR-RUN-INTEGRITY', original_result_sha256: sha256(originalNormalBytes), tampered_result_sha256: hashFile(normalResultPath), tamper: 'one appended LF in local fixture results.json', viewer_link_absent: true, retry_visible: true, current_project_diagnostics: 0};
     evidence.page_errors = pageErrors;
     evidence.viewer_console_errors = viewerPageErrors;
     evidence.http_404_classifications = http404Classifications;
