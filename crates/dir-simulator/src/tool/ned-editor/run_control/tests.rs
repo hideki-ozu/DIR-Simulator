@@ -572,16 +572,7 @@ fn real_worker_smoke_when_binary_supplied() {
     .unwrap();
     let id = f.create(&m, "one");
     fs::remove_dir_all(f.root.join("source")).unwrap();
-    let until = Instant::now() + Duration::from_secs(15);
-    let result = loop {
-        let v = m.get(&id).unwrap();
-        if !m.record(&id).unwrap().active() {
-            break v;
-        }
-        assert!(Instant::now() < until, "worker did not finish: {v}");
-        let state = m.shared.state.lock().unwrap();
-        let _ = m.shared.wake.wait_timeout(state, Duration::from_millis(20));
-    };
+    let result = await_real_worker_completion(&m, &id).value();
     assert_eq!(result["phase"], "completed", "{result}");
     assert!(result["report"]["diagnostics"].is_array());
     assert_eq!(result["worker_exit"]["reaped"], true);
@@ -856,7 +847,21 @@ fn existing_shared_readable_state_parent_can_hold_private_runs() {
 }
 
 fn await_phase(manager: &RunManager, id: &str, wanted: impl Fn(&RunRecord) -> bool) -> RunRecord {
-    let deadline = Instant::now() + Duration::from_secs(20);
+    await_phase_with_timeout(manager, id, Duration::from_secs(20), wanted)
+}
+fn await_real_worker_completion(manager: &RunManager, id: &str) -> RunRecord {
+    // Debug CI workers can need more than 15-20 seconds to prepare, simulate,
+    // and authenticate the baseline artifacts. This bounds the test harness;
+    // it does not change the run's product wall timeout or control-path waits.
+    await_phase_with_timeout(manager, id, Duration::from_secs(60), |r| !r.active())
+}
+fn await_phase_with_timeout(
+    manager: &RunManager,
+    id: &str,
+    timeout: Duration,
+    wanted: impl Fn(&RunRecord) -> bool,
+) -> RunRecord {
+    let deadline = Instant::now() + timeout;
     loop {
         let r = manager.record(id).unwrap();
         if wanted(&r) {
@@ -1030,7 +1035,7 @@ fn real_worker_matches_saved_baseline_cli_manifest_records_metrics_and_diagnosti
     // Eliminate disk fallback after the saved baseline was measured.
     fs::remove_dir_all(f.root.join("source")).unwrap();
     let id = f.create(&m, "baseline-equivalence");
-    let record = await_phase(&m, &id, |r| !r.active());
+    let record = await_real_worker_completion(&m, &id);
     assert_eq!(record.phase, "completed", "{}", record.value());
     assert_eq!(record.artifact_state, "published");
     let bundle = validated(&m.shared, &record).unwrap();
@@ -1311,7 +1316,7 @@ fn real_worker_viewer_render_without_http() {
     )
     .unwrap();
     let id = f.create(&m, "one");
-    let r = await_phase(&m, &id, |r| !r.active());
+    let r = await_real_worker_completion(&m, &id);
     assert_eq!(r.phase, "completed");
     let mut bundle = validated(&m.shared, &r).unwrap();
     let input = bundle.artifacts.remove("results.json").unwrap();
