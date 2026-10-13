@@ -82,8 +82,10 @@ class Resources(HTMLParser):
                 elif not url.scheme and not url.netloc and url.path:
                     path = local_path(self.source, url.path)
                     value = f'https://github.com/hideki-ozu/DIR-Simulator/blob/{self.commit}/' + quote(path)
+                    if url.query:
+                        value += '?' + url.query
                     if url.fragment:
-                        value += '#' + quote(url.fragment)
+                        value += '#' + quote(url.fragment, safe='/%')
             updated.append(name if value is None else f'{name}="{escape(value, quote=True)}"')
         self.parts.append('<' + tag + ((' ' + ' '.join(updated)) if updated else '') + (' />' if closed else '>'))
 

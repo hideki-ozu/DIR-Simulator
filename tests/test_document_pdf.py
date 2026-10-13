@@ -1,5 +1,7 @@
 """Check PDF input provenance without launching a renderer in unit tests."""
 import importlib.util
+from html import escape
+from html.parser import HTMLParser
 from pathlib import Path
 import subprocess
 import tempfile
@@ -12,6 +14,37 @@ spec.loader.exec_module(pdf)
 
 
 class DocumentPdfTests(unittest.TestCase):
+    def test_relative_links_preserve_queries_and_fragments(self):
+        class Links(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.hrefs = []
+
+            def handle_starttag(self, tag, attrs):
+                if tag == 'a':
+                    self.hrefs.append(dict(attrs)['href'])
+
+        commit = '1' * 40
+        cases = [
+            ('guide.md?plain=1#section', 'docs/guide.md?plain=1#section'),
+            ('../README.md?plain=1&ref=a%2Fb&ref=two#entry',
+             'README.md?plain=1&ref=a%2Fb&ref=two#entry'),
+            ('guide.md?title=%E6%97%A5%E6%9C%AC%E8%AA%9E&mode=plain',
+             'docs/guide.md?title=%E6%97%A5%E6%9C%AC%E8%AA%9E&mode=plain'),
+            ('guide.md#section', 'docs/guide.md#section'),
+            ('guide.md?plain=1#%E6%97%A5%E6%9C%AC%E8%AA%9E',
+             'docs/guide.md?plain=1#%E6%97%A5%E6%9C%AC%E8%AA%9E'),
+            ('guide.md#日本語', 'docs/guide.md#%E6%97%A5%E6%9C%AC%E8%AA%9E'),
+        ]
+        for target, expected in cases:
+            with self.subTest(target=target):
+                renderer = pdf.Resources('docs/document.md', commit, {})
+                renderer.feed(f'<a href="{escape(target, quote=True)}">link</a>')
+                links = Links()
+                links.feed(''.join(renderer.parts))
+                self.assertEqual(links.hrefs,
+                                 [f'https://github.com/hideki-ozu/DIR-Simulator/blob/{commit}/{expected}'])
+
     def test_images_use_the_selected_commit_even_with_dirty_working_files(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
