@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.20`
+文書バージョン：`1.1.22`
 対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,8 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.22` | `2026-10-13` | AHBの応答待ちの独立実習・8入力ZIP・ERROR完了・実Viewerを追加。SoC成果物を保持 |
+| `1.1.21` | `2026-10-13` | SoC共有バスの調停の独立実習・6入力ZIP・実Viewer・metadata/nav検査を追加 |
 | `1.1.20` | `2026-10-12` | 第3push。最新mainを通常取り込みし共有メモリとAXIの入口・ZIP・両分岐履歴を統合。nav17/HTML18を明記 |
 | `1.1.19` | `2026-10-12` | 共有メモリの取得actorだけを変える独立実習・8入力ZIP・実Viewer・metadata検査を追加 |
 | `1.1.19` | `2026-10-12` | AXI書き込みストローブの独立実習・8入力ZIP・実Viewer・metadata/ページ数検査を追加 |
@@ -56,6 +58,10 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [AXIの書き込みストローブと部分更新](docs/guide/AXIの書き込みストローブと部分更新.md)では、WSTRBだけを変え、OKAY応答と更新バイトを正式v1.1.4で比較します。[8入力ZIP](docs/guide/downloads/axi-strobes-inputs.zip)を配布しています。
 
 [共有メモリの公開と取得権限](docs/guide/共有メモリの公開と取得権限.md)では、consumeのactorだけを変え、公開・取得・権限拒否と残るslotを正式v1.1.4で比較します。[8入力ZIP](docs/guide/downloads/shared-roles-inputs.zip)を配布しています。
+
+[SoC共有バスの調停と要求の待ち時間](docs/guide/SoC共有バスの調停と要求の待ち時間.md)では、調停だけを変え、同じ転送量でもsource別の待ちが変わることを正式v1.1.4で確認します。[6入力ZIP](docs/guide/downloads/soc-arbitration-inputs.zip)で再現できます。
+
+[AHBの応答待ちとERROR完了](docs/guide/AHBの応答待ちとERROR完了.md)では、targetのwait_cyclesだけを変え、競合待ち・応答待ち・OKAYとERRORの完了を正式v1.1.4で区別します。[8入力ZIP](docs/guide/downloads/ahb-wait-error-inputs.zip)で再現できます。
 
 初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。ガイドは公開済みです。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
 
