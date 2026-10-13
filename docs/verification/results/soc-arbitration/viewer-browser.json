@@ -1,0 +1,83 @@
+{
+  "browser": "153.0.8010.12",
+  "input_hashes": {
+    "repository/round_robin-viewer.html": "35854b671350f8defa5844de2cf4bcc51a729d372f95a14fe83723aa5ad40bd6",
+    "repository/round_robin/results.json": "b7a142e5041b17e16dad48a3c449a9002f88d6e0280885e5def8bfb31c3283fe",
+    "repository/round_robin/manifest.json": "7e607785db09c4ce7617ecf1618c2cf9f5dc3fa57b98f2879f7b510137f995e4",
+    "repository/fixed_priority-viewer.html": "bcdf1527203394ec81473c781d877dae95036ab1ab6f5527d91f0fe263c10161",
+    "repository/fixed_priority/results.json": "cba76be0ae62a76d73e1aaefb4f7256a06425d509c6a3642ec101f8f539c355e",
+    "repository/fixed_priority/manifest.json": "3160c52480eb73cac60bdf79b3c9c33dc47052c5d8845f2efbcba81465bcdab6"
+  },
+  "conditions": {
+    "round_robin": {
+      "time_ps": 95,
+      "counts": [
+        "3",
+        "0",
+        "0",
+        "3",
+        "0"
+      ],
+      "rows": "a:0\tMain.m0\tread\t完了\t0\t0\t30\na:1\tMain.m0\tread\t完了\t0\t60\t90\nb:0\tMain.m1\tread\t完了\t0\t30\t60",
+      "selected_request": {
+        "data": {
+          "active_plan": null,
+          "address": "0",
+          "bytes": "8",
+          "completed_ps": "60",
+          "drop_reason": null,
+          "generated_ps": "0",
+          "operation": "read",
+          "response": "OKAY",
+          "source": "Main.m1",
+          "start_ps": "30",
+          "status": "completed",
+          "target": "Main.t"
+        },
+        "origin_request_id": null,
+        "record_id": "b:0",
+        "request_id": "b:0",
+        "schema_name": "soc.transaction",
+        "schema_version": 1,
+        "subject": "Main.m1",
+        "time_ps": "60"
+      }
+    },
+    "fixed_priority": {
+      "time_ps": 95,
+      "counts": [
+        "3",
+        "0",
+        "0",
+        "3",
+        "0"
+      ],
+      "rows": "a:0\tMain.m0\tread\t完了\t0\t0\t30\na:1\tMain.m0\tread\t完了\t0\t30\t60\nb:0\tMain.m1\tread\t完了\t0\t60\t90",
+      "selected_request": {
+        "data": {
+          "active_plan": null,
+          "address": "0",
+          "bytes": "8",
+          "completed_ps": "90",
+          "drop_reason": null,
+          "generated_ps": "0",
+          "operation": "read",
+          "response": "OKAY",
+          "source": "Main.m1",
+          "start_ps": "60",
+          "status": "completed",
+          "target": "Main.t"
+        },
+        "origin_request_id": null,
+        "record_id": "b:0",
+        "request_id": "b:0",
+        "schema_name": "soc.transaction",
+        "schema_version": 1,
+        "subject": "Main.m1",
+        "time_ps": "90"
+      }
+    }
+  },
+  "status": "passed",
+  "errors": []
+}

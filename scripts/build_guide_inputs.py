@@ -42,6 +42,7 @@ def main():
     build(ROOT / 'examples/guide/ddr-refresh', OUTPUT.with_name('ddr-refresh-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/axi-strobes', OUTPUT.with_name('axi-strobes-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/shared-roles', OUTPUT.with_name('shared-roles-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/soc-arbitration', OUTPUT.with_name('soc-arbitration-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':
