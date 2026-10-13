@@ -1,6 +1,6 @@
 # AHBの応答待ちとERROR完了
 
-文書バージョン：`1.1.1`  
+文書バージョン：`1.1.2`  
 対象GitHubバージョン：`v1.1.4`  
 実測ソースcommit：`b45515644dfc65c205216d564d5bf7ef00280622`  
 文書ID：`guide-ahb-wait-error`  
@@ -10,6 +10,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-13` | SHA不一致でビルドへ進まないよう準備コマンドを連結 |
 | `1.1.1` | `2026-10-13` | 第2push。正式v1.1.4の固定checkout・ビルド・PATH手順を追加 |
 | `1.1.0` | `2026-10-13` | AHBの応答待ちだけを変える実習・OKAY/ERRORの実CLI・実Viewerを追加 |
 
@@ -46,15 +47,15 @@ NEDは4ノードと6本のgate接続です。Managerのrequest→Busの対応suf
 まだ存在しない `DIR-v1.1.4` ディレクトリへ取得し、commitが一致したときだけビルドを進めます。
 
 ```bash
-git clone --depth 1 --branch v1.1.4 --single-branch https://github.com/hideki-ozu/DIR-Simulator.git DIR-v1.1.4
-cd DIR-v1.1.4
-test "$(git rev-parse HEAD)" = b45515644dfc65c205216d564d5bf7ef00280622
-cargo build --locked --release --target-dir target -p dir-simulator
-export PATH="$PWD/target/release:$PATH"
+git clone --depth 1 --branch v1.1.4 --single-branch https://github.com/hideki-ozu/DIR-Simulator.git DIR-v1.1.4 &&
+cd DIR-v1.1.4 &&
+test "$(git rev-parse HEAD)" = b45515644dfc65c205216d564d5bf7ef00280622 &&
+cargo build --locked --release --target-dir target -p dir-simulator &&
+export PATH="$PWD/target/release:$PATH" &&
 command -v dir-simulator
 ```
 
-最後に取得先の `target/release/dir-simulator` が表示されることを確認します。PATHの設定はこのシェルの間だけ有効です。同じシェルで次の入力展開先へ移動します。正式タグのソースにはこの新しい8入力実習を同梱していないため、上記のZIPを別途展開してください。
+`&&`で連結した準備は、一つでも失敗すると後続を実行しません。SHAが不一致ならビルドへ進まず、失敗の原因を確認してからやり直します。最後に取得先の `target/release/dir-simulator` が表示されることを確認します。PATHの設定はこのシェルの間だけ有効です。同じシェルで次の入力展開先へ移動します。正式タグのソースにはこの新しい8入力実習を同梱していないため、上記のZIPを別途展開してください。
 
 展開先の `examples/guide/ahb-wait-error` で実行します。
 

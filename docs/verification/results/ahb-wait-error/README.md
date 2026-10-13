@@ -1,6 +1,6 @@
 # AHB応答待ち実習検証記録
 
-文書バージョン：`1.1.1`  
+文書バージョン：`1.1.2`  
 対象GitHubバージョン：`v1.1.4`  
 実測ソースcommit：`b45515644dfc65c205216d564d5bf7ef00280622`  
 文書ID：`verification-guide-ahb-wait-error`  
@@ -10,6 +10,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-13` | SHAガードの&&連結と、不一致時にcargoを呼ばない拒否確認を追加 |
 | `1.1.1` | `2026-10-13` | 第2push。固定タグビルド・PATHと旧/fresh生成を含む掲載手順を再検証 |
 | `1.1.0` | `2026-10-13` | AHB応答待ち3条件・ERROR完了・隔離ZIP・実Viewer・metadata/navとサイトを検証 |
 
@@ -26,5 +27,7 @@
 [実測と安全なprovenance](measurements.json)、[Viewer検証](viewer-browser.json)、[サイト検証](site-browser.json)を参照する。実行全体の結果とCLI生成Viewerは選択したignored証跡ディレクトリに保存し、公開は安全なprovenance・simulationと実サンプル画像だけに限定する。
 
 第2pushではIssue #80の再現手順2点を修正した。FAQにビルド/PATH手順がないことと、掲載回帰コマンドの旧run未生成を独立確認し、重複Issueがないことを確認して関連付けた。正式タグを新しいclean checkoutへ取得し、commit b455156を確認、Rust 1.85.0でlocked release build（target-dir target）、PATHのCLI選択、AHB validateを実施した。そのCLIで存在しないahb-review-oldとahb-review-freshを順に生成した。各18操作、計36操作の全simulation・隔離ZIP一致と6負例に合格し、freshの実Viewer・サイト報告を更新した。入力ZIP、時刻・応答・指標、既存SoC成果物は変更していない。
+
+追加pushでは、通常のBashで単独test行が失敗しても後続行へ進む問題を同IssueのCLI準備項目として修正した。準備ブロックを&&で連結し、意図的なSHA不一致ではexit1となりcargoが呼ばれないことを確認した。一致時は正式clean checkoutの実cargoでビルド・PATH・AHB validateまで通した。生成一覧の改行はLinux再生成で統一し、手編集していない。
 
 有限2要求、target1、正常アドレスとdecode済ERRORのみ。容量超過・未decode・境界またぎ・複数target・非edge生成・途中打切り・連続負荷・native・実機は未検証。データbyte値、RTL、pipeline/burst/SPLIT/RETRY/lock/pin waveformと実機性能はprofileの保証範囲外。マージ・auto-merge・close・tag/Release・認証変更・デプロイ・外部agent・画像生成は行わない。
