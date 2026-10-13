@@ -1,0 +1,315 @@
+{
+  "schema_version": 2,
+  "endpoints": [
+    {
+      "instance": "Main.a",
+      "mac": "02:00:00:00:00:01"
+    },
+    {
+      "instance": "Main.b",
+      "mac": "02:00:00:00:00:02"
+    },
+    {
+      "instance": "Main.c",
+      "mac": "02:00:00:00:00:03"
+    }
+  ],
+  "switches": [
+    {
+      "instance": "Main.sw",
+      "forward_delay_ps": "2000",
+      "fdb": [
+        {
+          "dst_mac": "02:00:00:00:00:01",
+          "egress": "Main.sw.tx_a"
+        },
+        {
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "Main.sw.tx_b"
+        },
+        {
+          "dst_mac": "02:00:00:00:00:03",
+          "egress": "Main.sw.tx_c"
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "port": "Main.a.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.b.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.c.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_a",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_b",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_c",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    }
+  ]
+}
