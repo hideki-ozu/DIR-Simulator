@@ -1,0 +1,65 @@
+# Native IME dependency staging report
+
+Environment: Ubuntu 24.04, amd64. Existing apt metadata was used; no `apt update`, install, sudo, global configuration, HOME change, mount, Cargo command, or IME/IBus server or browser was started. System Python3 imports `gi`; `/usr/bin/dbus-run-session` and host `xauth` exist.
+
+Files are staged under this directory: official apt `.deb` files in `downloads/`, extracted package files in `rootfs/`.
+
+| Package | Version | Architecture | .deb SHA-256 |
+|---|---|---|---|
+| `gir1.2-ibus-1.0` | `1.5.29-2` | `amd64` | `12eb51eb9ba91ec9f768c91e02d4ceb99e87b931f83305d94a50acbe387b0c65` |
+| `ibus-data` | `1.5.29-2` | `all` | `1a3fac02f9bb69ad32e68e0f9e00fc98cccf2bacf5c9d2f034676a821c266c7c` |
+| `ibus-gtk3` | `1.5.29-2` | `amd64` | `c2602a2c2edc6e305a98f3a683af35f89fcc9dba3cd6aff8582ffb414f85d817` |
+| `ibus-gtk` | `1.5.29-2` | `amd64` | `b91d0ef45ef7212a1f3c42fa573e09a39df9d9b2612e43a5f66479eb51d3ec16` |
+| `ibus-mozc` | `2.28.4715.102+dfsg-2.2build7` | `amd64` | `fa57296083857f119ac175d1ede072cad1f2cacdac359b9bf2e7c7a6f5246488` |
+| `ibus` | `1.5.29-2` | `amd64` | `5c6c0af5583353bdcf18369e72afdf410c7dad23668919a6a006e7eaef043e61` |
+| `libabsl20220623t64` | `20220623.1-3.1ubuntu3.2` | `amd64` | `dec97687bc3bc4edbd1c26bc9182f7584e3ff1c36a9bb7ce80211951e5a5893d` |
+| `libfontenc1` | `1:1.1.8-1build1` | `amd64` | `0c5d57211cac9659e7f4c856f5e1922c4a522fe8bcf5776e9707b2811f965702` |
+| `libgtk2.0-0t64` | `2.24.33-4ubuntu1.1` | `amd64` | `6671dfd1956cf0ed3de20358f77c91afed6ff4e887fc22921f63e0d8241696ec` |
+| `libibus-1.0-5` | `1.5.29-2` | `amd64` | `2f9aac6e9690690bda1fc1fdb608ac8d98e570cc9041fdaf3e1380fb7c833d07` |
+| `libprotobuf32t64` | `3.21.12-8.2ubuntu0.3` | `amd64` | `0b0dd45060288fbe5505b4b3c86e6222d6f4214574f653b2a7d0bbe72d5c6d87` |
+| `libxdo3` | `1:3.20160805.1-5build1` | `amd64` | `3506c2824a74255439813f824a1629387452d52c6efd6d7916b8b54e458175e8` |
+| `libxfont2` | `1:2.0.6-1+deb13u1build0.24.04.2` | `amd64` | `e2ed49a20ccff6ffa52719a6cd118538e24c434d9035acd7fb736e7e4f8d6485` |
+| `mozc-data` | `2.28.4715.102+dfsg-2.2build7` | `all` | `894f9d38a1f6b14afba85080fb6e89461ecfc703ec12efc0c5ee049d4e45f901` |
+| `mozc-server` | `2.28.4715.102+dfsg-2.2build7` | `amd64` | `aa3729bd73f6fc54de3b919e108bd6343bd6c525abfac321215f22fa2f36b6d0` |
+| `python3-ibus-1.0` | `1.5.29-2` | `all` | `e484e398e8fdb5c8a3d0059626c2bc740c6bc6b821c5311cf85c0f4097937b5c` |
+| `x11-xkb-utils` | `7.7+8build2` | `amd64` | `69df4191e165f8b89d067f6234fcce89a4923d27d1e66dd92e6d63d6da93cdb0` |
+| `xdotool` | `1:3.20160805.1-5build1` | `amd64` | `58a202c74bce31ca2d72d4d514942a5ab6191932696adc5d21d909c9216b13cb` |
+| `xkb-data` | `2.41-2ubuntu1.1` | `all` | `e99f2a0b4c56cdf35dec489e56b6a8418826cab8ce6306ec6d0bd98e2cd0014a` |
+| `xserver-common` | `2:21.1.12-1ubuntu1.8` | `all` | `5720e7995c3b546927046f63bb4a344773b27850379c4b2694edf279025ad772` |
+| `xvfb` | `2:21.1.12-1ubuntu1.8` | `amd64` | `712429d9342c7d6cef63afb33ccfcd2bd477a69371b5c9941a9c6dde31a4cd3c` |
+
+Available runtime files:
+
+- `rootfs/usr/bin/Xvfb`
+- `rootfs/usr/bin/xdotool`
+- `rootfs/usr/bin/ibus-daemon`
+- `rootfs/usr/bin/xkbcomp`
+- `rootfs/usr/share/X11/xkb/rules/base` and `rootfs/usr/share/X11/xkb/symbols/jp`
+- `rootfs/usr/lib/ibus-mozc/ibus-engine-mozc`
+- `rootfs/usr/lib/mozc/mozc_server` and `rootfs/usr/lib/mozc/mozc_renderer`
+- `rootfs/usr/share/ibus/component/mozc.xml`
+- `rootfs/usr/lib/python3/dist-packages/gi/overrides/IBus.py`
+- `rootfs/usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/immodules/im-ibus.so`
+- `rootfs/usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-ibus.so`
+- GTK2 runtime libraries from `libgtk2.0-0t64`
+
+Commands used:
+
+```sh
+apt-get download xvfb xserver-common xdotool libxdo3 ibus ibus-data gir1.2-ibus-1.0 libibus-1.0-5 ibus-mozc mozc-server mozc-data
+apt-get download libxfont2 libabsl20220623t64 libprotobuf32t64
+apt-get download libfontenc1
+apt-get download xkb-data x11-xkb-utils python3-ibus-1.0 ibus-gtk ibus-gtk3 libgtk2.0-0t64
+# For each downloaded package:
+dpkg-deb -x PACKAGE.deb rootfs/
+LD_LIBRARY_PATH="$PWD/rootfs/usr/lib/x86_64-linux-gnu:$PWD/rootfs/lib/x86_64-linux-gnu" ldd rootfs/usr/bin/xkbcomp
+```
+
+Verification: `ldd` reports no unresolved shared libraries for Xvfb, xdotool, ibus-daemon, xkbcomp, ibus-engine-mozc, mozc_server, and both GTK IBus input modules with the private library directory set. Other dependencies resolve from the existing host. `Xvfb -help` returned usage, `xdotool --version` returned `3.20160805.1`, and `ibus-daemon --version` returned `1.5.29-rc2`. No daemon/server was started.
+
+Runtime paths for the parent's merged `/usr` overlay: `mozc.xml` executes `/usr/lib/ibus-mozc/ibus-engine-mozc`; the Mozc server binary contains the `/usr/lib/mozc` path. The XKB tree and `xkbcomp` are now staged at their standard `/usr` paths. Host `xauth` is available without staging. `rootfs/usr/share/fonts/X11` and host `/usr/share/fonts/X11` are absent.
+
+The selected Mozc payload has no separate system-dictionary file: `mozc-data` contains documentation and icons, while `mozc-server` contains `mozc_server` and `mozc_renderer`. The staged `ibus-data` package has general IBus emoji dictionaries, not a separate Mozc dictionary. The apt package search showed no standalone Mozc dictionary package; the system dictionary is expected to be embedded/provided by `mozc_server`, but this was not runtime-tested. `ibus` declares GTK/Pango and other direct dependencies not staged here; their shared libraries resolve from the host, so the merged overlay must retain the host lower layer. `python3-ibus-1.0` is staged for IBus's Python/GI integration.
+
+
+GTK module cache status: neither GTK module package contains `immodules.cache`, and no such cache exists in the staged rootfs. The host GTK2 cache is absent. The host GTK3 cache exists but has no IBus entry. GTK2 query utility is staged at `rootfs/usr/lib/x86_64-linux-gnu/libgtk2.0-0t64/gtk-query-immodules-2.0`; GTK3 query utility is `/usr/lib/x86_64-linux-gnu/libgtk-3-0t64/gtk-query-immodules-3.0`. Cache generation and runtime environment wiring remain for the parent.

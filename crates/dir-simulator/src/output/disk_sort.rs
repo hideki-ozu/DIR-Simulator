@@ -2,9 +2,11 @@
 use crate::{Diagnostic, allocation::reserve_vec};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+#[cfg(test)]
+use std::fs::{self, OpenOptions};
 use std::{
     cmp::Ordering,
-    fs::{self, File, OpenOptions},
+    fs::File,
     io::{BufReader, BufWriter, Read, Write},
     path::{Path, PathBuf},
     sync::atomic::{AtomicU64, Ordering as AtomicOrdering},
@@ -316,7 +318,7 @@ pub(super) struct Run {
 
 /// Owns every run and removes it on both success and failure.
 pub(super) struct Sorter {
-    directory: PathBuf,
+    directory: super::scratch::Directory,
     chunk: Vec<EncodedRow>,
     chunk_bytes: usize,
     levels: Vec<Vec<Run>>,
@@ -332,10 +334,10 @@ impl Sorter {
                 std::process::id(),
                 NEXT.fetch_add(1, AtomicOrdering::Relaxed)
             ));
-            match fs::create_dir(&path) {
-                Ok(()) => {
+            match super::scratch::Directory::create(path) {
+                Ok(directory) => {
                     return Ok(Self {
-                        directory: path,
+                        directory,
                         chunk: Vec::new(),
                         chunk_bytes: 0,
                         levels: Vec::new(),
@@ -404,10 +406,9 @@ impl Sorter {
         }
         self.chunk.sort_by(EncodedRow::cmp);
         let path = self.path()?;
-        let file = OpenOptions::new()
-            .create_new(true)
-            .write(true)
-            .open(&path)
+        let file = self
+            .directory
+            .open_new(&path)
             .map_err(|e| error("create", e))?;
         let mut writer = BufWriter::with_capacity(1024 * 1024, file);
         writer.write_all(MAGIC).map_err(|e| error("write", e))?;
@@ -437,7 +438,9 @@ impl Sorter {
             let paths = std::mem::take(&mut self.levels[level]);
             let merged = self.merge(&paths)?;
             for old in paths {
-                fs::remove_file(&old.path).map_err(|e| error("cleanup", e))?;
+                self.directory
+                    .remove_file(&old.path)
+                    .map_err(|e| error("cleanup", e))?;
             }
             level = level
                 .checked_add(1)
@@ -447,10 +450,9 @@ impl Sorter {
     }
     fn merge(&mut self, paths: &[Run]) -> Result<Run, Diagnostic> {
         let path = self.path()?;
-        let file = OpenOptions::new()
-            .create_new(true)
-            .write(true)
-            .open(&path)
+        let file = self
+            .directory
+            .open_new(&path)
             .map_err(|e| error("create", e))?;
         let mut writer = BufWriter::with_capacity(1024 * 1024, file);
         writer.write_all(MAGIC).map_err(|e| error("write", e))?;
@@ -499,7 +501,9 @@ impl Sorter {
                 reserve_vec(&mut pending, 1, "output_sort_pending")?;
                 pending.push(path);
                 for old in group {
-                    fs::remove_file(&old.path).map_err(|e| error("cleanup", e))?;
+                    self.directory
+                        .remove_file(&old.path)
+                        .map_err(|e| error("cleanup", e))?;
                 }
             }
         }
@@ -518,13 +522,13 @@ impl Sorter {
 impl Drop for Sorter {
     fn drop(&mut self) {
         if !self.directory.as_os_str().is_empty() {
-            let _ = fs::remove_dir_all(&self.directory);
+            self.directory.cleanup();
         }
     }
 }
 
 pub(super) struct Sorted {
-    directory: PathBuf,
+    directory: super::scratch::Directory,
     path: Option<PathBuf>,
     max_frame_bytes: usize,
     bytes: u64,
@@ -547,7 +551,7 @@ impl Sorted {
 }
 impl Drop for Sorted {
     fn drop(&mut self) {
-        let _ = fs::remove_dir_all(&self.directory);
+        self.directory.cleanup();
     }
 }
 pub(super) struct Rows(Option<RunReader>);
@@ -564,7 +568,7 @@ impl Iterator for Rows {
 /// binary stream until order has been checked, so a late violation can be replayed
 /// into the stable external sorter without rerunning aggregation.
 pub(super) struct OrderedWriter {
-    directory: PathBuf,
+    directory: super::scratch::Directory,
     path: PathBuf,
     writer: Option<BufWriter<File>>,
     previous: Option<Vec<u8>>,
@@ -581,14 +585,10 @@ impl OrderedWriter {
                 std::process::id(),
                 NEXT.fetch_add(1, AtomicOrdering::Relaxed)
             ));
-            match fs::create_dir(&directory) {
-                Ok(()) => {
+            match super::scratch::Directory::create(directory) {
+                Ok(mut directory) => {
                     let path = directory.join("rows");
-                    let file = OpenOptions::new()
-                        .create_new(true)
-                        .write(true)
-                        .open(&path)
-                        .map_err(|e| error("create", e));
+                    let file = directory.open_new(&path).map_err(|e| error("create", e));
                     return match file {
                         Ok(file) => {
                             let mut result = Self {
@@ -610,7 +610,7 @@ impl OrderedWriter {
                             Ok(result)
                         }
                         Err(e) => {
-                            let _ = fs::remove_dir_all(&directory);
+                            directory.cleanup();
                             Err(e)
                         }
                     };
@@ -677,7 +677,7 @@ impl Drop for OrderedWriter {
     fn drop(&mut self) {
         self.writer.take();
         if !self.directory.as_os_str().is_empty() {
-            let _ = fs::remove_dir_all(&self.directory);
+            self.directory.cleanup();
         }
     }
 }
@@ -1044,7 +1044,7 @@ mod tests {
         let mut paths = Vec::new();
         for payload in [vec![99], vec![0]] {
             let path = sorter.path().unwrap();
-            let mut writer = BufWriter::new(File::create(&path).unwrap());
+            let mut writer = BufWriter::new(sorter.directory.open_new(&path).unwrap());
             writer.write_all(MAGIC).unwrap();
             Sorter::write_row(
                 &mut writer,
@@ -1572,7 +1572,12 @@ mod tests {
             let mut merger = Sorter::new_in(&base).unwrap();
             merger.max_frame_bytes = frame;
             let path = merger.path().unwrap();
-            fs::write(&path, &data[..cut]).unwrap();
+            merger
+                .directory
+                .open_new(&path)
+                .unwrap()
+                .write_all(&data[..cut])
+                .unwrap();
             let merged = merger.merge(&[Run {
                 path,
                 bytes: data.len() as u64,

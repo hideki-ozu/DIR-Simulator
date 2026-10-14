@@ -709,6 +709,15 @@ fn save_as_uses_snapshot_after_source_removal_and_marks_only_complete() {
     );
     assert!(result["result"]["revision"].is_string());
     assert!(result["result"]["input_revision"].is_string());
+    let mapping = result["result"]["mapping"].as_object().unwrap();
+    for file in c.model.as_ref().unwrap().project.files.values() {
+        let outputs = mapping[&file.id].as_array().unwrap();
+        assert!(!outputs.is_empty());
+        for output in outputs {
+            assert!(output["role"].is_object());
+            assert!(output["output_path"].is_string());
+        }
+    }
 }
 #[test]
 fn invalid_save_keeps_dirty_and_creates_no_output() {
@@ -1093,6 +1102,7 @@ fn save_completion_retains_new_recovery_enumeration_error() {
         state: SaveOutcome::Complete,
         error: None,
         files: Vec::new(),
+        mapping: BTreeMap::new(),
         recovery_id: None,
         output_path: f.root.join("exports/test"),
     };
@@ -1120,3 +1130,6 @@ mod edit_plan_tests;
 
 #[path = "run_command_tests.rs"]
 mod run_command_tests;
+
+#[path = "acceptance_controller_tests.rs"]
+mod acceptance_controller_tests;

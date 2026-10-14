@@ -125,6 +125,8 @@ fn execute(request: Request, stdout: &mut impl Write) -> Result<()> {
         &request.run_root.join("input"),
         &request.bundle_digest,
     )?;
+    #[cfg(test)]
+    crate::acceptance_hooks::hit("worker.before_prepare");
     let mut prepared = match super::super::analysis::prepare(&project) {
         Ok(p) => p,
         Err(d) => {
@@ -149,6 +151,8 @@ fn execute(request: Request, stdout: &mut impl Write) -> Result<()> {
             inputs: inputs.clone(),
         },
     )?;
+    #[cfg(test)]
+    crate::acceptance_hooks::hit("worker.before_execute");
     let message = match crate::run_with_diagnostics(prepared, &request.run_root.join("result")) {
         Ok(report) => {
             let evidence = ResultReportEvidence::from(&report);
@@ -329,7 +333,15 @@ pub(super) fn publish_response(
         return write_frame(stdout, &small);
     }
     control.replace("worker-response.json", &bytes)?;
+    #[cfg(test)]
+    crate::acceptance_hooks::hit("worker.after_response");
+    #[cfg(test)]
+    crate::acceptance_hooks::hit("worker.before_frame");
     write_frame(stdout, message)
+}
+#[cfg(test)]
+pub(super) fn acceptance_execute(request: Request, output: &mut impl Write) -> Result<()> {
+    execute(request, output)
 }
 /// Private startup hook. This does not expose an editor HTTP operation.
 pub fn hidden_worker() -> std::result::Result<(), crate::Diagnostic> {

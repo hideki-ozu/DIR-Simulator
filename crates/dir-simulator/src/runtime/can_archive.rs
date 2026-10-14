@@ -5,12 +5,15 @@ use crate::{
 };
 use std::{
     collections::BTreeMap,
-    fs::{self, File, OpenOptions},
+    fs::{File, OpenOptions},
     io::{BufRead, BufReader, BufWriter, Write},
     ops::{Index, IndexMut},
     path::PathBuf,
-    sync::atomic::{AtomicU64, Ordering},
+    sync::atomic::{AtomicBool, AtomicU64, Ordering},
 };
+
+#[cfg(test)]
+use std::fs;
 
 static NEXT: AtomicU64 = AtomicU64::new(0);
 
@@ -28,6 +31,7 @@ pub struct ArchivedRequest {
 #[derive(Debug)]
 pub struct CanArchive {
     path: PathBuf,
+    detached: AtomicBool,
     writer: BufWriter<File>,
     count: usize,
     peak_live_requests: usize,
@@ -47,10 +51,16 @@ impl CanArchive {
                 std::process::id(),
                 NEXT.fetch_add(1, Ordering::Relaxed)
             ));
-            match OpenOptions::new().create_new(true).write(true).open(&path) {
+            match OpenOptions::new()
+                .create_new(true)
+                .read(true)
+                .write(true)
+                .open(&path)
+            {
                 Ok(file) => {
                     return Ok(Some(Self {
                         path,
+                        detached: AtomicBool::new(false),
                         writer: BufWriter::with_capacity(1024 * 1024, file),
                         count: 0,
                         peak_live_requests: 0,
@@ -78,11 +88,16 @@ impl CanArchive {
     pub(crate) fn finish(&mut self) -> Result<(), Diagnostic> {
         self.writer.flush().map_err(|e| error("flush", e))
     }
+    pub(crate) fn detach(&self) -> Result<(), Diagnostic> {
+        super::spool::detach_owned(&self.path, self.writer.get_ref(), &self.detached)
+            .map_err(|e| error("cleanup", e))
+    }
     pub fn iter(&self) -> Result<ArchivedRequests, Diagnostic> {
         Ok(ArchivedRequests {
             reader: BufReader::with_capacity(
                 1024 * 1024,
-                File::open(&self.path).map_err(|e| error("read", e))?,
+                super::spool::ScratchReader::new(self.writer.get_ref())
+                    .map_err(|e| error("read", e))?,
             ),
             line: String::new(),
             remaining: self.count,
@@ -107,11 +122,11 @@ impl CanArchive {
 }
 impl Drop for CanArchive {
     fn drop(&mut self) {
-        let _ = fs::remove_file(&self.path);
+        let _ = self.detach();
     }
 }
 pub struct ArchivedRequests {
-    reader: BufReader<File>,
+    reader: BufReader<super::spool::ScratchReader>,
     line: String,
     remaining: usize,
 }

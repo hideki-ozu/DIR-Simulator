@@ -1,0 +1,658 @@
+TAP version 13
+# Subtest: milestones preserve independent serialization, arrival, release and receive boundaries
+ok 1 - milestones preserve independent serialization, arrival, release and receive boundaries
+  ---
+  duration_ms: 2.941398
+  type: 'test'
+  ...
+# Subtest: partial run never invents reception from planned arrival
+ok 2 - partial run never invents reception from planned arrival
+  ---
+  duration_ms: 0.37469
+  type: 'test'
+  ...
+# Subtest: capacity drop is retained without physical transfer
+ok 3 - capacity drop is retained without physical transfer
+  ---
+  duration_ms: 0.459241
+  type: 'test'
+  ...
+# Subtest: replay at a destination is independent of navigation history
+ok 4 - replay at a destination is independent of navigation history
+  ---
+  duration_ms: 0.972718
+  type: 'test'
+  ...
+# Subtest: corrupt references, time order, envelope updates and fabricated receipts are rejected
+ok 5 - corrupt references, time order, envelope updates and fabricated receipts are rejected
+  ---
+  duration_ms: 1.313989
+  type: 'test'
+  ...
+# Subtest: large timestamps preserve picoseconds beyond binary64 safe integers
+ok 6 - large timestamps preserve picoseconds beyond binary64 safe integers
+  ---
+  duration_ms: 0.74077
+  type: 'test'
+  ...
+# Subtest: opposite link directions transmit concurrently without sharing a queue
+ok 7 - opposite link directions transmit concurrently without sharing a queue
+  ---
+  duration_ms: 0.380511
+  type: 'test'
+  ...
+# Subtest: switch flood links accepted and dropped children to a single reception
+ok 8 - switch flood links accepted and dropped children to a single reception
+  ---
+  duration_ms: 0.288053
+  type: 'test'
+  ...
+# Subtest: QoS class queue occupancy counts MAC bytes and excludes active transfer
+ok 9 - QoS class queue occupancy counts MAC bytes and excludes active transfer
+  ---
+  duration_ms: 1.225731
+  type: 'test'
+  ...
+# Subtest: QoS schema is explicit: version mismatches, invalid class and incomplete topology reject
+ok 10 - QoS schema is explicit: version mismatches, invalid class and incomplete topology reject
+  ---
+  duration_ms: 0.952413
+  type: 'test'
+  ...
+# Subtest: VLAN hop wire and classification preserve source contract and reclassify untagged ingress
+ok 11 - VLAN hop wire and classification preserve source contract and reclassify untagged ingress
+  ---
+  duration_ms: 1.303324
+  type: 'test'
+  ...
+# Subtest: VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN
+ok 12 - VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN
+  ---
+  duration_ms: 0.930609
+  type: 'test'
+  ...
+# Subtest: VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy
+ok 13 - VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy
+  ---
+  duration_ms: 5.138944
+  type: 'test'
+  ...
+# Subtest: VLAN immediate endpoint filter keeps one reason without inventing a dropped copy
+ok 14 - VLAN immediate endpoint filter keeps one reason without inventing a dropped copy
+  ---
+  duration_ms: 0.349998
+  type: 'test'
+  ...
+# Subtest: VLAN ingress admission rejection stops before child offers and requires exact classification
+ok 15 - VLAN ingress admission rejection stops before child offers and requires exact classification
+  ---
+  duration_ms: 0.273267
+  type: 'test'
+  ...
+# Subtest: VLAN pending planned arrival never synthesizes receiver or classification
+ok 16 - VLAN pending planned arrival never synthesizes receiver or classification
+  ---
+  duration_ms: 0.249826
+  type: 'test'
+  ...
+# Subtest: media replay preserves collision, jam, backoff and retry at each destination
+ok 17 - media replay preserves collision, jam, backoff and retry at each destination
+  ---
+  duration_ms: 3211.674546
+  type: 'test'
+  ...
+# Subtest: partial jam and T1 arrival boundary retain null actuals and never fabricate reception
+ok 18 - partial jam and T1 arrival boundary retain null actuals and never fabricate reception
+  ---
+  duration_ms: 6363.478171
+  type: 'test'
+  ...
+# Subtest: T1 pipeline receives an older immutable attempt after a newer SOF
+ok 19 - T1 pipeline receives an older immutable attempt after a newer SOF
+  ---
+  duration_ms: 3170.273664
+  type: 'test'
+  ...
+# Subtest: CAN FD replay keeps two-rate timing, evidence and declared wiring
+ok 20 - CAN FD replay keeps two-rate timing, evidence and declared wiring
+  ---
+  duration_ms: 3174.764104
+  type: 'test'
+  ...
+# Subtest: media decoder rejects fabricated completion, attempt lineage and mixed schemas
+ok 21 - media decoder rejects fabricated completion, attempt lineage and mixed schemas
+  ---
+  duration_ms: 2.072577
+  type: 'test'
+  ...
+# Subtest: initial carrier deferral remains in the FIFO and rewinds identically
+ok 22 - initial carrier deferral remains in the FIFO and rewinds identically
+  ---
+  duration_ms: 3187.527671
+  type: 'test'
+  ...
+# Subtest: milestones preserve independent serialization, arrival, release and receive boundaries
+ok 23 - milestones preserve independent serialization, arrival, release and receive boundaries
+  ---
+  duration_ms: 3.227836
+  type: 'test'
+  ...
+# Subtest: partial run never invents reception from planned arrival
+ok 24 - partial run never invents reception from planned arrival
+  ---
+  duration_ms: 0.502605
+  type: 'test'
+  ...
+# Subtest: capacity drop is retained without physical transfer
+ok 25 - capacity drop is retained without physical transfer
+  ---
+  duration_ms: 1.51812
+  type: 'test'
+  ...
+# Subtest: replay at a destination is independent of navigation history
+ok 26 - replay at a destination is independent of navigation history
+  ---
+  duration_ms: 1.355882
+  type: 'test'
+  ...
+# Subtest: corrupt references, time order, envelope updates and fabricated receipts are rejected
+ok 27 - corrupt references, time order, envelope updates and fabricated receipts are rejected
+  ---
+  duration_ms: 1.245858
+  type: 'test'
+  ...
+# Subtest: large timestamps preserve picoseconds beyond binary64 safe integers
+ok 28 - large timestamps preserve picoseconds beyond binary64 safe integers
+  ---
+  duration_ms: 0.215712
+  type: 'test'
+  ...
+# Subtest: opposite link directions transmit concurrently without sharing a queue
+ok 29 - opposite link directions transmit concurrently without sharing a queue
+  ---
+  duration_ms: 0.548507
+  type: 'test'
+  ...
+# Subtest: switch flood links accepted and dropped children to a single reception
+ok 30 - switch flood links accepted and dropped children to a single reception
+  ---
+  duration_ms: 0.285499
+  type: 'test'
+  ...
+# Subtest: QoS class queue occupancy counts MAC bytes and excludes active transfer
+ok 31 - QoS class queue occupancy counts MAC bytes and excludes active transfer
+  ---
+  duration_ms: 0.51446
+  type: 'test'
+  ...
+# Subtest: QoS schema is explicit: version mismatches, invalid class and incomplete topology reject
+ok 32 - QoS schema is explicit: version mismatches, invalid class and incomplete topology reject
+  ---
+  duration_ms: 0.87639
+  type: 'test'
+  ...
+# Subtest: VLAN hop wire and classification preserve source contract and reclassify untagged ingress
+ok 33 - VLAN hop wire and classification preserve source contract and reclassify untagged ingress
+  ---
+  duration_ms: 1.365733
+  type: 'test'
+  ...
+# Subtest: VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN
+ok 34 - VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN
+  ---
+  duration_ms: 1.255052
+  type: 'test'
+  ...
+# Subtest: VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy
+ok 35 - VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy
+  ---
+  duration_ms: 4.009413
+  type: 'test'
+  ...
+# Subtest: VLAN immediate endpoint filter keeps one reason without inventing a dropped copy
+ok 36 - VLAN immediate endpoint filter keeps one reason without inventing a dropped copy
+  ---
+  duration_ms: 0.675567
+  type: 'test'
+  ...
+# Subtest: VLAN ingress admission rejection stops before child offers and requires exact classification
+ok 37 - VLAN ingress admission rejection stops before child offers and requires exact classification
+  ---
+  duration_ms: 0.252036
+  type: 'test'
+  ...
+# Subtest: VLAN pending planned arrival never synthesizes receiver or classification
+ok 38 - VLAN pending planned arrival never synthesizes receiver or classification
+  ---
+  duration_ms: 0.176363
+  type: 'test'
+  ...
+# Subtest: GCL uses half-open boundaries and preserves exact time beyond Number range
+ok 39 - GCL uses half-open boundaries and preserves exact time beyond Number range
+  ---
+  duration_ms: 0.249822
+  type: 'test'
+  ...
+# Subtest: open duration handles millions of cycles with integer prefix arithmetic
+ok 40 - open duration handles millions of cycles with integer prefix arithmetic
+  ---
+  duration_ms: 0.10825
+  type: 'test'
+  ...
+# Subtest: CBS continues through IFG, freezes at closed gates and resets empty positive credit
+ok 41 - CBS continues through IFG, freezes at closed gates and resets empty positive credit
+  ---
+  duration_ms: 0.154976
+  type: 'test'
+  ...
+# Subtest: meter potential refill saturates u128 without inventing token consumption
+ok 42 - meter potential refill saturates u128 without inventing token consumption
+  ---
+  duration_ms: 0.107621
+  type: 'test'
+  ...
+# Subtest: malformed schedules fail before replay
+ok 43 - malformed schedules fail before replay
+  ---
+  duration_ms: 0.172336
+  type: 'test'
+  ...
+# Subtest: TAS fit includes IFG and accepts equality at close or a pending update
+ok 44 - TAS fit includes IFG and accepts equality at close or a pending update
+  ---
+  duration_ms: 0.244645
+  type: 'test'
+  ...
+# Subtest: TAS combines adjacent open entries and the end/start of a cycle
+ok 45 - TAS combines adjacent open entries and the end/start of a cycle
+  ---
+  duration_ms: 0.092007
+  type: 'test'
+  ...
+# Subtest: IP membership identity uses address bytes and multicast MAC mapping
+ok 46 - IP membership identity uses address bytes and multicast MAC mapping
+  ---
+  duration_ms: 0.398832
+  type: 'test'
+  ...
+# Subtest: dynamic loader supports versioned visit IDs and quiet policy state
+ok 47 - dynamic loader supports versioned visit IDs and quiet policy state
+  ---
+  duration_ms: 1.938165
+  type: 'test'
+  ...
+# Subtest: dynamic filtering reasons preserve a completed switch reception without child copies
+ok 48 - dynamic filtering reasons preserve a completed switch reception without child copies
+  ---
+  duration_ms: 1.625701
+  type: 'test'
+  ...
+# Subtest: dynamic loader rejects unknown schema, epochs, visit IDs and version mixing
+ok 49 - dynamic loader rejects unknown schema, epochs, visit IDs and version mixing
+  ---
+  duration_ms: 3.051492
+  type: 'test'
+  ...
+# Subtest: TSN loader replays signed credit through IFG and shows quiet gate configuration
+ok 50 - TSN loader replays signed credit through IFG and shows quiet gate configuration
+  ---
+  duration_ms: 2.04912
+  type: 'test'
+  ...
+# Subtest: TSN loader rejects negative zero, unknown states, overflowing numerator and incomplete schema sets
+ok 51 - TSN loader rejects negative zero, unknown states, overflowing numerator and incomplete schema sets
+  ---
+  duration_ms: 1.787163
+  type: 'test'
+  ...
+# Subtest: composite loader retains both physical media and frozen SOF terminal counts
+ok 52 - composite loader retains both physical media and frozen SOF terminal counts
+  ---
+  duration_ms: 4.867147
+  type: 'test'
+  ...
+# Subtest: composite segment loader rejects fabricated completions and Gateway terminal opportunities
+ok 53 - composite segment loader rejects fabricated completions and Gateway terminal opportunities
+  ---
+  duration_ms: 1.226503
+  type: 'test'
+  ...
+# Subtest: DIR codec validates length, ID width, reserved flags and zero padding
+ok 54 - DIR codec validates length, ID width, reserved flags and zero padding
+  ---
+  duration_ms: 0.258314
+  type: 'test'
+  ...
+# Subtest: dynamic policy checkpoints preserve prefix tables, expiry and never reuse a deleted generation
+ok 55 - dynamic policy checkpoints preserve prefix tables, expiry and never reuse a deleted generation
+  ---
+  duration_ms: 2.442031
+  type: 'test'
+  ...
+# Subtest: PSFP records conserve two buckets and distinguish actual from potential refill
+ok 56 - PSFP records conserve two buckets and distinguish actual from potential refill
+  ---
+  duration_ms: 3.437203
+  type: 'test'
+  ...
+# Subtest: composite branch closure keeps origin and RX capacity while awaiting a real child
+ok 57 - composite branch closure keeps origin and RX capacity while awaiting a real child
+  ---
+  duration_ms: 4.369492
+  type: 'test'
+  ...
+# Subtest: composite origin identity must agree with the recorded ingress media
+ok 58 - composite origin identity must agree with the recorded ingress media
+  ---
+  duration_ms: 0.822789
+  type: 'test'
+  ...
+# Subtest: composite segment IDs share native source IDs while duplicate schema identities reject
+ok 59 - composite segment IDs share native source IDs while duplicate schema identities reject
+  ---
+  duration_ms: 0.665744
+  type: 'test'
+  ...
+# Subtest: partial mixed replay retains admitted children without future SOF or fabricated receivers
+ok 60 - partial mixed replay retains admitted children without future SOF or fabricated receivers
+  ---
+  duration_ms: 0.644679
+  type: 'test'
+  ...
+# Subtest: TSN decisions require the visible schedule generation and physical copy class
+ok 61 - TSN decisions require the visible schedule generation and physical copy class
+  ---
+  duration_ms: 1.617208
+  type: 'test'
+  ...
+# Subtest: quiet TSN networks show configured gates and initial CBS credit without traffic
+ok 62 - quiet TSN networks show configured gates and initial CBS credit without traffic
+  ---
+  duration_ms: 0.239155
+  type: 'test'
+  ...
+# Subtest: dynamic control audit follows time and effect sequence independent of file ordering
+ok 63 - dynamic control audit follows time and effect sequence independent of file ordering
+  ---
+  duration_ms: 0.617344
+  type: 'test'
+  ...
+# Subtest: zero horizon retains only the frozen initial network policy
+ok 64 - zero horizon retains only the frozen initial network policy
+  ---
+  duration_ms: 0.360221
+  type: 'test'
+  ...
+# Subtest: zero TSN horizon permits only explicit initial gate and empty ready decision
+ok 65 - zero TSN horizon permits only explicit initial gate and empty ready decision
+  ---
+  duration_ms: 0.843609
+  type: 'test'
+  ...
+# Subtest: equal native IDs remain distinct qualified media origins and preserve generation times
+ok 66 - equal native IDs remain distinct qualified media origins and preserve generation times
+  ---
+  duration_ms: 1.833762
+  type: 'test'
+  ...
+# Subtest: declared dynamic tagged capability validates subscription, FDB and multicast without registering runtime membership
+ok 67 - declared dynamic tagged capability validates subscription, FDB and multicast without registering runtime membership
+  ---
+  duration_ms: 0.643827
+  type: 'test'
+  ...
+# Subtest: dynamic reference validation rejects undeclared, foreign, malformed, untagged and duplicate capabilities
+ok 68 - dynamic reference validation rejects undeclared, foreign, malformed, untagged and duplicate capabilities
+  ---
+  duration_ms: 1.478023
+  type: 'test'
+  ...
+# Subtest: static VLAN references cannot borrow a dynamic capability declaration
+ok 69 - static VLAN references cannot borrow a dynamic capability declaration
+  ---
+  duration_ms: 0.149758
+  type: 'test'
+  ...
+# Subtest: dynamic native source VLAN uses declared tagged permission while PVID and effective membership stay static
+ok 70 - dynamic native source VLAN uses declared tagged permission while PVID and effective membership stay static
+  ---
+  duration_ms: 1.709744
+  type: 'test'
+  ...
+# Subtest: current CLI queued-membership-leave result loads declared subscriptions and source VLANs
+ok 71 - current CLI queued-membership-leave result loads declared subscriptions and source VLANs # SKIP
+  ---
+  duration_ms: 0.036858
+  type: 'test'
+  ...
+# Subtest: replay uses actual grant and completion, preserving integer picoseconds
+ok 72 - replay uses actual grant and completion, preserving integer picoseconds
+  ---
+  duration_ms: 2.19796
+  type: 'test'
+  ...
+# Subtest: a stopped active request remains unfinished despite future planned time
+ok 73 - a stopped active request remains unfinished despite future planned time
+  ---
+  duration_ms: 0.674381
+  type: 'test'
+  ...
+# Subtest: step replay depends only on the destination interval and recorded direction
+ok 74 - step replay depends only on the destination interval and recorded direction
+  ---
+  duration_ms: 0.252758
+  type: 'test'
+  ...
+# Subtest: partial prefixes include a committed completion at H
+ok 75 - partial prefixes include a committed completion at H
+  ---
+  duration_ms: 0.462594
+  type: 'test'
+  ...
+# Subtest: unregistered schemas, duplicate IDs, unknown references and invalid times reject
+ok 76 - unregistered schemas, duplicate IDs, unknown references and invalid times reject
+  ---
+  duration_ms: 0.386261
+  type: 'test'
+  ...
+# Subtest: unknown data fields and malformed byte strings reject
+ok 77 - unknown data fields and malformed byte strings reject
+  ---
+  duration_ms: 0.212155
+  type: 'test'
+  ...
+# Subtest: terminal timelines stop at actual completion, including rejection at zero
+ok 78 - terminal timelines stop at actual completion, including rejection at zero
+  ---
+  duration_ms: 0.215692
+  type: 'test'
+  ...
+# Subtest: timeline preserves pending, active, completed, dropped and failed boundaries
+ok 79 - timeline preserves pending, active, completed, dropped and failed boundaries
+  ---
+  duration_ms: 0.131768
+  type: 'test'
+  ...
+# Subtest: request event groups retain exact ps and only reached request/receiver milestones
+ok 80 - request event groups retain exact ps and only reached request/receiver milestones
+  ---
+  duration_ms: 2.223168
+  type: 'test'
+  ...
+# Subtest: request event groups group simultaneous events and keep GW fanout branches separate
+ok 81 - request event groups group simultaneous events and keep GW fanout branches separate
+  ---
+  duration_ms: 1.850119
+  type: 'test'
+  ...
+# Subtest: actual schema2 results replay multiple buses, forwarding boundaries and origin path delay
+ok 82 - actual schema2 results replay multiple buses, forwarding boundaries and origin path delay
+  ---
+  duration_ms: 47735.442788
+  type: 'test'
+  ...
+# Subtest: actual fanout steps order incoming CAN, internal transfer, outgoing CAN and both receivers
+ok 83 - actual fanout steps order incoming CAN, internal transfer, outgoing CAN and both receivers
+  ---
+  duration_ms: 4148.700749
+  type: 'test'
+  ...
+# Subtest: replay reflects reached milestones, queues, receiver delay and filters in both directions
+ok 84 - replay reflects reached milestones, queues, receiver delay and filters in both directions
+  ---
+  duration_ms: 3.375243
+  type: 'test'
+  ...
+# Subtest: EOF cutoff and unreached planned release remain transmitting/intermission
+ok 85 - EOF cutoff and unreached planned release remain transmitting/intermission
+  ---
+  duration_ms: 0.48059
+  type: 'test'
+  ...
+# Subtest: partial boundary keeps only committed milestones, including at H
+ok 86 - partial boundary keeps only committed milestones, including at H
+  ---
+  duration_ms: 0.295315
+  type: 'test'
+  ...
+# Subtest: same-time queue measurements use record order, never reservation event_seq
+ok 87 - same-time queue measurements use record order, never reservation event_seq
+  ---
+  duration_ms: 0.333309
+  type: 'test'
+  ...
+# Subtest: adjacent u64 times remain exact for cursor, formatting, order and state
+ok 88 - adjacent u64 times remain exact for cursor, formatting, order and state
+  ---
+  duration_ms: 0.976619
+  type: 'test'
+  ...
+# Subtest: idle nodes survive empty or zero-duration simulation via metadata
+ok 89 - idle nodes survive empty or zero-duration simulation via metadata
+  ---
+  duration_ms: 3.960608
+  type: 'test'
+  ...
+# Subtest: drop transition occurs at ready, not generated; never generates success
+ok 90 - drop transition occurs at ready, not generated; never generates success
+  ---
+  duration_ms: 0.322948
+  type: 'test'
+  ...
+# Subtest: invalid schema, noncanonical time, statuses, references and chronology reject
+ok 91 - invalid schema, noncanonical time, statuses, references and chronology reject
+  ---
+  duration_ms: 0.963839
+  type: 'test'
+  ...
+# Subtest: time conversion rejects fractional ps and malformed numbers
+ok 92 - time conversion rejects fractional ps and malformed numbers
+  ---
+  duration_ms: 1.637053
+  type: 'test'
+  ...
+# Subtest: network progress is exact, reversible and keeps delayed RX after bus release
+ok 93 - network progress is exact, reversible and keeps delayed RX after bus release
+  ---
+  duration_ms: 0.865736
+  type: 'test'
+  ...
+# Subtest: event steps include zero-delay TX/RX, preserve physical direction on rewind, and exclude older frames
+ok 94 - event steps include zero-delay TX/RX, preserve physical direction on rewind, and exclude older frames
+  ---
+  duration_ms: 0.578565
+  type: 'test'
+  ...
+# Subtest: zero-delay broadcast completes simultaneously with deterministic visual trails
+ok 95 - zero-delay broadcast completes simultaneously with deterministic visual trails
+  ---
+  duration_ms: 0.438254
+  type: 'test'
+  ...
+# Subtest: network EOF cutoff does not invent completion or receive records
+ok 96 - network EOF cutoff does not invent completion or receive records
+  ---
+  duration_ms: 0.211631
+  type: 'test'
+  ...
+# Subtest: active network packets are independent of the 500 timeline interval limit
+ok 97 - active network packets are independent of the 500 timeline interval limit
+  ---
+  duration_ms: 18.837942
+  type: 'test'
+  ...
+# Subtest: network progress preserves precision for adjacent large timestamps
+ok 98 - network progress preserves precision for adjacent large timestamps
+  ---
+  duration_ms: 0.396987
+  type: 'test'
+  ...
+# Subtest: declared idle wiring and directed Gateway routes are visible before any event
+ok 99 - declared idle wiring and directed Gateway routes are visible before any event
+  ---
+  duration_ms: 0.613436
+  type: 'test'
+  ...
+# Subtest: fanout holds one RX parent through sibling admission, wait is excluded from TX, and rewind is exact
+ok 100 - fanout holds one RX parent through sibling admission, wait is excluded from TX, and rewind is exact
+  ---
+  duration_ms: 0.910138
+  type: 'test'
+  ...
+# Subtest: Gateway replay keeps blocked fanout siblings at ingress and receives only an admitted branch
+ok 101 - Gateway replay keeps blocked fanout siblings at ingress and receives only an admitted branch
+  ---
+  duration_ms: 5.631968
+  type: 'test'
+  ...
+# Subtest: schema2 holding cutoff, no-route immediate release, legacy fields and strict RX validation
+ok 102 - schema2 holding cutoff, no-route immediate release, legacy fields and strict RX validation
+  ---
+  duration_ms: 5.731176
+  type: 'test'
+  ...
+# Subtest: schema1 declared wiring retains an idle Controller without guessing Gateway membership
+ok 103 - schema1 declared wiring retains an idle Controller without guessing Gateway membership
+  ---
+  duration_ms: 0.259781
+  type: 'test'
+  ...
+# Subtest: legacy Gateway membership never guesses idle CAN wiring from a single observed bus
+ok 104 - legacy Gateway membership never guesses idle CAN wiring from a single observed bus
+  ---
+  duration_ms: 0.16044
+  type: 'test'
+  ...
+# Subtest: interval queues use final same-time state and independent integer-ps duration oracle
+ok 105 - interval queues use final same-time state and independent integer-ps duration oracle
+  ---
+  duration_ms: 0.965176
+  type: 'test'
+  ...
+# Subtest: missing initial measurement is unavailable; adjacent u64 clipping retains integer ps
+ok 106 - missing initial measurement is unavailable; adjacent u64 clipping retains integer ps
+  ---
+  duration_ms: 0.178625
+  type: 'test'
+  ...
+# Subtest: interval comparison clips two buses, unfinished committed TX, idle rows and separates TX from RX
+ok 107 - interval comparison clips two buses, unfinished committed TX, idle rows and separates TX from RX
+  ---
+  duration_ms: 1.074635
+  type: 'test'
+  ...
+# Subtest: interval aggregation includes >500 transmissions and >75 requests without altering inputs
+ok 108 - interval aggregation includes >500 transmissions and >75 requests without altering inputs
+  ---
+  duration_ms: 0.776422
+  type: 'test'
+  ...
+1..108
+# tests 108
+# suites 0
+# pass 107
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 52059.19731

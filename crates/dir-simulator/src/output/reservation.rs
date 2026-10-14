@@ -5,12 +5,7 @@ use std::path::{Path, PathBuf};
 
 pub(crate) struct OutputReservation {
     pub(crate) path: PathBuf,
-    lock: PathBuf,
-}
-impl Drop for OutputReservation {
-    fn drop(&mut self) {
-        let _ = fs::remove_file(&self.lock);
-    }
+    _lock: fs::File,
 }
 pub(crate) fn reserve_output(
     path: &Path,
@@ -59,11 +54,38 @@ pub(crate) fn reserve_output_for_inputs(
         }
         Err(e) => return Err(io_error(e)),
     }
-    let lock = target.join(".dir-simulator.lock");
-    fs::OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&lock)
-        .map_err(io_error)?;
-    Ok(OutputReservation { path: target, lock })
+    // Lock the directory inode, not a directory entry which would remain in a
+    // killed, otherwise complete bundle. Hold the descriptor through export.
+    let lock = fs::File::open(&target).map_err(io_error)?;
+    rustix::fs::flock(&lock, rustix::fs::FlockOperation::NonBlockingLockExclusive)
+        .map_err(|e| io_error(e.into()))?;
+    // Another writer may have published between the initial check and the lock.
+    if fs::read_dir(&target).map_err(io_error)?.next().is_some() {
+        return Err(Diagnostic::output(
+            "output directory is not empty; existing results were preserved",
+        ));
+    }
+    Ok(OutputReservation {
+        path: target,
+        _lock: lock,
+    })
+}
+
+#[cfg(test)]
+mod publication_tests {
+    use super::*;
+
+    #[test]
+    fn reservation_excludes_other_writers_without_a_bundle_entry() {
+        let path =
+            std::env::temp_dir().join(format!("dir-reservation-inode-{}", std::process::id()));
+        fs::create_dir(&path).unwrap();
+        let first = reserve_output_for_inputs(&path, &[]).unwrap();
+        assert_eq!(fs::read_dir(&path).unwrap().count(), 0);
+        assert!(reserve_output_for_inputs(&path, &[]).is_err());
+        drop(first);
+        let second = reserve_output_for_inputs(&path, &[]).unwrap();
+        drop(second);
+        fs::remove_dir(path).unwrap();
+    }
 }

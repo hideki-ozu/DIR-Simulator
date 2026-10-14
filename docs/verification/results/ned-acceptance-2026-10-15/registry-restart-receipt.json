@@ -1,0 +1,101 @@
+{
+  "binary": {
+    "path": "bin/ned-registry-debug-libtest",
+    "sha256": "fa4ab4d41a88d0973148976b4f47635d5d06138565ffb7b4f97eab80610309ff",
+    "source": "current integrated libtest copied before fixture correction"
+  },
+  "original_failure": "workspace-second.log:510-511;489 passed,1 failed,8 ignored",
+  "isolated": {
+    "result": "1 passed",
+    "seconds": 4.85
+  },
+  "concurrent_without_delay": {
+    "result": "2 passed including all95 XC23 cuts",
+    "seconds": 176.04
+  },
+  "deterministic_scheduling_reproduction": {
+    "execve_delay_ms": 100,
+    "registry_thread": 346687,
+    "child_pid": 346728,
+    "child_exec_enter": 1791993082.202383,
+    "child_exec_return": 1791993082.30285,
+    "registry_flock_eagain": 1791993082.218587,
+    "exact_failure": "output_tests.rs:66:84 E-EDITOR-TARGET-BUSY status409 os11",
+    "trace_refs": [
+      "registry-restart-exec-delay.trace.346687:78",
+      "registry-restart-exec-delay.trace.346728:1",
+      "registry-restart-exec-delay.trace.346688:26"
+    ],
+    "full_mixed_run": "180s supervisor timeout after92 XC23 cut evidence entries; exact existing test failure already captured. Not a full XC23 result."
+  },
+  "direct_fd_proof": {
+    "observed_inherited_registry_fds": [
+      {
+        "time": 1791993212.3536208,
+        "child_pid": 347718,
+        "fd": 8,
+        "target": "/tmp/ned-output-347695-1/state/.registry.lock",
+        "inode": 1237637,
+        "fdinfo": "pos:\t0\nflags:\t02500002\nmnt_id:\t82\nino:\t1237637\nlock:\t1: FLOCK  ADVISORY  WRITE 347695 08:30:1237637 0 EOF\n",
+        "observed_exe": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/bin/ned-registry-debug-libtest"
+      }
+    ],
+    "exact_original_failure": true,
+    "stopped_after_observation": true
+  },
+  "fd_lifetime": {
+    "registry_lock_acquired": 1791993211.909075,
+    "child_exec_enter": 1791993212.351733,
+    "inherited_child_fd_observed": 1791993212.3536208,
+    "parent_closed_lease": 1791993212.403531,
+    "parent_restart_flock_eagain": 1791993212.423223,
+    "child_exec_return": 1791993212.852593,
+    "cloexec_flag_octal": "02000000",
+    "inode": 1237637,
+    "trace_refs": [
+      "registry-fd-lifetime.trace.347696:4894",
+      "registry-fd-lifetime.trace.347696:5964",
+      "registry-fd-lifetime.trace.347696:6016",
+      "registry-fd-lifetime.trace.347718:1"
+    ],
+    "probe_end": "Explicitly stopped only its own session after exact failure plus inherited locked FD observation; no full-XC23 pass claim from this scheduling probe"
+  },
+  "fix": {
+    "file": "crates/dir-simulator/src/tool/ned-editor/output_tests.rs",
+    "scope": "Fixture::restart only",
+    "behavior": "Retry only E-EDITOR-TARGET-BUSY/status409 for at most2 seconds, yield between attempts; all other errors and deadline panic immediately. No production lock/interface/injection changes."
+  },
+  "validation": "Helper rustfmt passed; diff only17 added/1replaced line; git diff --check passed. Parent compiled new libtest. Actual524 bounded helper retries succeeded; entire forced mixed stress does not pass due later unrelated fixture assertion.",
+  "file_sha256": {
+    "registry-restart-isolated.log": "c631282b0dbc350fd6037220cdcc9f46325ecffbbde18d921ce5ab1d9a0630b2",
+    "registry-restart-concurrent.log": "91fe11a363c12e6f24293b23269e660d1013323476f9cfc8c8d530683f819892",
+    "registry-restart-exec-delay.log": "13bc0ce5ecd3284c39d3a0c6ded73e488127cea1247c8faa68c6b9454f327242",
+    "registry-fd-lifetime.log": "76c63586b73f748ce06055caf013a9564f4cf8e051e13c403912db9842b5fb80",
+    "registry-fd-lifetime.json": "09c9782515d5f74efa1e1248322f7accef4994fea32a80379d22c74c43fab87b",
+    "registry-fd-lifetime-probe.py": "3c312e9d7f6e268b451c08089af923af6ef14dfb37759e5860864ca657e9dd3c",
+    "registry-restart-fixed-exec-delay.log": "4e660fd481fb6f8d652500652a71fe12e49b7bbb2612e4a8e659eb032669e9de",
+    "registry-restart-fixed-exec-delay.trace.352703": "300b31de5a3c6d6bf946e159528718d1d62aede4eeed960a314d81173eb7627f"
+  },
+  "fixed_stress": {
+    "binary": "bin/ned-workspace-third-libtest",
+    "binary_sha256": "0c827744a81bbb314012e904a64a82de0bbeb44f80474f14d684555481ecb660",
+    "command": "timeout 300 strace --seccomp-bpf -ff -ttt -T -yy -o TRACE -e trace=clone,clone3,execve,flock -e inject=execve:delay_enter=100ms \"$DIR_NED_TEST_BINARY\" retirement_and_each_reclamation_boundary_resume_after_restart_and_retry xc23_actual_sigkill_at_each_observed_saveas_checkpoint_recovers_exact_bytes --test-threads=2 --nocapture",
+    "result": "1passed XC23(all95 cuts);1failed existing retirement regression at a later immediate recover outside the modified helper",
+    "seconds": 37.91,
+    "restart_retry_exercised": {
+      "trace": "registry-restart-fixed-exec-delay.trace.352703:78-602",
+      "busy_attempts": 524,
+      "first_busy": 1791993309.785492,
+      "last_busy": 1791993309.863855,
+      "success": 1791993309.864028,
+      "wait_ms": 78.536
+    },
+    "remaining_stress_condition": {
+      "trace": "registry-restart-fixed-exec-delay.trace.352703:640",
+      "fixture": "ned-output-352702-8",
+      "error": "E-EDITOR-TARGET-BUSY409",
+      "assertion": "output_tests.rs:904 expected Complete, got Rejected in immediate recover after_gc_retire_sync/0/false"
+    },
+    "source_changes": "No edit after new failure; parent notified. Arbitrarily slowing all execs also affects other fixture operations; do not claim broad immunity."
+  }
+}

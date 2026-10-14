@@ -622,6 +622,8 @@ pub(crate) struct Controller {
     recovery_stamps: BTreeMap<String, (Stamp, String, String)>,
     #[cfg(test)]
     worker_gate: Option<Arc<std::sync::Barrier>>,
+    #[cfg(test)]
+    panic_after_candidate: bool,
 }
 impl Controller {
     #[cfg(test)]
@@ -701,6 +703,8 @@ impl Controller {
             recovery_stamps: BTreeMap::new(),
             #[cfg(test)]
             worker_gate: None,
+            #[cfg(test)]
+            panic_after_candidate: false,
         })
     }
     fn revision(&self) -> u64 {
@@ -1580,6 +1584,8 @@ impl Controller {
         let input_revision = stamp.as_ref().map_or(0, |s| s.input_revision);
         #[cfg(test)]
         let worker_gate = c.worker_gate.take();
+        #[cfg(test)]
+        let panic_after_candidate = std::mem::take(&mut c.panic_after_candidate);
         let spawn = std::thread::Builder::new()
             .name("ned-editor-operation".into())
             .spawn(move || {
@@ -1588,7 +1594,7 @@ impl Controller {
                     gate.wait();
                 }
                 let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                    run_operation(
+                    let result = run_operation(
                         &worker_command,
                         OperationInput {
                             runs,
@@ -1603,7 +1609,14 @@ impl Controller {
                             authorized_digest,
                             replace_layout,
                         },
-                    )
+                    );
+                    #[cfg(test)]
+                    if panic_after_candidate
+                        && matches!(&result, Ok(Work::EditPreview(_) | Work::EditApplied(..)))
+                    {
+                        panic!("injected panic after constructing an unpublished edit candidate");
+                    }
+                    result
                 }));
                 let mut c = worker_shared.lock().unwrap_or_else(|e| e.into_inner());
                 c.complete_operation(&worker_command, stamp.as_ref(), outcome);
@@ -2577,7 +2590,7 @@ fn run_operation(command: &Command, input: OperationInput) -> Result<Work> {
     }
 }
 fn report_value(r: &SaveReport) -> Value {
-    json!({"save_id":r.save_id,"revision":r.revision.to_string(),"input_revision":r.input_revision.to_string(),"snapshot_id":r.snapshot_id,"plan_digest":r.plan_digest,"state":r.state,"files":r.files,"recovery_id":r.recovery_id,"output_path":r.output_path})
+    json!({"save_id":r.save_id,"revision":r.revision.to_string(),"input_revision":r.input_revision.to_string(),"snapshot_id":r.snapshot_id,"plan_digest":r.plan_digest,"state":r.state,"files":r.files,"mapping":r.mapping,"recovery_id":r.recovery_id,"output_path":r.output_path})
 }
 
 fn diagnostic(origin: &str, e: &EditorError, revision: u64) -> Value {

@@ -1,0 +1,70 @@
+
+running 38 tests
+test output::publish::acceptance_tests::failed_data_and_manifest_publication_preserve_external_paths ... ok
+test output::publish::acceptance_tests::killed_publication_has_strict_bundle_exactly_after_manifest ... ok
+test output::publish::acceptance_tests::paired_writer_failure_never_publishes_either_output ... ok
+test output::publish::acceptance_tests::preparation_publication_leaves_only_single_link_outputs ... ok
+test output::publish::acceptance_tests::preparation_publication_refuses_all_existing_destination_types ... ok
+test output::publish::acceptance_tests::publication_child ... ok
+test output::publish::acceptance_tests::snapshot_journals_remain_reusable_after_strict_publication ... ok
+test runtime::can_ethernet::tests::acceptance_last_can_branch_id_failure_preserves_processing_prefix ... ok
+test runtime::can_ethernet::tests::acceptance_last_ethernet_branch_byte_overflow_does_not_commit_first_branch ... ok
+test tool::ned_editor::acceptance_file_tests::xc01_second_root_creation_preserves_first_root_disk_and_network_semantics ... ok
+test tool::ned_editor::acceptance_file_tests::xc04_real_captured_casefold_sidecar_paths_roles_and_empty_ned_reject_atomically ... ok
+test tool::ned_editor::acceptance_file_tests::xc04_real_symlink_is_rejected_during_capture_without_replacing_session ... ok
+test tool::ned_editor::acceptance_file_tests::xc06_save_as_undo_shape_rejection_redo_preserve_all_disk_bytes_and_hashes ... ok
+test tool::ned_editor::acceptance_file_tests::xc07_external_creation_after_preview_before_save_is_an_ordered_no_clobber_barrier ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_added_file_64_65_and_rename_1000_1001_limits_are_separate ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_history_exact_32mib_and_one_byte_over_are_distinct_atomic_boundaries ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_plan_encoded_64mib_boundary_and_ten_minute_expiry_are_independent ... ok
+test tool::ned_editor::acceptance_mapping_tests::xc23_captured_shared_json_maps_one_input_id_to_two_outputs_without_relocating_snapshot ... 
+thread 'tool::ned_editor::acceptance_mapping_tests::xc23_captured_shared_json_maps_one_input_id_to_two_outputs_without_relocating_snapshot' panicked at crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs:39:37:
+called `Result::unwrap()` on an `Err` value: Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "invalid_argument", message: "/tmp/ned-mapping-acceptance-3acd38b7512c0308c0ddb296d549e4be250a3b167828cfeca11614a74d75365e/input/project.ini: model-config is unsupported for can.cc.ideal.v1", source: Some("/tmp/ned-mapping-acceptance-3acd38b7512c0308c0ddb296d549e4be250a3b167828cfeca11614a74d75365e/input/project.ini"), line: Some(12), column: Some(1), end_line: Some(12), end_column: Some(1), target: Some("model-profile"), time_ps: None, event_seq: None, details: None }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test tool::ned_editor::acceptance_mapping_tests::xc23_mapping_does_not_authorize_foreign_paths_or_duplicate_pairs ... 
+thread 'tool::ned_editor::acceptance_mapping_tests::xc23_mapping_does_not_authorize_foreign_paths_or_duplicate_pairs' panicked at crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs:39:37:
+called `Result::unwrap()` on an `Err` value: Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "invalid_argument", message: "/tmp/ned-mapping-acceptance-196edf0d4292ec2265e935d397352f389dc6f6f79753088aed1da110e9951736/input/project.ini: model-config is unsupported for can.cc.ideal.v1", source: Some("/tmp/ned-mapping-acceptance-196edf0d4292ec2265e935d397352f389dc6f6f79753088aed1da110e9951736/input/project.ini"), line: Some(12), column: Some(1), end_line: Some(12), end_column: Some(1), target: Some("model-profile"), time_ps: None, event_seq: None, details: None }
+FAILED
+test tool::ned_editor::acceptance_mapping_tests::xc23_recovery_keeps_mapping_and_legacy_absence_does_not_guess_input_ids ... 
+thread 'tool::ned_editor::acceptance_mapping_tests::xc23_recovery_keeps_mapping_and_legacy_absence_does_not_guess_input_ids' panicked at crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs:39:37:
+called `Result::unwrap()` on an `Err` value: Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "invalid_argument", message: "/tmp/ned-mapping-acceptance-325aa36bdff6fe3fb15448ad28a17cb0109439bb666d44130afbd1a636cbe1e1/input/project.ini: model-config is unsupported for can.cc.ideal.v1", source: Some("/tmp/ned-mapping-acceptance-325aa36bdff6fe3fb15448ad28a17cb0109439bb666d44130afbd1a636cbe1e1/input/project.ini"), line: Some(12), column: Some(1), end_line: Some(12), end_column: Some(1), target: Some("model-profile"), time_ps: None, event_seq: None, details: None }
+FAILED
+test tool::ned_editor::acceptance_mapping_tests::xc23_tampered_recovery_mapping_cannot_redirect_publication ... 
+thread 'tool::ned_editor::acceptance_mapping_tests::xc23_tampered_recovery_mapping_cannot_redirect_publication' panicked at crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs:39:37:
+called `Result::unwrap()` on an `Err` value: Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "invalid_argument", message: "/tmp/ned-mapping-acceptance-4b803e3b1fbe56a0000397e1df7c957bb4869ec7a96c2dca3f67ae9f496f2370/input/project.ini: model-config is unsupported for can.cc.ideal.v1", source: Some("/tmp/ned-mapping-acceptance-4b803e3b1fbe56a0000397e1df7c957bb4869ec7a96c2dca3f67ae9f496f2370/input/project.ini"), line: Some(12), column: Some(1), end_line: Some(12), end_column: Some(1), target: Some("model-profile"), time_ps: None, event_seq: None, details: None }
+FAILED
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc20_actual_reload_invalidates_same_bytes_preview_before_apply ... ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc20_writer_takeover_alone_invalidates_preview_without_editing_inputs ... ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc22_actual_preview_and_apply_candidate_panics_never_adopt_or_destroy_redo ... 
+thread 'ned-editor-operation' panicked at crates/dir-simulator/src/tool/ned-editor/controller.rs:1617:25:
+injected panic after constructing an unpublished edit candidate
+
+thread 'ned-editor-operation' panicked at crates/dir-simulator/src/tool/ned-editor/controller.rs:1617:25:
+injected panic after constructing an unpublished edit candidate
+ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc32_exact_hundred_inflight_and_terminal_retries_preserve_one_frozen_run ... ok
+test tool::ned_editor::controller::tests::malformed_auth_epoch_busy_and_revision_have_distinct_acceptance_boundaries ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc08_shared_cow_compares_every_path_value_channel_and_runtime_binding ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc09_xc11_multiroot_ancestors_crosspackage_layout_and_source_identity_roundtrip ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc10_unique_stop_and_unused_incoming_reference_compare_all_bindings ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc12_detach_invalid_targets_and_limits_are_atomic ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc13_xc15_aggregate_rename_updates_all_roles_channels_layout_and_ids ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc14_swap_three_cycle_and_parent_child_each_have_one_exact_history_entry ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc16_segment_boundaries_other_owner_and_unused_type_references_are_independent ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc17_every_unsupported_reference_variant_refuses_without_exact_override_compensation ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc18_equal_value_collisions_in_each_namespace_are_preview_rejections ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc19_bom_mixed_newlines_unicode_and_json_escape_keep_every_nonpatch_byte ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc20_edit_undo_and_reload_context_each_invalidate_a_rename_plan ... ok
+test tool::ned_editor::run_control::tests::acceptance_snapshot_tests::xc26_real_worker_never_falls_back_to_an_uncaptured_existing_disk_file ... ignored, Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY; run explicitly
+
+failures:
+
+failures:
+    tool::ned_editor::acceptance_mapping_tests::xc23_captured_shared_json_maps_one_input_id_to_two_outputs_without_relocating_snapshot
+    tool::ned_editor::acceptance_mapping_tests::xc23_mapping_does_not_authorize_foreign_paths_or_duplicate_pairs
+    tool::ned_editor::acceptance_mapping_tests::xc23_recovery_keeps_mapping_and_legacy_absence_does_not_guess_input_ids
+    tool::ned_editor::acceptance_mapping_tests::xc23_tampered_recovery_mapping_cannot_redirect_publication
+
+test result: FAILED. 33 passed; 4 failed; 1 ignored; 0 measured; 459 filtered out; finished in 51.46s
+

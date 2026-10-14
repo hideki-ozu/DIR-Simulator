@@ -1,0 +1,2174 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-15",
+  "timezone": "Asia/Tokyo",
+  "task": "Execution and correction of the 38 residual NED acceptance assessments",
+  "source_spec": "docs/tools/ned-editor/NED-editor仕様書.md#232-受入ケースと必要な証拠",
+  "base_commit": "0d7dd39",
+  "prior_record": {
+    "path": "ned-acceptance-residuals-2026-10-14.json",
+    "condition_status_counts": {
+      "partial": 56,
+      "unverified": 38,
+      "passed": 4
+    }
+  },
+  "case_id_policy": "Uses the specification IDs NE-XC01 through NE-XC43; no parallel IDs are introduced.",
+  "scope": "Reassesses the 38 previously unverified condition entries. The 43 compound case definitions remain in the specification. No standards conformance, arbitrary failure cross-product, physical-RAM OOM, or power-loss result is inferred.",
+  "product_binary": {
+    "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/bin/dir-simulator-acceptance-fixed",
+    "sha256": "b81812c1516029697b294e2787dcbcca8e637dbc0f23633a6fc78c98753758dd",
+    "source_state": "Built from the dirty source tree based on main 0d7dd39; source hashes bind the tested changes. Final exact-commit CI is recorded separately."
+  },
+  "conditions": [
+    {
+      "case_id": "NE-XC01",
+      "prior_condition_index": 3,
+      "prior_condition": "root 1無変更、network意味同一、実ディスク無変更をこのroot-2操作一式で同時照合",
+      "prior_reason": "Focused model tests do not provide a full disk and semantic comparison for this exact acceptance flow.",
+      "contract_condition": "root 1無変更、network意味同一、実ディスク無変更をこのroot-2操作一式で同時照合",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_file_tests::xc01_second_root_creation_preserves_first_root_disk_and_network_semantics",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC02",
+      "prior_condition_index": 2,
+      "prior_condition": "生成後の完全なprepare成功をこの組合せで確認する",
+      "prior_reason": "The named transaction test measures reversible model state; it is not a prepare-success measurement.",
+      "contract_condition": "workload又はmodel-configのJSONとINIを同じtransactionで生成し、prepare成功とUndoを確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "旧判定は誤り。既存試験にprepare成功のassertionがある。workloadとmodel-configを同時作成する要件を追加しない。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::file_creation::tests::file_creation_missing_json_and_ini_are_one_reversible_transaction",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC04",
+      "prior_condition_index": 2,
+      "prior_condition": "列挙した全不正入力（特にsymlinkとcase-fold衝突）ごとにHTTP 422とdisk/history/revision全不変を確認",
+      "prior_reason": "The passing model test does not establish every listed filesystem/HTTP variant.",
+      "contract_condition": "不正path・case-fold・role・空packageはpreviewで422。symlinkは実capture/Reload境界で拒否しsnapshotを維持",
+      "result": "passed_scoped_condition",
+      "scope_note": "disk変更後の未capture symlinkを不変snapshotのpreviewが検出するとは要求しない。capture/Reloadが実filesystem境界。既存model拒否も旧表では過小評価。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_file_tests::xc04_real_captured_casefold_sidecar_paths_roles_and_empty_ned_reject_atomically",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_file_tests::xc04_real_symlink_is_rejected_during_capture_without_replacing_session",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "http_final",
+          "source": "tests/ned_editor_acceptance_http.test.cjs",
+          "named_tests": [
+            "native HTTP acceptance XC04 XC32 XC36 XC38 XC39",
+            "XC04 native invalid creation previews are atomic terminal 422",
+            "XC32 discarded accepted HTTP response plus 100 exact resends creates one run",
+            "XC39 native raw HTTP Host Origin CORS auth and Viewer authority boundaries",
+            "XC36 native unsafe run cleanup refuses and preserves unrelated identities",
+            "XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC06",
+      "prior_condition_index": 2,
+      "prior_condition": "全disk bytesを各段階でhash比較し、dirty解消を完全SaveAs受入で確認",
+      "prior_reason": "Unit-level checkpoint assertions do not document a full acceptance artifact/hash record.",
+      "contract_condition": "全disk bytesを各段階でhash比較し、dirty解消を完全SaveAs受入で確認",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_file_tests::xc06_save_as_undo_shape_rejection_redo_preserve_all_disk_bytes_and_hashes",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC07",
+      "prior_condition_index": 2,
+      "prior_condition": "この正確なpreview→external-create→SaveAs B4 timingを実filesystem barrierで再現する",
+      "prior_reason": "Tests exercise deterministic collisions, not the full external-race timing sequence.",
+      "contract_condition": "この正確なpreview→external-create→SaveAs B4 timingを実filesystem barrierで再現する",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_file_tests::xc07_external_creation_after_preview_before_save_is_an_ordered_no_clobber_barrier",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC08",
+      "prior_condition_index": 2,
+      "prior_condition": "表のRack/Device/Net.a具体fixtureの全path・値・結線比較",
+      "prior_reason": "The test measures a separate bounded shared-parent fixture.",
+      "contract_condition": "表のRack/Device/Net.a具体fixtureの全path・値・結線比較",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc08_shared_cow_compares_every_path_value_channel_and_runtime_binding",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC09",
+      "prior_condition_index": 2,
+      "prior_condition": "別root祖先を含む全階層のsource/destination pathを受入fixtureでhash比較",
+      "prior_reason": "The test is a focused model fixture, not the full multi-root acceptance matrix.",
+      "contract_condition": "別root祖先を含む全階層のsource/destination pathを受入fixtureでhash比較",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc09_xc11_multiroot_ancestors_crosspackage_layout_and_source_identity_roundtrip",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC10",
+      "prior_condition_index": 2,
+      "prior_condition": "指定owner/child型の全前後参照を実GUI意味証拠として照合",
+      "prior_reason": "The passed check is a Rust model-level semantic fixture.",
+      "contract_condition": "指定owner/childと未使用型を含む参照・bindingを前後比較し、共有度による停止／copy継続を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "旧表の全条件を実GUI意味証拠とする追加制約は仕様表にない。参照意味は共通modelで検査しGUI全体はXC43で別途実施。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc10_unique_stop_and_unused_incoming_reference_compare_all_bindings",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC11",
+      "prior_condition_index": 2,
+      "prior_condition": "source/destination layout、source_file、全解決先、Undo bytesを一組のdisk exportで照合",
+      "prior_reason": "The source test is a focused in-memory refactor fixture.",
+      "contract_condition": "cross-package解決先、両layout、source_file、Undo bytesを同じsnapshotで比較。物理保存の非改名は独立SaveAs試験で確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "旧表の単一disk exportという追加制約は仕様表にない。snapshot意味と保存のidentity非改名を別の直接assertionで確認。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc09_xc11_multiroot_ancestors_crosspackage_layout_and_source_identity_roundtrip",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC12",
+      "prior_condition_index": 2,
+      "prior_condition": "network root/channel/未解決型/全件数上限それぞれの拒否と原型atomicity",
+      "prior_reason": "Not every listed invalid reference and limit variant is exercised by the cited fixtures.",
+      "contract_condition": "network root/channel/未解決型/全件数上限それぞれの拒否と原型atomicity",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc12_detach_invalid_targets_and_limits_are_atomic",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC13",
+      "prior_condition_index": 2,
+      "prior_condition": "NED/INI/Channel/JSON/layout全参照をこの一括変更で同時に出力hash比較",
+      "prior_reason": "Separate focused fixtures cover parts; no single aggregate export test covers every listed role.",
+      "contract_condition": "同時renameでNED/INI/Channel/JSON/layout全役割の参照と非参照bytesを比較",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc13_xc15_aggregate_rename_updates_all_roles_channels_layout_and_ids",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC14",
+      "prior_condition_index": 2,
+      "prior_condition": "A/B・3名・親子renameの各形で1履歴と完全逆変換bytesを個別照合",
+      "prior_reason": "The executed cycle fixtures do not claim every combination in the acceptance row.",
+      "contract_condition": "A/B・3名・親子renameの各形で1履歴と完全逆変換bytesを個別照合",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc14_swap_three_cycle_and_parent_child_each_have_one_exact_history_entry",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC15",
+      "prior_condition_index": 2,
+      "prior_condition": "全root path、全Channel ID、経路と設定IDを実保存後のbaselineと比較",
+      "prior_reason": "Focused semantic fixture does not include a complete saved-output provenance record.",
+      "contract_condition": "全instance path・Channel ID・経路・設定IDの意味比較と、独立SaveAsの入力identity保持を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc13_xc15_aggregate_rename_updates_all_roles_channels_layout_and_ids",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC16",
+      "prior_condition_index": 2,
+      "prior_condition": "a/aa segment境界と未使用型参照を別々に操作し、全対象限定性を確認",
+      "prior_reason": "The cited type-swap test does not exercise every path-prefix and unused-type case.",
+      "contract_condition": "a/aa segment境界と未使用型参照を別々に操作し、全対象限定性を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc16_segment_boundaries_other_owner_and_unused_type_references_are_independent",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC17",
+      "prior_condition_index": 2,
+      "prior_condition": "wildcard/duplicate key/ambiguous aliasの全種別で理由付き拒否と補償不在を照合",
+      "prior_reason": "The named tests cover explicit reference/schema fixtures, not all table variants.",
+      "contract_condition": "wildcard/duplicate key/ambiguous aliasの全種別で理由付き拒否と補償不在を照合",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc17_every_unsupported_reference_variant_refuses_without_exact_override_compensation",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC18",
+      "prior_condition_index": 2,
+      "prior_condition": "symbol/INI/Channel/layoutそれぞれで等値衝突をpreview時に拒否",
+      "prior_reason": "The cited test directly measures layout collision; other collision namespaces are not all established.",
+      "contract_condition": "symbol/INI/Channel/layoutそれぞれで等値衝突をpreview時に拒否",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc18_equal_value_collisions_in_each_namespace_are_preview_rejections",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC19",
+      "prior_condition_index": 2,
+      "prior_condition": "非ASCII commentと全形式でpatch外bytes及びsemantic comparisonを同一acceptance実行で確認",
+      "prior_reason": "The Rust and Node checks are separate fixtures; no complete shared evidence bundle was produced.",
+      "contract_condition": "BOM・混在改行・非ASCII・JSON escapeのpatch外bytes、spanと共通意味検査を照合",
+      "result": "passed_scoped_condition",
+      "scope_note": "別fixture／別言語であること自体は未検証の理由にならない。各形式の直接assertionを記録。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc19_bom_mixed_newlines_unicode_and_json_escape_keep_every_nonpatch_byte",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC20",
+      "prior_condition_index": 2,
+      "prior_condition": "preview後のedit・Undo・Reload・writer takeoverを一つずつcommit境界で全て再現",
+      "prior_reason": "Executed checks cover stale plan/revision/writer epoch subsets, not the full 4-way scenario.",
+      "contract_condition": "preview後のedit・Undo・Reload・writer takeoverを一つずつcommit境界で全て再現",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::controller::tests::acceptance_controller_tests::xc20_actual_reload_invalidates_same_bytes_preview_before_apply",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_controller_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::controller::tests::acceptance_controller_tests::xc20_writer_takeover_alone_invalidates_preview_without_editing_inputs",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_controller_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc20_edit_undo_and_reload_context_each_invalidate_a_rename_plan",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC21",
+      "prior_condition_index": 2,
+      "prior_condition": "32MiB operation境界±1byte、plan/file/rename件数境界を全て測定",
+      "prior_reason": "The cited history and plan-expiry tests do not establish every new byte/count limit.",
+      "contract_condition": "履歴32MiBとplan64MiBの境界-1/丁度/+1、追加file63/64/65、rename999/1000/1001の受付、履歴200/201とTTLを独立に確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "rename1000件はpayload受付の上限試験。1000-symbol同時semantic renameを実測した主張ではない。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_file_tests::xc21_added_file_64_65_and_rename_1000_1001_limits_are_separate",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_file_tests::xc21_plan_encoded_64mib_boundary_and_ten_minute_expiry_are_independent",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_file_tests::xc21_history_exact_32mib_and_one_byte_over_are_distinct_atomic_boundaries",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::tests::history_limit_counts_forward_and_reverse_bytes_and_rejects_atomically",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC22",
+      "prior_condition_index": 3,
+      "prior_condition": "preview dialog取消とapply後dialog閉鎖の終端job境界を全経路で確認",
+      "prior_reason": "The Node test covers New confirmation; it is not an edit-plan dialog close test.",
+      "contract_condition": "preview取消で未適用、実apply受領202のclient ack保留時も閉じたdialogに依存せず一回採用し明示Undoできる",
+      "result": "passed_scoped_condition",
+      "scope_note": "preview取消とapply受領後のdialog閉鎖を実UIで確認。candidate panicは実際の候補生成後・採用前の非同期workerへcfg(test)で注入。",
+      "evidence": [
+        {
+          "run": "extensions_final",
+          "source": "tests/ned_editor_extensions_browser.test.cjs",
+          "named_tests": [
+            "NED editor extensions work through the real UI and produce a runnable exported project"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC22",
+      "prior_condition_index": 4,
+      "prior_condition": "candidate panic時の未採用無変更をprocess barrierで再現",
+      "prior_reason": "No panic/fault injection was run for this condition.",
+      "contract_condition": "非同期workerで候補を実構築した後・採用前にpanicを注入し、モデル・履歴・Redo・disk不変と終端照会を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "preview取消とapply受領後のdialog閉鎖を実UIで確認。candidate panicは実際の候補生成後・採用前の非同期workerへcfg(test)で注入。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::controller::tests::acceptance_controller_tests::xc22_actual_preview_and_apply_candidate_panics_never_adopt_or_destroy_redo",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_controller_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC23",
+      "prior_condition_index": 2,
+      "prior_condition": "全B4 fault point、全input→複数output対応、実process crash前後の全hashを照合",
+      "prior_reason": "Unit fault injection covers selected publication gaps; no process kill at every B4 point was performed.",
+      "contract_condition": "20種類のB4 checkpoint全観測occurrenceで実SIGKILL・復旧・hashを照合し、保存mappingと入力snapshotの非改名を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "未知inodeを削除しない仕様に従い、stage identity未記録の4切断では同一inode/hashの一時物を保護保持。一般内蔵profileに両schema共通の有効JSONはないため、1ID複数role出力は計画policy単体試験、通常有効SaveAsと復旧は別試験。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_mapping_tests::xc23_multirole_mapping_policy_has_two_outputs_but_does_not_bypass_profile_validation",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_mapping_tests::xc23_mapping_does_not_authorize_foreign_paths_or_duplicate_pairs",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_mapping_tests::xc23_tampered_recovery_mapping_cannot_redirect_publication",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_mapping_tests::xc23_real_save_mapping_preserves_every_output_byte_and_snapshot_logical_path",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::acceptance_mapping_tests::xc23_recovery_keeps_mapping_and_legacy_absence_does_not_guess_input_ids",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc23_actual_sigkill_at_each_observed_saveas_checkpoint_recovers_exact_bytes",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC25",
+      "prior_condition_index": 2,
+      "prior_condition": "Untitled/new fileを含む未保存原文hash・元disk・dirty/save baselineを同時検証",
+      "prior_reason": "The browser fixture has existing input files and a created NED file; it does not cover every unsaved-file variant.",
+      "contract_condition": "Untitled/new fileを含む未保存原文hash・元disk・dirty/save baselineを同時検証",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "extensions_final",
+          "source": "tests/ned_editor_extensions_browser.test.cjs",
+          "named_tests": [
+            "NED editor extensions work through the real UI and produce a runnable exported project"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC26",
+      "prior_condition_index": 2,
+      "prior_condition": "全てのsource fileを消した状態で実workerを通し、unknown path同名ファイル衝突も別runで確認",
+      "prior_reason": "The unit test verifies snapshot path behavior; the browser flow deletes selected source inputs but is not the full matrix.",
+      "contract_condition": "全てのsource fileを消した状態で実workerを通し、unknown path同名ファイル衝突も別runで確認",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::tests::acceptance_snapshot_tests::xc26_real_worker_never_falls_back_to_an_uncaptured_existing_disk_file",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_snapshot_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::tests::real_worker_matches_saved_baseline_cli_manifest_records_metrics_and_diagnostics",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::tests::real_worker_smoke_when_binary_supplied",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC28",
+      "prior_condition_index": 4,
+      "prior_condition": "native browser/OS IME event sequenceを実機IMEで検証",
+      "prior_reason": "Node harness composition events are synthetic; no nativeIME hardware/browser input was used.",
+      "contract_condition": "実X11/IBus/Mozc/XTestによる日本語compositionと原文HTTP ack待ちを経て、一件だけ固定runを作成",
+      "result": "passed_scoped_condition",
+      "scope_note": "CompositionEvent/insertTextを注入しない。Chromium156はnative compositionendのisTrustedをfalseで返すためその値も保持し、start/update/inputのtrueと実Mozc/XTest経路を記録。",
+      "evidence": [
+        {
+          "run": "native_ime_final",
+          "source": "tests/ned_editor_native_ime.test.cjs",
+          "named_tests": [
+            "native Mozc composition and source acknowledgement precede the NED run snapshot"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        },
+        {
+          "run": "ui_final",
+          "source": "tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs",
+          "named_tests": [
+            "edit plan pages concatenate impacts until the final cursor",
+            "edit plan pagination rejects a changed plan, digest, session, or writer epoch",
+            "plan id",
+            "plan digest",
+            "session",
+            "writer epoch",
+            "edit plan pagination rejects a cursor loop",
+            "removing the selected file drops a clean buffer and resets the editor scope",
+            "removed unsent, composing, and sent buffers stay orphaned and recover their raw text when the file returns",
+            "same-file COW Undo and Redo rebind the selected instance to the surviving type key",
+            "a disappeared selected type clears its stale key and advances scope generation",
+            "pending text prevents scope reconciliation while the NED parse is unresolved",
+            "edit impact descriptions preserve file and symbol names as display strings",
+            "run history is current by project and input identity, regardless of layout-only revision changes",
+            "Viewer links require a separate loopback HTTP origin with an explicit port and no fragment or credentials",
+            "run artifact download sends the editor session and returns the binary response",
+            "run artifact download turns an HTTP failure into an ApiError with server details",
+            "Viewer expires exactly at its deadline, invalidates the render cache and permits preparation",
+            "run cards show partial and recovered outcomes while readonly mode locks run mutations",
+            "run cards render nested diagnostics and keep published results downloadable when Viewer preparation failed",
+            "recovery-only lock remains visible even when no journal can be listed",
+            "completed publication awaiting registry checkpoint offers only finalization",
+            "invalid journal remains visible with diagnostic and neither destructive recovery action",
+            "boundary port addition is enabled only on module declarations",
+            "LF shadow maps BOM, Japanese, emoji and CRLF using byte/codepoint boundaries",
+            "local patch retains BOM, comments and every unmodified mixed newline",
+            "emoji replacement expands a common surrogate prefix to complete code points",
+            "newlines inserted in an interval use its nearest original newline",
+            "acknowledgement updates the baseline without overwriting newer typing",
+            "blocked buffer preserves unsent text, and IME end explicitly releases waiters",
+            "JSON body limit counts encoded UTF-8 and escapes, not UTF-16 length",
+            "API keeps credentials only in the required header and supplies JSON content type",
+            "command DTO preserves all u64 values as strings and forwards opaque acknowledgement",
+            "202 reserves sequence, blocks the next command and waits for a terminal job",
+            "consumed terminal rejection advances sequence and retains command without retransmitting",
+            "unconsumed terminal rejection does not advance sequence",
+            "uncertain response retains exact command and resolves through same-ID lookup only",
+            "oversized command remains a local error, never an uncertain transmission",
+            "read-only clients cannot send mutation commands",
+            "view adoption rejects old scope, session and sequences with exact u64 comparison",
+            "port roles reverse only at compound boundaries without changing input/output labels",
+            "display geometry preserves backend coordinates and unresolved nodes have no invented gates",
+            "pending text takes display priority over a past ready state; recovery comes first",
+            "instance selection resolves the exact shared type key and sends its file, path and scope generation",
+            "node navigation keeps the current instance branch and rejects absent, unresolved and mismatched children",
+            "hierarchy filtering retains ancestors and backend instance order without inventing children",
+            "cycle instances can be inspected but structural editing is disabled only in invalid selected contexts",
+            "parameter values require the selected instance, corresponding graph and current projection",
+            "browser callbacks navigate instances and breadcrumbs, clear context on type/file selection and retain source buffers",
+            "source acknowledgement uses the committed raw hash and retains later typing on a cross-tab race",
+            "default fetch is bound to the browser global instead of the Api instance",
+            "builtin choices remain available without NED definitions and preserve colliding project names",
+            "file badges distinguish NED parsing from INI and JSON source roles",
+            "CAN pair candidates use Classical and Multibus implementation metadata and unused gates",
+            "project reset clears old buffers and scope while retaining monotonic response counters",
+            "New confirmation cancellation and terminal rejection preserve buffers and selected scope",
+            "successful New and uncertain same-ID lookup clear old context then select the new network",
+            "INI and JSON navigation edits and flushes through the same lossless source command",
+            "instance choices use resolved Controller metadata and exact descendant path boundaries",
+            "Gateway structured payload supports fanout and rejects duplicate IDs, foreign ports and reversed ranges",
+            "workload form canonicalizes periodic/explicit rows and rejects duplicate and unsafe values",
+            "gate forms produce atomic direction pairs and reject duplicate or invalid identifiers",
+            "composition dialogs use structural confirmations and atomic boundary-port commands",
+            "configuration commands confirm impacts, preserve count strings for INI and block unreadable JSON",
+            "workload settings flush pending JSON before constructing rows and show the latest count",
+            "settings submission rejects changed raw buffers or remote revision instead of overwriting newer JSON",
+            "network and instance settings use refreshed projections rather than earlier button snapshots",
+            "Gateway settings bind both node selection and route forms to the current source snapshot",
+            "settings snapshot also rejects drift after a newer edit has already been acknowledged",
+            "settings recheck source after shared-impact confirmation and preserve a remote edit",
+            "settings opening waits for IME completion before taking the source snapshot",
+            "Run waits for composition and source acknowledgement before freezing input",
+            "Run creates no command while flush is blocked or fails and retains the edited bytes",
+            "Run flushes typing received during an unacknowledged edit before freezing the final version",
+            "Run dialog cancellation and invalid timeout never flush or create a run",
+            "Gateway choices retain orphan settings nodes and unavailable configured ports",
+            "Gateway settings can delete an orphan entry and reject configuring an absent compound",
+            "Gateway dialogs preserve missing checked ports and route values until explicitly unchecked",
+            "a queued close event from the preceding dialog cannot close the next settings step",
+            "repeatable forms retain invalid rows, allow removal/addition and collect only live rows",
+            "repeatable route choices track checked Gateway ports and disabled conditional inputs",
+            "Save As requires writer before opening its dialog and sends the current lease",
+            "Save As rechecks writer after its dialog, so a takeover cannot register a destination",
+            "layout-only drag and collapse send commands without type impact confirmations",
+            "explicit time form roundtrip preserves spaces between numbers and units"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC30",
+      "prior_condition_index": 3,
+      "prior_condition": "manifest/worker termination/Viewerレコードの全対応を全partial種別で突合",
+      "prior_reason": "Browser measures one bounded event-cap partial fixture; not every partial termination/export path.",
+      "contract_condition": "イベント上限による実partialのreport・manifest・result・Viewerの存在recordを対応付ける",
+      "result": "passed_scoped_condition",
+      "scope_note": "全partial原因の組合せを要求する旧表の記述を訂正。イベント上限を実行し、OS強制停止は別の非公開終端として検査。",
+      "evidence": [
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc30_actual_partial_report_manifest_and_records_are_consistent",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "extensions_final",
+          "source": "tests/ned_editor_extensions_browser.test.cjs",
+          "named_tests": [
+            "NED editor extensions work through the real UI and produce a runnable exported project"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC31",
+      "prior_condition_index": 2,
+      "prior_condition": "物理ENOSPC/permission-deniedをdiagnostic後に起こし、manifestなしViewer不可を実行",
+      "prior_reason": "No actual ENOSPC or permission-denial publication failure was generated.",
+      "contract_condition": "物理ENOSPC/permission-deniedをdiagnostic後に起こし、manifestなしViewer不可を実行",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc31_real_enospc_and_eacces_after_execution_preserve_original_diagnostics",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC32",
+      "prior_condition_index": 3,
+      "prior_condition": "exactly100 retransmissions、異payload409、freeze through terminalまでの全command kindを一つのrunで計測",
+      "prior_reason": "The cited checks cover idempotency/sequence subsets, not this full 100-retry protocol row.",
+      "contract_condition": "同一要求100回の受領中／終端再送、実HTTP応答喪失と異payload409、sequence予約、単一runと単一worker起動方針を照合",
+      "result": "passed_scoped_condition",
+      "scope_note": "既存試験にも100回再送・異payload拒否があった。追加試験で受領中と実HTTP応答喪失を測定。worker起動数は独立instrumented coordinator試験で観測。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::controller::tests::acceptance_controller_tests::xc32_exact_hundred_inflight_and_terminal_retries_preserve_one_frozen_run",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/acceptance_controller_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "http_final",
+          "source": "tests/ned_editor_acceptance_http.test.cjs",
+          "named_tests": [
+            "native HTTP acceptance XC04 XC32 XC36 XC38 XC39",
+            "XC04 native invalid creation previews are atomic terminal 422",
+            "XC32 discarded accepted HTTP response plus 100 exact resends creates one run",
+            "XC39 native raw HTTP Host Origin CORS auth and Viewer authority boundaries",
+            "XC36 native unsafe run cleanup refuses and preserves unrelated identities",
+            "XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC33",
+      "prior_condition_index": 4,
+      "prior_condition": "prepare/simulate/export/verifying/manifest-before-response race points each use fixed barriers and deterministic assertions",
+      "prior_reason": "No full cancellation-race barrier matrix was run; direct persisted-state fixture is synthetic, while shutdown test covers only service signals.",
+      "contract_condition": "prepare/simulate/export/verifying/manifest-before-response race points each use fixed barriers and deterministic assertions",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc33_real_cancellation_at_prepare_execute_export_and_completion_barriers",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC34",
+      "prior_condition_index": 3,
+      "prior_condition": "actual 4GiB OOM, 1GiB output, hardware/file/total soft quotas and full log cap under load",
+      "prior_reason": "No OOM, hardware quota, or giant physical output workload was run.",
+      "contract_condition": "4GiB RLIMIT_AS、1GiB RLIMIT_FSIZE、timeout、2/10GiB論理soft総量、各1MiB log末尾の実発動を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "物理RAM OOMやhardware総量quotaは契約にない。4GiBはaddress space、1GiBは単一file、2/10GiBはsoft論理会計。",
+      "evidence": [
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc34_actual_worker_address_space_and_sparse_file_hard_limits",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc34_actual_worker_stdout_stderr_tails_keep_exact_one_mib_suffix",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc34_real_timeout_soft_storage_monitor_and_exact_log_tail",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC35",
+      "prior_condition_index": 3,
+      "prior_condition": "editor process kill at each listed freeze/ack/manifest/response/cancel cutpoint and resulting recovery state",
+      "prior_reason": "The shutdown suite sends service signals at an active worker; it is not a kill-at-every-persistence-boundary matrix.",
+      "contract_condition": "freeze・run公開／API受領返却・manifest・worker応答／frame・完了lock・取消記録の計16地点で実SIGKILLし再起動分類と再実行不在を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "HTTP受付喪失はXC32、耐久run公開と直接coordinator API返却は固定barrierで分ける。SIGKILLはprocess停止であり電源断試験ではない。",
+      "evidence": [
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc35_actual_coordinator_sigkill_covers_snapshot_publication_manifest_and_response_cuts",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC36",
+      "prior_condition_index": 2,
+      "prior_condition": "同run ID・全output collision variants・入力/他run/save-recovery hashを一括比較",
+      "prior_reason": "Cited tests cover separate deterministic filesystem variants, not the full combined matrix.",
+      "contract_condition": "同run ID・全output collision variants・入力/他run/save-recovery hashを一括比較",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc36_actual_publication_conflicts_preserve_external_files_and_other_roots",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "http_final",
+          "source": "tests/ned_editor_acceptance_http.test.cjs",
+          "named_tests": [
+            "native HTTP acceptance XC04 XC32 XC36 XC38 XC39",
+            "XC04 native invalid creation previews are atomic terminal 422",
+            "XC32 discarded accepted HTTP response plus 100 exact resends creates one run",
+            "XC39 native raw HTTP Host Origin CORS auth and Viewer authority boundaries",
+            "XC36 native unsafe run cleanup refuses and preserves unrelated identities",
+            "XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC37",
+      "prior_condition_index": 4,
+      "prior_condition": "実worker 1+2同時実行、物理pin quota±1byte、通常編集/SaveAsを同時継続",
+      "prior_reason": "Concurrency and quota conditions use synthetic state/accounting fixtures; no physical quota or live edit/save race.",
+      "contract_condition": "実worker1＋待機2と次受付503、独立coordinator非所有process、編集中SaveAs、pin論理会計の境界-1/丁度/+1を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "3worker同時実行や物理pin quotaではない。pin512MiBとUndo32MiBの独立した受付会計を検査。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::run_control::tests::capacity_rejects_before_freeze_and_pin_bounds_are_independent",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::run_control::tests::pinned_capacity_exact_boundary_and_one_byte_over_do_not_create_files",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc37_one_actual_worker_two_waiters_nonowner_and_concurrent_edit_save",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC38",
+      "prior_condition_index": 2,
+      "prior_condition": "別runの内部整合した全bundleへの交換、全unsafe path種、HTTP応答漏洩とViewer無効化を確認",
+      "prior_reason": "Unit integrity tests cover selected tamper classes; no full cross-run HTTP/Viewer attack test was run.",
+      "contract_condition": "別runの内部整合した全bundleへの交換、全unsafe path種、HTTP応答漏洩とViewer無効化を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::acceptance_fault_tests::xc38_independently_valid_cross_run_bundle_substitution_and_unsafe_paths_are_denied",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "http_final",
+          "source": "tests/ned_editor_acceptance_http.test.cjs",
+          "named_tests": [
+            "native HTTP acceptance XC04 XC32 XC36 XC38 XC39",
+            "XC04 native invalid creation previews are atomic terminal 422",
+            "XC32 discarded accepted HTTP response plus 100 exact resends creates one run",
+            "XC39 native raw HTTP Host Origin CORS auth and Viewer authority boundaries",
+            "XC36 native unsafe run cleanup refuses and preserves unrelated identities",
+            "XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC39",
+      "prior_condition_index": 2,
+      "prior_condition": "複数Host/CORS/editor secret単独/Viewer capabilityでeditor mutation/再起動TTLを全てHTTP integrationで確認",
+      "prior_reason": "The run combines request-gate unit coverage and one browser flow; not all security boundary permutations were executed.",
+      "contract_condition": "不正／複数Host、Origin、CORS、editor/Viewer権限分離、revoke・再起動、時計制御TTLを実HTTPで確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "既存raw TCP試験にも複数Host/Origin/CORS/revokeの直接assertionがあった。1時間TTLは実socket経路の時計制御で確認し実時間待ちは要求しない。",
+      "evidence": [
+        {
+          "run": "workspace_final",
+          "named_test": "tool::ned_editor::run_control::viewer_server::tests::expiry_releases_route_files_but_pins_an_accepted_response",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/viewer_server.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Exact named success line"
+        },
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::viewer_server::tests::http_deadline_change_during_receive_releases_pin_and_keeps_tombstone",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/viewer_server.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "native_fault_final",
+          "named_test": "tool::ned_editor::run_control::viewer_server::tests::http_repeated_get_head_revoke_and_headers",
+          "source_candidates": [
+            "crates/dir-simulator/src/tool/ned-editor/run_control/viewer_server.rs"
+          ],
+          "test_result": "passed",
+          "basis": "Named selection in completed19-test suite with zero failed/ignored; fault stdout interleaves individual status lines."
+        },
+        {
+          "run": "http_final",
+          "source": "tests/ned_editor_acceptance_http.test.cjs",
+          "named_tests": [
+            "native HTTP acceptance XC04 XC32 XC36 XC38 XC39",
+            "XC04 native invalid creation previews are atomic terminal 422",
+            "XC32 discarded accepted HTTP response plus 100 exact resends creates one run",
+            "XC39 native raw HTTP Host Origin CORS auth and Viewer authority boundaries",
+            "XC36 native unsafe run cleanup refuses and preserves unrelated identities",
+            "XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC40",
+      "prior_condition_index": 2,
+      "prior_condition": "hostile HTML/script closing tagsをdiagnostic/result fieldsへ注入し実行不在/外部通信なしを確認",
+      "prior_reason": "The browser fixture did not perform the specified hostile-string injection.",
+      "contract_condition": "hostile HTML/script closing tagsをdiagnostic/result fieldsへ注入し実行不在/外部通信なしを確認",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "hostile_final",
+          "source": "tests/ned_editor_hostile_browser.test.cjs",
+          "named_tests": [
+            "XC40 hostile NED diagnostics and real rendered Viewer remain inert in Chromium"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC42",
+      "prior_condition_index": 2,
+      "prior_condition": "empty Multibusのprepare-failure fixture、save無書込、run ledger耐久化、修正後same file ID success",
+      "prior_reason": "The browser flow uses a CAN baseline and a valid created NED file; it does not exercise this failure/repair sequence.",
+      "contract_condition": "empty Multibusのprepare-failure fixture、save無書込、run ledger耐久化、修正後same file ID success",
+      "result": "passed_scoped_condition",
+      "scope_note": null,
+      "evidence": [
+        {
+          "run": "extensions_final",
+          "source": "tests/ned_editor_extensions_browser.test.cjs",
+          "named_tests": [
+            "NED editor extensions work through the real UI and produce a runnable exported project"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC43",
+      "prior_condition_index": 2,
+      "prior_condition": "全acceptance sequenceの同一UI経路と保存復旧回帰を一つのrun/sessionとして照合",
+      "prior_reason": "Browser end-to-end flow and saved-recovery tests passed separately; no single run covers the entire combined row.",
+      "contract_condition": "同一UI sessionの新規NED→COW→rename→未保存run→Viewer、保存・復旧回帰と固定出典を確認",
+      "result": "passed_scoped_condition",
+      "scope_note": "旧表の一つのrunだけで保存復旧を含める条件を訂正。同一UI sessionで複数runと保存／Undoを照合。",
+      "evidence": [
+        {
+          "run": "extensions_final",
+          "source": "tests/ned_editor_extensions_browser.test.cjs",
+          "named_tests": [
+            "NED editor extensions work through the real UI and produce a runnable exported project"
+          ],
+          "test_result": "passed",
+          "scope": "Direct assertions described in this condition and the retained acquisition JSON; unrelated assertions are not used as proof."
+        }
+      ]
+    }
+  ],
+  "runs": {
+    "workspace_final": {
+      "command": "CARGO_TARGET_DIR=<audit target> DIR_NED_RUN_TEST_BINARY=<fixed immutable product> cargo test --locked --workspace",
+      "result": "passed",
+      "suites": 32,
+      "passed": 769,
+      "failed": 0,
+      "ignored": 19,
+      "suite_rows": [
+        {
+          "result": "ok",
+          "passed": 479,
+          "failed": 0,
+          "ignored": 19,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 24,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 17,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 19,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 11,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 8,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 15,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 14,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 16,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 11,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 11,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 12,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 37,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 8,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 20,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        },
+        {
+          "result": "ok",
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 0
+        }
+      ],
+      "log": "ned-acceptance-2026-10-15/workspace-final.log"
+    },
+    "native_fault_final": {
+      "command": "DIR_NED_RUN_TEST_BINARY=<fixed immutable product> DIR_ACCEPTANCE_EVIDENCE=<new JSONL> <immutable libtest> tool::ned_editor::run_control --ignored --nocapture --test-threads=1",
+      "result": "passed",
+      "suites": 1,
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0,
+      "suite_rows": [
+        {
+          "result": "ok",
+          "passed": 19,
+          "failed": 0,
+          "ignored": 0,
+          "filtered_out": 479
+        }
+      ],
+      "log": "ned-acceptance-2026-10-15/native-fault-final.log",
+      "test_binary_sha256": "8170884bd7a548749e5763ef2eed9746363a581cf10551c73d7e35f527267518",
+      "scope": "Eleven deterministic native fault tests plus eight actual product worker/socket tests; serial and isolated from ordinary libtest fixtures."
+    },
+    "http_final": {
+      "result": "passed",
+      "command": "DIR_NED_HTTP_BINARY=<fixed immutable product> DIR_NED_HTTP_EVIDENCE=<new exclusive directory> node --test tests/ned_editor_acceptance_http.test.cjs",
+      "source": "tests/ned_editor_acceptance_http.test.cjs",
+      "log": "ned-acceptance-2026-10-15/http-evidence-final.log",
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "skipped": 0,
+      "named_tests": [
+        "native HTTP acceptance XC04 XC32 XC36 XC38 XC39",
+        "XC04 native invalid creation previews are atomic terminal 422",
+        "XC32 discarded accepted HTTP response plus 100 exact resends creates one run",
+        "XC39 native raw HTTP Host Origin CORS auth and Viewer authority boundaries",
+        "XC36 native unsafe run cleanup refuses and preserves unrelated identities",
+        "XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle"
+      ]
+    },
+    "ui_final": {
+      "result": "passed",
+      "command": "node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs",
+      "source": "tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs",
+      "log": "ned-acceptance-2026-10-15/ui-unit-final.log",
+      "tests": 85,
+      "pass": 85,
+      "fail": 0,
+      "skipped": 0,
+      "named_tests": [
+        "edit plan pages concatenate impacts until the final cursor",
+        "edit plan pagination rejects a changed plan, digest, session, or writer epoch",
+        "plan id",
+        "plan digest",
+        "session",
+        "writer epoch",
+        "edit plan pagination rejects a cursor loop",
+        "removing the selected file drops a clean buffer and resets the editor scope",
+        "removed unsent, composing, and sent buffers stay orphaned and recover their raw text when the file returns",
+        "same-file COW Undo and Redo rebind the selected instance to the surviving type key",
+        "a disappeared selected type clears its stale key and advances scope generation",
+        "pending text prevents scope reconciliation while the NED parse is unresolved",
+        "edit impact descriptions preserve file and symbol names as display strings",
+        "run history is current by project and input identity, regardless of layout-only revision changes",
+        "Viewer links require a separate loopback HTTP origin with an explicit port and no fragment or credentials",
+        "run artifact download sends the editor session and returns the binary response",
+        "run artifact download turns an HTTP failure into an ApiError with server details",
+        "Viewer expires exactly at its deadline, invalidates the render cache and permits preparation",
+        "run cards show partial and recovered outcomes while readonly mode locks run mutations",
+        "run cards render nested diagnostics and keep published results downloadable when Viewer preparation failed",
+        "recovery-only lock remains visible even when no journal can be listed",
+        "completed publication awaiting registry checkpoint offers only finalization",
+        "invalid journal remains visible with diagnostic and neither destructive recovery action",
+        "boundary port addition is enabled only on module declarations",
+        "LF shadow maps BOM, Japanese, emoji and CRLF using byte/codepoint boundaries",
+        "local patch retains BOM, comments and every unmodified mixed newline",
+        "emoji replacement expands a common surrogate prefix to complete code points",
+        "newlines inserted in an interval use its nearest original newline",
+        "acknowledgement updates the baseline without overwriting newer typing",
+        "blocked buffer preserves unsent text, and IME end explicitly releases waiters",
+        "JSON body limit counts encoded UTF-8 and escapes, not UTF-16 length",
+        "API keeps credentials only in the required header and supplies JSON content type",
+        "command DTO preserves all u64 values as strings and forwards opaque acknowledgement",
+        "202 reserves sequence, blocks the next command and waits for a terminal job",
+        "consumed terminal rejection advances sequence and retains command without retransmitting",
+        "unconsumed terminal rejection does not advance sequence",
+        "uncertain response retains exact command and resolves through same-ID lookup only",
+        "oversized command remains a local error, never an uncertain transmission",
+        "read-only clients cannot send mutation commands",
+        "view adoption rejects old scope, session and sequences with exact u64 comparison",
+        "port roles reverse only at compound boundaries without changing input/output labels",
+        "display geometry preserves backend coordinates and unresolved nodes have no invented gates",
+        "pending text takes display priority over a past ready state; recovery comes first",
+        "instance selection resolves the exact shared type key and sends its file, path and scope generation",
+        "node navigation keeps the current instance branch and rejects absent, unresolved and mismatched children",
+        "hierarchy filtering retains ancestors and backend instance order without inventing children",
+        "cycle instances can be inspected but structural editing is disabled only in invalid selected contexts",
+        "parameter values require the selected instance, corresponding graph and current projection",
+        "browser callbacks navigate instances and breadcrumbs, clear context on type/file selection and retain source buffers",
+        "source acknowledgement uses the committed raw hash and retains later typing on a cross-tab race",
+        "default fetch is bound to the browser global instead of the Api instance",
+        "builtin choices remain available without NED definitions and preserve colliding project names",
+        "file badges distinguish NED parsing from INI and JSON source roles",
+        "CAN pair candidates use Classical and Multibus implementation metadata and unused gates",
+        "project reset clears old buffers and scope while retaining monotonic response counters",
+        "New confirmation cancellation and terminal rejection preserve buffers and selected scope",
+        "successful New and uncertain same-ID lookup clear old context then select the new network",
+        "INI and JSON navigation edits and flushes through the same lossless source command",
+        "instance choices use resolved Controller metadata and exact descendant path boundaries",
+        "Gateway structured payload supports fanout and rejects duplicate IDs, foreign ports and reversed ranges",
+        "workload form canonicalizes periodic/explicit rows and rejects duplicate and unsafe values",
+        "gate forms produce atomic direction pairs and reject duplicate or invalid identifiers",
+        "composition dialogs use structural confirmations and atomic boundary-port commands",
+        "configuration commands confirm impacts, preserve count strings for INI and block unreadable JSON",
+        "workload settings flush pending JSON before constructing rows and show the latest count",
+        "settings submission rejects changed raw buffers or remote revision instead of overwriting newer JSON",
+        "network and instance settings use refreshed projections rather than earlier button snapshots",
+        "Gateway settings bind both node selection and route forms to the current source snapshot",
+        "settings snapshot also rejects drift after a newer edit has already been acknowledged",
+        "settings recheck source after shared-impact confirmation and preserve a remote edit",
+        "settings opening waits for IME completion before taking the source snapshot",
+        "Run waits for composition and source acknowledgement before freezing input",
+        "Run creates no command while flush is blocked or fails and retains the edited bytes",
+        "Run flushes typing received during an unacknowledged edit before freezing the final version",
+        "Run dialog cancellation and invalid timeout never flush or create a run",
+        "Gateway choices retain orphan settings nodes and unavailable configured ports",
+        "Gateway settings can delete an orphan entry and reject configuring an absent compound",
+        "Gateway dialogs preserve missing checked ports and route values until explicitly unchecked",
+        "a queued close event from the preceding dialog cannot close the next settings step",
+        "repeatable forms retain invalid rows, allow removal/addition and collect only live rows",
+        "repeatable route choices track checked Gateway ports and disabled conditional inputs",
+        "Save As requires writer before opening its dialog and sends the current lease",
+        "Save As rechecks writer after its dialog, so a takeover cannot register a destination",
+        "layout-only drag and collapse send commands without type impact confirmations",
+        "explicit time form roundtrip preserves spaces between numbers and units"
+      ]
+    },
+    "extensions_final": {
+      "result": "passed",
+      "command": "PLAYWRIGHT_MODULE=<Playwright1.64.0> DIR_SIMULATOR_BIN=<fixed immutable product> node --test tests/ned_editor_extensions_browser.test.cjs",
+      "source": "tests/ned_editor_extensions_browser.test.cjs",
+      "log": "ned-acceptance-2026-10-15/extensions-browser-fixed-dialog-first.log",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "named_tests": [
+        "NED editor extensions work through the real UI and produce a runnable exported project"
+      ]
+    },
+    "hostile_final": {
+      "result": "passed",
+      "command": "PLAYWRIGHT_MODULE=<Playwright1.64.0> DIR_SIMULATOR_BIN=<fixed immutable product> node --test tests/ned_editor_hostile_browser.test.cjs",
+      "source": "tests/ned_editor_hostile_browser.test.cjs",
+      "log": "ned-acceptance-2026-10-15/hostile-browser-fixed-first.log",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "named_tests": [
+        "XC40 hostile NED diagnostics and real rendered Viewer remain inert in Chromium"
+      ]
+    },
+    "native_ime_final": {
+      "result": "passed",
+      "command": "DIR_NED_NATIVE_IME_PRIVATE=1 PLAYWRIGHT_MODULE=<Playwright1.64.0> PLAYWRIGHT_CHROMIUM_EXECUTABLE=<Chromium156> DIR_SIMULATOR_BIN=<fixed immutable product> node --test tests/ned_editor_native_ime.test.cjs",
+      "source": "tests/ned_editor_native_ime.test.cjs",
+      "log": "ned-acceptance-2026-10-15/native-ime-x11-final.log",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "named_tests": [
+        "native Mozc composition and source acknowledgement precede the NED run snapshot"
+      ],
+      "environment": "Private mount/user namespace, real uid1000 with capabilities dropped, private Xvfb/Xauthority/D-Bus, IBus/Mozc, Japanese font, XTest keys, Chromium sandbox enabled. Dependency receipt and exact evidence retain commands and versions."
+    },
+    "viewer_models_final": {
+      "result": "passed",
+      "command": "node --test tests/*viewer_model.test.cjs",
+      "source": "tests/*viewer_model.test.cjs",
+      "log": "ned-acceptance-2026-10-15/viewer-model-final.log",
+      "tests": 108,
+      "pass": 107,
+      "fail": 0,
+      "skipped": 1,
+      "named_tests": [
+        "milestones preserve independent serialization, arrival, release and receive boundaries",
+        "partial run never invents reception from planned arrival",
+        "capacity drop is retained without physical transfer",
+        "replay at a destination is independent of navigation history",
+        "corrupt references, time order, envelope updates and fabricated receipts are rejected",
+        "large timestamps preserve picoseconds beyond binary64 safe integers",
+        "opposite link directions transmit concurrently without sharing a queue",
+        "switch flood links accepted and dropped children to a single reception",
+        "QoS class queue occupancy counts MAC bytes and excludes active transfer",
+        "QoS schema is explicit: version mismatches, invalid class and incomplete topology reject",
+        "VLAN hop wire and classification preserve source contract and reclassify untagged ingress",
+        "VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN",
+        "VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy",
+        "VLAN immediate endpoint filter keeps one reason without inventing a dropped copy",
+        "VLAN ingress admission rejection stops before child offers and requires exact classification",
+        "VLAN pending planned arrival never synthesizes receiver or classification",
+        "media replay preserves collision, jam, backoff and retry at each destination",
+        "partial jam and T1 arrival boundary retain null actuals and never fabricate reception",
+        "T1 pipeline receives an older immutable attempt after a newer SOF",
+        "CAN FD replay keeps two-rate timing, evidence and declared wiring",
+        "media decoder rejects fabricated completion, attempt lineage and mixed schemas",
+        "initial carrier deferral remains in the FIFO and rewinds identically",
+        "milestones preserve independent serialization, arrival, release and receive boundaries",
+        "partial run never invents reception from planned arrival",
+        "capacity drop is retained without physical transfer",
+        "replay at a destination is independent of navigation history",
+        "corrupt references, time order, envelope updates and fabricated receipts are rejected",
+        "large timestamps preserve picoseconds beyond binary64 safe integers",
+        "opposite link directions transmit concurrently without sharing a queue",
+        "switch flood links accepted and dropped children to a single reception",
+        "QoS class queue occupancy counts MAC bytes and excludes active transfer",
+        "QoS schema is explicit: version mismatches, invalid class and incomplete topology reject",
+        "VLAN hop wire and classification preserve source contract and reclassify untagged ingress",
+        "VLAN display filter keeps global replay counts and supports hop VLAN separate from receive VLAN",
+        "VLAN model rejects corrupt TCI, tag, FCS, length, mixed schema, class, reference and policy",
+        "VLAN immediate endpoint filter keeps one reason without inventing a dropped copy",
+        "VLAN ingress admission rejection stops before child offers and requires exact classification",
+        "VLAN pending planned arrival never synthesizes receiver or classification",
+        "GCL uses half-open boundaries and preserves exact time beyond Number range",
+        "open duration handles millions of cycles with integer prefix arithmetic",
+        "CBS continues through IFG, freezes at closed gates and resets empty positive credit",
+        "meter potential refill saturates u128 without inventing token consumption",
+        "malformed schedules fail before replay",
+        "TAS fit includes IFG and accepts equality at close or a pending update",
+        "TAS combines adjacent open entries and the end/start of a cycle",
+        "IP membership identity uses address bytes and multicast MAC mapping",
+        "dynamic loader supports versioned visit IDs and quiet policy state",
+        "dynamic filtering reasons preserve a completed switch reception without child copies",
+        "dynamic loader rejects unknown schema, epochs, visit IDs and version mixing",
+        "TSN loader replays signed credit through IFG and shows quiet gate configuration",
+        "TSN loader rejects negative zero, unknown states, overflowing numerator and incomplete schema sets",
+        "composite loader retains both physical media and frozen SOF terminal counts",
+        "composite segment loader rejects fabricated completions and Gateway terminal opportunities",
+        "DIR codec validates length, ID width, reserved flags and zero padding",
+        "dynamic policy checkpoints preserve prefix tables, expiry and never reuse a deleted generation",
+        "PSFP records conserve two buckets and distinguish actual from potential refill",
+        "composite branch closure keeps origin and RX capacity while awaiting a real child",
+        "composite origin identity must agree with the recorded ingress media",
+        "composite segment IDs share native source IDs while duplicate schema identities reject",
+        "partial mixed replay retains admitted children without future SOF or fabricated receivers",
+        "TSN decisions require the visible schedule generation and physical copy class",
+        "quiet TSN networks show configured gates and initial CBS credit without traffic",
+        "dynamic control audit follows time and effect sequence independent of file ordering",
+        "zero horizon retains only the frozen initial network policy",
+        "zero TSN horizon permits only explicit initial gate and empty ready decision",
+        "equal native IDs remain distinct qualified media origins and preserve generation times",
+        "declared dynamic tagged capability validates subscription, FDB and multicast without registering runtime membership",
+        "dynamic reference validation rejects undeclared, foreign, malformed, untagged and duplicate capabilities",
+        "static VLAN references cannot borrow a dynamic capability declaration",
+        "dynamic native source VLAN uses declared tagged permission while PVID and effective membership stay static",
+        "current CLI queued-membership-leave result loads declared subscriptions and source VLANs",
+        "replay uses actual grant and completion, preserving integer picoseconds",
+        "a stopped active request remains unfinished despite future planned time",
+        "step replay depends only on the destination interval and recorded direction",
+        "partial prefixes include a committed completion at H",
+        "unregistered schemas, duplicate IDs, unknown references and invalid times reject",
+        "unknown data fields and malformed byte strings reject",
+        "terminal timelines stop at actual completion, including rejection at zero",
+        "timeline preserves pending, active, completed, dropped and failed boundaries",
+        "request event groups retain exact ps and only reached request/receiver milestones",
+        "request event groups group simultaneous events and keep GW fanout branches separate",
+        "actual schema2 results replay multiple buses, forwarding boundaries and origin path delay",
+        "actual fanout steps order incoming CAN, internal transfer, outgoing CAN and both receivers",
+        "replay reflects reached milestones, queues, receiver delay and filters in both directions",
+        "EOF cutoff and unreached planned release remain transmitting/intermission",
+        "partial boundary keeps only committed milestones, including at H",
+        "same-time queue measurements use record order, never reservation event_seq",
+        "adjacent u64 times remain exact for cursor, formatting, order and state",
+        "idle nodes survive empty or zero-duration simulation via metadata",
+        "drop transition occurs at ready, not generated; never generates success",
+        "invalid schema, noncanonical time, statuses, references and chronology reject",
+        "time conversion rejects fractional ps and malformed numbers",
+        "network progress is exact, reversible and keeps delayed RX after bus release",
+        "event steps include zero-delay TX/RX, preserve physical direction on rewind, and exclude older frames",
+        "zero-delay broadcast completes simultaneously with deterministic visual trails",
+        "network EOF cutoff does not invent completion or receive records",
+        "active network packets are independent of the 500 timeline interval limit",
+        "network progress preserves precision for adjacent large timestamps",
+        "declared idle wiring and directed Gateway routes are visible before any event",
+        "fanout holds one RX parent through sibling admission, wait is excluded from TX, and rewind is exact",
+        "Gateway replay keeps blocked fanout siblings at ingress and receives only an admitted branch",
+        "schema2 holding cutoff, no-route immediate release, legacy fields and strict RX validation",
+        "schema1 declared wiring retains an idle Controller without guessing Gateway membership",
+        "legacy Gateway membership never guesses idle CAN wiring from a single observed bus",
+        "interval queues use final same-time state and independent integer-ps duration oracle",
+        "missing initial measurement is unavailable; adjacent u64 clipping retains integer ps",
+        "interval comparison clips two buses, unfinished committed TX, idle rows and separates TX from RX",
+        "interval aggregation includes >500 transmissions and >75 requests without altering inputs"
+      ],
+      "scope": "107 passed/one environment-gated test skipped here; that exact remaining test passed separately in viewer_capability_final using fresh native CLI output."
+    },
+    "viewer_capability_final": {
+      "result": "passed",
+      "command": "DIR_VIEWER_CAPABILITY_RESULT=<fresh native result> node --test --test-name-pattern=\"current CLI queued-membership-leave\" tests/network_viewer_model.test.cjs",
+      "source": "tests/network_viewer_model.test.cjs",
+      "log": "ned-acceptance-2026-10-15/viewer-capability-final/viewer-model-test.log",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "named_tests": [
+        "current CLI queued-membership-leave result loads declared subscriptions and source VLANs"
+      ]
+    },
+    "shutdown_final": {
+      "result": "passed",
+      "command": "DIR_NED_RUN_TEST_BINARY=<fixed immutable product> node --test tests/ned_editor_run_shutdown.test.cjs",
+      "source": "tests/ned_editor_run_shutdown.test.cjs",
+      "log": "ned-acceptance-2026-10-15/shutdown-final.log",
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0,
+      "named_tests": [
+        "editor SIGINT stops and reaps an active worker",
+        "editor SIGTERM stops and reaps an active worker"
+      ]
+    },
+    "fmt": {
+      "result": "passed",
+      "log": "ned-acceptance-2026-10-15/fmt-final.log"
+    },
+    "clippy": {
+      "result": "passed",
+      "log": "ned-acceptance-2026-10-15/clippy-final.log"
+    },
+    "python": {
+      "result": "passed",
+      "log": "ned-acceptance-2026-10-15/python-first.log",
+      "passed": 67
+    },
+    "traceability": {
+      "result": "passed",
+      "log": "ned-acceptance-2026-10-15/trace-strict-final.log",
+      "requirements": 231,
+      "functions": 60,
+      "nodes": 274,
+      "structural_errors": 0,
+      "incomplete_requirements": 0,
+      "incomplete_items": 0
+    },
+    "diagrams": {
+      "result": "passed",
+      "log": "ned-acceptance-2026-10-15/diagrams-final.log",
+      "checked": 13
+    },
+    "guide_inputs": {
+      "result": "passed",
+      "log": "ned-acceptance-2026-10-15/guide-inputs-final.log"
+    },
+    "mkdocs": {
+      "result": "passed",
+      "log": "ned-acceptance-2026-10-15/guide-ci-build-final.log"
+    },
+    "guide_links": {
+      "result": "passed",
+      "log": "ned-acceptance-2026-10-15/guide-links-final.log",
+      "html_files": 24,
+      "links_assets_anchors": 1516
+    }
+  },
+  "source_sha256": {
+    "crates/dir-simulator/Cargo.toml": "0b57c47fa2502145e3103e4ed99ead5c56c58db700693485e53fc560e594ef39",
+    "crates/dir-simulator/build.rs": "dcb85121a55fcb454a56a32036bb48a0a6550a5ba056d851a1ab73198b7baf63",
+    "crates/dir-simulator/build_identity.rs": "716692dbff706658aec958a752074c491671577813cb723ec875cc8f88a0b845",
+    "crates/dir-simulator/src/acceptance_hooks.rs": "1074fb7b90eec98a9464f50e296630994886070407695371b825eedbded477b7",
+    "crates/dir-simulator/src/allocation.rs": "6c299edd05d9286fb17ec3ab349871f779337f6beec35192782ba3b647204c6d",
+    "crates/dir-simulator/src/cli_runtime_boundary_tests.rs": "03f8f511550af6e8b731057538f04614fbba1846e7f5a0187e48d829ec836018",
+    "crates/dir-simulator/src/input/axi.rs": "0c5bc31d249b69c6cdf6968d1f30dfdf65577a2dbbb4591e0b8d8abfd82c639e",
+    "crates/dir-simulator/src/input/can/tests.rs": "e9c52637371cd8de5060a2034690e762783075c97f97345f47bd49a7105cb5c5",
+    "crates/dir-simulator/src/input/can.rs": "894bd054971af8ad32ecec82961062c8df0552ba468a44865c8801c3cb6953e6",
+    "crates/dir-simulator/src/input/can_ethernet.rs": "636b3e078023a149e986fd4f7c1b7fbe8d3158ecc7337d257d81c25bcb21d0f0",
+    "crates/dir-simulator/src/input/canfd.rs": "9ce70bb4f35012d670b181d03c9224b32652d83c18c45a371f6eb31fdc9a03de",
+    "crates/dir-simulator/src/input/editor_api_tests.rs": "f6387fb620542e9b3804edb51122f9c529700aea36f80423078753f97a289a1a",
+    "crates/dir-simulator/src/input/ethernet/dynamic.rs": "7a5a12dba79e38140d2bc687c5069ad045c51b771e72b54fdc7f5bdb2bd3c534",
+    "crates/dir-simulator/src/input/ethernet/tests.rs": "b5fcd2af750e56a2afe5f4faedb0f3ed9df13bb4fd58ad9ffa44b500cbe7777e",
+    "crates/dir-simulator/src/input/ethernet/tsn.rs": "da3dc76bcdf0098b2b953a1f35970d0032b5ca83314d4c2227d4f035b84ed921",
+    "crates/dir-simulator/src/input/ethernet.rs": "cb7f8814394edc1c084dd10bf99c7e0fdba7561f3416b306ceca4ff186749e27",
+    "crates/dir-simulator/src/input/gateway.rs": "a7464316ba584899c945b2c5d5a55274abd7d59a93c5e1f0e65d93714b60fd1e",
+    "crates/dir-simulator/src/input/json_diagnostics.rs": "d3cbf3167c772511a4627802b69e2c266fb7d44b9c2591088bd2908611d9759f",
+    "crates/dir-simulator/src/input/memory_ipc.rs": "670c54011cf845f1cca1fc6e1f99be123d37cd2e2861302e451ef64b20431dfb",
+    "crates/dir-simulator/src/input/ned/tests.rs": "244a80dc42f28b26c0ab94df3c6a63f13a649f9fc1194f72475d732ebca2c93b",
+    "crates/dir-simulator/src/input/ned.rs": "af1e68ff016b77a0757033b4fcbf4679458e354d6c451d4986d0d631732e90c4",
+    "crates/dir-simulator/src/input/network/topology.rs": "6300b17ae5cb590d2d91748fa29adcc213f60f62040b6f8cd8524a0501f95365",
+    "crates/dir-simulator/src/input/network.rs": "3790a8e861841aa9258e7aa89583732bf293922cee43b3827135d3c46cbea72f",
+    "crates/dir-simulator/src/input/provenance.rs": "308b9659b0f03012f655b5fa99c80a76b6261f9cbd09419966fd58d826d942e4",
+    "crates/dir-simulator/src/input/references/tests.rs": "edadf2551d50c12441677d7dff055890872b77638513da5fb073083e6866d106",
+    "crates/dir-simulator/src/input/references.rs": "085b265a285d34787a383dc0c076fa777faacc4b61685a9ff9f1e54f94f3885c",
+    "crates/dir-simulator/src/input/soc.rs": "d2899837921393698739bb9f4bedaad8c61bf5950140bdb0a145dfa1756c0258",
+    "crates/dir-simulator/src/input/tests.rs": "62f958dfbd4f5c81254bfa2570aee12ac74e0775b0a24d89cf3418a03d38d7c8",
+    "crates/dir-simulator/src/input.rs": "741d065c88893e903c62045f5a4764b2f1777a1891643ee42021275781cb7a38",
+    "crates/dir-simulator/src/lib/snapshot/axi.rs": "8dd682727f513c68f6d4e3e2b14d4ba8db9981c7704245ef93d5adcae2dc5e5b",
+    "crates/dir-simulator/src/lib/snapshot/can.rs": "017bea2d68f5e07cd28c9c76ae12c2aa9990516c9a552e4df3d46d81a5aa08b6",
+    "crates/dir-simulator/src/lib/snapshot/can_ethernet.rs": "56ca0697e213d7c7d5f615caf3861fe828e80b88b4495d1f17420398b3febf3a",
+    "crates/dir-simulator/src/lib/snapshot/canfd.rs": "6e4eed941a8fe29f59ab45c918ef8b62ca9f5316e930993e7248f103caac6674",
+    "crates/dir-simulator/src/lib/snapshot/common.rs": "75694192a86776adcfba176e95f11640adac4f675e2a5bc5134d30831179a361",
+    "crates/dir-simulator/src/lib/snapshot/ethernet/dynamic.rs": "cc6faf381101e872589e375dd0c79170dd47e4372fb4fc62c2ae821bd9565905",
+    "crates/dir-simulator/src/lib/snapshot/ethernet/tsn.rs": "885329fdcdc19a1df0216e77d267363c67fca6499472d9d9a14e5769425ea828",
+    "crates/dir-simulator/src/lib/snapshot/ethernet.rs": "a626ca577c768d7e824bc98097fd6f5fcb255e8d4385804e2b40a927c607116f",
+    "crates/dir-simulator/src/lib/snapshot/gateway.rs": "a2e294aaaae6e178ce913f5c25d586f3fddc869c8423e5a0a4c43cb8f51a9f3c",
+    "crates/dir-simulator/src/lib/snapshot/memory_ipc.rs": "3425346b7bd29242393a844e7c43e2af8115879ae7c8daee4ea89684e38b183b",
+    "crates/dir-simulator/src/lib/snapshot/soc.rs": "609a59d49825eb9c4e8a01c8c413cfc470b61466624647f137b9da55da93421f",
+    "crates/dir-simulator/src/lib/snapshot.rs": "3f45283155ab787d97e241807a044e7f2ea30d9701c87e03597fbe924e3cad1d",
+    "crates/dir-simulator/src/lib/types/axi.rs": "6ee551e711a442fc45b0ed1051e6d4d23808b9bd0004c6d5eadc1a21d4c3d169",
+    "crates/dir-simulator/src/lib/types/can.rs": "92b0fe28035fe52bc740e683d496acfa5b28e4b79786436c91662997c682c0f3",
+    "crates/dir-simulator/src/lib/types/can_ethernet.rs": "b851d612c1c7591c973a0f66c45e5b87ec56df7a3a4d4cf2eb30f890dc95c57d",
+    "crates/dir-simulator/src/lib/types/canfd.rs": "3eca46a8e66cedb3cc2038098119b801bc4ad8b20d9e2ba0d4f6237275942787",
+    "crates/dir-simulator/src/lib/types/common.rs": "0c30dd2ae55d11a98addccc2ffb1c44a695d6b3650bba685e3f4540e22c46d99",
+    "crates/dir-simulator/src/lib/types/ethernet/dynamic.rs": "bb304a9715e27d46ae663ae84df798dc2c84c6dce7387dd9c0d5145ec84e2610",
+    "crates/dir-simulator/src/lib/types/ethernet/tsn.rs": "fa474525b11e6f30181f780ff7470b01a1bb3241abb01662dda53ed996ffe092",
+    "crates/dir-simulator/src/lib/types/ethernet.rs": "a939ed331b9da01fd8077eb267a2c8985708a2277604d458ef7470748df38041",
+    "crates/dir-simulator/src/lib/types/gateway.rs": "748ff29f2c7d8df33d1018236b4bd98c8168f408c3a63a3b1e9d95af9eaa6bc5",
+    "crates/dir-simulator/src/lib/types/memory_ipc.rs": "ceb8f595c37a245ec4ce506afe278f0368064211288c050dc21452eef6e8314e",
+    "crates/dir-simulator/src/lib/types/network.rs": "fa0cdaae75e56025934dcfa559a03f26030d65f9030f550eb30d233c22517c0c",
+    "crates/dir-simulator/src/lib/types/prepared.rs": "40dd60200973fa3ec52730f09f74b43d4ce557e327c062a1f93a7a154159e277",
+    "crates/dir-simulator/src/lib/types/soc.rs": "d26b723b22e4a066e5c2bbc92e1087468cb1226b0167ed60d1bb0c0fe7dfb30f",
+    "crates/dir-simulator/src/lib/types.rs": "ce5199fd0d1ced0a06691e6cdf4dd85e59adea1dbf4a59741bda3c698b20f69a",
+    "crates/dir-simulator/src/lib.rs": "5b55784310ea5c6a7d7aa2e176376657377823a7de29107e7c66a6dbc509e64d",
+    "crates/dir-simulator/src/main.rs": "a4552ae3e1314674e9417a5a5b381068fb0fc76d6d8690215e9ee85deda07b5d",
+    "crates/dir-simulator/src/output/aggregate.rs": "cfd9952fa074a405fd6821cbc84ff9a79707a13026b2329988b529ecd0711c30",
+    "crates/dir-simulator/src/output/axi.rs": "008771a004dc5f993fa01f6a60dfdff66ca14f1fbe0d9c8552729f9193fc158d",
+    "crates/dir-simulator/src/output/canfd.rs": "454fb7150c159fcfab009af94a0f4e44fee257a51751d0176bec7e02a7e7149d",
+    "crates/dir-simulator/src/output/contribution_sort.rs": "0ccaca3e279cc3d67303f6a3e53c238da1536f9527ad844055064196b0e5df5d",
+    "crates/dir-simulator/src/output/csv.rs": "6f15a300cb927557f5fc6112a23b5dd19dcdc83cecb434d1a9297c2e2e93eb29",
+    "crates/dir-simulator/src/output/disk_sort.rs": "33fb727e233f7488f1046730a9e00add2b7beea5c412a3e186594c683077a187",
+    "crates/dir-simulator/src/output/ethernet/flow.rs": "32a4d71d548fd8cd5cf950948cbc4c4cf9de2ee7d7e235d04c95b8a14a496fb8",
+    "crates/dir-simulator/src/output/ethernet/media.rs": "0db5b887bcff07e9f98bd0966c3f33998e869194481201a2dae7dbcb46757505",
+    "crates/dir-simulator/src/output/ethernet.rs": "b07a46f7e2ab7645e47b186a22952f8f0e30cf9bba799b86e2ef1396941e5d5c",
+    "crates/dir-simulator/src/output/json.rs": "f0c50b397071b989063e2b75c8c7267c01c4ad81204065c03aa768c5fe41dc74",
+    "crates/dir-simulator/src/output/memory_ipc.rs": "0e620e0fad08f63fb53fdd4d22a8a3b75a3774aed2b51f1d8b26ddaacfa4a646",
+    "crates/dir-simulator/src/output/metadata/reproduction.rs": "22d1936632fe4c006f34a12524b74b027a59e5552a32b3fe6881ecdaa806a1fc",
+    "crates/dir-simulator/src/output/metadata.rs": "b2f5469838c40d691ad0e6e740d11b50042be9695b55e2a6f6ea9b0fde8d8fac",
+    "crates/dir-simulator/src/output/model_records.rs": "77f48ceddaf71dbb567e42bf8eb13291d894cd2b1c8d1cb4f4d2c8bf10930b9c",
+    "crates/dir-simulator/src/output/network.rs": "4497ae96b1e5c9bcbe159e4e34d7f21cd184ea886b8eb5f4e9b31f38f0ad49da",
+    "crates/dir-simulator/src/output/preparation.rs": "339f973614947ab46ce015e08d1b8f59c63b82bd475e03f102b6fe5a7695f6e1",
+    "crates/dir-simulator/src/output/publish.rs": "11ef5de418ab5da095ff183f6ae8b61ae4752c0e182e52919defbef377e6921e",
+    "crates/dir-simulator/src/output/registered.rs": "b5f018272f94b5559a6d73c578aeb3c69282f59be10e37a51e2deb52584fae35",
+    "crates/dir-simulator/src/output/reservation.rs": "88159927c0450b043636f5963462dc8fd075c40b1100874f47b8b83d418a6605",
+    "crates/dir-simulator/src/output/scratch.rs": "f4e20ff9168030f25296dde0b5e6c5308bdf9b2161e1935d0f577be0941acc19",
+    "crates/dir-simulator/src/output/soc.rs": "86ce43009140ed0d3f202fdf205274abb6bd6befbbffa10aee82a81d736b2ae3",
+    "crates/dir-simulator/src/output/stream.rs": "e24e6243b66e7009ac842669164b71de374fea7959f09426ec34263228c06940",
+    "crates/dir-simulator/src/output/tests.rs": "f85052a7c886ad22eb4b442f6a7ba2efe669470ffc36fc2d0316a38e16675d31",
+    "crates/dir-simulator/src/output/validation.rs": "9ea49eee0a5519a42cae2cf1b74a3cfcf6ec0c08320e2cba8ddfc83ae0bb78a6",
+    "crates/dir-simulator/src/output.rs": "b6e01281ae1256202ba49e5fd924f82808bd2d695ce71be21a11e794de16bcbe",
+    "crates/dir-simulator/src/registry/mod.rs": "1df423c8ccc06083291ac64ba53f47b7eb925630d616be01bdf792b4fdd30551",
+    "crates/dir-simulator/src/registry/prepare.rs": "2fb21cf47d1ba9527622740398285d83caca9cee65fadda3f325de6b14d30807",
+    "crates/dir-simulator/src/run.rs": "6fe470477d4aa6bbe304cb594a468f24cecc999a42d713941cf4adf7a59bfaf4",
+    "crates/dir-simulator/src/runtime/axi/protocol.rs": "ba9d27db6b706c46c337096a4f51d6596422d46f9e4d0856c2afe65ee3efd8a7",
+    "crates/dir-simulator/src/runtime/axi.rs": "6de016a370c295c4ffed7e344e24d9b4bfe8d91f981e835caa6bd32c3bec32a4",
+    "crates/dir-simulator/src/runtime/can/protocol.rs": "1958d0b904829d7eb6b61c6abe2dc331b7f3cec5acdd5facfe49c88f4a850a00",
+    "crates/dir-simulator/src/runtime/can/tests.rs": "1bbf4c3bee79f9d38085684b530457d983e4cb201413a45bcfab6b3a3efdb7c7",
+    "crates/dir-simulator/src/runtime/can.rs": "05021a0b3b35b75ea10ccc3bdec249a18d9ebeef8ac7283a8361ab37ac40b562",
+    "crates/dir-simulator/src/runtime/can_archive.rs": "a1eaa23886b35407966e42487d9c9e994fff575d0979c3f77ba3873a0fd9e8a5",
+    "crates/dir-simulator/src/runtime/can_ethernet/protocol.rs": "63933cb3b28400ddd2c2315cbd6bf144b88fd652b0bd503b6aa37b60d3f915a7",
+    "crates/dir-simulator/src/runtime/can_ethernet.rs": "24a0352fa37b8142736838de48d3f1c23e7d79a11d8b13c48db7c3db70366a51",
+    "crates/dir-simulator/src/runtime/canfd/protocol.rs": "2dab96bc489ad9cef60eedbeece468588ed03a3ea9de521ebd57b0042a57204c",
+    "crates/dir-simulator/src/runtime/canfd.rs": "ef41e0972ba0eec7edd9a07d0dfff32f96c863865f2ded2317458625770976b8",
+    "crates/dir-simulator/src/runtime/engine.rs": "50e889dcfe0f7d32328f9828201b281ab83e4a58da19d6a2baf9fe110af228a8",
+    "crates/dir-simulator/src/runtime/ethernet/dynamic.rs": "e190911a24b935dd9f1fd7f5538d060e51dc0affdc77c56eec3b1af9b50edece",
+    "crates/dir-simulator/src/runtime/ethernet/l2.rs": "b8335bde2b29bf500911aaa46caae5fbc846ea8a19dbdeb6f34948dceb643d51",
+    "crates/dir-simulator/src/runtime/ethernet/media.rs": "c3bd6e988b12c8ae9ff6b36a8d07b68957d76731ac85d9b5eec9618e3a085f13",
+    "crates/dir-simulator/src/runtime/ethernet/tests.rs": "67353b34d944f6a5890d7f405087473f665be6b25376252b62b6462e0f3937cf",
+    "crates/dir-simulator/src/runtime/ethernet/tsn.rs": "ce63ee39d22f5c3a9874f0f766aeb837ab97228aa009187d2a8ff84fd146cd2b",
+    "crates/dir-simulator/src/runtime/ethernet.rs": "08bf7ccf3ee917d080212bbaf62bd9abc79c5f1ae9f7c334d87c9fbfb5cff19a",
+    "crates/dir-simulator/src/runtime/gateway.rs": "10b994461cffac6640d80d075c44aeb46cfba0ab8342b57bfb3d9432fb47f8b0",
+    "crates/dir-simulator/src/runtime/memory_ipc/protocol.rs": "b83a503ab53c3256813612afa4b2e9172e8bacc9dfc40f588dc9cca9f2b50ae3",
+    "crates/dir-simulator/src/runtime/memory_ipc.rs": "6f3d46c9d617e7cf81dc76cda483ae1089c5576d699d7ed1faad1ec360e6950a",
+    "crates/dir-simulator/src/runtime/network.rs": "44b4ab701d32519f81577fec0a8b3650fc325bf11ab0ac5cb47f609a9f9e0b7f",
+    "crates/dir-simulator/src/runtime/registered.rs": "9826d35952e8ab5d39e3242f1c1e87b94a80d43b40ed8fe2e2e725ee0a9a4ade",
+    "crates/dir-simulator/src/runtime/scheduler.rs": "c2bd78b03dd35487bebdbede4e3b9e38ed4b7d8c966c00c64114b2bfc46e81b7",
+    "crates/dir-simulator/src/runtime/soc/protocol.rs": "2f445e95fc55ebc059344cc9e612a156e7d0b36c69e114cd1a72d001cbe179fe",
+    "crates/dir-simulator/src/runtime/soc.rs": "3335b0ee430741166bd460b762d2928fd2dee043d05b3c1ff3ad0771a146a020",
+    "crates/dir-simulator/src/runtime/spool.rs": "7dfcf33b6e38652513a51c38ba7d33562d866d18f1b44a58a5dfac6370d0af50",
+    "crates/dir-simulator/src/runtime/tests.rs": "483cf969a984eafa120452b2ef5912ed79f1960e242b26db9a9fc3c98a7f93e2",
+    "crates/dir-simulator/src/runtime/timing.rs": "c934952fb18c9e84983b40452fe63b36164ac53d26eb96c4bae5a36818415d5c",
+    "crates/dir-simulator/src/runtime.rs": "851ae0678d7d015566f6a72db5e40d4c59ffde2cb902f54ea470c87e837d6a62",
+    "crates/dir-simulator/src/tool/ned-editor/acceptance_controller_tests.rs": "1d63def5aeae1467389019999c85465fa81e5c92fd101b1a3d8d67f4df9e6b98",
+    "crates/dir-simulator/src/tool/ned-editor/acceptance_file_tests.rs": "d6d49d487719e8a5a3e497b51284e845cf3850160fe90e0257018dd6ef48d66a",
+    "crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs": "07a4e579150c76defb9c941d1a712bb0c6d0109a9be94ea2770445028cf1190c",
+    "crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs": "73c5e227cb54e252dbf5e434f37d7432495a327b1f83ce83475311bf6f185f4f",
+    "crates/dir-simulator/src/tool/ned-editor/analysis.rs": "52614b68de2672491b41ac44843e9be5ef7cec61afcba3aa2f4a9d4ac19f98e1",
+    "crates/dir-simulator/src/tool/ned-editor/assets/index.html": "64b61973f2c95039caddac606ea7ac19e20b0004e70bee068344afd0974d52c1",
+    "crates/dir-simulator/src/tool/ned-editor/assets/input.js": "99351ac5022f951b46b8b5dbdf735194c488a7effa437d07e6102477adeb38a8",
+    "crates/dir-simulator/src/tool/ned-editor/assets/style.css": "54dbb6c6f58983d6f15cd4244a33b5133c9038f8848e0735844c0a7a69677554",
+    "crates/dir-simulator/src/tool/ned-editor/assets/view.js": "60afd879edcccbba33fdc77443ad4928de806f2e83f28df2956f2695670e97c5",
+    "crates/dir-simulator/src/tool/ned-editor/builtin.rs": "574e85b2cde4d8d2f24bb941f7ef3ae3d6acf0601c39e9241d059e351553335b",
+    "crates/dir-simulator/src/tool/ned-editor/commands.rs": "131f41b1482f2e0ae87fba14da156e141c0246fa3038d1c5bebb07e488a1c0da",
+    "crates/dir-simulator/src/tool/ned-editor/composition.rs": "56fd7f530bb69e203ae4fb55be2ad25832e7af2d63d2819bbd12cd36da9a1d8a",
+    "crates/dir-simulator/src/tool/ned-editor/composition_tests.rs": "9ed9a1fc2fc6eb0298592b61a3d3b4c3404efc5d7f1f2fe4c8fcd446e5de58b2",
+    "crates/dir-simulator/src/tool/ned-editor/controller.rs": "4640390f90e2506420c3fd5abd8c9872161550061f4fb8f2a8ed017061df4cb7",
+    "crates/dir-simulator/src/tool/ned-editor/controller_tests.rs": "7266071892b738e0933f0a7f610cb0dc082799ca3ebca1c0dc612a3c01da1357",
+    "crates/dir-simulator/src/tool/ned-editor/edit_plan_tests.rs": "c5f023b825606d4db8613b992c78cc1b003296ed5b31ba5f610f5ca25e773957",
+    "crates/dir-simulator/src/tool/ned-editor/file_creation.rs": "7d100d5e9ddcef91e2b6349f3dbf96fc3abb94eb94e8ecb005b109ea1ae67ca9",
+    "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs": "c7b2f04a654377b5c8d2b3ed92cc51f65123187b1b575467f6e948e35be10ba3",
+    "crates/dir-simulator/src/tool/ned-editor/input.rs": "029c6e2d204a5a63d5b5b9308ec8cf5b79a0036edd2c1415f1d7d902398d5fa4",
+    "crates/dir-simulator/src/tool/ned-editor/layout.rs": "0c4dcc168cc61a28d6591c70b241cffdf4bf363d5cb7e82c49fd1eefe44b11c4",
+    "crates/dir-simulator/src/tool/ned-editor/mod.rs": "c4108f15283adf0752055a9aa0ea25a0b10c5e827d5ce266d406c4c73887f016",
+    "crates/dir-simulator/src/tool/ned-editor/model.rs": "6985d12b41ea0ac128531e8b025cfc17ea1656f6f7797264c498deb569ea96f8",
+    "crates/dir-simulator/src/tool/ned-editor/output.rs": "61a1c0515873c34a9cd707112871a12660ef4d44083c5c3697829fdcf51553b5",
+    "crates/dir-simulator/src/tool/ned-editor/output_tests.rs": "9d6bb1140986b42f87567df7fe2d2596b45940716a92b378ef21291db800018c",
+    "crates/dir-simulator/src/tool/ned-editor/refactor.rs": "877cd42536769f26f72270a50e2cc8cd2b95a4349a921ca6cd3d429f847ce0dd",
+    "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/detach.rs": "01a0991482be9b2eb4d6538e26adff9d23923565134d552523523fb5807cad3e",
+    "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/semantic.rs": "db24dda5f5e8a260f7cdd74016275b7b6e705daf7a915049b8cc9ce71056fc32",
+    "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs": "a22d22e9264d2abf47db0f8299dc1b804ac9ca0575e17981827d6e76b6d3bdd8",
+    "crates/dir-simulator/src/tool/ned-editor/refactor_symbols.rs": "47659adc7270b5a3101bcd5dcc37e80692344158d466e8f35efd565f9ad686f0",
+    "crates/dir-simulator/src/tool/ned-editor/run_command_tests.rs": "2926cd6be29fe1fd50e5395dd9ee5167bbbfe9d1b4a96dfeea1b301598859d40",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs": "3f7425fde44035a675d5ff6b28555deb19e9d01340a40733302906d6e8ea343b",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_snapshot_tests.rs": "a089c3ee3c75bca145ea4b7e9bba0432b72cf1ea489e39ca8ca8518dd8efe093",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/cleanup.rs": "665e0e8cdd7f12cc86c4060329a1f018d37a1e1e54d66bb9b8005e66467e4253",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/large_response_tests.rs": "5b9c509fbe4e136de93795a54603e96e46cf64c4e2d2733acf44d1e59ffc8022",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/safety_tests.rs": "a08c1eee298426779fe5733fa38879dc30824e8e3971763e9bab28ceb8d1252e",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/storage.rs": "426d0c373e232240e3662506de74f16c223919846bcef1076adccafa7157ae37",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs": "e48bb42930db33c3dd63497a9b9059f43b4b2564d58044f7cfbcd79780a4e25d",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/viewer_server.rs": "936de38ecad28ff501eaed852dea668412ac1ef9f61e2b388b20206292ff79e6",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/worker.rs": "d115e280d4e3a16d1f0cb033695a2bb198a430c428d4cbb3e60a623bb92215b0",
+    "crates/dir-simulator/src/tool/ned-editor/run_control.rs": "f00c420ccdb8a8aa56e68b27116f8cee8fc9cc9c6cbfe22b30469e9f27c2f9d3",
+    "crates/dir-simulator/src/tool/ned-editor/run_snapshot/tests.rs": "fa00b58ee5815a5df5130d938c1dd68149b7a656cb9f4c60414bd03430855aa7",
+    "crates/dir-simulator/src/tool/ned-editor/run_snapshot.rs": "edbc889df000bdc90eb2ede118040af1b16048e6bc97d06c13942cceb216c725",
+    "crates/dir-simulator/src/tool/ned-editor/server.rs": "c19a9a0b171740bc25804904a6b04b67906c5c25225676cac2ad6f5b32ce6c18",
+    "crates/dir-simulator/src/tool/ned-editor/settings.rs": "e2d3c9d1a76807e7eebc9de978db633f563e25519504452d4509544f5aaca129",
+    "crates/dir-simulator/src/tool/ned-editor/settings_tests.rs": "ca9d9becc75612c134d4241efa475320fbcab3cfcbd1182afba093a5cf74f11c",
+    "crates/dir-simulator/src/tool/ned-editor/source_index.rs": "3d760bf616b6abc2951cef1e6b24e22fac14044301d4154b95ffa0b00fa63c44",
+    "crates/dir-simulator/src/tool/ned-editor/template.rs": "eeebb45da0423a74b639e38b71011f25a39f6b4e921710f180e1cb06e3cd49fc",
+    "crates/dir-simulator/src/tool/ned-editor/template_tests.rs": "23aeeb18cf19fafba00c6d729dc256357acd5735b2bcb54f1afa9aefd1f7717a",
+    "crates/dir-simulator/src/tool/ned-editor/tests.rs": "22b0b68675d77e37b74f7a72b676c37e16386e6a1c65029741806985eca2eee1",
+    "crates/dir-simulator/src/tool/ned-editor/view.rs": "bd74b5509693c7c0ff6c8b6afb13a2f28648b32cd962863451aa916b83061264",
+    "crates/dir-simulator/src/tool/ned-editor/viewer_worker.rs": "bf7eafa1589c68839044c305a74b1b429940c374af8088950010c20ba7c48d16",
+    "crates/dir-simulator/src/tool/viewer/assets/app.js": "d0b8c6d8ff30e9c6caf4aad044379756764a9993434c3f3ffcc8fb6b1aceca24",
+    "crates/dir-simulator/src/tool/viewer/assets/ethernet-app.js": "474e114218ade9a18416a121cd6c8d821faa3695c1f4f4ca2e16b51188f02f3f",
+    "crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js": "9ad80da3d9589061594ef1eb682ea7fc968d109ccbfc7147fcffdd53c4f8d784",
+    "crates/dir-simulator/src/tool/viewer/assets/index.html": "8ceb944be5c92a0f9f1dee0932f2a30251d469314b7b30f3b0595936903034dd",
+    "crates/dir-simulator/src/tool/viewer/assets/model.js": "37eb4ce8eb03a2e3fecf65e4d197baaa287531ce3eeddf8dc5c8b69cbd91086c",
+    "crates/dir-simulator/src/tool/viewer/assets/style.css": "bdf1f39f20cc32a447979bfc3d9809bed6b0e7aff94dbab5ce41a3d2bc908bfc",
+    "crates/dir-simulator/src/tool/viewer/assets/transaction-app.js": "c222a88b7ad13c33a05758e9096c1b94c41de3923191d691a3c6cbc03885a9b9",
+    "crates/dir-simulator/src/tool/viewer/assets/transaction-model.js": "36e0a432f64263efdf35b9eb6f02d7b8e644c03fbb95b39b28c34dbd0a4e34e4",
+    "crates/dir-simulator/src/tool/viewer/tests.rs": "c282c1c92763b20697569d4fc5cd60ecec8afd62823cc75d67cae22d9bcbc822",
+    "crates/dir-simulator/src/tool/viewer.rs": "07bd770b996fd30c73c6dd4253146621752b1ce503ce8148b4fc4adf3c2e70ed",
+    "crates/dir-simulator/src/tool.rs": "8210ae0f0a164a39f3c65c49757cd2e05e98155c0ac264c0de7800e1c22c3669",
+    "crates/dir-simulator/tests/ac0008_attributes.rs": "cafb00704e1a35876274b4bd8423160d3c8447a5d5e410c912c68f7283a3ceda",
+    "crates/dir-simulator/tests/ac0008_ned_rejections.rs": "431149d60b7c43307e3f83033b92e655b1b5dbcf0bf9882147625f97a06d020c",
+    "crates/dir-simulator/tests/ac0008_paths.rs": "13988b13add493d8dde202521878c271ca32f2e633c71c54df6a12a669d6c8f8",
+    "crates/dir-simulator/tests/acceptance_bridge.rs": "b0fb7295522f13056b51139d4d373c7b55f3a58cbf577e2a8e7874796d09fccf",
+    "crates/dir-simulator/tests/acceptance_dynamic_tsn.rs": "1c0933997f2674bf77f36b28bfe70f3c847dd5710f97d39b3b868959f0c4aaea",
+    "crates/dir-simulator/tests/acceptance_output.rs": "961d15bf054a661dd1926b66bf8c617065f65c2a88347b19bb1d8d0ad2d158f4",
+    "crates/dir-simulator/tests/acceptance_prefix.rs": "f33bcf7d9b65a99666e94fb737f28f6161bd68db74d566d8a4acfe9b00816595",
+    "crates/dir-simulator/tests/acceptance_resources.rs": "c1b7f5415d28d0d7a66bd7e4eb6ddb6a71f2083deb3bdbf02865c7ebc2af039a",
+    "crates/dir-simulator/tests/axi.rs": "f23f91c5947b0a79a39114ee8b7fb2459ad7d52e4693b16ff4c36ba5a99c017e",
+    "crates/dir-simulator/tests/build_ledger_identity.rs": "b98437c4285441d6e29fa5cb3e0f1b1a5b90797f1eaa88f59d01e839bba969bf",
+    "crates/dir-simulator/tests/can_scenarios.rs": "26d5d0c632461954b14bd1517580664eb3c96af5a0f4d9fbb82a2a4aec76c465",
+    "crates/dir-simulator/tests/canfd.rs": "f7ecdb0f5770a0d0c47c0d2885af986fb6913981982fe302339cd3449df4b44c",
+    "crates/dir-simulator/tests/cli.rs": "b4bcfd3bd9b85a712ea38e4a21ff42a4442900b05a9c90b18b97dac90840bed9",
+    "crates/dir-simulator/tests/diagnostics.rs": "7dbe11abe6fbd359da2d44f1337865ff62a87e33071bb185377abd13db5fae03",
+    "crates/dir-simulator/tests/ethernet.rs": "7dcc8a53462653ef57cf58db507512f173b1246b080ea48b3104cfc219ad28b3",
+    "crates/dir-simulator/tests/ethernet_media.rs": "c50e2bfc1bb633111c67aa8c45113f350ec0cc0bb095af63756d5d8c2a03a5d4",
+    "crates/dir-simulator/tests/ethernet_qos.rs": "2c3208a3f52cd146efcc78da8abd1e8f9d65988f6235e058fa14e508408ee2f3",
+    "crates/dir-simulator/tests/ethernet_vlan.rs": "4b3b7b48f9ce55495fc1037c83862bb5a4c5cb9ad1fb79c80cedb0299e0b540a",
+    "crates/dir-simulator/tests/event_timing.rs": "f10613f66f46a03a80cf8586995de56c6771ca4749fe91a3ab4503b47248b021",
+    "crates/dir-simulator/tests/gateway.rs": "2d8cbb5d1867a49915d375c499f092bedc2c9664334a9bf0385f8d3ebd965b8c",
+    "crates/dir-simulator/tests/memory_ipc.rs": "a52e62845a5d7de1ff89f8fc63b702f6140f8070f0a67187ac2c21f8fd19ba33",
+    "crates/dir-simulator/tests/network_extensions.rs": "42605a9ae474cc87ee11d64ff0a93055cb718c63d1fd33549902c1f02d96245b",
+    "crates/dir-simulator/tests/preparation_failures.rs": "9d2e917f1f532efc9ea78d7750a9df309a7692a8cc56b4431cfda24794400b6d",
+    "crates/dir-simulator/tests/provenance.rs": "ff005ab8bbf1a005657d773e454e91c3a0ad42b7239023d59fe1d2b39f39eea6",
+    "crates/dir-simulator/tests/registry.rs": "85e15191106a00c702f3ab95aa36c54de8f5568241170c9f2ffb46ffaf29b492",
+    "crates/dir-simulator/tests/registry_diagnostics.rs": "f628fa7c4d12465b5acecace85cdb42863739ab8f3538530c3c1872be296124f",
+    "crates/dir-simulator/tests/soc.rs": "debc4374f08e6db5defaa41a528fabb6f0dd27a0d49cc9a91f28bcb988db71db",
+    "crates/dir-simulator/tests/spooling.rs": "8bd5cea73ca584c3afed86bd233d0018071a88348f19013a7cb6265704322290",
+    "crates/dir-simulator/tests/viewer_cli.rs": "a283be42361e94800ad1bdec5ee6bb5677e9c17a2d2455b26a5fbef2f82dbcfc",
+    "Cargo.lock": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+    "rust-toolchain.toml": "dc8a9e7668c882190e58da244ac78e86d0d9875140a6249849f49b74d7382a76",
+    ".github/workflows/release-audit.yml": "409a3b5d7e059ebb99cb71fc26557730d81ca5557fe650fbae24b9fb41f9acc8",
+    "tests/ned_editor_acceptance_http.test.cjs": "039004d9711620443efb377c1b334403dde3cceb4674ff549b2bc6dab1b48892",
+    "tests/ned_editor_browser.test.cjs": "aac85c05cf9d8f9e514614c75fcb6bc07df7bc8a9aadddcc33163fe0e472ed7d",
+    "tests/ned_editor_composition_browser.test.cjs": "e3eff02cedc70065af84e7e51211a3a4cd6963042baba401bdc56887acde7419",
+    "tests/ned_editor_extensions_browser.test.cjs": "d5df94539aa80a3be145ca687d029c796a5352645f1ee41294ed367077bad4fa",
+    "tests/ned_editor_extensions_ui.test.cjs": "fa2a8080e08ad61de8ce46c7bff8e20a983baf88e241966f729ab84de6634e97",
+    "tests/ned_editor_hostile_browser.test.cjs": "6229edd8df776609b9e7deeab93022991e51be9dfdd1eea0a2a97383086fc0e0",
+    "tests/ned_editor_native_ime.test.cjs": "80d08edcc85b78820366681a6f19a344c81b2ba4d0a77a86569035662bcb1470",
+    "tests/ned_editor_recovery.test.cjs": "5e39cd0c80322b50325aef800d3d167fd37c7c79feef6e64577c40d6209d26cc",
+    "tests/ned_editor_run_shutdown.test.cjs": "576c529f620f564559c857098fa7db17db8a158257cee211bc76553c5512780a",
+    "tests/ned_editor_ui.test.cjs": "67115e9ce6feb789cd5a30549260d85f746f2d9448bdd1d1ec19279350538f21",
+    "tests/ned_editor_viewer_expiry_browser.test.cjs": "fbee76a2934f447f4ab77277bcc6b3977a80fec1f4404f3e107dde7dbd56af30"
+  },
+  "prior_failures": [
+    {
+      "log": "ned-acceptance-2026-10-15/ordinary-acceptance-first.log",
+      "sha256": "461cf01c094cf4fe82a219114f18c509a8e4d876d8dccbc2d3de9688093bc034",
+      "summary": {
+        "suites": 1,
+        "passed": 22,
+        "failed": 4,
+        "ignored": 0,
+        "suite_rows": [
+          {
+            "result": "FAILED",
+            "passed": 22,
+            "failed": 4,
+            "ignored": 0,
+            "filtered_out": 444
+          }
+        ]
+      },
+      "classification": "Four new fixture/oracle errors, later corrected; original log retained."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/ordinary-acceptance-third.log",
+      "sha256": "cf1697e59ba1b57a94669618c4ccfac51a64acec10d337ef6afd9a041aee69a5",
+      "summary": {
+        "suites": 1,
+        "passed": 33,
+        "failed": 4,
+        "ignored": 1,
+        "suite_rows": [
+          {
+            "result": "FAILED",
+            "passed": 33,
+            "failed": 4,
+            "ignored": 1,
+            "filtered_out": 459
+          }
+        ]
+      },
+      "classification": "Shared JSON/model-config fixture was invalid for Classical CAN; corrected valid SaveAs and explicitly separate multi-role policy test."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/fault-run-first.log",
+      "sha256": "961f70d7d67dd9401f36ca8b070bbf454550872a3a026da1e10574312bf8bc67",
+      "summary": {
+        "suites": 1,
+        "passed": 6,
+        "failed": 5,
+        "ignored": 0,
+        "suite_rows": [
+          {
+            "result": "FAILED",
+            "passed": 6,
+            "failed": 5,
+            "ignored": 0,
+            "filtered_out": 472
+          }
+        ]
+      },
+      "classification": "Includes the genuine postmanifest staging defect plus initial oracle errors; retained without rewriting."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/fault-run-second.log",
+      "sha256": "4239bc9418c4ca17680093b16936642c6f4d7592287e97066c06c31e0cb16aa9",
+      "summary": {
+        "suites": 1,
+        "passed": 9,
+        "failed": 1,
+        "ignored": 0,
+        "suite_rows": [
+          {
+            "result": "FAILED",
+            "passed": 9,
+            "failed": 1,
+            "ignored": 0,
+            "filtered_out": 474
+          }
+        ]
+      },
+      "classification": "Pre-product-fix subset; ENOSPC adapter nsenter credentials failed before the actual filesystem fault, then corrected."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/fault-run-third.log",
+      "sha256": "d5af44188ff72bd19435857cb090f9d892f60d47256aa8bef2c088a4636c9418",
+      "summary": {
+        "suites": 1,
+        "passed": 11,
+        "failed": 1,
+        "ignored": 0,
+        "suite_rows": [
+          {
+            "result": "FAILED",
+            "passed": 11,
+            "failed": 1,
+            "ignored": 0,
+            "filtered_out": 485
+          }
+        ]
+      },
+      "classification": "New publisher rejects unknown entry before manifest with output_failed; obsolete integrity_failed oracle corrected and manifest absence asserted."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/publication-regression-first.log",
+      "sha256": "0ede5f29b7bb90653799cd8643224711a230ca5cfbf499e184d4bf543d6b666e",
+      "summary": {
+        "suites": 1,
+        "passed": 5,
+        "failed": 1,
+        "ignored": 0,
+        "suite_rows": [
+          {
+            "result": "FAILED",
+            "passed": 5,
+            "failed": 1,
+            "ignored": 0,
+            "filtered_out": 482
+          }
+        ]
+      },
+      "classification": "First publication fix left live engine/sort scratch after manifest. Preserved failing strict validator; product subsequently corrected."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/workspace-first.log",
+      "sha256": "d3d776c7227dc95e1123106d19bf332c055104009dceeef5870756119e1311f2",
+      "summary": null,
+      "classification": "New test fixture import build error; no runtime success inferred."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/workspace-second.log",
+      "sha256": "63ac54a37cc35782052f2198be3bd1c0bb79bfcccb856bd3403bff5d436387de",
+      "summary": {
+        "suites": 1,
+        "passed": 489,
+        "failed": 1,
+        "ignored": 8,
+        "suite_rows": [
+          {
+            "result": "FAILED",
+            "passed": 489,
+            "failed": 1,
+            "ignored": 8,
+            "filtered_out": 0
+          }
+        ]
+      },
+      "classification": "Native child-spawn matrix interfered with ordinary fixture registry lease; actual inherited FD/close/exec evidence retained."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/extensions-browser-extra-first.log",
+      "sha256": "05e47bb8a40c400a4a9b74fc6118e7589e2bbd543634fd0a101ab2a1d0e8c699",
+      "summary": null,
+      "classification": "Oracle expected absent instead of actual unpublished artifact state."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/extensions-browser-extra-second.log",
+      "sha256": "4cc29cb1c377180b9982592740aeaabeb8b74b766fb19c47a03e74a3d97909bb",
+      "summary": null,
+      "classification": "Repair fixture omitted required second CAN pair; corrected using standard fully connected Bus and current-revision diagnostics."
+    }
+  ],
+  "status": "completed_scoped_reassessment",
+  "browser_environment": {
+    "playwright": "1.64.0",
+    "chromium": "156.0.8078.4",
+    "rust": "1.85.0",
+    "node": "v22.22.0"
+  },
+  "summary": {
+    "reassessed_conditions": 38,
+    "passed_scoped_conditions": 38,
+    "unverified_conditions": 0,
+    "failed_conditions": 0,
+    "complete_43_compound_case_claim": false
+  },
+  "fault_measurements": {
+    "records": 142,
+    "by_case": {
+      "XC23": 95,
+      "XC30": 1,
+      "XC31": 2,
+      "XC33": 7,
+      "XC34": 8,
+      "XC35": 16,
+      "XC36": 5,
+      "XC37": 1,
+      "XC38": 7
+    },
+    "save_checkpoint_kinds": 20,
+    "save_sigkill_cuts": 95,
+    "cancel_barriers": 7,
+    "restart_sigkill_barriers": 16,
+    "resource_contract": "4GiB address-space and1GiB/file hard limits;2/10GiB soft logical totals, not physical-RAM OOM or total hard hardware quotas."
+  },
+  "production_corrections": [
+    {
+      "area": "NED SaveAs provenance",
+      "change": "Add specification-promised input-ID to output-role/path mapping to plan digest, save reply and recovery; legacy missing mapping stays empty."
+    },
+    {
+      "area": "Result manifest commit/recovery",
+      "change": "Remove owned stage links/journal names/sort spills before atomic no-replace manifest publication; preserve FD snapshot reuse and strict validator; directory flock leaves no lockfile entry."
+    }
+  ],
+  "test_isolation_correction": {
+    "reason": "Measured clone/exec inheritance of another libtest fixture CLOEXEC flock FD causes genuine transient409 until exec closes it. Delayed-exec mixed stress also produced a later recovery409; no all-green claim is made for that mixed stress.",
+    "resolution": "Eleven native fault tests are explicitly selected and run serially after ordinary workspace tests in CI. Fixture restart retries only409/E-EDITOR-TARGET-BUSY for2seconds; all other errors propagate. Product locking and busy rejection remain unchanged.",
+    "receipt": "ned-acceptance-2026-10-15/registry-restart-receipt.json",
+    "normal_workspace_passed": 769,
+    "mandatory_explicit_tests_passed": 19
+  },
+  "specification_sha256": "93e618a872ac47939d1bda1b0ad5b73ad311afcbb2864c5a1bbd1de89e185ba0",
+  "static_review": {
+    "artifact": "ned-acceptance-2026-10-15/final-production-review-result.txt",
+    "scope": "Read-only independent Astra review of production changes; no blocking findings. Acquired before final test isolation; its then-unresolved contention is followed by the FD receipt and final isolated769+19passing runs."
+  },
+  "artifact_inventory": "ned-acceptance-2026-10-15/inventory.json",
+  "ci": {
+    "policy": "Final exact-commit CI belongs to the follow-up pull request checks, separate from these locally acquired measurements.",
+    "native_fault_tests_mandatory": true,
+    "native_fault_tests_serial": true,
+    "workflow_timeout_minutes": 45
+  },
+  "artifact_inventory_sha256": "b5121ad0aabe31984502d45f6835d16bc2b329beacabd1cabe46af7ff7630ae3"
+}

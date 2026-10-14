@@ -1,4 +1,6 @@
 //! Durable asynchronous runs, independently locked from editor state.
+#[cfg(test)]
+mod acceptance_fault_tests;
 mod cleanup;
 pub(crate) mod storage;
 #[cfg(test)]
@@ -627,8 +629,12 @@ impl RunManager {
                 .unwrap()
                 .pending
                 .insert(command_key.clone(), r.clone());
+            #[cfg(test)]
+            crate::acceptance_hooks::hit("run.before_publish");
             let publication =
                 Directory::open(&self.shared.root)?.rename_child(&staging, &id, &r.owner);
+            #[cfg(test)]
+            crate::acceptance_hooks::hit("run.after_publish");
             #[cfg(test)]
             let publication = publication.and_then(|()| {
                 if self
@@ -732,6 +738,8 @@ impl RunManager {
     pub(crate) fn cancel(&self, id: &str) -> Result<Value> {
         self.mutation()?;
         self.record(id)?;
+        #[cfg(test)]
+        crate::acceptance_hooks::hit("run.before_cancel_persist");
         let mut state = self.shared.state.lock().unwrap();
         let r = state.records.get_mut(id).ok_or_else(missing)?;
         if r.phase == "queued" {
@@ -746,6 +754,8 @@ impl RunManager {
         }
         let value = r.value();
         drop(state);
+        #[cfg(test)]
+        crate::acceptance_hooks::hit("run.after_cancel_persist");
         self.shared.wake.notify_all();
         Ok(value)
     }
@@ -1242,6 +1252,10 @@ fn spawn_worker(
     shared: &Shared,
     request: &worker::Request,
 ) -> Result<(std::process::Child, Instant)> {
+    #[cfg(test)]
+    if std::env::var_os(crate::acceptance_hooks::WORKERS).is_some() {
+        return acceptance_fault_tests::spawn_worker(request);
+    }
     if hash_file(&File::open(&shared.binary).map_err(|e| EditorError::io(&shared.binary, e))?)?
         != shared.binary_hash
     {
@@ -1442,6 +1456,17 @@ fn execute_child(shared: &Shared, id: &str, request: worker::Request, timeout: u
     let mut protocol_closed = false;
     let status = loop {
         let message = rx.recv_timeout(Duration::from_millis(100));
+        #[cfg(test)]
+        let terminal_message = matches!(
+            &message,
+            Ok(Ok(worker::Message::Report { .. }
+                | worker::Message::Failed { .. }
+                | worker::Message::PreparedFailed { .. }))
+        );
+        #[cfg(test)]
+        if terminal_message {
+            crate::acceptance_hooks::hit("run.before_completion_lock");
+        }
         let mut state = shared.state.lock().unwrap();
         let r = state.records.get_mut(id).unwrap();
         match message {
@@ -1473,6 +1498,13 @@ fn execute_child(shared: &Shared, id: &str, request: worker::Request, timeout: u
             Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => protocol_closed = true,
             Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {}
         }
+        #[cfg(test)]
+        if terminal_message {
+            drop(state);
+            crate::acceptance_hooks::hit("run.verifying_unlocked");
+            state = shared.state.lock().unwrap();
+        }
+        let r = state.records.get_mut(id).unwrap();
         // Completion acceptance and stop requests use this same run-state lock.
         match child.try_wait() {
             Ok(Some(status)) => {

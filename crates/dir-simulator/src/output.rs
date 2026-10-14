@@ -19,6 +19,7 @@ mod preparation;
 mod publish;
 mod registered;
 pub(crate) mod reservation;
+mod scratch;
 mod soc;
 mod stream;
 mod validation;
@@ -101,13 +102,15 @@ pub fn export(
         && prepared.soc.is_none()
         && prepared.memory_ipc.is_none()
     {
-        let streamed = stream::prepare(prepared, snapshot, output)?;
         let version = if prepared.common.profile == PROFILE {
             1
         } else {
             2
         };
         return publish::stream(output, &run_id, version, snapshot, |stage| {
+            // Keep every sort/merge/fallback spill within the writer's lifetime:
+            // all are dropped before stream commits the manifest.
+            let streamed = stream::prepare(prepared, snapshot, output)?;
             stage.write_pair("results.json", "events.csv", |writer, csv_writer| {
                 json::write_stream_result(
                     writer, csv_writer, prepared, snapshot, &run_id, &timestamp, &streamed,

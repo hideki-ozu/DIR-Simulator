@@ -3,11 +3,11 @@ use crate::{Diagnostic, snapshot::Point};
 use std::{
     cell::RefCell,
     fs::{self, File, OpenOptions},
-    io::{BufRead, BufReader, Write},
+    io::{BufRead, BufReader, Read, Write},
     path::{Path, PathBuf},
     sync::{
         Arc, Mutex,
-        atomic::{AtomicU64, Ordering},
+        atomic::{AtomicBool, AtomicU64, Ordering},
     },
 };
 
@@ -40,15 +40,59 @@ fn failure(operation: &str, error: impl std::fmt::Display) -> Diagnostic {
         .with_reason(reason)
         .with_detail("operation", operation)
 }
+/// Independent positional cursor: cloning a File alone shares its seek offset.
+/// The descriptor keeps a detached snapshot journal readable after publication.
+pub(crate) struct ScratchReader {
+    file: File,
+    offset: u64,
+}
+impl ScratchReader {
+    pub(crate) fn new(file: &File) -> std::io::Result<Self> {
+        Ok(Self {
+            file: file.try_clone()?,
+            offset: 0,
+        })
+    }
+}
+impl Read for ScratchReader {
+    fn read(&mut self, bytes: &mut [u8]) -> std::io::Result<usize> {
+        use std::os::unix::fs::FileExt;
+        let n = self.file.read_at(bytes, self.offset)?;
+        self.offset += n as u64;
+        Ok(n)
+    }
+}
+
+pub(crate) fn detach_owned(path: &Path, file: &File, detached: &AtomicBool) -> std::io::Result<()> {
+    use std::os::unix::fs::MetadataExt;
+    if detached.load(Ordering::Acquire) {
+        return Ok(());
+    }
+    let owned = file.metadata()?;
+    match fs::symlink_metadata(path) {
+        Ok(current)
+            if current.is_file()
+                && (current.dev(), current.ino()) == (owned.dev(), owned.ino()) =>
+        {
+            fs::remove_file(path)?;
+        }
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+        _ => return Err(std::io::Error::other("scratch path ownership changed")),
+    }
+    detached.store(true, Ordering::Release);
+    Ok(())
+}
+
 #[derive(Debug)]
 pub struct PointSpool {
     path: PathBuf,
+    detached: AtomicBool,
     writer: Mutex<File>,
     count: usize,
 }
 impl Drop for PointSpool {
     fn drop(&mut self) {
-        let _ = fs::remove_file(&self.path);
+        let _ = self.detach();
     }
 }
 impl PointSpool {
@@ -68,6 +112,7 @@ impl PointSpool {
                 Ok(writer) => {
                     return Ok(Self {
                         path,
+                        detached: AtomicBool::new(false),
                         writer: Mutex::new(writer),
                         count: 0,
                     });
@@ -94,16 +139,21 @@ impl PointSpool {
             .ok_or_else(|| failure("count", "overflow"))?;
         Ok(())
     }
+    pub(crate) fn detach(&self) -> Result<(), Diagnostic> {
+        let writer = self.writer.lock().map_err(|e| failure("lock", e))?;
+        detach_owned(&self.path, &writer, &self.detached).map_err(|e| failure("cleanup", e))
+    }
     fn iter(&self) -> Result<DiskPoints, Diagnostic> {
+        let writer = self.writer.lock().map_err(|e| failure("lock", e))?;
         Ok(DiskPoints {
-            reader: BufReader::new(File::open(&self.path).map_err(|e| failure("read", e))?),
+            reader: BufReader::new(ScratchReader::new(&writer).map_err(|e| failure("read", e))?),
             line: String::new(),
             remaining: self.count,
         })
     }
 }
 pub struct DiskPoints {
-    reader: BufReader<File>,
+    reader: BufReader<ScratchReader>,
     line: String,
     remaining: usize,
 }
@@ -245,5 +295,44 @@ mod tests {
         assert_eq!(diagnostic.code, "E-0003");
         assert_eq!(diagnostic.reason, "output_create_failed");
         assert!(!path.exists());
+    }
+}
+
+#[cfg(test)]
+mod publication_tests {
+    use super::*;
+
+    #[test]
+    fn detached_journal_has_independent_readers_and_preserves_replacement() {
+        let directory =
+            std::env::temp_dir().join(format!("dir-detached-journal-{}", std::process::id()));
+        fs::create_dir(&directory).unwrap();
+        let path = directory.join("journal");
+        let mut file = OpenOptions::new()
+            .create_new(true)
+            .read(true)
+            .write(true)
+            .open(&path)
+            .unwrap();
+        file.write_all(b"abc").unwrap();
+        let detached = AtomicBool::new(false);
+        detach_owned(&path, &file, &detached).unwrap();
+        fs::write(&path, b"foreign").unwrap();
+        detach_owned(&path, &file, &detached).unwrap();
+        let mut a = ScratchReader::new(&file).unwrap();
+        let mut b = ScratchReader::new(&file).unwrap();
+        for expected in b"abc" {
+            let mut x = [0];
+            let mut y = [0];
+            a.read_exact(&mut x).unwrap();
+            b.read_exact(&mut y).unwrap();
+            assert_eq!(x, [*expected]);
+            assert_eq!(y, [*expected]);
+        }
+        assert_eq!(fs::read(&path).unwrap(), b"foreign");
+        let other = AtomicBool::new(false);
+        assert!(detach_owned(&path, &file, &other).is_err());
+        assert_eq!(fs::read(&path).unwrap(), b"foreign");
+        fs::remove_dir_all(directory).unwrap();
     }
 }

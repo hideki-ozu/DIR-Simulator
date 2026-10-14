@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "case": "NE-XC28",
+  "binary_sha256": "b81812c1516029697b294e2787dcbcca8e637dbc0f23633a6fc78c98753758dd",
+  "input_before": {
+    "baseline.json": "48e3bd572d8c17cbbdbaca25a08c83cf8f3a9a17fb3f7f9832d87ba2df7dee37",
+    "models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251",
+    "project.ini": "7917b7f205f7d0858ab30d9674bb0fad54ec64892793f0d35a6d7bc28f083386"
+  },
+  "input_backend": "XTest through xdotool",
+  "injected_composition_events": false,
+  "chromium_sandbox": true,
+  "commands": [
+    {
+      "kind": "replace_source",
+      "command_id": "client-5601a08fc5ba7e7273c2eb913962d2d8fed8d7528669f85998833f165e333a64:1",
+      "base_revision": "1",
+      "source_sha256": "2cbf59fa11d3b9e65d31f799189bf95f100309199bb8648acd707d2323ec3d5b"
+    },
+    {
+      "kind": "replace_source",
+      "command_id": "client-5601a08fc5ba7e7273c2eb913962d2d8fed8d7528669f85998833f165e333a64:2",
+      "base_revision": "2",
+      "source_sha256": "6dea4feb4a5031bce6da415dacee4468cbcdaea24431e152a1bf7ab41d90ff24"
+    },
+    {
+      "kind": "start_run",
+      "command_id": "client-5601a08fc5ba7e7273c2eb913962d2d8fed8d7528669f85998833f165e333a64:3",
+      "base_revision": "3"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "native-preedit.png",
+      "sha256": "4489a9e641db6db36c51d4c2f860324cf6e6d133d17b03094b360c35ce1424ed",
+      "bytes": 230883
+    },
+    {
+      "file": "native-source-ack-held.png",
+      "sha256": "028c43b54c62a13ebc6742cd8b4273790971281f92adb3349681470c374b0548",
+      "bytes": 224090
+    },
+    {
+      "file": "native-frozen-run-completed.png",
+      "sha256": "fb13d826ad0afe51cd8e9ccb0efdffc2af9676e569ea98ed17e75f88680c1ce0",
+      "bytes": 209331
+    }
+  ],
+  "stages": [
+    {
+      "stage": "native-preedit",
+      "source_sha256": "6dea4feb4a5031bce6da415dacee4468cbcdaea24431e152a1bf7ab41d90ff24",
+      "source_status": "NED · pending · IME変換中・反映待ち",
+      "run_count": 0
+    },
+    {
+      "stage": "source-ack-held-after-run-confirmation",
+      "source_sha256": "6dea4feb4a5031bce6da415dacee4468cbcdaea24431e152a1bf7ab41d90ff24",
+      "run_count": 0
+    }
+  ],
+  "ibus_version": "IBus 1.5.29-rc2",
+  "xdotool_version": "xdotool version 3.20160805.1",
+  "mozc_version": "2.28.4715.102+dfsg-2.2build7",
+  "mozc_server_sha256": "bbf20e0971d85aba83ad9da75fb81b22dd95b22ae152ecb043e0e37f4e444040",
+  "mozc_engine_sha256": "46f464835ef4e4d328ae1ace78fb712a18bebaf4dbb98c1e87d0e7b8ae595d4a",
+  "browser_version": "156.0.8078.4",
+  "engine_selection_exit_code": 1,
+  "observed_engine": "mozc-jp",
+  "held_source_ack": {
+    "operation_status": 200,
+    "source_sha256": "6dea4feb4a5031bce6da415dacee4468cbcdaea24431e152a1bf7ab41d90ff24"
+  },
+  "events": [
+    {
+      "kind": "compositionstart",
+      "data": "",
+      "isTrusted": true
+    },
+    {
+      "kind": "compositionupdate",
+      "data": "ｎ",
+      "isTrusted": true
+    },
+    {
+      "kind": "beforeinput",
+      "data": "ｎ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "input",
+      "data": "ｎ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "compositionupdate",
+      "data": "に",
+      "isTrusted": true
+    },
+    {
+      "kind": "beforeinput",
+      "data": "に",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "input",
+      "data": "に",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "compositionupdate",
+      "data": "にｈ",
+      "isTrusted": true
+    },
+    {
+      "kind": "beforeinput",
+      "data": "にｈ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "input",
+      "data": "にｈ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "compositionupdate",
+      "data": "にほ",
+      "isTrusted": true
+    },
+    {
+      "kind": "beforeinput",
+      "data": "にほ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "input",
+      "data": "にほ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "compositionupdate",
+      "data": "にほｎ",
+      "isTrusted": true
+    },
+    {
+      "kind": "beforeinput",
+      "data": "にほｎ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "input",
+      "data": "にほｎ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "compositionupdate",
+      "data": "にほんｇ",
+      "isTrusted": true
+    },
+    {
+      "kind": "beforeinput",
+      "data": "にほんｇ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "input",
+      "data": "にほんｇ",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "compositionupdate",
+      "data": "にほんご",
+      "isTrusted": true
+    },
+    {
+      "kind": "beforeinput",
+      "data": "にほんご",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "input",
+      "data": "にほんご",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "compositionupdate",
+      "data": "日本語",
+      "isTrusted": true
+    },
+    {
+      "kind": "beforeinput",
+      "data": "日本語",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "input",
+      "data": "日本語",
+      "isTrusted": true,
+      "isComposing": true,
+      "inputType": "insertCompositionText"
+    },
+    {
+      "kind": "compositionend",
+      "data": "日本語",
+      "isTrusted": false
+    }
+  ],
+  "compositionend_trust": [
+    false
+  ],
+  "run": {
+    "run_id": "run-204a9f4ffa7ac1ec9d31546fae5af352df79b2885870b31bab7f3c6a32c60227",
+    "command_id": "client-5601a08fc5ba7e7273c2eb913962d2d8fed8d7528669f85998833f165e333a64:3",
+    "phase": "completed",
+    "frozen_file_id": "f5b8cc88d4f29b30aa25be8f3",
+    "frozen_hash": "6dea4feb4a5031bce6da415dacee4468cbcdaea24431e152a1bf7ab41d90ff24",
+    "frozen_bytes": 954,
+    "frozen_source_artifact": "native-frozen-source.ned",
+    "current_dirty": true,
+    "dirty_at_start": true,
+    "input_digest": "349d1127dfc61fabdc578edb4d27dc1a28f316f2f8c0dcb9dfc75e73c021345f"
+  },
+  "input_after": {
+    "baseline.json": "48e3bd572d8c17cbbdbaca25a08c83cf8f3a9a17fb3f7f9832d87ba2df7dee37",
+    "models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251",
+    "project.ini": "7917b7f205f7d0858ab30d9674bb0fad54ec64892793f0d35a6d7bc28f083386"
+  },
+  "result": "passed",
+  "owned_ime_processes_terminated": 2,
+  "owned_ime_processes_remaining": 0
+}

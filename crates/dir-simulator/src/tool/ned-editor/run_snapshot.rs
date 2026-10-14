@@ -446,6 +446,8 @@ pub(crate) fn freeze(project: &ProjectSnapshot, input: &Path) -> Result<Snapshot
     blob_dir.sync()?;
     directory.create(MANIFEST, &raw)?;
     directory.sync()?;
+    #[cfg(test)]
+    crate::acceptance_hooks::hit("snapshot.before_commit");
     directory.replace(
         COMMIT,
         &encode(&Commit {
@@ -454,7 +456,11 @@ pub(crate) fn freeze(project: &ProjectSnapshot, input: &Path) -> Result<Snapshot
             bytes: total as u64,
         })?,
     )?;
+    #[cfg(test)]
+    crate::acceptance_hooks::hit("snapshot.after_commit");
     directory.sync()?;
+    #[cfg(test)]
+    crate::acceptance_hooks::hit("snapshot.after_sync");
     Ok(evidence)
 }
 fn evidence(manifest: &Manifest, digest: &str, bytes: usize) -> SnapshotEvidence {

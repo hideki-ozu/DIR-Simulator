@@ -2,6 +2,8 @@ use super::*;
 use std::fs;
 use std::io::Read;
 use std::os::unix::fs::PermissionsExt;
+#[path = "acceptance_snapshot_tests.rs"]
+mod acceptance_snapshot_tests;
 #[path = "safety_tests.rs"]
 mod safety_tests;
 struct Fixture {
@@ -248,7 +250,7 @@ fn pinned_capacity_exact_boundary_and_one_byte_over_do_not_create_files() {
     let before = Directory::open(&m.shared.root).unwrap().names().unwrap();
     // Exercise accounting directly without allocating PIN_LIMIT bytes. This
     // verifies the admission comparison, not physical disk/memory exhaustion.
-    for (delta, permitted) in [(0, true), (1, false)] {
+    for (offset, permitted) in [(0, true), (1, true), (2, false)] {
         m.shared
             .state
             .lock()
@@ -257,7 +259,7 @@ fn pinned_capacity_exact_boundary_and_one_byte_over_do_not_create_files() {
             .get_mut(&id)
             .unwrap()
             .snapshot
-            .bytes = PIN_LIMIT - incoming + delta;
+            .bytes = PIN_LIMIT - incoming - 1 + offset;
         let result = m.check_capacity(&f.project);
         if permitted {
             result.unwrap();

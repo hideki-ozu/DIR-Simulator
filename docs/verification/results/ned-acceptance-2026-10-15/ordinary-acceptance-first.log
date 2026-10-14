@@ -1,0 +1,67 @@
+   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.86s
+     Running unittests src/lib.rs (/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target/debug/deps/dir_simulator-58b4dee6f8903494)
+
+running 26 tests
+test output::publish::acceptance_tests::failed_data_and_manifest_publication_preserve_external_paths ... ok
+test output::publish::acceptance_tests::paired_writer_failure_never_publishes_either_output ... ok
+test runtime::can_ethernet::tests::acceptance_last_can_branch_id_failure_preserves_processing_prefix ... ok
+test runtime::can_ethernet::tests::acceptance_last_ethernet_branch_byte_overflow_does_not_commit_first_branch ... ok
+test tool::ned_editor::acceptance_file_tests::xc01_second_root_creation_preserves_first_root_disk_and_network_semantics ... ok
+test tool::ned_editor::acceptance_file_tests::xc04_real_captured_casefold_sidecar_paths_roles_and_empty_ned_reject_atomically ... ok
+test tool::ned_editor::acceptance_file_tests::xc04_real_symlink_is_rejected_during_capture_without_replacing_session ... ok
+test tool::ned_editor::acceptance_file_tests::xc06_save_as_undo_shape_rejection_redo_preserve_all_disk_bytes_and_hashes ... ok
+test tool::ned_editor::acceptance_file_tests::xc07_external_creation_after_preview_before_save_is_an_ordered_no_clobber_barrier ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_added_file_64_65_and_rename_1000_1001_limits_are_separate ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_history_exact_32mib_and_one_byte_over_are_distinct_atomic_boundaries ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_plan_encoded_64mib_boundary_and_ten_minute_expiry_are_independent ... ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc20_writer_takeover_alone_invalidates_preview_without_editing_inputs ... ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc32_exact_hundred_inflight_and_terminal_retries_preserve_one_frozen_run ... ok
+test tool::ned_editor::controller::tests::malformed_auth_epoch_busy_and_revision_have_distinct_acceptance_boundaries ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc08_shared_cow_compares_every_path_value_channel_and_runtime_binding ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc09_xc11_multiroot_ancestors_crosspackage_layout_and_source_identity_roundtrip ... FAILED
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc10_unique_stop_and_unused_incoming_reference_compare_all_bindings ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc12_detach_invalid_targets_and_limits_are_atomic ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc13_xc15_aggregate_rename_updates_all_roles_channels_layout_and_ids ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc14_swap_three_cycle_and_parent_child_each_have_one_exact_history_entry ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc16_segment_boundaries_other_owner_and_unused_type_references_are_independent ... FAILED
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc17_every_unsupported_reference_variant_refuses_without_exact_override_compensation ... FAILED
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc18_equal_value_collisions_in_each_namespace_are_preview_rejections ... FAILED
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc19_bom_mixed_newlines_unicode_and_json_escape_keep_every_nonpatch_byte ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc20_edit_undo_and_reload_context_each_invalidate_a_rename_plan ... ok
+
+failures:
+
+---- tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc09_xc11_multiroot_ancestors_crosspackage_layout_and_source_identity_roundtrip stdout ----
+
+thread 'tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc09_xc11_multiroot_ancestors_crosspackage_layout_and_source_identity_roundtrip' panicked at crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs:86:5:
+assertion `left == right` failed
+  left: "{\"/\": [(\"tmp\", Directory)], \"/tmp\": [(\"ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683\", Directory)], \"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683\": [(\"baseline.json\", File), (\"extra_models\", Directory), (\"models\", Directory), (\"project.ini\", File)], \"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683/extra_models\": [(\"demo\", Directory)], \"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683/extra_models/demo\": [(\"Outer.ned\", File), (\"Rack.ned\", File)], \"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683/models\": [(\"demo\", Directory)], \"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683/models/demo\": [(\"Main.ned\", File)]}"
+ right: "{\"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683/extra_models\": [(\"demo\", Directory)], \"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683/extra_models/demo\": [(\"Outer.ned\", File), (\"Rack.ned\", File)], \"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683/models\": [(\"demo\", Directory)], \"/tmp/ned-xc-cow-c5470768eb28234c91f9cafc12fbb1c54cc13763b1e6aca76ee4878508227683/models/demo\": [(\"Main.ned\", File)]}"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc16_segment_boundaries_other_owner_and_unused_type_references_are_independent stdout ----
+
+thread 'tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc16_segment_boundaries_other_owner_and_unused_type_references_are_independent' panicked at crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs:742:45:
+called `Result::unwrap()` on an `Err` value: EditorError { code: "E-EDITOR-SEMANTIC", message: "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/can/baseline.ini: unknown instance: Main.aaus", status: 422, diagnostic: Some(Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "unknown_instance", message: "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/can/baseline.ini: unknown instance: Main.aaus", source: Some("/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/can/baseline.ini"), line: Some(6), column: Some(1), end_line: Some(6), end_column: Some(18), target: Some("Main.aaus.bitrate"), time_ps: None, event_seq: None, details: Some(Object {"actual": String("Main.aaus"), "expected": String("declared instance")}) }) }
+
+---- tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc17_every_unsupported_reference_variant_refuses_without_exact_override_compensation stdout ----
+
+thread 'tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc17_every_unsupported_reference_variant_refuses_without_exact_override_compensation' panicked at crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs:21:57:
+called `Result::unwrap()` on an `Err` value: EditorError { code: "E-EDITOR-CREATE-FILE", message: "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/gateway/fanout.ini: unknown or invalid key: *.queueCapacity", status: 422, diagnostic: Some(Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "unknown_parameter", message: "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/gateway/fanout.ini: unknown or invalid key: *.queueCapacity", source: Some("/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/gateway/fanout.ini"), line: Some(14), column: Some(1), end_line: Some(14), end_column: Some(16), target: Some("*.queueCapacity"), time_ps: None, event_seq: None, details: Some(Object {"actual": String("*.queueCapacity"), "expected": String("registered parameter")}) }) }
+
+---- tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc18_equal_value_collisions_in_each_namespace_are_preview_rejections stdout ----
+
+thread 'tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc18_equal_value_collisions_in_each_namespace_are_preview_rejections' panicked at crates/dir-simulator/src/tool/ned-editor/acceptance_refactor_tests.rs:21:57:
+called `Result::unwrap()` on an `Err` value: EditorError { code: "E-EDITOR-CREATE-FILE", message: "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/can/baseline.ini: duplicate key: Main.a.unit.queueCapacity", status: 422, diagnostic: Some(Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0001", stage: "prepare", reason: "duplicate_definition", message: "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/can/baseline.ini: duplicate key: Main.a.unit.queueCapacity", source: Some("/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/can/baseline.ini"), line: Some(12), column: Some(1), end_line: Some(12), end_column: Some(26), target: Some("Main.a.unit.queueCapacity"), time_ps: None, event_seq: None, details: Some(Object {"related_column": String("1"), "related_line": String("7"), "related_source": String("/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/examples/can/baseline.ini")}) }) }
+
+
+failures:
+    tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc09_xc11_multiroot_ancestors_crosspackage_layout_and_source_identity_roundtrip
+    tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc16_segment_boundaries_other_owner_and_unused_type_references_are_independent
+    tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc17_every_unsupported_reference_variant_refuses_without_exact_override_compensation
+    tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc18_equal_value_collisions_in_each_namespace_are_preview_rejections
+
+test result: FAILED. 22 passed; 4 failed; 0 ignored; 0 measured; 444 filtered out; finished in 22.10s
+
+error: test failed, to rerun pass `-p dir-simulator --lib`

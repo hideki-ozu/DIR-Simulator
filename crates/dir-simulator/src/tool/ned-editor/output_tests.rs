@@ -63,7 +63,23 @@ impl Fixture {
         file.hash = hash(file.text.as_bytes());
     }
     fn restart(&self) -> TargetRegistry {
-        TargetRegistry::open(&self.root.join("exports"), &self.root.join("state")).unwrap()
+        // Parallel subprocess tests can inherit this fixture's just-released
+        // lease between clone and exec, before CLOEXEC closes their copy.
+        // Wait only for that kernel lock contention; preserve all other errors.
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+        loop {
+            match TargetRegistry::open(&self.root.join("exports"), &self.root.join("state")) {
+                Ok(registry) => return registry,
+                Err(error)
+                    if error.code == "E-EDITOR-TARGET-BUSY"
+                        && error.status == 409
+                        && std::time::Instant::now() < deadline =>
+                {
+                    std::thread::yield_now();
+                }
+                Err(error) => panic!("Fixture registry restart failed: {error:?}"),
+            }
+        }
     }
 }
 impl Drop for Fixture {
