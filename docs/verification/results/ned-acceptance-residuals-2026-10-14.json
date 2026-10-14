@@ -167,6 +167,26 @@
       "log": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/ned-real-workers-final.log",
       "log_sha256": "6bc5f85560a1af46c1d33d8665cf17dbd0edae6949bb73e57976a927645f505f",
       "scope": "Final actual worker/snapshot-vs-CLI/source-position/render/socket/header/deadline/revoke tests"
+    },
+    "ci_final_workspace_770c1e5": {
+      "command": "cargo test --locked --workspace",
+      "result": "passed",
+      "source_commit": "770c1e582c83020908fd51fc58d41a6dee45898b",
+      "run_id": 38481473942,
+      "job_id": 115584844166,
+      "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38481473942/job/115584844166",
+      "job_conclusion": "success",
+      "lib_suite": {
+        "passed": 442,
+        "failed": 0,
+        "ignored": 7,
+        "filtered_out": 0
+      },
+      "log": "docs/verification/results/ned-references-ci-final-2026-10-14.log",
+      "log_sha256": "da38f95927f8c90dd3a49ea878b0f06434020d87b33e57af8e9a39e78096c4cc",
+      "downloaded_job_log_sha256": "5d52459ec3120e9ef41d1964cda35da5a340eaae5bcd9eb1c405c070b6761b1f",
+      "evidence_kind": "GitHub job logs API; selected command, two unmodified timestamped success lines and lib summary; ANSI color removed from command",
+      "scope": "Final PR81 head CI workspace execution. Both named input::references tests occur in the unfiltered lib suite. This is separate from local serial_full_workspace_final and its original log/hash; no local rerun is claimed."
     }
   },
   "interpretation_boundaries": [
@@ -693,7 +713,7 @@
             {
               "source": "crates/dir-simulator/src/input/references/tests.rs",
               "named_test": "references_rejections_match_prepare_without_additional_acquisition",
-              "run": "rust_focused",
+              "run": "ci_final_workspace_770c1e5",
               "test_result": "passed",
               "measured_scope": "Reference rejection parity and acquisition constraints passed."
             },
@@ -756,7 +776,7 @@
             {
               "source": "crates/dir-simulator/src/input/references/tests.rs",
               "named_test": "references_bom_crlf_escaped_json_and_channel_spans_keep_nonreferences_untouched",
-              "run": "rust_focused",
+              "run": "ci_final_workspace_770c1e5",
               "test_result": "passed",
               "measured_scope": "Byte/span preservation for listed reference token classes passed."
             },
