@@ -1,0 +1,184 @@
+{
+  "browser": "153.0.8010.12",
+  "input_hashes": {
+    "repository/capacity1-viewer.html": "7a175d697c1b8ee5b7ff209f23aeeff8a9bfe677a05e512286d9776ad8957072",
+    "repository/capacity1/results.json": "2874a2bbf418cb4e21c8a33c7d9dc5e0f0e9cb620d3ee3590794719a244a5db2",
+    "repository/capacity1/manifest.json": "8c5af8762d128834f96b4ca8c524d61704dcad368d74d6cd0efb63aa1d8628f8",
+    "repository/capacity2-viewer.html": "7f3fee58d5aae14ecc115a8593ad5bb98ca14faa928388788cd38b02cf24bca8",
+    "repository/capacity2/results.json": "d950c768ac1cb9e57de032fc4cc66bb87081e12e09d1c910237397b4de5d0ed2",
+    "repository/capacity2/manifest.json": "32accbf228557bd4523c0c97c0bc3b3832cc392526c007adc3c99e8c4c3c28f9",
+    "repository/capacity3-viewer.html": "36ae73ef46616965e9ebfc15d3f0cc05ae27adf98ef543bac874bafd0e63fc59",
+    "repository/capacity3/results.json": "efbfeef7e8c9994e89d7dd4babc38fa71f34dd5b0905ebd605696717edfc2b90",
+    "repository/capacity3/manifest.json": "6b4f7b4cad2d105cd8e0411ecd91d7c8a2398850b129709bda4e4f852411658b"
+  },
+  "conditions": {
+    "capacity1": {
+      "time_ps": 35,
+      "counts": [
+        "5",
+        "3",
+        "2",
+        "0",
+        "0"
+      ],
+      "rows": "a:0\tMain.e00\tpacket\t処理中\t0\t0\t50\na:1\tMain.e00\tpacket\t待機\t10\t40\t60\na:2\tMain.e00\tpacket\t待機\t20\t50\t70\na:3\tMain.e00\tpacket\t待機\t30\t60\t80\nb:0\tMain.e10\tpacket\t処理中\t0\t0\t40",
+      "selected_request": {
+        "data": {
+          "active_plan": null,
+          "address": null,
+          "bytes": "4",
+          "completed_ps": "60",
+          "drop_reason": null,
+          "generated_ps": "10",
+          "operation": null,
+          "response": "OKAY",
+          "source": "Main.e00",
+          "start_ps": "40",
+          "status": "completed",
+          "target": "Main.e10"
+        },
+        "origin_request_id": null,
+        "record_id": "a:1",
+        "request_id": "a:1",
+        "schema_name": "noc.transaction",
+        "schema_version": 1,
+        "subject": "Main.e00",
+        "time_ps": "60"
+      },
+      "selected_transfers": [
+        {
+          "bytes": "4",
+          "end_ps": "50",
+          "from": "Main.r00",
+          "hop": "0",
+          "response": null,
+          "start_ps": "40",
+          "to": "Main.r10"
+        },
+        {
+          "bytes": "4",
+          "end_ps": "60",
+          "from": "Main.r10",
+          "hop": "1",
+          "response": "OKAY",
+          "start_ps": "50",
+          "to": "Main.e10"
+        }
+      ],
+      "visible_selected_state": "a:1\tMain.e00\tpacket\t待機\t10\t40\t60"
+    },
+    "capacity2": {
+      "time_ps": 35,
+      "counts": [
+        "5",
+        "2",
+        "3",
+        "0",
+        "0"
+      ],
+      "rows": "a:0\tMain.e00\tpacket\t処理中\t0\t0\t50\na:1\tMain.e00\tpacket\t処理中\t10\t10\t60\na:2\tMain.e00\tpacket\t待機\t20\t40\t70\na:3\tMain.e00\tpacket\t待機\t30\t50\t80\nb:0\tMain.e10\tpacket\t処理中\t0\t0\t40",
+      "selected_request": {
+        "data": {
+          "active_plan": null,
+          "address": null,
+          "bytes": "4",
+          "completed_ps": "60",
+          "drop_reason": null,
+          "generated_ps": "10",
+          "operation": null,
+          "response": "OKAY",
+          "source": "Main.e00",
+          "start_ps": "10",
+          "status": "completed",
+          "target": "Main.e10"
+        },
+        "origin_request_id": null,
+        "record_id": "a:1",
+        "request_id": "a:1",
+        "schema_name": "noc.transaction",
+        "schema_version": 1,
+        "subject": "Main.e00",
+        "time_ps": "60"
+      },
+      "selected_transfers": [
+        {
+          "bytes": "4",
+          "end_ps": "20",
+          "from": "Main.r00",
+          "hop": "0",
+          "response": null,
+          "start_ps": "10",
+          "to": "Main.r10"
+        },
+        {
+          "bytes": "4",
+          "end_ps": "60",
+          "from": "Main.r10",
+          "hop": "1",
+          "response": "OKAY",
+          "start_ps": "50",
+          "to": "Main.e10"
+        }
+      ],
+      "visible_selected_state": "a:1\tMain.e00\tpacket\t処理中\t10\t10\t60"
+    },
+    "capacity3": {
+      "time_ps": 35,
+      "counts": [
+        "5",
+        "1",
+        "4",
+        "0",
+        "0"
+      ],
+      "rows": "a:0\tMain.e00\tpacket\t処理中\t0\t0\t50\na:1\tMain.e00\tpacket\t処理中\t10\t10\t60\na:2\tMain.e00\tpacket\t処理中\t20\t20\t70\na:3\tMain.e00\tpacket\t待機\t30\t40\t80\nb:0\tMain.e10\tpacket\t処理中\t0\t0\t40",
+      "selected_request": {
+        "data": {
+          "active_plan": null,
+          "address": null,
+          "bytes": "4",
+          "completed_ps": "60",
+          "drop_reason": null,
+          "generated_ps": "10",
+          "operation": null,
+          "response": "OKAY",
+          "source": "Main.e00",
+          "start_ps": "10",
+          "status": "completed",
+          "target": "Main.e10"
+        },
+        "origin_request_id": null,
+        "record_id": "a:1",
+        "request_id": "a:1",
+        "schema_name": "noc.transaction",
+        "schema_version": 1,
+        "subject": "Main.e00",
+        "time_ps": "60"
+      },
+      "selected_transfers": [
+        {
+          "bytes": "4",
+          "end_ps": "20",
+          "from": "Main.r00",
+          "hop": "0",
+          "response": null,
+          "start_ps": "10",
+          "to": "Main.r10"
+        },
+        {
+          "bytes": "4",
+          "end_ps": "60",
+          "from": "Main.r10",
+          "hop": "1",
+          "response": "OKAY",
+          "start_ps": "50",
+          "to": "Main.e10"
+        }
+      ],
+      "visible_selected_state": "a:1\tMain.e00\tpacket\t処理中\t10\t10\t60"
+    }
+  },
+  "detail_semantics": "final committed records, not cursor-time observations",
+  "status": "passed",
+  "errors": []
+}

@@ -42,6 +42,11 @@ def main():
     build(ROOT / 'examples/guide/ddr-refresh', OUTPUT.with_name('ddr-refresh-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/axi-strobes', OUTPUT.with_name('axi-strobes-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/shared-roles', OUTPUT.with_name('shared-roles-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/soc-arbitration', OUTPUT.with_name('soc-arbitration-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ahb-wait-error', OUTPUT.with_name('ahb-wait-error-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/noc-input-fifo', OUTPUT.with_name('noc-input-fifo-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-priority', OUTPUT.with_name('ethernet-priority-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-vlan', OUTPUT.with_name('ethernet-vlan-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':
