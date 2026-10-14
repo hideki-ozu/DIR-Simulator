@@ -1,0 +1,59 @@
+{
+  "goal": "Repair PR90 XC31 CI namespace setup while preserving real errno13/28 and diagnostics assertions",
+  "architecture": {
+    "default": "Unchanged unprivileged unshare -Ur -m --propagation private; nsenter --user --mount --preserve-credentials",
+    "ci_opt_in": "DIR_ACCEPTANCE_NAMESPACE_MODE=sudo-mount",
+    "ci_child": "sudo -n unshare --mount --propagation private -- setpriv originalUID/GID --clear-groups --bounding-set=-all --inh-caps=-all --ambient-caps=-all --no-new-privs -- env ONLY_ALLOWLISTED_TEST_CONTROLS EXECUTABLE",
+    "ci_io": "sudo -n nsenter --target ACTUAL_ACKNOWLEDGED_WORKER_PID --mount -- mount owned0700/4KiB tmpfs; filler uses same setpriv identity/capability drop",
+    "assertions": "Actual event PID UID/GID real/effective/saved/fs equals original runner; all5 capability sets0; supplementarygroups empty; NoNewPrivs1; mountns differs and has no shared propagation; output path under own fixture/runs and basename result",
+    "cleanup": "Dedicated sudo wrapper process group; Drop uses sudo -n kill -KILL only that process group if still running; worker retains production parent-death SIGKILL. Actual CI/session behavior remains for GitHub runner validation."
+  },
+  "files": [
+    "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs",
+    ".github/workflows/release-audit.yml"
+  ],
+  "constraints": "No Git actions, skips, reduced matrix, production-code changes, host sysctl/AppArmor/sudo-policy changes; no passwords/shims used. Existing default namespace remains default. No secrets recorded.",
+  "validation": [
+    {
+      "command": "CARGO_TARGET_DIR=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target /home/hideki/.cargo/bin/cargo +1.85.0 test --locked -p dir-simulator --lib tool::ned_editor::run_control::acceptance_fault_tests::xc31_real_enospc_and_eacces_after_execution_preserve_original_diagnostics -- --ignored --exact --nocapture --test-threads=1",
+      "result": "PASS1,0failed,0ignored,497filtered; compile10.79s,test7.58s; actual errno13 and28; both event_limit/execution_failed retained; output_failed/unpublished/absent; no manifest/source mutations asserted"
+    },
+    {
+      "command": "/home/hideki/.cargo/bin/cargo +1.85.0 fmt --all -- --check",
+      "result": "PASS final third log. Initial direct-file formatting differed from cargo module formatting; first and second failure logs retained; cargo +1.85.0 fmt --all corrected only target file."
+    },
+    {
+      "command": "CARGO_TARGET_DIR=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target /home/hideki/.cargo/bin/cargo +1.85.0 clippy --locked -p dir-simulator --lib --tests -- -D warnings",
+      "result": "PASS5.87s"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "sudo -n true",
+      "result": "EXIT1 sudo: a password is required"
+    },
+    {
+      "command": "DIR_ACCEPTANCE_NAMESPACE_MODE=sudo-mount timeout90 bin/ned-ci-namespace-fix-libtest tool::ned_editor::run_control::acceptance_fault_tests::xc31_real_enospc_and_eacces_after_execution_preserve_original_diagnostics --ignored --exact --nocapture --test-threads=1",
+      "result": "EXIT101 expected environment limitation3.79s; EACCES real case completes; sudo denies before ENOSPC barrier; retained full failed log; no CI-mode pass claim"
+    }
+  ],
+  "review": "/root/ci_namespace_review (Astra) read-only review: no blocking findings; runtime sudo wrapper/session cleanup requires genuine CI proof.",
+  "remaining": "CI sudo-mount branch must pass on real GitHub ubuntu24.04 runner with existing passwordless sudo before claiming CI success. Parent owns push/CI/report.",
+  "final_source_sha256": {
+    "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs": "f36cd715e8db1ad89b0031bd4f6d301c8e821b56a5d3ada34eeca8052062ad7a",
+    ".github/workflows/release-audit.yml": "087f6ecf7e2358b905e0b386611ce9e6e322244724dbd03eafdf9669e8f61da6"
+  },
+  "evidence_sha256": {
+    "ci-namespace-fix-default-first.log": "9d68960efcf49c7a809a867618d5dcd88a08c26ec50fbbdeea141b47c643baa5",
+    "ci-namespace-fix-default-evidence.jsonl": "dbdf7abe48c744c4865c6ee4b2e99a0113f43c0edf04d3441f413eda0dd5ff58",
+    "ci-namespace-fix-fmt-first.log": "1852c2ad869c03721a90a403e36f74c101ce9268573803efcc9be98578528d99",
+    "ci-namespace-fix-fmt-second.log": "1852c2ad869c03721a90a403e36f74c101ce9268573803efcc9be98578528d99",
+    "ci-namespace-fix-fmt-third.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ci-namespace-fix-clippy.log": "0a39b6dee8c1ca952f347629b717ffacaba1a89a5e6ba97bf0150f528d1bad9c",
+    "ci-namespace-fix-sudo-availability.log": "9b3a3b7a78f239c4473bb193476b1a860c91f1c2b4fab9c7639eceea414a60fb",
+    "ci-namespace-fix-sudo-attempt.log": "cf20a57cbd6a83c3187aa1f787b5c337f9197542c141858de40d029081711336",
+    "bin/ned-ci-namespace-fix-libtest": "9859967adeaf2e1e1541b9a415da919712fa6abb2e5e950d1bec7cce83e967c2"
+  }
+}

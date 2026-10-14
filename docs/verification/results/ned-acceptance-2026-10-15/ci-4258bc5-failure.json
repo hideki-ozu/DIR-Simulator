@@ -1,0 +1,249 @@
+{
+  "schema": "dir-simulator-ci-failure-receipt.v1",
+  "run": {
+    "id": 38597433525,
+    "event": "pull_request",
+    "head_branch": "fix/ned-acceptance-evidence",
+    "head_sha": "4258bc5d906797605f2bd8ab64b35fe95d8fd808",
+    "status": "completed",
+    "conclusion": "failure",
+    "started_at_utc": "2026-10-14T16:21:48Z",
+    "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38597433525",
+    "updated_at_utc": "2026-10-14T16:54:02Z"
+  },
+  "job": {
+    "id": 115967658138,
+    "name": "Rust ledger identity regression",
+    "status": "completed",
+    "conclusion": "failure",
+    "started_at_utc": "2026-10-14T16:21:51Z",
+    "completed_at_utc": "2026-10-14T16:54:02Z",
+    "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38597433525/job/115967658138",
+    "steps": [
+      {
+        "number": 1,
+        "name": "Set up job",
+        "conclusion": "success",
+        "started_at_utc": "2026-10-14T16:21:52Z",
+        "completed_at_utc": "2026-10-14T16:21:53Z"
+      },
+      {
+        "number": 2,
+        "name": "Run actions/checkout",
+        "conclusion": "success",
+        "started_at_utc": "2026-10-14T16:21:53Z",
+        "completed_at_utc": "2026-10-14T16:21:57Z"
+      },
+      {
+        "number": 3,
+        "name": "Install fixed toolchain",
+        "conclusion": "success",
+        "started_at_utc": "2026-10-14T16:21:57Z",
+        "completed_at_utc": "2026-10-14T16:22:04Z"
+      },
+      {
+        "number": 4,
+        "name": "Format and regression",
+        "conclusion": "success",
+        "started_at_utc": "2026-10-14T16:22:04Z",
+        "completed_at_utc": "2026-10-14T16:37:19Z"
+      },
+      {
+        "number": 5,
+        "name": "Verify actual product ledger reference",
+        "conclusion": "failure",
+        "started_at_utc": "2026-10-14T16:37:19Z",
+        "completed_at_utc": "2026-10-14T16:53:59Z"
+      },
+      {
+        "number": 6,
+        "name": "Viewer model and browser regression",
+        "conclusion": "skipped",
+        "started_at_utc": "2026-10-14T16:53:59Z",
+        "completed_at_utc": "2026-10-14T16:53:59Z"
+      },
+      {
+        "number": 7,
+        "name": "Audit checker and comparison selftests",
+        "conclusion": "skipped",
+        "started_at_utc": "2026-10-14T16:53:59Z",
+        "completed_at_utc": "2026-10-14T16:53:59Z"
+      },
+      {
+        "number": 14,
+        "name": "Post Run actions/checkout",
+        "conclusion": "success",
+        "started_at_utc": "2026-10-14T16:53:59Z",
+        "completed_at_utc": "2026-10-14T16:53:59Z"
+      },
+      {
+        "number": 15,
+        "name": "Complete job",
+        "conclusion": "success",
+        "started_at_utc": "2026-10-14T16:53:59Z",
+        "completed_at_utc": "2026-10-14T16:53:59Z"
+      }
+    ]
+  },
+  "full_job_log": {
+    "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/ci-4258bc5-rust-115967658138.log",
+    "bytes": 429045,
+    "sha256": "4415c18eb44f9925a8d61da1329b7a04ae1460e04ef139911d777479beeb9bb5"
+  },
+  "format_and_regression": {
+    "workspace": {
+      "runtime_result_rows": 32,
+      "passed": 769,
+      "failed": 0,
+      "ignored": 19,
+      "measured": 0,
+      "filtered_out": 0,
+      "row_by_row_match_to_local_workspace_final_log": true,
+      "comparison_fields": [
+        "target",
+        "result",
+        "passed",
+        "failed",
+        "ignored",
+        "measured",
+        "filtered_out"
+      ]
+    },
+    "local_workspace_reference": {
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/workspace-final.log",
+      "bytes": 84375,
+      "sha256": "c8281ddc28553b29b9a5b56755ae7f924224c17657dd8256fdee13a078145882",
+      "runtime_result_rows": 32,
+      "passed": 769,
+      "failed": 0,
+      "ignored": 19,
+      "row_by_row_match_to_ci_workspace": true
+    },
+    "five_focused_duplicate_prechecks": [
+      {
+        "target": "tests/registry.rs",
+        "test": "generic_channel_factories_receive_frozen_inputs_in_stable_order",
+        "passed": 1,
+        "failed": 0,
+        "filtered_out": 36
+      },
+      {
+        "target": "tests/registry.rs",
+        "test": "generic_invalid_channel_parameter_never_reaches_factories",
+        "passed": 1,
+        "failed": 0,
+        "filtered_out": 36
+      },
+      {
+        "target": "tests/registry.rs",
+        "test": "generic_channel_factory_failure_releases_only_constructed_prefix",
+        "passed": 1,
+        "failed": 0,
+        "filtered_out": 36
+      },
+      {
+        "target": "unittests src/lib.rs",
+        "test": "cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does",
+        "passed": 1,
+        "failed": 0,
+        "filtered_out": 497
+      },
+      {
+        "target": "tests/ac0008_paths.rs",
+        "test": "classical_can_cli_validate_accepts_fixture_and_rejects_missing_config",
+        "passed": 1,
+        "failed": 0,
+        "filtered_out": 5
+      }
+    ],
+    "duplicate_note": "Each one-test precheck passed and its test name also appears in the subsequent unfiltered workspace run; these five prechecks are kept separate from the 769/19 workspace total."
+  },
+  "verify_actual_product_ledger_reference": {
+    "summary": {
+      "result": "FAILED",
+      "passed": 18,
+      "failed": 1,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 479,
+      "duration_seconds": 979.95
+    },
+    "native_fault_test_pass_count": 10,
+    "native_fault_tests_passed": [
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc23_actual_sigkill_at_each_observed_saveas_checkpoint_recovers_exact_bytes",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc30_actual_partial_report_manifest_and_records_are_consistent",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc33_real_cancellation_at_prepare_execute_export_and_completion_barriers",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc34_actual_worker_address_space_and_sparse_file_hard_limits",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc34_actual_worker_stdout_stderr_tails_keep_exact_one_mib_suffix",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc34_real_timeout_soft_storage_monitor_and_exact_log_tail",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc35_actual_coordinator_sigkill_covers_snapshot_publication_manifest_and_response_cuts",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc36_actual_publication_conflicts_preserve_external_files_and_other_roots",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc37_one_actual_worker_two_waiters_nonowner_and_concurrent_edit_save",
+      "tool::ned_editor::run_control::acceptance_fault_tests::xc38_independently_valid_cross_run_bundle_substitution_and_unsafe_paths_are_denied"
+    ],
+    "native_fault_test_failed": "tool::ned_editor::run_control::acceptance_fault_tests::xc31_real_enospc_and_eacces_after_execution_preserve_original_diagnostics",
+    "other_selected_test_pass_count": 8,
+    "other_selected_tests_passed": [
+      "tool::ned_editor::run_control::tests::acceptance_snapshot_tests::xc26_real_worker_never_falls_back_to_an_uncaptured_existing_disk_file",
+      "tool::ned_editor::run_control::tests::real_worker_matches_saved_baseline_cli_manifest_records_metrics_and_diagnostics",
+      "tool::ned_editor::run_control::tests::real_worker_prepare_failure_timeout_force_kill_and_shutdown",
+      "tool::ned_editor::run_control::tests::real_worker_smoke_when_binary_supplied",
+      "tool::ned_editor::run_control::tests::real_worker_syntax_and_semantic_prepare_failures_map_frozen_source_without_output",
+      "tool::ned_editor::run_control::tests::real_worker_viewer_render_without_http",
+      "tool::ned_editor::run_control::viewer_server::tests::http_deadline_change_during_receive_releases_pin_and_keeps_tombstone",
+      "tool::ned_editor::run_control::viewer_server::tests::http_repeated_get_head_revoke_and_headers"
+    ],
+    "eacces_subcase": {
+      "status": "passed_before_enospc_setup_failure",
+      "case": "XC31",
+      "kernel_errno": 13,
+      "barrier_site": "output.export_entry",
+      "terminal_artifact_state": "unpublished",
+      "terminal_phase": "output_failed",
+      "original_termination": "execution_failed",
+      "diagnostics": [
+        {
+          "code": "E-0004",
+          "message": "max-events exceeded",
+          "phase": "run",
+          "reason": "event_limit"
+        },
+        {
+          "code": "E-0003",
+          "message": "Cannot create output staging directory: Permission denied (os error 13)",
+          "phase": "output",
+          "reason": "output_write_failed"
+        }
+      ]
+    },
+    "enospc_subcase": {
+      "status": "not_reached",
+      "runner_error": "unshare: write failed /proc/self/uid_map: Operation not permitted",
+      "test_source_reference_from_log": "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs:572:14",
+      "assertion": "execution must reach actual export entry"
+    },
+    "downstream_steps_skipped": [
+      "Viewer model and browser regression",
+      "Audit checker and comparison selftests"
+    ],
+    "coverage_caveat": "The focused invocation also passed a real_worker shutdown test and two viewer_server HTTP tests after the XC31 test failure. Its final failed exit stopped the later dedicated native HTTP/shutdown commands and Viewer/browser/audit steps."
+  },
+  "separate_local_native_fault_context": {
+    "passed": 19,
+    "failed": 0,
+    "provenance": "root-provided local result; separate from this CI job, whose focused result is 18 passed / 1 failed"
+  },
+  "constraints": {
+    "source_edits": 0,
+    "test_reruns": 0,
+    "private_environment_values_recorded": false,
+    "raw_job_log_copied_into_excerpt": false
+  },
+  "bounded_excerpt_path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/ci-4258bc5-failure-excerpt.log",
+  "original_diagnostic_lines": {
+    "path": "ci-4258bc5-failure-original-lines.log",
+    "sha256": "43d1ea403f496388447daf4ef10d9793744d278b28991e976aabee0f2184c782",
+    "scope": "Five original raw log lines selected verbatim; whole original log retained separately with its hash."
+  },
+  "derived_summary_corrections": "Parent verified run_started_at against Actions run API and corrected the chronology of later successful tests within the same failed invocation. Raw full log was not rewritten."
+}

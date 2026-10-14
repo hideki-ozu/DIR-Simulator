@@ -1,0 +1,14 @@
+DIR-Simulator CI failure evidence (bounded excerpt; exact-head summary)
+Run 38597433525 | head 4258bc5d906797605f2bd8ab64b35fe95d8fd808 | https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38597433525
+Job 115967658138 (Rust ledger identity regression) | 16:21:51–16:54:02 UTC | https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38597433525/job/115967658138
+Full job log: ci-4258bc5-rust-115967658138.log | 429045 bytes | SHA-256 4415c18eb44f9925a8d61da1329b7a04ae1460e04ef139911d777479beeb9bb5
+Format and regression succeeded. Runtime workspace rows: 769 passed, 0 failed, 19 ignored across 32 result rows; they match workspace-final.log row by row.
+Five separate focused prechecks each passed one test; their test names also occur in the workspace run and are not included in the 769 workspace total.
+Verify actual product ledger reference failed. Focused result: 18 passed, 1 failed, 0 ignored, 479 filtered; 979.95 s.
+Native fault tests: 10 passed; XC31 failed; 8 other selected run-control tests passed.
+Failed test: tool::ned_editor::run_control::acceptance_fault_tests::xc31_real_enospc_and_eacces_after_execution_preserve_original_diagnostics
+XC31 EACCES subcase passed: errno 13 at output.export_entry; unpublished output preserved E-0004 max-events exceeded and E-0003 Permission denied (os error 13).
+ENOSPC was not reached: unshare: write failed /proc/self/uid_map: Operation not permitted.
+Assertion: crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs:572:14 — execution must reach actual export entry.
+Downstream Viewer model/browser and audit checker/comparison selftests were skipped. Earlier in step 5, one real_worker shutdown test and two viewer_server HTTP tests passed.
+Local native 19/19 is separate local evidence, not this CI result. No source edits or reruns.
