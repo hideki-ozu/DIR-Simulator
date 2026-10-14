@@ -1,0 +1,20 @@
+
+running 6 tests
+test output::publish::acceptance_tests::failed_data_and_manifest_publication_preserve_external_paths ... ok
+test output::publish::acceptance_tests::killed_publication_has_strict_bundle_exactly_after_manifest ... 
+thread 'output::publish::acceptance_tests::killed_publication_has_strict_bundle_exactly_after_manifest' panicked at crates/dir-simulator/src/output/publish.rs:384:60:
+called `Result::unwrap()` on an `Err` value: Diagnostic { schema_version: 1, seq: 0, primary: true, code: "E-0003", stage: "output", reason: "output_write_failed", message: "Invalid result bundle: unknown result directory entry", source: None, line: None, column: None, end_line: None, end_column: None, target: None, time_ps: None, event_seq: None, details: None }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test output::publish::acceptance_tests::paired_writer_failure_never_publishes_either_output ... ok
+test output::publish::acceptance_tests::preparation_publication_leaves_only_single_link_outputs ... ok
+test output::publish::acceptance_tests::preparation_publication_refuses_all_existing_destination_types ... ok
+test output::publish::acceptance_tests::publication_child ... ok
+
+failures:
+
+failures:
+    output::publish::acceptance_tests::killed_publication_has_strict_bundle_exactly_after_manifest
+
+test result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 482 filtered out; finished in 7.58s
+

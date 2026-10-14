@@ -1,13 +1,16 @@
 # NED-editor仕様書
 
-文書バージョン：`1.1.6`
-対象GitHubバージョン：`fix/spec-contract-gaps @ 65e862d`
-公開版：`v1.1.5`（既存タグを維持。本改訂は未リリース）
+文書バージョン：`1.1.9`
+対象GitHubバージョン：`fix/pr90-recovered-run-cleanup @ c2aee4e204a065a223e7a27504a1cc2ea94db16c`
+公開タグ：`v1.1.5`（既存タグの範囲を維持。本改訂は上記開発基準の未リリース修正）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.9` | `2026-10-14` | PR94独立レビュー：退役journalのmappingを既存の検証済みmanifest hashへ結び、GC前後の改変拒否と旧形式互換を検証 |
+| `1.1.8` | `2026-10-14` | Issue #91/#92：manifest未公開runの削除・回復試験、mappingのplan digest照合と未リリース開発基準を整合 |
+| `1.1.7` | `2026-10-15` | 未確認条件の実測と誤判定の訂正、保存mappingと結果公開直後の復旧を補正 |
 | `1.1.6` | `2026-10-14` | 43受入ケースの条件別対応表と残条件の追試、後続協調停止・再開の設計案を追加 |
 | `1.1.5` | `2026-10-12` | Viewer回収snapshotと遅延応答の競合を直列化し、旧422のbarrier再現と修正後成功を記録 |
 | `1.1.4` | `2026-10-12` | ユーザーのPR69マージ後のmainを対象に更新し、未リリース修正の基準を明示 |
@@ -1554,7 +1557,7 @@ DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/*viewer_mo
 PLAYWRIGHT_MODULE=/path/to/matching/playwright DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_extensions_browser.test.cjs
 ```
 
-第23.2節の43ケースは条件を含む受入設計であり、番号全件の全条件を合格扱いにしていない。各freeze/manifest/応答境界での実process kill、全取消raceの固定barrier、実ENOSPC・4 GiB OOM・1 GiB出力・soft quota超過の網羅、全上限の境界±1byte、実電源断、別ブラウザ、大規模性能は本記録の証拠に含まれない。強制停止時の部分export/resumeも提供契約に含めない。文書のstrict traceability、生成物、リンク、図の検査は文書構造の確認として扱う。
+本節は2026-10-12時点の証拠であり、第23.2節の43ケースを一括して合格扱いにしていない。当時未実施だったprocess kill・取消barrier・資源限度・上限境界の追試は第23.5節で更新する。「4 GiB OOM」という従来の表現は第22.5節のaddress space上限と異なるため訂正する。実電源断、別ブラウザ、大規模性能は本節の証拠に含まれない。強制停止時の部分export/resumeも提供契約に含めない。文書のstrict traceability、生成物、リンク、図の検査は文書構造の確認として扱う。
 
 ### 23.4. 残条件の追試（2026-10-14、未リリース）
 
@@ -1568,7 +1571,25 @@ PLAYWRIGHT_MODULE=/path/to/matching/playwright DIR_SIMULATOR_BIN="$PWD/target/de
 
 5種のrun操作（受付・取消・Viewer準備・削除・失効）の成功／失敗／worker panicは、現在入力のcontroller診断を削除も追加もしない。エラー応答とjob／command ledgerを維持し、実行・Viewerの診断は固定run側で参照する。過去runのViewer失敗が現在入力へsemantic診断として混入する不具合を修正し、既存のsemantic／io／load診断の保持と実ブラウザの失敗表示を確認した。
 
-残る実ENOSPC・実OOM・大容量限度の全境界、freeze／manifest／応答の全地点での実process kill、全取消raceの固定barrier、全故障画面／攻撃入力組合せ、別ブラウザと実電源断は対応表へ未確認として残す。協調停止・再開の後続案は[提案仕様](../../proposals/後続拡張契約提案仕様書.md#control)・[設計](../../proposals/後続拡張契約提案設計書.md#control)・[検証](../../proposals/後続拡張契約提案検証仕様書.md)へ具体化した。現行の強制停止APIへ後続案のcheckpoint／resume保証を追加しない。
+この時点で未確認としていた条件は第23.5節の実測・訂正で更新する。物理RAM OOM・hardware総量quotaは現行契約に追加しない。別ブラウザ・実電源断・任意の攻撃入力の全組合せまでを実測した主張にはしない。協調停止・再開の後続案は[提案仕様](../../proposals/後続拡張契約提案仕様書.md#control)・[設計](../../proposals/後続拡張契約提案設計書.md#control)・[検証](../../proposals/後続拡張契約提案検証仕様書.md)へ具体化した。現行の強制停止APIへ後続案のcheckpoint／resume保証を追加しない。
+
+### 23.5. 未確認条件の実施と誤判定の訂正（2026-10-15、未リリース）
+
+初回表の「未確認38条件」を[再評価結果](../../verification/results/ned-acceptance-reassessment-2026-10-15.json)へ引き継ぎ、旧文言・旧判定理由・仕様上の条件・実行した試験・実測範囲を対応付けた。[初回表](../../verification/results/ned-acceptance-residuals-2026-10-14.json)は取得時点の履歴として保持し、現在の判定先を明示する。38は未実装機能の数ではなく、初回の証拠対応で未確認としていた条件の数である。
+
+作成・COW・renameは複数root、全役割の参照、layout、非参照bytes、Undo/Redo、保存先衝突を直接照合した。32 MiB履歴と64 MiB planの境界-1/丁度/+1、追加file63/64/65、rename payload999/1000/1001、履歴200/201、600秒失効は独立に検査する。rename1000件の受付成功を1000-symbolの意味変換実測へ読み替えない。
+
+保存結果には仕様第19.3節の`input_file_id → [{role,output_path}]`に対応する`mapping`を追加した。plan digest、保存応答、復旧journalへ保持し、旧journalでは空mappingを既定としてIDを推測しない。mappingは説明用の出典であり、公開先の認可は登録targetと実際のplan filesで行う。通常の有効SaveAsで全出力bytesと入力identity/pathを照合し、同じ入力IDの複数role出力は計画policy試験で確認する。組込みworkload/model-configのschemaを同一JSONへ無理に通すことはせず、その非対応入力は保存前に拒否する。
+
+実OS故障・停止の試験は、B4の20種類・95回の観測checkpointでSIGKILL、7か所の取消barrier、16か所のfreeze／公開／応答／取消記録barrierでSIGKILLと新process再起動を行った。所有が耐久記録される前のstage inodeは仕様第8.9節に従って同一inode/hashのまま保護保持する。実ENOSPCはprivate tmpfsでerrno 28、EACCESは能力を落としたprocessでerrno 13を確認した。4 GiBは`RLIMIT_AS`、1 GiBは`RLIMIT_FSIZE`、2/10 GiBは疎fileを用いた論理soft監視として実発動させた。pin512 MiBはUndo32 MiBから独立した受付会計であり、物理disk quotaではない。
+
+manifest公開直後に停止するとstage link・journal・sort spillが残って共通整合検査に失敗する不具合を修正した。manifestを最後のno-replace renameで公開する前に所有一時物の名前を整理し、SnapshotはFD経由で再読込可能なまま保持する。公開後のSIGKILL／取消でも同じ共通validatorで回復する。未知entryは公開前に拒否して保全し、整合検査を緩めない。
+
+実HTTPでは応答を受け取れなかった同一要求の100回再送、異payload拒否、Host/Origin/CORS、editor/Viewer権限、失効・再起動・時計制御TTLを検査した。実ブラウザではpreview取消、受領202を保留した状態の閉じたdialogからの一回採用と明示Undo、保存前の新規NED→COW→rename→run→Viewer、空Multibusの失敗から同一file IDでの修復、攻撃文字列の非実行を確認した。partialはworker/report/manifest/resultとViewerの21 request・42 receiver・187 milestone・166 replay sampleを対応付け、存在しない受信を追加しない。
+
+実X11・IBus/Mozc・XTestの日本語入力で未確定「にほんご」から確定「日本語」へ進め、原文HTTP ackを保留した間はrunゼロ、解放後に一件だけ実行された。CompositionEventやCDP文字挿入は使用しない。Chromium 156がnative `compositionend.isTrusted=false`を返した値も記録し、start/update/inputのtrueや実OS入力経路と混同しない。環境・依存package版/hash、画面・固定原文・run出典を証拠へ保存する。
+
+故障注入11試験はLinuxのnamespace・signal・資源制限を使うため、通常libtestと同時に走らせず、CIの`run_control -- --ignored --nocapture --test-threads=1`で既存の実worker/socket試験とともに必ず明示実行する。大量のclone/execと他fixtureのflockが干渉する失敗はログとFD証拠を保持し、製品のbusy拒否を弱めず試験を直列化した。全体のコマンド・合否・hashは再評価結果と[対応記録](../../verification/results/仕様残項目対応記録.md)を参照する。
 
 ## PR #69 の不具合修正追補（未リリース）
 
@@ -1585,3 +1606,11 @@ HTMLの各生成を所有identityと結び付ける。失敗・取消ではworke
 回帰は [検証報告](../../verification/results/pr69-fixes-2026-10-12/report.md) を参照する。期限境界の時計制御、HTTP終端再送と新command、20世代の最終参照回収、未知identity・中断回収・lease保護を検証する。過去の全43受入ケースや性能条件の完全合格を新たに主張するものではない。
 
 Viewerの旧世代回収はinventory snapshotからbatch完了まで同じmutexを保持する。遅延した最後の応答による二度目の回収は、inventoryとファイルが両方不存在の場合だけ削除なしで成功する。同名の未知ファイルがあれば拒否する。旧公開cleanupへbarrierだけを加えた同じ試験はUnknown Viewer allocation/422で失敗し、修正版は成功。全target clippyも成功。Issue #75で追跡しクローズしない。
+
+## 保存journalのplan整合と旧記録の境界
+
+保存時のplan digestが含むmapping（input ID・role・output pathを含む）を、復旧操作前にafter blobから再構成したplanned filesとともに照合する。展開後targetから復元できない保存時baseline digest・元の予定directory列・layout確認要否だけをprivate journalのplan_contextへ保持する。contextはdigest再計算用であり、path許可や削除権限を与えない。永続session認証や秘密鍵を追加しない。
+
+旧schema1でmappingを保持しなかった記録は、空mappingを返す従来の読み込みを維持する。未リリースPR90候補のmapping付き記録でplan_contextがないものは、plan整合を確認できないためinvalidとして保持し復旧を拒否する。contextがある記録はmapping削除・role/input ID変更・元plan digest不一致を操作前に拒否し、対象とjournalを変更しない。これは自己所有state内の整合検査で、全fieldを同時に書き換えられる者に対する暗号学的認証を主張しない。
+
+退役journalでは、通常journalのplan digestとbackupを検証した後に採取した既存のmanifest node hashへ、targets registry中の返却用manifestを再照合する。role・input ID・mapping・plan digestなどの変更はGC/回復報告の前に拒否し、backupが全回収された後も同じ照合を行う。新しい秘密・認証方式・削除権限fieldは追加しない。mapping/contextを持たなかったschema1は、default-empty mapping fieldを省いた元のserializationに対する既存hashも照合し、input IDを推測しない。

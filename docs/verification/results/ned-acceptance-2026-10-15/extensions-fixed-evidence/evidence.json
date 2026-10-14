@@ -1,0 +1,461 @@
+{
+  "root": "/tmp/dir-ned-extension-browser-u1zyNV",
+  "input_before": {
+    "baseline.json": "48e3bd572d8c17cbbdbaca25a08c83cf8f3a9a17fb3f7f9832d87ba2df7dee37",
+    "models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251",
+    "project.ini": "7917b7f205f7d0858ab30d9674bb0fad54ec64892793f0d35a6d7bc28f083386"
+  },
+  "stages": [
+    {
+      "stage": "preview-dialog-cancel",
+      "revision": "1",
+      "input_digest": "da89be5dae9d9f774cc8d62f5f97f1deb46336305fa3ba8b1f5cdf3b2bc51b85",
+      "no_file_added": true,
+      "history_unchanged": true
+    },
+    {
+      "stage": "create-file",
+      "file_id": "file-794959c525a6ac6864a127f1d5c5cad1c383543593a53efdd2ab9d7ec2e7167e",
+      "plan_contains_path": true,
+      "plan_contains_module": true,
+      "revision": "2"
+    },
+    {
+      "stage": "undo-redo",
+      "stable_file_id": "file-794959c525a6ac6864a127f1d5c5cad1c383543593a53efdd2ab9d7ec2e7167e",
+      "selected_source": "/tmp/dir-ned-extension-browser-u1zyNV/input/models/demo/Main.ned"
+    },
+    {
+      "stage": "layout",
+      "revision": "5",
+      "positions": {
+        "a": {
+          "x": 80,
+          "y": 100
+        },
+        "b": {
+          "x": 320,
+          "y": 100
+        },
+        "c": {
+          "x": 560,
+          "y": 100
+        },
+        "bus": {
+          "x": 800,
+          "y": 100
+        }
+      }
+    },
+    {
+      "stage": "cow",
+      "clone_qname": "editor.ControllerFora",
+      "clone_proposal_from_ui": "ControllerFora",
+      "main_a": "editor.ControllerFora",
+      "main_b": "demo.Controller",
+      "main_c": "demo.Controller"
+    },
+    {
+      "stage": "rename-and-swap",
+      "renamed_clone_qname": "editor.ControllerFora_Renamed",
+      "main_a": "demo.Controller",
+      "main_b": "editor.ControllerFora_Renamed",
+      "main_c": "demo.Controller",
+      "positions": {
+        "b": {
+          "x": 80,
+          "y": 100
+        },
+        "a": {
+          "x": 320,
+          "y": 100
+        },
+        "c": {
+          "x": 560,
+          "y": 100
+        },
+        "bus": {
+          "x": 800,
+          "y": 100
+        }
+      },
+      "json_references": [
+        "Main.b",
+        "Main.a",
+        "Main.c"
+      ]
+    },
+    {
+      "stage": "same-file-cow-undo-redo",
+      "proposal_from_ui": "ControllerForc",
+      "clone_qname": "demo.ControllerForc",
+      "stable_type_key": "f327b1359f0fe4793ab9f30a9|4|demo.ControllerForc",
+      "undo_type": "demo.Controller",
+      "redo_type": "demo.ControllerForc",
+      "file_id": "f327b1359f0fe4793ab9f30a9"
+    },
+    {
+      "stage": "save-as-cli",
+      "exported_main": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final/ned/0001/demo/Main.ned",
+      "exported_extra": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final/ned/0001/editor/Extra.ned",
+      "exported_workload": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final/data/workload.json",
+      "exported_layout": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final/ned/0001/demo/Main.ned.layout.json",
+      "output_hashes": {
+        "data/workload.json": "0202a37b8e069553595d467f585bb4fa63206dda7e6660e3eb24c843e0f28d98",
+        "ned/0001/demo/Main.ned": "a88442820aaedc72a0e8bd0493305f7a0109ad8441e0543ffb017cb0b2ee4da7",
+        "ned/0001/demo/Main.ned.layout.json": "7bd56c4ce074e5fbff63ec3a91799d70d3c325d76749b04d28d573f038bbe97d",
+        "ned/0001/editor/Extra.ned": "15ff8606f7cba749307fae28e6cff2afdd986ade7cbc38ebd1d207ff434c0702",
+        "project.ini": "70166d1254153175d07c3fdd6a4c569ea8fbc7201a2c068eb6ac3d08ef872650"
+      }
+    },
+    {
+      "stage": "past-run-after-input-edit",
+      "prior_run_id": "run-daac1cc9456c5a0137992523335de44f4ccb6e22de7b792f9dc958c3eca47bdf",
+      "input_revision": "10",
+      "input_digest": "5ca1b3e153fe2b3a04e691f3bdae599052eef554a68ab80928c456ff0f6e955a",
+      "prior_run_marked_past": true
+    }
+  ],
+  "screenshots": [
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/model-after-same-file-cow-redo.png",
+      "sha256": "a9ab938231a1b203d78548129c87cc84276f547a726dae279b54d0ce7d772e52",
+      "bytes": 232434
+    },
+    {
+      "surface": "viewer",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/unsaved-create-cow-rename-run-viewer.png",
+      "sha256": "731593bff1047532240acfac1a67a303293cfbf836c76942aa89b129f75cef40",
+      "bytes": 574781
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/saved-project.png",
+      "sha256": "1ee2594506f7156c30b25dea35dd9fa018e4634413638212ab0321e3814eee49",
+      "bytes": 202817
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/normal-run-completed.png",
+      "sha256": "32ebbf8acba7df54ada9a2511f8e0695e868edca0fb6f2367d144509cb48f403",
+      "bytes": 204503
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/normal-run-marked-past-after-input-edit.png",
+      "sha256": "b6f0817aa29b17da0fa48c50fb500fd9d082262e6f251f8b1ff071c84575f94d",
+      "bytes": 207221
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/partial-run-published.png",
+      "sha256": "5c8b1a6eaa27e8c7812cc76c17cd0c56cd02055615c02a0c466a6ce02ec26648",
+      "bytes": 223108
+    },
+    {
+      "surface": "viewer",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/partial-viewer-after-next-event.png",
+      "sha256": "ec5c0afabe77a6dff8d70609cf44ce54947a61345e12dd62a526e2f1a4819f3c",
+      "bytes": 394162
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/past-prepare-failed-run-current-diagnostics-isolated.png",
+      "sha256": "c57d8c61a3c50cad6b4c0334f6f2c17141dde0c973178be1b1b77ef643476767",
+      "bytes": 236983
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/viewer-failed-integrity-mismatch.png",
+      "sha256": "4239ccc33b265adc3a992f0d2c263cc4c8fa38693fbfd35aae5be46bbcf4220e",
+      "bytes": 239960
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/empty-multibus-created-module-prepare-failed.png",
+      "sha256": "534b92b4896e199ec7a6f13eb6b0d98cf6f16da0156e0a5e4902194f785763cd",
+      "bytes": 249681
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/empty-multibus-same-file-repaired-run-completed.png",
+      "sha256": "9944a234e84d9f43a7b4f569372c19b03a21e88a424c2f1da973f39ce86c8aac",
+      "bytes": 270957
+    },
+    {
+      "surface": "editor",
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/acceptance-20261014/extensions-fixed-evidence/last-visible-state.png",
+      "sha256": "9944a234e84d9f43a7b4f569372c19b03a21e88a424c2f1da973f39ce86c8aac",
+      "bytes": 270957
+    }
+  ],
+  "browser_version": "156.0.8078.4",
+  "binary_sha256": "b81812c1516029697b294e2787dcbcca8e637dbc0f23633a6fc78c98753758dd",
+  "main_file_id": "f327b1359f0fe4793ab9f30a9",
+  "workload_file_id": "fbfed714380a986b000ccc9fd",
+  "unsaved_gui_chain": {
+    "run_id": "run-d59a0d09f53d0d9b816100234b7c8f83a74ad8dcc5a68ac95ea9581c731fa77b",
+    "phase": "completed",
+    "dirty_at_start": true,
+    "never_exported_at_start": true,
+    "input_digest": "4d23e7019507c6e7c556fbbe52d6d2af48deaa9c6519d09f3240e396a02689d8",
+    "frozen_inputs": [
+      {
+        "file_id": "f327b1359f0fe4793ab9f30a9",
+        "sha256": "a88442820aaedc72a0e8bd0493305f7a0109ad8441e0543ffb017cb0b2ee4da7"
+      },
+      {
+        "file_id": "fbfed714380a986b000ccc9fd",
+        "sha256": "0202a37b8e069553595d467f585bb4fa63206dda7e6660e3eb24c843e0f28d98"
+      },
+      {
+        "file_id": "fcac16b62305286089c3da0df",
+        "sha256": "c7977b8ff1db69b388e58db51d4921ca83f36e46c4015bbeff62caf1956650e3"
+      },
+      {
+        "file_id": "file-794959c525a6ac6864a127f1d5c5cad1c383543593a53efdd2ab9d7ec2e7167e",
+        "sha256": "15ff8606f7cba749307fae28e6cff2afdd986ade7cbc38ebd1d207ff434c0702"
+      }
+    ],
+    "history_unchanged": true,
+    "source_disk_unchanged": true,
+    "exports_empty": true,
+    "viewer_opener_null": true,
+    "viewer_step_succeeded": true,
+    "capability_url_redacted": true
+  },
+  "save_mapping": {
+    "save_id": "save-85d2db1fc6705a0f3abada00e2f016e074c943376f82721a095bf2c5f9f0929d",
+    "plan_digest": "9d658a110c907d19b2092c229503cba96a20f6b8f811860150a25bdb55190e68",
+    "mapping": {
+      "f327b1359f0fe4793ab9f30a9": [
+        {
+          "output_path": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final/ned/0001/demo/Main.ned",
+          "role": {
+            "kind": "ned",
+            "package": "demo",
+            "relative": "demo/Main.ned",
+            "root_index": 0
+          }
+        }
+      ],
+      "fbfed714380a986b000ccc9fd": [
+        {
+          "output_path": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final/data/workload.json",
+          "role": {
+            "kind": "workload"
+          }
+        }
+      ],
+      "fcac16b62305286089c3da0df": [
+        {
+          "output_path": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final/project.ini",
+          "role": {
+            "kind": "config"
+          }
+        }
+      ],
+      "file-794959c525a6ac6864a127f1d5c5cad1c383543593a53efdd2ab9d7ec2e7167e": [
+        {
+          "output_path": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final/ned/0001/editor/Extra.ned",
+          "role": {
+            "kind": "ned",
+            "package": "editor",
+            "relative": "editor/Extra.ned",
+            "root_index": 0
+          }
+        }
+      ]
+    },
+    "input_identity_unchanged": true
+  },
+  "output_project": "/tmp/dir-ned-extension-browser-u1zyNV/exports/ned-extension-final",
+  "output_files": {
+    "data/workload.json": "0202a37b8e069553595d467f585bb4fa63206dda7e6660e3eb24c843e0f28d98",
+    "ned/0001/demo/Main.ned": "a88442820aaedc72a0e8bd0493305f7a0109ad8441e0543ffb017cb0b2ee4da7",
+    "ned/0001/demo/Main.ned.layout.json": "7bd56c4ce074e5fbff63ec3a91799d70d3c325d76749b04d28d573f038bbe97d",
+    "ned/0001/editor/Extra.ned": "15ff8606f7cba749307fae28e6cff2afdd986ade7cbc38ebd1d207ff434c0702",
+    "project.ini": "70166d1254153175d07c3fdd6a4c569ea8fbc7201a2c068eb6ac3d08ef872650"
+  },
+  "cli": {
+    "validate_status": 0,
+    "validate_result": {
+      "channel_count": "6",
+      "network": "demo.Main",
+      "node_count": "4",
+      "schema_version": 1,
+      "status": "valid"
+    },
+    "run_status": 0,
+    "run_result_sha256": "d02582773871d313188189cec8bfb16c303c410ac8ef4cec4e953c0b074395bc"
+  },
+  "page_errors": [],
+  "input_after": {
+    "baseline.json": "48e3bd572d8c17cbbdbaca25a08c83cf8f3a9a17fb3f7f9832d87ba2df7dee37",
+    "models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251",
+    "project.ini": "7917b7f205f7d0858ab30d9674bb0fad54ec64892793f0d35a6d7bc28f083386"
+  },
+  "input_removed_before_run": true,
+  "normal_ui_run": {
+    "run_id": "run-daac1cc9456c5a0137992523335de44f4ccb6e22de7b792f9dc958c3eca47bdf",
+    "phase": "completed",
+    "dirty_at_start": false,
+    "source_stamp": {
+      "project_instance_id": "snapshot-2c36f181ea7fe4695f986c7979ff97ba16b6c7973c21dd84a04493c9a02119cd",
+      "input_revision": "9",
+      "input_digest": "4d23e7019507c6e7c556fbbe52d6d2af48deaa9c6519d09f3240e396a02689d8"
+    },
+    "history_unchanged": true,
+    "termination": "events_exhausted",
+    "exit_code": 0,
+    "results_sha256": "ac7a5cf6c510d1e8244ebde8131cb484b445ca1efb096cfbbc652ed2e2659a23",
+    "results_bytes": 378354
+  },
+  "partial_ui_run": {
+    "run_id": "run-fff61b869b7d2a6f3e6798a6ae17de0093284180a9a5da062815dd9ae835da24",
+    "phase": "partial",
+    "artifact_state": "published",
+    "dirty_at_start": true,
+    "termination": "execution_failed",
+    "exit_code": 3,
+    "results_sha256": "d5356aef0e39d29a3785b75b9f6f639c60a82af56fbe1f45633638065f0b0992",
+    "results_bytes": 190858,
+    "deleted_from_api": true
+  },
+  "frozen_inputs_after_source_removal": [
+    {
+      "path": "/tmp/dir-ned-extension-browser-u1zyNV/input/models/demo/Main.ned",
+      "sha256": "a88442820aaedc72a0e8bd0493305f7a0109ad8441e0543ffb017cb0b2ee4da7",
+      "bytes": 1234
+    },
+    {
+      "path": "/tmp/dir-ned-extension-browser-u1zyNV/input/baseline.json",
+      "sha256": "0202a37b8e069553595d467f585bb4fa63206dda7e6660e3eb24c843e0f28d98",
+      "bytes": 808
+    },
+    {
+      "path": "/tmp/dir-ned-extension-browser-u1zyNV/input/project.ini",
+      "sha256": "58a1d9f84e88ccca7c5e7fe5df8c13e179ac1a41ee64d32f3a6565d5bf1b1338",
+      "bytes": 242
+    },
+    {
+      "path": "/tmp/dir-ned-extension-browser-u1zyNV/input/models/editor/Extra.ned",
+      "sha256": "15ff8606f7cba749307fae28e6cff2afdd986ade7cbc38ebd1d207ff434c0702",
+      "bytes": 316
+    }
+  ],
+  "partial_record_correspondence": {
+    "manifest_sha256": "17769232d993b653093660b9cad2057b35f1c38a37aa9d0e07571ae07d8c0f57",
+    "worker_response_sha256": "814fa3e809c6122a86e563e09f6f94315aa549c3787c6b9722eda4f105813e59",
+    "results_sha256": "d5356aef0e39d29a3785b75b9f6f639c60a82af56fbe1f45633638065f0b0992",
+    "termination": "execution_failed",
+    "diagnostic_reason": "event_limit",
+    "exit_code": 3,
+    "requests": 21,
+    "receivers": 42,
+    "exact_committed_milestones": 187,
+    "validated_transfer_samples": 166,
+    "embedded_result_equal": true,
+    "no_invented_receive_records": true
+  },
+  "viewer": {
+    "origin": "http://127.0.0.1:45957",
+    "capability_url_redacted": true,
+    "separate_loopback_origin": true,
+    "opened_in_new_tab": true,
+    "window_opener_null": true,
+    "next_time_enabled": true,
+    "current_ps_before": "0 ps",
+    "current_ps_after": "238000000 ps",
+    "csp_errors": [],
+    "revoked_http_status": 410
+  },
+  "failed_run_isolation": {
+    "run_id": "run-95f6b89d2eadb29fa5d5155165f3fe3db7467505338f7621de804d2d8f9c659c",
+    "phase": "prepare_failed",
+    "diagnostic_reason": "unknown_type",
+    "frozen_source_sha256": "6d9450dff2674cf17073ccf8eff40a529b39f5bbad26054cd854dbeedbef7f5d",
+    "stages": [
+      {
+        "stage": "prepare-failed-current-input",
+        "past_input": false,
+        "current_diagnostics": 0,
+        "current_project_instance_id": "snapshot-2c36f181ea7fe4695f986c7979ff97ba16b6c7973c21dd84a04493c9a02119cd",
+        "current_input_revision": "11",
+        "frozen_sha256": "6d9450dff2674cf17073ccf8eff40a529b39f5bbad26054cd854dbeedbef7f5d"
+      },
+      {
+        "stage": "later-edit",
+        "past_input": true,
+        "current_diagnostics": 0,
+        "current_project_instance_id": "snapshot-2c36f181ea7fe4695f986c7979ff97ba16b6c7973c21dd84a04493c9a02119cd",
+        "current_input_revision": "12",
+        "frozen_sha256": "6d9450dff2674cf17073ccf8eff40a529b39f5bbad26054cd854dbeedbef7f5d"
+      },
+      {
+        "stage": "undo",
+        "past_input": true,
+        "current_diagnostics": 0,
+        "current_project_instance_id": "snapshot-2c36f181ea7fe4695f986c7979ff97ba16b6c7973c21dd84a04493c9a02119cd",
+        "current_input_revision": "13",
+        "frozen_sha256": "6d9450dff2674cf17073ccf8eff40a529b39f5bbad26054cd854dbeedbef7f5d"
+      },
+      {
+        "stage": "reload",
+        "past_input": true,
+        "current_diagnostics": 0,
+        "current_project_instance_id": "project-deed500c32b37092984ebf3ef75ec059f1f2d5837018624f6aa73a4fd2215b63",
+        "current_input_revision": "14",
+        "frozen_sha256": "6d9450dff2674cf17073ccf8eff40a529b39f5bbad26054cd854dbeedbef7f5d"
+      },
+      {
+        "stage": "new-project",
+        "past_input": true,
+        "current_diagnostics": 0,
+        "current_project_instance_id": "project-f5974c506128fe2fb8bee8ffbabb9392e71eefb81fd001d5cf65ff632093e1fe",
+        "current_input_revision": "15",
+        "frozen_sha256": "6d9450dff2674cf17073ccf8eff40a529b39f5bbad26054cd854dbeedbef7f5d"
+      },
+      {
+        "stage": "create-file",
+        "past_input": true,
+        "current_diagnostics": 0,
+        "current_project_instance_id": "project-f5974c506128fe2fb8bee8ffbabb9392e71eefb81fd001d5cf65ff632093e1fe",
+        "current_input_revision": "16",
+        "frozen_sha256": "6d9450dff2674cf17073ccf8eff40a529b39f5bbad26054cd854dbeedbef7f5d"
+      }
+    ]
+  },
+  "viewer_failure": {
+    "run_id": "run-daac1cc9456c5a0137992523335de44f4ccb6e22de7b792f9dc958c3eca47bdf",
+    "viewer_state": "failed",
+    "phase": "completed",
+    "error_code": "E-EDITOR-RUN-INTEGRITY",
+    "original_result_sha256": "ac7a5cf6c510d1e8244ebde8131cb484b445ca1efb096cfbbc652ed2e2659a23",
+    "tampered_result_sha256": "b8f64b26c0f168cb38d4f266463d085a8d818dca7643a3fd0f21633d39b6011b",
+    "tamper": "one appended LF in local fixture results.json",
+    "viewer_link_absent": true,
+    "retry_visible": true,
+    "current_project_diagnostics": 0
+  },
+  "empty_multibus_repair": {
+    "template": "multibus-empty",
+    "file_id": "file-60fdad9116e58adba540490a6f92c4c53679aa915690967153325d0743c6b005",
+    "created_source_sha256": "fc7f34d6bbd46259ed8bfc15ad7063bbf538ee8657cfdacfeb46e6ff5c00486d",
+    "failed_run_id": "run-9c4e1b031a79f5f2388ff5f49ba98ae87e2824a1be6e81fc66a429da2180a588",
+    "failed_phase": "prepare_failed",
+    "failed_save_status": 422,
+    "no_result_export": true,
+    "repaired_source_sha256": "e95a63a21392ba5ba1e35784035ed802f0eac62894a4952e4d91fd880661ff3e",
+    "repaired_run_id": "run-4078db063cf8a044e5f24fed2a964a0a41aa771ad9e7d773958ef027966c3a09",
+    "repaired_phase": "completed",
+    "same_file_id": true,
+    "dirty_at_start": true,
+    "exports_unchanged": true,
+    "input_unchanged": true
+  },
+  "viewer_console_errors": [],
+  "http_404_classifications": [],
+  "console_error_sources": []
+}

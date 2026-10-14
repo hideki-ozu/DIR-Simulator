@@ -1,0 +1,47 @@
+TAP version 13
+# NED extension browser evidence: /tmp/dir-ned-extension-browser-kJvkX2/evidence/evidence.json
+# Screenshot SHA-256 2f38e8962a7b7dbde8c8161e9e0d436fd904f55cbdf124c18f9d8983df7fbef5: /tmp/dir-ned-extension-browser-kJvkX2/evidence/model-after-same-file-cow-redo.png
+# Screenshot SHA-256 3e7871bd68e540d3597718f4c314804615ea0d266bd9ed4349ee9a3c3821c853: /tmp/dir-ned-extension-browser-kJvkX2/evidence/unsaved-create-cow-rename-run-viewer.png
+# Screenshot SHA-256 aaca0ce5358f1c32407a8d76ef030c5c741823763687790efdd5c34ef7ba7de8: /tmp/dir-ned-extension-browser-kJvkX2/evidence/saved-project.png
+# Screenshot SHA-256 e77813f908a9be7da7eeba86a36039b11a97d81ba5f06d5700b5dadeba90e82a: /tmp/dir-ned-extension-browser-kJvkX2/evidence/normal-run-completed.png
+# Screenshot SHA-256 87f96fee6766b4a08c91821e6ac3c80e07941fb7cfaae456780d92ffddbaf583: /tmp/dir-ned-extension-browser-kJvkX2/evidence/normal-run-marked-past-after-input-edit.png
+# Screenshot SHA-256 21c9094143d3ab2071044849afd92edd1e25fa87c94aa993aa6679649581cb00: /tmp/dir-ned-extension-browser-kJvkX2/evidence/partial-run-published.png
+# Screenshot SHA-256 fc17485e5780fe9e439e1703b6f91084bf1ee12cfc6aa77a905960d72481763b: /tmp/dir-ned-extension-browser-kJvkX2/evidence/partial-viewer-after-next-event.png
+# Screenshot SHA-256 7c84b5bf878ece94e775a4cc675416fb10deac61848d9dd1354a5a86854272e3: /tmp/dir-ned-extension-browser-kJvkX2/evidence/past-prepare-failed-run-current-diagnostics-isolated.png
+# Screenshot SHA-256 b642f0c878847f392c770eee42f9726fe1945804720354108e58d4ab3d0eec90: /tmp/dir-ned-extension-browser-kJvkX2/evidence/viewer-failed-integrity-mismatch.png
+# Screenshot SHA-256 67b5e893b20ab2240449956d7d036ea5f50b7759b6dc45ec4b923bdeae1217f8: /tmp/dir-ned-extension-browser-kJvkX2/evidence/last-visible-state.png
+# Subtest: NED editor extensions work through the real UI and produce a runnable exported project
+not ok 1 - NED editor extensions work through the real UI and produce a runnable exported project
+  ---
+  duration_ms: 64666.676809
+  type: 'test'
+  location: '/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/tests/ned_editor_extensions_browser.test.cjs:1046:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'unpublished'
+    - 'absent'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'absent'
+  actual: 'unpublished'
+  operator: 'strictEqual'
+  stack: |-
+    main (/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/tests/ned_editor_extensions_browser.test.cjs:981:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async TestContext.<anonymous> (/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/tests/ned_editor_extensions_browser.test.cjs:1050:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 68828.576812

@@ -1,0 +1,9 @@
+**No blocking findings** in the reviewed changes against HEAD `0d7dd39`, under the stated exclusive-writer assumption.
+
+- **Goal:** Independent correctness/security review before commit/PR completed.
+- **Architecture:** Publication removes stage links and scratch before the final `NOREPLACE` manifest rename. Unknown entries prevent completion and are preserved. Directory `flock` avoids a leftover lockfile.
+- **Files:** Reviewed all requested diffs and read untracked `scratch.rs` directly, plus relevant recovery and cleanup code.
+- **Interfaces:** Snapshot readers use independent positional offsets over cloned descriptors, preserving reuse after unlink. Sort ownership transfers into `Sorted` and tracks live spill inodes. Mapping enters the plan digest and reports; recovery paths remain independently constrained by registered targets and journal files.
+- **Constraints:** Read-only throughout. No edits, Cargo, Git mutations, services, agents, or configuration changes. No concurrent hostile-filesystem or power-loss guarantees assumed.
+- **Acceptance criteria:** No actionable regression identified in snapshot lifecycle, no-clobber publication, unknown-entry preservation, or mapping redirects. Legacy manifests default to empty mapping; retirement records hash the original on-disk bytes, avoiding a hash mismatch from newly serialized default fields.
+- **Verification:** Static review using six focused tool calls; **no tests run**. Parent-reported results were not independently reproduced. The reported parallel child-spawn `flock busy` failure remains unresolved and should be diagnosed before describing the full suite as passing.

@@ -1,4 +1,7 @@
 //! Resolved symbol refactors over immutable editor inputs.
+#[cfg(test)]
+#[path = "acceptance_refactor_tests.rs"]
+mod acceptance_refactor_tests;
 mod detach;
 mod semantic;
 #[cfg(test)]

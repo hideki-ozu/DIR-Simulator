@@ -1,0 +1,48 @@
+Diff in /home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs:775:
+         assert!(diagnostics.len() >= 2, "{terminal}");
+         assert_eq!(diagnostics[0]["diagnostic"]["reason"], "event_limit");
+         assert_eq!(diagnostics.last().unwrap()["diagnostic"]["code"], "E-0003");
+-        assert!(diagnostics.last().unwrap()["diagnostic"]["message"]
+-            .as_str()
+-            .unwrap()
+-            .contains(&format!("os error {}", kernel["errno"])));
++        assert!(
++            diagnostics.last().unwrap()["diagnostic"]["message"]
++                .as_str()
++                .unwrap()
++                .contains(&format!("os error {}", kernel["errno"]))
++        );
+         assert!(!output.join("manifest.json").exists());
+         assert_eq!(inventory(&f.root.join("source")), input);
+         evidence(
+Diff in /home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs:1062:
+                         site, "save.after_stage_file_sync",
+                         "unexpected residual {path:?}"
+                     );
+-                    assert!(path
+-                        .file_name()
+-                        .unwrap()
+-                        .to_string_lossy()
+-                        .starts_with(".ned-editor-save-"));
++                    assert!(
++                        path.file_name()
++                            .unwrap()
++                            .to_string_lossy()
++                            .starts_with(".ned-editor-save-")
++                    );
+                     assert_eq!(
+                         at_cut.get(&path),
+                         Some(&entry),
+Diff in /home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs:1167:
+         );
+         let runs = observation["records"].clone();
+         for run in runs["runs"].as_array().unwrap() {
+-            assert!(!["queued", "preparing", "running", "verifying", "stopping"]
+-                .contains(&run["phase"].as_str().unwrap()));
++            assert!(
++                !["queued", "preparing", "running", "verifying", "stopping"]
++                    .contains(&run["phase"].as_str().unwrap())
++            );
+             if [
+                 "output.after_manifest",
+                 "worker.after_response",

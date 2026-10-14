@@ -1,0 +1,9 @@
+Read-only independent Astra review of the CI namespace test-infrastructure correction.
+Source snapshot:
+crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs sha256=f36cd715e8db1ad89b0031bd4f6d301c8e821b56a5d3ada34eeca8052062ad7a
+.github/workflows/release-audit.yml sha256=087f6ecf7e2358b905e0b386611ce9e6e322244724dbd03eafdf9669e8f61da6
+
+No blocking security/correctness findings in the bounded CI scope.
+Explicit sudo-mount mode creates a private mount namespace and drops to the original runner UID/GID before test execution. Namespace operations use the acknowledged actual worker PID. Assertions check all UID/GID fields, all five capability sets zero, empty supplementary groups, and NoNewPrivs=1. The tiny0700 tmpfs is runner-owned; the filler also drops privileges. Actual errno28/13, original diagnostics, and non-publication assertions remain.
+Cleanup targets the dedicated wrapper process group; the worker retains parent-death protection.
+No source edits, Cargo, privileged execution, or runtime tests were performed by the reviewer. Actual CI must confirm sudo process/session behavior and successful namespace teardown; local passwordless sudo is unavailable. This review does not assert that the CI mode has already passed.

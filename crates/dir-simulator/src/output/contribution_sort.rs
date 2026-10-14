@@ -1,8 +1,10 @@
 //! Fixed-width, bounded external sort for CAN metric window contributions.
 use super::disk_sort::Run;
 use crate::{Diagnostic, allocation::reserve_vec};
+#[cfg(test)]
+use std::fs::{self, OpenOptions};
 use std::{
-    fs::{self, File, OpenOptions},
+    fs::File,
     io::{BufReader, BufWriter, Read, Write},
     path::{Path, PathBuf},
     sync::atomic::{AtomicU64, Ordering},
@@ -86,7 +88,7 @@ impl Row {
 
 /// Owns all intermediate runs, including partially written files on errors.
 pub(super) struct Sorter {
-    directory: PathBuf,
+    directory: super::scratch::Directory,
     chunk: Vec<Row>,
     levels: Vec<Vec<Run>>,
     next: u64,
@@ -100,10 +102,10 @@ impl Sorter {
                 std::process::id(),
                 NEXT.fetch_add(1, Ordering::Relaxed)
             ));
-            match fs::create_dir(&path) {
-                Ok(()) => {
+            match super::scratch::Directory::create(path) {
+                Ok(directory) => {
                     return Ok(Self {
-                        directory: path,
+                        directory,
                         chunk: Vec::new(),
                         levels: Vec::new(),
                         next: 0,
@@ -153,10 +155,8 @@ impl Sorter {
         self.chunk.sort_unstable_by_key(|row| row.key());
         let path = self.path()?;
         let mut writer = BufWriter::new(
-            OpenOptions::new()
-                .create_new(true)
-                .write(true)
-                .open(&path)
+            self.directory
+                .open_new(&path)
                 .map_err(|e| error("create", e))?,
         );
         for row in &self.chunk {
@@ -187,7 +187,9 @@ impl Sorter {
             let paths = std::mem::take(&mut self.levels[level]);
             let merged = self.merge(&paths)?;
             for old in paths {
-                fs::remove_file(&old.path).map_err(|e| error("cleanup", e))?;
+                self.directory
+                    .remove_file(&old.path)
+                    .map_err(|e| error("cleanup", e))?;
             }
             level = level
                 .checked_add(1)
@@ -198,10 +200,8 @@ impl Sorter {
     fn merge(&mut self, paths: &[Run]) -> Result<Run, Diagnostic> {
         let path = self.path()?;
         let mut writer = BufWriter::new(
-            OpenOptions::new()
-                .create_new(true)
-                .write(true)
-                .open(&path)
+            self.directory
+                .open_new(&path)
                 .map_err(|e| error("create", e))?,
         );
         let mut readers = Vec::new();
@@ -250,7 +250,9 @@ impl Sorter {
                 reserve_vec(&mut pending, 1, "output_contribution_pending")?;
                 pending.push(path);
                 for old in group {
-                    fs::remove_file(&old.path).map_err(|e| error("cleanup", e))?;
+                    self.directory
+                        .remove_file(&old.path)
+                        .map_err(|e| error("cleanup", e))?;
                 }
             }
         }
@@ -268,13 +270,13 @@ impl Sorter {
 impl Drop for Sorter {
     fn drop(&mut self) {
         if !self.directory.as_os_str().is_empty() {
-            let _ = fs::remove_dir_all(&self.directory);
+            self.directory.cleanup();
         }
     }
 }
 
 pub(super) struct Sorted {
-    directory: PathBuf,
+    directory: super::scratch::Directory,
     path: Option<PathBuf>,
     bytes: u64,
 }
@@ -290,7 +292,7 @@ impl Sorted {
 }
 impl Drop for Sorted {
     fn drop(&mut self) {
-        let _ = fs::remove_dir_all(&self.directory);
+        self.directory.cleanup();
     }
 }
 pub(super) struct Rows(Option<RunReader>);
@@ -416,9 +418,14 @@ mod tests {
         for cut in 0..=data.len() {
             let mut sorter = Sorter::new_in(&base).unwrap();
             let path = sorter.path().unwrap();
-            fs::write(&path, &data[..cut]).unwrap();
+            sorter
+                .directory
+                .open_new(&path)
+                .unwrap()
+                .write_all(&data[..cut])
+                .unwrap();
             let sorted = Sorted {
-                directory: PathBuf::new(),
+                directory: Default::default(),
                 path: Some(path.clone()),
                 bytes: cut as u64,
             };

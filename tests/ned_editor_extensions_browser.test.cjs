@@ -56,11 +56,11 @@ async function main() {
   const input = path.join(root, 'input');
   const exports = path.join(root, 'exports');
   const state = path.join(root, 'state');
-  const evidenceDir = path.join(root, 'evidence');
+  const evidenceDir = path.resolve(process.env.DIR_NED_EXTENSIONS_EVIDENCE || path.join(root, 'evidence'));
   const simulation = path.join(root, 'simulation');
   fs.mkdirSync(path.join(input, 'models/demo'), {recursive: true});
   fs.mkdirSync(exports);
-  fs.mkdirSync(evidenceDir);
+  fs.mkdirSync(evidenceDir, {recursive: true});
   const fixtureFiles = [
     ['examples/can/baseline.ini', 'project.ini'],
     ['examples/can/baseline.json', 'baseline.json'],
@@ -247,6 +247,16 @@ async function main() {
       assert.equal(digest, entry.sha256, 'Downloaded results.json did not match its artifact digest.');
       return {entry, digest, bytes, result: JSON.parse(bytes.toString('utf8'))};
     };
+    const observeUiTerminal=async(kind,action)=>{
+      const responsePromise=page.waitForResponse(response=>{
+        if(response.url()!==origin+'/api/commands'||response.request().method()!=='POST')return false;
+        try{return response.request().postDataJSON().kind===kind;}catch{return false;}
+      });
+      await action();let envelope=await (await responsePromise).json();
+      const deadline=Date.now()+30000;
+      while(!envelope.terminal){assert.ok(Date.now()<deadline,'UI command terminal timeout');await sleep(40);envelope=await (await apiFetch('/api/jobs/'+envelope.job_id)).json();}
+      return envelope;
+    };
     const optionRecords = locator => locator.locator('option').evaluateAll(items => items.map(item => ({value: item.value, label: item.textContent.trim()})));
     const chooseOption = async (selector, predicate, description) => {
       const select = page.locator(selector);
@@ -283,9 +293,89 @@ async function main() {
     assert.match(createPlan, /editor\/Extra\.ned/);
     assert.match(createPlan, /module Extra/);
     assert.deepEqual(snapshotTree(input), inputBefore, 'Creating an editor file changed the read-only source project on disk.');
-    const createRevision = BigInt((await rootView()).revision);
+    const cancelBefore = await rootView();
+    await page.locator('#dialog-cancel').click();
+    await page.waitForFunction(() => !document.getElementById('editor-dialog').open && !document.getElementById('create-file').disabled);
+    const cancelled = await rootView();
+    for (const key of ['revision','input_revision','input_digest','can_undo','can_redo']) assert.equal(cancelled[key], cancelBefore[key], `Cancelled preview changed ${key}`);
+    assert.equal(cancelled.files.some(file => file.path.endsWith('Extra.ned')), false);
+    assert.deepEqual(snapshotTree(input), inputBefore);
+    evidence.stages.push({stage:'preview-dialog-cancel',revision:cancelled.revision,input_digest:cancelled.input_digest,no_file_added:true,history_unchanged:true});
+    // Reopen the actual forms and request a fresh plan before applying.
+    await page.locator('#create-file').click();
+    await waitDialog('新規入力ファイル');
+    await page.locator('#new-file-template').selectOption('ned.module_empty');
     await page.locator('#dialog-submit').click();
-    view = await waitView(current => BigInt(current.revision) > createRevision && current.files.some(file => file.role === 'ned' && file.path.endsWith('Extra.ned')), 'UI-created Extra.ned');
+    await waitDialog('新規ファイルの場所と名前');
+    await chooseOption('#new-file-root', item => true, 'No NED root after cancelled plan.');
+    await page.locator('#new-file-path').fill('editor/Extra.ned');
+    await page.locator('#new-file-name').fill('Extra');
+    await page.locator('#dialog-submit').click();
+    await waitDialog('変更計画を確認');
+    const createRevision = BigInt((await rootView()).revision);
+    // The product closes this confirmation before sending apply. Hold delivery of
+    // the real native 202 so that the closed dialog and pending client are observed
+    // at the accepted-command boundary, independently of how fast its job finishes.
+    let applyRequests = 0, releaseApply, acceptApply, rejectApply, finishApply;
+    let applyRouteError;
+    const releaseApplyResponse = new Promise(resolve => { releaseApply = resolve; });
+    const applyAccepted = new Promise((resolve, reject) => { acceptApply = resolve; rejectApply = reject; });
+    const applyRouteFinished = new Promise(resolve => { finishApply = resolve; });
+    const applyRoute = async route => {
+      const request = route.request();
+      if (request.method() !== 'POST' || request.postDataJSON()?.kind !== 'apply_edit_plan') {
+        await route.continue();
+        return;
+      }
+      applyRequests++;
+      try {
+        assert.equal(applyRequests, 1, 'The browser submitted a second apply command.');
+        const response = await route.fetch();
+        assert.equal(response.status(), 202, 'The native server must accept the actual apply command.');
+        const envelope = await response.json();
+        assert.equal(envelope.terminal, false);
+        assert.equal(typeof envelope.command_id, 'string');
+        assert.equal(typeof envelope.job_id, 'string');
+        acceptApply({command_id: envelope.command_id, job_id: envelope.job_id});
+        await releaseApplyResponse;
+        await route.fulfill({response});
+      } catch (error) {
+        applyRouteError = new Error(redact(error.message));
+        rejectApply(applyRouteError);
+        await route.abort().catch(() => {});
+      } finally {
+        finishApply();
+      }
+    };
+    await page.route(origin + '/api/commands', applyRoute);
+    let acceptedApply, heldView, acceptedTimer;
+    try {
+      await page.locator('#dialog-submit').click();
+      acceptedApply = await Promise.race([
+        applyAccepted,
+        new Promise((_, reject) => { acceptedTimer = setTimeout(() => reject(new Error('Native apply acceptance was not observed.')), 20000); }),
+      ]);
+      await page.waitForFunction(() => !document.getElementById('editor-dialog').open && document.getElementById('status').textContent.includes('変更計画の適用'));
+      assert.equal(await page.locator('#create-file').isDisabled(), true);
+      assert.equal(await page.locator('#undo').isDisabled(), true);
+      heldView = await waitView(current => BigInt(current.revision) === createRevision + 1n && current.files.some(file => file.role === 'ned' && file.path.endsWith('Extra.ned')), 'One server adoption while client acknowledgement is held');
+      const repeatedView = await rootView();
+      assert.equal(repeatedView.revision, heldView.revision);
+      assert.deepEqual(repeatedView.files.filter(file => file.path.endsWith('Extra.ned')).map(file => file.id), heldView.files.filter(file => file.path.endsWith('Extra.ned')).map(file => file.id));
+      assert.equal(heldView.files.filter(file => file.path.endsWith('Extra.ned')).length, 1);
+      assert.equal(applyRequests, 1);
+      evidence.stages.push({stage: 'apply-accepted-response-held-dialog-closed', ...acceptedApply, http_status: 202, dialog_closed: true, client_acknowledgement_held: true, client_operation_pending: true, apply_requests: applyRequests, adopted_revision: heldView.revision, revision_increment: 1, added_files: 1});
+    } finally {
+      clearTimeout(acceptedTimer);
+      releaseApply();
+    }
+    await applyRouteFinished;
+    if (applyRouteError) throw applyRouteError;
+    await page.waitForFunction(() => !document.getElementById('create-file').disabled);
+    view = await waitView(current => BigInt(current.revision) === createRevision + 1n && current.files.some(file => file.role === 'ned' && file.path.endsWith('Extra.ned')), 'UI-created Extra.ned after acknowledgement delivery');
+    assert.equal(view.revision, heldView.revision, 'Acknowledgement delivery must not adopt the plan a second time.');
+    assert.equal(applyRequests, 1);
+    await page.unroute(origin + '/api/commands', applyRoute);
     const extraFile = view.files.find(file => file.role === 'ned' && file.path.endsWith('Extra.ned'));
     assert.ok(extraFile);
     const createdId = extraFile.id;
@@ -473,16 +563,88 @@ async function main() {
     evidence.stages.push({stage: 'same-file-cow-undo-redo', proposal_from_ui: sameFileProposal, clone_qname: sameFileCloneQname, stable_type_key: sameFileRedo.instances.find(item => item.path === 'Main.c').type_key, undo_type: sameFileUndo.instances.find(item => item.path === 'Main.c').type_name, redo_type: sameFileRedo.instances.find(item => item.path === 'Main.c').type_name, file_id: mainFile.id});
     await addScreenshot('model-after-same-file-cow-redo.png');
 
+    // XC25/XC43: execute this complete UI create/COW/rename history before
+    // its first Save As, then open the resulting real Viewer.
+    const unsavedBefore = await rootView();
+    assert.equal(unsavedBefore.dirty, true);
+    assert.equal(unsavedBefore.never_exported, true);
+    const currentSources = new Map();
+    for (const file of unsavedBefore.files) {
+      const current = await viewForFile(file.id);
+      currentSources.set(file.id, current.source);
+    }
+    const unsavedRunId = await startRunFromUi();
+    const unsavedRun = await waitRun(unsavedRunId, 'Unsaved complete GUI chain');
+    assert.equal(unsavedRun.phase, 'completed');
+    assert.equal(unsavedRun.artifact_state, 'published');
+    assert.equal(unsavedRun.source_stamp.dirty_at_start, true);
+    assert.equal(unsavedRun.source_stamp.input_digest, unsavedBefore.input_digest);
+    assert.equal(unsavedRun.source_stamp.snapshot_id, unsavedBefore.snapshot_id);
+    const unsavedAfter = await rootView();
+    for (const key of ['revision','input_revision','input_digest','dirty','can_undo','can_redo','never_exported']) assert.equal(unsavedAfter[key],unsavedBefore[key],`Unsaved run changed ${key}`);
+    const unsavedFrozen = await apiJson('/api/runs/'+unsavedRunId+'/inputs');
+    assert.equal(unsavedFrozen.files.length,currentSources.size);
+    const unsavedHashes = [];
+    for (const file of unsavedFrozen.files) {
+      const frozen = await apiJson('/api/runs/'+unsavedRunId+'/input/'+encodeURIComponent(file.file_id));
+      const current = currentSources.get(file.file_id);
+      assert.ok(current,'Frozen file belongs to the current UI-created project');
+      assert.equal(frozen.text,current.text);
+      assert.equal(frozen.frozen_hash,current.hash);
+      assert.equal(sha256(Buffer.from(frozen.text)),current.hash);
+      unsavedHashes.push({file_id:file.file_id,sha256:current.hash});
+    }
+    assert.ok(unsavedHashes.some(file=>file.file_id===createdId),'Run includes the newly created COW file');
+    assert.deepEqual(snapshotTree(input),inputBefore);
+    assert.deepEqual(snapshotTree(exports),{});
+    const unsavedCard=page.locator('#runs article.run-card[data-run-id="'+unsavedRunId+'"]');
+    await unsavedCard.getByRole('button',{name:'Viewerを準備',exact:true}).click();
+    const unsavedLink=unsavedCard.getByRole('link',{name:'Viewerを開く'});
+    await unsavedLink.waitFor();
+    const unsavedURL=new URL(await unsavedLink.getAttribute('href'));
+    assert.equal(JSON.stringify(evidence).includes(unsavedURL.pathname.slice(1)),false);
+    const unsavedPopup=context.waitForEvent('page');await unsavedLink.click();viewerPage=await unsavedPopup;
+    await viewerPage.waitForFunction(()=>document.getElementById('dashboard')&&!document.getElementById('dashboard').hidden);
+    assert.equal(await viewerPage.evaluate(()=>window.opener===null),true);
+    assert.equal(await viewerPage.locator('#error-banner').isVisible(),false);
+    const unsavedTime=await viewerPage.locator('#current-ps').innerText();
+    await viewerPage.locator('#next-time').click();
+    await viewerPage.waitForFunction(previous=>document.getElementById('current-ps').textContent!==previous,unsavedTime);
+    await addViewerScreenshot('unsaved-create-cow-rename-run-viewer.png');
+    await viewerPage.close();viewerPage=null;
+    await unsavedCard.getByRole('button',{name:'閲覧リンクを失効'}).click();
+    await page.waitForFunction(id=>!document.querySelector('#runs article.run-card[data-run-id="'+id+'"] a'),unsavedRunId);
+    const unsavedRevoked=await fetch(unsavedURL.href);assert.equal(unsavedRevoked.status,410);await unsavedRevoked.arrayBuffer();
+    evidence.unsaved_gui_chain={run_id:unsavedRunId,phase:unsavedRun.phase,dirty_at_start:true,never_exported_at_start:true,input_digest:unsavedBefore.input_digest,frozen_inputs:unsavedHashes,history_unchanged:true,source_disk_unchanged:true,exports_empty:true,viewer_opener_null:true,viewer_step_succeeded:true,capability_url_redacted:true};
+
     // Save through the editor UI, then validate and run the exported standalone project.
     await page.locator('#save-as').click();
     await waitDialog('別フォルダにプロジェクトを保存');
     await chooseOption('#export-root', item => true, 'No allowed export root is available.');
     await page.locator('#destination-name').fill('ned-extension-final');
-    await page.locator('#dialog-submit').click();
+    const successfulSave=await observeUiTerminal('save_as_project',()=>page.locator('#dialog-submit').click());
+    assert.equal(successfulSave.operation_status,200,'Actual UI Save As completed');
     view = await waitView(current => (current.outputs || []).some(output => output.kind === 'managed_export' && output.path.endsWith('ned-extension-final')), 'Save As of the edited project');
     outputProject = path.join(exports, 'ned-extension-final');
     const exportedConfig = path.join(outputProject, 'project.ini');
     assert.ok(fs.existsSync(exportedConfig), 'Save As did not write project.ini.');
+    const saveMapping=successfulSave.result.mapping;
+    assert.deepEqual(Object.keys(saveMapping).sort(),view.files.map(file=>file.id).sort(),'Save report maps each captured input ID');
+    const reportedPaths=new Set(successfulSave.result.files.map(file=>file.path));
+    for(const file of view.files){
+      assert.ok(saveMapping[file.id].length>0,'Captured ID has explicit output role');
+      for(const entry of saveMapping[file.id]){
+        const role=entry.role;
+        const expected=role.kind==='config'?path.join(outputProject,'project.ini'):
+          role.kind==='ned'?path.join(outputProject,'ned',String(role.root_index+1).padStart(4,'0'),role.relative):
+          role.kind==='workload'?path.join(outputProject,'data/workload.json'):
+          role.kind==='model_config'?path.join(outputProject,'data/model-config.json'):null;
+        assert.ok(expected,'Known captured input role');assert.equal(entry.output_path,expected);assert.ok(reportedPaths.has(entry.output_path));
+      }
+    }
+    assert.deepEqual(view.files.map(file=>({id:file.id,path:file.path})),unsavedBefore.files.map(file=>({id:file.id,path:file.path})),'Save does not relocate captured input IDs or logical paths');
+    evidence.save_mapping={save_id:successfulSave.result.save_id,plan_digest:successfulSave.result.plan_digest,mapping:saveMapping,input_identity_unchanged:true};
+
     const exportedFiles = listFiles(outputProject);
     const exportedMain = exportedFiles.find(file => path.basename(file) === 'Main.ned');
     const exportedExtra = exportedFiles.find(file => path.basename(file) === 'Extra.ned');
@@ -532,8 +694,8 @@ async function main() {
     evidence.input_after = inputAfter;
     evidence.stages.push({stage: 'save-as-cli', exported_main: exportedMain, exported_extra: exportedExtra, exported_workload: exportedWorkload, exported_layout: exportedLayout, output_hashes: savedTree});
 
-    // The copied fixture is proven unchanged above, then removed before either
-    // asynchronous run. This makes a successful UI run depend on the editor's
+    // The copied fixture is proven unchanged above, then removed before the
+    // following normal and partial asynchronous runs. This makes a successful UI run depend on the editor's
     // captured model and the durable run snapshot, never a later disk fallback.
     const projectIni = view.files.find(file => file.path === 'project.ini' || file.path.endsWith('/project.ini'));
     assert.ok(projectIni, 'The captured project.ini is unavailable in the editor model.');
@@ -618,6 +780,21 @@ async function main() {
     const partialArtifact = await readResultArtifact(partialRunId);
     assert.equal(partialArtifact.result.simulation?.partial, true);
     assert.equal(partialArtifact.result.simulation?.termination, partialRun.report.termination);
+    const partialDirectory=path.join(state,'runs',partialRunId);
+    const partialManifestBytes=fs.readFileSync(path.join(partialDirectory,'result/manifest.json'));
+    const partialManifest=JSON.parse(partialManifestBytes);
+    const partialWorkerBytes=fs.readFileSync(path.join(partialDirectory,'control/worker-response.json'));
+    const partialWorker=JSON.parse(partialWorkerBytes);
+    assert.equal(partialWorker.kind,'report');assert.equal(partialWorker.run_id,partialRunId);
+    assert.equal(partialManifest.run_id,partialRunId);assert.equal(partialArtifact.result.run_id,partialRunId);
+    for(const key of ['partial','termination','exit_code']){
+      assert.equal(partialWorker.report[key],partialRun.report[key]);
+      assert.equal(partialWorker.evidence[key],partialRun.report[key]);
+    }
+    assert.equal(partialManifest.partial,true);assert.equal(partialManifest.termination,partialRun.report.termination);
+    assert.equal(partialManifest.files.find(file=>file.name==='results.json').sha256,partialArtifact.digest);
+    assert.equal(partialRun.report.primary_diagnostic.reason,'event_limit');
+
     const partialCardSelector = `#runs article.run-card[data-run-id="${partialRunId}"]`;
     const partialCard = page.locator(partialCardSelector);
     await partialCard.waitFor();
@@ -703,6 +880,46 @@ async function main() {
       const next = document.getElementById('next-time');
       return next && !next.disabled;
     });
+    // Compare the actual embedded payload and every replay milestone against
+    // committed result fields. Planned EOF values never create receive records.
+    const partialEmbedded=JSON.parse(await viewerPage.locator('#embedded-results').textContent());
+    assert.deepEqual(partialEmbedded,partialArtifact.result);
+    const replayProof=await viewerPage.evaluate(()=>{
+      const raw=JSON.parse(document.getElementById('embedded-results').textContent);
+      const api=window.DIRViewerModel,model=api.parseResults(raw),transfers=[];
+      for(let i=0;i<model.eventTimes.length;i++){
+        const at=model.eventTimes[i];
+        for(const rx of api.networkAt(model,at).rx)transfers.push({request_id:rx.requestId,receiver:rx.receiver});
+        if(i>0)for(const transfer of api.stepTransfers(model,model.eventTimes[i-1],at))transfers.push({request_id:transfer.requestId,receiver:transfer.receiver||null});
+      }
+      return {requests:model.requests.map(row=>row.raw),receivers:model.receivers.map(row=>row.raw),events:model.events.map(row=>({time:row.time.toString(),kind:row.kind,request_id:row.requestId,node:row.node})),transfers};
+    });
+    const partialSimulation=partialArtifact.result.simulation;
+    assert.deepEqual(replayProof.requests,partialSimulation.requests);
+    assert.deepEqual(replayProof.receivers,partialSimulation.receivers);
+    const expectedEvents=[];
+    const addRecordedEvent=(time,kind,request_id,node)=>{if(time!==null)expectedEvents.push({time,kind,request_id,node});};
+    for(const request of partialSimulation.requests){
+      addRecordedEvent(request.generated_ps,'generated',request.request_id,request.source);
+      addRecordedEvent(request.ready_ps,request.status==='dropped'?'dropped':'ready',request.request_id,request.source);
+      if(Object.hasOwn(request.model_fields,'tx_enqueued_ps'))addRecordedEvent(request.model_fields.tx_enqueued_ps,'tx_enqueued',request.request_id,request.source);
+      addRecordedEvent(request.sof_ps,'sof',request.request_id,request.bus);
+      addRecordedEvent(request.eof_ps,'eof',request.request_id,request.bus);
+      addRecordedEvent(request.model_fields.release_ps,'release',request.request_id,request.bus);
+    }
+    for(const receiver of partialSimulation.receivers){
+      addRecordedEvent(receiver.observed_ps,receiver.status==='filtered'?'filtered':'observed',receiver.request_id,receiver.receiver);
+      addRecordedEvent(receiver.received_ps,'received',receiver.request_id,receiver.receiver);
+    }
+    const sortedEvents=events=>events.map(event=>JSON.stringify(event)).sort();
+    assert.deepEqual(sortedEvents(replayProof.events),sortedEvents(expectedEvents),'Viewer event set contains exactly committed milestones');
+    const recordedRequests=new Set(partialSimulation.requests.map(row=>row.request_id));
+    const recordedReceivers=new Set(partialSimulation.receivers.map(row=>JSON.stringify([row.request_id,row.receiver])));
+    for(const transfer of replayProof.transfers){assert.ok(recordedRequests.has(transfer.request_id));if(transfer.receiver)assert.ok(recordedReceivers.has(JSON.stringify([transfer.request_id,transfer.receiver])),'Replay cannot invent a receive leg');}
+    assert.ok(replayProof.events.every(event=>BigInt(event.time)<=BigInt(partialSimulation.end_ps)));
+    const visibleRequestIds=await viewerPage.locator('#request-rows tr').evaluateAll(rows=>rows.filter(row=>row.cells.length===8).map(row=>row.cells[0].textContent));
+    assert.ok(visibleRequestIds.length>0);assert.ok(visibleRequestIds.every(id=>recordedRequests.has(id)));
+    evidence.partial_record_correspondence={manifest_sha256:sha256(partialManifestBytes),worker_response_sha256:sha256(partialWorkerBytes),results_sha256:partialArtifact.digest,termination:partialRun.report.termination,diagnostic_reason:partialRun.report.primary_diagnostic.reason,exit_code:3,requests:replayProof.requests.length,receivers:replayProof.receivers.length,exact_committed_milestones:replayProof.events.length,validated_transfer_samples:replayProof.transfers.length,embedded_result_equal:true,no_invented_receive_records:true};
     const beforeViewerStep = await viewerPage.locator('#current-ps').innerText();
     await viewerPage.locator('#next-time').click();
     await viewerPage.waitForFunction(previous => document.getElementById('current-ps').textContent !== previous, beforeViewerStep);
@@ -853,6 +1070,85 @@ async function main() {
     assert.doesNotMatch(await page.locator('#diagnostics').innerText(), /artifact size or SHA-256 mismatch/);
     await addScreenshot('viewer-failed-integrity-mismatch.png');
     evidence.viewer_failure = {run_id: normalRunId, viewer_state: failedViewerRun.viewer_state, phase: failedViewerRun.phase, error_code: 'E-EDITOR-RUN-INTEGRITY', original_result_sha256: sha256(originalNormalBytes), tampered_result_sha256: hashFile(normalResultPath), tamper: 'one appended LF in local fixture results.json', viewer_link_absent: true, retry_visible: true, current_project_diagnostics: 0};
+    // XC42: start the real empty Multibus template, add a syntax-valid
+    // module, observe save/run prepare failures, then repair the same file ID.
+    const beforeDraftExports=snapshotTree(exports);
+    await page.locator('#new-project').click();
+    await waitDialog('新規プロジェクト');
+    await page.locator('#project-template').selectOption('multibus-empty');
+    await page.locator('#project-name-input').fill('RecoveryDraft');
+    await page.locator('#dialog-submit').click();
+    await waitDialog('新規プロジェクトを作成');
+    await page.locator('#dialog-submit').click();
+    let draft=await waitView(current=>current.project_origin==='new'&&current.project_template==='multibus-empty','empty Multibus new project');
+    assert.equal(draft.never_exported,true);
+    const draftMain=draft.files.find(file=>file.role==='ned'&&file.path.endsWith('Main.ned'));
+    assert.ok(draftMain);
+    await page.locator('#create-file').click();
+    await waitDialog('新規入力ファイル');
+    await page.locator('#new-file-template').selectOption('ned.module_empty');
+    await page.locator('#dialog-submit').click();
+    await waitDialog('新規ファイルの場所と名前');
+    await chooseOption('#new-file-root',item=>true,'Empty Multibus NED root');
+    await page.locator('#new-file-path').fill('RecoveryDraft/Recovery.ned');
+    await page.locator('#new-file-name').fill('Recovery');
+    await page.locator('#dialog-submit').click();
+    await waitDialog('変更計画を確認');
+    assert.ok((await page.locator('#dialog-body').innerText()).includes('module Recovery'));
+    await page.locator('#dialog-submit').click();
+    draft=await waitView(current=>current.files.some(file=>file.path.endsWith('Recovery.ned')),'syntax-valid Recovery module on incomplete network');
+    const recoveryFile=draft.files.find(file=>file.path.endsWith('Recovery.ned'));
+    assert.equal(draft.analysis,'semantic_error');
+    const recoveryBefore=await viewForFile(recoveryFile.id);
+    assert.match(recoveryBefore.source.text,/module Recovery/);
+    await page.locator('#save-as').click();
+    await waitDialog('別フォルダにプロジェクトを保存');
+    await chooseOption('#export-root',item=>true,'Draft export root');
+    await page.locator('#destination-name').fill('incomplete-draft-must-not-write');
+    const refusedSave=await observeUiTerminal('save_as_project',()=>page.locator('#dialog-submit').click());
+    assert.equal(refusedSave.operation_status,422);
+    assert.deepEqual(snapshotTree(exports),beforeDraftExports,'Incomplete draft Save As wrote output');
+    assert.equal(fs.existsSync(path.join(exports,'incomplete-draft-must-not-write')),false);
+    const incompleteRunId=await startRunFromUi();
+    const incompleteRun=await waitRun(incompleteRunId,'empty Multibus prepare failure');
+    assert.equal(incompleteRun.phase,'prepare_failed');
+    assert.equal(incompleteRun.artifact_state,'unpublished');
+    assert.equal(incompleteRun.source_stamp.dirty_at_start,true);
+    assert.deepEqual(listFiles(path.join(state,'runs',incompleteRunId,'result')),[],'Prepare failure exported result files');
+    const draftFrozen=await apiJson('/api/runs/'+incompleteRunId+'/inputs');
+    assert.ok(draftFrozen.files.some(file=>file.file_id===recoveryFile.id));
+    const frozenRecovery=await apiJson('/api/runs/'+incompleteRunId+'/input/'+encodeURIComponent(recoveryFile.id));
+    assert.equal(frozenRecovery.text,recoveryBefore.source.text);
+    await addScreenshot('empty-multibus-created-module-prepare-failed.png');
+    const editDraftFile=async(file,text)=>{
+      await page.locator('#files button').filter({hasText:path.basename(file.path)}).first().click();
+      await page.waitForFunction(name=>document.getElementById('source-title').textContent.endsWith(name),path.basename(file.path));
+      await page.locator('#source-editor').fill(text);
+      await waitView(current=>current.files.find(item=>item.id===file.id)?.hash===sha256(Buffer.from(text)),'Draft source acknowledgment');
+      assert.equal((await viewForFile(file.id)).source.text,text);
+    };
+    const repairedModule='package RecoveryDraft;\nmodule Recovery {\n submodules: a: RecoveryDraft.Controller; b: RecoveryDraft.Controller; bus: RecoveryDraft.Bus;\n connections: a.tx --> RecoveryDraft.FixedDelay --> bus.rx_a; bus.tx_a --> RecoveryDraft.FixedDelay --> a.rx; b.tx --> RecoveryDraft.FixedDelay --> bus.rx_b; bus.tx_b --> RecoveryDraft.FixedDelay --> b.rx;\n}\n';
+    await editDraftFile(recoveryFile,repairedModule);
+    const draftMainSource=await viewForFile(draftMain.id);
+    assert.match(draftMainSource.source.text,/network Main\s*\{\s*\}/);
+    const repairedMain=draftMainSource.source.text.replace(/network Main\s*\{\s*\}/,'network Main { submodules: recovered: RecoveryDraft.Recovery; }');
+    await editDraftFile(draftMain,repairedMain);
+    await page.locator('#validate').click();
+    const repaired=await waitView(current=>current.analysis==='ready','repaired empty Multibus project');
+    assert.deepEqual(repaired.diagnostics.filter(row=>String(row.input_revision)===String(repaired.input_revision)),[],'Repaired current input retains a diagnostic');
+    assert.equal(repaired.files.find(file=>file.path.endsWith('Recovery.ned')).id,recoveryFile.id);
+    const repairedRunId=await startRunFromUi();
+    const repairedRun=await waitRun(repairedRunId,'same-file-ID repaired unsaved draft run');
+    assert.equal(repairedRun.phase,'completed');
+    assert.equal(repairedRun.artifact_state,'published');
+    assert.equal(repairedRun.source_stamp.dirty_at_start,true);
+    assert.equal(repairedRun.source_stamp.input_digest,repaired.input_digest);
+    assert.equal((await viewForFile(recoveryFile.id)).source.text,repairedModule);
+    assert.deepEqual(snapshotTree(exports),beforeDraftExports);
+    assert.deepEqual(snapshotTree(input),inputBefore);
+    assert.deepEqual(snapshotTree(outputProject),savedTree);
+    await addScreenshot('empty-multibus-same-file-repaired-run-completed.png');
+    evidence.empty_multibus_repair={template:'multibus-empty',file_id:recoveryFile.id,created_source_sha256:sha256(Buffer.from(recoveryBefore.source.text)),failed_run_id:incompleteRunId,failed_phase:incompleteRun.phase,failed_save_status:refusedSave.operation_status,no_result_export:true,repaired_source_sha256:sha256(Buffer.from(repairedModule)),repaired_run_id:repairedRunId,repaired_phase:repairedRun.phase,same_file_id:true,dirty_at_start:true,exports_unchanged:true,input_unchanged:true};
     evidence.page_errors = pageErrors;
     evidence.viewer_console_errors = viewerPageErrors;
     evidence.http_404_classifications = http404Classifications;
@@ -862,7 +1158,7 @@ async function main() {
     assert.equal(JSON.stringify(evidence).includes(viewerCapability), false, 'The Viewer capability must not be stored in evidence.');
   } catch (error) {
     evidence.failure = redact(error.stack || error.message);
-    throw error;
+    throw new Error(redact(error.stack || error.message));
   } finally {
     try { await addScreenshot('last-visible-state.png'); } catch (error) { evidence.screenshot_error = redact(error.message); }
     if (page) evidence.page_errors = pageErrors;

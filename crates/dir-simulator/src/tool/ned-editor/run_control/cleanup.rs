@@ -134,12 +134,15 @@ fn decimal_tail(s: &str) -> bool {
 fn random_tail(s: &str) -> bool {
     s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit())
 }
-fn result_name(path: &str, id: &str, pid: Option<&str>) -> bool {
+fn result_name(path: &str, id: &str, pid: Option<&str>, directory: bool) -> bool {
     let mut parts = path.split('/');
     let Some(first) = parts.next() else {
         return false;
     };
     let rest: Vec<_> = parts.collect();
+    if first == format!(".tmp-{id}-manifest") {
+        return rest.is_empty() && !directory;
+    }
     let files = [
         "results.json",
         "events.csv",
@@ -156,6 +159,9 @@ fn result_name(path: &str, id: &str, pid: Option<&str>) -> bool {
     let Some(pid) = pid else {
         return false;
     };
+    if let Some(tail) = first.strip_prefix(&format!(".dir-can-ledger-{pid}-")) {
+        return rest.is_empty() && !directory && decimal_tail(tail);
+    }
     if let Some(tail) = first.strip_prefix(&format!(".dir-observations-{pid}-")) {
         return rest.is_empty() && decimal_tail(tail);
     }
@@ -173,6 +179,25 @@ fn result_name(path: &str, id: &str, pid: Option<&str>) -> bool {
         }
     }
     false
+}
+#[cfg(test)]
+#[test]
+fn can_ledger_cleanup_requires_recorded_worker_and_regular_leaf() {
+    assert!(result_name(
+        ".dir-can-ledger-123-0",
+        "run-one",
+        Some("123"),
+        false
+    ));
+    for (path, pid, directory) in [
+        (".dir-can-ledger-124-0", Some("123"), false),
+        (".dir-can-ledger-123-0", None, false),
+        (".dir-can-ledger-123-0", Some("123"), true),
+        (".dir-can-ledger-123-0/rows", Some("123"), false),
+        (".dir-can-ledger-123-x", Some("123"), false),
+    ] {
+        assert!(!result_name(path, "run-one", pid, directory));
+    }
 }
 pub(super) fn approved(shared: &Shared, record: &RunRecord) -> Result<Vec<OwnedEntry>> {
     let dir = verify_owner(shared, record)?;
@@ -224,9 +249,12 @@ pub(super) fn approved(shared: &Shared, record: &RunRecord) -> Result<Vec<OwnedE
                         expected.as_ref().is_some_and(|i| i == &entry.identity)
                     })
             }
-            Some(("result", path)) => {
-                result_name(path, &record.run_id, record.worker_pid.as_deref())
-            }
+            Some(("result", path)) => result_name(
+                path,
+                &record.run_id,
+                record.worker_pid.as_deref(),
+                entry.directory,
+            ),
             _ => false,
         };
         if !allowed {

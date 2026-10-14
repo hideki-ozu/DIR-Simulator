@@ -6,6 +6,8 @@
 //! assert_eq!(report.exit_code, 0);
 //! # Ok::<(), dir_simulator::types::Diagnostic>(())
 //! ```
+#[cfg(test)]
+pub(crate) mod acceptance_hooks;
 pub(crate) mod allocation;
 pub mod input;
 pub mod output;

@@ -721,6 +721,37 @@ struct PlannedFile {
     before: Before,
     rank: u8,
 }
+/// Descriptive input provenance; output authorization remains with the target
+/// registry and planned files, never with this mapping.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct RolePathMapping {
+    pub role: FileRole,
+    pub output_path: PathBuf,
+}
+pub(crate) type InputOutputMapping = BTreeMap<String, Vec<RolePathMapping>>;
+
+fn validate_mapping(mapping: &InputOutputMapping, paths: &BTreeSet<PathBuf>) -> Result<()> {
+    let mut covered = BTreeSet::new();
+    for (input_id, outputs) in mapping {
+        if input_id.is_empty() || outputs.is_empty() {
+            return Err(invalid("Empty input/output mapping"));
+        }
+        for (index, output) in outputs.iter().enumerate() {
+            if !paths.contains(&output.output_path) || outputs[..index].contains(output) {
+                return Err(invalid("Input/output mapping differs from planned files"));
+            }
+            covered.insert(output.output_path.clone());
+        }
+    }
+    if &covered != paths {
+        return Err(invalid(
+            "Input/output mapping does not cover planned input files",
+        ));
+    }
+    Ok(())
+}
+
 #[derive(Clone)]
 pub(crate) struct SavePlan {
     pub id: String,
@@ -731,6 +762,7 @@ pub(crate) struct SavePlan {
     pub target_id: String,
     pub output_path: PathBuf,
     pub requires_layout_confirmation: bool,
+    pub mapping: InputOutputMapping,
     target: Target,
     files: Vec<PlannedFile>,
     directories: Vec<PathBuf>,
@@ -885,6 +917,7 @@ pub(crate) fn build_plan(
             .collect()
     };
     let mut files = BTreeMap::<PathBuf, (Vec<u8>, u8)>::new();
+    let mut mapping = InputOutputMapping::new();
     let mut directories = BTreeSet::new();
     let mut workload = None;
     let mut model_config = None;
@@ -901,7 +934,16 @@ pub(crate) fn build_plan(
     for file in project.files.values() {
         for role in &file.roles {
             let (path, rank) = match role {
-                FileRole::Config => continue,
+                FileRole::Config => {
+                    mapping
+                        .entry(file.id.clone())
+                        .or_default()
+                        .push(RolePathMapping {
+                            role: role.clone(),
+                            output_path: target.config.clone(),
+                        });
+                    continue;
+                }
                 FileRole::Ned {
                     root_index,
                     relative,
@@ -938,6 +980,13 @@ pub(crate) fn build_plan(
                     return Err(invalid("Output role collision"));
                 }
             }
+            mapping
+                .entry(file.id.clone())
+                .or_default()
+                .push(RolePathMapping {
+                    role: role.clone(),
+                    output_path: path.clone(),
+                });
             files.insert(path.clone(), (file.text.as_bytes().to_vec(), rank));
             directories.insert(path.parent().unwrap().to_path_buf());
         }
@@ -1074,6 +1123,14 @@ pub(crate) fn build_plan(
             rank,
         })
         .collect();
+    validate_mapping(
+        &mapping,
+        &files
+            .iter()
+            .filter(|file| file.rank != 2)
+            .map(|file| file.path.clone())
+            .collect(),
+    )?;
     let directories: Vec<_> = directories.into_iter().collect();
     let virtual_files = files
         .iter()
@@ -1096,6 +1153,7 @@ pub(crate) fn build_plan(
             target_id,
             &baseline_digest,
             &files,
+            &mapping,
             &directories,
             &target.config,
             &target.cwd,
@@ -1112,6 +1170,7 @@ pub(crate) fn build_plan(
         target_id: target_id.into(),
         output_path: target.path.clone(),
         requires_layout_confirmation,
+        mapping,
         target,
         files,
         directories,
@@ -1144,6 +1203,7 @@ pub(crate) struct SaveReport {
     pub state: SaveOutcome,
     pub error: Option<EditorError>,
     pub files: Vec<FileSaveResult>,
+    pub mapping: InputOutputMapping,
     pub recovery_id: Option<String>,
     pub output_path: PathBuf,
 }
@@ -1185,8 +1245,23 @@ struct Manifest {
     state: String,
     action: Option<String>,
     files: Vec<JournalFile>,
+    // Older schema-1 journals did not retain input file identities. Keep them
+    // readable, reporting an empty mapping rather than guessing those IDs.
+    #[serde(default)]
+    mapping: InputOutputMapping,
+    // Digest-only inputs which cannot be recovered from the expanded target.
+    // They never grant path or deletion authority.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    plan_context: Option<PlanDigestContext>,
     directories: Vec<JournalDirectory>,
     completed_target: Option<Target>,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PlanDigestContext {
+    baseline_digest: String,
+    directories: Vec<PathBuf>,
+    requires_layout_confirmation: bool,
 }
 // Durable deletion authority contains only identities under a canonical private save ID.
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -1233,6 +1308,34 @@ impl RetiredJournal {
             })
         {
             return Err(invalid("Invalid retired node allowlist"));
+        }
+        if self.manifest.plan_context.is_none() && !self.manifest.mapping.is_empty() {
+            return Err(invalid("Mapped retired journal lacks plan digest context"));
+        }
+        // This hash was captured only after load_manifest checked the original
+        // plan digest and backup bytes. Bind the returned manifest to that same
+        // verified journal even when GC has already reclaimed every backup.
+        let bytes =
+            serde_json::to_vec_pretty(&self.manifest).map_err(|e| invalid(e.to_string()))?;
+        let expected = self.nodes["manifest.json"].hash.as_deref();
+        if expected != Some(hash(&bytes).as_str()) {
+            // Pre-mapping schema-1 writers omitted this default-empty field.
+            let legacy = if self.manifest.mapping.is_empty() && self.manifest.plan_context.is_none()
+            {
+                Some(hash(
+                    String::from_utf8(bytes)
+                        .map_err(|e| invalid(e.to_string()))?
+                        .replacen("\n  \"mapping\": {},", "", 1)
+                        .as_bytes(),
+                ))
+            } else {
+                None
+            };
+            if legacy.as_deref() != expected {
+                return Err(invalid(
+                    "Retired manifest differs from verified journal hash",
+                ));
+            }
         }
         Ok(())
     }
@@ -1299,7 +1402,18 @@ impl TargetRegistry {
         {
             return Err(invalid("Recovery registration digest mismatch"));
         }
+        if !m.mapping.is_empty() {
+            validate_mapping(
+                &m.mapping,
+                &m.files
+                    .iter()
+                    .filter(|file| file.rank != 2)
+                    .map(|file| file.path.clone())
+                    .collect(),
+            )?;
+        }
         let mut seen = BTreeSet::new();
+        let mut planned_files = Vec::new();
         for (i, file) in m.files.iter().enumerate() {
             if !registered.allowed_files.contains(&file.path)
                 || !seen.insert(file.path.clone())
@@ -1325,6 +1439,13 @@ impl TargetRegistry {
             if after.len() as u64 != file.after_size || hash(&after) != file.after_hash {
                 return Err(invalid("After backup hash/size mismatch"));
             }
+            planned_files.push(PlannedFile {
+                path: file.path.clone(),
+                bytes: after,
+                hash: file.after_hash.clone(),
+                before: file.before.clone(),
+                rank: file.rank,
+            });
             if let (
                 Before::Present {
                     hash: expected,
@@ -1342,6 +1463,29 @@ impl TargetRegistry {
             if !registered.directories.contains(&dir.path) {
                 return Err(invalid("Unregistered recovery directory"));
             }
+        }
+        if let Some(context) = &m.plan_context {
+            let digest = hash(
+                &serde_json::to_vec(&(
+                    m.revision,
+                    m.input_revision,
+                    &m.snapshot_id,
+                    &m.target.id,
+                    &context.baseline_digest,
+                    &planned_files,
+                    &m.mapping,
+                    &context.directories,
+                    &m.target.config,
+                    &m.target.cwd,
+                    context.requires_layout_confirmation,
+                ))
+                .map_err(|e| invalid(e.to_string()))?,
+            );
+            if digest != m.plan_digest {
+                return Err(invalid("Recovery plan digest mismatch"));
+            }
+        } else if !m.mapping.is_empty() {
+            return Err(invalid("Mapped recovery journal lacks plan digest context"));
         }
         if let Some(completed) = &m.completed_target {
             if completed.id != registered.id
@@ -1962,6 +2106,12 @@ fn initial_manifest(plan: &SavePlan, registry: &mut TargetRegistry) -> Result<Ma
         state: "prepared".into(),
         action: None,
         files,
+        mapping: plan.mapping.clone(),
+        plan_context: Some(PlanDigestContext {
+            baseline_digest: plan.baseline_digest.clone(),
+            directories: plan.directories.clone(),
+            requires_layout_confirmation: plan.requires_layout_confirmation,
+        }),
         directories: dirs,
         completed_target: None,
     };
@@ -1987,6 +2137,7 @@ fn report_plan(plan: &SavePlan, error: EditorError) -> SaveReport {
                 hash: None,
             })
             .collect(),
+        mapping: plan.mapping.clone(),
         recovery_id: None,
         output_path: plan.output_path.clone(),
     }
@@ -2046,6 +2197,7 @@ fn report_manifest(m: &Manifest, state: SaveOutcome, error: Option<EditorError>)
         state,
         error,
         files,
+        mapping: m.mapping.clone(),
         output_path: m.target.path.clone(),
     }
 }
@@ -2056,6 +2208,15 @@ pub(crate) fn save_plan(
     replace_layout_confirmed: bool,
 ) -> SaveReport {
     let check = (|| {
+        validate_mapping(
+            &plan.mapping,
+            &plan
+                .files
+                .iter()
+                .filter(|file| file.rank != 2)
+                .map(|file| file.path.clone())
+                .collect(),
+        )?;
         let target = registry
             .data
             .targets
@@ -2558,6 +2719,7 @@ pub(crate) fn recover(
         state: SaveOutcome::Rejected,
         error: Some(e),
         files: Vec::new(),
+        mapping: InputOutputMapping::new(),
         recovery_id: Some(recovery_id.into()),
         output_path: PathBuf::new(),
     };
@@ -2669,6 +2831,8 @@ thread_local! { static FAILURE:std::cell::RefCell<Option<(String,usize)>>=const 
 #[cfg(test)]
 thread_local! { static PUBLICATION_COLLISION:std::cell::RefCell<Option<PathBuf>>=const {std::cell::RefCell::new(None)}; }
 fn checkpoint(_name: &str) -> Result<()> {
+    #[cfg(test)]
+    crate::acceptance_hooks::hit(&format!("save.{_name}"));
     #[cfg(test)]
     {
         FAILURE.with(|state| {

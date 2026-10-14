@@ -22,7 +22,7 @@ jobs:
   rust:
     name: Rust ledger identity regression
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -70,7 +70,14 @@ jobs:
               assert hashlib.sha256(data).hexdigest() == entry['sha256']
           print('PASS: actual ledger hash/document version, metadata reference and manifest files')
           PY
-          DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control -- --ignored --nocapture --test-threads=1
+          # Includes native fault/resource/cancellation/restart tests. Keep them
+          # serial and separate from ordinary libtests' process-local fixtures.
+          # ubuntu-24.04 may deny unprivileged uid_map. Use sudo only to
+          # create/enter the private mount namespace; the test drops back to
+          # the runner identity with no groups/capabilities before execution.
+          DIR_ACCEPTANCE_NAMESPACE_MODE=sudo-mount DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control -- --ignored --nocapture --test-threads=1
+          DIR_NED_HTTP_BINARY="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_acceptance_http.test.cjs
+          DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_run_shutdown.test.cjs
       - name: Viewer model and browser regression
         run: |
           node --version
@@ -82,6 +89,7 @@ jobs:
           node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node --test tests/ned_editor_viewer_expiry_browser.test.cjs
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_extensions_browser.test.cjs
+          PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_hostile_browser.test.cjs
       - name: Audit checker and comparison selftests
         run: |
           python3 scripts/check_third_party_notices.py

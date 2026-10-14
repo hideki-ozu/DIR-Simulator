@@ -1,4 +1,6 @@
 //! Durable asynchronous runs, independently locked from editor state.
+#[cfg(test)]
+mod acceptance_fault_tests;
 mod cleanup;
 pub(crate) mod storage;
 #[cfg(test)]
@@ -627,8 +629,12 @@ impl RunManager {
                 .unwrap()
                 .pending
                 .insert(command_key.clone(), r.clone());
+            #[cfg(test)]
+            crate::acceptance_hooks::hit("run.before_publish");
             let publication =
                 Directory::open(&self.shared.root)?.rename_child(&staging, &id, &r.owner);
+            #[cfg(test)]
+            crate::acceptance_hooks::hit("run.after_publish");
             #[cfg(test)]
             let publication = publication.and_then(|()| {
                 if self
@@ -732,6 +738,8 @@ impl RunManager {
     pub(crate) fn cancel(&self, id: &str) -> Result<Value> {
         self.mutation()?;
         self.record(id)?;
+        #[cfg(test)]
+        crate::acceptance_hooks::hit("run.before_cancel_persist");
         let mut state = self.shared.state.lock().unwrap();
         let r = state.records.get_mut(id).ok_or_else(missing)?;
         if r.phase == "queued" {
@@ -746,6 +754,8 @@ impl RunManager {
         }
         let value = r.value();
         drop(state);
+        #[cfg(test)]
+        crate::acceptance_hooks::hit("run.after_cancel_persist");
         self.shared.wake.notify_all();
         Ok(value)
     }
@@ -1240,8 +1250,12 @@ fn recover_record(shared: &Shared, r: &mut RunRecord) -> Result<()> {
 }
 fn spawn_worker(
     shared: &Shared,
-    request: &worker::Request,
+    _request: &worker::Request,
 ) -> Result<(std::process::Child, Instant)> {
+    #[cfg(test)]
+    if std::env::var_os(crate::acceptance_hooks::WORKERS).is_some() {
+        return acceptance_fault_tests::spawn_worker(_request);
+    }
     if hash_file(&File::open(&shared.binary).map_err(|e| EditorError::io(&shared.binary, e))?)?
         != shared.binary_hash
     {
@@ -1253,7 +1267,7 @@ fn spawn_worker(
     use std::process::{Command, Stdio};
     // process_group is a safe standard-library API; no pre_exec/unsafe closure.
     let started = Instant::now();
-    let mut child = Command::new(&shared.binary)
+    let child = Command::new(&shared.binary)
         .arg("--ned-editor-run-worker")
         .process_group(0)
         .env_clear()
@@ -1262,13 +1276,16 @@ fn spawn_worker(
         .stderr(Stdio::piped())
         .spawn()
         .map_err(|e| EditorError::new("E-EDITOR-RUN-WORKER", e.to_string(), 500))?;
+    Ok((child, started))
+}
+fn start_worker(child: &mut std::process::Child, request: &worker::Request) -> Result<()> {
     if let Err(e) = worker::write_frame(child.stdin.as_mut().expect("worker pipe"), request) {
         let _ = child.kill();
         let _ = child.wait();
         return Err(e);
     }
     child.stdin.take();
-    Ok((child, started))
+    Ok(())
 }
 fn probe_worker(shared: &Shared) -> Result<()> {
     let request = worker::Request {
@@ -1281,6 +1298,7 @@ fn probe_worker(shared: &Shared) -> Result<()> {
         bundle_digest: String::new(),
     };
     let (mut child, _) = spawn_worker(shared, &request)?;
+    start_worker(&mut child, &request)?;
     let pid = rustix::process::Pid::from_raw(child.id() as i32)
         .ok_or_else(|| invalid("Invalid worker PID"))?;
     let pidfd = match rustix::process::pidfd_open(pid, rustix::process::PidfdFlags::empty()) {
@@ -1402,6 +1420,16 @@ fn execute_child(shared: &Shared, id: &str, request: worker::Request, timeout: u
             return;
         }
     }
+    // No worker output can precede durable cleanup provenance.
+    if let Err(error) = start_worker(&mut child, &request) {
+        let mut state = shared.state.lock().unwrap();
+        let r = state.records.get_mut(id).unwrap();
+        r.response = Some(worker::Message::InfrastructureFailed {
+            message: error.to_string(),
+        });
+        let _ = finish_record(shared, r);
+        return;
+    }
     let pidfd = match rustix::process::pidfd_open(pid, rustix::process::PidfdFlags::empty()) {
         Ok(fd) => fd,
         Err(e) => {
@@ -1442,6 +1470,17 @@ fn execute_child(shared: &Shared, id: &str, request: worker::Request, timeout: u
     let mut protocol_closed = false;
     let status = loop {
         let message = rx.recv_timeout(Duration::from_millis(100));
+        #[cfg(test)]
+        let terminal_message = matches!(
+            &message,
+            Ok(Ok(worker::Message::Report { .. }
+                | worker::Message::Failed { .. }
+                | worker::Message::PreparedFailed { .. }))
+        );
+        #[cfg(test)]
+        if terminal_message {
+            crate::acceptance_hooks::hit("run.before_completion_lock");
+        }
         let mut state = shared.state.lock().unwrap();
         let r = state.records.get_mut(id).unwrap();
         match message {
@@ -1473,6 +1512,13 @@ fn execute_child(shared: &Shared, id: &str, request: worker::Request, timeout: u
             Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => protocol_closed = true,
             Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {}
         }
+        #[cfg(test)]
+        if terminal_message {
+            drop(state);
+            crate::acceptance_hooks::hit("run.verifying_unlocked");
+            state = shared.state.lock().unwrap();
+        }
+        let r = state.records.get_mut(id).unwrap();
         // Completion acceptance and stop requests use this same run-state lock.
         match child.try_wait() {
             Ok(Some(status)) => {

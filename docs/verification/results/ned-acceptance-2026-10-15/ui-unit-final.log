@@ -1,0 +1,521 @@
+TAP version 13
+# Subtest: edit plan pages concatenate impacts until the final cursor
+ok 1 - edit plan pages concatenate impacts until the final cursor
+  ---
+  duration_ms: 1.388537
+  type: 'test'
+  ...
+# Subtest: edit plan pagination rejects a changed plan, digest, session, or writer epoch
+    # Subtest: plan id
+    ok 1 - plan id
+      ---
+      duration_ms: 1.255019
+      type: 'test'
+      ...
+    # Subtest: plan digest
+    ok 2 - plan digest
+      ---
+      duration_ms: 0.09132
+      type: 'test'
+      ...
+    # Subtest: session
+    ok 3 - session
+      ---
+      duration_ms: 0.069692
+      type: 'test'
+      ...
+    # Subtest: writer epoch
+    ok 4 - writer epoch
+      ---
+      duration_ms: 0.118469
+      type: 'test'
+      ...
+    1..4
+ok 2 - edit plan pagination rejects a changed plan, digest, session, or writer epoch
+  ---
+  duration_ms: 1.989194
+  type: 'test'
+  ...
+# Subtest: edit plan pagination rejects a cursor loop
+ok 3 - edit plan pagination rejects a cursor loop
+  ---
+  duration_ms: 0.11136
+  type: 'test'
+  ...
+# Subtest: removing the selected file drops a clean buffer and resets the editor scope
+ok 4 - removing the selected file drops a clean buffer and resets the editor scope
+  ---
+  duration_ms: 0.252255
+  type: 'test'
+  ...
+# Subtest: removed unsent, composing, and sent buffers stay orphaned and recover their raw text when the file returns
+ok 5 - removed unsent, composing, and sent buffers stay orphaned and recover their raw text when the file returns
+  ---
+  duration_ms: 0.889077
+  type: 'test'
+  ...
+# Subtest: same-file COW Undo and Redo rebind the selected instance to the surviving type key
+ok 6 - same-file COW Undo and Redo rebind the selected instance to the surviving type key
+  ---
+  duration_ms: 0.271273
+  type: 'test'
+  ...
+# Subtest: a disappeared selected type clears its stale key and advances scope generation
+ok 7 - a disappeared selected type clears its stale key and advances scope generation
+  ---
+  duration_ms: 0.260324
+  type: 'test'
+  ...
+# Subtest: pending text prevents scope reconciliation while the NED parse is unresolved
+ok 8 - pending text prevents scope reconciliation while the NED parse is unresolved
+  ---
+  duration_ms: 0.166864
+  type: 'test'
+  ...
+# Subtest: edit impact descriptions preserve file and symbol names as display strings
+ok 9 - edit impact descriptions preserve file and symbol names as display strings
+  ---
+  duration_ms: 0.158306
+  type: 'test'
+  ...
+# Subtest: run history is current by project and input identity, regardless of layout-only revision changes
+ok 10 - run history is current by project and input identity, regardless of layout-only revision changes
+  ---
+  duration_ms: 0.278967
+  type: 'test'
+  ...
+# Subtest: Viewer links require a separate loopback HTTP origin with an explicit port and no fragment or credentials
+ok 11 - Viewer links require a separate loopback HTTP origin with an explicit port and no fragment or credentials
+  ---
+  duration_ms: 0.736525
+  type: 'test'
+  ...
+# Subtest: run artifact download sends the editor session and returns the binary response
+ok 12 - run artifact download sends the editor session and returns the binary response
+  ---
+  duration_ms: 0.483663
+  type: 'test'
+  ...
+# Subtest: run artifact download turns an HTTP failure into an ApiError with server details
+ok 13 - run artifact download turns an HTTP failure into an ApiError with server details
+  ---
+  duration_ms: 0.289881
+  type: 'test'
+  ...
+# Subtest: Viewer expires exactly at its deadline, invalidates the render cache and permits preparation
+ok 14 - Viewer expires exactly at its deadline, invalidates the render cache and permits preparation
+  ---
+  duration_ms: 3.053177
+  type: 'test'
+  ...
+# Subtest: run cards show partial and recovered outcomes while readonly mode locks run mutations
+ok 15 - run cards show partial and recovered outcomes while readonly mode locks run mutations
+  ---
+  duration_ms: 1.254724
+  type: 'test'
+  ...
+# Subtest: run cards render nested diagnostics and keep published results downloadable when Viewer preparation failed
+ok 16 - run cards render nested diagnostics and keep published results downloadable when Viewer preparation failed
+  ---
+  duration_ms: 0.939201
+  type: 'test'
+  ...
+# Subtest: recovery-only lock remains visible even when no journal can be listed
+ok 17 - recovery-only lock remains visible even when no journal can be listed
+  ---
+  duration_ms: 4.687886
+  type: 'test'
+  ...
+# Subtest: completed publication awaiting registry checkpoint offers only finalization
+ok 18 - completed publication awaiting registry checkpoint offers only finalization
+  ---
+  duration_ms: 2.085932
+  type: 'test'
+  ...
+# Subtest: invalid journal remains visible with diagnostic and neither destructive recovery action
+ok 19 - invalid journal remains visible with diagnostic and neither destructive recovery action
+  ---
+  duration_ms: 1.155726
+  type: 'test'
+  ...
+# Subtest: boundary port addition is enabled only on module declarations
+ok 20 - boundary port addition is enabled only on module declarations
+  ---
+  duration_ms: 1.684407
+  type: 'test'
+  ...
+# Subtest: LF shadow maps BOM, Japanese, emoji and CRLF using byte/codepoint boundaries
+ok 21 - LF shadow maps BOM, Japanese, emoji and CRLF using byte/codepoint boundaries
+  ---
+  duration_ms: 2.673988
+  type: 'test'
+  ...
+# Subtest: local patch retains BOM, comments and every unmodified mixed newline
+ok 22 - local patch retains BOM, comments and every unmodified mixed newline
+  ---
+  duration_ms: 0.771311
+  type: 'test'
+  ...
+# Subtest: emoji replacement expands a common surrogate prefix to complete code points
+ok 23 - emoji replacement expands a common surrogate prefix to complete code points
+  ---
+  duration_ms: 0.439369
+  type: 'test'
+  ...
+# Subtest: newlines inserted in an interval use its nearest original newline
+ok 24 - newlines inserted in an interval use its nearest original newline
+  ---
+  duration_ms: 0.198238
+  type: 'test'
+  ...
+# Subtest: acknowledgement updates the baseline without overwriting newer typing
+ok 25 - acknowledgement updates the baseline without overwriting newer typing
+  ---
+  duration_ms: 0.252186
+  type: 'test'
+  ...
+# Subtest: blocked buffer preserves unsent text, and IME end explicitly releases waiters
+ok 26 - blocked buffer preserves unsent text, and IME end explicitly releases waiters
+  ---
+  duration_ms: 0.253996
+  type: 'test'
+  ...
+# Subtest: JSON body limit counts encoded UTF-8 and escapes, not UTF-16 length
+ok 27 - JSON body limit counts encoded UTF-8 and escapes, not UTF-16 length
+  ---
+  duration_ms: 0.411072
+  type: 'test'
+  ...
+# Subtest: API keeps credentials only in the required header and supplies JSON content type
+ok 28 - API keeps credentials only in the required header and supplies JSON content type
+  ---
+  duration_ms: 0.420417
+  type: 'test'
+  ...
+# Subtest: command DTO preserves all u64 values as strings and forwards opaque acknowledgement
+ok 29 - command DTO preserves all u64 values as strings and forwards opaque acknowledgement
+  ---
+  duration_ms: 0.805863
+  type: 'test'
+  ...
+# Subtest: 202 reserves sequence, blocks the next command and waits for a terminal job
+ok 30 - 202 reserves sequence, blocks the next command and waits for a terminal job
+  ---
+  duration_ms: 252.134991
+  type: 'test'
+  ...
+# Subtest: consumed terminal rejection advances sequence and retains command without retransmitting
+ok 31 - consumed terminal rejection advances sequence and retains command without retransmitting
+  ---
+  duration_ms: 0.319371
+  type: 'test'
+  ...
+# Subtest: unconsumed terminal rejection does not advance sequence
+ok 32 - unconsumed terminal rejection does not advance sequence
+  ---
+  duration_ms: 0.108968
+  type: 'test'
+  ...
+# Subtest: uncertain response retains exact command and resolves through same-ID lookup only
+ok 33 - uncertain response retains exact command and resolves through same-ID lookup only
+  ---
+  duration_ms: 0.222081
+  type: 'test'
+  ...
+# Subtest: oversized command remains a local error, never an uncertain transmission
+ok 34 - oversized command remains a local error, never an uncertain transmission
+  ---
+  duration_ms: 0.098124
+  type: 'test'
+  ...
+# Subtest: read-only clients cannot send mutation commands
+ok 35 - read-only clients cannot send mutation commands
+  ---
+  duration_ms: 0.177613
+  type: 'test'
+  ...
+# Subtest: view adoption rejects old scope, session and sequences with exact u64 comparison
+ok 36 - view adoption rejects old scope, session and sequences with exact u64 comparison
+  ---
+  duration_ms: 0.109947
+  type: 'test'
+  ...
+# Subtest: port roles reverse only at compound boundaries without changing input/output labels
+ok 37 - port roles reverse only at compound boundaries without changing input/output labels
+  ---
+  duration_ms: 0.28222
+  type: 'test'
+  ...
+# Subtest: display geometry preserves backend coordinates and unresolved nodes have no invented gates
+ok 38 - display geometry preserves backend coordinates and unresolved nodes have no invented gates
+  ---
+  duration_ms: 0.082723
+  type: 'test'
+  ...
+# Subtest: pending text takes display priority over a past ready state; recovery comes first
+ok 39 - pending text takes display priority over a past ready state; recovery comes first
+  ---
+  duration_ms: 0.14032
+  type: 'test'
+  ...
+# Subtest: instance selection resolves the exact shared type key and sends its file, path and scope generation
+ok 40 - instance selection resolves the exact shared type key and sends its file, path and scope generation
+  ---
+  duration_ms: 0.19874
+  type: 'test'
+  ...
+# Subtest: node navigation keeps the current instance branch and rejects absent, unresolved and mismatched children
+ok 41 - node navigation keeps the current instance branch and rejects absent, unresolved and mismatched children
+  ---
+  duration_ms: 0.080411
+  type: 'test'
+  ...
+# Subtest: hierarchy filtering retains ancestors and backend instance order without inventing children
+ok 42 - hierarchy filtering retains ancestors and backend instance order without inventing children
+  ---
+  duration_ms: 0.225554
+  type: 'test'
+  ...
+# Subtest: cycle instances can be inspected but structural editing is disabled only in invalid selected contexts
+ok 43 - cycle instances can be inspected but structural editing is disabled only in invalid selected contexts
+  ---
+  duration_ms: 0.095233
+  type: 'test'
+  ...
+# Subtest: parameter values require the selected instance, corresponding graph and current projection
+ok 44 - parameter values require the selected instance, corresponding graph and current projection
+  ---
+  duration_ms: 0.168037
+  type: 'test'
+  ...
+# Subtest: browser callbacks navigate instances and breadcrumbs, clear context on type/file selection and retain source buffers
+ok 45 - browser callbacks navigate instances and breadcrumbs, clear context on type/file selection and retain source buffers
+  ---
+  duration_ms: 2.245471
+  type: 'test'
+  ...
+# Subtest: source acknowledgement uses the committed raw hash and retains later typing on a cross-tab race
+ok 46 - source acknowledgement uses the committed raw hash and retains later typing on a cross-tab race
+  ---
+  duration_ms: 4.829154
+  type: 'test'
+  ...
+# Subtest: default fetch is bound to the browser global instead of the Api instance
+ok 47 - default fetch is bound to the browser global instead of the Api instance
+  ---
+  duration_ms: 0.167671
+  type: 'test'
+  ...
+# Subtest: builtin choices remain available without NED definitions and preserve colliding project names
+ok 48 - builtin choices remain available without NED definitions and preserve colliding project names
+  ---
+  duration_ms: 0.331421
+  type: 'test'
+  ...
+# Subtest: file badges distinguish NED parsing from INI and JSON source roles
+ok 49 - file badges distinguish NED parsing from INI and JSON source roles
+  ---
+  duration_ms: 0.086759
+  type: 'test'
+  ...
+# Subtest: CAN pair candidates use Classical and Multibus implementation metadata and unused gates
+ok 50 - CAN pair candidates use Classical and Multibus implementation metadata and unused gates
+  ---
+  duration_ms: 0.203785
+  type: 'test'
+  ...
+# Subtest: project reset clears old buffers and scope while retaining monotonic response counters
+ok 51 - project reset clears old buffers and scope while retaining monotonic response counters
+  ---
+  duration_ms: 0.115426
+  type: 'test'
+  ...
+# Subtest: New confirmation cancellation and terminal rejection preserve buffers and selected scope
+ok 52 - New confirmation cancellation and terminal rejection preserve buffers and selected scope
+  ---
+  duration_ms: 2.837093
+  type: 'test'
+  ...
+# Subtest: successful New and uncertain same-ID lookup clear old context then select the new network
+ok 53 - successful New and uncertain same-ID lookup clear old context then select the new network
+  ---
+  duration_ms: 1.411521
+  type: 'test'
+  ...
+# Subtest: INI and JSON navigation edits and flushes through the same lossless source command
+ok 54 - INI and JSON navigation edits and flushes through the same lossless source command
+  ---
+  duration_ms: 8.496473
+  type: 'test'
+  ...
+# Subtest: instance choices use resolved Controller metadata and exact descendant path boundaries
+ok 55 - instance choices use resolved Controller metadata and exact descendant path boundaries
+  ---
+  duration_ms: 0.23926
+  type: 'test'
+  ...
+# Subtest: Gateway structured payload supports fanout and rejects duplicate IDs, foreign ports and reversed ranges
+ok 56 - Gateway structured payload supports fanout and rejects duplicate IDs, foreign ports and reversed ranges
+  ---
+  duration_ms: 0.399564
+  type: 'test'
+  ...
+# Subtest: workload form canonicalizes periodic/explicit rows and rejects duplicate and unsafe values
+ok 57 - workload form canonicalizes periodic/explicit rows and rejects duplicate and unsafe values
+  ---
+  duration_ms: 0.456118
+  type: 'test'
+  ...
+# Subtest: gate forms produce atomic direction pairs and reject duplicate or invalid identifiers
+ok 58 - gate forms produce atomic direction pairs and reject duplicate or invalid identifiers
+  ---
+  duration_ms: 0.181099
+  type: 'test'
+  ...
+# Subtest: composition dialogs use structural confirmations and atomic boundary-port commands
+ok 59 - composition dialogs use structural confirmations and atomic boundary-port commands
+  ---
+  duration_ms: 1.04591
+  type: 'test'
+  ...
+# Subtest: configuration commands confirm impacts, preserve count strings for INI and block unreadable JSON
+ok 60 - configuration commands confirm impacts, preserve count strings for INI and block unreadable JSON
+  ---
+  duration_ms: 2.05511
+  type: 'test'
+  ...
+# Subtest: workload settings flush pending JSON before constructing rows and show the latest count
+ok 61 - workload settings flush pending JSON before constructing rows and show the latest count
+  ---
+  duration_ms: 4.166486
+  type: 'test'
+  ...
+# Subtest: settings submission rejects changed raw buffers or remote revision instead of overwriting newer JSON
+ok 62 - settings submission rejects changed raw buffers or remote revision instead of overwriting newer JSON
+  ---
+  duration_ms: 2.796551
+  type: 'test'
+  ...
+# Subtest: network and instance settings use refreshed projections rather than earlier button snapshots
+ok 63 - network and instance settings use refreshed projections rather than earlier button snapshots
+  ---
+  duration_ms: 1.930058
+  type: 'test'
+  ...
+# Subtest: Gateway settings bind both node selection and route forms to the current source snapshot
+ok 64 - Gateway settings bind both node selection and route forms to the current source snapshot
+  ---
+  duration_ms: 1.868287
+  type: 'test'
+  ...
+# Subtest: settings snapshot also rejects drift after a newer edit has already been acknowledged
+ok 65 - settings snapshot also rejects drift after a newer edit has already been acknowledged
+  ---
+  duration_ms: 0.227045
+  type: 'test'
+  ...
+# Subtest: settings recheck source after shared-impact confirmation and preserve a remote edit
+ok 66 - settings recheck source after shared-impact confirmation and preserve a remote edit
+  ---
+  duration_ms: 1.749856
+  type: 'test'
+  ...
+# Subtest: settings opening waits for IME completion before taking the source snapshot
+ok 67 - settings opening waits for IME completion before taking the source snapshot
+  ---
+  duration_ms: 0.918922
+  type: 'test'
+  ...
+# Subtest: Run waits for composition and source acknowledgement before freezing input
+ok 68 - Run waits for composition and source acknowledgement before freezing input
+  ---
+  duration_ms: 1.093987
+  type: 'test'
+  ...
+# Subtest: Run creates no command while flush is blocked or fails and retains the edited bytes
+ok 69 - Run creates no command while flush is blocked or fails and retains the edited bytes
+  ---
+  duration_ms: 0.831246
+  type: 'test'
+  ...
+# Subtest: Run flushes typing received during an unacknowledged edit before freezing the final version
+ok 70 - Run flushes typing received during an unacknowledged edit before freezing the final version
+  ---
+  duration_ms: 1.652681
+  type: 'test'
+  ...
+# Subtest: Run dialog cancellation and invalid timeout never flush or create a run
+ok 71 - Run dialog cancellation and invalid timeout never flush or create a run
+  ---
+  duration_ms: 0.545405
+  type: 'test'
+  ...
+# Subtest: Gateway choices retain orphan settings nodes and unavailable configured ports
+ok 72 - Gateway choices retain orphan settings nodes and unavailable configured ports
+  ---
+  duration_ms: 0.146229
+  type: 'test'
+  ...
+# Subtest: Gateway settings can delete an orphan entry and reject configuring an absent compound
+ok 73 - Gateway settings can delete an orphan entry and reject configuring an absent compound
+  ---
+  duration_ms: 0.757575
+  type: 'test'
+  ...
+# Subtest: Gateway dialogs preserve missing checked ports and route values until explicitly unchecked
+ok 74 - Gateway dialogs preserve missing checked ports and route values until explicitly unchecked
+  ---
+  duration_ms: 6.257592
+  type: 'test'
+  ...
+# Subtest: a queued close event from the preceding dialog cannot close the next settings step
+ok 75 - a queued close event from the preceding dialog cannot close the next settings step
+  ---
+  duration_ms: 1.272734
+  type: 'test'
+  ...
+# Subtest: repeatable forms retain invalid rows, allow removal/addition and collect only live rows
+ok 76 - repeatable forms retain invalid rows, allow removal/addition and collect only live rows
+  ---
+  duration_ms: 1.058218
+  type: 'test'
+  ...
+# Subtest: repeatable route choices track checked Gateway ports and disabled conditional inputs
+ok 77 - repeatable route choices track checked Gateway ports and disabled conditional inputs
+  ---
+  duration_ms: 0.989149
+  type: 'test'
+  ...
+# Subtest: Save As requires writer before opening its dialog and sends the current lease
+ok 78 - Save As requires writer before opening its dialog and sends the current lease
+  ---
+  duration_ms: 1.724151
+  type: 'test'
+  ...
+# Subtest: Save As rechecks writer after its dialog, so a takeover cannot register a destination
+ok 79 - Save As rechecks writer after its dialog, so a takeover cannot register a destination
+  ---
+  duration_ms: 0.365958
+  type: 'test'
+  ...
+# Subtest: layout-only drag and collapse send commands without type impact confirmations
+ok 80 - layout-only drag and collapse send commands without type impact confirmations
+  ---
+  duration_ms: 0.373236
+  type: 'test'
+  ...
+# Subtest: explicit time form roundtrip preserves spaces between numbers and units
+ok 81 - explicit time form roundtrip preserves spaces between numbers and units
+  ---
+  duration_ms: 0.10094
+  type: 'test'
+  ...
+1..81
+# tests 85
+# suites 0
+# pass 85
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 369.340863

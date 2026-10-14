@@ -1,0 +1,17 @@
+   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/source/crates/dir-simulator)
+error[E0425]: cannot find function `hash` in this scope
+   --> crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs:233:19
+    |
+233 |     config.hash = hash(config.text.as_bytes());
+    |                   ^^^^ not found in this scope
+    |
+help: consider importing one of these functions
+    |
+5   + use crate::tool::ned_editor::hash;
+    |
+5   + use std::ptr::hash;
+    |
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `dir-simulator` (lib test) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

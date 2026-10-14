@@ -1,0 +1,377 @@
+{
+  "schema_version": 1,
+  "scope": "PR90 dependent recovery cleanup, mapping integrity and four document target headers",
+  "original_dependency_head": "4258bc5d906797605f2bd8ab64b35fe95d8fd808",
+  "integrated_dependency_head": "91a3b4130f195810c0d3897dca19b71116a5a2cc",
+  "issues": [
+    91,
+    92,
+    93
+  ],
+  "changes": [
+    "Exact run-owned pending manifest regular leaf cleanup",
+    "Recorded worker-PID CAN ledger regular leaf cleanup",
+    "Persist worker PID before sending execution request",
+    "Reconstruct original plan digest including mapping before recovery",
+    "Four document headers point to unreleased development base"
+  ],
+  "negative_reproductions": {
+    "pending_manifest": {
+      "log_sha256": "fbb42d65fd6b0613abbeacaa638e537da8bff7b64cb30c7122a1c3db07349d30",
+      "observed": "E-EDITOR-RUN-INTEGRITY: Unknown owned cleanup descendant: result/.tmp-<own-run-id>-manifest",
+      "test_failed_as_expected": true
+    },
+    "mapping": {
+      "log_sha256": "aa6b90884b3c9e02337abb589c9cda49b3ba1a096ca77d6a34352a444997f832",
+      "observed": "Recovery accepted Workload role changed to ModelConfig with original plan_digest",
+      "test_failed_as_expected": true
+    },
+    "cancel_cut_ledger": {
+      "log_sha256": "92ceabc1f377586a8926115dd589eb3b6ce36633b1f3b6466050a7c937497e52",
+      "observed": "CAN ledger remained while persisted worker_pid was null at cancel cut",
+      "test_failed_as_expected": true
+    }
+  },
+  "source_sha256": {
+    "crates/dir-simulator/src/tool/ned-editor/output.rs": "c6d2e9cd6241f4fb6ff1348be3bf055c3a296c3b03ec4cd424b3eb79696ad798",
+    "crates/dir-simulator/src/tool/ned-editor/output_tests.rs": "4007d267431e3f1f7e7cf2626c6e67d7e70cbdf38f94b78e81074c23d73cdec2",
+    "crates/dir-simulator/src/tool/ned-editor/acceptance_mapping_tests.rs": "49cb7883de42ea115d4343262b46df28fbd394dd71753216c5a10d1d4a7850fb",
+    "crates/dir-simulator/src/tool/ned-editor/run_control.rs": "f28414617998d99eade00de7fb04497dde4e7f0277cb41dffe7c064a112c03f7",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/cleanup.rs": "8ad0c58529e40d1610b8688c49754a6a194dedb695b261060310885134c77bf5",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs": "dd92230e5a23b12f101cd5ac8fd154cc47cfaffb94641f24ad28bfc2c36dbb7d",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs": "e203bef110c8d33778a39e481073a164c06df5ffa614ede10eac4344db74f474"
+  },
+  "xc35": {
+    "cuts": [
+      {
+        "barrier": "snapshot.before_commit",
+        "signal": 9,
+        "expected_run_ids": [],
+        "deleted_run_ids": [],
+        "recovered_runs": [],
+        "execution_launches_unchanged_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "barrier": "snapshot.after_commit",
+        "signal": 9,
+        "expected_run_ids": [],
+        "deleted_run_ids": [],
+        "recovered_runs": [],
+        "execution_launches_unchanged_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "barrier": "snapshot.after_sync",
+        "signal": 9,
+        "expected_run_ids": [],
+        "deleted_run_ids": [],
+        "recovered_runs": [],
+        "execution_launches_unchanged_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "barrier": "run.before_publish",
+        "signal": 9,
+        "expected_run_ids": [],
+        "deleted_run_ids": [],
+        "recovered_runs": [],
+        "execution_launches_unchanged_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "barrier": "run.after_publish",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-f3db969a8c54d0ced5ac3b43c64c881cad958341712006ab5175ba29d30a0071"
+        ],
+        "deleted_run_ids": [
+          "run-f3db969a8c54d0ced5ac3b43c64c881cad958341712006ab5175ba29d30a0071"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-f3db969a8c54d0ced5ac3b43c64c881cad958341712006ab5175ba29d30a0071",
+            "phase": "interrupted",
+            "artifact_state": "unpublished"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "barrier": "run.after_create_ack",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-a36783d3cf2ba613d1eae2578385111fab7dab41b08ad57cf5ba6fdb40cf01b7"
+        ],
+        "deleted_run_ids": [
+          "run-a36783d3cf2ba613d1eae2578385111fab7dab41b08ad57cf5ba6fdb40cf01b7"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-a36783d3cf2ba613d1eae2578385111fab7dab41b08ad57cf5ba6fdb40cf01b7",
+            "phase": "interrupted",
+            "artifact_state": "unpublished"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "barrier": "worker.before_prepare",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-e94ad3e3dc8cbea9f105d0b49cd75c33890a2a63a9b08e9d055fab3b1d5c31f7"
+        ],
+        "deleted_run_ids": [
+          "run-e94ad3e3dc8cbea9f105d0b49cd75c33890a2a63a9b08e9d055fab3b1d5c31f7"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-e94ad3e3dc8cbea9f105d0b49cd75c33890a2a63a9b08e9d055fab3b1d5c31f7",
+            "phase": "interrupted",
+            "artifact_state": "unpublished"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "62a497991f1821df740afc1d2379c573336dcceec283e0fff47b14a0d9e00bf7"
+      },
+      {
+        "barrier": "worker.before_execute",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-bd70029bf968b9ed39704f23169bf15dc9b150672a9edf0a321321974aafe811"
+        ],
+        "deleted_run_ids": [
+          "run-bd70029bf968b9ed39704f23169bf15dc9b150672a9edf0a321321974aafe811"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-bd70029bf968b9ed39704f23169bf15dc9b150672a9edf0a321321974aafe811",
+            "phase": "interrupted",
+            "artifact_state": "unpublished"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "0943f69179eb98d71efc67e10cf281410363a46cb4f3202874d30477574ea6ee"
+      },
+      {
+        "barrier": "output.before_manifest",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-d722642e7dde3377bfb0bc9bf78cb840339d04e0abcebfe89b967d89f388f927"
+        ],
+        "deleted_run_ids": [
+          "run-d722642e7dde3377bfb0bc9bf78cb840339d04e0abcebfe89b967d89f388f927"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-d722642e7dde3377bfb0bc9bf78cb840339d04e0abcebfe89b967d89f388f927",
+            "phase": "interrupted",
+            "artifact_state": "unpublished"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "4a10a2af6c134cd05503f53b5ee70ca1c20b91b2ba64b84411bb347bd8d44d58"
+      },
+      {
+        "barrier": "output.after_manifest",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-49005f34b393827d9ded4ceb5ff31f374ca942f7a18bca9b1f414df242cd3ca3"
+        ],
+        "deleted_run_ids": [
+          "run-49005f34b393827d9ded4ceb5ff31f374ca942f7a18bca9b1f414df242cd3ca3"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-49005f34b393827d9ded4ceb5ff31f374ca942f7a18bca9b1f414df242cd3ca3",
+            "phase": "completed",
+            "artifact_state": "published"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "a4d3d453d90cb907c8af4ca0442cd163d9f15480f0fe47067f0a42edbfae1c29"
+      },
+      {
+        "barrier": "worker.after_response",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-65090b1bf4a59fdfa06e698dc2b7a421f3f33e31a47b0363d0b1624731acffd1"
+        ],
+        "deleted_run_ids": [
+          "run-65090b1bf4a59fdfa06e698dc2b7a421f3f33e31a47b0363d0b1624731acffd1"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-65090b1bf4a59fdfa06e698dc2b7a421f3f33e31a47b0363d0b1624731acffd1",
+            "phase": "completed",
+            "artifact_state": "published"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "af0cab817d1930a05f160d965ac3c50f48929a154f1ad17eeced4ee660860b92"
+      },
+      {
+        "barrier": "worker.before_frame",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-f94ca262f33fecf3b5344e5bc37b8657a939ccd7aa112de1d93b6586f5807367"
+        ],
+        "deleted_run_ids": [
+          "run-f94ca262f33fecf3b5344e5bc37b8657a939ccd7aa112de1d93b6586f5807367"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-f94ca262f33fecf3b5344e5bc37b8657a939ccd7aa112de1d93b6586f5807367",
+            "phase": "completed",
+            "artifact_state": "published"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "fb3dbe27c6e3f47ec9fb54c823a3bcf9fbd2084d1e739020e481fb28ba137dba"
+      },
+      {
+        "barrier": "run.before_completion_lock",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-d6d4feb0f480b245acfb94f97c0d761d49cd7c2a7768a29e1a03d37d6d30f468"
+        ],
+        "deleted_run_ids": [
+          "run-d6d4feb0f480b245acfb94f97c0d761d49cd7c2a7768a29e1a03d37d6d30f468"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-d6d4feb0f480b245acfb94f97c0d761d49cd7c2a7768a29e1a03d37d6d30f468",
+            "phase": "completed",
+            "artifact_state": "published"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "4437dbdeaa86db245996cf2f21d928392593399bf2c4cf5fe236edc178bcda54"
+      },
+      {
+        "barrier": "run.verifying_unlocked",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-ec1eece84bb0c0f7663c9e85ef0815ec3444eaa019768296cfbe7819ac7e185f"
+        ],
+        "deleted_run_ids": [
+          "run-ec1eece84bb0c0f7663c9e85ef0815ec3444eaa019768296cfbe7819ac7e185f"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-ec1eece84bb0c0f7663c9e85ef0815ec3444eaa019768296cfbe7819ac7e185f",
+            "phase": "completed",
+            "artifact_state": "published"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "a07b5ee8cd7353906bb4b1b6662351d12838c0c057e3f837eab995ac83d14bad"
+      },
+      {
+        "barrier": "run.after_cancel_persist",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-4ef0c142026a58eab4e28b6a4f32e72b47e2962a70370c66931c17701569336f"
+        ],
+        "deleted_run_ids": [
+          "run-4ef0c142026a58eab4e28b6a4f32e72b47e2962a70370c66931c17701569336f"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-4ef0c142026a58eab4e28b6a4f32e72b47e2962a70370c66931c17701569336f",
+            "phase": "cancelled",
+            "artifact_state": "unpublished"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "f04ce98b94557cbd021f31ac256e906aae07be2da8d7abe6438ca0d346a4f811"
+      },
+      {
+        "barrier": "run.before_cancel_persist",
+        "signal": 9,
+        "expected_run_ids": [
+          "run-deca9720eb6daad482943d2a9439634b1ab5383e08f9f651c732eab2849d94cd"
+        ],
+        "deleted_run_ids": [
+          "run-deca9720eb6daad482943d2a9439634b1ab5383e08f9f651c732eab2849d94cd"
+        ],
+        "recovered_runs": [
+          {
+            "run_id": "run-deca9720eb6daad482943d2a9439634b1ab5383e08f9f651c732eab2849d94cd",
+            "phase": "interrupted",
+            "artifact_state": "unpublished"
+          }
+        ],
+        "execution_launches_unchanged_sha256": "a298293fa19bcddb868b14cc20f7b6a684b55219217a079087387efa5a3a8a75"
+      }
+    ],
+    "tests": {
+      "log_sha256": "07f9d5a927b4575d82c31d065387e0f934a6c1d9e7119c8c950991f8944c1601",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 32.21s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 502 filtered out; finished in 143.52s"
+      ]
+    }
+  },
+  "completed_verification": {
+    "pr90-output-final.log": {
+      "log_sha256": "d8109677a5f9d6f6fc3a6ebec6f0810b93672ae7b77cee6db1542c945ecd161c",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.62s",
+        "test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 471 filtered out; finished in 10.85s"
+      ]
+    },
+    "pr90-cleanup-after.log": {
+      "log_sha256": "cb1c992508acd59a5b96792ee4105b9d0cc0a74a161b4d626604d3b2ef29898a",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.04s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 502 filtered out; finished in 11.25s"
+      ]
+    },
+    "pr90-cleanup-safety.log": {
+      "log_sha256": "bc87ebdbbd3088b04cb598c0ee9078217753172391537cf6ec5d96e4f0138d10",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.47s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 502 filtered out; finished in 14.99s"
+      ]
+    },
+    "pr90-ledger-safety.log": {
+      "log_sha256": "cf241ff64ff6e496ab78f86956c15d0c68389b26857f59ef743047fd6a3ac787",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.48s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 502 filtered out; finished in 0.00s"
+      ]
+    },
+    "pr90-python-final.log": {
+      "log_sha256": "eb7330d9a31dfc132ed88715bcd0e42c6547dcfb5f525b33c95440f4fc176184",
+      "result_lines": [
+        "Ran 67 tests in 37.715s",
+        "OK",
+        "PASS: two named tests map to exact final CI source, command, success lines/hash; partial/unverified retained"
+      ]
+    },
+    "pr90-trace-strict.log": {
+      "log_sha256": "915e2ace5ba386c4e2fe574b6d52f309649fff3941c8694fbe1025b22ce43f39",
+      "result_lines": [
+        "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)"
+      ]
+    },
+    "pr90-trace-fresh.log": {
+      "log_sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3",
+      "result_lines": [
+        "All traceability reports and the hierarchy annex are up to date"
+      ]
+    },
+    "pr90-format-final.log": {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "result_lines": []
+    },
+    "pr90-clippy-final.log": {
+      "log_sha256": "224618169d950cc4ff67fc2f7719093690e7f73cf09b135cd6fdccbb3279ecbe",
+      "result_lines": [
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.03s"
+      ]
+    }
+  },
+  "guide_checks": {
+    "mkdocs_strict": "passed",
+    "html_files": 24,
+    "local_links_images_anchors": 1516,
+    "download_zip_archives": 16
+  },
+  "limits": [
+    "Self-owned state integrity, not cryptographic authentication against coordinated whole-journal rewriting",
+    "Legacy unmapped contextless schema1 journals retain empty mapping compatibility; unreleased mapped journals without plan_context are preserved and rejected",
+    "Older PID-less foreign scratch is preserved and rejected",
+    "Original PR90 CI 4258bc5 ENOSPC did not reach export barrier because user namespace creation failed; author #93 fix integrated separately",
+    "Zero-test short-name --exact invocation excluded from coverage",
+    "Final remote head CI and wider local workspace/actual-worker outcomes are recorded in the dependent Draft PR; do not infer them from these focused local runs"
+  ]
+}

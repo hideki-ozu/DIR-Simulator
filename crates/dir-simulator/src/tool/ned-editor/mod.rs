@@ -20,6 +20,9 @@ mod template;
 mod view;
 mod viewer_worker;
 
+#[cfg(test)]
+mod acceptance_file_tests;
+
 use crate::types::Diagnostic;
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -116,3 +119,6 @@ pub(crate) fn absolute(path: &std::path::Path, base: &std::path::Path) -> PathBu
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod acceptance_mapping_tests;
