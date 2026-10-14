@@ -78,7 +78,9 @@ jobs:
           # the runner identity with no groups/capabilities before execution.
           DIR_ACCEPTANCE_NAMESPACE_MODE=sudo-mount DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control -- --ignored --nocapture --test-threads=1
       - name: Startup observer regressions
-        run: node --test tests/ned_editor_startup.test.cjs
+        run: |
+          node --test tests/ned_editor_startup.test.cjs
+          DIR_NED_HTTP_BINARY="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_startup_failure.test.cjs
       - name: Native HTTP acceptance
         run: |
           DIR_NED_HTTP_BINARY="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_acceptance_http.test.cjs

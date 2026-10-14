@@ -190,8 +190,8 @@ test('native HTTP acceptance XC04 XC32 XC36 XC38 XC39', {skip:binary?false:'Set 
       const fresh=await editor.command('build_viewer',{run_id:runB});assert.equal(fresh.operation_status,200);const freshURL=new URL(fresh.result.run.url);hidden.push(freshURL.pathname.slice(1),freshURL.href);assert.ok(freshURL.href!==oldViewer.href,'new native process new capability');const page=await fetch(freshURL.href);assert.equal(page.status,200);await page.arrayBuffer();await editor.command('revoke_viewer',{run_id:runB});
       add('xc39_restart',{old_capability:oldStatus,fresh_authenticated_build_status:200});
     });
-    await t.test('XC36 native unsafe run cleanup refuses and preserves unrelated identities',async()=>{
-      if (!editor.origin) { t.skip('Shared native fixture unavailable after failed restart; cleanup assertions not executed'); return; }
+    await t.test('XC36 native unsafe run cleanup refuses and preserves unrelated identities',async child=>{
+      if (!editor.origin) { child.skip('Shared native fixture unavailable after failed restart; cleanup assertions not executed'); return; }
       const runDir=path.join(editor.state,'runs',runA), resultDir=path.join(runDir,'result');
       const untouched={input:inventory(editor.input),other_run:inventory(path.join(editor.state,'runs',runB)),recovery:inventory(recovery),external:inventory(external)};
       const resultFile=path.join(resultDir,'results.json'), original=fs.readFileSync(resultFile);
@@ -207,8 +207,8 @@ test('native HTTP acceptance XC04 XC32 XC36 XC38 XC39', {skip:binary?false:'Set 
       }
       evidence.gaps.push('Native cleanup covers unknown/nonempty output, symlink and external hardlink; deterministic same-ID publication collision requires the test-only ID supplier.');
     });
-    await t.test('XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle',async()=>{
-      if (!editor.origin) { t.skip('Shared native fixture unavailable after failed restart; artifact assertions not executed'); return; }
+    await t.test('XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle',async child=>{
+      if (!editor.origin) { child.skip('Shared native fixture unavailable after failed restart; artifact assertions not executed'); return; }
       const runDir=path.join(editor.state,'runs',runA), resultDir=path.join(runDir,'result'), otherDir=path.join(editor.state,'runs',runB);
       const listing=await editor.api('/api/runs/'+runA+'/artifacts');assert.equal(listing.status,200);const resultArtifact=listing.value.artifacts.find(a=>a.filename==='results.json');assert.ok(resultArtifact,'result artifact exists');
       const originalResult=contents(resultDir), originalResponse=fs.readFileSync(path.join(runDir,'control/worker-response.json'));

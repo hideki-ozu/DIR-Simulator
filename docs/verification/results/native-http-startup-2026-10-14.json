@@ -131,5 +131,25 @@
     "Original CI timeout not reproduced locally and not claimed resolved",
     "No product recovery-code change or permissions/time-limit change",
     "Final exact-head CI outcomes are recorded in the Draft PR; local executions are distinct"
-  ]
+  ],
+  "independent_review": {
+    "base_head": "5318d0d584fa48fa5ecb786c555fd0c1e77a15ba",
+    "comment": "https://github.com/hideki-ozu/DIR-Simulator/issues/95#issuecomment-6180220706",
+    "defect": "Parent TestContext skip caused unexecuted child tests to appear passed",
+    "fix": "Use each child callback TestContext",
+    "controlled_regression": {
+      "original_default_timeout_ms": 20000,
+      "injected_second_attempt_timeout_ms": 1,
+      "before_failed_as_expected": true,
+      "before_log_sha256": "07b5c25a7bc990cccbf4e82ce7c04a0cd01fb40a47413c926ae77d3410f8b07e",
+      "after_test_passed": true,
+      "after_log_sha256": "e6b5036298b71d1870cecf25890e33f2f82e7907d5707f7e32049671dcf16f97",
+      "inner_http_exit": 1,
+      "inner_pass": 2,
+      "inner_fail_including_parent": 2,
+      "inner_child_skipped": 2,
+      "owned_child_reaped": true,
+      "original_ci_cause_reproduced": false
+    }
+  }
 }
