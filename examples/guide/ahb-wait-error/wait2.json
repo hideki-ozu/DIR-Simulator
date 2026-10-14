@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "profile": "ahb.transaction.v1",
+  "clock_period": "10ps",
+  "bus": "Main.bus",
+  "targets": [
+    {
+      "node": "Main.t",
+      "base": 0,
+      "size": 32,
+      "error_ranges": [
+        {
+          "start": 16,
+          "end": 20
+        }
+      ],
+      "wait_cycles": 2
+    }
+  ],
+  "managers": [
+    {
+      "node": "Main.m0",
+      "capacity": 2
+    },
+    {
+      "node": "Main.m1",
+      "capacity": 2
+    }
+  ]
+}

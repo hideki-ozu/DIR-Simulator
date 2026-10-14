@@ -1,0 +1,186 @@
+{
+  "browser": "153.0.8010.12",
+  "input_hashes": {
+    "repository/all-viewer.html": "f165fe2c573cb2ed1d3e84b4ebe2cf5f190b29895bf7997d5700936a1959556c",
+    "repository/all/results.json": "be0355cc781f0aec14fe13f653861b9de5ed523554c3d120164d3a94bc1e0629",
+    "repository/all/manifest.json": "4ec8b22992e472857defc5f2e00da4b6caff71d2b27ad2cd377602b9d77d670d",
+    "repository/tagged-viewer.html": "12a3efb878060cd917d81c7d999e1015befecb26b74dcd3cb921fe9ba12c34ab",
+    "repository/tagged/results.json": "39087487b968c0a2adc0490e2367e01067b3160fc61016d8117c3154df8837b6",
+    "repository/tagged/manifest.json": "68b5b36eadc794449fc29a19e4c19e8bee01e1d3a584d9da9b7a175fded72253",
+    "repository/untagged-viewer.html": "71f98e2e8dbab06001076c61e7bc19ac0eb58ca6051f68f3a29f19b65c1a9f39",
+    "repository/untagged/results.json": "0224fb9fb726a5ff1e44d054b6af9f15b5bda68b175a90ae704e3e2f63ee6585",
+    "repository/untagged/manifest.json": "113e05ceb2f39f97d593d1a7a77a6504db5ea63f79f32a237cd790330fa1dfb1"
+  },
+  "conditions": {
+    "all": {
+      "time_ps": 2000000,
+      "counts": [
+        "1",
+        "0",
+        "0",
+        "2",
+        "0",
+        "1"
+      ],
+      "selected_transfer": {
+        "data": {
+          "arrival_ps": "609000",
+          "drop_reason": null,
+          "eof_ps": "608000",
+          "frame_id": "probe:0",
+          "from_port": "Main.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "609000",
+          "planned_eof_ps": "608000",
+          "planned_release_ps": "704000",
+          "priority": "0",
+          "queue_id": "Main.a.tx.queue.0",
+          "queued_ps": "0",
+          "release_ps": "704000",
+          "sof_ps": "0",
+          "status": "serialized",
+          "to_port": "Main.sw.rx_a",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "e4c9eb3a",
+            "mac_bytes": "68",
+            "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "0",
+              "pcp": "0",
+              "vid": "10"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "probe:0@Main.a.tx",
+        "request_id": "probe:0",
+        "schema_name": "ethernet.transfer",
+        "schema_version": 3,
+        "subject": "Main.a.tx",
+        "time_ps": "704000"
+      },
+      "panel": "probe:0@Main.a.tx\n元フレーム\nprobe:0\nSource\nMain.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\ne4c9eb3a\n生成（ps）\n0\nFlow\nflow_probe\nSource Priority\n0\n相対deadline（ps）\n未指定\nClass queue\nMain.a.tx.queue.0\nHop Priority / class\n0\nSource VLAN\n10\nSource tag\nVID 10 · PCP 0 · DEI 0\nSource MAC bytes\n68\nSource FCS\ne4c9eb3a\nHop VLAN\n10\nHop tag\nVID 10 · PCP 0 · DEI 0\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\ne4c9eb3a\nHop wire hex\n0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\n状態\nEOF 到達\n親copy\nsource\n経路\nMain.a.tx → Main.sw.rx_a\nqueued_ps\n0\nsof_ps\n0\neof_ps\n608000\nrelease_ps\n704000\narrival_ps\n609000\nplanned_eof_ps\n608000\nplanned_release_ps\n704000\nplanned_arrival_ps\n609000\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nMain.b: 受信完了 / observed 1220000 / ready 1220000 / planned ready 1220000 ps / ingress VLAN 10 · Priority 0\n\nMain.sw: 転送判断済み / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 10 · Priority 0\n\nMain.b 配送遅延: 1220000 ps\n\nethernet.queue_wait_ps: 0 ps\n\nethernet.serialization_ps: 1216000 ps\n\nethernet.propagation_ps: 2000 ps\n\nethernet.processing_ps: 2000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"609000\",\n    \"drop_reason\": null,\n    \"eof_ps\": \"608000\",\n    \"frame_id\": \"probe:0\",\n    \"from_port\": \"Main.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"609000\",\n    \"planned_eof_ps\": \"608000\",\n    \"planned_release_ps\": \"704000\",\n    \"priority\": \"0\",\n    \"queue_id\": \"Main.a.tx.queue.0\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"704000\",\n    \"sof_ps\": \"0\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Main.sw.rx_a\",\n    \"vlan_id\": \"10\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"e4c9eb3a\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"0\",\n        \"pcp\": \"0\",\n        \"vid\": \"10\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"probe:0@Main.a.tx\",\n  \"request_id\": \"probe:0\",\n  \"schema_name\": \"ethernet.transfer\",\n  \"schema_version\": 3,\n  \"subject\": \"Main.a.tx\",\n  \"time_ps\": \"704000\"\n}",
+      "detail_semantics": "full-run record and actual reception at final selected time"
+    },
+    "tagged": {
+      "time_ps": 2000000,
+      "counts": [
+        "1",
+        "0",
+        "0",
+        "2",
+        "0",
+        "1"
+      ],
+      "selected_transfer": {
+        "data": {
+          "arrival_ps": "609000",
+          "drop_reason": null,
+          "eof_ps": "608000",
+          "frame_id": "probe:0",
+          "from_port": "Main.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "609000",
+          "planned_eof_ps": "608000",
+          "planned_release_ps": "704000",
+          "priority": "0",
+          "queue_id": "Main.a.tx.queue.0",
+          "queued_ps": "0",
+          "release_ps": "704000",
+          "sof_ps": "0",
+          "status": "serialized",
+          "to_port": "Main.sw.rx_a",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "e4c9eb3a",
+            "mac_bytes": "68",
+            "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "0",
+              "pcp": "0",
+              "vid": "10"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "probe:0@Main.a.tx",
+        "request_id": "probe:0",
+        "schema_name": "ethernet.transfer",
+        "schema_version": 3,
+        "subject": "Main.a.tx",
+        "time_ps": "704000"
+      },
+      "panel": "probe:0@Main.a.tx\n元フレーム\nprobe:0\nSource\nMain.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\ne4c9eb3a\n生成（ps）\n0\nFlow\nflow_probe\nSource Priority\n0\n相対deadline（ps）\n未指定\nClass queue\nMain.a.tx.queue.0\nHop Priority / class\n0\nSource VLAN\n10\nSource tag\nVID 10 · PCP 0 · DEI 0\nSource MAC bytes\n68\nSource FCS\ne4c9eb3a\nHop VLAN\n10\nHop tag\nVID 10 · PCP 0 · DEI 0\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\ne4c9eb3a\nHop wire hex\n0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\n状態\nEOF 到達\n親copy\nsource\n経路\nMain.a.tx → Main.sw.rx_a\nqueued_ps\n0\nsof_ps\n0\neof_ps\n608000\nrelease_ps\n704000\narrival_ps\n609000\nplanned_eof_ps\n608000\nplanned_release_ps\n704000\nplanned_arrival_ps\n609000\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nMain.b: 受信完了 / observed 1220000 / ready 1220000 / planned ready 1220000 ps / ingress VLAN 10 · Priority 0\n\nMain.sw: 転送判断済み / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 10 · Priority 0\n\nMain.b 配送遅延: 1220000 ps\n\nethernet.queue_wait_ps: 0 ps\n\nethernet.serialization_ps: 1216000 ps\n\nethernet.propagation_ps: 2000 ps\n\nethernet.processing_ps: 2000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"609000\",\n    \"drop_reason\": null,\n    \"eof_ps\": \"608000\",\n    \"frame_id\": \"probe:0\",\n    \"from_port\": \"Main.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"609000\",\n    \"planned_eof_ps\": \"608000\",\n    \"planned_release_ps\": \"704000\",\n    \"priority\": \"0\",\n    \"queue_id\": \"Main.a.tx.queue.0\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"704000\",\n    \"sof_ps\": \"0\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Main.sw.rx_a\",\n    \"vlan_id\": \"10\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"e4c9eb3a\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"0\",\n        \"pcp\": \"0\",\n        \"vid\": \"10\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"probe:0@Main.a.tx\",\n  \"request_id\": \"probe:0\",\n  \"schema_name\": \"ethernet.transfer\",\n  \"schema_version\": 3,\n  \"subject\": \"Main.a.tx\",\n  \"time_ps\": \"704000\"\n}",
+      "detail_semantics": "full-run record and actual reception at final selected time"
+    },
+    "untagged": {
+      "time_ps": 2000000,
+      "counts": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "selected_transfer": {
+        "data": {
+          "arrival_ps": "609000",
+          "drop_reason": null,
+          "eof_ps": "608000",
+          "frame_id": "probe:0",
+          "from_port": "Main.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "609000",
+          "planned_eof_ps": "608000",
+          "planned_release_ps": "704000",
+          "priority": "0",
+          "queue_id": "Main.a.tx.queue.0",
+          "queued_ps": "0",
+          "release_ps": "704000",
+          "sof_ps": "0",
+          "status": "serialized",
+          "to_port": "Main.sw.rx_a",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "e4c9eb3a",
+            "mac_bytes": "68",
+            "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "0",
+              "pcp": "0",
+              "vid": "10"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "probe:0@Main.a.tx",
+        "request_id": "probe:0",
+        "schema_name": "ethernet.transfer",
+        "schema_version": 3,
+        "subject": "Main.a.tx",
+        "time_ps": "704000"
+      },
+      "panel": "probe:0@Main.a.tx\n元フレーム\nprobe:0\nSource\nMain.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\ne4c9eb3a\n生成（ps）\n0\nFlow\nflow_probe\nSource Priority\n0\n相対deadline（ps）\n未指定\nClass queue\nMain.a.tx.queue.0\nHop Priority / class\n0\nSource VLAN\n10\nSource tag\nVID 10 · PCP 0 · DEI 0\nSource MAC bytes\n68\nSource FCS\ne4c9eb3a\nHop VLAN\n10\nHop tag\nVID 10 · PCP 0 · DEI 0\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\ne4c9eb3a\nHop wire hex\n0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\n状態\nEOF 到達\n親copy\nsource\n経路\nMain.a.tx → Main.sw.rx_a\nqueued_ps\n0\nsof_ps\n0\neof_ps\n608000\nrelease_ps\n704000\narrival_ps\n609000\nplanned_eof_ps\n608000\nplanned_release_ps\n704000\nplanned_arrival_ps\n609000\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nMain.sw: フィルタ拒否 / observed 609000 / ready 609000 / planned ready 未指定 ps / ingress VLAN 10 · Priority 0 / reason ingress_frame_type\n\n{\n  \"data\": {\n    \"arrival_ps\": \"609000\",\n    \"drop_reason\": null,\n    \"eof_ps\": \"608000\",\n    \"frame_id\": \"probe:0\",\n    \"from_port\": \"Main.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"609000\",\n    \"planned_eof_ps\": \"608000\",\n    \"planned_release_ps\": \"704000\",\n    \"priority\": \"0\",\n    \"queue_id\": \"Main.a.tx.queue.0\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"704000\",\n    \"sof_ps\": \"0\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Main.sw.rx_a\",\n    \"vlan_id\": \"10\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"e4c9eb3a\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"0\",\n        \"pcp\": \"0\",\n        \"vid\": \"10\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"probe:0@Main.a.tx\",\n  \"request_id\": \"probe:0\",\n  \"schema_name\": \"ethernet.transfer\",\n  \"schema_version\": 3,\n  \"subject\": \"Main.a.tx\",\n  \"time_ps\": \"704000\"\n}",
+      "detail_semantics": "full-run record and actual reception at final selected time"
+    }
+  },
+  "status": "passed",
+  "errors": []
+}
