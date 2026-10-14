@@ -1,0 +1,348 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-14",
+  "source_baseline": "65e862d50626eb3c9e772cdbf6b404de944efc33",
+  "release_tags_preserved": [
+    "v1.1.4",
+    "v1.1.5"
+  ],
+  "scope": {
+    "implemented": [
+      "one_model_record_version_per_schema_name_per_profile",
+      "object_model_record_data_validation_before_validator_and_commit",
+      "committed_document_pdf_export"
+    ],
+    "design_only": [
+      "gateway_tsn_composite",
+      "abstract_redundancy",
+      "abstract_preemption",
+      "cooperative_sameprocess_run_control",
+      "generalized_metrics_v2"
+    ],
+    "wire_protocol_adapters": "common_ingress_contract_only_adapter_state_and_encoding_tables_not_designed"
+  },
+  "checks": [
+    {
+      "id": "rust_workspace",
+      "command": "cargo test --locked --workspace",
+      "status": "passed",
+      "log_sha256": "d514754066126fbbb8ddf03bd19dea1defe021f835faad51fbca5dc79a261bed",
+      "log_name": "cargo-workspace.log",
+      "passed": 729,
+      "failed": 0,
+      "ignored": 5,
+      "scope": "Initial 729-test run before three additional controller diagnostic regressions; final count is recorded separately."
+    },
+    {
+      "id": "rust_clippy",
+      "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "status": "passed",
+      "log_sha256": "eb10df6ac97235aeab39d466e93a8694b2cc4c92d9d7ca9344116f8eaff53eb4",
+      "log_name": "cargo-clippy.log"
+    },
+    {
+      "id": "python_unit",
+      "command": "python3 -m unittest discover -s tests -v",
+      "status": "passed",
+      "log_sha256": "e993b1293c2c78ad97376f0627431b50539bd1432a883b70c51c03df1a78ef11",
+      "log_name": "python-tests.log"
+    },
+    {
+      "id": "ned_ui",
+      "command": "node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs",
+      "status": "passed",
+      "log_sha256": "54d0571fe10a8defe30dcd1452e27b5692d44faf767439b1f17134d95cbcc1a2",
+      "log_name": "ned-ui-integrated.log",
+      "tests": 85,
+      "pass": 85,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "id": "viewer_model",
+      "command": "DIR_SIMULATOR_BIN=<fresh binary> node --test tests/*viewer_model.test.cjs",
+      "status": "passed",
+      "log_sha256": "4d388ba6ee151d1b7a32242b5a8a7771e6020b494959e2a1214d3048ea174e1e",
+      "log_name": "viewer-model-tests.log",
+      "tests": 108,
+      "pass": 107,
+      "fail": 0,
+      "skipped": 1
+    },
+    {
+      "id": "viewer_browser",
+      "command": "NODE_PATH=<Playwright1.64.0 node_modules> DIR_SIMULATOR_BIN=<fresh binary> node tests/viewer_browser.cjs",
+      "status": "passed",
+      "log_sha256": "81118045c9c92fe5b6c08237334b989dbc5afb48248749f1a069402500030984",
+      "log_name": "viewer-browser.log"
+    },
+    {
+      "id": "viewer_expiry_browser",
+      "command": "NODE_PATH=<Playwright1.64.0 node_modules> node --test tests/ned_editor_viewer_expiry_browser.test.cjs",
+      "status": "passed",
+      "log_sha256": "29f4efd3dcb0c7ac6ffa3d2c451676ca733970ff67001f33896e503fd069649f",
+      "log_name": "viewer-expiry-browser.log",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "id": "mkdocs",
+      "command": "python -m mkdocs build --strict",
+      "status": "passed",
+      "log_sha256": "85366463dc838b581a855055977ddaf82184976ef98aade4f3e43b2a3502461d",
+      "log_name": "mkdocs-strict.log"
+    },
+    {
+      "id": "diagrams",
+      "command": "python3 scripts/render_diagrams.py --check",
+      "status": "passed",
+      "log_sha256": "c295344843ecd20b18de8a77e836e4011d1709446e421d9c8f4bb5e6638dba07",
+      "log_name": "diagrams-check.log"
+    },
+    {
+      "id": "fmt",
+      "command": "cargo fmt --all -- --check",
+      "status": "passed"
+    },
+    {
+      "id": "traceability",
+      "command": "python3 scripts/check_traceability.py --strict",
+      "status": "passed",
+      "requirements": 231,
+      "functions": 60,
+      "nodes": 274,
+      "structural_errors": 0,
+      "incomplete_items": 0
+    },
+    {
+      "id": "guide_links",
+      "command": "python3 scripts/check_guide_links.py",
+      "status": "passed",
+      "html_files": 18,
+      "local_targets": 1024
+    },
+    {
+      "id": "ned_additional_feasible_conditions",
+      "status": "passed",
+      "details": "NED matrix saved_baseline_comparison/syntax_semantic_positions/browser_feasible_fixed/run_completion_diagnostic_isolation",
+      "physical_grid_complete": false
+    },
+    {
+      "id": "rust_workspace_final",
+      "command": "cargo test --locked --workspace",
+      "status": "passed",
+      "passed": 732,
+      "failed": 0,
+      "ignored": 7,
+      "suites": 32,
+      "log_name": "cargo-workspace-final.log",
+      "log_sha256": "948509c39bf09c276f37fb5144fd248b0ef3c9dcbd268861f4ebac5bbb430fca"
+    },
+    {
+      "id": "rust_gated_final",
+      "status": "passed",
+      "passed": 7,
+      "failed": 0,
+      "binary_sha256": "dba4497780833b39ce26095b8852c2fe745cfccef5c1a27acacd07ba02333864",
+      "log_name": "ned-real-workers-final.log",
+      "log_sha256": "6bc5f85560a1af46c1d33d8665cf17dbd0edae6949bb73e57976a927645f505f"
+    },
+    {
+      "id": "python_final",
+      "status": "passed",
+      "passed": 62,
+      "log_name": "python-tests-final.log",
+      "log_sha256": "0ca53eb3a6907e88ccbe864b7598a9509da18d108648bd4cd217e62135393329"
+    },
+    {
+      "id": "clippy_final",
+      "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "status": "passed",
+      "log_name": "cargo-clippy-final.log",
+      "log_sha256": "a982bf000910502346e17d426e362a6b98816ade9c3e9751a6651b866964426a"
+    }
+  ],
+  "negative_controls": [
+    {
+      "contract": "profile_version_mixing",
+      "source_baseline": "65e862d50626eb3c9e772cdbf6b404de944efc33",
+      "product_source_modified": false,
+      "new_regression_tests_applied": true,
+      "expected_test_exit": 101,
+      "observed": "regression_assertion_failed_against_old_product",
+      "log_sha256": "0e0ffd5abdfdda11737835c3dcf6b800612e3b5ca806616e8f8661a914d1e1f6"
+    },
+    {
+      "contract": "scalar_record_data",
+      "source_baseline": "65e862d50626eb3c9e772cdbf6b404de944efc33",
+      "product_source_modified": false,
+      "new_regression_tests_applied": true,
+      "expected_test_exit": 101,
+      "observed": "regression_assertion_failed_against_old_product",
+      "log_sha256": "53f5a1336c95d863a1f943d2d911194dedef2715f0c2b2a0d6ea95985c3c6109"
+    },
+    {
+      "contract": "run_completion_diagnostic_isolation",
+      "source_baseline": "65e862d50626eb3c9e772cdbf6b404de944efc33",
+      "product_source_modified": false,
+      "new_regression_tests_applied": true,
+      "failed": 3,
+      "log_name": "ned-run-diagnostic-negative-control.log",
+      "log_sha256": "104f4e01e746276a1f175047870b49db096dba5c7cfe0b3ce1bc28484504130d"
+    }
+  ],
+  "local_orchestration_failure": {
+    "log_sha256": "db9cd79e8416e443168f3467cc127eb561e7d5dc7dba346da7f75e205b83e818",
+    "cause": "concurrent_same_target_cargo_replaced_running_test_executable_current_exe_deleted",
+    "remediation": "cargo_commands_serialized_isolated_two_tests_passed_and_full_workspace_passed",
+    "production_or_assertion_weakened": false
+  },
+  "current_notices": {
+    "schema_version": 1,
+    "generated_by": "scripts/check_third_party_notices.py",
+    "status": "passed_originals_and_notice_correspondence",
+    "verification_date": "2026-10-12",
+    "historical_audit_date": "2026-10-08",
+    "audit_zip_sha256": "72e7833612f6957792aa7fd1e0be7b24a899462bd35144d1f2d47a0e7f981b41",
+    "supplied_payload_files_checked": 37,
+    "locked_packages_checked": 44,
+    "historical_locked_packages_checked": 42,
+    "supplemental_locked_packages_checked": 2,
+    "supplemental_manifest_sha256": "c475a38df8004066569236a7e22aaee4a761c3d8438e23fb1fa5c5c7aa6eb9e1",
+    "supplemental_crate_archive_checksums": [
+      "d881a16cf4426aa584979d30bd82cb33429027e42122b169753d6ef1085ed6e2",
+      "c4db69cba1110affc0e9f7bcd48bbf87b3f4fc7c61fc9155afd4c469eb3d6c1b"
+    ],
+    "crate_license_originals_checked": 93,
+    "source_notice_bundles_checked": 10,
+    "guide_license_originals_checked": 8,
+    "supplied_lock_sha256": "2b6189d9cf264a41cc001b392d4e2552d5828169a8a11dca1bfb9373957270cc",
+    "repository_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+    "lock_package_records_equal": false,
+    "lock_bytes_equal": false,
+    "lock_difference": "Historical 42 registry identities/checksums unchanged; current lock adds the fixed two-crate supplement and dependency edges",
+    "ledger_version": "1.1.3",
+    "ledger_sha256": "3151f564f5c4f37671981166553b2a60af845a373074fd75385ce1422b03cec4",
+    "fresh_guide_assets_compared": [],
+    "scope": "bytes_and_population_correspondence_not_legal_adoption_approval",
+    "official_crate_archive_fetch": "Historical 42: provided audit evidence; supplemental two: cached official archives matched Cargo.lock on 2026-10-12. Neither archive set is bundled or freshly fetched by this checker",
+    "preserved_attachment_instructions": "Evidence only; recommendations do not authorize actions or license choices"
+  },
+  "pdf": {
+    "evidence": {
+      "schema_version": 1,
+      "source_commit": "65e862d50626eb3c9e772cdbf6b404de944efc33",
+      "generated_at_utc": "2026-10-13T21:39:42+00:00",
+      "source_inputs": {
+        "docs/guide/初めてのCAN実行.md": {
+          "sha256": "eeb593702b6cb640f1b30703605321b3707a0d18180f597106d3d18eabcc627b",
+          "bytes": 8542
+        },
+        "docs/guide/assets/guide-minimal-viewer.png": {
+          "sha256": "5a33943a2fd74a7cce08940522058a4786a7413752bb00cfc85724e59b46c753",
+          "bytes": 259396
+        },
+        "docs/guide/assets/guide-fast-viewer.png": {
+          "sha256": "e2f2c23146ff304eb2c6dbebade607fc72ad966ba684e3638df74999200b3b56",
+          "bytes": 258228
+        }
+      },
+      "python_markdown": "3.11.1",
+      "renderer": {
+        "playwright": "1.64.0",
+        "chromium": "156.0.8078.4",
+        "images": 2,
+        "missing_images": 0,
+        "external_requests": 0
+      },
+      "pdf": {
+        "sha256": "2c58655096a8f39762cab16da0684a546b18224ca4f1a58a0209adca3bbbefb9",
+        "bytes": 1125482
+      },
+      "visual_review": "required_before_distribution"
+    },
+    "visual_review": "first_page_Japanese_tables_and_image_page_reviewed_in_actual_Chromium_PDF_viewer",
+    "not_claimed": "all_documents_all_pages_all_fonts",
+    "distribution_approval": false
+  },
+  "product_binary": {
+    "sha256": "dba4497780833b39ce26095b8852c2fe745cfccef5c1a27acacd07ba02333864",
+    "toolchain": "Rust1.85.0",
+    "evidence_environment": "WSL Ubuntu24.04 x86_64",
+    "scope": "final controller fix actual browser run; initial checks record earlier binaries separately in NED matrix"
+  },
+  "file_hashes": {
+    "crates/dir-simulator/src/registry/mod.rs": "1df423c8ccc06083291ac64ba53f47b7eb925630d616be01bdf792b4fdd30551",
+    "crates/dir-simulator/src/runtime/registered.rs": "9826d35952e8ab5d39e3242f1c1e87b94a80d43b40ed8fe2e2e725ee0a9a4ade",
+    "crates/dir-simulator/tests/registry.rs": "85e15191106a00c702f3ab95aa36c54de8f5568241170c9f2ffb46ffaf29b492",
+    "scripts/export_document_pdf.py": "7c48bb6f08d9ef01c8d838d3347118cb910e98bca65ba3d8314620b70479b17a",
+    "tests/test_document_pdf.py": "b97b56a6fd7a398aaa1a5f4c3f6c9e8a1abfe16879f3643577e4e2a7a957b2b0",
+    "crates/dir-simulator/src/tool/ned-editor/controller.rs": "a6e7cfec6af81f1939360f56d33e9cde31ed906b1a316ebd2457da41fe658c73",
+    "crates/dir-simulator/src/tool/ned-editor/run_command_tests.rs": "2926cd6be29fe1fd50e5395dd9ee5167bbbfe9d1b4a96dfeea1b301598859d40",
+    "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs": "84fa6dd0451394bedd8efbff0079759c73d5e1fe2c5dc7f43ecf739db1a70892",
+    "tests/ned_editor_extensions_browser.test.cjs": "ab2089a76e748bfcae76e086a2fd521c373663c8f64a63849fd21f23d4fe8fb5"
+  },
+  "ned_condition_matrix": "ned-acceptance-residuals-2026-10-14.json",
+  "remaining_decisions": [
+    "wire_adapter_standards_edition_encoding_timers_state_tables_and_vectors",
+    "NED_physical_failure_full_barrier_grid_and_native_environment_conditions",
+    "individual_origin_distribution_population_adoption_review",
+    "future_proposals_adoption_and_product_implementation"
+  ],
+  "document_revisions": [
+    {
+      "path": "docs/要件定義書.md",
+      "baseline_version": "1.1.9",
+      "version": "1.1.10",
+      "github_target": "fix/spec-contract-gaps @65e862d",
+      "release_tag_preserved": "v1.1.5"
+    },
+    {
+      "path": "docs/ドキュメント作成・運用規約.md",
+      "baseline_version": "1.1.1",
+      "version": "1.1.2",
+      "github_target": "fix/spec-contract-gaps @65e862d",
+      "release_tag_preserved": "v1.1.5"
+    },
+    {
+      "path": "docs/将来拡張計画.md",
+      "baseline_version": "1.1.6",
+      "version": "1.1.7",
+      "github_target": "fix/spec-contract-gaps @65e862d",
+      "release_tag_preserved": "v1.1.5"
+    },
+    {
+      "path": "docs/specs/結果詳細機能仕様書.md",
+      "baseline_version": "1.1.2",
+      "version": "1.1.3",
+      "github_target": "fix/spec-contract-gaps @65e862d",
+      "release_tag_preserved": "v1.1.5"
+    },
+    {
+      "path": "docs/design/結果処理詳細設計書.md",
+      "baseline_version": "1.1.1",
+      "version": "1.1.2",
+      "github_target": "fix/spec-contract-gaps @65e862d",
+      "release_tag_preserved": "v1.1.5"
+    },
+    {
+      "path": "docs/specs/拡張モデル共通詳細機能仕様書.md",
+      "baseline_version": "1.1.3",
+      "version": "1.1.4",
+      "github_target": "fix/spec-contract-gaps @65e862d",
+      "release_tag_preserved": "v1.1.5"
+    },
+    {
+      "path": "docs/tools/ned-editor/NED-editor仕様書.md",
+      "baseline_version": "1.1.5",
+      "version": "1.1.6",
+      "github_target": "fix/spec-contract-gaps @65e862d",
+      "release_tag_preserved": "v1.1.5"
+    }
+  ],
+  "local_evidence_root": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014",
+  "implemented_additional_fix": "historical_run_operations_preserve_current_project_diagnostics",
+  "ned_unverified_condition_slices": 38
+}

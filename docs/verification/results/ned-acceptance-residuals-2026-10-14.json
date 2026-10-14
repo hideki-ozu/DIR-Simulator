@@ -1,0 +1,1896 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-14",
+  "task": "Condition-level evidence matrix for NED editor acceptance cases 23.2.",
+  "source_spec": "docs/tools/ned-editor/NED-editor仕様書.md#232-受入ケースと必要な証拠",
+  "source_revision": "65e862d",
+  "case_id_policy": "Uses the specification IDs NE-XC01 through NE-XC43; no parallel IDs are introduced.",
+  "status_policy": {
+    "partial": "At least one explicitly named condition has a passing test in the listed run, but the compound acceptance case is not fully demonstrated.",
+    "unverified": "No listed passing test directly measures that condition. Candidate test references, where present, are not treated as proof."
+  },
+  "binary": {
+    "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target/debug/dir-simulator",
+    "sha256": "e22df8a43b667ce38ba99a3f34936e08d91349fcf2398ec81076c59bd68f7e2e"
+  },
+  "runs": {
+    "rust_focused": {
+      "command": "CARGO_TARGET_DIR=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target /home/hideki/.cargo/bin/cargo +1.85.0 test --locked -p dir-simulator tool::ned_editor",
+      "result": "passed",
+      "passed": 201,
+      "failed": 0,
+      "ignored": 5,
+      "filtered_out": 238,
+      "scope": "All non-ignored lib unit tests matching tool::ned_editor."
+    },
+    "node_ui_recovery_extensions": {
+      "command": "node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs",
+      "result": "passed",
+      "passed": 85,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "UI, recovery, and extension unit/harness suites; composition is synthetic, not native IME."
+    },
+    "rust_ignored_with_binary": {
+      "command": "DIR_NED_RUN_TEST_BINARY=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target/debug/dir-simulator CARGO_TARGET_DIR=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target /home/hideki/.cargo/bin/cargo +1.85.0 test --locked -p dir-simulator --lib tool::ned_editor -- --ignored",
+      "result": "passed",
+      "passed": 5,
+      "failed": 0,
+      "ignored": 0,
+      "binary_sha256": "e22df8a43b667ce38ba99a3f34936e08d91349fcf2398ec81076c59bd68f7e2e",
+      "scope": "Three real-worker tests plus two loopback HTTP Viewer tests; explicitly gated tests only."
+    },
+    "shutdown_signals": {
+      "command": "DIR_NED_RUN_TEST_BINARY=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target/debug/dir-simulator node --test tests/ned_editor_run_shutdown.test.cjs",
+      "result": "passed",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "binary_sha256": "e22df8a43b667ce38ba99a3f34936e08d91349fcf2398ec81076c59bd68f7e2e",
+      "scope": "Real child worker shutdown/reap for SIGINT and SIGTERM; SIGINT path stopped worker and observed KILL/reap."
+    },
+    "browser_extensions": {
+      "command": "PLAYWRIGHT_MODULE=/home/hideki/DIR-Simulator/tmp/viewer-tests/node_modules/playwright DIR_SIMULATOR_BIN=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target/debug/dir-simulator node --test tests/ned_editor_extensions_browser.test.cjs",
+      "result": "passed",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "binary_sha256": "e22df8a43b667ce38ba99a3f34936e08d91349fcf2398ec81076c59bd68f7e2e",
+      "browser_version": "151.0.7922.34",
+      "persistent_evidence": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/ned-browser-evidence/evidence.json",
+      "scope": "One real Chromium flow; seven sanitized, hash-verified screenshots; CLI validate/run, UI run, partial result and Viewer were exercised.",
+      "playwright_version": "1.62.1"
+    },
+    "isolated_restart_test": {
+      "command": "CARGO_TARGET_DIR=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target /home/hideki/.cargo/bin/cargo +1.85.0 test --locked -p dir-simulator --lib tool::ned_editor::run_control::tests::restart_after_durable_stop_classifies_manifest_and_response_independently -- --exact --nocapture",
+      "result": "passed",
+      "passed": 1,
+      "failed": 0,
+      "scope": "Exact restored cancellation/manifest/response restart test, rerun alone."
+    },
+    "isolated_existing_recovery_test": {
+      "command": "CARGO_TARGET_DIR=/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target /home/hideki/.cargo/bin/cargo +1.85.0 test --locked -p dir-simulator --lib tool::ned_editor::run_control::tests::staged_creation_and_tombstoned_deletion_recover_without_loading_partial_records -- --exact --nocapture",
+      "result": "passed",
+      "passed": 1,
+      "failed": 0,
+      "scope": "Exact pre-existing state-recovery test, rerun alone."
+    },
+    "shared_target_workspace_attempt": {
+      "command": "Parent full-workspace Cargo test in the same CARGO_TARGET_DIR while a second focused Cargo build was active.",
+      "result": "failed_environment_race",
+      "passed": 437,
+      "failed": 2,
+      "ignored": 5,
+      "log": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/cargo-workspace-concurrent-failure.log",
+      "failure": "Both failures were at run_control/tests.rs:31 opening current_exe because the test executable path ended in `(deleted)`. Parent confirmed concurrent same-target Cargo replacement. Both exact tests then passed in isolated invocations; no assertion or production code was changed to hide this failure.",
+      "scope": "Initial parent full-workspace attempt overlapped another Cargo build in the same target directory; retained as failed evidence. A later serial full-workspace run passed and is recorded separately."
+    },
+    "serial_full_workspace_parent": {
+      "command": "CARGO_TARGET_DIR=<isolated target> /home/hideki/.cargo/bin/cargo test --locked --workspace",
+      "result": "passed",
+      "passed": 729,
+      "failed": 0,
+      "ignored": 5,
+      "suite_count": 32,
+      "measured_by": "parent agent",
+      "scope": "Initial serial full workspace before final controller fix; final rerun will be recorded separately.",
+      "log": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/cargo-workspace.log"
+    },
+    "clippy_all_workspace_parent": {
+      "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "result": "passed",
+      "failed": 0,
+      "measured_by": "parent agent",
+      "scope": "All workspace targets; warnings denied."
+    },
+    "rustfmt_parent": {
+      "command": "cargo fmt --all -- --check",
+      "result": "passed",
+      "measured_by": "parent agent",
+      "scope": "Parent reported formatting exit 0."
+    },
+    "saved_baseline_comparison": {
+      "command": "DIR_NED_RUN_TEST_BINARY=<fresh binary> cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control::tests::real_worker_matches_saved_baseline_cli_manifest_records_metrics_and_diagnostics -- --ignored --exact",
+      "result": "passed",
+      "passed": 1,
+      "binary_sha256": "9e0a3cbceaf8746d238a78da5f6c4f6ee618ee1cfc15c51defd6b874250c3592",
+      "log": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/ned-feasible-baseline-full-validator-pass.log",
+      "normalization": "unchanged measure_can_million.py checker: full simulation, CSV run_id only; full metadata minus started_at_utc/finished_at_utc; RunReport output_path/manifest_path separately checked then removed with event_processing_wall_seconds",
+      "both_bundles_common_validated": true
+    },
+    "syntax_semantic_positions": {
+      "command": "DIR_NED_RUN_TEST_BINARY=<fresh binary> cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control::tests::real_worker_syntax_and_semantic_prepare_failures_map_frozen_source_without_output -- --ignored --exact",
+      "result": "passed",
+      "passed": 1,
+      "binary_sha256": "9e0a3cbceaf8746d238a78da5f6c4f6ee618ee1cfc15c51defd6b874250c3592",
+      "log": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/ned-feasible-prepare-independent-span-pass.log",
+      "scope": "Separate BOM/CRLF/Unicode syntax EOF and unknown-type semantic errors: independently computed frozen source byte/line/column positions, PreparedFailed reply/no report/empty results/reaped worker; no simulate-call counter"
+    },
+    "browser_feasible_fixed": {
+      "command": "PLAYWRIGHT_MODULE=<Playwright1.64.0 module> DIR_SIMULATOR_BIN=<fresh binary> node --test tests/ned_editor_extensions_browser.test.cjs",
+      "result": "passed",
+      "passed": 1,
+      "binary_sha256": "dba4497780833b39ce26095b8852c2fe745cfccef5c1a27acacd07ba02333864",
+      "playwright_version": "1.64.0",
+      "browser_version": "156.0.8078.4",
+      "persistent_evidence": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/ned-feasible-browser-fixed-evidence/evidence.json",
+      "scope": "Nine screenshots; same historical run through edit/Undo/Reload/New/create, current diagnostics preserved; real Viewer integrity failure, retry/no link, current diagnostic count0"
+    },
+    "run_completion_diagnostic_isolation": {
+      "command": "cargo test --locked -p dir-simulator --lib run_command_completion_",
+      "result": "passed",
+      "passed": 3,
+      "scope": "5 run commands x success/failure/panic; preserves controller+model diagnostics and job/ledger error/status, sequence/busy/recovery",
+      "negative_control": {
+        "result": "expected_failure_on_old_controller",
+        "failed": 3,
+        "log": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/ned-run-diagnostic-negative-control.log"
+      }
+    },
+    "serial_full_workspace_final": {
+      "command": "CARGO_TARGET_DIR=<isolated target> cargo test --locked --workspace",
+      "result": "passed",
+      "passed": 732,
+      "failed": 0,
+      "ignored": 7,
+      "suite_count": 32,
+      "log": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/cargo-workspace-final.log",
+      "log_sha256": "948509c39bf09c276f37fb5144fd248b0ef3c9dcbd268861f4ebac5bbb430fca",
+      "scope": "Final registry/core/current-input diagnostic fixes and all test additions"
+    },
+    "rust_ignored_final": {
+      "command": "DIR_NED_RUN_TEST_BINARY=<fresh binary> CARGO_TARGET_DIR=<isolated target> cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control -- --ignored --nocapture --test-threads=1",
+      "result": "passed",
+      "passed": 7,
+      "failed": 0,
+      "binary_sha256": "dba4497780833b39ce26095b8852c2fe745cfccef5c1a27acacd07ba02333864",
+      "log": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/ned-real-workers-final.log",
+      "log_sha256": "6bc5f85560a1af46c1d33d8665cf17dbd0edae6949bb73e57976a927645f505f",
+      "scope": "Final actual worker/snapshot-vs-CLI/source-position/render/socket/header/deadline/revoke tests"
+    }
+  },
+  "interpretation_boundaries": [
+    "pinned_capacity_exact_boundary_and_one_byte_over_do_not_create_files mutates stored byte accounting; it proves admission arithmetic only, not physical disk quota or allocation failure.",
+    "running_plus_two_waiters_rejects_third_and_cancel_releases_one_slot sets a synthetic running phase; it proves slot accounting, not three live concurrent worker processes.",
+    "Run UI composition tests use a harness composition event, not native OS/browser IME input.",
+    "restart_after_durable_stop_classifies_manifest_and_response_independently persists fixture state and restarts the manager; it is not a process-kill test at every manifest/response cutpoint.",
+    "SIGINT/SIGTERM shutdown tests use real child processes and verify worker reap; they do not establish arbitrary editor-process kill/restart behavior at every journal boundary.",
+    "No physical ENOSPC, OOM, hardware quota, 1 GiB output, or full 43-case acceptance sweep is claimed."
+  ],
+  "cases": [
+    {
+      "case_id": "NE-XC01",
+      "design_area": "NE-X02",
+      "category": "normal",
+      "operation": "root 2 `pkg/New.ned` を作成",
+      "expected": "root 1無変更、package=pkg、parse成功、既存network意味不変、1履歴、ディスク無変更",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "テンプレート作成が共通parserでparseできる",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_seven_templates_and_encoding_use_common_parser",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "7 templates and encoding cases passed through the shared parser; this does not prove the full root-2 workflow."
+            }
+          ]
+        },
+        {
+          "condition": "作成後Undo/Redoでfile ID・bytes・layoutが保持される",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_nested_edit_undo_twice_redo_twice_has_no_residue",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Nested create/edit/Undo×2/Redo×2 and no-residue assertions passed."
+            }
+          ]
+        },
+        {
+          "condition": "root 1無変更、network意味同一、実ディスク無変更をこのroot-2操作一式で同時照合",
+          "status": "unverified",
+          "reason": "Focused model tests do not provide a full disk and semantic comparison for this exact acceptance flow."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC02",
+      "design_area": "NE-X02",
+      "category": "normal",
+      "operation": "欠落workload/model-configをschema templateで作成",
+      "expected": "JSON+INIが同時追加、prepare成功、Undoで両方戻る",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "欠落JSONとINIを一つの可逆transactionで追加しUndoで入力集合を戻す",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_missing_json_and_ini_are_one_reversible_transaction",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "The paired JSON+INI model transaction and Undo restoration passed."
+            }
+          ]
+        },
+        {
+          "condition": "生成後の完全なprepare成功をこの組合せで確認する",
+          "status": "unverified",
+          "reason": "The named transaction test measures reversible model state; it is not a prepare-success measurement.",
+          "candidate_test_scope": {
+            "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+            "named_test": "file_creation_missing_json_and_ini_are_one_reversible_transaction",
+            "run": "rust_focused",
+            "test_result": "passed",
+            "measured_scope": "Executed; transaction/Undo assertions only."
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC03",
+      "design_area": "NE-X02",
+      "category": "boundary",
+      "operation": "同じ相対pathを別rootへ追加し、完全型名を変える／同じ完全型名でも試す",
+      "expected": "異なる完全型名は許可、同一完全型名は全体拒否",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "別rootの同相対pathと異なる型名を許可し、同一型名を拒否する",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_distinct_roots_allow_same_relative_path_but_not_same_type",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Both distinct-root acceptance and same-type-name rejection passed."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC04",
+      "design_area": "NE-X02",
+      "category": "abnormal",
+      "operation": "空package、空NED、絶対path、traversal、symlink、case-fold衝突、既存roleを投入",
+      "expected": "422、files/metadata/directories/history/revision完全不変",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "template/path/role/snapshot衝突の拒否後にmodel stateを保持する",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_roles_templates_paths_and_snapshot_collisions_are_atomic",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Named atomic-rejection test passed for its enumerated template/path/role/collision fixtures."
+            }
+          ]
+        },
+        {
+          "condition": "列挙した全不正入力（特にsymlinkとcase-fold衝突）ごとにHTTP 422とdisk/history/revision全不変を確認",
+          "status": "unverified",
+          "reason": "The passing model test does not establish every listed filesystem/HTTP variant.",
+          "candidate_test_scope": {
+            "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+            "named_test": "file_creation_roles_templates_paths_and_snapshot_collisions_are_atomic",
+            "run": "rust_focused",
+            "test_result": "passed",
+            "measured_scope": "Executed; only the test’s explicit fixtures are measured."
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC05",
+      "design_area": "NE-X02",
+      "category": "normal",
+      "operation": "作成→編集→Undo×2→Redo×2",
+      "expected": "ID同一、各段bytes一致、parsed/layout/仮想dirに残骸なし",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "nested create/editのUndo×2/Redo×2でID・state復元と残骸なしを確認",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_nested_edit_undo_twice_redo_twice_has_no_residue",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Directly exercises the stated history sequence and residue assertions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC06",
+      "design_area": "NE-X02",
+      "category": "boundary",
+      "operation": "作成→SaveAs→Undo→同target保存→Redo",
+      "expected": "Undoはdisk無変更、保存はshape拒否、Redoでcheckpoint一致しdirty解消",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "SaveAs checkpoint・Undo・shape拒否・Redoを照合",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_save_checkpoint_undo_shape_redo_and_external_collision",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "The named test passed and exercises checkpoint, Undo/Redo, shape, and collision assertions."
+            }
+          ]
+        },
+        {
+          "condition": "全disk bytesを各段階でhash比較し、dirty解消を完全SaveAs受入で確認",
+          "status": "unverified",
+          "reason": "Unit-level checkpoint assertions do not document a full acceptance artifact/hash record."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC07",
+      "design_area": "NE-X02",
+      "category": "abnormal",
+      "operation": "preview後に出力予定pathを外部作成してSaveAs",
+      "expected": "B4で衝突拒否、既存fileを上書きしない",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "external collisionを検出して既存inode/contentを保持する",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_save_checkpoint_undo_shape_redo_and_external_collision",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "The file-creation SaveAs test passed its external-collision assertion."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/output_tests.rs",
+              "named_test": "new_target_foreign_entry_and_existing_external_changes_are_preserved",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Output publication tests passed for preserving foreign/external changes."
+            }
+          ]
+        },
+        {
+          "condition": "この正確なpreview→external-create→SaveAs B4 timingを実filesystem barrierで再現する",
+          "status": "unverified",
+          "reason": "Tests exercise deterministic collisions, not the full external-race timing sequence."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC08",
+      "design_area": "NE-X03",
+      "category": "normal",
+      "operation": "Net.a/Net.bがRack共有、a.unitだけ固有化",
+      "expected": "Device/RackコピーとNet.a再結合、b原型維持、全path/値/結線同一",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "共有parentのCOWで他binding保持、Undo/Redo可能",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "detach_shared_parent_keeps_other_bindings_and_undo_redo",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Shared-parent detach, preserved other bindings, and Undo/Redo passed."
+            }
+          ]
+        },
+        {
+          "condition": "表のRack/Device/Net.a具体fixtureの全path・値・結線比較",
+          "status": "unverified",
+          "reason": "The test measures a separate bounded shared-parent fixture."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC09",
+      "design_area": "NE-X03",
+      "category": "boundary",
+      "operation": "共有が数階層、別rootの祖先、別networkから利用",
+      "expected": "必要階層をnetworkまで計画、非active network不変",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "deep shared chainを複製しinactive networkを不変に保つ",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "detach_deep_shared_chain_and_inactive_network_remain_unchanged",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Deep-chain COW and inactive-network preservation assertions passed."
+            }
+          ]
+        },
+        {
+          "condition": "別root祖先を含む全階層のsource/destination pathを受入fixtureでhash比較",
+          "status": "unverified",
+          "reason": "The test is a focused model fixture, not the full multi-root acceptance matrix."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC10",
+      "design_area": "NE-X03",
+      "category": "boundary",
+      "operation": "親が唯一利用／未使用型からも利用",
+      "expected": "唯一利用のみ指定child型参照をpatchして停止可、未使用型利用があればcopy継続",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "unique-parent stop pointとunused-type use時のcopy継続を確認",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "detach_unique_parent_stops_before_network_and_unused_use_forces_copy",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Both unique-parent and unused-type branches passed."
+            }
+          ]
+        },
+        {
+          "condition": "指定owner/child型の全前後参照を実GUI意味証拠として照合",
+          "status": "unverified",
+          "reason": "The passed check is a Rust model-level semantic fixture."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC11",
+      "design_area": "NE-X03",
+      "category": "normal",
+      "operation": "別packageのNEDへ型と祖先をコピー、原型に配置/extraあり",
+      "expected": "修飾で解決先保持、destination座標コピー、source配置保持、source_file妥当、Undo完全復元",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "cross-package NED作成とrequired ancestor chain、comment保持を確認",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "detach_cross_package_new_file_preserves_comments_and_required_ancestor_chain",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Cross-package clone, ancestor chain, and comments passed."
+            }
+          ]
+        },
+        {
+          "condition": "source/destination layout、source_file、全解決先、Undo bytesを一組のdisk exportで照合",
+          "status": "unverified",
+          "reason": "The source test is a focused in-memory refactor fixture."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC12",
+      "design_area": "NE-X03",
+      "category": "abnormal",
+      "operation": "network root/channel/未解決型/名前衝突/限度超を投入",
+      "expected": "候補全体拒否、原型を部分変更しない",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "root/package/collision拒否でmodel stateを保護",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "detach_second_root_new_package_and_collision_rejection",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Second-root/new-package and collision rejection fixture passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_simultaneous_cycles_and_schema_rejection",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Schema rejection and simultaneous rename validation passed."
+            }
+          ]
+        },
+        {
+          "condition": "network root/channel/未解決型/全件数上限それぞれの拒否と原型atomicity",
+          "status": "unverified",
+          "reason": "Not every listed invalid reference and limit variant is exercised by the cited fixtures.",
+          "candidate_test_scope": {
+            "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+            "named_test": "detach_second_root_new_package_and_collision_rejection",
+            "run": "rust_focused",
+            "test_result": "passed",
+            "measured_scope": "Executed; only explicit fixture branches measured."
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC13",
+      "design_area": "NE-X04",
+      "category": "normal",
+      "operation": "型+child+gate+parameterを一括変更",
+      "expected": "NED/INI/Channel/JSON/layout参照更新、非参照comment原文保持",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "renameが型付き参照と複数設定sourceを更新し、value/Undoを保持",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_all_kinds_network_and_shared_paths_preserves_values_and_undo",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "All named rename kinds, shared paths, preserved values, and Undo assertions passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_gateway_json_tokens_and_indices_follow_path_identity",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Gateway JSON token/index mapping by path identity passed."
+            }
+          ]
+        },
+        {
+          "condition": "NED/INI/Channel/JSON/layout全参照をこの一括変更で同時に出力hash比較",
+          "status": "unverified",
+          "reason": "Separate focused fixtures cover parts; no single aggregate export test covers every listed role."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC14",
+      "design_area": "NE-X04",
+      "category": "boundary",
+      "operation": "A/B交換、3名cycle、親子両方rename",
+      "expected": "全最終map成功、一時名なし、1履歴、逆変換完全一致",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "同時cycle renameとbus-order cycleを評価",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_simultaneous_cycles_and_schema_rejection",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Simultaneous cycles and rejection branches passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_bus_order_cycle_keeps_all_bus_settings",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Bus order cycle and settings retention passed."
+            }
+          ]
+        },
+        {
+          "condition": "A/B・3名・親子renameの各形で1履歴と完全逆変換bytesを個別照合",
+          "status": "unverified",
+          "reason": "The executed cycle fixtures do not claim every combination in the acceptance row."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC15",
+      "design_area": "NE-X04",
+      "category": "normal",
+      "operation": "active network名変更",
+      "expected": "root pathと子孫参照/Channel ID更新、解決値/経路/設定ID保持",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "network renameを含むrename後の値とUndoを検査",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_all_kinds_network_and_shared_paths_preserves_values_and_undo",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "The test includes network rename and preserves semantic values/Undo."
+            }
+          ]
+        },
+        {
+          "condition": "全root path、全Channel ID、経路と設定IDを実保存後のbaselineと比較",
+          "status": "unverified",
+          "reason": "Focused semantic fixture does not include a complete saved-output provenance record."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC16",
+      "design_area": "NE-X04",
+      "category": "boundary",
+      "operation": "aとaa、別ownerの同名member、未使用型参照",
+      "expected": "ID/segmentに基づき対象だけ更新、未使用型内参照も更新",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "owner/member namespaceを合成したtype swapを検査",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_type_swap_composes_original_owner_member_namespaces",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Original owner/member namespaces remain distinct under type swap."
+            }
+          ]
+        },
+        {
+          "condition": "a/aa segment境界と未使用型参照を別々に操作し、全対象限定性を確認",
+          "status": "unverified",
+          "reason": "The cited type-swap test does not exercise every path-prefix and unused-type case."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC17",
+      "design_area": "NE-X04",
+      "category": "abnormal",
+      "operation": "wildcard INI/重複key/未解決参照/未対応schema/曖昧alias",
+      "expected": "理由付き拒否、exact override補償や文字列置換なし",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "prepareと一致する参照拒否を追加acquisitionなしで検査",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/input/references/tests.rs",
+              "named_test": "references_rejections_match_prepare_without_additional_acquisition",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Reference rejection parity and acquisition constraints passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_simultaneous_cycles_and_schema_rejection",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Schema rejection branch passed."
+            }
+          ]
+        },
+        {
+          "condition": "wildcard/duplicate key/ambiguous aliasの全種別で理由付き拒否と補償不在を照合",
+          "status": "unverified",
+          "reason": "The named tests cover explicit reference/schema fixtures, not all table variants."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC18",
+      "design_area": "NE-X04",
+      "category": "abnormal",
+      "operation": "最終symbol/INI/Channel/layout key衝突",
+      "expected": "previewで拒否し、値が等しくても統合しない",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "layout stale-key衝突拒否とextra保持を検査",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/refactor_symbols/tests.rs",
+              "named_test": "rename_layout_cycles_preserve_extra_and_stale_collisions_refuse",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Layout cycles, extras, and stale collisions passed."
+            }
+          ]
+        },
+        {
+          "condition": "symbol/INI/Channel/layoutそれぞれで等値衝突をpreview時に拒否",
+          "status": "unverified",
+          "reason": "The cited test directly measures layout collision; other collision namespaces are not all established."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC19",
+      "design_area": "NE-X01",
+      "category": "boundary",
+      "operation": "BOM、CRLF、混在改行、非ASCII comment、JSON escaped path",
+      "expected": "patch外bytes同一、span境界妥当、意味比較成功",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "BOM/CRLF/escaped JSON/channel spanを参照patchで保持",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/input/references/tests.rs",
+              "named_test": "references_bom_crlf_escaped_json_and_channel_spans_keep_nonreferences_untouched",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Byte/span preservation for listed reference token classes passed."
+            },
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "local patch retains BOM, comments and every unmodified mixed newline",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "UI patch preserved BOM/comments/mixed newlines in the fixture."
+            }
+          ]
+        },
+        {
+          "condition": "非ASCII commentと全形式でpatch外bytes及びsemantic comparisonを同一acceptance実行で確認",
+          "status": "unverified",
+          "reason": "The Rust and Node checks are separate fixtures; no complete shared evidence bundle was produced."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC20",
+      "design_area": "NE-X01",
+      "category": "abnormal",
+      "operation": "preview後編集/Undo/Reload/writer交代",
+      "expected": "古いcommitは409、再preview必要",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "stale plan/revisionやwriter epochのapply拒否を検査",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/edit_plan_tests.rs",
+              "named_test": "apply_requires_matching_confirmation_and_rejects_missing_wrong_and_stale_plan",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Wrong/missing/stale plan branches passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/edit_plan_tests.rs",
+              "named_test": "plan_reads_enforce_writer_and_current_writer_sees_stale_revision_conflict",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Writer and stale revision conflict branches passed."
+            },
+            {
+              "source": "tests/ned_editor_extensions_ui.test.cjs",
+              "named_test": "edit plan pagination rejects a changed plan, digest, session, or writer epoch",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "UI pagination rejects plan/digest/session/writer-epoch drift."
+            }
+          ]
+        },
+        {
+          "condition": "preview後のedit・Undo・Reload・writer takeoverを一つずつcommit境界で全て再現",
+          "status": "unverified",
+          "reason": "Executed checks cover stale plan/revision/writer epoch subsets, not the full 4-way scenario."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC21",
+      "design_area": "NE-X01",
+      "category": "boundary",
+      "operation": "32MiB/1byte超、履歴200/201、plan/file/rename件数境界、10分失効",
+      "expected": "各上限を独立検査しatomic拒否、期限切れplanは410",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "file-creation history limitとoversize rejectionを検査",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_history_exact_limit_and_oversized_rejection_preserve_redo",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Exact tested history limit and oversized rejection preserve redo."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/edit_plan_tests.rs",
+              "named_test": "expired_and_replaced_edit_plans_return_gone_without_sleeping",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Expired/replaced plan returns Gone using deterministic clock fixture."
+            }
+          ]
+        },
+        {
+          "condition": "32MiB operation境界±1byte、plan/file/rename件数境界を全て測定",
+          "status": "unverified",
+          "reason": "The cited history and plan-expiry tests do not establish every new byte/count limit.",
+          "candidate_test_scope": {
+            "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+            "named_test": "file_creation_history_exact_limit_and_oversized_rejection_preserve_redo",
+            "run": "rust_focused",
+            "test_result": "passed",
+            "measured_scope": "Executed history-size boundary only."
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC22",
+      "design_area": "NE-X01",
+      "category": "normal",
+      "operation": "同command/別payload再送、preview中取消、apply受領後閉じる、別ID再送、候補panic",
+      "expected": "ledger再送、一回採用、異payload/別ID拒否、取消時applyせず、apply後は結果取得と明示Undo",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "edit-plan applyのledger idempotencyとUndo/Redoで同IDを保持",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/edit_plan_tests.rs",
+              "named_test": "apply_is_ledger_idempotent_and_undo_redo_reuses_added_file_id_and_layout",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Same-command replay and stable added-file identity passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/controller_tests.rs",
+              "named_test": "ledger_retains_a_thousand_responses_and_high_watermark_prevents_reexecution",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Ledger high-watermark prevents command reexecution."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/controller_tests.rs",
+              "named_test": "changed_payload_or_revision_invalidates_confirmation",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Changed payload/revision invalidates confirmation."
+            }
+          ]
+        },
+        {
+          "condition": "GUI confirmation cancel/rejection leaves selected scope and buffers intact",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "New confirmation cancellation and terminal rejection preserve buffers and selected scope",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "New confirmation cancel/rejection path preserves client state."
+            }
+          ]
+        },
+        {
+          "condition": "preview dialog取消とapply後dialog閉鎖の終端job境界を全経路で確認",
+          "status": "unverified",
+          "reason": "The Node test covers New confirmation; it is not an edit-plan dialog close test."
+        },
+        {
+          "condition": "candidate panic時の未採用無変更をprocess barrierで再現",
+          "status": "unverified",
+          "reason": "No panic/fault injection was run for this condition."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC23",
+      "design_area": "NE-X01",
+      "category": "normal",
+      "operation": "追加込みSaveAsの各B4 fault point",
+      "expected": "manifest復旧の前後一致、input ID→複数output対応、snapshot path不改名",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "partial publicationとregistry/crash-gap recoveryを決定的fault fixtureで検査",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/output_tests.rs",
+              "named_test": "restart_completes_partial_no_clobber_publication_using_hash_truth",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Deterministic partial publication recovery by recorded hashes passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/output_tests.rs",
+              "named_test": "completed_manifest_repairs_registry_after_crash_gap",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Completed manifest repairs registry after simulated checkpoint gap."
+            }
+          ]
+        },
+        {
+          "condition": "全B4 fault point、全input→複数output対応、実process crash前後の全hashを照合",
+          "status": "unverified",
+          "reason": "Unit fault injection covers selected publication gaps; no process kill at every B4 point was performed."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC24",
+      "design_area": "NE-X05",
+      "category": "normal",
+      "operation": "第22節条件で操作・失敗を再現",
+      "expected": "保存済みbaseline CLI結果同等、manifest/records/metrics/diagnosticsとViewerを確認",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "browser flowでSaveAs後CLI validate/runが成功し、結果とViewerを生成",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "Real Chromium flow passed; CLI validate/run status 0, result hash captured, run records and Viewer were exercised."
+            }
+          ]
+        },
+        {
+          "condition": "保存済みCLI baselineと固定runのmanifest・全simulation/CSV・metadata/metrics/diagnosticsの比較",
+          "status": "passed",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "real_worker_matches_saved_baseline_cli_manifest_records_metrics_and_diagnostics",
+              "run": "saved_baseline_comparison",
+              "test_result": "passed",
+              "measured_scope": "Both actual outputs common-validated and manifest authenticated; full simulation/CSV normalized run_id; metadata equality excluding only execution timestamps; report paths independently checked"
+            }
+          ]
+        }
+      ],
+      "additional_verification": "Feasible previously unverified slice closed; no all-profile/environment claim."
+    },
+    {
+      "case_id": "NE-XC25",
+      "design_area": "NE-X05",
+      "category": "unsaved",
+      "operation": "dirty原文/Untitled/新規fileを実行",
+      "expected": "run出典は編集hash、元disk不変、dirtyと保存基準不変",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "dirty sourceのfreezeが一回で行われ、history/checkpointを変えない",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_command_tests.rs",
+              "named_test": "run_command_freezes_dirty_input_once_and_preserves_history_and_checkpoint",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "API-level dirty input snapshot and unchanged history/checkpoint passed."
+            },
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "Browser partial run began dirty; frozen run outputs and source hashes were recorded."
+            }
+          ]
+        },
+        {
+          "condition": "Untitled/new fileを含む未保存原文hash・元disk・dirty/save baselineを同時検証",
+          "status": "unverified",
+          "reason": "The browser fixture has existing input files and a created NED file; it does not cover every unsaved-file variant."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC26",
+      "design_area": "NE-X05",
+      "category": "input deletion",
+      "operation": "load後に全元入力を削除して実行、未知snapshot pathを指定",
+      "expected": "snapshotから実行成功、unknown pathは同名disk fileがあってもfallback失敗",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "source deletion後もsnapshotがprepareに使われ、unknown path fallbackを拒否",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_snapshot/tests.rs",
+              "named_test": "source_deletion_does_not_change_prepare_and_unknown_paths_never_fall_back",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Source removal and no-fallback checks passed."
+            },
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "Browser evidence confirms source removal before later run and records frozen input hashes."
+            }
+          ]
+        },
+        {
+          "condition": "全てのsource fileを消した状態で実workerを通し、unknown path同名ファイル衝突も別runで確認",
+          "status": "unverified",
+          "reason": "The unit test verifies snapshot path behavior; the browser flow deletes selected source inputs but is not the full matrix."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC27",
+      "design_area": "NE-X05",
+      "category": "freeze",
+      "operation": "受付後にedit/Undo/Reload/New/create",
+      "expected": "run内容固定、現在診断非汚染、古い結果表示が正しい",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "edit/Undo/Reload/New/create後にもfrozen source bytes/stampが固定",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_command_tests.rs",
+              "named_test": "run_frozen_source_survives_later_edit_reload_new_project_and_creation",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Restored test passed across later edit, Undo, Reload, New, and file creation; it checks frozen text/stamp and project files."
+            }
+          ]
+        },
+        {
+          "condition": "同じ実runで後続edit/Undo/Reload/New/createに対する固定内容・現在診断非汚染・過去入力表示を確認",
+          "status": "passed",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_feasible_fixed",
+              "test_result": "passed",
+              "measured_scope": "Same actual run/frozen bytes/stamp/diagnostics retained through later edit, Undo, Reload, New and create; current diagnostics0; past/current badge verified; real Viewer failure shown without current diagnostic contamination"
+            }
+          ]
+        }
+      ],
+      "additional_verification": "Feasible previously unverified slice closed; no all-profile/environment claim."
+    },
+    {
+      "case_id": "NE-XC28",
+      "design_area": "NE-X05",
+      "category": "flush",
+      "operation": "IME途中、未ack、flush失敗を経てrun request",
+      "expected": "composition/未ack/失敗中はrunなし、全ack後だけrun",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "composition終了・source ack前にはstart_runを送らず、順序をreplace_source→start_runと確認",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "Run waits for composition and source acknowledgement before freezing input",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Harness composition event and delayed source acknowledgment gate start_run."
+            }
+          ]
+        },
+        {
+          "condition": "blocked/rejected flushではrunなし、raw bytesを保持",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "Run creates no command while flush is blocked or fails and retains the edited bytes",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Blocked and transport-error fixture paths retain pending bytes and create no run."
+            }
+          ]
+        },
+        {
+          "condition": "ack待ち中の新typingを再flushし、取消/範囲外timeoutではflushしない",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "Run flushes typing received during an unacknowledged edit before freezing the final version",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Second source flush carries newest text before run."
+            },
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "Run dialog cancellation and invalid timeout never flush or create a run",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Cancel and invalid timeout create no command."
+            }
+          ]
+        },
+        {
+          "condition": "native browser/OS IME event sequenceを実機IMEで検証",
+          "status": "unverified",
+          "reason": "Node harness composition events are synthetic; no nativeIME hardware/browser input was used."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC29",
+      "design_area": "NE-X05",
+      "category": "prepare failure",
+      "operation": "syntax error/semantic errorを別々に投入",
+      "expected": "原文保持、prepare_failed、simulate未呼出し、位置は固定原文に対応",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "invalid edited sourceをfreezeしてprepare用に復元できる",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_snapshot/tests.rs",
+              "named_test": "syntactically_invalid_edited_source_is_frozen_and_restored_for_prepare",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Snapshot codec retains syntactically invalid edited input for prepare."
+            }
+          ]
+        },
+        {
+          "condition": "actual workerのprepare failure lifecycleを含むworker gateを実行",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "real_worker_prepare_failure_timeout_force_kill_and_shutdown",
+              "run": "rust_ignored_with_binary",
+              "test_result": "passed",
+              "measured_scope": "Fresh-binary worker test passed its prepare-failure/lifecycle branches."
+            }
+          ]
+        },
+        {
+          "condition": "syntax/semanticを別々に生成し、固定原文のbyte/line/column位置・prepare_failed・reportなし・空result・worker reapを照合",
+          "status": "passed",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "real_worker_syntax_and_semantic_prepare_failures_map_frozen_source_without_output",
+              "run": "syntax_semantic_positions",
+              "test_result": "passed",
+              "measured_scope": "Independent positions for BOM/CRLF/Unicode syntax EOF and semantic unknown-type; actual PreparedFailed reply, unchanged source/no report/no result and reap"
+            }
+          ]
+        }
+      ],
+      "additional_verification": "Feasible previously unverified slice closed; no all-profile/environment claim."
+    },
+    {
+      "case_id": "NE-XC30",
+      "design_area": "NE-X05",
+      "category": "partial result",
+      "operation": "event上限等でpartial reportを作成",
+      "expected": "partial=true、exit 3、実termination/manifest一致、Viewerは存在recordのみ再生",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "real browser UIからevent-limited partial resultを発行しexit/phase/artifactを確認",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "Partial UI run published with exit_code 3 and execution_failed; result hash and Viewer step were captured."
+            }
+          ]
+        },
+        {
+          "condition": "partial/complete stop race result classificationをmodel unitで確認",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "stop_race_keeps_valid_complete_or_partial_result",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Complete and partial stop classification fixture passed."
+            }
+          ]
+        },
+        {
+          "condition": "manifest/worker termination/Viewerレコードの全対応を全partial種別で突合",
+          "status": "unverified",
+          "reason": "Browser measures one bounded event-cap partial fixture; not every partial termination/export path."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC31",
+      "design_area": "NE-X05",
+      "category": "publication failure",
+      "operation": "execution診断後にENOSPC/permission failure注入",
+      "expected": "prior_diagnostics/original_termination保持、manifestなしならViewer不可",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "soft-quota accounting fixture counts internal staging hardlinks once",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "soft_quota_counts_internal_staging_links_once",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Internal staging-link accounting passed; it is accounting logic only."
+            }
+          ]
+        },
+        {
+          "condition": "物理ENOSPC/permission-deniedをdiagnostic後に起こし、manifestなしViewer不可を実行",
+          "status": "unverified",
+          "reason": "No actual ENOSPC or permission-denial publication failure was generated.",
+          "candidate_test_scope": {
+            "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+            "named_test": "soft_quota_counts_internal_staging_links_once",
+            "run": "rust_focused",
+            "test_result": "passed",
+            "measured_scope": "Not equivalent to physical ENOSPC or permission failure."
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC32",
+      "design_area": "NE-X05",
+      "category": "retry",
+      "operation": "応答紛失後同commandを100回再送、別payload、terminal待ち",
+      "expected": "run/worker一件、異payloadは409、freeze/job中は次commandなし",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "durable exactly-once creation and command-ledger replay prevent duplicate run",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "run_creation_is_durable_exactly_once_and_does_not_edit_project",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Durable run identity is assigned exactly once."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_command_tests.rs",
+              "named_test": "run_command_freezes_dirty_input_once_and_preserves_history_and_checkpoint",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Command-level replay and frozen-source assertions passed."
+            }
+          ]
+        },
+        {
+          "condition": "terminal 202 job reserves sequence until completion; unconsumed/consumed rejections differ",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "202 reserves sequence, blocks the next command and waits for a terminal job",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Client blocks the next command while async job is pending."
+            },
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "consumed terminal rejection advances sequence and retains command without retransmitting",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Sequence behavior for consumed terminal rejection passed."
+            }
+          ]
+        },
+        {
+          "condition": "exactly100 retransmissions、異payload409、freeze through terminalまでの全command kindを一つのrunで計測",
+          "status": "unverified",
+          "reason": "The cited checks cover idempotency/sequence subsets, not this full 100-retry protocol row."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC33",
+      "design_area": "NE-X05",
+      "category": "cancel race",
+      "operation": "queued/prepare/simulate/export/verifying/manifest/response各点で停止",
+      "expected": "一つの終端、worker reap、manifest有無に応じた分類",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "queued cancel is terminal/idempotent; running+2 waiter fixture rejects third and cancel releases slot",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "queued_cancel_is_terminal_and_noop_repeated",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Queued cancellation is terminal and repeated cancel is idempotent."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "running_plus_two_waiters_rejects_third_and_cancel_releases_one_slot",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Synthetic running record plus two waiters and slot release passed."
+            }
+          ]
+        },
+        {
+          "condition": "durable cancellation recovery distinguishes manifest/report combinations",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "restart_after_durable_stop_classifies_manifest_and_response_independently",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Three persisted manifest/response combinations passed after restart."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "restart_preserves_durable_cancellation_and_same_command_identity",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Durable cancellation and command identity survived manager restart."
+            }
+          ]
+        },
+        {
+          "condition": "real service SIGINT/SIGTERM shutdown stops and reaps active worker",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_run_shutdown.test.cjs",
+              "named_test": "editor SIGINT stops and reaps an active worker",
+              "run": "shutdown_signals",
+              "test_result": "passed",
+              "measured_scope": "Fresh binary; worker was stopped, service SIGINT led to actual SIGKILL/reap, input hashes unchanged.",
+              "source_name_template": "editor ${signal} stops and reaps an active worker"
+            },
+            {
+              "source": "tests/ned_editor_run_shutdown.test.cjs",
+              "named_test": "editor SIGTERM stops and reaps an active worker",
+              "run": "shutdown_signals",
+              "test_result": "passed",
+              "measured_scope": "Fresh binary; service SIGTERM stopped/reaped worker and input hashes stayed unchanged.",
+              "source_name_template": "editor ${signal} stops and reaps an active worker"
+            }
+          ]
+        },
+        {
+          "condition": "prepare/simulate/export/verifying/manifest-before-response race points each use fixed barriers and deterministic assertions",
+          "status": "unverified",
+          "reason": "No full cancellation-race barrier matrix was run; direct persisted-state fixture is synthetic, while shutdown test covers only service signals."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC34",
+      "design_area": "NE-X05",
+      "category": "timeout/limits",
+      "operation": "timeout bounds、memory/file/total soft limits、log cap",
+      "expected": "limitでeditor本体を停止しない",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "timeout payload strictness and bounds plus frontend valid/invalid choices",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "timeout_payload_is_strict_and_bounded",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Run timeout parser/bounds test passed."
+            },
+            {
+              "source": "tests/ned_editor_ui.test.cjs",
+              "named_test": "Run dialog cancellation and invalid timeout never flush or create a run",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Cancel, zero, and 3601-second invalid values do not send commands."
+            }
+          ]
+        },
+        {
+          "condition": "monitored stop and large diagnostic response bound handling",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/safety_tests.rs",
+              "named_test": "monitored_limits_stop_even_when_durable_record_cannot_be_written",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Synthetic monitored-limit stop remains active when persistence fails."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/large_response_tests.rs",
+              "named_test": "large_prepare_diagnostic_bounds_every_string_with_json_escaping_and_utf8",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Large diagnostic strings are bounded with UTF-8/JSON escaping checks."
+            }
+          ]
+        },
+        {
+          "condition": "actual 4GiB OOM, 1GiB output, hardware/file/total soft quotas and full log cap under load",
+          "status": "unverified",
+          "reason": "No OOM, hardware quota, or giant physical output workload was run.",
+          "candidate_test_scope": {
+            "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+            "named_test": "soft_quota_counts_internal_staging_links_once",
+            "run": "rust_focused",
+            "test_result": "passed",
+            "measured_scope": "Internal accounting test only; not a physical resource-exhaustion measurement."
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC35",
+      "design_area": "NE-X05",
+      "category": "restart",
+      "operation": "freeze/ack/manifest/worker-response/cancel記録前後でkill",
+      "expected": "二重実行せず回復・interrupted・保全へ分類",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "queued record and published manifest restart classification avoid rerun",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "restart_never_reruns_queued_and_recovers_published_manifest",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Persisted queued and published-manifest recovery paths passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "restart_after_durable_stop_classifies_manifest_and_response_independently",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Persisted stop/manifest/response classifications passed."
+            }
+          ]
+        },
+        {
+          "condition": "service SIGINT/SIGTERM shutdown reaps worker and leaves durable service_shutdown record",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_run_shutdown.test.cjs",
+              "named_test": "editor SIGINT stops and reaps an active worker",
+              "run": "shutdown_signals",
+              "test_result": "passed",
+              "measured_scope": "Actual process signal path and worker reap passed.",
+              "source_name_template": "editor ${signal} stops and reaps an active worker"
+            },
+            {
+              "source": "tests/ned_editor_run_shutdown.test.cjs",
+              "named_test": "editor SIGTERM stops and reaps an active worker",
+              "run": "shutdown_signals",
+              "test_result": "passed",
+              "measured_scope": "Actual process signal path and worker reap passed.",
+              "source_name_template": "editor ${signal} stops and reaps an active worker"
+            }
+          ]
+        },
+        {
+          "condition": "editor process kill at each listed freeze/ack/manifest/response/cancel cutpoint and resulting recovery state",
+          "status": "unverified",
+          "reason": "The shutdown suite sends service signals at an active worker; it is not a kill-at-every-persistence-boundary matrix."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC36",
+      "design_area": "NE-X05",
+      "category": "output conflict",
+      "operation": "same run ID/nonempty output/symlink swap/external hardlink/unknown entry",
+      "expected": "入力/他run/save recovery物不変更",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "publication collisions and symlink/hardlink/permission changes stop before clobber",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/output_tests.rs",
+              "named_test": "nonreplace_publication_collision_never_clobbers_external_inode",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "No-clobber external inode collision passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/output_tests.rs",
+              "named_test": "source_symlink_hardlink_and_permission_changes_are_conflicts",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Symlink, hardlink, and permission conflict fixtures passed."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "unknown_descendants_are_preserved_before_delete_and_during_tombstone_recovery",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Unknown descendants were preserved in deletion/recovery fixture."
+            }
+          ]
+        },
+        {
+          "condition": "同run ID・全output collision variants・入力/他run/save-recovery hashを一括比較",
+          "status": "unverified",
+          "reason": "Cited tests cover separate deterministic filesystem variants, not the full combined matrix."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC37",
+      "design_area": "NE-X05",
+      "category": "concurrency",
+      "operation": "1実行+2待機、次503、cancel slot解放、pin±1、Undo 32MiB独立、non-owner busy",
+      "expected": "上限/lockは守り、通常編集/保存は継続",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "one synthetic running record plus two queued slots rejects third and cancel releases a slot",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "running_plus_two_waiters_rejects_third_and_cancel_releases_one_slot",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Direct record-phase fixture proves queue accounting and replacement admission."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "capacity_rejects_before_freeze_and_pin_bounds_are_independent",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Admission and pin-bound independence logic passed."
+            }
+          ]
+        },
+        {
+          "condition": "pin-capacity arithmetic accepts exact boundary and rejects +1 without file creation",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "pinned_capacity_exact_boundary_and_one_byte_over_do_not_create_files",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Directly mutates stored byte accounting; exact and +1 arithmetic only, no quota allocation."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_history_exact_limit_and_oversized_rejection_preserve_redo",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Undo history limit is tested independently from run-capacity arithmetic."
+            }
+          ]
+        },
+        {
+          "condition": "read-only/non-owner coordinator rejects mutations while preserving reads",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "readonly_coordinator_keeps_reads_and_rejects_mutations",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Read-only coordinator read/mutation behavior passed."
+            }
+          ]
+        },
+        {
+          "condition": "実worker 1+2同時実行、物理pin quota±1byte、通常編集/SaveAsを同時継続",
+          "status": "unverified",
+          "reason": "Concurrency and quota conditions use synthetic state/accounting fixtures; no physical quota or live edit/save race."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC38",
+      "design_area": "NE-X06",
+      "category": "tamper",
+      "operation": "artifact/manifest/response hash、他run一式、absolute/../symlink参照を改ざん",
+      "expected": "integrity_failed、HTTP漏洩なし、Viewer無効",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "snapshot/result identity and cross-correspondence tampering are rejected",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "tampered_frozen_input_and_result_are_rejected",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Frozen input and result tamper fixtures rejected."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+              "named_test": "stamp_and_correspondence_tampering_are_integrity_failures",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Stamp/correspondence mismatch classified as integrity failure."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_snapshot/tests.rs",
+              "named_test": "blob_manifest_commit_and_expected_identity_tampering_are_rejected",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Snapshot blob/manifest identity tamper branches passed."
+            }
+          ]
+        },
+        {
+          "condition": "別runの内部整合した全bundleへの交換、全unsafe path種、HTTP応答漏洩とViewer無効化を確認",
+          "status": "unverified",
+          "reason": "Unit integrity tests cover selected tamper classes; no full cross-run HTTP/Viewer attack test was run."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC39",
+      "design_area": "NE-X06",
+      "category": "Viewer boundary",
+      "operation": "bad/multiple Host,異origin,editor secret only,capabilityでeditor操作,CORS,TTL/restart",
+      "expected": "不許可要求拒否、capability失効",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "Viewer request gates reject invalid request shapes and browser flow verifies separate origin/revoke",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/viewer_server.rs",
+              "named_test": "strict_request_gates",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Strict Viewer request gate unit test passed."
+            },
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "Real browser confirms separate loopback origin, new tab, opener null, and revoked route 410."
+            },
+            {
+              "source": "tests/ned_editor_extensions_ui.test.cjs",
+              "named_test": "Viewer expires exactly at its deadline, invalidates the render cache and permits preparation",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Deterministic UI expiry boundary and cache invalidation passed."
+            }
+          ]
+        },
+        {
+          "condition": "複数Host/CORS/editor secret単独/Viewer capabilityでeditor mutation/再起動TTLを全てHTTP integrationで確認",
+          "status": "unverified",
+          "reason": "The run combines request-gate unit coverage and one browser flow; not all security boundary permutations were executed."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC40",
+      "design_area": "NE-X06",
+      "category": "Viewer CSP",
+      "operation": "NED/diagnostic/resultへHTML/script closing tagを挿入し実ブラウザ確認",
+      "expected": "script実行なし、CSP errorなし、通常操作可、外部通信なし、openerなし",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "Viewer CSP contains hash-only script source and browser had no CSP errors or opener",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/run_control/viewer_server.rs",
+              "named_test": "csp_has_only_hash_script_sources",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "CSP source policy assertion passed."
+            },
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "Browser Viewer had zero CSP errors and window.opener was null."
+            }
+          ]
+        },
+        {
+          "condition": "hostile HTML/script closing tagsをdiagnostic/result fieldsへ注入し実行不在/外部通信なしを確認",
+          "status": "unverified",
+          "reason": "The browser fixture did not perform the specified hostile-string injection."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC41",
+      "design_area": "NE-X05 / NE-X06",
+      "category": "display evidence",
+      "operation": "normal/partial/past-input/Viewer-failureを固定状態で撮影",
+      "expected": "browser版、path、hashを記録",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "actual Chromium flow captured 7 fixed-state screenshots with SHA-256 and bytes",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "Evidence has browser version 151.0.7922.34, 7 screenshot hashes, normal/past/partial/viewer states; sanitized copy is persistent."
+            }
+          ]
+        },
+        {
+          "condition": "通常・部分・過去入力・Viewer失敗の固定画面、browser/binary/result path/hashの記録",
+          "status": "passed",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_feasible_fixed",
+              "test_result": "passed",
+              "measured_scope": "Same actual run/frozen bytes/stamp/diagnostics retained through later edit, Undo, Reload, New and create; current diagnostics0; past/current badge verified; real Viewer failure shown without current diagnostic contamination"
+            }
+          ]
+        }
+      ],
+      "additional_verification": "Feasible previously unverified slice closed; no all-profile/environment claim."
+    },
+    {
+      "case_id": "NE-XC42",
+      "design_area": "NE-X02",
+      "category": "editing",
+      "operation": "empty Multibusで新規module NED作成、prepare失敗後save/run、修正",
+      "expected": "save無書込拒否、runはbundle/ledger耐久化してprepare_failed、simulate/exportなし、修正後同ID成功",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "real browser UI creates an additional NED file and exported project includes it",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "UI-created `Extra.ned` was saved/exported and the project validated/run successfully."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/file_creation_tests.rs",
+              "named_test": "file_creation_seven_templates_and_encoding_use_common_parser",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "NED templates parse via shared parser."
+            }
+          ]
+        },
+        {
+          "condition": "empty Multibusのprepare-failure fixture、save無書込、run ledger耐久化、修正後same file ID success",
+          "status": "unverified",
+          "reason": "The browser flow uses a CAN baseline and a valid created NED file; it does not exercise this failure/repair sequence."
+        }
+      ]
+    },
+    {
+      "case_id": "NE-XC43",
+      "design_area": "NE-X01 / NE-X04 / NE-X05 / NE-X06",
+      "category": "whole GUI",
+      "operation": "新規NED→COW→type/child swap→未保存run→Viewer",
+      "expected": "UI全体で参照整合、履歴と実行出典を照合、保存復旧回帰も合格",
+      "status": "partial",
+      "conditions": [
+        {
+          "condition": "real-browser extension flow exercised UI file creation, COW, rename/swap, SaveAs, CLI run, source removal, normal/partial UI runs, Viewer step/revoke and deletion",
+          "status": "partial",
+          "evidence": [
+            {
+              "source": "tests/ned_editor_extensions_browser.test.cjs",
+              "named_test": "NED editor extensions work through the real UI and produce a runnable exported project",
+              "run": "browser_extensions",
+              "test_result": "passed",
+              "measured_scope": "One real Chromium flow passed and captured CLI, run, Viewer, revoke, output hashes, and screenshots."
+            },
+            {
+              "source": "tests/ned_editor_recovery.test.cjs",
+              "named_test": "completed publication awaiting registry checkpoint offers only finalization",
+              "run": "node_ui_recovery_extensions",
+              "test_result": "passed",
+              "measured_scope": "Recovery UI exposes only safe finalization for completed publication."
+            },
+            {
+              "source": "crates/dir-simulator/src/tool/ned-editor/output_tests.rs",
+              "named_test": "completed_manifest_repairs_registry_after_crash_gap",
+              "run": "rust_focused",
+              "test_result": "passed",
+              "measured_scope": "Save recovery repairs a completed-manifest checkpoint gap."
+            }
+          ]
+        },
+        {
+          "condition": "全acceptance sequenceの同一UI経路と保存復旧回帰を一つのrun/sessionとして照合",
+          "status": "unverified",
+          "reason": "Browser end-to-end flow and saved-recovery tests passed separately; no single run covers the entire combined row."
+        }
+      ]
+    }
+  ],
+  "binaries": {
+    "initial_tests": {
+      "path": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/target/debug/dir-simulator",
+      "sha256": "e22df8a43b667ce38ba99a3f34936e08d91349fcf2398ec81076c59bd68f7e2e"
+    },
+    "feasible_tests_before_diagnostic_fix": {
+      "sha256": "9e0a3cbceaf8746d238a78da5f6c4f6ee618ee1cfc15c51defd6b874250c3592"
+    },
+    "final_diagnostic_fix": {
+      "sha256": "dba4497780833b39ce26095b8852c2fe745cfccef5c1a27acacd07ba02333864"
+    }
+  }
+}
