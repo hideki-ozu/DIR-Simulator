@@ -260,7 +260,7 @@ pub(super) fn spawn_worker(request: &worker::Request) -> Result<(Child, Instant)
         )
         .map_err(|e| invalid(e.to_string()))?;
     }
-    let mut stream = loop {
+    let stream = loop {
         match listener.accept() {
             Ok((s, _)) => break s,
             Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
@@ -274,7 +274,9 @@ pub(super) fn spawn_worker(request: &worker::Request) -> Result<(Child, Instant)
         }
     };
     fs::remove_file(&socket).unwrap();
-    worker::write_frame(&mut stream, request)?;
+    child.stdin = Some(std::process::ChildStdin::from(OwnedFd::from(
+        stream.try_clone().unwrap(),
+    )));
     child.stdout = Some(std::process::ChildStdout::from(OwnedFd::from(stream)));
     Ok((child, started))
 }
@@ -401,14 +403,23 @@ fn fault_child() {
         save(&root, mode == "restore");
         return;
     }
-    if mode == "reopen" {
+    if mode == "reopen" || mode == "reopen-delete" {
         let p = load(&root);
         let m = manager(&root, &p);
         let records = m.list(None).unwrap();
+        let mut deleted = Vec::new();
+        if mode == "reopen-delete" {
+            for run in records["runs"].as_array().unwrap() {
+                let id = run["run_id"].as_str().unwrap();
+                m.delete(id).unwrap();
+                deleted.push(id.to_owned());
+            }
+            assert!(m.list(None).unwrap()["runs"].as_array().unwrap().is_empty());
+        }
         fs::write(
             root.join("reopened.json"),
             serde_json::to_vec(
-                &json!({"worker_launching_enabled":m.shared.launch_worker,"records":records}),
+                &json!({"worker_launching_enabled":m.shared.launch_worker,"records":records,"deleted_run_ids":deleted}),
             )
             .unwrap(),
         )
@@ -985,6 +996,23 @@ fn xc35_actual_coordinator_sigkill_covers_snapshot_publication_manifest_and_resp
             false,
         );
         let (event, _stream) = child.next().expect("selected run barrier must be reached");
+        let expected_ids: Vec<_> = fs::read_dir(f.root.join("state/runs"))
+            .unwrap()
+            .map(|entry| entry.unwrap().file_name().into_string().unwrap())
+            .filter(|name| name.starts_with("run-"))
+            .collect();
+        let unpublished = [
+            "snapshot.before_commit",
+            "snapshot.after_commit",
+            "snapshot.after_sync",
+            "run.before_publish",
+        ]
+        .contains(&site);
+        assert_eq!(
+            expected_ids.len(),
+            usize::from(!unpublished),
+            "{site}: {expected_ids:?}"
+        );
         let worker_pid = if event["pid"] != json!(child.child.id()) {
             Some(event["pid"].as_u64().unwrap() as i32)
         } else {
@@ -1011,7 +1039,7 @@ fn xc35_actual_coordinator_sigkill_covers_snapshot_publication_manifest_and_resp
         }
         let launches_before = fs::read(f.root.join("execution-launches.jsonl")).unwrap_or_default();
         drop(child);
-        let mut reopened = Supervisor::spawn(&f.root, "reopen", "unused", "0", false);
+        let mut reopened = Supervisor::spawn(&f.root, "reopen-delete", "unused", "0", false);
         assert!(reopened.next().is_none());
         reopened.finish();
         let observation: Value =
@@ -1023,7 +1051,17 @@ fn xc35_actual_coordinator_sigkill_covers_snapshot_publication_manifest_and_resp
             "restart must not launch another execution worker"
         );
         let runs = observation["records"].clone();
+        assert_eq!(
+            runs["runs"].as_array().unwrap().len(),
+            expected_ids.len(),
+            "{site}: {runs}"
+        );
+        assert_eq!(observation["deleted_run_ids"], json!(expected_ids));
         for run in runs["runs"].as_array().unwrap() {
+            assert!(
+                expected_ids.iter().any(|id| run["run_id"] == *id),
+                "{site}: {run}"
+            );
             assert!(
                 !["queued", "preparing", "running", "verifying", "stopping"]
                     .contains(&run["phase"].as_str().unwrap())
@@ -1048,7 +1086,7 @@ fn xc35_actual_coordinator_sigkill_covers_snapshot_publication_manifest_and_resp
         }
         assert_eq!(inventory(&f.root.join("source")), source);
         evidence(
-            json!({"case":"XC35","barrier":event,"coordinator_signal":9,"worker_parent_death_checked":worker_pid.is_some(),"reopened_worker_launching_enabled":true,"execution_launches_unchanged_sha256":hash(&launches_before),"reopened_runs":runs}),
+            json!({"case":"XC35","barrier":event,"coordinator_signal":9,"worker_parent_death_checked":worker_pid.is_some(),"reopened_worker_launching_enabled":true,"execution_launches_unchanged_sha256":hash(&launches_before),"expected_run_ids":expected_ids,"deleted_run_ids":observation["deleted_run_ids"],"reopened_runs":runs}),
         );
     }
 }

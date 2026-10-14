@@ -746,6 +746,58 @@ fn unknown_descendants_are_preserved_before_delete_and_during_tombstone_recovery
         b"still-preserve"
     );
 }
+
+#[test]
+fn recovered_pre_manifest_run_can_be_deleted() {
+    let f = Fixture::new();
+    let m = f.manager();
+    let id = f.create(&m, "one");
+    f.publish(&m, &id, false, false);
+    let result = m.shared.root.join(&id).join("result");
+    let pending = result.join(format!(".tmp-{id}-manifest"));
+    fs::rename(result.join("manifest.json"), &pending).unwrap();
+    let m = f.restart(m);
+    let runs = m.list(None).unwrap();
+    let runs = runs["runs"].as_array().unwrap();
+    assert_eq!(runs.len(), 1);
+    assert_eq!(runs[0]["run_id"], id);
+    assert_eq!(runs[0]["artifact_state"], "unpublished");
+    assert!(pending.is_file());
+    m.delete(&id).unwrap();
+    assert!(!result.parent().unwrap().exists());
+    assert!(m.list(None).unwrap()["runs"].as_array().unwrap().is_empty());
+}
+
+#[test]
+fn pending_manifest_cleanup_rejects_foreign_names_directories_and_symlinks() {
+    use std::os::unix::fs::symlink;
+    for kind in ["foreign", "nested", "directory", "symlink"] {
+        let f = Fixture::new();
+        let m = f.manager();
+        let id = f.create(&m, "one");
+        m.cancel(&id).unwrap();
+        let result = m.shared.root.join(&id).join("result");
+        let path = result.join(if kind == "foreign" {
+            ".tmp-other-manifest".to_owned()
+        } else {
+            format!(".tmp-{id}-manifest")
+        });
+        let external = f.root.join("preserved");
+        fs::write(&external, b"preserve").unwrap();
+        match kind {
+            "directory" => fs::create_dir(&path).unwrap(),
+            "nested" => {
+                fs::create_dir(&path).unwrap();
+                fs::write(path.join("manifest.json"), b"unknown").unwrap();
+            }
+            "symlink" => symlink(&external, &path).unwrap(),
+            _ => fs::write(&path, b"unknown").unwrap(),
+        }
+        assert!(m.delete(&id).is_err(), "{kind}");
+        assert!(fs::symlink_metadata(&path).is_ok(), "{kind}");
+        assert_eq!(fs::read(&external).unwrap(), b"preserve");
+    }
+}
 #[test]
 fn owned_internal_hard_links_can_be_removed_but_external_links_cannot() {
     let f = Fixture::new();

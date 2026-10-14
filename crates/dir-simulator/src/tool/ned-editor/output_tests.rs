@@ -3,6 +3,110 @@ use super::super::layout::LayoutDocument;
 use super::*;
 use std::sync::atomic::{AtomicU64, Ordering};
 static TEMP: AtomicU64 = AtomicU64::new(0);
+
+#[test]
+fn legacy_unmapped_journal_recovers_without_inventing_mapping() {
+    for legacy in [true, false] {
+        let mut f = Fixture::new();
+        let target = f.destination("legacy-journal");
+        inject("after_publish", 0);
+        let report = save_plan(f.plan(&target), &mut f.registry, None, false);
+        let id = report.recovery_id.unwrap();
+        let path = manifest_path(&f.registry, &id);
+        let mut journal: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        journal.as_object_mut().unwrap().remove("plan_context");
+        if legacy {
+            journal.as_object_mut().unwrap().remove("mapping");
+        }
+        let bytes = serde_json::to_vec(&journal).unwrap();
+        std::fs::write(&path, &bytes).unwrap();
+        let recovered = recover(&mut f.registry, &id, "complete");
+        if legacy {
+            assert_eq!(recovered.state, SaveOutcome::Complete, "{recovered:?}");
+            assert!(recovered.mapping.is_empty());
+        } else {
+            assert_eq!(recovered.state, SaveOutcome::Rejected);
+            assert_eq!(std::fs::read(&path).unwrap(), bytes);
+        }
+    }
+}
+
+#[test]
+fn recovery_rejects_mapping_role_or_input_id_change_with_original_plan_digest() {
+    fn contents(path: &Path) -> BTreeMap<PathBuf, Vec<u8>> {
+        let mut files = BTreeMap::new();
+        for entry in std::fs::read_dir(path).unwrap() {
+            let path = entry.unwrap().path();
+            if path.is_dir() {
+                files.extend(contents(&path));
+            } else {
+                files.insert(path.clone(), std::fs::read(&path).unwrap());
+            }
+        }
+        files
+    }
+    for mutation in ["role", "input_id"] {
+        let mut f = Fixture::new();
+        let config = f.root.join("input/project.ini");
+        let mut text = std::fs::read_to_string(&config).unwrap();
+        text.push_str("workload = \"workload.json\"\n");
+        std::fs::write(&config, text).unwrap();
+        std::fs::write(
+            f.root.join("input/workload.json"),
+            r#"{"schema_version":1,"generators":[]}"#,
+        )
+        .unwrap();
+        f.project = load_project(&config, &f.root).unwrap();
+        let target = f.destination("mapping-corruption");
+        inject("after_publish", 0);
+        let report = save_plan(f.plan(&target), &mut f.registry, None, false);
+        let id = report.recovery_id.unwrap();
+        let path = manifest_path(&f.registry, &id);
+        let mut journal: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        let original_digest = journal["plan_digest"].clone();
+        let mapping = journal["mapping"].as_object_mut().unwrap();
+        let key =
+            mapping
+                .iter()
+                .find(|(_, entries)| {
+                    entries.as_array().unwrap().iter().any(|entry| {
+                        entry["role"] == serde_json::to_value(FileRole::Workload).unwrap()
+                    })
+                })
+                .unwrap()
+                .0
+                .clone();
+        if mutation == "role" {
+            let entry = mapping
+                .get_mut(&key)
+                .unwrap()
+                .as_array_mut()
+                .unwrap()
+                .iter_mut()
+                .find(|entry| entry["role"] == serde_json::to_value(FileRole::Workload).unwrap())
+                .unwrap();
+            entry["role"] = serde_json::to_value(FileRole::ModelConfig).unwrap();
+        } else {
+            let entries = mapping.remove(&key).unwrap();
+            mapping.insert("altered-input-id".into(), entries);
+        }
+        assert_eq!(journal["plan_digest"], original_digest);
+        let corrupt = serde_json::to_vec(&journal).unwrap();
+        std::fs::write(&path, &corrupt).unwrap();
+        let target_bytes = contents(&f.root.join("exports/mapping-corruption"));
+        let rejected = recover(&mut f.registry, &id, "complete");
+        assert_eq!(
+            rejected.state,
+            SaveOutcome::Rejected,
+            "{mutation}: {rejected:?}"
+        );
+        assert_eq!(std::fs::read(&path).unwrap(), corrupt);
+        assert_eq!(
+            contents(&f.root.join("exports/mapping-corruption")),
+            target_bytes
+        );
+    }
+}
 struct Fixture {
     root: PathBuf,
     project: ProjectSnapshot,

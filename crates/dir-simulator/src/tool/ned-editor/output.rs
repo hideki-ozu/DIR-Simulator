@@ -1249,8 +1249,19 @@ struct Manifest {
     // readable, reporting an empty mapping rather than guessing those IDs.
     #[serde(default)]
     mapping: InputOutputMapping,
+    // Digest-only inputs which cannot be recovered from the expanded target.
+    // They never grant path or deletion authority.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    plan_context: Option<PlanDigestContext>,
     directories: Vec<JournalDirectory>,
     completed_target: Option<Target>,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PlanDigestContext {
+    baseline_digest: String,
+    directories: Vec<PathBuf>,
+    requires_layout_confirmation: bool,
 }
 // Durable deletion authority contains only identities under a canonical private save ID.
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -1374,6 +1385,7 @@ impl TargetRegistry {
             )?;
         }
         let mut seen = BTreeSet::new();
+        let mut planned_files = Vec::new();
         for (i, file) in m.files.iter().enumerate() {
             if !registered.allowed_files.contains(&file.path)
                 || !seen.insert(file.path.clone())
@@ -1399,6 +1411,13 @@ impl TargetRegistry {
             if after.len() as u64 != file.after_size || hash(&after) != file.after_hash {
                 return Err(invalid("After backup hash/size mismatch"));
             }
+            planned_files.push(PlannedFile {
+                path: file.path.clone(),
+                bytes: after,
+                hash: file.after_hash.clone(),
+                before: file.before.clone(),
+                rank: file.rank,
+            });
             if let (
                 Before::Present {
                     hash: expected,
@@ -1416,6 +1435,29 @@ impl TargetRegistry {
             if !registered.directories.contains(&dir.path) {
                 return Err(invalid("Unregistered recovery directory"));
             }
+        }
+        if let Some(context) = &m.plan_context {
+            let digest = hash(
+                &serde_json::to_vec(&(
+                    m.revision,
+                    m.input_revision,
+                    &m.snapshot_id,
+                    &m.target.id,
+                    &context.baseline_digest,
+                    &planned_files,
+                    &m.mapping,
+                    &context.directories,
+                    &m.target.config,
+                    &m.target.cwd,
+                    context.requires_layout_confirmation,
+                ))
+                .map_err(|e| invalid(e.to_string()))?,
+            );
+            if digest != m.plan_digest {
+                return Err(invalid("Recovery plan digest mismatch"));
+            }
+        } else if !m.mapping.is_empty() {
+            return Err(invalid("Mapped recovery journal lacks plan digest context"));
         }
         if let Some(completed) = &m.completed_target {
             if completed.id != registered.id
@@ -2037,6 +2079,11 @@ fn initial_manifest(plan: &SavePlan, registry: &mut TargetRegistry) -> Result<Ma
         action: None,
         files,
         mapping: plan.mapping.clone(),
+        plan_context: Some(PlanDigestContext {
+            baseline_digest: plan.baseline_digest.clone(),
+            directories: plan.directories.clone(),
+            requires_layout_confirmation: plan.requires_layout_confirmation,
+        }),
         directories: dirs,
         completed_target: None,
     };

@@ -1,13 +1,14 @@
 # NED-editor仕様書
 
-文書バージョン：`1.1.7`
-対象GitHubバージョン：`v1.1.5`
-公開版：`v1.1.5`（既存タグを維持。本改訂は未リリース）
+文書バージョン：`1.1.8`
+対象GitHubバージョン：`fix/pr90-recovered-run-cleanup @ 4258bc5d906797605f2bd8ab64b35fe95d8fd808`
+公開タグ：`v1.1.5`（既存タグの範囲を維持。本改訂は上記開発基準の未リリース修正）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.8` | `2026-10-14` | Issue #91/#92：manifest未公開runの削除・回復試験、mappingのplan digest照合と未リリース開発基準を整合 |
 | `1.1.7` | `2026-10-15` | 未確認条件の実測と誤判定の訂正、保存mappingと結果公開直後の復旧を補正 |
 | `1.1.6` | `2026-10-14` | 43受入ケースの条件別対応表と残条件の追試、後続協調停止・再開の設計案を追加 |
 | `1.1.5` | `2026-10-12` | Viewer回収snapshotと遅延応答の競合を直列化し、旧422のbarrier再現と修正後成功を記録 |
@@ -1604,3 +1605,9 @@ HTMLの各生成を所有identityと結び付ける。失敗・取消ではworke
 回帰は [検証報告](../../verification/results/pr69-fixes-2026-10-12/report.md) を参照する。期限境界の時計制御、HTTP終端再送と新command、20世代の最終参照回収、未知identity・中断回収・lease保護を検証する。過去の全43受入ケースや性能条件の完全合格を新たに主張するものではない。
 
 Viewerの旧世代回収はinventory snapshotからbatch完了まで同じmutexを保持する。遅延した最後の応答による二度目の回収は、inventoryとファイルが両方不存在の場合だけ削除なしで成功する。同名の未知ファイルがあれば拒否する。旧公開cleanupへbarrierだけを加えた同じ試験はUnknown Viewer allocation/422で失敗し、修正版は成功。全target clippyも成功。Issue #75で追跡しクローズしない。
+
+## 保存journalのplan整合と旧記録の境界
+
+保存時のplan digestが含むmapping（input ID・role・output pathを含む）を、復旧操作前にafter blobから再構成したplanned filesとともに照合する。展開後targetから復元できない保存時baseline digest・元の予定directory列・layout確認要否だけをprivate journalのplan_contextへ保持する。contextはdigest再計算用であり、path許可や削除権限を与えない。永続session認証や秘密鍵を追加しない。
+
+旧schema1でmappingを保持しなかった記録は、空mappingを返す従来の読み込みを維持する。未リリースPR90候補のmapping付き記録でplan_contextがないものは、plan整合を確認できないためinvalidとして保持し復旧を拒否する。contextがある記録はmapping削除・role/input ID変更・元plan digest不一致を操作前に拒否し、対象とjournalを変更しない。これは自己所有state内の整合検査で、全fieldを同時に書き換えられる者に対する暗号学的認証を主張しない。
