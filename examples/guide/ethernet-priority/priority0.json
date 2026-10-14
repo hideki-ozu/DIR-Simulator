@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "a_busy",
+      "node": "Main.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "0"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": ""
+      },
+      "flow_id": "flow_busy",
+      "priority": 0,
+      "deadline_ps": null
+    },
+    {
+      "id": "b_probe",
+      "node": "Main.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "100000"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": ""
+      },
+      "flow_id": "flow_probe",
+      "priority": 0,
+      "deadline_ps": null
+    },
+    {
+      "id": "c_fixed",
+      "node": "Main.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "100000"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": ""
+      },
+      "flow_id": "flow_fixed",
+      "priority": 3,
+      "deadline_ps": null
+    }
+  ]
+}

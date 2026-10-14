@@ -1,6 +1,6 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.17`
+文書バージョン：`1.1.19`
 対象GitHubバージョン：`v1.1.4`
 文書ID：`guide-index`  
 文書状態：公開済み。mainへのpush時に検証後、GitHub Pagesを自動更新
@@ -9,6 +9,8 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.19` | `2026-10-14` | Ethernet VLAN受入admitだけを変える8入力実習・filtered理由・正式版実測と実Viewerを追加。未マージ4記事を保持 |
+| `1.1.18` | `2026-10-13` | Ethernetの論理priorityだけを変える8入力実習・非プリエンプト/FIFO・実Viewerを追加。既存3記事を保持 |
 | `1.1.17` | `2026-10-13` | NoC入力FIFOの独立8入力実習・35ps実Viewer・開始待ちとhop間待ちを追加。SoC/AHBを保持 |
 | `1.1.16` | `2026-10-13` | AHBの応答待ちの独立実習・8入力ZIP・ERROR完了・実Viewerを追加。SoC成果物を保持 |
 | `1.1.15` | `2026-10-13` | SoC共有バスの調停の独立実習・6入力ZIP・実Viewer・metadata/nav検査を追加 |
@@ -56,6 +58,8 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信とメモリ読
 | SoC共有バスの実験 | [SoC共有バスの調停と要求の待ち時間](SoC共有バスの調停と要求の待ち時間.md) | 調停だけを変え、source FIFO・占有と個別/平均の待ちを比較 |
 | AHB応答待ちの実験 | [AHBの応答待ちとERROR完了](AHBの応答待ちとERROR完了.md) | wait_cyclesだけを変え、開始待ち・占有とERROR完了を区別 |
 | NoC入力FIFOの実験 | [NoCの入力FIFO容量と待ち時間](NoCの入力FIFO容量と待ち時間.md) | input_capacityだけを変え、最初のgrant・hop間待ちと最終配送を区別 |
+| Ethernet優先キューの実験 | [Ethernetの優先キューと送信順](Ethernetの優先キューと送信順.md) | priorityだけを変え、FIFO・非プリエンプトとflow別待ちを区別 |
+| Ethernet VLANの実験 | [EthernetのVLAN受入条件と破棄理由](EthernetのVLAN受入条件と破棄理由.md) | admitだけを変え、受入拒否の場所・時刻・理由を読む |
 | 設定・用語・FAQ | [設定・用語・FAQ](設定・用語・FAQ.md) | パス、単位、上書きエラー、学習時の疑問 |
 
 上から3ページを順に読むと、一つの小さな実験がつながります。入門は3要求だけに絞り、実際に保存された結果と画面を掲載しています。
@@ -71,3 +75,5 @@ DMAの実習は正式v1.1.4の `memory.ipc.transaction.v1` を使います。[DM
 DDRの実習も正式v1.1.4の `memory.ipc.transaction.v1` を使い、[独立DDR入力ZIP](downloads/ddr-refresh-inputs.zip)で再現できます。
 
 共有メモリの実習も正式v1.1.4の `memory.ipc.transaction.v1` を使い、[共有メモリ入力ZIP](downloads/shared-roles-inputs.zip)で再現できます。
+
+VLAN受入条件の実習は正式v1.1.4の`ethernet.l2.vlan.v1`を使い、[独立入力ZIP](downloads/ethernet-vlan-inputs.zip)で再現できます。

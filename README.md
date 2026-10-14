@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.23`
+文書バージョン：`1.1.25`
 対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,8 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.25` | `2026-10-14` | Ethernet VLAN受入admitだけを変える8入力実習・filtered理由・正式版実測と実Viewerを追加。未マージ4記事を保持 |
+| `1.1.24` | `2026-10-13` | Ethernetの論理priorityだけを変える8入力実習・非プリエンプト/FIFO・実Viewerを追加。既存3記事を保持 |
 | `1.1.23` | `2026-10-13` | NoC入力FIFOの独立8入力実習・35ps実Viewer・開始待ちとhop間待ちを追加。SoC/AHBを保持 |
 | `1.1.22` | `2026-10-13` | AHBの応答待ちの独立実習・8入力ZIP・ERROR完了・実Viewerを追加。SoC成果物を保持 |
 | `1.1.21` | `2026-10-13` | SoC共有バスの調停の独立実習・6入力ZIP・実Viewer・metadata/nav検査を追加 |
@@ -65,6 +67,8 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [AHBの応答待ちとERROR完了](docs/guide/AHBの応答待ちとERROR完了.md)では、targetのwait_cyclesだけを変え、競合待ち・応答待ち・OKAYとERRORの完了を正式v1.1.4で区別します。[8入力ZIP](docs/guide/downloads/ahb-wait-error-inputs.zip)で再現できます。
 
 [NoCの入力FIFO容量と待ち時間](docs/guide/NoCの入力FIFO容量と待ち時間.md)では、共通条件からinput_capacityだけを変え、開始待ちとhop間FIFO待ちを正式v1.1.4で比較します。[8入力ZIP](docs/guide/downloads/noc-input-fifo-inputs.zip)を配布しています。
+
+[Ethernetの優先キューと送信順](docs/guide/Ethernetの優先キューと送信順.md)では、待機frameのpriorityだけを変え、class内FIFOと送信中copyを中断しない境界を正式v1.1.4で確認します。[8入力ZIP](docs/guide/downloads/ethernet-priority-inputs.zip)で再現できます。
 
 初めて使う場合は[ガイドの入口](docs/guide/index.md)から、CANの最小実行・Viewer・調停実験を順に読めます。[GitHub Pagesの公開ガイド](https://hideki-ozu.github.io/DIR-Simulator/)はmainへのマージ後に自動生成・検証・更新します。ガイドは公開済みです。Markdown原稿は[Qiitaにも再利用](docs/Qiita移植メモ.md)できます。
 
@@ -488,3 +492,5 @@ v1.1.4は、公開Registry API・構造化診断・再現メタデータ、CAN�
 NEDのdisplay／description属性と元SourceSpanの保持、非対応import／extendsの診断reason修正の実測は[修正証拠](docs/verification/results/ac0008-issue44-2026-10-10/README.md)へ保存しています。組み込みCANと汎用拡張の経路別条件は[受入対応表](docs/verification/results/can-acceptance-paths-2026-10-10/README.md)で管理します。個別実測、通常回帰、全受入条件の適合を区別し、AC0008・採用判断・出自の未確認記録を保持します。公開操作はこれらの全件合格の宣言ではありません。
 
 外部部品は[用途とライセンス選択一覧](docs/third-party/外部部品ライセンス選択一覧.md)にまとめています。固定40件のOR経路は利用者承認によりMITを選択し、元の選択肢・著作通知・個別の追加条件を保持します。ガイドのMPL/BSD/OFL等は各資産の原条件を維持します。
+
+[EthernetのVLAN受入条件と破棄理由](docs/guide/EthernetのVLAN受入条件と破棄理由.md)では、Switchの受入条件だけを変え、受信拒否と容量dropを正式v1.1.4で区別します。[8入力ZIP](docs/guide/downloads/ethernet-vlan-inputs.zip)を配布しています。

@@ -238,6 +238,127 @@ fn queued_cancel_is_terminal_and_noop_repeated() {
     assert_eq!(v["stop_reason"], "cancel");
     assert_eq!(m.cancel(&id).unwrap(), v);
 }
+
+#[test]
+fn pinned_capacity_exact_boundary_and_one_byte_over_do_not_create_files() {
+    let f = Fixture::new();
+    let m = f.manager();
+    let id = f.create(&m, "pinned");
+    let incoming = run_snapshot::size(&f.project).unwrap();
+    let before = Directory::open(&m.shared.root).unwrap().names().unwrap();
+    // Exercise accounting directly without allocating PIN_LIMIT bytes. This
+    // verifies the admission comparison, not physical disk/memory exhaustion.
+    for (delta, permitted) in [(0, true), (1, false)] {
+        m.shared
+            .state
+            .lock()
+            .unwrap()
+            .records
+            .get_mut(&id)
+            .unwrap()
+            .snapshot
+            .bytes = PIN_LIMIT - incoming + delta;
+        let result = m.check_capacity(&f.project);
+        if permitted {
+            result.unwrap();
+        } else {
+            assert_eq!(result.unwrap_err().status, 503);
+            assert_eq!(
+                m.create_run(&f.project, f.stamp("over-limit"), 600000)
+                    .unwrap_err()
+                    .status,
+                503
+            );
+        }
+        assert_eq!(
+            before,
+            Directory::open(&m.shared.root).unwrap().names().unwrap()
+        );
+        assert_eq!(m.list(None).unwrap()["runs"].as_array().unwrap().len(), 1);
+    }
+}
+
+#[test]
+fn running_plus_two_waiters_rejects_third_and_cancel_releases_one_slot() {
+    let f = Fixture::new();
+    let m = f.manager();
+    let active = f.create(&m, "active");
+    m.shared
+        .state
+        .lock()
+        .unwrap()
+        .records
+        .get_mut(&active)
+        .unwrap()
+        .phase = "running".into();
+    let waiting = f.create(&m, "waiting-one");
+    f.create(&m, "waiting-two");
+    assert_eq!(m.check_capacity(&f.project).unwrap_err().status, 503);
+    assert_eq!(
+        m.create_run(&f.project, f.stamp("rejected"), 600000)
+            .unwrap_err()
+            .status,
+        503
+    );
+    assert_eq!(m.cancel(&waiting).unwrap()["phase"], "cancelled");
+    let replacement = f.create(&m, "replacement");
+    assert_eq!(m.record(&replacement).unwrap().phase, "queued");
+    assert_eq!(m.record(&active).unwrap().phase, "running");
+    assert_eq!(
+        m.shared
+            .state
+            .lock()
+            .unwrap()
+            .records
+            .values()
+            .filter(|r| r.phase == "queued")
+            .count(),
+        2
+    );
+}
+
+#[test]
+fn restart_preserves_durable_cancellation_and_same_command_identity() {
+    let f = Fixture::new();
+    let m = f.manager();
+    let id = f.create(&m, "cancel-before-restart");
+    let cancelled = m.cancel(&id).unwrap();
+    let m = f.restart(m);
+    assert_eq!(m.get(&id).unwrap()["phase"], "cancelled");
+    assert_eq!(m.get(&id).unwrap()["stop_reason"], "cancel");
+    assert_eq!(f.create(&m, "cancel-before-restart"), id);
+    assert_eq!(m.cancel(&id).unwrap(), cancelled);
+    assert_eq!(m.list(None).unwrap()["runs"].as_array().unwrap().len(), 1);
+}
+
+#[test]
+fn restart_after_durable_stop_classifies_manifest_and_response_independently() {
+    for (manifest, reply) in [(false, false), (true, false), (true, true)] {
+        let f = Fixture::new();
+        let m = f.manager();
+        let id = f.create(&m, "stop-before-restart");
+        if manifest {
+            f.publish(&m, &id, false, reply);
+        } else {
+            let mut state = m.shared.state.lock().unwrap();
+            let record = state.records.get_mut(&id).unwrap();
+            record.phase = "running".into();
+            persist(&m.shared, record).unwrap();
+        }
+        assert_eq!(m.cancel(&id).unwrap()["phase"], "stopping");
+        let m = f.restart(m);
+        let record = m.record(&id).unwrap();
+        assert_eq!(record.stop_reason.as_deref(), Some("cancel"));
+        assert_eq!(
+            record.phase,
+            if manifest { "completed" } else { "cancelled" }
+        );
+        assert_eq!(record.report.is_some(), reply);
+        assert_eq!(record.recovered_result.is_some(), manifest && !reply);
+        assert_eq!(f.create(&m, "stop-before-restart"), id);
+        assert_eq!(m.list(None).unwrap()["runs"].as_array().unwrap().len(), 1);
+    }
+}
 #[test]
 fn stop_race_keeps_valid_complete_or_partial_result() {
     for partial in [false, true] {
@@ -451,16 +572,7 @@ fn real_worker_smoke_when_binary_supplied() {
     .unwrap();
     let id = f.create(&m, "one");
     fs::remove_dir_all(f.root.join("source")).unwrap();
-    let until = Instant::now() + Duration::from_secs(15);
-    let result = loop {
-        let v = m.get(&id).unwrap();
-        if !m.record(&id).unwrap().active() {
-            break v;
-        }
-        assert!(Instant::now() < until, "worker did not finish: {v}");
-        let state = m.shared.state.lock().unwrap();
-        let _ = m.shared.wake.wait_timeout(state, Duration::from_millis(20));
-    };
+    let result = await_real_worker_completion(&m, &id).value();
     assert_eq!(result["phase"], "completed", "{result}");
     assert!(result["report"]["diagnostics"].is_array());
     assert_eq!(result["worker_exit"]["reaped"], true);
@@ -735,7 +847,21 @@ fn existing_shared_readable_state_parent_can_hold_private_runs() {
 }
 
 fn await_phase(manager: &RunManager, id: &str, wanted: impl Fn(&RunRecord) -> bool) -> RunRecord {
-    let deadline = Instant::now() + Duration::from_secs(20);
+    await_phase_with_timeout(manager, id, Duration::from_secs(20), wanted)
+}
+fn await_real_worker_completion(manager: &RunManager, id: &str) -> RunRecord {
+    // Debug CI workers can need more than 15-20 seconds to prepare, simulate,
+    // and authenticate the baseline artifacts. This bounds the test harness;
+    // it does not change the run's product wall timeout or control-path waits.
+    await_phase_with_timeout(manager, id, Duration::from_secs(60), |r| !r.active())
+}
+fn await_phase_with_timeout(
+    manager: &RunManager,
+    id: &str,
+    timeout: Duration,
+    wanted: impl Fn(&RunRecord) -> bool,
+) -> RunRecord {
+    let deadline = Instant::now() + timeout;
     loop {
         let r = manager.record(id).unwrap();
         if wanted(&r) {
@@ -858,6 +984,266 @@ fn real_worker_prepare_failure_timeout_force_kill_and_shutdown() {
     }
 }
 
+#[test]
+#[ignore = "Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY and Python 3; run explicitly"]
+fn real_worker_matches_saved_baseline_cli_manifest_records_metrics_and_diagnostics() {
+    let binary =
+        std::env::var_os("DIR_NED_RUN_TEST_BINARY").expect("Supply DIR_NED_RUN_TEST_BINARY");
+    let f = Fixture::new();
+    let baseline = f.root.join("baseline-result");
+    let cli = std::process::Command::new(&binary)
+        .args(["run", "--config"])
+        .arg(f.root.join("source/project.ini"))
+        .arg("--output")
+        .arg(&baseline)
+        .output()
+        .unwrap();
+    assert!(
+        cli.status.success(),
+        "{}",
+        String::from_utf8_lossy(&cli.stderr)
+    );
+    let cli_report: Value = serde_json::from_slice(&cli.stdout).unwrap();
+    let cli_result: Value =
+        serde_json::from_slice(&fs::read(baseline.join("results.json")).unwrap()).unwrap();
+    let prepared = super::super::analysis::prepare(&f.project).unwrap();
+    let expected_inputs = crate::output::result_input_evidence(&prepared);
+    let baseline_bundle = crate::output::validate_result_bundle(
+        &baseline,
+        &ResultBundleExpectation {
+            run_id: cli_result["run_id"].as_str().unwrap().to_owned(),
+            started_at_utc: Some(
+                cli_result["metadata"]["started_at_utc"]
+                    .as_str()
+                    .unwrap()
+                    .to_owned(),
+            ),
+            frozen_inputs: expected_inputs.clone(),
+            acquired_inputs: Some(expected_inputs),
+            report: Some(serde_json::from_value(cli_report.clone()).unwrap()),
+            manifest_sha256: None,
+        },
+    )
+    .unwrap();
+    assert_eq!(baseline_bundle.artifacts.len(), 5);
+    let m = RunManager::open_impl(
+        &f.root.join("state"),
+        &f.project.input_regions(),
+        Some(Path::new(&binary)),
+    )
+    .unwrap();
+    // Eliminate disk fallback after the saved baseline was measured.
+    fs::remove_dir_all(f.root.join("source")).unwrap();
+    let id = f.create(&m, "baseline-equivalence");
+    let record = await_real_worker_completion(&m, &id);
+    assert_eq!(record.phase, "completed", "{}", record.value());
+    assert_eq!(record.artifact_state, "published");
+    let bundle = validated(&m.shared, &record).unwrap();
+    assert_eq!(bundle.artifacts.len(), 5);
+    // Reuse the existing performance acceptance normalizer: full simulation,
+    // events/summary with only the run ID removed, and all manifest hashes/sizes.
+    let normalizer = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../scripts/performance/measure_can_million.py");
+    let checked = std::process::Command::new("python3")
+        .arg("-c")
+        .arg("import importlib.util,json,pathlib,sys; s=importlib.util.spec_from_file_location('normalizer',sys.argv[1]); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps([m.verify_output(pathlib.Path(p)) for p in sys.argv[2:]]))")
+        .arg(normalizer)
+        .arg(&baseline)
+        .arg(m.shared.root.join(&id).join("result"))
+        .output()
+        .unwrap();
+    assert!(
+        checked.status.success(),
+        "{}",
+        String::from_utf8_lossy(&checked.stderr)
+    );
+    let comparisons: Value = serde_json::from_slice(&checked.stdout).unwrap();
+    assert_eq!(comparisons[0]["manifest_verified"], true);
+    assert_eq!(comparisons[1]["manifest_verified"], true);
+    assert_eq!(
+        comparisons[0]["deterministic"],
+        comparisons[1]["deterministic"]
+    );
+    let frozen_result: Value = serde_json::from_slice(
+        &fs::read(m.shared.root.join(&id).join("result/results.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        cli_result["schema_version"],
+        frozen_result["schema_version"]
+    );
+    let mut cli_metadata = cli_result["metadata"].clone();
+    let mut frozen_metadata = frozen_result["metadata"].clone();
+    for metadata in [&mut cli_metadata, &mut frozen_metadata] {
+        // Execution timestamps differ; all descriptors, source hashes/content,
+        // topology, initial state, configuration and metric versions must agree.
+        assert!(metadata["started_at_utc"].is_string());
+        assert!(metadata["finished_at_utc"].is_string());
+        metadata.as_object_mut().unwrap().remove("started_at_utc");
+        metadata.as_object_mut().unwrap().remove("finished_at_utc");
+    }
+    assert_eq!(cli_metadata, frozen_metadata);
+    assert_eq!(
+        fs::read(baseline.join("diagnostics.jsonl")).unwrap(),
+        fs::read(m.shared.root.join(&id).join("result/diagnostics.jsonl")).unwrap()
+    );
+    let mut cli_evidence = cli_report;
+    let mut frozen_evidence = record.report.unwrap();
+    assert_eq!(
+        cli_evidence["output_path"],
+        baseline.to_string_lossy().as_ref()
+    );
+    assert_eq!(
+        frozen_evidence["output_path"],
+        m.shared
+            .root
+            .join(&id)
+            .join("result")
+            .to_string_lossy()
+            .as_ref()
+    );
+    for report in [&mut cli_evidence, &mut frozen_evidence] {
+        let path = Path::new(report["output_path"].as_str().unwrap()).join("manifest.json");
+        assert_eq!(report["manifest_path"], path.to_string_lossy().as_ref());
+        report.as_object_mut().unwrap().remove("output_path");
+        report.as_object_mut().unwrap().remove("manifest_path");
+    }
+    // Wall time is measured independently by the two executions.
+    cli_evidence
+        .as_object_mut()
+        .unwrap()
+        .remove("event_processing_wall_seconds");
+    frozen_evidence
+        .as_object_mut()
+        .unwrap()
+        .remove("event_processing_wall_seconds");
+    // Worker reports attach diagnostics, while the CLI prints its RunReport.
+    assert_eq!(frozen_evidence["diagnostics"], json!([]));
+    frozen_evidence
+        .as_object_mut()
+        .unwrap()
+        .remove("diagnostics");
+    assert_eq!(cli_evidence, frozen_evidence);
+    assert!(record.diagnostics.is_empty());
+}
+
+#[test]
+#[ignore = "Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY; run explicitly"]
+fn real_worker_syntax_and_semantic_prepare_failures_map_frozen_source_without_output() {
+    let binary =
+        std::env::var_os("DIR_NED_RUN_TEST_BINARY").expect("Supply DIR_NED_RUN_TEST_BINARY");
+    for syntax in [true, false] {
+        let mut f = Fixture::new();
+        let file_id = f.project.ned_files().next().unwrap().id.clone();
+        let file = f.project.files.get_mut(&file_id).unwrap();
+        let original = file.text.to_string();
+        let text = if syntax {
+            // EOF syntax error after Unicode/BOM/CRLF exercises source mapping.
+            format!(
+                "\u{feff}// 日本語\r\n{}",
+                original
+                    .replace('\n', "\r\n")
+                    .trim_end()
+                    .trim_end_matches('}')
+            )
+        } else {
+            format!(
+                "\u{feff}// 日本語\r\n{}",
+                original
+                    .replacen("a: demo.Controller;", "a: demo.Missing;", 1)
+                    .replace('\n', "\r\n")
+            )
+        };
+        let source_path = file.path.clone();
+        file.text = std::sync::Arc::from(text.clone());
+        file.hash = hash(text.as_bytes());
+        f.project.refresh_inputs();
+        let expected = super::super::analysis::prepare(&f.project).unwrap_err();
+        assert_eq!(
+            expected.reason,
+            if syntax {
+                "syntax_error"
+            } else {
+                "unknown_type"
+            }
+        );
+        let start = if syntax {
+            text.len()
+        } else {
+            text.find("demo.Missing").unwrap()
+        };
+        let end = if syntax {
+            start
+        } else {
+            start + "demo.Missing".len()
+        };
+        assert_eq!(
+            text.get(start..end),
+            Some(if syntax { "" } else { "demo.Missing" })
+        );
+        // Calculate positions independently from the diagnostic implementation.
+        // Columns count Unicode scalars, BOM is hidden, CRLF is one newline.
+        let point = |offset| {
+            let prefix = &text[..offset];
+            let prefix = prefix
+                .strip_prefix('\u{feff}')
+                .unwrap_or(prefix)
+                .replace("\r\n", "\n");
+            (
+                prefix.chars().filter(|&c| c == '\n').count() + 1,
+                prefix.rsplit('\n').next().unwrap().chars().count() + 1,
+            )
+        };
+        let (line, column) = point(start);
+        let (end_line, end_column) = point(end);
+        assert_eq!(
+            expected.source.as_deref(),
+            Some(source_path.to_str().unwrap())
+        );
+        assert_eq!(expected.line, Some(line));
+        assert_eq!(expected.column, Some(column));
+        assert_eq!(expected.end_line, Some(end_line));
+        assert_eq!(expected.end_column, Some(end_column));
+        let m = RunManager::open_impl(
+            &f.root.join("state"),
+            &f.project.input_regions(),
+            Some(Path::new(&binary)),
+        )
+        .unwrap();
+        fs::remove_dir_all(f.root.join("source")).unwrap();
+        let id = f.create(&m, if syntax { "syntax" } else { "semantic" });
+        let record = await_phase(&m, &id, |r| !r.active());
+        assert_eq!(record.phase, "prepare_failed", "{}", record.value());
+        assert_eq!(record.artifact_state, "unpublished");
+        assert!(record.report.is_none());
+        assert_eq!(record.worker_exit.as_ref().unwrap()["reaped"], true);
+        assert!(matches!(
+            record.response,
+            Some(worker::Message::PreparedFailed { .. })
+        ));
+        assert_eq!(record.diagnostics.len(), 1);
+        assert_eq!(record.diagnostics[0]["phase"], "prepare");
+        assert_eq!(record.diagnostics[0]["diagnostic"], expected.wire_value());
+        assert_eq!(
+            record.diagnostics[0]["source_stamp"],
+            serde_json::to_value(&record.stamp).unwrap()
+        );
+        assert_eq!(m.source(&id, &file_id).unwrap()["text"], text);
+        let result = m.shared.root.join(&id).join("result");
+        assert!(
+            fs::read_dir(result).unwrap().next().is_none(),
+            "prepare failure must not export any result artifacts"
+        );
+        assert_eq!(
+            m.artifacts(&id).unwrap()["artifacts"]
+                .as_array()
+                .unwrap()
+                .len(),
+            1
+        );
+    }
+}
+
 #[path = "large_response_tests.rs"]
 mod large_responses;
 
@@ -930,7 +1316,7 @@ fn real_worker_viewer_render_without_http() {
     )
     .unwrap();
     let id = f.create(&m, "one");
-    let r = await_phase(&m, &id, |r| !r.active());
+    let r = await_real_worker_completion(&m, &id);
     assert_eq!(r.phase, "completed");
     let mut bundle = validated(&m.shared, &r).unwrap();
     let input = bundle.artifacts.remove("results.json").unwrap();
