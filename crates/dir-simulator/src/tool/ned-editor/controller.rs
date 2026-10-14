@@ -2083,17 +2083,26 @@ impl Controller {
     ) {
         let mut applied = false;
         let mut extra = None;
-        let origin = if command.kind == "reload" {
-            "load"
+        let origin = if matches!(
+            command.kind.as_str(),
+            "start_run" | "cancel_run" | "build_viewer" | "delete_run" | "revoke_viewer"
+        ) {
+            // Run operations report through their job/ledger and run record.
+            // They must not clear or add diagnostics for the current input.
+            None
+        } else if command.kind == "reload" {
+            Some("load")
         } else if matches!(
             command.kind.as_str(),
             "save_as_project" | "overwrite_project" | "recover"
         ) {
-            "io"
+            Some("io")
         } else {
-            "semantic"
+            Some("semantic")
         };
-        self.diagnostics.retain(|d| d["origin"] != origin);
+        if let Some(origin) = origin {
+            self.diagnostics.retain(|d| d["origin"] != origin);
+        }
         let result = (|| {
             let work = match outcome {
                 Ok(v) => v?,
@@ -2353,7 +2362,7 @@ impl Controller {
             }
             Ok(())
         })();
-        if let Err(e) = &result {
+        if let (Some(origin), Err(e)) = (origin, &result) {
             // Validation normally records the exact diagnostic on the model.
             // Preserve failures that happened before that result was adopted.
             let entry = diagnostic(

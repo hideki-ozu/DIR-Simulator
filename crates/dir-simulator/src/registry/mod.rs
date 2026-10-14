@@ -294,6 +294,23 @@ fn insert<K: Ord + std::fmt::Debug, V>(
     map.insert(key, value);
     Ok(())
 }
+fn model_record_versions_valid(profile: &ProfileDescriptor) -> Result<(), Diagnostic> {
+    let mut versions = BTreeMap::new();
+    for schema in &profile.model_records {
+        if versions
+            .insert(schema.name.as_str(), schema.version)
+            .is_some_and(|version| version != schema.version)
+        {
+            return Err(Diagnostic::prepare(format!(
+                "multiple model record versions in profile: {}",
+                schema.name
+            ))
+            .with_reason("duplicate_definition")
+            .with_detail("schema_name", &schema.name));
+        }
+    }
+    Ok(())
+}
 fn schema_valid(schema: &Schema) -> Result<(), Diagnostic> {
     check_name(&schema.name)?;
     if schema.version == 0 {
@@ -494,6 +511,7 @@ impl Registry {
             return Err(Diagnostic::prepare("duplicate profile membership")
                 .with_reason("duplicate_definition"));
         }
+        model_record_versions_valid(&descriptor)?;
         insert(&mut self.profiles, descriptor.name.clone(), descriptor)
     }
     pub fn register_metric(&mut self, descriptor: MetricDescriptor) -> Result<(), Diagnostic> {
@@ -592,6 +610,7 @@ impl Registry {
             .profiles
             .get(profile)
             .ok_or_else(|| Diagnostic::prepare(format!("unregistered profile: {profile}")))?;
+        model_record_versions_valid(p)?;
         for key in &p.modules {
             let module = self
                 .modules
@@ -934,6 +953,9 @@ impl Context<'_> {
             .records
             .get(&record.schema)
             .ok_or_else(|| ModelError("unregistered model record schema".into()))?;
+        if !record.data.is_object() {
+            return Err("model record data must be an object".into());
+        }
         (descriptor.validate)(&record.data)?;
         self.batch.effects.push(Effect::Record(record));
         Ok(())
@@ -1154,5 +1176,63 @@ impl Channel for FixedDelay {
             return Err("unsupported FixedDelay capability".into());
         }
         Ok(ParameterValue::Quantity(self.0))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn prepare_rechecks_model_record_versions_before_input_or_factories() {
+        let mut registry = Registry::empty();
+        for version in [1, 2] {
+            registry
+                .register_model_record(ModelRecordDescriptor {
+                    schema: Schema::new("test.Record", version),
+                    validate: |_| Ok(()),
+                })
+                .unwrap();
+        }
+        registry
+            .register_profile(ProfileDescriptor {
+                name: "test.profile.v1".into(),
+                implementation_version: "1".into(),
+                modules: vec![],
+                channels: vec![],
+                events: vec![],
+                metrics: vec![],
+                model_records: vec![Schema::new("test.Record", 1)],
+                output_schema_version: 2,
+                validate: |_, _| panic!("invalid registration must fail before profile validator"),
+            })
+            .unwrap();
+        // Exercise the preparation guard independently of public registration.
+        registry
+            .profiles
+            .get_mut("test.profile.v1")
+            .unwrap()
+            .model_records
+            .push(Schema::new("test.Record", 2));
+        let root = std::env::temp_dir().join(format!(
+            "dir-registry-schema-versions-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        std::fs::create_dir(&root).unwrap();
+        let config = root.join("scenario.ini");
+        std::fs::write(&config, "[General]\nnetwork = demo.Demo\nned-path = \"missing\"\nmodel-profile = \"test.profile.v1\"\nsim-time-limit = 20ps\n").unwrap();
+        let error = prepare_with_registry(&config, registry).unwrap_err();
+        std::fs::remove_dir_all(root).unwrap();
+        assert_eq!(error.code, "E-0001");
+        assert_eq!(error.reason, "duplicate_definition");
+        assert_eq!(
+            error.message,
+            "multiple model record versions in profile: test.Record"
+        );
+        assert_eq!(error.details.unwrap()["schema_name"], "test.Record");
     }
 }

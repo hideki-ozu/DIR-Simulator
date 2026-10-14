@@ -1,0 +1,397 @@
+{
+  "schema_version": 3,
+  "endpoints": [
+    {
+      "instance": "Main.a",
+      "mac": "02:00:00:00:00:01",
+      "multicast": []
+    },
+    {
+      "instance": "Main.b",
+      "mac": "02:00:00:00:00:02",
+      "multicast": []
+    },
+    {
+      "instance": "Main.c",
+      "mac": "02:00:00:00:00:03",
+      "multicast": []
+    }
+  ],
+  "switches": [
+    {
+      "instance": "Main.sw",
+      "forward_delay_ps": "2000",
+      "fdb": [
+        {
+          "dst_mac": "02:00:00:00:00:01",
+          "egress": "Main.sw.tx_a",
+          "vid": 10
+        },
+        {
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "Main.sw.tx_b",
+          "vid": 10
+        },
+        {
+          "dst_mac": "02:00:00:00:00:03",
+          "egress": "Main.sw.tx_c",
+          "vid": 10
+        }
+      ],
+      "multicast": [],
+      "unknown_multicast": "flood"
+    }
+  ],
+  "outputs": [
+    {
+      "port": "Main.a.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.b.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.c.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_a",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_b",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_c",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    }
+  ],
+  "ports": [
+    {
+      "port": "Main.a.tx",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "Main.b.tx",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "Main.c.tx",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_a",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_b",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "Main.sw.tx_c",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": true
+        }
+      ]
+    }
+  ]
+}
