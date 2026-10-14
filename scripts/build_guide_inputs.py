@@ -47,6 +47,7 @@ def main():
     build(ROOT / 'examples/guide/noc-input-fifo', OUTPUT.with_name('noc-input-fifo-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-priority', OUTPUT.with_name('ethernet-priority-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-vlan', OUTPUT.with_name('ethernet-vlan-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-tas', OUTPUT.with_name('ethernet-tas-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':
