@@ -1,0 +1,1025 @@
+{
+  "schema_version": 3,
+  "endpoints": [
+    {
+      "instance": "VlanDemo.a",
+      "mac": "02:00:00:00:00:01",
+      "multicast": []
+    },
+    {
+      "instance": "VlanDemo.b",
+      "mac": "02:00:00:00:00:02",
+      "multicast": []
+    },
+    {
+      "instance": "VlanDemo.c",
+      "mac": "02:00:00:00:00:03",
+      "multicast": [
+        {
+          "vid": 20,
+          "dst_mac": "01:00:5e:00:00:01"
+        }
+      ]
+    },
+    {
+      "instance": "VlanDemo.d",
+      "mac": "02:00:00:00:00:04",
+      "multicast": []
+    },
+    {
+      "instance": "VlanDemo.e",
+      "mac": "02:00:00:00:00:05",
+      "multicast": []
+    }
+  ],
+  "switches": [
+    {
+      "instance": "VlanDemo.s1",
+      "forward_delay_ps": "2000",
+      "fdb": [
+        {
+          "vid": 10,
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "VlanDemo.s1.tx_b"
+        },
+        {
+          "vid": 10,
+          "dst_mac": "02:00:00:00:00:04",
+          "egress": "VlanDemo.s1.tx_b"
+        },
+        {
+          "vid": 20,
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "VlanDemo.s1.tx_b"
+        },
+        {
+          "vid": 20,
+          "dst_mac": "02:00:00:00:00:04",
+          "egress": "VlanDemo.s1.tx_b"
+        }
+      ],
+      "multicast": [
+        {
+          "vid": 20,
+          "dst_mac": "01:00:5e:00:00:01",
+          "egresses": [
+            "VlanDemo.s1.tx_b",
+            "VlanDemo.s1.tx_c"
+          ]
+        },
+        {
+          "vid": 20,
+          "dst_mac": "01:00:5e:00:00:03",
+          "egresses": []
+        }
+      ],
+      "unknown_multicast": "flood"
+    },
+    {
+      "instance": "VlanDemo.s2",
+      "forward_delay_ps": "2000",
+      "fdb": [
+        {
+          "vid": 10,
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "VlanDemo.s2.tx_c"
+        },
+        {
+          "vid": 10,
+          "dst_mac": "02:00:00:00:00:04",
+          "egress": "VlanDemo.s2.tx_b"
+        },
+        {
+          "vid": 20,
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "VlanDemo.s2.tx_c"
+        },
+        {
+          "vid": 20,
+          "dst_mac": "02:00:00:00:00:04",
+          "egress": "VlanDemo.s2.tx_b"
+        }
+      ],
+      "multicast": [
+        {
+          "vid": 20,
+          "dst_mac": "01:00:5e:00:00:01",
+          "egresses": [
+            "VlanDemo.s2.tx_b",
+            "VlanDemo.s2.tx_c"
+          ]
+        }
+      ],
+      "unknown_multicast": "flood"
+    },
+    {
+      "instance": "VlanDemo.s3",
+      "forward_delay_ps": "2000",
+      "fdb": [
+        {
+          "vid": 10,
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "VlanDemo.s3.tx_a"
+        },
+        {
+          "vid": 10,
+          "dst_mac": "02:00:00:00:00:04",
+          "egress": "VlanDemo.s3.tx_b"
+        },
+        {
+          "vid": 20,
+          "dst_mac": "02:00:00:00:00:02",
+          "egress": "VlanDemo.s3.tx_a"
+        },
+        {
+          "vid": 20,
+          "dst_mac": "02:00:00:00:00:04",
+          "egress": "VlanDemo.s3.tx_b"
+        }
+      ],
+      "multicast": [
+        {
+          "vid": 20,
+          "dst_mac": "01:00:5e:00:00:01",
+          "egresses": [
+            "VlanDemo.s3.tx_b",
+            "VlanDemo.s3.tx_c"
+          ]
+        }
+      ],
+      "unknown_multicast": "flood"
+    }
+  ],
+  "ports": [
+    {
+      "port": "VlanDemo.a.tx",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.b.tx",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.c.tx",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.d.tx",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.e.tx",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s1.tx_a",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 2,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s1.tx_b",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": true
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s1.tx_c",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s2.tx_a",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": true
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s2.tx_b",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s2.tx_c",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s3.tx_a",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s3.tx_b",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s3.tx_c",
+      "pvid": 10,
+      "admit": "all",
+      "default_priority": 0,
+      "vlans": [
+        {
+          "vid": 10,
+          "tagged": false
+        },
+        {
+          "vid": 20,
+          "tagged": true
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "port": "VlanDemo.a.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.b.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.c.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.d.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.e.tx",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s1.tx_a",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s1.tx_b",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s1.tx_c",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s2.tx_a",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s2.tx_b",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s2.tx_c",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s3.tx_a",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s3.tx_b",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    },
+    {
+      "port": "VlanDemo.s3.tx_c",
+      "scheduler": "strict_priority",
+      "queues": [
+        {
+          "priority": 0,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 1,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 2,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 3,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 4,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 5,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 6,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        },
+        {
+          "priority": 7,
+          "capacity_frames": "64",
+          "capacity_bytes": null
+        }
+      ]
+    }
+  ]
+}
