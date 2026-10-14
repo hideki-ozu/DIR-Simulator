@@ -1309,6 +1309,34 @@ impl RetiredJournal {
         {
             return Err(invalid("Invalid retired node allowlist"));
         }
+        if self.manifest.plan_context.is_none() && !self.manifest.mapping.is_empty() {
+            return Err(invalid("Mapped retired journal lacks plan digest context"));
+        }
+        // This hash was captured only after load_manifest checked the original
+        // plan digest and backup bytes. Bind the returned manifest to that same
+        // verified journal even when GC has already reclaimed every backup.
+        let bytes =
+            serde_json::to_vec_pretty(&self.manifest).map_err(|e| invalid(e.to_string()))?;
+        let expected = self.nodes["manifest.json"].hash.as_deref();
+        if expected != Some(hash(&bytes).as_str()) {
+            // Pre-mapping schema-1 writers omitted this default-empty field.
+            let legacy = if self.manifest.mapping.is_empty() && self.manifest.plan_context.is_none()
+            {
+                Some(hash(
+                    String::from_utf8(bytes)
+                        .map_err(|e| invalid(e.to_string()))?
+                        .replacen("\n  \"mapping\": {},", "", 1)
+                        .as_bytes(),
+                ))
+            } else {
+                None
+            };
+            if legacy.as_deref() != expected {
+                return Err(invalid(
+                    "Retired manifest differs from verified journal hash",
+                ));
+            }
+        }
         Ok(())
     }
 }

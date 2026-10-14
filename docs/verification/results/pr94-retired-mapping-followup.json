@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "scope": "PR94 independent review: retired journal mapping integrity",
+  "source_base": "c2aee4e204a065a223e7a27504a1cc2ea94db16c",
+  "failed_reproduction": {
+    "command": "cargo test --locked -p dir-simulator --lib retired_journal_rejects_mapping_changes_before_and_after_backup_reclamation -- --nocapture --test-threads=1",
+    "test_exit": 101,
+    "observed": "after_gc_registry/role: original plan_digest retained, Workload changed to ModelConfig, recovery incorrectly returned Complete with altered mapping",
+    "log_sha256": "a07e4b2449cf69b525a857f7ce40f772fe012db490cb57c18eb4b38f5ebd03b7"
+  },
+  "fix": "Compare returned retired manifest serialization to the existing manifest node hash captured after original plan-digest and backup validation; do not depend on already reclaimed backups. Reject mapped retired journals without plan_context. No new authentication secret or ownership field.",
+  "completed_verification": {
+    "pr94-retired-after.log": {
+      "log_sha256": "8d576315f2489827df44c14f53128c16af584874333e61e4037dbf7ebcf74dfc",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 28.62s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 504 filtered out; finished in 1.25s"
+      ]
+    },
+    "pr94-retired-legacy.log": {
+      "log_sha256": "1232100206e4b4fe03c6422bcd437cd63446add6d7e0c2687865f0a5d67db5e2",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.24s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 504 filtered out; finished in 0.16s"
+      ]
+    },
+    "pr94-output-final.log": {
+      "log_sha256": "a9a2a49d129278eb45e4db5ee799f2120ec52c761d4e8ce901565b89b2654381",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s",
+        "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 471 filtered out; finished in 12.71s"
+      ]
+    },
+    "pr94-format-final.log": {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "result_lines": []
+    },
+    "pr94-clippy-final.log": {
+      "log_sha256": "af1475330b39d39b06dd4e6ed5d6994aa07ccfa039c1ba77c5839ec72ab8c410",
+      "result_lines": [
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 27.84s"
+      ]
+    },
+    "pr90-python-final.log": {
+      "log_sha256": "3b3aa6a9da93f7d5d22a17ad640c5c9a6eb577a1f68bdb1c254ce63ce578288e",
+      "result_lines": [
+        "Ran 67 tests in 36.237s",
+        "OK"
+      ]
+    },
+    "pr90-trace-strict.log": {
+      "log_sha256": "915e2ace5ba386c4e2fe574b6d52f309649fff3941c8694fbe1025b22ce43f39",
+      "result_lines": [
+        "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)"
+      ]
+    },
+    "pr90-trace-fresh.log": {
+      "log_sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3",
+      "result_lines": [
+        "All traceability reports and the hierarchy annex are up to date"
+      ]
+    }
+  },
+  "matrix": {
+    "cuts": [
+      "after_gc_registry",
+      "before_gc_forget"
+    ],
+    "mutations": [
+      "role",
+      "input_id",
+      "mapping_removed",
+      "context_removed"
+    ],
+    "conditions": 8,
+    "original_plan_digest_retained": true,
+    "returned_mapping_empty_on_rejection": true,
+    "registry_and_all_remaining_file_bytes_unchanged": true
+  },
+  "legacy": "Existing hash of pre-mapping schema1 serialization is accepted only for empty mapping and absent context, returning no invented input IDs",
+  "source_sha256": {
+    "crates/dir-simulator/src/tool/ned-editor/output.rs": "a46c23becaae26f4d82aa5539cc2222e1d6327dd11b914a2d02dc9d8a3161be2",
+    "crates/dir-simulator/src/tool/ned-editor/output_tests.rs": "1fbce8d923af517c4be59c7ce9b77fba2399b2f327767798203a3e7f0c4830c6"
+  },
+  "prior_actual_worker_run": {
+    "source_head": "c2aee4e204a065a223e7a27504a1cc2ea94db16c",
+    "tests": {
+      "log_sha256": "f449f08f4b495850a605513a54267ec3447bcf07b457f267a90166ea0d87bcea",
+      "result_lines": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.45s",
+        "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 484 filtered out; finished in 431.61s"
+      ]
+    },
+    "eacces_errno": 13,
+    "enospc_errno": 28,
+    "namespace_mode": "user-mount",
+    "separate_from_final_head_ci": true
+  },
+  "runner_exit_1": {
+    "observed_exit": 1,
+    "all_recorded_workspace_suite_successes": 774,
+    "test_failures_in_that_log": 0,
+    "cause_status": "Not conclusively determined: runner script was edited during execution and no shell trace was retained",
+    "remediation": "Immutable workspace-only runner saves command exit explicitly; first confirmation exited 0, final-source confirmation and exact-head CI outcomes are recorded in the PR body"
+  },
+  "author_issue_93": {
+    "head": "91a3b4130f195810c0d3897dca19b71116a5a2cc",
+    "run_id": 38603848595,
+    "job_id": 115989582443,
+    "reported_status": "success verified via GitHub API with exact author head; kernel details confirmed by parent",
+    "issue_closed": false
+  },
+  "limits": [
+    "Integrity of private self-owned state; coordinated rewriting of provenance and its matching digests is not cryptographically authenticated",
+    "Node allowlist, inode/hash checks, symlink and external-hardlink refusal remain active",
+    "Final remote CI and full-workspace outcomes are recorded in the Draft PR, not inferred from these focused results"
+  ]
+}

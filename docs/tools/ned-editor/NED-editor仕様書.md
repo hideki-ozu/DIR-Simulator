@@ -1,13 +1,14 @@
 # NED-editor仕様書
 
-文書バージョン：`1.1.8`
-対象GitHubバージョン：`fix/pr90-recovered-run-cleanup @ 91a3b4130f195810c0d3897dca19b71116a5a2cc`
+文書バージョン：`1.1.9`
+対象GitHubバージョン：`fix/pr90-recovered-run-cleanup @ c2aee4e204a065a223e7a27504a1cc2ea94db16c`
 公開タグ：`v1.1.5`（既存タグの範囲を維持。本改訂は上記開発基準の未リリース修正）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.9` | `2026-10-14` | PR94独立レビュー：退役journalのmappingを既存の検証済みmanifest hashへ結び、GC前後の改変拒否と旧形式互換を検証 |
 | `1.1.8` | `2026-10-14` | Issue #91/#92：manifest未公開runの削除・回復試験、mappingのplan digest照合と未リリース開発基準を整合 |
 | `1.1.7` | `2026-10-15` | 未確認条件の実測と誤判定の訂正、保存mappingと結果公開直後の復旧を補正 |
 | `1.1.6` | `2026-10-14` | 43受入ケースの条件別対応表と残条件の追試、後続協調停止・再開の設計案を追加 |
@@ -1611,3 +1612,5 @@ Viewerの旧世代回収はinventory snapshotからbatch完了まで同じmutex�
 保存時のplan digestが含むmapping（input ID・role・output pathを含む）を、復旧操作前にafter blobから再構成したplanned filesとともに照合する。展開後targetから復元できない保存時baseline digest・元の予定directory列・layout確認要否だけをprivate journalのplan_contextへ保持する。contextはdigest再計算用であり、path許可や削除権限を与えない。永続session認証や秘密鍵を追加しない。
 
 旧schema1でmappingを保持しなかった記録は、空mappingを返す従来の読み込みを維持する。未リリースPR90候補のmapping付き記録でplan_contextがないものは、plan整合を確認できないためinvalidとして保持し復旧を拒否する。contextがある記録はmapping削除・role/input ID変更・元plan digest不一致を操作前に拒否し、対象とjournalを変更しない。これは自己所有state内の整合検査で、全fieldを同時に書き換えられる者に対する暗号学的認証を主張しない。
+
+退役journalでは、通常journalのplan digestとbackupを検証した後に採取した既存のmanifest node hashへ、targets registry中の返却用manifestを再照合する。role・input ID・mapping・plan digestなどの変更はGC/回復報告の前に拒否し、backupが全回収された後も同じ照合を行う。新しい秘密・認証方式・削除権限fieldは追加しない。mapping/contextを持たなかったschema1は、default-empty mapping fieldを省いた元のserializationに対する既存hashも照合し、input IDを推測しない。
