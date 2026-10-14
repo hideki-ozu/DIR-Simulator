@@ -544,6 +544,199 @@ fn duplicate_registration_does_not_replace_original() {
     assert_eq!(registry.event(&schema()).unwrap().phase, 1);
 }
 #[test]
+fn profile_model_record_versions_are_unique_per_name() {
+    let mut r = registry(false);
+    for record_schema in [
+        Schema::new("test.Record", 2),
+        Schema::new("test.OtherRecord", 2),
+    ] {
+        r.register_model_record(ModelRecordDescriptor {
+            schema: record_schema,
+            validate: |_| Ok(()),
+        })
+        .unwrap();
+    }
+    let original = r.profile("test.profile.v1").unwrap().clone();
+    let mut mixed = original.clone();
+    mixed.name = "test.mixed.v1".into();
+    mixed.model_records.push(Schema::new("test.Record", 2));
+    let error = r.register_profile(mixed).unwrap_err();
+    assert_eq!(error.code, "E-0001");
+    assert_eq!(error.reason, "duplicate_definition");
+    assert_eq!(
+        error.message,
+        "multiple model record versions in profile: test.Record"
+    );
+    assert_eq!(error.details.unwrap()["schema_name"], "test.Record");
+    assert!(r.profile("test.mixed.v1").is_none());
+
+    let mut different_names = original.clone();
+    different_names.name = "test.names.v1".into();
+    different_names
+        .model_records
+        .push(Schema::new("test.OtherRecord", 2));
+    r.register_profile(different_names).unwrap();
+    let mut separate_version = original;
+    separate_version.name = "test.versiontwo.v1".into();
+    separate_version.model_records = vec![Schema::new("test.Record", 2)];
+    r.register_profile(separate_version).unwrap();
+    for name in ["test.profile.v1", "test.names.v1", "test.versiontwo.v1"] {
+        let f = Fixture::new();
+        let config = std::fs::read_to_string(f.config())
+            .unwrap()
+            .replace("test.profile.v1", name);
+        std::fs::write(f.config(), config).unwrap();
+        prepare_with_registry(&f.config(), r.clone()).unwrap();
+    }
+    assert!(r.model_record(&Schema::new("test.Record", 1)).is_some());
+    assert!(r.model_record(&Schema::new("test.Record", 2)).is_some());
+}
+
+mod record_boundary_probe {
+    use super::*;
+    use serde_json::{Value, json};
+    use std::cell::{Cell, RefCell};
+
+    thread_local! {
+        static DATA: RefCell<Value> = const { RefCell::new(Value::Null) };
+        static VALIDATIONS: Cell<u64> = const { Cell::new(0) };
+    }
+    pub(super) fn reset(data: Value) {
+        DATA.with(|slot| *slot.borrow_mut() = data);
+        VALIDATIONS.with(|count| count.set(0));
+    }
+    pub(super) fn validations() -> u64 {
+        VALIDATIONS.with(Cell::get)
+    }
+    fn record(c: &mut Context<'_>, data: Value) -> ModelResult {
+        c.upsert_model_record(ModelRecord {
+            schema: Schema::new("test.RecordBoundary", 1),
+            id: "request1".into(),
+            subject: c.subject().into(),
+            time_ps: c.now(),
+            data,
+        })
+    }
+    struct Records;
+    impl Model for Records {
+        fn initialize(&mut self, c: &mut Context<'_>) -> ModelResult {
+            record(c, json!({"state":"initial"}))?;
+            c.schedule_at(2, schema(), vec![1])?;
+            Ok(())
+        }
+        fn on_event(&mut self, e: &Envelope, c: &mut Context<'_>) -> ModelResult {
+            if e.payload == [3] {
+                return Ok(());
+            }
+            let owner = c.subject().to_owned();
+            if e.payload == [1] {
+                record(
+                    c,
+                    json!({"state":"committed", "nested":{"items":[5, null, true]}}),
+                )?;
+                c.observe("test.received", &owner, 1)?;
+                c.schedule_after(1, schema(), vec![2])?;
+            } else {
+                record(c, json!({"state":"uncommitted"}))?;
+                c.observe("test.received", &owner, 999)?;
+                c.schedule_after(1, schema(), vec![3])?;
+                record(c, DATA.with(|slot| slot.borrow().clone()))?;
+            }
+            Ok(())
+        }
+    }
+    pub(super) fn registry() -> Registry {
+        let mut r = registry_factories(
+            |_| Ok(Box::new(Records)),
+            |_| Ok(Box::new(Receiver { fail: false })),
+        );
+        r.register_model_record(ModelRecordDescriptor {
+            schema: Schema::new("test.RecordBoundary", 1),
+            validate: |_| {
+                VALIDATIONS.with(|count| count.set(count.get() + 1));
+                Ok(())
+            },
+        })
+        .unwrap();
+        let mut profile = r.profile("test.profile.v1").unwrap().clone();
+        profile.name = "test.recordboundary.v1".into();
+        profile.model_records = vec![Schema::new("test.RecordBoundary", 1)];
+        r.register_profile(profile).unwrap();
+        r
+    }
+    pub(super) fn run(f: &Fixture) -> (dir_simulator::RunReport, Value) {
+        let config = std::fs::read_to_string(f.config())
+            .unwrap()
+            .replace("test.profile.v1", "test.recordboundary.v1");
+        std::fs::write(f.config(), config).unwrap();
+        let prepared = prepare_with_registry(&f.config(), registry()).unwrap();
+        let output = f.0.join("results");
+        let report = dir_simulator::run(prepared, &output).unwrap();
+        let result =
+            serde_json::from_slice(&std::fs::read(output.join("results.json")).unwrap()).unwrap();
+        (report, result)
+    }
+}
+
+#[test]
+fn non_object_model_record_data_is_rejected_before_validator_and_preserves_prefix() {
+    use serde_json::json;
+    for data in [
+        json!(5),
+        json!(1.5),
+        json!(null),
+        json!("text"),
+        json!(true),
+        json!([{"nested":{}}]),
+    ] {
+        record_boundary_probe::reset(data);
+        let f = Fixture::new();
+        let (report, result) = record_boundary_probe::run(&f);
+        assert_eq!(report.exit_code, 3);
+        assert_eq!(result["simulation"]["termination"], "execution_failed");
+        assert_eq!(result["simulation"]["committed_events"], "1");
+        assert_eq!(result["simulation"]["pending_events"], "1");
+        let rows = result["simulation"]["model_records"].as_array().unwrap();
+        assert_eq!(rows.len(), 1);
+        assert_eq!(rows[0]["time_ps"], "2");
+        assert_eq!(
+            rows[0]["data"],
+            json!({"state":"committed", "nested":{"items":[5, null, true]}})
+        );
+        assert_eq!(result["simulation"]["records"].as_array().unwrap().len(), 1);
+        assert_eq!(result["simulation"]["records"][0]["value"], "1");
+        assert_eq!(record_boundary_probe::validations(), 3);
+        let diagnostics = std::fs::read_to_string(f.0.join("results/diagnostics.jsonl")).unwrap();
+        let diagnostic: serde_json::Value = serde_json::from_str(diagnostics.trim()).unwrap();
+        assert_eq!(diagnostic["code"], "E-0002");
+        assert_eq!(diagnostic["reason"], "invalid_event");
+        assert_eq!(diagnostic["message"], "model record data must be an object");
+    }
+}
+
+#[test]
+fn empty_and_nested_model_record_objects_reach_validator_and_publication() {
+    use serde_json::json;
+    for data in [
+        json!({}),
+        json!({"nested":{"items":[null,true,5,{"deep":"ok"}]}}),
+    ] {
+        record_boundary_probe::reset(data.clone());
+        let f = Fixture::new();
+        let (report, result) = record_boundary_probe::run(&f);
+        assert_eq!(report.exit_code, 0);
+        assert_eq!(result["simulation"]["termination"], "events_exhausted");
+        assert_eq!(result["simulation"]["model_records"][0]["data"], data);
+        assert_eq!(record_boundary_probe::validations(), 4);
+        assert!(
+            std::fs::read_to_string(f.0.join("results/diagnostics.jsonl"))
+                .unwrap()
+                .is_empty()
+        );
+    }
+}
+
+#[test]
 fn unknown_schema_and_port_version_are_prepare_errors() {
     let f = Fixture::new();
     let mut r = registry(false);

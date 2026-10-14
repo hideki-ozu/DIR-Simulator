@@ -404,6 +404,7 @@ async function browserHarness(run, mode = 'success') {
     else if (url === '/api/destinations') data = { id: 'target-fixture' };
     else if (url === '/api/confirmations') data = hooks.confirmation ? await hooks.confirmation(body) : { confirmation: 'discard-nonce', impacts: [] };
     else if (url === '/api/commands') {
+      if (hooks.beforeCommand) await hooks.beforeCommand(body);
       if (body.kind === 'new_project') {
         if (mode === 'reject') data = { ...success(body), accepted: false, operation_status: 409, code: 'E-EDITOR-CONFLICT' };
         else if (mode === 'uncertain') { uncertain = body; throw new Error('connection closed'); }
@@ -690,6 +691,80 @@ test('settings opening waits for IME completion before taking the source snapsho
     b.composition(false); await opening;
     assert.equal(h.dialogs.length, 1); assert.equal(b.pending, false);
     assert.equal(h.requests.filter(r => r.body?.kind === 'replace_source').length, 1);
+  });
+});
+
+test('Run waits for composition and source acknowledgement before freezing input', async () => {
+  await browserHarness(async h => {
+    const b = h.app.buffers.get('ned');
+    b.edit(b.visible + '\n// composed input'); b.composition(true);
+    h.answers.push({'run-timeout-seconds': '1'});
+    let releaseAck, announceSource;
+    const sourceSeen = new Promise(resolve => { announceSource = resolve; });
+    const ack = new Promise(resolve => { releaseAck = resolve; });
+    h.hooks.beforeCommand = async body => {
+      if (body.kind === 'replace_source') { announceSource(); await ack; }
+    };
+    const running = h.elements.get('run-simulation').onclick();
+    await Promise.resolve(); await Promise.resolve();
+    assert.equal(h.requests.some(r => r.body?.kind === 'replace_source'), false);
+    assert.equal(h.requests.some(r => r.body?.kind === 'start_run'), false);
+    b.composition(false);
+    await sourceSeen;
+    assert.equal(h.requests.some(r => r.body?.kind === 'start_run'), false);
+    releaseAck(); await running;
+    const commands = h.requests.filter(r => r.url === '/api/commands').map(r => r.body);
+    assert.deepEqual(commands.map(c => c.kind), ['replace_source', 'start_run']);
+    assert.equal(commands[0].payload.text, b.raw);
+    assert.equal(commands[1].base_revision, '2');
+    assert.equal(commands[1].payload.wall_timeout_ms, '1000');
+    assert.equal(b.pending, false);
+  });
+});
+
+test('Run creates no command while flush is blocked or fails and retains the edited bytes', async () => {
+  for (const mode of ['blocked', 'rejected']) await browserHarness(async h => {
+    const b = h.app.buffers.get('ned'); b.edit(b.visible + '\n// unsent input');
+    const raw = b.raw;
+    if (mode === 'blocked') b.blocked = 'Fixture conflict';
+    else h.hooks.beforeCommand = async body => {
+      if (body.kind === 'replace_source') throw new Error('Fixture flush transport failure');
+    };
+    h.answers.push({'run-timeout-seconds': '600'});
+    await h.elements.get('run-simulation').onclick();
+    assert.equal(h.requests.some(r => r.body?.kind === 'start_run'), false);
+    assert.equal(b.raw, raw); assert.equal(b.pending, true);
+    assert.ok(b.blocked);
+    assert.match(h.elements.get('notice-text').textContent, mode === 'blocked' ? /反映できない入力/ : /Fixture flush transport failure/);
+  });
+});
+
+test('Run flushes typing received during an unacknowledged edit before freezing the final version', async () => {
+  await browserHarness(async h => {
+    const b = h.app.buffers.get('ned'); b.edit(b.visible + '\n// first input');
+    let sourceCommands = 0;
+    h.hooks.beforeCommand = async body => {
+      if (body.kind === 'replace_source' && ++sourceCommands === 1) b.edit(b.visible + '\n// newer typing');
+    };
+    h.answers.push({'run-timeout-seconds': '60'});
+    await h.elements.get('run-simulation').onclick();
+    const commands = h.requests.filter(r => r.url === '/api/commands').map(r => r.body);
+    assert.deepEqual(commands.map(c => c.kind), ['replace_source', 'replace_source', 'start_run']);
+    assert.match(commands[0].payload.text, /first input$/);
+    assert.match(commands[1].payload.text, /newer typing$/);
+    assert.equal(commands[1].payload.text, b.raw);
+    assert.equal(commands[2].base_revision, '3');
+    assert.equal(b.pending, false);
+  });
+});
+
+test('Run dialog cancellation and invalid timeout never flush or create a run', async () => {
+  for (const answer of [null, {'run-timeout-seconds':'0'}, {'run-timeout-seconds':'3601'}]) await browserHarness(async h => {
+    const b = h.app.buffers.get('ned'); b.edit(b.visible + '\n// retain pending text');
+    h.answers.push(answer);
+    await h.elements.get('run-simulation').onclick();
+    assert.equal(h.requests.some(r => r.url === '/api/commands'), false);
+    assert.equal(b.pending, true);
   });
 });
 
