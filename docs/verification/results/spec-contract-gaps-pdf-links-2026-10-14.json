@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-14",
+  "kind": "pdf_link_review_followup",
+  "source_parent_commit": "c2713b3d4d2d4fc330f9499383bb3b7ed8fc230f",
+  "review_url": "https://github.com/hideki-ozu/DIR-Simulator/pull/81#discussion_r4264610006",
+  "fix": "Preserve relative-link queries, including repeated and percent-encoded values, before the fragment. Preserve existing percent escapes in fragments while encoding raw Unicode anchors.",
+  "source_files": {
+    "scripts/export_document_pdf.py": {
+      "before_sha256": "7c48bb6f08d9ef01c8d838d3347118cb910e98bca65ba3d8314620b70479b17a",
+      "after_sha256": "8cebfca27fb0ff0e9974085e87e9c7133d0ab9f60c46d2e0e42b8b75be73012f"
+    },
+    "tests/test_document_pdf.py": {
+      "before_sha256": "b97b56a6fd7a398aaa1a5f4c3f6c9e8a1abfe16879f3643577e4e2a7a957b2b0",
+      "after_sha256": "70ab883a1a45152bdf6ca59d8f8ef4fcebb0099855feaa213479b6035bbe0755"
+    }
+  },
+  "regression_test": "DocumentPdfTests.test_relative_links_preserve_queries_and_fragments",
+  "regression_cases": 6,
+  "negative_controls": [
+    "Three query cases fail before query preservation; fragment-only case passes.",
+    "After query preservation but before fragment escape preservation, the encoded Unicode fragment case fails."
+  ],
+  "checks": [
+    {
+      "log_name": "pdf-link-negative-control.log",
+      "log_sha256": "3837263ced088b1dcc88e95586aefc6193121e1e2d8c6dd0bb15345bb755f866"
+    },
+    {
+      "log_name": "pdf-link-fragment-negative-control.log",
+      "log_sha256": "88ad0bc067cf1cf05e1f77e6a8c9ad930e0166d0dd5da1d28b3b478890df3aef"
+    },
+    {
+      "log_name": "pdf-link-python-tests-final.log",
+      "log_sha256": "04fec5509f4875b763e8cae1f23a857c4f037b5eb9369c28014372cb8dabcbf0"
+    }
+  ],
+  "final_python_tests": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "passed": 63,
+    "failed": 0
+  },
+  "document_checks": {
+    "generated_traceability": "up_to_date",
+    "strict_requirements": 231,
+    "strict_functions": 60,
+    "strict_nodes": 274,
+    "structural_errors": 0,
+    "incomplete_items": 0,
+    "diagrams": 13
+  },
+  "previous_head_ci": {
+    "head": "c2713b3d4d2d4fc330f9499383bb3b7ed8fc230f",
+    "rust_run_url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38479006919",
+    "rust_job_log_name": "ci-job-115576703920.log",
+    "rust_job_log_sha256": "d830b28add3de4d58fd92e08ddbb97da435e4a562ee10edc41bc8a7bd1d2595a",
+    "conclusion": "success",
+    "ignored_worker_socket_tests_passed": 7,
+    "browser_and_audit_steps": "success"
+  },
+  "remote_ci_after_fix": "pending at acquisition; verify the final PR head",
+  "version_and_tags": "No authored Markdown changed. Preserve published document revisions and existing v1.1.4/v1.1.5 tags."
+}

@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-14",
+  "kind": "ci_regression_followup",
+  "source_parent_commit": "9467232cffb53d79d2d8cd2da9be8726ee209e01",
+  "source_file": "crates/dir-simulator/src/tool/ned-editor/run_control/tests.rs",
+  "before_source_sha256": "84fa6dd0451394bedd8efbff0079759c73d5e1fe2c5dc7f43ecf739db1a70892",
+  "after_source_sha256": "11e7f8c5593b497350645395bf7e0e9b97e5fa15fad9c9b34aada915234dc21e",
+  "initial_ci": {
+    "run_url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38475885801",
+    "job_id": 115566341238,
+    "conclusion": "failure",
+    "preserved_job_log_name": "ci-job-115566341238.log",
+    "preserved_job_log_sha256": "9ad68f130ef2775fac75bd441ded31cadb67bf0c1b56af8c54a6fe543e22ce26",
+    "format_workspace_tests_and_clippy": "passed",
+    "workspace_tests_passed": 732,
+    "focused_rust_checks_passed": 5,
+    "ignored_worker_socket_tests": {
+      "passed": 6,
+      "failed": 1
+    },
+    "failing_test": "tool::ned_editor::run_control::tests::real_worker_smoke_when_binary_supplied",
+    "failure": "15-second harness completion deadline expired while phase=running, diagnostics=[], artifact_state=unpublished; the product wall timeout had not expired"
+  },
+  "change": {
+    "scope": "test-only completion waits at three successful baseline worker sites",
+    "smoke_completion_wait_seconds": {
+      "before": 15,
+      "after": 60
+    },
+    "baseline_equivalence_and_viewer_completion_wait_seconds": {
+      "before": 20,
+      "after": 60
+    },
+    "control_and_failure_wait_seconds": 20,
+    "product_wall_timeout_ms": 600000,
+    "completion_required": true,
+    "report_artifact_reaping_and_failure_assertions": "preserved",
+    "workflow_timeout_minutes": 30
+  },
+  "local_verification": [
+    {
+      "command": "DIR_NED_RUN_TEST_BINARY=<supplied binary> CARGO_TARGET_DIR=<isolated target> cargo +1.85.0 test --locked -p dir-simulator --lib tool::ned_editor::run_control::tests::real_worker_smoke_when_binary_supplied -- --exact --ignored --nocapture",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "elapsed_seconds": 12.56,
+      "evidence_storage": "worker tool output only; no persistent test log",
+      "worker": "ci_worker_deadline_fix"
+    },
+    {
+      "command": "DIR_NED_RUN_TEST_BINARY=<supplied binary> CARGO_TARGET_DIR=<isolated target> cargo +1.85.0 test --locked -p dir-simulator --lib tool::ned_editor::run_control::tests::real_worker_ -- --ignored --test-threads=1 --nocapture",
+      "passed": 5,
+      "failed": 0,
+      "ignored": 0,
+      "elapsed_seconds": 102.29,
+      "evidence_storage": "worker tool output only; no persistent test log",
+      "worker": "ci_worker_deadline_fix"
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "status": "passed",
+      "evidence_storage": "worker tool output only"
+    },
+    {
+      "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "status": "passed",
+      "log_name": "ci-wait-fix-clippy.log",
+      "log_sha256": "bc985b7a8e01b33ef39162f1aad661e88d1066a35fa21b7270f86937d6f245b4"
+    },
+    {
+      "command": "python3 scripts/generate_traceability.py --check; python3 scripts/check_traceability.py --strict; python3 scripts/render_diagrams.py --check",
+      "status": "passed",
+      "requirements": 231,
+      "functions": 60,
+      "nodes": 274,
+      "structural_errors": 0,
+      "incomplete_items": 0,
+      "diagrams": 13,
+      "evidence_storage": "parent tool output only"
+    }
+  ],
+  "verification_binary_sha256": "dba4497780833b39ce26095b8852c2fe745cfccef5c1a27acacd07ba02333864",
+  "remote_ci_after_fix": "pending at acquisition; final conclusion must be verified against the pushed PR head",
+  "document_and_release_scope": "No authored Markdown changed in this followup. Existing document revisions and v1.1.4/v1.1.5 tags are preserved. Prior acquisition-time reports are not rewritten."
+}
