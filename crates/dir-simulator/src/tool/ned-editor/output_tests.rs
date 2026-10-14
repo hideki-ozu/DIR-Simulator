@@ -45,7 +45,7 @@ fn recovery_rejects_mapping_role_or_input_id_change_with_original_plan_digest() 
         }
         files
     }
-    for mutation in ["role", "input_id"] {
+    for mutation in ["role", "input_id", "mapping_removed"] {
         let mut f = Fixture::new();
         let config = f.root.join("input/project.ini");
         let mut text = std::fs::read_to_string(&config).unwrap();
@@ -86,6 +86,8 @@ fn recovery_rejects_mapping_role_or_input_id_change_with_original_plan_digest() 
                 .find(|entry| entry["role"] == serde_json::to_value(FileRole::Workload).unwrap())
                 .unwrap();
             entry["role"] = serde_json::to_value(FileRole::ModelConfig).unwrap();
+        } else if mutation == "mapping_removed" {
+            mapping.clear();
         } else {
             let entries = mapping.remove(&key).unwrap();
             mapping.insert("altered-input-id".into(), entries);

@@ -327,6 +327,8 @@ fn xc23_recovery_keeps_mapping_and_legacy_absence_does_not_guess_input_ids() {
             let path = f.manifest(&recovery);
             let mut journal: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
             journal.as_object_mut().unwrap().remove("mapping");
+            // Actual legacy journals predate both provenance fields.
+            journal.as_object_mut().unwrap().remove("plan_context");
             fs::write(path, serde_json::to_vec_pretty(&journal).unwrap()).unwrap();
         }
         let mut registry = f.restart();
