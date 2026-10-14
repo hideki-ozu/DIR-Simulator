@@ -14,7 +14,7 @@ test('forced second startup failure reports child skips and parent failure', {sk
   fs.writeFileSync(preload,`const helper=require(${JSON.stringify(helper)});const original=helper.waitForStartup;let attempts=0;helper.waitForStartup=(child,options)=>original(child,++attempts===2?{...options,timeoutMs:1}:options);`);
   const env={...process.env,DIR_NED_HTTP_EVIDENCE:path.join(root,'evidence')};
   delete env.NODE_TEST_CONTEXT;
-  const run=spawnSync(process.execPath,['--require',preload,'--test',require.resolve('./ned_editor_acceptance_http.test.cjs')],{
+  const run=spawnSync(process.execPath,['--require',preload,'--test','--test-reporter=tap',require.resolve('./ned_editor_acceptance_http.test.cjs')],{
     env,encoding:'utf8',timeout:170000,maxBuffer:2*1024*1024
   });
   assert.equal(run.error,undefined);assert.equal(run.status,1,'intentional restart failure must fail suite');
