@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.25`
+文書バージョン：`1.1.26`
 対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.26` | `2026-10-14` | Ethernet TASの生成時刻1ps境界実習・IFG込み窓末尾・実Viewerと8入力ZIPを追加。既存20記事と履歴を保持 |
 | `1.1.25` | `2026-10-14` | Ethernet VLAN受入admitだけを変える8入力実習・filtered理由・正式版実測と実Viewerを追加。未マージ4記事を保持 |
 | `1.1.24` | `2026-10-13` | Ethernetの論理priorityだけを変える8入力実習・非プリエンプト/FIFO・実Viewerを追加。既存3記事を保持 |
 | `1.1.23` | `2026-10-13` | NoC入力FIFOの独立8入力実習・35ps実Viewer・開始待ちとhop間待ちを追加。SoC/AHBを保持 |
@@ -494,3 +495,5 @@ NEDのdisplay／description属性と元SourceSpanの保持、非対応import／e
 外部部品は[用途とライセンス選択一覧](docs/third-party/外部部品ライセンス選択一覧.md)にまとめています。固定40件のOR経路は利用者承認によりMITを選択し、元の選択肢・著作通知・個別の追加条件を保持します。ガイドのMPL/BSD/OFL等は各資産の原条件を維持します。
 
 [EthernetのVLAN受入条件と破棄理由](docs/guide/EthernetのVLAN受入条件と破棄理由.md)では、Switchの受入条件だけを変え、受信拒否と容量dropを正式v1.1.4で区別します。[8入力ZIP](docs/guide/downloads/ethernet-vlan-inputs.zip)を配布しています。
+
+[Ethernet TASの送信窓とIFG込みの待ち時間](<docs/guide/Ethernet TASの送信窓とIFG込みの待ち時間.md>)では、共通1フレームの生成時刻だけを1psずつ変え、gate openでもIFG込みguardで待つ条件を正式v1.1.4で読みます。[8入力ZIP](docs/guide/downloads/ethernet-tas-inputs.zip)を配布しています。
