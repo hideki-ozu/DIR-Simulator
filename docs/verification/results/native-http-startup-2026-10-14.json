@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "issue": 95,
+  "base_main": "94450fa52378c155c3e8de67312e09838d2ea6d4",
+  "base_tree_equals": "df36a2b87c4c0baa071c89d6249fc6f65edd3fd8",
+  "original_ci": {
+    "run_id": 38609398869,
+    "job_id": 116008541374,
+    "head": "df36a2b87c4c0baa071c89d6249fc6f65edd3fd8",
+    "result": "failure",
+    "position": "XC39 restart: first stdout JSON did not arrive within 20000ms; subsequent XC36/XC38 fetch failed",
+    "full_log_sha256": "07d19c7ac9b5fa1fa379a6e63445f3414162728b3151271bcdbad42d15676726",
+    "excerpt": "native-http-startup-2026-10-14/original-ci-excerpt.log",
+    "excerpt_sha256": "e8fd1e1882885e614460e347e3e3fbdef30d1dec1fc3a44bfa2898f7668d4c4e",
+    "unexecuted": [
+      "shutdown",
+      "Viewer/browser",
+      "audit selftests"
+    ],
+    "cause": "not established"
+  },
+  "observed_before_repair": {
+    "binary_sha256": "f9fc2d5268faf1a028d071d665661ad27391b77419cfd080b0bf87f5ef96a3a2",
+    "node": "v22.22.0",
+    "log_sha256": "88bac113a2f1eded7065409ac438422772fd096062d139b4ca3eb9de59041295",
+    "tests": 6,
+    "exit_code": 0,
+    "startups": [
+      {
+        "attempt": 1,
+        "timeout_ms": 20000,
+        "pid": 18394,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:45647/#session=[redacted]\"}\n",
+        "stderr": "",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 6411,
+        "closed_ms": 34897
+      },
+      {
+        "attempt": 2,
+        "timeout_ms": 20000,
+        "pid": 19728,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:45931/#session=[redacted]\"}\n",
+        "stderr": "",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 7797,
+        "closed_ms": 18875
+      },
+      {
+        "attempt": 3,
+        "timeout_ms": 20000,
+        "pid": 20205,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:45265/#session=[redacted]\"}\n",
+        "stderr": "",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 7341,
+        "closed_ms": 7700
+      }
+    ]
+  },
+  "after_diagnostic_repair": {
+    "binary_sha256": "f9fc2d5268faf1a028d071d665661ad27391b77419cfd080b0bf87f5ef96a3a2",
+    "node": "v22.22.0",
+    "log_sha256": "b637ed526ca0dcaf22845cc94495d1790863e84c272b8ed060a8412f5098096e",
+    "tests": 6,
+    "exit_code": 0,
+    "startups": [
+      {
+        "attempt": 1,
+        "timeout_ms": 20000,
+        "pid": 21964,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:45411/#session=[redacted]\"}\n",
+        "stderr": "",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 6467,
+        "closed_ms": 33258
+      },
+      {
+        "attempt": 2,
+        "timeout_ms": 20000,
+        "pid": 23210,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:46451/#session=[redacted]\"}\n",
+        "stderr": "",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 7823,
+        "closed_ms": 18702
+      },
+      {
+        "attempt": 3,
+        "timeout_ms": 20000,
+        "pid": 23671,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:44715/#session=[redacted]\"}\n",
+        "stderr": "",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 7347,
+        "closed_ms": 7701
+      }
+    ]
+  },
+  "helper_regressions": {
+    "tests": 6,
+    "failed": 0,
+    "log_sha256": "5660c8bb1b6239228925e876c29ef4bf7fdb70e9c5d2dd2a6fdd9e30bf7baf8f",
+    "scope": "controlled Node subprocess observer/redaction/exit/cleanup; not product simulation acceptance"
+  },
+  "shutdown": {
+    "tests": 2,
+    "failed": 0,
+    "log_sha256": "2142ca763ecba42a67b7c5191f597dca48861e3b5fdd3f8004ec73873258cea7"
+  },
+  "changes": [
+    "Keep 20-second readiness bound and all product boundary assertions",
+    "Persist sanitized stdout/stderr, elapsed time, PID and exit/signal in job logs and evidence",
+    "Reap owned failed-startup child using existing SIGTERM/10-second SIGKILL grace",
+    "Clear obsolete origin/credentials and explicitly skip dependent assertions after failed restart; parent suite still fails",
+    "Run independent shutdown/Viewer/audit steps after successful native product validation even if HTTP fails; no continue-on-error"
+  ],
+  "limits": [
+    "Original CI timeout not reproduced locally and not claimed resolved",
+    "No product recovery-code change or permissions/time-limit change",
+    "Final exact-head CI outcomes are recorded in the Draft PR; local executions are distinct"
+  ]
+}

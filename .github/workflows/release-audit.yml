@@ -49,6 +49,7 @@ jobs:
           cargo test --locked --workspace
           cargo clippy --locked --workspace --all-targets -- -D warnings
       - name: Verify actual product ledger reference
+        id: native-product
         run: |
           cargo build --locked -p dir-simulator
           target/debug/dir-simulator run --config docs/verification/fixtures/can/competition.ini --output "$RUNNER_TEMP/ledger-metadata"
@@ -76,9 +77,17 @@ jobs:
           # create/enter the private mount namespace; the test drops back to
           # the runner identity with no groups/capabilities before execution.
           DIR_ACCEPTANCE_NAMESPACE_MODE=sudo-mount DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" cargo test --locked -p dir-simulator --lib tool::ned_editor::run_control -- --ignored --nocapture --test-threads=1
+      - name: Startup observer regressions
+        run: node --test tests/ned_editor_startup.test.cjs
+      - name: Native HTTP acceptance
+        run: |
           DIR_NED_HTTP_BINARY="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_acceptance_http.test.cjs
+      - name: Native shutdown acceptance
+        if: ${{ !cancelled() && steps.native-product.conclusion == 'success' }}
+        run: |
           DIR_NED_RUN_TEST_BINARY="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_run_shutdown.test.cjs
       - name: Viewer model and browser regression
+        if: ${{ !cancelled() && steps.native-product.conclusion == 'success' }}
         run: |
           node --version
           npm --version
@@ -91,6 +100,7 @@ jobs:
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_extensions_browser.test.cjs
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_hostile_browser.test.cjs
       - name: Audit checker and comparison selftests
+        if: ${{ !cancelled() && steps.native-product.conclusion == 'success' }}
         run: |
           python3 scripts/check_third_party_notices.py
           cd docs/verification/results/release-native-distribution-audit-2026-10-08

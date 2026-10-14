@@ -10,6 +10,7 @@ const net = require('node:net');
 const crypto = require('node:crypto');
 const {spawn} = require('node:child_process');
 const {once} = require('node:events');
+const {waitForStartup, stopNativeChild} = require('./ned_editor_startup.cjs');
 const repo = path.resolve(__dirname, '..');
 const binary = process.env.DIR_NED_HTTP_BINARY;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -67,27 +68,28 @@ async function raw(origin, target, headers, method = 'GET', body = '') {
   });
 }
 class NativeEditor {
-  constructor(root) { this.root = root; this.input = path.join(root, 'input'); this.state = path.join(root, 'state'); this.exports = path.join(root, 'exports'); this.next = 1; }
+  constructor(root) { this.root = root; this.input = path.join(root, 'input'); this.state = path.join(root, 'state'); this.exports = path.join(root, 'exports'); this.next = 1; this.startups = []; }
   async start() {
+    this.origin = null; this.secret = null; this.writer = null;
+    const attempt = {attempt: this.startups.length + 1};
+    this.startups.push(attempt);
     this.child = spawn(path.resolve(binary), ['ned-editor','--config',path.join(this.input,'project.ini'),'--export-root',this.exports,'--state-root',this.state], {cwd:this.root, stdio:['ignore','pipe','pipe']});
-    this.closed = once(this.child,'close'); this.stderr = '';
-    this.child.stderr.on('data', bytes => { this.stderr = (this.stderr + bytes).slice(-8192); });
-    const startup = await new Promise((resolve,reject) => {
-      let out = ''; const timer = setTimeout(() => reject(new Error('native editor startup timeout')),20000);
-      this.child.once('error', () => {clearTimeout(timer);reject(new Error('native editor launch failed'));});
-      this.child.once('close', () => {clearTimeout(timer);reject(new Error('native editor stopped before startup'));});
-      this.child.stdout.on('data', bytes => { out += bytes; const end = out.indexOf('\n'); if(end >= 0) {clearTimeout(timer);try{resolve(JSON.parse(out.slice(0,end)));}catch{reject(new Error('invalid startup frame'));}} });
-    });
-    const url = new URL(startup.url); this.origin = url.origin; this.secret = new URLSearchParams(url.hash.slice(1)).get('session'); hidden.push(this.secret);
-    const writer = await this.api('/api/writer',{action:'register'});
-    assert.equal(writer.status,200,'writer registration'); this.writer = writer.value; this.next = Number(writer.value.next_sequence);
+    this.closed = once(this.child,'close'); this.closed.catch(() => {});
+    let startup;
+    try {
+      startup = await waitForStartup(this.child, {attempt, sanitize: redact, report: value => console.log('NATIVE_EDITOR_STARTUP ' + JSON.stringify(value))});
+      const url = new URL(startup.url); this.origin = url.origin; this.secret = new URLSearchParams(url.hash.slice(1)).get('session'); hidden.push(this.secret);
+      const writer = await this.api('/api/writer',{action:'register'});
+      assert.equal(writer.status,200,'writer registration'); this.writer = writer.value; this.next = Number(writer.value.next_sequence);
+    } catch (error) {
+      await this.stop();
+      this.origin = null; this.secret = null; this.writer = null;
+      console.log('NATIVE_EDITOR_STARTUP_FINAL ' + JSON.stringify({...attempt, stdout: redact(attempt.stdout), stderr: redact(attempt.stderr)}));
+      throw error;
+    }
   }
   async stop() {
-    if (this.child && this.child.exitCode === null && this.child.signalCode === null) {
-      this.child.kill('SIGTERM');
-      const timeout = setTimeout(() => this.child.kill('SIGKILL'),10000);
-      await this.closed; clearTimeout(timeout);
-    }
+    await stopNativeChild(this.child, this.closed);
   }
   async api(route, body, headers = {}) {
     const response = await fetch(this.origin + route,{method:body === undefined ? 'GET':'POST',headers:{'X-Editor-Session':this.secret,...(body === undefined ? {} : {'Content-Type':'application/json',Origin:this.origin}),...headers},body:body === undefined ? undefined : JSON.stringify(body),signal:AbortSignal.timeout(20000)});
@@ -189,6 +191,7 @@ test('native HTTP acceptance XC04 XC32 XC36 XC38 XC39', {skip:binary?false:'Set 
       add('xc39_restart',{old_capability:oldStatus,fresh_authenticated_build_status:200});
     });
     await t.test('XC36 native unsafe run cleanup refuses and preserves unrelated identities',async()=>{
+      if (!editor.origin) { t.skip('Shared native fixture unavailable after failed restart; cleanup assertions not executed'); return; }
       const runDir=path.join(editor.state,'runs',runA), resultDir=path.join(runDir,'result');
       const untouched={input:inventory(editor.input),other_run:inventory(path.join(editor.state,'runs',runB)),recovery:inventory(recovery),external:inventory(external)};
       const resultFile=path.join(resultDir,'results.json'), original=fs.readFileSync(resultFile);
@@ -205,6 +208,7 @@ test('native HTTP acceptance XC04 XC32 XC36 XC38 XC39', {skip:binary?false:'Set 
       evidence.gaps.push('Native cleanup covers unknown/nonempty output, symlink and external hardlink; deterministic same-ID publication collision requires the test-only ID supplier.');
     });
     await t.test('XC38 native artifact and new Viewer validation deny tampering and a complete foreign run bundle',async()=>{
+      if (!editor.origin) { t.skip('Shared native fixture unavailable after failed restart; artifact assertions not executed'); return; }
       const runDir=path.join(editor.state,'runs',runA), resultDir=path.join(runDir,'result'), otherDir=path.join(editor.state,'runs',runB);
       const listing=await editor.api('/api/runs/'+runA+'/artifacts');assert.equal(listing.status,200);const resultArtifact=listing.value.artifacts.find(a=>a.filename==='results.json');assert.ok(resultArtifact,'result artifact exists');
       const originalResult=contents(resultDir), originalResponse=fs.readFileSync(path.join(runDir,'control/worker-response.json'));
@@ -238,6 +242,8 @@ test('native HTTP acceptance XC04 XC32 XC36 XC38 XC39', {skip:binary?false:'Set 
   } catch(error) {throw new Error(redact(error.stack||error.message));}
   finally {
     await editor.stop();
+    evidence.startups = editor.startups.map(attempt => ({...attempt, stdout: redact(attempt.stdout), stderr: redact(attempt.stderr)}));
+    console.log('NATIVE_EDITOR_STARTUP_FINAL ' + JSON.stringify(evidence.startups));
     const link=path.join(editor.input,'models/demo/link');if(fs.existsSync(link)&&fs.lstatSync(link).isSymbolicLink())fs.unlinkSync(link);
     evidence.source_sha256=Object.fromEntries([...contents(editor.input)].map(([n,b])=>[n,hash(b)]));
     const evidenceDir=path.resolve(process.env.DIR_NED_HTTP_EVIDENCE||path.join(root,'evidence'));fs.mkdirSync(evidenceDir,{recursive:true});
