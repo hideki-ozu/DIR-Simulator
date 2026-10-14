@@ -9,12 +9,51 @@ use std::io::{BufRead, BufReader, Seek, SeekFrom, Write};
 use std::os::fd::OwnedFd;
 use std::os::unix::fs::{MetadataExt, OpenOptionsExt, PermissionsExt};
 use std::os::unix::net::{UnixListener, UnixStream};
-use std::os::unix::process::ExitStatusExt;
+use std::os::unix::process::{CommandExt, ExitStatusExt};
 use std::process::{Child, Command, Stdio};
 use std::sync::atomic::AtomicU64;
 
 const CHILD_MODE: &str = "DIR_ACCEPTANCE_MODE";
+const NAMESPACE_MODE: &str = "DIR_ACCEPTANCE_NAMESPACE_MODE";
 static NEXT: AtomicU64 = AtomicU64::new(0);
+
+fn sudo_mount_namespace() -> bool {
+    match std::env::var(NAMESPACE_MODE) {
+        Err(std::env::VarError::NotPresent) => false,
+        Ok(mode) if mode == "sudo-mount" => true,
+        mode => panic!("Unsupported {NAMESPACE_MODE}: {mode:?}"),
+    }
+}
+
+fn drop_privileges(command: &mut Command, uid: u32, gid: u32) {
+    command.args([
+        "setpriv",
+        &format!("--reuid={uid}"),
+        &format!("--regid={gid}"),
+        "--clear-groups",
+        "--bounding-set=-all",
+        "--inh-caps=-all",
+        "--ambient-caps=-all",
+        "--no-new-privs",
+        "--",
+    ]);
+}
+
+fn namespace_command(pid: &str, sudo_mount: bool) -> Command {
+    let mut command = if sudo_mount {
+        let mut command = Command::new("sudo");
+        command.args(["-n", "--", "nsenter"]);
+        command
+    } else {
+        Command::new("nsenter")
+    };
+    command.args(["--target", pid]);
+    if !sudo_mount {
+        command.args(["--user", "--preserve-credentials"]);
+    }
+    command.args(["--mount", "--"]);
+    command
+}
 struct Fixture {
     root: PathBuf,
     project: ProjectSnapshot,
@@ -119,6 +158,7 @@ struct Supervisor {
     child: Child,
     listener: UnixListener,
     socket: PathBuf,
+    sudo_namespace: bool,
 }
 impl Supervisor {
     fn spawn(root: &Path, mode: &str, site: &str, occurrence: &str, namespace: bool) -> Self {
@@ -127,7 +167,44 @@ impl Supervisor {
         let listener = UnixListener::bind(&socket).unwrap();
         listener.set_nonblocking(true).unwrap();
         let binary = std::env::current_exe().unwrap();
-        let mut cmd = if namespace {
+        let sudo_namespace = namespace && sudo_mount_namespace();
+        let variables = [
+            (CHILD_MODE, std::ffi::OsString::from(mode)),
+            ("DIR_ACCEPTANCE_ROOT", root.as_os_str().to_owned()),
+            ("DIR_ACCEPTANCE_SITE", site.into()),
+            ("DIR_ACCEPTANCE_OCCURRENCE", occurrence.into()),
+            ("DIR_ACCEPTANCE_SOCKET", socket.as_os_str().to_owned()),
+            (hooks::WORKERS, "1".into()),
+        ];
+        let mut cmd = if sudo_namespace {
+            // CI runners may prohibit uid_map while permitting a private mount
+            // namespace through their existing passwordless sudo policy.
+            let identity = fs::metadata("/proc/self").unwrap();
+            assert_ne!(identity.uid(), 0, "Run the test harness as the runner user");
+            let mut c = Command::new("sudo");
+            c.args([
+                "-n",
+                "--",
+                "unshare",
+                "--mount",
+                "--propagation",
+                "private",
+                "--",
+            ]);
+            drop_privileges(&mut c, identity.uid(), identity.gid());
+            // Pass only these test controls after dropping privilege. sudo -E
+            // would carry unrelated runner environment into privileged tools.
+            c.arg("env");
+            for (key, value) in &variables {
+                let mut assignment = std::ffi::OsString::from(key);
+                assignment.push("=");
+                assignment.push(value);
+                c.arg(assignment);
+            }
+            c.arg(&binary);
+            c.process_group(0);
+            c
+        } else if namespace {
             let mut c = Command::new("unshare");
             c.args(["-Ur", "-m", "--propagation", "private", "--"]);
             c.arg(&binary);
@@ -136,18 +213,14 @@ impl Supervisor {
             Command::new(&binary)
         };
         cmd.args(["--exact", hooks::ENTRY, "--nocapture"])
-            .env(CHILD_MODE, mode)
-            .env("DIR_ACCEPTANCE_ROOT", root)
-            .env("DIR_ACCEPTANCE_SITE", site)
-            .env("DIR_ACCEPTANCE_OCCURRENCE", occurrence)
-            .env("DIR_ACCEPTANCE_SOCKET", &socket)
-            .env(hooks::WORKERS, "1")
+            .envs(variables)
             .stdout(Stdio::null())
             .stderr(Stdio::inherit());
         Self {
             child: cmd.spawn().unwrap(),
             listener,
             socket,
+            sudo_namespace,
         }
     }
     fn next(&mut self) -> Option<(Value, UnixStream)> {
@@ -194,6 +267,22 @@ impl Supervisor {
 }
 impl Drop for Supervisor {
     fn drop(&mut self) {
+        if self.sudo_namespace && self.child.try_wait().ok().flatten().is_none() {
+            // The wrapper has its own group; kill only that group on assertion
+            // failure. The real worker also has its normal parent-death signal.
+            let _ = Command::new("sudo")
+                .args([
+                    "-n",
+                    "--",
+                    "kill",
+                    "-KILL",
+                    "--",
+                    &format!("-{}", self.child.id()),
+                ])
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .status();
+        }
         let _ = self.child.kill();
         let _ = self.child.wait();
         let _ = fs::remove_file(&self.socket);
@@ -593,21 +682,62 @@ fn xc31_real_enospc_and_eacces_after_execution_preserve_original_diagnostics() {
             json!({"errno":13})
         } else {
             let pid = event["pid"].as_u64().unwrap().to_string();
-            let mount = Command::new("nsenter")
-                .args([
-                    "--target",
-                    &pid,
-                    "--user",
-                    "--mount",
-                    "--preserve-credentials",
-                    "--",
-                    "mount",
-                    "-t",
-                    "tmpfs",
-                    "-o",
-                    "size=4096,mode=0700",
-                    "tmpfs",
-                ])
+            assert!(output.starts_with(f.root.join("state/runs")));
+            assert_eq!(output.file_name().unwrap(), "result");
+            let namespace = fs::read_link(format!("/proc/{pid}/ns/mnt")).unwrap();
+            assert_ne!(namespace, fs::read_link("/proc/self/ns/mnt").unwrap());
+            let mountinfo = fs::read_to_string(format!("/proc/{pid}/mountinfo")).unwrap();
+            assert!(
+                !mountinfo.lines().any(|line| line.contains(" shared:")),
+                "Test mount namespace must have private propagation"
+            );
+            let sudo_mount = sudo_mount_namespace();
+            let identity = fs::metadata("/proc/self").unwrap();
+            if sudo_mount {
+                // Verify the acknowledged actual worker, not sudo's wrapper PID.
+                let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
+                for (name, expected) in [("Uid:", identity.uid()), ("Gid:", identity.gid())] {
+                    let values = status
+                        .lines()
+                        .find(|line| line.starts_with(name))
+                        .unwrap()
+                        .split_whitespace()
+                        .skip(1)
+                        .map(|value| value.parse::<u32>().unwrap())
+                        .collect::<Vec<_>>();
+                    assert_eq!(values, vec![expected; 4]);
+                }
+                for name in ["CapInh:", "CapPrm:", "CapEff:", "CapBnd:", "CapAmb:"] {
+                    let value = status
+                        .lines()
+                        .find(|line| line.starts_with(name))
+                        .unwrap()
+                        .split_whitespace()
+                        .nth(1)
+                        .unwrap();
+                    assert_eq!(u64::from_str_radix(value, 16).unwrap(), 0, "{name}");
+                }
+                for (name, expected) in [("NoNewPrivs:", Some("1")), ("Groups:", None)] {
+                    let value = status
+                        .lines()
+                        .find(|line| line.starts_with(name))
+                        .unwrap()
+                        .split_whitespace()
+                        .nth(1);
+                    assert_eq!(value, expected, "{name}");
+                }
+            }
+            let options = if sudo_mount {
+                format!(
+                    "size=4096,mode=0700,uid={},gid={}",
+                    identity.uid(),
+                    identity.gid()
+                )
+            } else {
+                "size=4096,mode=0700".into()
+            };
+            let mount = namespace_command(&pid, sudo_mount)
+                .args(["mount", "-t", "tmpfs", "-o", &options, "tmpfs"])
                 .arg(&output)
                 .output()
                 .unwrap();
@@ -616,13 +746,29 @@ fn xc31_real_enospc_and_eacces_after_execution_preserve_original_diagnostics() {
                 "private tmpfs mount: {}",
                 String::from_utf8_lossy(&mount.stderr)
             );
-            let fill=Command::new("nsenter").args(["--target",&pid,"--user","--mount","--preserve-credentials","--","python3","-c","import os,sys,json\nf=open(sys.argv[1]+'/filler','wb',buffering=0)\ntry:\n while True:f.write(b'x'*4096)\nexcept OSError as e:\n assert e.errno==28;print(json.dumps({'errno':e.errno}))"]).arg(&output).output().unwrap();
+            let mut fill = namespace_command(&pid, sudo_mount);
+            if sudo_mount {
+                drop_privileges(&mut fill, identity.uid(), identity.gid());
+            }
+            let fill=fill.args(["python3","-c","import os,sys,json\nf=open(sys.argv[1]+'/filler','wb',buffering=0)\ntry:\n while True:f.write(b'x'*4096)\nexcept OSError as e:\n assert e.errno==28;print(json.dumps({'errno':e.errno}))"]).arg(&output).output().unwrap();
             assert!(
                 fill.status.success(),
                 "{}",
                 String::from_utf8_lossy(&fill.stderr)
             );
-            serde_json::from_slice(&fill.stdout).unwrap()
+            let mut kernel: Value = serde_json::from_slice(&fill.stdout).unwrap();
+            kernel["namespace_mode"] = json!(if sudo_mount {
+                "sudo-mount"
+            } else {
+                "user-mount"
+            });
+            kernel["private_mount_namespace"] = json!(true);
+            if sudo_mount {
+                kernel["worker_uid"] = json!(identity.uid());
+                kernel["worker_gid"] = json!(identity.gid());
+                kernel["worker_capabilities_cleared"] = json!(true);
+            }
+            kernel
         };
         release(&mut stream);
         assert!(child.next().is_none());

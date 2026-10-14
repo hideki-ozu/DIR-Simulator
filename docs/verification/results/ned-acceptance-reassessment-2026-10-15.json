@@ -2106,6 +2106,18 @@
       "sha256": "4cc29cb1c377180b9982592740aeaabeb8b74b766fb19c47a03e74a3d97909bb",
       "summary": null,
       "classification": "Repair fixture omitted required second CAN pair; corrected using standard fully connected Bus and current-revision diagnostics."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/ci-4258bc5-failure-excerpt.log",
+      "sha256": "0ff07e7f073bbaa7d31bacbe38fdafd34518877db8777483dcca8642c8e6d762",
+      "summary": null,
+      "classification": "Exact4258bc5 CI:769 workspace passed; native18passed/1failed because ENOSPC namespace setup uid_map was denied. Local19passed remains separate; no ENOSPC result is inferred from the failed CI invocation."
+    },
+    {
+      "log": "ned-acceptance-2026-10-15/ci-namespace-fix-sudo-attempt.log",
+      "sha256": "cf20a57cbd6a83c3187aa1f787b5c337f9197542c141858de40d029081711336",
+      "summary": null,
+      "classification": "Genuine local sudo-mount attempt failed before ENOSPC barrier because sudo -n requires password. No shim/password/security-policy change or successful CI-mode claim; actual GitHub CI is required."
     }
   ],
   "status": "completed_scoped_reassessment",
@@ -2168,7 +2180,46 @@
     "policy": "Final exact-commit CI belongs to the follow-up pull request checks, separate from these locally acquired measurements.",
     "native_fault_tests_mandatory": true,
     "native_fault_tests_serial": true,
-    "workflow_timeout_minutes": 45
+    "workflow_timeout_minutes": 45,
+    "initial_exact_commit_run": {
+      "head": "4258bc5d906797605f2bd8ab64b35fe95d8fd808",
+      "run_id": 38597433525,
+      "job_id": 115967658138,
+      "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38597433525/job/115967658138",
+      "conclusion": "failure",
+      "ordinary_workspace": {
+        "passed": 769,
+        "failed": 0,
+        "ignored": 19,
+        "suites": 32
+      },
+      "native_explicit": {
+        "passed": 18,
+        "failed": 1,
+        "ignored": 0
+      },
+      "failure": "XC31 actual EACCES passed; ENOSPC test did not reach its execution barrier because unprivileged uid_map setup was denied. This CI failure is separate from the successful local19/19 acquisition.",
+      "full_job_log_sha256": "4415c18eb44f9925a8d61da1329b7a04ae1460e04ef139911d777479beeb9bb5",
+      "later_steps": "Native HTTP/shutdown, Viewer/browser, and audit steps did not run after the failed native command.",
+      "receipt": "ned-acceptance-2026-10-15/ci-4258bc5-failure.json",
+      "diagnostic_original_lines": "ned-acceptance-2026-10-15/ci-4258bc5-failure-original-lines.log",
+      "receipt_sha256": "9444e5bf11c451ab5137a2d582b400790a13965a46f236d2ac1af29399d23593"
+    },
+    "namespace_setup_correction": {
+      "scope": "Test infrastructure only; product code, host security policy, matrix and error assertions unchanged.",
+      "mode": "DIR_ACCEPTANCE_NAMESPACE_MODE=sudo-mount",
+      "source_sha256": {
+        "crates/dir-simulator/src/tool/ned-editor/run_control/acceptance_fault_tests.rs": "f36cd715e8db1ad89b0031bd4f6d301c8e821b56a5d3ada34eeca8052062ad7a",
+        ".github/workflows/release-audit.yml": "087f6ecf7e2358b905e0b386611ce9e6e322244724dbd03eafdf9669e8f61da6"
+      },
+      "validation_receipt": "ned-acceptance-2026-10-15/ci-namespace-fix-receipt.json",
+      "review": "ned-acceptance-2026-10-15/ci-namespace-review.txt",
+      "local_default_real_errno13_and28": "passed",
+      "local_sudo_mode": "unavailable: sudo -n requires a password; actual failed attempt is retained. No successful CI-mode result is inferred.",
+      "exact_followup_ci": "Requires actual GitHub PR90 checks for the follow-up commit. Success is not claimed in this pre-push record."
+    }
   },
-  "artifact_inventory_sha256": "b5121ad0aabe31984502d45f6835d16bc2b329beacabd1cabe46af7ff7630ae3"
+  "artifact_inventory_sha256": "f5e59af95a9c6ad0ba9907e80b75251789d36d70f40532f200ae0cb018a9ab9c",
+  "source_sha256_commit": "4258bc5d906797605f2bd8ab64b35fe95d8fd808",
+  "source_sha256_scope": "The219 baseline source hashes identify the source snapshot for the locally acquired full769+19 and browser/IME measurements, as committed in4258bc5. The subsequent CI-only test namespace correction has separate source bindings and focused validation below; it does not retroactively replace the measured baseline."
 }
