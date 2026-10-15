@@ -1,0 +1,138 @@
+{
+  "generated_by": "scripts/verify_ethernet_psfp_viewer.cjs",
+  "browser": "151.0.7922.34",
+  "input_hashes": {
+    "repository/pass-viewer.html": "a7fd5c8b9615d4fee4aa15880779edead75e9519b1d33a27dc17f685c5781b91",
+    "repository/pass/results.json": "b85d2a81b5e189088c2c1ce8efc3d7cbc27032b213c53b06984cca041b4b611f",
+    "repository/pass/manifest.json": "50c8b0213ffc30ccf02886d150474737b5176743f54689522874d8a707bdea74",
+    "repository/drop-viewer.html": "80366814f846c239c3d8acc2115d3ef54dfdd980f82ad2321919430fb1ef4aec",
+    "repository/drop/results.json": "0c8f96f4272cb27a16b2ba73fcdbbffe70d1769e6493e9894610d0fc0d2412c1",
+    "repository/drop/manifest.json": "d1758f673773fcc61cdafb2c5583000612caf4aff6927c1a1b339d6f29641594"
+  },
+  "conditions": {
+    "pass": {
+      "time_ps": 1248000,
+      "counts": [
+        "3",
+        "1",
+        "0",
+        "2",
+        "0",
+        "2"
+      ],
+      "stream_card": "s0\n\npass · color yellow · consumed 512 bit\n\n最後のmeter評価 1248000 ps · committed 5376000000000 · peak 10752000000000\n\n潜在refill（未消費） committed 5376000000000 · peak 10752000000000",
+      "selected_transfer": {
+        "data": {
+          "arrival_ps": "1248000",
+          "copy_id": "psfp:1/v0/c1",
+          "drop_reason": null,
+          "effect_seq": "32",
+          "eof_ps": "1248000",
+          "frame_id": "psfp:1",
+          "from_port": "Net.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "1248000",
+          "planned_eof_ps": "1248000",
+          "planned_release_ps": "1344000",
+          "policy_epoch_offer": "0",
+          "policy_epoch_sof": "0",
+          "priority": "7",
+          "queue_id": "Net.a.tx.queue.7",
+          "queued_ps": "0",
+          "release_ps": "1344000",
+          "sof_ps": "672000",
+          "status": "serialized",
+          "to_port": "Net.b.rx",
+          "visit_id": "0",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "a9e82eb4",
+            "mac_bytes": "64",
+            "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": null
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "psfp:1/v0/c1",
+        "request_id": "psfp:1",
+        "schema_name": "ethernet.dynamic.transfer",
+        "schema_version": 1,
+        "subject": "@network",
+        "time_ps": "1344000"
+      },
+      "panel": "psfp:1/v0/c1\n元フレーム\npsfp:1\nSource\nNet.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\na9e82eb4\n生成（ps）\n0\nFlow\npsfp\nSource Priority\n7\n相対deadline（ps）\n未指定\nClass queue\nNet.a.tx.queue.7\nHop Priority / class\n7\nSource VLAN\n10\nSource tag\nuntagged\nSource MAC bytes\n64\nSource FCS\na9e82eb4\nHop VLAN\n10\nHop tag\nuntagged\nHop MAC bytes\n64\nHop wire bits (preamble含む)\n576\nHop occupied bits (IFG含む)\n672\nHop FCS\na9e82eb4\nHop wire hex\n020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4\n状態\nEOF 到達\n親copy\nsource\n経路\nNet.a.tx → Net.b.rx\nqueued_ps\n0\nsof_ps\n672000\neof_ps\n1248000\nrelease_ps\n1344000\narrival_ps\n1248000\nplanned_eof_ps\n1248000\nplanned_release_ps\n1344000\nplanned_arrival_ps\n1248000\n現在のpolicy epoch\n0\nVisit\n0\nOffer policy epoch\n0\nSOF policy epoch\n0\nDrop reason\n—\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nNet.b: 受信完了 / observed 1248000 / ready 1248000 / planned ready 1248000 ps / ingress VLAN 10 · Priority 7\n\nNet.b 配送遅延: 1248000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"1248000\",\n    \"copy_id\": \"psfp:1/v0/c1\",\n    \"drop_reason\": null,\n    \"effect_seq\": \"32\",\n    \"eof_ps\": \"1248000\",\n    \"frame_id\": \"psfp:1\",\n    \"from_port\": \"Net.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"1248000\",\n    \"planned_eof_ps\": \"1248000\",\n    \"planned_release_ps\": \"1344000\",\n    \"policy_epoch_offer\": \"0\",\n    \"policy_epoch_sof\": \"0\",\n    \"priority\": \"7\",\n    \"queue_id\": \"Net.a.tx.queue.7\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"1344000\",\n    \"sof_ps\": \"672000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Net.b.rx\",\n    \"visit_id\": \"0\",\n    \"vlan_id\": \"10\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"a9e82eb4\",\n      \"mac_bytes\": \"64\",\n      \"mac_hex\": \"020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": null\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"psfp:1/v0/c1\",\n  \"request_id\": \"psfp:1\",\n  \"schema_name\": \"ethernet.dynamic.transfer\",\n  \"schema_version\": 1,\n  \"subject\": \"@network\",\n  \"time_ps\": \"1344000\"\n}",
+      "red_at_1920000": "s0\n\npsfp_meter_red · color red · consumed 0 bit\n\n最後のmeter評価 1920000 ps · committed 10752000000000 · peak 21504000000000\n\n潜在refill（未消費） committed 10752000000000 · peak 21504000000000",
+      "later_yellow_at_32576000": "s0\n\npass · color yellow · consumed 512 bit\n\n最後のmeter評価 32576000 ps · committed 256000000000000 · peak 0\n\n潜在refill（未消費） committed 256000000000000 · peak 0",
+      "final_card": "s0\n\npass · color green · consumed 1024 bit\n\n最後のmeter評価 96576000 ps · committed 0 · peak 512000000000000\n\n潜在refill（未消費） committed 187392000000000 · peak 886784000000000",
+      "boundary": "1247999ps still green record; arrival1248000ps yellow; final serialized5 and received4/2"
+    },
+    "drop": {
+      "time_ps": 1248000,
+      "counts": [
+        "3",
+        "1",
+        "0",
+        "2",
+        "0",
+        "1"
+      ],
+      "stream_card": "s0\n\npsfp_meter_yellow · color yellow · consumed 512 bit\n\n最後のmeter評価 1248000 ps · committed 5376000000000 · peak 10752000000000\n\n潜在refill（未消費） committed 5376000000000 · peak 10752000000000",
+      "selected_transfer": {
+        "data": {
+          "arrival_ps": "1248000",
+          "copy_id": "psfp:1/v0/c1",
+          "drop_reason": null,
+          "effect_seq": "32",
+          "eof_ps": "1248000",
+          "frame_id": "psfp:1",
+          "from_port": "Net.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "1248000",
+          "planned_eof_ps": "1248000",
+          "planned_release_ps": "1344000",
+          "policy_epoch_offer": "0",
+          "policy_epoch_sof": "0",
+          "priority": "7",
+          "queue_id": "Net.a.tx.queue.7",
+          "queued_ps": "0",
+          "release_ps": "1344000",
+          "sof_ps": "672000",
+          "status": "serialized",
+          "to_port": "Net.b.rx",
+          "visit_id": "0",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "a9e82eb4",
+            "mac_bytes": "64",
+            "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": null
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "psfp:1/v0/c1",
+        "request_id": "psfp:1",
+        "schema_name": "ethernet.dynamic.transfer",
+        "schema_version": 1,
+        "subject": "@network",
+        "time_ps": "1344000"
+      },
+      "panel": "psfp:1/v0/c1\n元フレーム\npsfp:1\nSource\nNet.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\na9e82eb4\n生成（ps）\n0\nFlow\npsfp\nSource Priority\n7\n相対deadline（ps）\n未指定\nClass queue\nNet.a.tx.queue.7\nHop Priority / class\n7\nSource VLAN\n10\nSource tag\nuntagged\nSource MAC bytes\n64\nSource FCS\na9e82eb4\nHop VLAN\n10\nHop tag\nuntagged\nHop MAC bytes\n64\nHop wire bits (preamble含む)\n576\nHop occupied bits (IFG含む)\n672\nHop FCS\na9e82eb4\nHop wire hex\n020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4\n状態\nEOF 到達\n親copy\nsource\n経路\nNet.a.tx → Net.b.rx\nqueued_ps\n0\nsof_ps\n672000\neof_ps\n1248000\nrelease_ps\n1344000\narrival_ps\n1248000\nplanned_eof_ps\n1248000\nplanned_release_ps\n1344000\nplanned_arrival_ps\n1248000\n現在のpolicy epoch\n0\nVisit\n0\nOffer policy epoch\n0\nSOF policy epoch\n0\nDrop reason\n—\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nNet.b: フィルタ拒否 / observed 1248000 / ready 1248000 / planned ready 未指定 ps / ingress VLAN 10 · Priority 7 / reason psfp_meter_yellow\n\n{\n  \"data\": {\n    \"arrival_ps\": \"1248000\",\n    \"copy_id\": \"psfp:1/v0/c1\",\n    \"drop_reason\": null,\n    \"effect_seq\": \"32\",\n    \"eof_ps\": \"1248000\",\n    \"frame_id\": \"psfp:1\",\n    \"from_port\": \"Net.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"1248000\",\n    \"planned_eof_ps\": \"1248000\",\n    \"planned_release_ps\": \"1344000\",\n    \"policy_epoch_offer\": \"0\",\n    \"policy_epoch_sof\": \"0\",\n    \"priority\": \"7\",\n    \"queue_id\": \"Net.a.tx.queue.7\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"1344000\",\n    \"sof_ps\": \"672000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Net.b.rx\",\n    \"visit_id\": \"0\",\n    \"vlan_id\": \"10\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"a9e82eb4\",\n      \"mac_bytes\": \"64\",\n      \"mac_hex\": \"020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": null\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"psfp:1/v0/c1\",\n  \"request_id\": \"psfp:1\",\n  \"schema_name\": \"ethernet.dynamic.transfer\",\n  \"schema_version\": 1,\n  \"subject\": \"@network\",\n  \"time_ps\": \"1344000\"\n}",
+      "red_at_1920000": "s0\n\npsfp_meter_red · color red · consumed 0 bit\n\n最後のmeter評価 1920000 ps · committed 10752000000000 · peak 21504000000000\n\n潜在refill（未消費） committed 10752000000000 · peak 21504000000000",
+      "later_yellow_at_32576000": "s0\n\npsfp_meter_yellow · color yellow · consumed 512 bit\n\n最後のmeter評価 32576000 ps · committed 256000000000000 · peak 0\n\n潜在refill（未消費） committed 256000000000000 · peak 0",
+      "final_card": "s0\n\npass · color green · consumed 1024 bit\n\n最後のmeter評価 96576000 ps · committed 0 · peak 512000000000000\n\n潜在refill（未消費） committed 187392000000000 · peak 886784000000000",
+      "boundary": "1247999ps still green record; arrival1248000ps yellow; final serialized5 and received4/2"
+    }
+  },
+  "status": "passed",
+  "errors": []
+}
