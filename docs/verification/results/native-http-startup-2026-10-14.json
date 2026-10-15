@@ -415,5 +415,57 @@
       },
       "generated_reports": "fresh"
     }
+  },
+  "rust_fixture_followup": {
+    "optimized_ci_before_fixture_fix": {
+      "head": "617aa5941fc4a1832aa1c3ef2a6641369f1de640",
+      "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38657648900/job/116171120830",
+      "log_sha256": "93cb3c5bb4692dd627e8d4621402769b5c88f918b2f5cee70dd0636e797ca37b",
+      "conclusion": "failure",
+      "ordinary_workspace_pass": 777,
+      "ignored_workers": {
+        "pass": 18,
+        "fail": 1,
+        "failed_test": "real_worker_prepare_failure_timeout_force_kill_and_shutdown",
+        "kind": "timeout",
+        "expected": "timed_out",
+        "actual": "completed",
+        "committed_events": "0",
+        "termination": "time_limit"
+      },
+      "http_shutdown_viewer_audit": "skipped because native-product producer failed; not a reproduced HTTP timeout"
+    },
+    "change": "Rust long_project also used sim-time-limit=0ps; set 1000000s and retain timeout/cancel/force-kill/shutdown assertions. Only this ignored fixture calls long_project.",
+    "local_sudo_mount_attempt": {
+      "pass": 18,
+      "blocked": 1,
+      "blocked_case": "XC31 enospc",
+      "reason": "sudo: a password is required; export entry not reached",
+      "log_sha256": "ae6ca05abcbcd69a30fbefd99eef0eb5fef447bece29a48d9a18f0d6c8e20101"
+    },
+    "local_xc31_user_mount": {
+      "pass": 1,
+      "actual_eacces_errno": 13,
+      "actual_enospc_errno": 28,
+      "private_mount_namespace": true,
+      "log_sha256": "3896961d96b74803c0af3ae1388d614f82fb1d293e4d6cacdc3f5beac60f1143"
+    },
+    "local_complete_user_mount_suite": {
+      "pass": 19,
+      "fail": 0,
+      "namespace_mode": "existing default user-mount; no authentication or permission configuration changes",
+      "log_sha256": "026dbfe30583e3b8326b53cb1b9e66dacef4ed9376386ae48cd42b9c21018393"
+    },
+    "workspace_after_profile_change": {
+      "pass": 777,
+      "ignored": 19,
+      "fail": 0,
+      "head": "617aa5941fc4a1832aa1c3ef2a6641369f1de640",
+      "log_sha256": "8b9ef57fbd2fcf77107913748298faf55f1a79ccfa54c46d6d035652e4fe4b84"
+    },
+    "limits": [
+      "No change to product simulation duration semantics, worker timeout, signal handling, identity verification or namespace implementation.",
+      "Final updated head CI is pending at record creation."
+    ]
   }
 }

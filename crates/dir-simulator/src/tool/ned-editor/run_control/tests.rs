@@ -961,8 +961,11 @@ fn long_project(f: &mut Fixture) {
         .values_mut()
         .find(|f| f.roles.contains(&super::super::input::FileRole::Config))
         .unwrap();
-    config.text =
-        std::sync::Arc::from(config.text.replace("20ms", "0ps") + "\nmax-events = 1000000000000\n");
+    // A zero horizon completes without events; it does not mean unlimited.
+    // Keep real work pending for timeout, cancellation and shutdown assertions.
+    config.text = std::sync::Arc::from(
+        config.text.replace("20ms", "1000000s") + "\nmax-events = 1000000000000\n",
+    );
     config.hash = hash(config.text.as_bytes());
     let workload = f
         .project
