@@ -5,3 +5,9 @@ members = ["crates/dir-simulator"]
 [workspace.package]
 edition = "2024"
 license = "MIT OR Apache-2.0"
+
+# Native editor startup authenticates the complete worker executable twice.
+# Keep those complete checks fast in development/test builds with large debug
+# executables by optimizing SHA-256's compression loops.
+[profile.dev.package.sha2]
+opt-level = 3

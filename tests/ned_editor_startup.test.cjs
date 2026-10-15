@@ -51,6 +51,16 @@ test('Viewer capability paths are sanitized independently of parsed session stat
   const value=redactStartup('http://127.0.0.1:1234/'+ 'a'.repeat(64)+' #session='+secret);
   assert.ok(!value.includes(secret));assert.ok(!value.includes('a'.repeat(64)));
 });
+test('a frame received during timeout cleanup remains a failure with its observation time', async()=>{
+  const r=await observe(`process.on('SIGTERM',()=>{process.stdout.write(${JSON.stringify(frame+'\n')},()=>process.exit(0))});setInterval(()=>{},1000)`,{timeoutMs:500});
+  assert.equal(r.attempt.state,'startup_timeout');
+  assert.equal(r.reports[0].stdout_bytes_at_settle,0);
+  assert.equal(r.reports[0].frame_received_ms,null);
+  assert.ok(r.attempt.frame_received_ms>=r.attempt.elapsed_ms);
+  assert.ok(r.attempt.stdout_bytes>0);
+  assert.equal(r.attempt.exit_code,0);
+  assert.match(redactStartup(r.attempt.stdout),/redacted/);
+});
 test('cleanup escalates only the owned unresponsive child after bounded grace', async()=>{
   const child=spawn(process.execPath,['-e',"process.on('SIGTERM',()=>{});process.stdout.write('ready\\n');setInterval(()=>{},1000)"],{stdio:['ignore','pipe','pipe']});
   const closed=once(child,'close'); await once(child.stdout,'data');

@@ -167,5 +167,253 @@
       "inner_child_skipped": 2,
       "log_sha256": "b5e3eb8f035f6e8b0841d90bf4f8f797ac1127bffe943716768c79da3bcb7d90"
     }
+  },
+  "followup_ci_observation": {
+    "head": "5af28ff2153367be2c329f5700f5520b3015c2c4",
+    "url": "https://github.com/hideki-ozu/DIR-Simulator/actions/runs/38651672248/job/116151690227",
+    "log_sha256": "bfceb1223a4ea85434c17c9bf89deb411dccc9a5c3e2c7c621f42b3512b4d34b",
+    "http": {
+      "exit": 1,
+      "pass": 2,
+      "fail_including_parent": 2,
+      "child_skipped": 2,
+      "first_ready_ms": 17670,
+      "second_timeout_ms": 20000,
+      "second_stdout_at_timeout": "",
+      "second_stderr_at_timeout": "",
+      "second_after_cleanup": {
+        "pid": 16148,
+        "stdout_has_redacted_listening_frame": true,
+        "stderr": "",
+        "exit_code": 0,
+        "signal": null,
+        "closed_ms": 21353
+      },
+      "third_startup": "not_executed"
+    },
+    "worker_pass": 19,
+    "helper_pass": 6,
+    "controlled_failure_regression_pass": 1,
+    "shutdown_pass": 2,
+    "viewer_browser": "cancelled; model 29/29 and two browser PASS lines observed; whole step incomplete",
+    "audit": "skipped",
+    "job_conclusion": "cancelled",
+    "job_started_utc": "2026-10-14T23:03:15Z",
+    "job_completed_utc": "2026-10-14T23:48:30Z",
+    "separation": "HTTP exit1 at 23:44:02 precedes job cancellation at 23:48:28; cancellation cause not established solely by log wording",
+    "issue_comment": "https://github.com/hideki-ozu/DIR-Simulator/issues/95#issuecomment-6181071793"
+  },
+  "development_hash_followup": {
+    "change": "[profile.dev.package.sha2] opt-level=3; complete executable hash reads and all identity checks retained; test inherits development dependency profile; release profile unchanged",
+    "profiled_comparison": {
+      "before": {
+        "editor_startups": [
+          {
+            "hash_reads": [
+              {
+                "elapsed_ms": 5047,
+                "syscall_ms": 112
+              },
+              {
+                "elapsed_ms": 4798,
+                "syscall_ms": 105
+              }
+            ],
+            "first_stdout_ms": 10168
+          },
+          {
+            "hash_reads": [
+              {
+                "elapsed_ms": 5122,
+                "syscall_ms": 114
+              },
+              {
+                "elapsed_ms": 5051,
+                "syscall_ms": 106
+              }
+            ],
+            "first_stdout_ms": 12100
+          },
+          {
+            "hash_reads": [
+              {
+                "elapsed_ms": 5138,
+                "syscall_ms": 117
+              },
+              {
+                "elapsed_ms": 4895,
+                "syscall_ms": 109
+              }
+            ],
+            "first_stdout_ms": 11433
+          }
+        ],
+        "raw_trace_sha256": "fc052d6e8903d2d5364c0285235c410346ede85dde9efd4c57d1b72b62d38b18",
+        "helper_startup_ms": [
+          10164,
+          12100,
+          11431
+        ]
+      },
+      "after": {
+        "editor_startups": [
+          {
+            "hash_reads": [
+              {
+                "elapsed_ms": 1429,
+                "syscall_ms": 84
+              },
+              {
+                "elapsed_ms": 1377,
+                "syscall_ms": 82
+              }
+            ],
+            "first_stdout_ms": 2923
+          },
+          {
+            "hash_reads": [
+              {
+                "elapsed_ms": 1824,
+                "syscall_ms": 85
+              },
+              {
+                "elapsed_ms": 1368,
+                "syscall_ms": 81
+              }
+            ],
+            "first_stdout_ms": 3815
+          },
+          {
+            "hash_reads": [
+              {
+                "elapsed_ms": 1323,
+                "syscall_ms": 83
+              },
+              {
+                "elapsed_ms": 1301,
+                "syscall_ms": 80
+              }
+            ],
+            "first_stdout_ms": 3118
+          }
+        ],
+        "raw_trace_sha256": "48e638b73a188e369fd06a67288c9eff56db4837f282643227966f63ba1c63ca",
+        "helper_startup_ms": [
+          2917,
+          3814,
+          3117
+        ]
+      },
+      "scope": "Same strace arguments and native HTTP fixture; sha2 development optimization is the build variable. Rust regression additions are cfg(test) and absent from product binary. strace overhead means these are not uninstrumented timings or CI CPU measurements.",
+      "before_http_pass": 6,
+      "after_http_pass": 6,
+      "command": "DIR_NED_HTTP_BINARY=target/debug/dir-simulator strace -f -ttt -T -e trace=pread64,execve,fsync,fdatasync,write -e raw=pread64,write -o startup.strace node --test tests/ned_editor_acceptance_http.test.cjs"
+    },
+    "normal_http_after": [
+      {
+        "attempt": 1,
+        "timeout_ms": 20000,
+        "pid": 53801,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:44939/#session=[redacted]\"}\n",
+        "stderr": "",
+        "stdout_bytes": 147,
+        "stderr_bytes": 0,
+        "first_stdout_ms": 149,
+        "first_stderr_ms": null,
+        "frame_received_ms": 149,
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 149,
+        "stdout_bytes_at_settle": 147,
+        "stderr_bytes_at_settle": 0,
+        "closed_ms": 3504
+      },
+      {
+        "attempt": 2,
+        "timeout_ms": 20000,
+        "pid": 54063,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:45047/#session=[redacted]\"}\n",
+        "stderr": "",
+        "stdout_bytes": 147,
+        "stderr_bytes": 0,
+        "first_stdout_ms": 449,
+        "first_stderr_ms": null,
+        "frame_received_ms": 449,
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 449,
+        "stdout_bytes_at_settle": 147,
+        "stderr_bytes_at_settle": 0,
+        "closed_ms": 3202
+      },
+      {
+        "attempt": 3,
+        "timeout_ms": 20000,
+        "pid": 54202,
+        "state": "stdout_ready",
+        "stdout": "{\"schema_version\":1,\"status\":\"listening\",\"url\":\"http://127.0.0.1:46269/#session=[redacted]\"}\n",
+        "stderr": "",
+        "stdout_bytes": 147,
+        "stderr_bytes": 0,
+        "first_stdout_ms": 296,
+        "first_stderr_ms": null,
+        "frame_received_ms": 296,
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 296,
+        "stdout_bytes_at_settle": 147,
+        "stderr_bytes_at_settle": 0,
+        "closed_ms": 576
+      }
+    ],
+    "normal_http_pass": 6,
+    "helper_pass": 7,
+    "forced_failure_regression_pass": 1,
+    "shutdown_after_fixture_repair_pass": 2,
+    "rust_run_control": {
+      "pass": 53,
+      "ignored": 19,
+      "failed": 0
+    },
+    "clippy": "passed",
+    "fmt": "passed",
+    "shutdown_fixture_negative_control": {
+      "log_sha256": "c5f1ba216f80448a6b900ba74201603ebbb575366c162f25b18ec315b58573e9",
+      "pass": 1,
+      "fail": 1,
+      "actual": "completed",
+      "expected": "interrupted",
+      "cause": "sim-time-limit=0ps is zero duration, not an unlimited workload; replaced with 1000000s while retaining active-worker shutdown assertions"
+    },
+    "hash_regression": "1048580-byte fixed SHA-256 vector and changed final byte; existing position-independent descriptor regression retained",
+    "observation_regression": "Late frame during timeout cleanup remains failure; first stdout/frame/stderr observations, byte counts at settle and timer lag recorded without credentials",
+    "limits": [
+      "Exact failed CI does not contain CPU stage timings, so its complete root cause is not proven by the local comparison.",
+      "No timeout increase, verification skipping, manifest trust relaxation or recovery bypass.",
+      "Optimized latest head CI is not yet executed at receipt creation."
+    ],
+    "logs_sha256": {
+      "issue95-followup-helper.log": "28aba856580cb491087e46a3e4254ad68f99735824d0e3f55cd05186bc6b4284",
+      "issue95-followup-forced.log": "06f2f8d79977477f2e831a20d39e80aee3d71762cde7538b7c5f7927f70391cf",
+      "issue95-followup-http.log": "6d81724bed5f249019102dc2a05f975dfcc6589c8a4e033a05bc76e27d836aea",
+      "issue95-followup-shutdown.log": "4ef28f835c4b1f60b1af4c399008078517be0316b46785db4fd9d8bf973df1d5",
+      "issue95-followup-rust.log": "5b930347b45aeede291e80e766bb293cf9ae227cb140db87a3a3ffd66c325fbe",
+      "issue95-followup-clippy.log": "006b15aace91e743ff39f8f938fa554414c96ac98cc9eda835f97c2ddc69fbd0",
+      "issue95-followup-fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "documentation_validation": {
+      "python_pass": 67,
+      "mkdocs_strict": "passed",
+      "traceability": {
+        "requirements": 231,
+        "functions": 60,
+        "nodes": 274,
+        "structural_errors": 0,
+        "incomplete": 0
+      },
+      "generated_reports": "fresh"
+    }
   }
 }
