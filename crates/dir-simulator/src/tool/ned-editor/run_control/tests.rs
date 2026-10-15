@@ -547,6 +547,27 @@ fn bounded_frames_reject_oversize_duplicate_keys_and_short_data() {
     assert_eq!(stderr_ring(text.as_slice()).len(), LOG_LIMIT);
 }
 #[test]
+fn executable_hash_authenticates_all_chunks_and_partial_tail() {
+    let f = Fixture::new();
+    let path = f.root.join("worker-image");
+    let mut bytes: Vec<u8> = (0u8..=255).cycle().take(1024 * 1024).collect();
+    bytes.extend_from_slice(b"last");
+    fs::write(&path, &bytes).unwrap();
+    let file = File::open(&path).unwrap();
+    // Fixed vectors independently calculated with Python hashlib, rather than
+    // deriving the expected digest through the hashing code under test.
+    assert_eq!(
+        hash_file(&file).unwrap(),
+        "4868200248495f6a111edabff76180cd3f02ddc23664bce1eb8b4b02912c09df"
+    );
+    *bytes.last_mut().unwrap() = b'!';
+    fs::write(&path, &bytes).unwrap();
+    assert_eq!(
+        hash_file(&file).unwrap(),
+        "90e379e8e795a10c33a7756c0b1c03f90d1213eacd40e96891a79bd58f00b041"
+    );
+}
+#[test]
 fn hash_uses_position_independent_reads() {
     let f = Fixture::new();
     let path = f.root.join("file");
@@ -940,8 +961,11 @@ fn long_project(f: &mut Fixture) {
         .values_mut()
         .find(|f| f.roles.contains(&super::super::input::FileRole::Config))
         .unwrap();
-    config.text =
-        std::sync::Arc::from(config.text.replace("20ms", "0ps") + "\nmax-events = 1000000000000\n");
+    // A zero horizon completes without events; it does not mean unlimited.
+    // Keep real work pending for timeout, cancellation and shutdown assertions.
+    config.text = std::sync::Arc::from(
+        config.text.replace("20ms", "1000000s") + "\nmax-events = 1000000000000\n",
+    );
     config.hash = hash(config.text.as_bytes());
     let workload = f
         .project

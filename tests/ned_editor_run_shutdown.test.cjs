@@ -19,7 +19,9 @@ for (const signal of ['SIGINT','SIGTERM']) test(`editor ${signal} stops and reap
   const input=path.join(root,'input'), state=path.join(root,'state'), exports=path.join(root,'exports');
   fs.mkdirSync(path.join(input,'models/demo'),{recursive:true});fs.mkdirSync(exports);
   const config=fs.readFileSync(path.join(repo,'examples/can/baseline.ini'),'utf8')
-    .replace('20ms','0ps')+'\nmax-events = 1000000000000\n';
+    // Zero is a zero-duration simulation, not an unlimited run. Keep useful
+    // work pending until the shutdown signal even with fast digest builds.
+    .replace('20ms','1000000s')+'\nmax-events = 1000000000000\n';
   const workload=JSON.parse(fs.readFileSync(path.join(repo,'examples/can/baseline.json'),'utf8'));
   for(const generator of workload.generators) generator.count=1000000000000;
   fs.writeFileSync(path.join(input,'project.ini'),config);
