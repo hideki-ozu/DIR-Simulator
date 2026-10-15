@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.27`
+文書バージョン：`1.1.28`
 対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.28` | `2026-10-15` | CBSのidle slope1変数比較・正式版実測・実Viewerと8入力ZIPを追加。PR97と既存記事・ZIP・履歴を保持 |
 | `1.1.27` | `2026-10-14` | 静的multicastの出口リスト1変数比較・正式版実測・実Viewerと9入力ZIPを追加。既存記事・ZIP・履歴を保持 |
 | `1.1.26` | `2026-10-14` | Ethernet TASの生成時刻1ps境界実習・IFG込み窓末尾・実Viewerと8入力ZIPを追加。既存20記事と履歴を保持 |
 | `1.1.25` | `2026-10-14` | Ethernet VLAN受入admitだけを変える8入力実習・filtered理由・正式版実測と実Viewerを追加。未マージ4記事を保持 |
@@ -79,6 +80,8 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [Gateway処理遅延と複数CANバスの中継](docs/guide/Gateway処理遅延と複数CANバスの中継.md)では、元CAN送信と別バスへのコピー配送を分けて読みます。[9入力ZIP](docs/guide/downloads/gateway-delay-inputs.zip)でGateway処理遅延だけを0/100/300µsへ変え、同じ400µsの実Viewerを比較できます。
 
 [Ethernetの静的multicastとコピーの配送先](docs/guide/Ethernetの静的multicastとコピーの配送先.md)では、Switchのgroup出口リストだけを変え、転送コピー数とEndpoint購読を正式v1.1.4で区別します。[9入力ZIP](docs/guide/downloads/ethernet-multicast-inputs.zip)で再現できます。
+
+[Ethernet CBSのcredit回復と送信待ち](<docs/guide/Ethernet CBSのcredit回復と送信待ち.md>)では、idle slopeだけを変え、同じ2フレームのLink占有とCBS待ちを正式v1.1.4で比較します。[8入力ZIP](docs/guide/downloads/ethernet-cbs-inputs.zip)で再現できます。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
