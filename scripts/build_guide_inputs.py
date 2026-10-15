@@ -51,6 +51,7 @@ def main():
     build(ROOT / 'examples/guide/ethernet-multicast', OUTPUT.with_name('ethernet-multicast-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-cbs', OUTPUT.with_name('ethernet-cbs-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-psfp', OUTPUT.with_name('ethernet-psfp-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-learning', OUTPUT.with_name('ethernet-learning-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':
