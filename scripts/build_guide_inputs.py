@@ -48,6 +48,8 @@ def main():
     build(ROOT / 'examples/guide/ethernet-priority', OUTPUT.with_name('ethernet-priority-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-vlan', OUTPUT.with_name('ethernet-vlan-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-tas', OUTPUT.with_name('ethernet-tas-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-multicast', OUTPUT.with_name('ethernet-multicast-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-cbs', OUTPUT.with_name('ethernet-cbs-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':

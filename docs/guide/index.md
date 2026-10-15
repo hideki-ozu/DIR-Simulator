@@ -1,6 +1,6 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.20`
+文書バージョン：`1.1.22`
 対象GitHubバージョン：`v1.1.4`
 文書ID：`guide-index`  
 文書状態：公開済み。mainへのpush時に検証後、GitHub Pagesを自動更新
@@ -9,6 +9,8 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.22` | `2026-10-15` | CBSのidle slope1変数比較・正式版実測・実Viewerと8入力ZIPを追加。PR97と既存記事・ZIP・履歴を保持 |
+| `1.1.21` | `2026-10-14` | 静的multicastの出口リスト1変数比較・正式版実測・実Viewerと9入力ZIPを追加。既存記事・ZIP・履歴を保持 |
 | `1.1.20` | `2026-10-14` | Ethernet TASの生成時刻1ps境界実習・IFG込み窓末尾・実Viewerと8入力ZIPを追加。既存20記事と履歴を保持 |
 | `1.1.19` | `2026-10-14` | Ethernet VLAN受入admitだけを変える8入力実習・filtered理由・正式版実測と実Viewerを追加。未マージ4記事を保持 |
 | `1.1.18` | `2026-10-13` | Ethernetの論理priorityだけを変える8入力実習・非プリエンプト/FIFO・実Viewerを追加。既存3記事を保持 |
@@ -62,6 +64,8 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信とメモリ読
 | Ethernet優先キューの実験 | [Ethernetの優先キューと送信順](Ethernetの優先キューと送信順.md) | priorityだけを変え、FIFO・非プリエンプトとflow別待ちを区別 |
 | Ethernet VLANの実験 | [EthernetのVLAN受入条件と破棄理由](EthernetのVLAN受入条件と破棄理由.md) | admitだけを変え、受入拒否の場所・時刻・理由を読む |
 | Ethernet TASの実験 | [Ethernet TASの送信窓とIFG込みの待ち時間](<Ethernet TASの送信窓とIFG込みの待ち時間.md>) | 生成時刻だけを1psずつ変え、送信窓の等号と次窓への待ちを読む |
+| Ethernet multicastの実験 | [Ethernetの静的multicastとコピーの配送先](Ethernetの静的multicastとコピーの配送先.md) | 静的groupの出口リストだけを変え、転送コピー・経路とEndpoint購読を区別 |
+| Ethernet CBSの実験 | [Ethernet CBSのcredit回復と送信待ち](<Ethernet CBSのcredit回復と送信待ち.md>) | idle slopeだけを変え、物理Link占有とcredit回復の待ちを区別 |
 | 設定・用語・FAQ | [設定・用語・FAQ](設定・用語・FAQ.md) | パス、単位、上書きエラー、学習時の疑問 |
 
 上から3ページを順に読むと、一つの小さな実験がつながります。入門は3要求だけに絞り、実際に保存された結果と画面を掲載しています。
@@ -81,3 +85,7 @@ DDRの実習も正式v1.1.4の `memory.ipc.transaction.v1` を使い、[独立DD
 VLAN受入条件の実習は正式v1.1.4の`ethernet.l2.vlan.v1`を使い、[独立入力ZIP](downloads/ethernet-vlan-inputs.zip)で再現できます。
 
 TAS送信窓の実習は正式v1.1.4の`ethernet.tsn.v1`を使い、[独立入力ZIP](downloads/ethernet-tas-inputs.zip)で再現できます。
+
+静的multicastの実習は正式v1.1.4の`ethernet.l2.vlan.v1`を使い、[独立入力ZIP](downloads/ethernet-multicast-inputs.zip)で再現できます。
+
+CBSの実習は正式v1.1.4の`ethernet.tsn.v1`を使い、[独立8入力ZIP](downloads/ethernet-cbs-inputs.zip)で再現できます。

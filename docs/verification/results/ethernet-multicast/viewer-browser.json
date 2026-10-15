@@ -1,0 +1,228 @@
+{
+  "browser": "151.0.7922.34",
+  "input_hashes": {
+    "repository/none-viewer.html": "3a1aa7c1b8b7ffbb1c51206f22a24eb9a6be27ec7ae77d5b168834743f74f0de",
+    "repository/none/results.json": "7f0dfab4c71809601c5c7a3375e5d24bdd25dc87f5249ad238cb07d94d10b620",
+    "repository/none/manifest.json": "60f6527951fce1587821b49efa000c73adfe3cb560326a15f71addae0dd027f9",
+    "repository/local-viewer.html": "de1181d680e03875b3ec230a71886740356ed30f61c038159ea6a31116c0a28a",
+    "repository/local/results.json": "0d1810a1d1ac810a8e78e3c4e8938d743e58d3d089bf5a40b2c84befdf4d0b00",
+    "repository/local/manifest.json": "94262822d3929c28f5054439621f073fe392b9b6cc0e4577dfe231560238eaa2",
+    "repository/branch-viewer.html": "f06a97009275453913027ef1c8f9552b02df63793395108a5148a503c2a2655f",
+    "repository/branch/results.json": "56a8d16569b04b993fd2896baeb2ac2f1d6115172bf3c38edf969f43ce7437a7",
+    "repository/branch/manifest.json": "5d001ae27689373964b2c01950d19b24740d4ee113c1dc8a1309f3edbdf3f745"
+  },
+  "conditions": {
+    "none": {
+      "time_ps": 4000000,
+      "counts": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "selected_transfer": {
+        "data": {
+          "arrival_ps": "609000",
+          "drop_reason": null,
+          "eof_ps": "608000",
+          "frame_id": "vlan_multicast:0",
+          "from_port": "VlanDemo.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "609000",
+          "planned_eof_ps": "608000",
+          "planned_release_ps": "704000",
+          "priority": "4",
+          "queue_id": "VlanDemo.a.tx.queue.4",
+          "queued_ps": "0",
+          "release_ps": "704000",
+          "sof_ps": "0",
+          "status": "serialized",
+          "to_port": "VlanDemo.s1.rx_a",
+          "vlan_id": "20",
+          "wire": {
+            "data_hex": "010203",
+            "dst_mac": "01:00:5e:00:00:01",
+            "ether_type": "2048",
+            "fcs_hex": "4fa1ebf2",
+            "mac_bytes": "68",
+            "mac_hex": "01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2",
+            "pad_bytes": "43",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "1",
+              "pcp": "4",
+              "vid": "20"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "vlan_multicast:0@VlanDemo.a.tx",
+        "request_id": "vlan_multicast:0",
+        "schema_name": "ethernet.transfer",
+        "schema_version": 3,
+        "subject": "VlanDemo.a.tx",
+        "time_ps": "704000"
+      },
+      "panel": "vlan_multicast:0@VlanDemo.a.tx\n元フレーム\nvlan_multicast:0\nSource\nVlanDemo.a\nMAC\n02:00:00:00:00:01 → 01:00:5e:00:00:01\nEtherType\n2048\nPayload\n010203\nPadding bytes\n43\nFCS\n4fa1ebf2\n生成（ps）\n0\nFlow\nflow_vlan_multicast\nSource Priority\n4\n相対deadline（ps）\n未指定\nClass queue\nVlanDemo.a.tx.queue.4\nHop Priority / class\n4\nSource VLAN\n20\nSource tag\nVID 20 · PCP 4 · DEI 1\nSource MAC bytes\n68\nSource FCS\n4fa1ebf2\nHop VLAN\n20\nHop tag\nVID 20 · PCP 4 · DEI 1\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\n4fa1ebf2\nHop wire hex\n01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\n状態\nEOF 到達\n親copy\nsource\n経路\nVlanDemo.a.tx → VlanDemo.s1.rx_a\nqueued_ps\n0\nsof_ps\n0\neof_ps\n608000\nrelease_ps\n704000\narrival_ps\n609000\nplanned_eof_ps\n608000\nplanned_release_ps\n704000\nplanned_arrival_ps\n609000\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nVlanDemo.s1: フィルタ拒否 / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 20 · Priority 4 / reason multicast_no_egress\n\n{\n  \"data\": {\n    \"arrival_ps\": \"609000\",\n    \"drop_reason\": null,\n    \"eof_ps\": \"608000\",\n    \"frame_id\": \"vlan_multicast:0\",\n    \"from_port\": \"VlanDemo.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"609000\",\n    \"planned_eof_ps\": \"608000\",\n    \"planned_release_ps\": \"704000\",\n    \"priority\": \"4\",\n    \"queue_id\": \"VlanDemo.a.tx.queue.4\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"704000\",\n    \"sof_ps\": \"0\",\n    \"status\": \"serialized\",\n    \"to_port\": \"VlanDemo.s1.rx_a\",\n    \"vlan_id\": \"20\",\n    \"wire\": {\n      \"data_hex\": \"010203\",\n      \"dst_mac\": \"01:00:5e:00:00:01\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"4fa1ebf2\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\",\n      \"pad_bytes\": \"43\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"1\",\n        \"pcp\": \"4\",\n        \"vid\": \"20\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"vlan_multicast:0@VlanDemo.a.tx\",\n  \"request_id\": \"vlan_multicast:0\",\n  \"schema_name\": \"ethernet.transfer\",\n  \"schema_version\": 3,\n  \"subject\": \"VlanDemo.a.tx\",\n  \"time_ps\": \"704000\"\n}"
+    },
+    "local": {
+      "time_ps": 4000000,
+      "counts": [
+        "1",
+        "0",
+        "0",
+        "2",
+        "0",
+        "1"
+      ],
+      "selected_transfer": {
+        "data": {
+          "arrival_ps": "609000",
+          "drop_reason": null,
+          "eof_ps": "608000",
+          "frame_id": "vlan_multicast:0",
+          "from_port": "VlanDemo.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "609000",
+          "planned_eof_ps": "608000",
+          "planned_release_ps": "704000",
+          "priority": "4",
+          "queue_id": "VlanDemo.a.tx.queue.4",
+          "queued_ps": "0",
+          "release_ps": "704000",
+          "sof_ps": "0",
+          "status": "serialized",
+          "to_port": "VlanDemo.s1.rx_a",
+          "vlan_id": "20",
+          "wire": {
+            "data_hex": "010203",
+            "dst_mac": "01:00:5e:00:00:01",
+            "ether_type": "2048",
+            "fcs_hex": "4fa1ebf2",
+            "mac_bytes": "68",
+            "mac_hex": "01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2",
+            "pad_bytes": "43",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "1",
+              "pcp": "4",
+              "vid": "20"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "vlan_multicast:0@VlanDemo.a.tx",
+        "request_id": "vlan_multicast:0",
+        "schema_name": "ethernet.transfer",
+        "schema_version": 3,
+        "subject": "VlanDemo.a.tx",
+        "time_ps": "704000"
+      },
+      "panel": "vlan_multicast:0@VlanDemo.a.tx\n元フレーム\nvlan_multicast:0\nSource\nVlanDemo.a\nMAC\n02:00:00:00:00:01 → 01:00:5e:00:00:01\nEtherType\n2048\nPayload\n010203\nPadding bytes\n43\nFCS\n4fa1ebf2\n生成（ps）\n0\nFlow\nflow_vlan_multicast\nSource Priority\n4\n相対deadline（ps）\n未指定\nClass queue\nVlanDemo.a.tx.queue.4\nHop Priority / class\n4\nSource VLAN\n20\nSource tag\nVID 20 · PCP 4 · DEI 1\nSource MAC bytes\n68\nSource FCS\n4fa1ebf2\nHop VLAN\n20\nHop tag\nVID 20 · PCP 4 · DEI 1\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\n4fa1ebf2\nHop wire hex\n01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\n状態\nEOF 到達\n親copy\nsource\n経路\nVlanDemo.a.tx → VlanDemo.s1.rx_a\nqueued_ps\n0\nsof_ps\n0\neof_ps\n608000\nrelease_ps\n704000\narrival_ps\n609000\nplanned_eof_ps\n608000\nplanned_release_ps\n704000\nplanned_arrival_ps\n609000\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nVlanDemo.c: 受信完了 / observed 1220000 / ready 1220000 / planned ready 1220000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.s1: 転送判断済み / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.c 配送遅延: 1220000 ps\n\nethernet.queue_wait_ps: 0 ps\n\nethernet.serialization_ps: 1216000 ps\n\nethernet.propagation_ps: 2000 ps\n\nethernet.processing_ps: 2000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"609000\",\n    \"drop_reason\": null,\n    \"eof_ps\": \"608000\",\n    \"frame_id\": \"vlan_multicast:0\",\n    \"from_port\": \"VlanDemo.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"609000\",\n    \"planned_eof_ps\": \"608000\",\n    \"planned_release_ps\": \"704000\",\n    \"priority\": \"4\",\n    \"queue_id\": \"VlanDemo.a.tx.queue.4\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"704000\",\n    \"sof_ps\": \"0\",\n    \"status\": \"serialized\",\n    \"to_port\": \"VlanDemo.s1.rx_a\",\n    \"vlan_id\": \"20\",\n    \"wire\": {\n      \"data_hex\": \"010203\",\n      \"dst_mac\": \"01:00:5e:00:00:01\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"4fa1ebf2\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\",\n      \"pad_bytes\": \"43\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"1\",\n        \"pcp\": \"4\",\n        \"vid\": \"20\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"vlan_multicast:0@VlanDemo.a.tx\",\n  \"request_id\": \"vlan_multicast:0\",\n  \"schema_name\": \"ethernet.transfer\",\n  \"schema_version\": 3,\n  \"subject\": \"VlanDemo.a.tx\",\n  \"time_ps\": \"704000\"\n}"
+    },
+    "branch": {
+      "time_ps": 4000000,
+      "counts": [
+        "1",
+        "0",
+        "0",
+        "7",
+        "0",
+        "1"
+      ],
+      "selected_transfer": {
+        "data": {
+          "arrival_ps": "609000",
+          "drop_reason": null,
+          "eof_ps": "608000",
+          "frame_id": "vlan_multicast:0",
+          "from_port": "VlanDemo.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "609000",
+          "planned_eof_ps": "608000",
+          "planned_release_ps": "704000",
+          "priority": "4",
+          "queue_id": "VlanDemo.a.tx.queue.4",
+          "queued_ps": "0",
+          "release_ps": "704000",
+          "sof_ps": "0",
+          "status": "serialized",
+          "to_port": "VlanDemo.s1.rx_a",
+          "vlan_id": "20",
+          "wire": {
+            "data_hex": "010203",
+            "dst_mac": "01:00:5e:00:00:01",
+            "ether_type": "2048",
+            "fcs_hex": "4fa1ebf2",
+            "mac_bytes": "68",
+            "mac_hex": "01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2",
+            "pad_bytes": "43",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "1",
+              "pcp": "4",
+              "vid": "20"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "vlan_multicast:0@VlanDemo.a.tx",
+        "request_id": "vlan_multicast:0",
+        "schema_name": "ethernet.transfer",
+        "schema_version": 3,
+        "subject": "VlanDemo.a.tx",
+        "time_ps": "704000"
+      },
+      "panel": "vlan_multicast:0@VlanDemo.a.tx\n元フレーム\nvlan_multicast:0\nSource\nVlanDemo.a\nMAC\n02:00:00:00:00:01 → 01:00:5e:00:00:01\nEtherType\n2048\nPayload\n010203\nPadding bytes\n43\nFCS\n4fa1ebf2\n生成（ps）\n0\nFlow\nflow_vlan_multicast\nSource Priority\n4\n相対deadline（ps）\n未指定\nClass queue\nVlanDemo.a.tx.queue.4\nHop Priority / class\n4\nSource VLAN\n20\nSource tag\nVID 20 · PCP 4 · DEI 1\nSource MAC bytes\n68\nSource FCS\n4fa1ebf2\nHop VLAN\n20\nHop tag\nVID 20 · PCP 4 · DEI 1\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\n4fa1ebf2\nHop wire hex\n01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\n状態\nEOF 到達\n親copy\nsource\n経路\nVlanDemo.a.tx → VlanDemo.s1.rx_a\nqueued_ps\n0\nsof_ps\n0\neof_ps\n608000\nrelease_ps\n704000\narrival_ps\n609000\nplanned_eof_ps\n608000\nplanned_release_ps\n704000\nplanned_arrival_ps\n609000\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nVlanDemo.b: フィルタ拒否 / observed 1831000 / ready 1831000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.c: 受信完了 / observed 1220000 / ready 1220000 / planned ready 1220000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.d: フィルタ拒否 / observed 2442000 / ready 2442000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.e: フィルタ拒否 / observed 2442000 / ready 2442000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.s1: 転送判断済み / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.s2: 転送判断済み / observed 1220000 / ready 1222000 / planned ready 1222000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.s3: 転送判断済み / observed 1831000 / ready 1833000 / planned ready 1833000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.c 配送遅延: 1220000 ps\n\nethernet.queue_wait_ps: 0 ps\n\nethernet.serialization_ps: 1216000 ps\n\nethernet.propagation_ps: 2000 ps\n\nethernet.processing_ps: 2000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"609000\",\n    \"drop_reason\": null,\n    \"eof_ps\": \"608000\",\n    \"frame_id\": \"vlan_multicast:0\",\n    \"from_port\": \"VlanDemo.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"609000\",\n    \"planned_eof_ps\": \"608000\",\n    \"planned_release_ps\": \"704000\",\n    \"priority\": \"4\",\n    \"queue_id\": \"VlanDemo.a.tx.queue.4\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"704000\",\n    \"sof_ps\": \"0\",\n    \"status\": \"serialized\",\n    \"to_port\": \"VlanDemo.s1.rx_a\",\n    \"vlan_id\": \"20\",\n    \"wire\": {\n      \"data_hex\": \"010203\",\n      \"dst_mac\": \"01:00:5e:00:00:01\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"4fa1ebf2\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\",\n      \"pad_bytes\": \"43\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"1\",\n        \"pcp\": \"4\",\n        \"vid\": \"20\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"vlan_multicast:0@VlanDemo.a.tx\",\n  \"request_id\": \"vlan_multicast:0\",\n  \"schema_name\": \"ethernet.transfer\",\n  \"schema_version\": 3,\n  \"subject\": \"VlanDemo.a.tx\",\n  \"time_ps\": \"704000\"\n}",
+      "selected_child": {
+        "data": {
+          "arrival_ps": "1220000",
+          "drop_reason": null,
+          "eof_ps": "1219000",
+          "frame_id": "vlan_multicast:0",
+          "from_port": "VlanDemo.s1.tx_b",
+          "parent_transfer_id": "vlan_multicast:0@VlanDemo.a.tx",
+          "planned_arrival_ps": "1220000",
+          "planned_eof_ps": "1219000",
+          "planned_release_ps": "1315000",
+          "priority": "4",
+          "queue_id": "VlanDemo.s1.tx_b.queue.4",
+          "queued_ps": "611000",
+          "release_ps": "1315000",
+          "sof_ps": "611000",
+          "status": "serialized",
+          "to_port": "VlanDemo.s2.rx_a",
+          "vlan_id": "20",
+          "wire": {
+            "data_hex": "010203",
+            "dst_mac": "01:00:5e:00:00:01",
+            "ether_type": "2048",
+            "fcs_hex": "4fa1ebf2",
+            "mac_bytes": "68",
+            "mac_hex": "01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2",
+            "pad_bytes": "43",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "1",
+              "pcp": "4",
+              "vid": "20"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "vlan_multicast:0@VlanDemo.s1.tx_b",
+        "request_id": "vlan_multicast:0",
+        "schema_name": "ethernet.transfer",
+        "schema_version": 3,
+        "subject": "VlanDemo.s1.tx_b",
+        "time_ps": "1315000"
+      },
+      "unsubscribed_b": "vlan_multicast:0@VlanDemo.s2.tx_c\n元フレーム\nvlan_multicast:0\nSource\nVlanDemo.a\nMAC\n02:00:00:00:00:01 → 01:00:5e:00:00:01\nEtherType\n2048\nPayload\n010203\nPadding bytes\n43\nFCS\n4fa1ebf2\n生成（ps）\n0\nFlow\nflow_vlan_multicast\nSource Priority\n4\n相対deadline（ps）\n未指定\nClass queue\nVlanDemo.s2.tx_c.queue.4\nHop Priority / class\n4\nSource VLAN\n20\nSource tag\nVID 20 · PCP 4 · DEI 1\nSource MAC bytes\n68\nSource FCS\n4fa1ebf2\nHop VLAN\n20\nHop tag\nVID 20 · PCP 4 · DEI 1\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\n4fa1ebf2\nHop wire hex\n01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\n状態\nEOF 到達\n親copy\nvlan_multicast:0@VlanDemo.s1.tx_b\n経路\nVlanDemo.s2.tx_c → VlanDemo.b.rx\nqueued_ps\n1222000\nsof_ps\n1222000\neof_ps\n1830000\nrelease_ps\n1926000\narrival_ps\n1831000\nplanned_eof_ps\n1830000\nplanned_release_ps\n1926000\nplanned_arrival_ps\n1831000\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nVlanDemo.b: フィルタ拒否 / observed 1831000 / ready 1831000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.c: 受信完了 / observed 1220000 / ready 1220000 / planned ready 1220000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.d: フィルタ拒否 / observed 2442000 / ready 2442000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.e: フィルタ拒否 / observed 2442000 / ready 2442000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.s1: 転送判断済み / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.s2: 転送判断済み / observed 1220000 / ready 1222000 / planned ready 1222000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.s3: 転送判断済み / observed 1831000 / ready 1833000 / planned ready 1833000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.c 配送遅延: 1220000 ps\n\nethernet.queue_wait_ps: 0 ps\n\nethernet.serialization_ps: 1216000 ps\n\nethernet.propagation_ps: 2000 ps\n\nethernet.processing_ps: 2000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"1831000\",\n    \"drop_reason\": null,\n    \"eof_ps\": \"1830000\",\n    \"frame_id\": \"vlan_multicast:0\",\n    \"from_port\": \"VlanDemo.s2.tx_c\",\n    \"parent_transfer_id\": \"vlan_multicast:0@VlanDemo.s1.tx_b\",\n    \"planned_arrival_ps\": \"1831000\",\n    \"planned_eof_ps\": \"1830000\",\n    \"planned_release_ps\": \"1926000\",\n    \"priority\": \"4\",\n    \"queue_id\": \"VlanDemo.s2.tx_c.queue.4\",\n    \"queued_ps\": \"1222000\",\n    \"release_ps\": \"1926000\",\n    \"sof_ps\": \"1222000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"VlanDemo.b.rx\",\n    \"vlan_id\": \"20\",\n    \"wire\": {\n      \"data_hex\": \"010203\",\n      \"dst_mac\": \"01:00:5e:00:00:01\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"4fa1ebf2\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\",\n      \"pad_bytes\": \"43\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"1\",\n        \"pcp\": \"4\",\n        \"vid\": \"20\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"vlan_multicast:0@VlanDemo.s2.tx_c\",\n  \"request_id\": \"vlan_multicast:0\",\n  \"schema_name\": \"ethernet.transfer\",\n  \"schema_version\": 3,\n  \"subject\": \"VlanDemo.s2.tx_c\",\n  \"time_ps\": \"1926000\"\n}",
+      "subscribed_c": "vlan_multicast:0@VlanDemo.s1.tx_c\n元フレーム\nvlan_multicast:0\nSource\nVlanDemo.a\nMAC\n02:00:00:00:00:01 → 01:00:5e:00:00:01\nEtherType\n2048\nPayload\n010203\nPadding bytes\n43\nFCS\n4fa1ebf2\n生成（ps）\n0\nFlow\nflow_vlan_multicast\nSource Priority\n4\n相対deadline（ps）\n未指定\nClass queue\nVlanDemo.s1.tx_c.queue.4\nHop Priority / class\n4\nSource VLAN\n20\nSource tag\nVID 20 · PCP 4 · DEI 1\nSource MAC bytes\n68\nSource FCS\n4fa1ebf2\nHop VLAN\n20\nHop tag\nVID 20 · PCP 4 · DEI 1\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\n4fa1ebf2\nHop wire hex\n01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\n状態\nEOF 到達\n親copy\nvlan_multicast:0@VlanDemo.a.tx\n経路\nVlanDemo.s1.tx_c → VlanDemo.c.rx\nqueued_ps\n611000\nsof_ps\n611000\neof_ps\n1219000\nrelease_ps\n1315000\narrival_ps\n1220000\nplanned_eof_ps\n1219000\nplanned_release_ps\n1315000\nplanned_arrival_ps\n1220000\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nVlanDemo.b: フィルタ拒否 / observed 1831000 / ready 1831000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.c: 受信完了 / observed 1220000 / ready 1220000 / planned ready 1220000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.d: フィルタ拒否 / observed 2442000 / ready 2442000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.e: フィルタ拒否 / observed 2442000 / ready 2442000 / planned ready 未指定 ps / ingress VLAN 20 · Priority 4 / reason multicast_not_subscribed\n\nVlanDemo.s1: 転送判断済み / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.s2: 転送判断済み / observed 1220000 / ready 1222000 / planned ready 1222000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.s3: 転送判断済み / observed 1831000 / ready 1833000 / planned ready 1833000 ps / ingress VLAN 20 · Priority 4\n\nVlanDemo.c 配送遅延: 1220000 ps\n\nethernet.queue_wait_ps: 0 ps\n\nethernet.serialization_ps: 1216000 ps\n\nethernet.propagation_ps: 2000 ps\n\nethernet.processing_ps: 2000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"1220000\",\n    \"drop_reason\": null,\n    \"eof_ps\": \"1219000\",\n    \"frame_id\": \"vlan_multicast:0\",\n    \"from_port\": \"VlanDemo.s1.tx_c\",\n    \"parent_transfer_id\": \"vlan_multicast:0@VlanDemo.a.tx\",\n    \"planned_arrival_ps\": \"1220000\",\n    \"planned_eof_ps\": \"1219000\",\n    \"planned_release_ps\": \"1315000\",\n    \"priority\": \"4\",\n    \"queue_id\": \"VlanDemo.s1.tx_c.queue.4\",\n    \"queued_ps\": \"611000\",\n    \"release_ps\": \"1315000\",\n    \"sof_ps\": \"611000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"VlanDemo.c.rx\",\n    \"vlan_id\": \"20\",\n    \"wire\": {\n      \"data_hex\": \"010203\",\n      \"dst_mac\": \"01:00:5e:00:00:01\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"4fa1ebf2\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"01005e000001020000000001810090140800010203000000000000000000000000000000000000000000000000000000000000000000000000000000000000004fa1ebf2\",\n      \"pad_bytes\": \"43\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"1\",\n        \"pcp\": \"4\",\n        \"vid\": \"20\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"vlan_multicast:0@VlanDemo.s1.tx_c\",\n  \"request_id\": \"vlan_multicast:0\",\n  \"schema_name\": \"ethernet.transfer\",\n  \"schema_version\": 3,\n  \"subject\": \"VlanDemo.s1.tx_c\",\n  \"time_ps\": \"1315000\"\n}"
+    }
+  },
+  "status": "passed",
+  "errors": []
+}
