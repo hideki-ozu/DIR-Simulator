@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.28`
+文書バージョン：`1.1.29`
 対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.29` | `2026-10-15` | PSFPのyellow_action1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・ZIP・履歴を保持 |
 | `1.1.28` | `2026-10-15` | CBSのidle slope1変数比較・正式版実測・実Viewerと8入力ZIPを追加。PR97と既存記事・ZIP・履歴を保持 |
 | `1.1.27` | `2026-10-14` | 静的multicastの出口リスト1変数比較・正式版実測・実Viewerと9入力ZIPを追加。既存記事・ZIP・履歴を保持 |
 | `1.1.26` | `2026-10-14` | Ethernet TASの生成時刻1ps境界実習・IFG込み窓末尾・実Viewerと8入力ZIPを追加。既存20記事と履歴を保持 |
@@ -82,6 +83,8 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [Ethernetの静的multicastとコピーの配送先](docs/guide/Ethernetの静的multicastとコピーの配送先.md)では、Switchのgroup出口リストだけを変え、転送コピー数とEndpoint購読を正式v1.1.4で区別します。[9入力ZIP](docs/guide/downloads/ethernet-multicast-inputs.zip)で再現できます。
 
 [Ethernet CBSのcredit回復と送信待ち](<docs/guide/Ethernet CBSのcredit回復と送信待ち.md>)では、idle slopeだけを変え、同じ2フレームのLink占有とCBS待ちを正式v1.1.4で比較します。[8入力ZIP](docs/guide/downloads/ethernet-cbs-inputs.zip)で再現できます。
+
+[Ethernet PSFPの色判定とyellow破棄](<docs/guide/Ethernet PSFPの色判定とyellow破棄.md>)では、yellow_actionだけを変え、送信済みコピーと受信拒否・2 bucket token消費を正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-psfp-inputs.zip)で再現できます。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
