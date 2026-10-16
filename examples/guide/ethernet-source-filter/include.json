@@ -1,0 +1,49 @@
+{
+  "schema_version": 4,
+  "generators": [
+    {
+      "id": "ipv4",
+      "node": "Main.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "100",
+        "3000000"
+      ],
+      "frame": {
+        "dst_mac": "01:00:5e:01:01:01",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 0,
+          "dei": 0
+        },
+        "ip_multicast": {
+          "family": "ipv4",
+          "source": "192.0.2.1",
+          "group": "239.1.1.1"
+        }
+      },
+      "flow_id": "ipv4",
+      "priority": 0,
+      "deadline_ps": null
+    }
+  ],
+  "controls": [
+    {
+      "id": "join4",
+      "at_ps": "0",
+      "kind": "membership_set",
+      "switch": "Main.sw",
+      "port": "Main.sw.tx_b",
+      "vid": 10,
+      "family": "ipv4",
+      "group": "239.1.1.1",
+      "mode": "include",
+      "sources": [
+        "192.0.2.1"
+      ],
+      "lifetime_ps": "2000000"
+    }
+  ]
+}

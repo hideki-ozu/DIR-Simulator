@@ -53,6 +53,7 @@ def main():
     build(ROOT / 'examples/guide/ethernet-psfp', OUTPUT.with_name('ethernet-psfp-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-learning', OUTPUT.with_name('ethernet-learning-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-link-control', OUTPUT.with_name('ethernet-link-control-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-source-filter', OUTPUT.with_name('ethernet-source-filter-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':
