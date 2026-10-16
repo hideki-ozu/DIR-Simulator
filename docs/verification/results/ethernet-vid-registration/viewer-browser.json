@@ -1,0 +1,211 @@
+{
+  "generated_by": "scripts/verify_ethernet_vid_registration_viewer.cjs",
+  "browser": "151.0.7922.34",
+  "input_hashes": {
+    "repository/short-viewer.html": "8bf5721b583727a248d59a18709c11fcdbbb303b54057c41bdb66ad61c7b9c00",
+    "repository/short/results.json": "4a51b10adf30f3125ea0346441236c787d33f5e09e3b0eaf9e8869ded30db11b",
+    "repository/short/manifest.json": "333376a14b130e7e2386dc949158561a53a22a66f928ee71eaf603407bd13aec",
+    "repository/long-viewer.html": "dc3d61b6e1748dec7bce4a410b18086dde8447a5598b11219f140b26b5fe2046",
+    "repository/long/results.json": "c1777ce1f671bab49ae0c2cdb3a1c2cb21ae1af9c800603da6fec433b56efa30",
+    "repository/long/manifest.json": "797c1a7a13136273511e347892de5f07de92dd5042fe799d263fc0c9743a3acd"
+  },
+  "conditions": {
+    "short": {
+      "at_ps": 4000000,
+      "registration": [
+        {
+          "key": {
+            "port": "Main.sw.tx_a",
+            "vid": "20"
+          },
+          "expires_at": "8000000",
+          "generation": "1",
+          "value": true
+        },
+        {
+          "key": {
+            "port": "Main.b.tx",
+            "vid": "20"
+          },
+          "expires_at": "8000000",
+          "generation": "1",
+          "value": true
+        },
+        {
+          "key": {
+            "port": "Main.a.tx",
+            "vid": "20"
+          },
+          "expires_at": "8000000",
+          "generation": "1",
+          "value": true
+        }
+      ],
+      "egress": "Main.sw.tx_b\tup\tdesignated\t10 tagged",
+      "receiver": "Main.b.tx\tup\tdesignated\t10 tagged, 20 tagged",
+      "expiry_boundary": "present at expiry-1, absent at expiry, reverse seek identical",
+      "second_selected_transfer": {
+        "data": {
+          "arrival_ps": "3609000",
+          "copy_id": "unicast:1/v0/c2",
+          "drop_reason": null,
+          "effect_seq": "31",
+          "eof_ps": "3608000",
+          "frame_id": "unicast:1",
+          "from_port": "Main.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "3609000",
+          "planned_eof_ps": "3608000",
+          "planned_release_ps": "3704000",
+          "policy_epoch_offer": "2",
+          "policy_epoch_sof": "2",
+          "priority": "0",
+          "queue_id": "Main.a.tx.queue.0",
+          "queued_ps": "3000000",
+          "release_ps": "3704000",
+          "sof_ps": "3000000",
+          "status": "serialized",
+          "to_port": "Main.sw.rx_a",
+          "visit_id": "0",
+          "vlan_id": "20",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "6f968196",
+            "mac_bytes": "68",
+            "mac_hex": "020000000002020000000001810000140800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006f968196",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "0",
+              "pcp": "0",
+              "vid": "20"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "unicast:1/v0/c2",
+        "request_id": "unicast:1",
+        "schema_name": "ethernet.dynamic.transfer",
+        "schema_version": 1,
+        "subject": "@network",
+        "time_ps": "3704000"
+      },
+      "second_panel": "unicast:1/v0/c2\n元フレーム\nunicast:1\nSource\nMain.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\n6f968196\n生成（ps）\n3000000\nFlow\nunicast\nSource Priority\n0\n相対deadline（ps）\n未指定\nClass queue\nMain.a.tx.queue.0\nHop Priority / class\n0\nSource VLAN\n20\nSource tag\nVID 20 · PCP 0 · DEI 0\nSource MAC bytes\n68\nSource FCS\n6f968196\nHop VLAN\n20\nHop tag\nVID 20 · PCP 0 · DEI 0\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\n6f968196\nHop wire hex\n020000000002020000000001810000140800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006f968196\n状態\nEOF 到達\n親copy\nsource\n経路\nMain.a.tx → Main.sw.rx_a\nqueued_ps\n3000000\nsof_ps\n3000000\neof_ps\n3608000\nrelease_ps\n3704000\narrival_ps\n3609000\nplanned_eof_ps\n3608000\nplanned_release_ps\n3704000\nplanned_arrival_ps\n3609000\n現在のpolicy epoch\n2\nVisit\n0\nOffer policy epoch\n2\nSOF policy epoch\n2\nDrop reason\n—\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nMain.sw: フィルタ拒否 / observed 3609000 / ready 3611000 / planned ready 3611000 ps / ingress VLAN 20 · Priority 0 / reason known_egress_ineligible\n\n{\n  \"data\": {\n    \"arrival_ps\": \"3609000\",\n    \"copy_id\": \"unicast:1/v0/c2\",\n    \"drop_reason\": null,\n    \"effect_seq\": \"31\",\n    \"eof_ps\": \"3608000\",\n    \"frame_id\": \"unicast:1\",\n    \"from_port\": \"Main.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"3609000\",\n    \"planned_eof_ps\": \"3608000\",\n    \"planned_release_ps\": \"3704000\",\n    \"policy_epoch_offer\": \"2\",\n    \"policy_epoch_sof\": \"2\",\n    \"priority\": \"0\",\n    \"queue_id\": \"Main.a.tx.queue.0\",\n    \"queued_ps\": \"3000000\",\n    \"release_ps\": \"3704000\",\n    \"sof_ps\": \"3000000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Main.sw.rx_a\",\n    \"visit_id\": \"0\",\n    \"vlan_id\": \"20\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"6f968196\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"020000000002020000000001810000140800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006f968196\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"0\",\n        \"pcp\": \"0\",\n        \"vid\": \"20\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"unicast:1/v0/c2\",\n  \"request_id\": \"unicast:1\",\n  \"schema_name\": \"ethernet.dynamic.transfer\",\n  \"schema_version\": 1,\n  \"subject\": \"@network\",\n  \"time_ps\": \"3704000\"\n}",
+      "final_registration": [],
+      "final_ports": [
+        "Main.a.txupdesignated10 tagged",
+        "Main.b.txupdesignated10 tagged",
+        "Main.c.txupdesignated10 tagged",
+        "Main.sw.tx_aupdesignated10 tagged",
+        "Main.sw.tx_bupdesignated10 tagged",
+        "Main.sw.tx_cupdesignated10 tagged"
+      ]
+    },
+    "long": {
+      "at_ps": 4000000,
+      "registration": [
+        {
+          "key": {
+            "port": "Main.sw.tx_b",
+            "vid": "20"
+          },
+          "expires_at": "5000000",
+          "generation": "1",
+          "value": true
+        },
+        {
+          "key": {
+            "port": "Main.sw.tx_a",
+            "vid": "20"
+          },
+          "expires_at": "8000000",
+          "generation": "1",
+          "value": true
+        },
+        {
+          "key": {
+            "port": "Main.b.tx",
+            "vid": "20"
+          },
+          "expires_at": "8000000",
+          "generation": "1",
+          "value": true
+        },
+        {
+          "key": {
+            "port": "Main.a.tx",
+            "vid": "20"
+          },
+          "expires_at": "8000000",
+          "generation": "1",
+          "value": true
+        }
+      ],
+      "egress": "Main.sw.tx_b\tup\tdesignated\t10 tagged, 20 tagged",
+      "receiver": "Main.b.tx\tup\tdesignated\t10 tagged, 20 tagged",
+      "expiry_boundary": "present at expiry-1, absent at expiry, reverse seek identical",
+      "second_selected_transfer": {
+        "data": {
+          "arrival_ps": "3609000",
+          "copy_id": "unicast:1/v0/c2",
+          "drop_reason": null,
+          "effect_seq": "31",
+          "eof_ps": "3608000",
+          "frame_id": "unicast:1",
+          "from_port": "Main.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "3609000",
+          "planned_eof_ps": "3608000",
+          "planned_release_ps": "3704000",
+          "policy_epoch_offer": "1",
+          "policy_epoch_sof": "1",
+          "priority": "0",
+          "queue_id": "Main.a.tx.queue.0",
+          "queued_ps": "3000000",
+          "release_ps": "3704000",
+          "sof_ps": "3000000",
+          "status": "serialized",
+          "to_port": "Main.sw.rx_a",
+          "visit_id": "0",
+          "vlan_id": "20",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "6f968196",
+            "mac_bytes": "68",
+            "mac_hex": "020000000002020000000001810000140800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006f968196",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "0",
+              "pcp": "0",
+              "vid": "20"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "unicast:1/v0/c2",
+        "request_id": "unicast:1",
+        "schema_name": "ethernet.dynamic.transfer",
+        "schema_version": 1,
+        "subject": "@network",
+        "time_ps": "3704000"
+      },
+      "second_panel": "unicast:1/v0/c2\n元フレーム\nunicast:1\nSource\nMain.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\n6f968196\n生成（ps）\n3000000\nFlow\nunicast\nSource Priority\n0\n相対deadline（ps）\n未指定\nClass queue\nMain.a.tx.queue.0\nHop Priority / class\n0\nSource VLAN\n20\nSource tag\nVID 20 · PCP 0 · DEI 0\nSource MAC bytes\n68\nSource FCS\n6f968196\nHop VLAN\n20\nHop tag\nVID 20 · PCP 0 · DEI 0\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\n6f968196\nHop wire hex\n020000000002020000000001810000140800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006f968196\n状態\nEOF 到達\n親copy\nsource\n経路\nMain.a.tx → Main.sw.rx_a\nqueued_ps\n3000000\nsof_ps\n3000000\neof_ps\n3608000\nrelease_ps\n3704000\narrival_ps\n3609000\nplanned_eof_ps\n3608000\nplanned_release_ps\n3704000\nplanned_arrival_ps\n3609000\n現在のpolicy epoch\n2\nVisit\n0\nOffer policy epoch\n1\nSOF policy epoch\n1\nDrop reason\n—\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nMain.sw: 転送判断済み / observed 3609000 / ready 3611000 / planned ready 3611000 ps / ingress VLAN 20 · Priority 0\n\nMain.b: 受信完了 / observed 4220000 / ready 4220000 / planned ready 4220000 ps / ingress VLAN 20 · Priority 0\n\nMain.b 配送遅延: 1220000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"3609000\",\n    \"copy_id\": \"unicast:1/v0/c2\",\n    \"drop_reason\": null,\n    \"effect_seq\": \"31\",\n    \"eof_ps\": \"3608000\",\n    \"frame_id\": \"unicast:1\",\n    \"from_port\": \"Main.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"3609000\",\n    \"planned_eof_ps\": \"3608000\",\n    \"planned_release_ps\": \"3704000\",\n    \"policy_epoch_offer\": \"1\",\n    \"policy_epoch_sof\": \"1\",\n    \"priority\": \"0\",\n    \"queue_id\": \"Main.a.tx.queue.0\",\n    \"queued_ps\": \"3000000\",\n    \"release_ps\": \"3704000\",\n    \"sof_ps\": \"3000000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Main.sw.rx_a\",\n    \"visit_id\": \"0\",\n    \"vlan_id\": \"20\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"6f968196\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"020000000002020000000001810000140800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006f968196\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"0\",\n        \"pcp\": \"0\",\n        \"vid\": \"20\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"unicast:1/v0/c2\",\n  \"request_id\": \"unicast:1\",\n  \"schema_name\": \"ethernet.dynamic.transfer\",\n  \"schema_version\": 1,\n  \"subject\": \"@network\",\n  \"time_ps\": \"3704000\"\n}",
+      "final_registration": [],
+      "final_ports": [
+        "Main.a.txupdesignated10 tagged",
+        "Main.b.txupdesignated10 tagged",
+        "Main.c.txupdesignated10 tagged",
+        "Main.sw.tx_aupdesignated10 tagged",
+        "Main.sw.tx_bupdesignated10 tagged",
+        "Main.sw.tx_cupdesignated10 tagged"
+      ]
+    }
+  },
+  "status": "passed",
+  "errors": []
+}

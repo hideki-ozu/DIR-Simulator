@@ -1,0 +1,62 @@
+{
+  "schema_version": 4,
+  "generators": [
+    {
+      "id": "unicast",
+      "node": "Main.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "0",
+        "3000000"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 20,
+          "pcp": 0,
+          "dei": 0
+        },
+        "ip_multicast": null
+      },
+      "flow_id": "unicast",
+      "priority": 0,
+      "deadline_ps": null
+    }
+  ],
+  "controls": [
+    {
+      "id": "source",
+      "at_ps": "0",
+      "kind": "vlan_register",
+      "port": "Main.a.tx",
+      "vid": 20,
+      "lifetime_ps": "8000000"
+    },
+    {
+      "id": "ingress",
+      "at_ps": "0",
+      "kind": "vlan_register",
+      "port": "Main.sw.tx_a",
+      "vid": 20,
+      "lifetime_ps": "8000000"
+    },
+    {
+      "id": "receiver",
+      "at_ps": "0",
+      "kind": "vlan_register",
+      "port": "Main.b.tx",
+      "vid": 20,
+      "lifetime_ps": "8000000"
+    },
+    {
+      "id": "egress",
+      "at_ps": "0",
+      "kind": "vlan_register",
+      "port": "Main.sw.tx_b",
+      "vid": 20,
+      "lifetime_ps": "5000000"
+    }
+  ]
+}
