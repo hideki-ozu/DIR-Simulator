@@ -1,6 +1,6 @@
 # 動的VID登録ガイド検証記録
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 対象GitHubバージョン：`v1.1.4`
 文書ID：`verification-guide-ethernet-vid-registration`
 文書状態：CLI・実Viewer・サイト検証合格。Projectは権限不足で未実施
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-16` | 横wheelによる390px表の右端到達を再検証し、スクロール可能な表を表示不能と受け取らせる説明を訂正 |
 | `1.1.0` | `2026-10-16` | 初版：VID登録寿命1変数の公開入力、正式版実測・隔離ZIP・実Viewerとサイト検証の証跡を追加 |
 
 ## 基準・来歴・適用範囲
@@ -37,7 +38,7 @@ shortはserialized3/forwarded1/received1/filtered1（known_egress_ineligible）�
 
 Project一覧のGraphQLはINSUFFICIENT_SCOPES/read:projectで拒否された。認証・権限変更や迂回はせず、登録/進行更新は未実施として報告する。Issueを自動closeするDone、マージ/auto-merge、リリース/デプロイ、CodeRabbit操作や外部エージェント依頼は行わない。公開直前のコメント/競合確認とremote head/CI結果はPR本文へ記録する。
 
-初回390px撮影ではViewer有効VID列の右端が切れたため、実Viewerを600pxで撮り直した。公開記事にはこの狭幅Viewer表の制約を明記し、ガイドサイトの390px表示と区別する。
+初回390px撮影では有効VID表を横スクロールせずに撮影し、右端列が表示枠の外になったため、比較用画像を600pxで取得した。その時点の「切れる」という説明はスクロール不能と誤解させるため1.1.1で訂正した。390pxでもtable-scrollの横スクロールで右端列を読める。
 
 ## 最終ローカル検証
 
@@ -48,3 +49,13 @@ MkDocs strict、31 HTML・2185ローカルリンク/画像/アンカー、全23�
 公開直前の再確認でもmain594458e不変、ユーザー追加コメントとopen PR/重複作業なし。remote head/CI最終結果はPR本文へ保存する。
 
 数値表の追加寸法検査は初回に非表示modalのtableを選んで幅0を記録したため、保存証跡の確認時に検出した。本文role=mainの最後の表へ限定し、幅が0より大きいことも必須として再検証した。最終証跡はその修正後の可視表の値を保存する。
+
+## 390px横スクロールの再確認（第2push）
+
+short/longとも4Mpsで表の表示枠360px・内容402px、overflow-x:autoを確認した。実Chromiumの水平mouse wheel500px入力でscrollLeft0から42へ進み、受信側セルの全文10 tagged, 20 taggedを読めた。セルclientWidth/scrollWidthは150/150で内部文字欠落なし、右端は枠375pxに対し375.109375px（整数scroll丸め0.11px）だった。600pxでは枠/内容570/570pxで横スクロール不要。PNG2枚は第1pushとbyte同一を維持する。
+
+現行main594458eと正式v1.1.4のethernet-app.js blobは8d930480202a111ec59c0573c550c337580d0ba6、ethernet-model.jsは7e60c01fed8550e252c49c7ae4d5c7ad937f0cd1で各々同一。style.cssは正式版の全既存規則に別領域向け規則が追加され、renderPolicyのtable-scroll構造と既存overflow:autoは維持されている。Viewer全体/生成HTML全体の同一性やmain binary再実行は主張しない。
+
+Viewer/390/狭幅/横スクロール/overflowのIssue検索に、この有効VID表のスクロール不能に該当する既知Issueは見つからなかった。Issue95はnative HTTP起動待ちtimeoutで別件。今回の観測は横スクロール可能な正常な表で、現行製品のスクロール不能不具合とは判定せず新Issueは作成しない。
+
+生成short-viewer.html/long-viewer.htmlはローカルguide-evidence/registration-fresh/repository内の非追跡成果物で、リポジトリへ公開保存していない。共有済み証拠はviewer-browser.json・measurements.json・公開PNG2枚と検証スクリプト。追加の公開HTMLアップロードは行わない。
