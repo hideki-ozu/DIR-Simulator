@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.30`
+文書バージョン：`1.1.31`
 対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.31` | `2026-10-16` | link復旧時刻の1ps比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・共通導線・20 ZIPを維持 |
 | `1.1.30` | `2026-10-15` | MAC学習のaging1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・ZIP・共通導線を維持 |
 | `1.1.29` | `2026-10-15` | PSFPのyellow_action1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・ZIP・履歴を保持 |
 | `1.1.28` | `2026-10-15` | CBSのidle slope1変数比較・正式版実測・実Viewerと8入力ZIPを追加。PR97と既存記事・ZIP・履歴を保持 |
@@ -88,6 +89,8 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [Ethernet PSFPの色判定とyellow破棄](<docs/guide/Ethernet PSFPの色判定とyellow破棄.md>)では、yellow_actionだけを変え、送信済みコピーと受信拒否・2 bucket token消費を正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-psfp-inputs.zip)で再現できます。
 
 [EthernetのMAC学習とagingによる転送先](docs/guide/EthernetのMAC学習とagingによる転送先.md)では、mac_age_psだけを変え、送信元学習・期限失効と戻り方向の既知転送/floodを正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-learning-inputs.zip)で再現できます。
+
+[Ethernetのlink復旧時刻と受信判定](docs/guide/Ethernetのlink復旧時刻と受信判定.md)では復旧時刻だけを1ps変え、送信済みcopyの継続と到着時のlink判定を正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-link-control-inputs.zip)で再現できます。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 
