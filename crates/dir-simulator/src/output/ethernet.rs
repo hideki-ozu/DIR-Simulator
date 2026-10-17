@@ -26,9 +26,10 @@ pub(super) const FILTER_REASONS: [&str; 8] = [
     "multicast_no_egress",
     "unknown_multicast",
 ];
-pub(super) const NETWORK_FILTER_REASONS: [&str; 10] = [
+pub(super) const NETWORK_FILTER_REASONS: [&str; 11] = [
     "link_down",
     "stp_discarding",
+    "stp_learning",
     "vlan_unregistered",
     "known_egress_ineligible",
     "multicast_filtered",

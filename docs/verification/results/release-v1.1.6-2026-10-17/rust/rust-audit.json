@@ -1,0 +1,64 @@
+[
+  {
+    "name": "fmt",
+    "command": [
+      "/home/hideki/.cargo/bin/cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.31,
+    "log": "tmp/release-v1.1.6-publication/preflight/rust/fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "build",
+    "command": [
+      "/home/hideki/.cargo/bin/cargo",
+      "build",
+      "--locked",
+      "-p",
+      "dir-simulator",
+      "--bin",
+      "dir-simulator",
+      "--example",
+      "control_checkpoint"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 7.754,
+    "log": "tmp/release-v1.1.6-publication/preflight/rust/build.log",
+    "sha256": "9e9e2aab9526b62b687ab8142261fec205e0fa83a8281d08643dcc8c84154057"
+  },
+  {
+    "name": "workspace-tests",
+    "command": [
+      "/home/hideki/.cargo/bin/cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 211.967,
+    "log": "tmp/release-v1.1.6-publication/preflight/rust/workspace-tests.log",
+    "sha256": "541ac5794052305fa28f639c2acb4248cd641248cfbbfae1d1e0c63f1392a13b"
+  },
+  {
+    "name": "clippy",
+    "command": [
+      "/home/hideki/.cargo/bin/cargo",
+      "clippy",
+      "--workspace",
+      "--locked",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 8.51,
+    "log": "tmp/release-v1.1.6-publication/preflight/rust/clippy.log",
+    "sha256": "cfd60d70f005fb0238a9620bfb42768d2aac3c39977a810ff69a639cdb1f6ff3"
+  }
+]

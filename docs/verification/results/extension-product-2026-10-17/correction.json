@@ -1,0 +1,14 @@
+{
+  "kind": "design_precondition_correction",
+  "product_execution_claimed": false,
+  "source": "IEEE 802.1Q-2022, 13.28.9 and Figure 13-26",
+  "cases": [
+    "P-RSTP-T01-V248",
+    "P-RSTP-T01-V249",
+    "P-RSTP-T01-V250"
+  ],
+  "before_sha256": "8ba6288d50f5e23658596b482389ea32574a59f843cbbc40d98072acce650352",
+  "after_sha256": "9434265f6f8ece9c712ad1f9d82c55a246d4816a9cc41759c8a5b45da5b27640",
+  "change": "Add before.sendRSTP=true; expected outputs unchanged",
+  "reason": "With unspecified_booleans=false, omitted sendRSTP selects FwdDelay=15. fdWhile=2 triggers the higher-priority ALTERNATE_PORT self-loop. The intended rapid transition requires sendRSTP=true, selecting HelloTime=2."
+}

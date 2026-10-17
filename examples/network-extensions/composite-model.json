@@ -1,0 +1,240 @@
+{
+  "schema_name": "dir.can_ethernet_tsn.config",
+  "schema_version": 1,
+  "bridge": {
+    "schema_version": 1,
+    "can": {},
+    "gateways": [
+      {
+        "instance": "R01.gw",
+        "can_ports": [
+          "R01.gw.can"
+        ],
+        "ethernet_endpoint": "R01.gw.eth",
+        "rx_capacity": 2,
+        "conversion_delay_ps": "2000000",
+        "max_hops": 8,
+        "rules": [
+          {
+            "id": "to_eth",
+            "direction": "can_to_ethernet",
+            "ingress": "R01.gw.can",
+            "match": {
+              "format": "standard",
+              "can_id": 0
+            },
+            "egresses": [
+              {
+                "port": "R01.gw.eth.tx",
+                "dst_mac": "02:00:00:00:00:02",
+                "vid": 10,
+                "pcp": 3
+              }
+            ]
+          },
+          {
+            "id": "to_can",
+            "direction": "ethernet_to_can",
+            "ingress": "R01.gw.eth",
+            "match": {
+              "vid": 10,
+              "pcp": 3,
+              "format": "standard",
+              "can_id": 0
+            },
+            "egresses": [
+              {
+                "port": "R01.gw.can.tx",
+                "format": "standard",
+                "can_id": 0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ethernet": {
+    "schema_version": 4,
+    "endpoints": [
+      {
+        "instance": "R01.gw.eth",
+        "mac": "02:00:00:00:00:01",
+        "multicast": []
+      },
+      {
+        "instance": "R01.sink",
+        "mac": "02:00:00:00:00:02",
+        "multicast": []
+      }
+    ],
+    "switches": [],
+    "ports": [
+      {
+        "port": "R01.gw.eth.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": false
+          }
+        ]
+      },
+      {
+        "port": "R01.sink.tx",
+        "pvid": 10,
+        "admit": "all",
+        "default_priority": 3,
+        "vlans": [
+          {
+            "vid": 10,
+            "tagged": false
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "port": "R01.gw.eth.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      },
+      {
+        "port": "R01.sink.tx",
+        "scheduler": "strict_priority",
+        "queues": [
+          {
+            "priority": 0,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 1,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 2,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 3,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 4,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 5,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 6,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          },
+          {
+            "priority": 7,
+            "capacity_frames": "64",
+            "capacity_bytes": null
+          }
+        ]
+      }
+    ],
+    "dynamic": {
+      "mac_age_ps": "100000000",
+      "convergence_ps": "0",
+      "bridges": [],
+      "links": [
+        {
+          "id": "gw-sink",
+          "ports": [
+            "R01.gw.eth.tx",
+            "R01.sink.tx"
+          ],
+          "up": true,
+          "cost": "1"
+        }
+      ],
+      "registrable": [],
+      "limits": {
+        "mac_entries": 16,
+        "membership_entries": 16,
+        "sources_per_entry": 16,
+        "registrations": 16,
+        "control_events": 128,
+        "pending_timers": 128,
+        "visits_per_frame": 16
+      }
+    }
+  },
+  "tsn": {
+    "clock": "ideal_shared",
+    "outputs": [
+      {
+        "port": "R01.gw.eth.tx",
+        "tas": null,
+        "cbs": []
+      },
+      {
+        "port": "R01.sink.tx",
+        "tas": null,
+        "cbs": []
+      }
+    ],
+    "streams": [],
+    "gcl_updates": []
+  },
+  "limits": {
+    "max_pending_branches": 128,
+    "max_control_events": 128
+  }
+}

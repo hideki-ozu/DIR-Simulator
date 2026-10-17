@@ -1,0 +1,46 @@
+
+running 38 tests
+test channel_capability_checks_descriptor_even_when_implementation_is_permissive ... ok
+test duplicate_registration_does_not_replace_original ... ok
+test coordinator_borrows_frozen_output_preserves_lineage_and_finishes_before_simples ... ok
+test current_timer_token_identifies_reservations_and_is_scoped_to_timer_callbacks ... ok
+test backwards_phase_runs_after_current_arbitration_and_hits_delta_guard_with_context ... ok
+test callback_failure_discards_every_effect_and_preserves_pending_current ... ok
+test custom_profile_validates_owned_json_and_factory_receives_it ... ok
+test custom_profile_cannot_publish_schema_two_layout_under_schema_one ... ok
+test failed_callback_does_not_commit_cancellation_of_an_existing_timer ... ok
+test event_limit_and_half_open_time_boundary_are_enforced ... ok
+test cancellation_excludes_current_timer_and_removes_future_tombstones_from_pending ... ok
+test custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically ... ok
+test generic_channel_factories_receive_frozen_inputs_in_stable_order ... ok
+test generic_channel_factory_failure_releases_only_constructed_prefix ... ok
+test generic_invalid_channel_parameter_never_reaches_factories ... ok
+test initialization_error_discards_effects_and_finishes_successful_initializations ... ok
+test generic_prepare_defers_model_factories_until_runtime ... ok
+test profile_rejects_module_schemas_outside_its_allowlist ... ok
+test panic_is_diagnostic_and_cleanup_receives_committed_prefix ... ok
+test strategy_registrations_are_executable ... ok
+test coordinator_rejects_noncompound_targets_and_unowned_or_incompatible_outputs ... ok
+test unknown_schema_and_port_version_are_prepare_errors ... ok
+test profile_model_record_versions_are_unique_per_name ... ok
+test zero_time_limit_without_initial_events_still_reports_time_limit ... ok
+test acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix ... ok
+test acceptance_phase_fixed_point_resource_order_and_next_delta_repeat ... ok
+test registered_builtin_adapter_preserves_builtin_result ... ok
+test custom_preparation_failure_uses_registered_implementation_versions ... ok
+test custom_run_publishes_registered_records_and_metrics ... ok
+test live_channel_settings_override_captured_initial_state_after_prepare ... ok
+test custom_tsn_builtin_name_uses_custom_registry ... ok
+test custom_dynamic_builtin_name_uses_custom_registry ... ok
+test custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog ... ok
+test custom_gateway_builtin_name_uses_custom_registry ... ok
+test empty_and_nested_model_record_objects_reach_validator_and_publication ... ok
+test explicit_run_config_selects_custom_registry_instead_of_default ... ok
+test non_object_model_record_data_is_rejected_before_validator_and_preserves_prefix ... ok
+test finish_can_retain_frozen_spool_after_full_buffer_and_tail_are_committed ... ok
+
+test result: ok. 38 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+   Compiling dir-simulator v0.1.0 ([source-root]/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.72s
+     Running tests/registry.rs (target/debug/deps/registry-937729b07543eb4d)

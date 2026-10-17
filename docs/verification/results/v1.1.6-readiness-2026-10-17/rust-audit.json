@@ -1,0 +1,64 @@
+[
+  {
+    "name": "fmt",
+    "command": [
+      "/home/hideki/.cargo/bin/cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.289,
+    "log": "tmp/release-readiness-20261017/fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "workspace-tests",
+    "command": [
+      "/home/hideki/.cargo/bin/cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 250.668,
+    "log": "tmp/release-readiness-20261017/workspace-tests.log",
+    "sha256": "9bab832f9d47fd5f0a794a9711b6d21ef46761093ac7ee712c7334e460bc1ed2"
+  },
+  {
+    "name": "clippy",
+    "command": [
+      "/home/hideki/.cargo/bin/cargo",
+      "clippy",
+      "--workspace",
+      "--locked",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 25.307,
+    "log": "tmp/release-readiness-20261017/clippy.log",
+    "sha256": "d18abdf6b53cbd473a1770f51e7355875cf6afe6c89ab9064e5eebbad0d72874"
+  },
+  {
+    "name": "build",
+    "command": [
+      "/home/hideki/.cargo/bin/cargo",
+      "build",
+      "--locked",
+      "-p",
+      "dir-simulator",
+      "--bin",
+      "dir-simulator",
+      "--example",
+      "control_checkpoint"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 6.642,
+    "log": "tmp/release-readiness-20261017/build.log",
+    "sha256": "e262ba3de9868a609781ad43e933e7c3fbdb40e36885f05059f61d55bb5cfc6f"
+  }
+]

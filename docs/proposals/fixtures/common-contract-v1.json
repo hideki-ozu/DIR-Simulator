@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "status": "design_vectors_not_product_tests",
+  "vectors": [
+    {
+      "id": "P-CORE-T01-V01",
+      "test_id": "P-CORE-T01",
+      "kind": "wire_envelope",
+      "input": {
+        "protocol": "igmp",
+        "encapsulation": "ip_packet",
+        "extra_fields": [
+          "vid",
+          "source_mac",
+          "destination_mac"
+        ]
+      },
+      "expected": {
+        "prepare": "accept"
+      },
+      "basis": "共通wire §2.1のpacket discriminated union。正常base/対象portを前提とするenvelope単体vector"
+    },
+    {
+      "id": "P-CORE-T01-V02",
+      "test_id": "P-CORE-T01",
+      "kind": "wire_envelope",
+      "input": {
+        "protocol": "mld",
+        "encapsulation": "mac_frame_fcs",
+        "extra_fields": []
+      },
+      "expected": {
+        "prepare": "reject"
+      },
+      "basis": "共通wire §2.1のpacket discriminated union。正常base/対象portを前提とするenvelope単体vector"
+    },
+    {
+      "id": "P-CORE-T01-V03",
+      "test_id": "P-CORE-T01",
+      "kind": "wire_envelope",
+      "input": {
+        "protocol": "rstp",
+        "encapsulation": "mac_frame_fcs",
+        "extra_fields": []
+      },
+      "expected": {
+        "prepare": "accept"
+      },
+      "basis": "共通wire §2.1のpacket discriminated union。正常base/対象portを前提とするenvelope単体vector。採用した将来設計のenvelope契約であり現行製品の受理結果ではない"
+    },
+    {
+      "id": "P-CORE-T01-V04",
+      "test_id": "P-CORE-T01",
+      "kind": "wire_envelope",
+      "input": {
+        "protocol": "igmp",
+        "encapsulation": "ip_packet",
+        "extra_fields": [
+          "vid",
+          "source_mac",
+          "destination_mac",
+          "protocol_revision"
+        ]
+      },
+      "expected": {
+        "prepare": "reject"
+      },
+      "basis": "共通wire §2.1のpacket discriminated union。正常base/対象portを前提とするenvelope単体vector"
+    },
+    {
+      "id": "P-CORE-T02-V01",
+      "test_id": "P-CORE-T02",
+      "kind": "phase_order",
+      "input": {
+        "events": [
+          {
+            "id": "select",
+            "time_ps": "10",
+            "delta": 0,
+            "phase": 2,
+            "seq": 0
+          },
+          {
+            "id": "arrival",
+            "time_ps": "10",
+            "delta": 0,
+            "phase": 1,
+            "seq": 2
+          },
+          {
+            "id": "expiry",
+            "time_ps": "10",
+            "delta": 0,
+            "phase": 0,
+            "seq": 3
+          }
+        ]
+      },
+      "expected": {
+        "order": [
+          "expiry",
+          "arrival",
+          "select"
+        ]
+      },
+      "basis": "FES tuple lexicographic order"
+    },
+    {
+      "id": "P-CORE-T02-V02",
+      "test_id": "P-CORE-T02",
+      "kind": "phase_order",
+      "input": {
+        "events": [
+          {
+            "id": "next_delta",
+            "time_ps": "10",
+            "delta": 1,
+            "phase": 0,
+            "seq": 0
+          },
+          {
+            "id": "current_select",
+            "time_ps": "10",
+            "delta": 0,
+            "phase": 2,
+            "seq": 5
+          }
+        ]
+      },
+      "expected": {
+        "order": [
+          "current_select",
+          "next_delta"
+        ]
+      },
+      "basis": "delta precedes phase in existing FES tuple"
+    },
+    {
+      "id": "P-CORE-T03-V01",
+      "test_id": "P-CORE-T03",
+      "kind": "result_schema",
+      "input": {
+        "base_schema": 2,
+        "controlled_export": false,
+        "metric_v2": false
+      },
+      "expected": {
+        "result_schema": 2
+      },
+      "basis": "P-CORE-S03: opt-in controlled export/V2 ->schema3; normal profile output unchanged"
+    },
+    {
+      "id": "P-CORE-T03-V02",
+      "test_id": "P-CORE-T03",
+      "kind": "result_schema",
+      "input": {
+        "base_schema": 2,
+        "controlled_export": true,
+        "metric_v2": false
+      },
+      "expected": {
+        "result_schema": 3
+      },
+      "basis": "P-CORE-S03: opt-in controlled export/V2 ->schema3; normal profile output unchanged"
+    }
+  ]
+}

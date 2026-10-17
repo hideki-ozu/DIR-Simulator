@@ -1,0 +1,612 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "design-only; fixture and trace checks do not execute or validate product behavior",
+  "recomputation_scope": {
+    "bytes": "IP lengths/header and message checksums only; acceptance/action/state assertions remain design-review conditions",
+    "wire_envelope": "tagged packet envelope only; assumes valid base configuration and ports",
+    "wire_frames": "802.3/EtherType bounds and FCS input integrity only; protocol acceptance/action/state assertions remain structure-only",
+    "other_oracles": "only the fields explicitly compared by oracle(kind, vector)"
+  },
+  "result": "pass",
+  "inputs": {
+    "proposal_trace_documents": 10,
+    "trace_nodes": 162,
+    "fixture_files": 8,
+    "vectors": 1322
+  },
+  "trace": {
+    "requirements_checked": 27,
+    "requirements_reaching_verification": 27,
+    "requirements_without_full_chain": []
+  },
+  "vectors": {
+    "recomputed": 115,
+    "structure_only": 1207,
+    "unknown_kind": 0,
+    "kind_coverage": {
+      "atomic_capacity": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "atomic_failure": {
+        "total": 5,
+        "recomputed": 0,
+        "structure_only": 5,
+        "unknown": 0
+      },
+      "boundary_overlap": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "boundary_prefix": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "bridge_binding": {
+        "total": 3,
+        "recomputed": 0,
+        "structure_only": 3,
+        "unknown": 0
+      },
+      "bridge_catalog": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "bridge_fdb_flush": {
+        "total": 4,
+        "recomputed": 4,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "bridge_learning": {
+        "total": 4,
+        "recomputed": 4,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "bridge_map_order": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "bridge_relearning": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "bridge_scope": {
+        "total": 3,
+        "recomputed": 3,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "bytes": {
+        "total": 30,
+        "recomputed": 30,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "calculation": {
+        "total": 17,
+        "recomputed": 17,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "capacity_atomicity": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "checked_sum": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "checkpoint_gate": {
+        "total": 3,
+        "recomputed": 0,
+        "structure_only": 3,
+        "unknown": 0
+      },
+      "checkpoint_mismatch": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "checkpoint_phase": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "checkpoint_publication": {
+        "total": 3,
+        "recomputed": 3,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "checkpoint_tokens": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "cleanup_order": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "codec_payload_exact": {
+        "total": 5,
+        "recomputed": 0,
+        "structure_only": 5,
+        "unknown": 0
+      },
+      "composite_admission": {
+        "total": 3,
+        "recomputed": 0,
+        "structure_only": 3,
+        "unknown": 0
+      },
+      "composite_capacity": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "control_boundary": {
+        "total": 4,
+        "recomputed": 0,
+        "structure_only": 4,
+        "unknown": 0
+      },
+      "crc_arithmetic": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "epoch_noop": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "fallback": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "filter_union": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "fragment_formula": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "frozen_export": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "fsm_applicant": {
+        "total": 768,
+        "recomputed": 0,
+        "structure_only": 768,
+        "unknown": 0
+      },
+      "fsm_applicant_admin": {
+        "total": 24,
+        "recomputed": 0,
+        "structure_only": 24,
+        "unknown": 0
+      },
+      "fsm_leaveall": {
+        "total": 8,
+        "recomputed": 0,
+        "structure_only": 8,
+        "unknown": 0
+      },
+      "fsm_leaveall_sequence": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "fsm_local_leaveall_tx": {
+        "total": 3,
+        "recomputed": 0,
+        "structure_only": 3,
+        "unknown": 0
+      },
+      "fsm_periodic": {
+        "total": 8,
+        "recomputed": 0,
+        "structure_only": 8,
+        "unknown": 0
+      },
+      "fsm_registrar": {
+        "total": 72,
+        "recomputed": 0,
+        "structure_only": 72,
+        "unknown": 0
+      },
+      "fsm_registrar_admin": {
+        "total": 18,
+        "recomputed": 0,
+        "structure_only": 18,
+        "unknown": 0
+      },
+      "fsm_tx_action": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "fsm_tx_capacity": {
+        "total": 12,
+        "recomputed": 0,
+        "structure_only": 12,
+        "unknown": 0
+      },
+      "fsm_unit": {
+        "total": 124,
+        "recomputed": 0,
+        "structure_only": 124,
+        "unknown": 0
+      },
+      "gap_rearrival": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "gate_fit": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "gauge_integral": {
+        "total": 3,
+        "recomputed": 3,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "gauge_resume": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "half_open": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "hex_decode": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "hex_validation": {
+        "total": 3,
+        "recomputed": 3,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "history_storage": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "horizon": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "integration_rule": {
+        "total": 25,
+        "recomputed": 0,
+        "structure_only": 25,
+        "unknown": 0
+      },
+      "lease_timeline": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "mailbox_capacity": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "malformed_atomic": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "malformed_boundary": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "manifest_set": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "metric_descriptor": {
+        "total": 4,
+        "recomputed": 0,
+        "structure_only": 4,
+        "unknown": 0
+      },
+      "packing_arithmetic": {
+        "total": 5,
+        "recomputed": 5,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "phase_order": {
+        "total": 3,
+        "recomputed": 3,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "point_summary": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "port_policy": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "preemption_prefix": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "preemption_timeline": {
+        "total": 3,
+        "recomputed": 0,
+        "structure_only": 3,
+        "unknown": 0
+      },
+      "prepare_rejection": {
+        "total": 3,
+        "recomputed": 0,
+        "structure_only": 3,
+        "unknown": 0
+      },
+      "prepare_rule": {
+        "total": 9,
+        "recomputed": 0,
+        "structure_only": 9,
+        "unknown": 0
+      },
+      "query_budget": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "queue_revalidation": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "readiness_gate": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "ready_pause": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "recovery_window": {
+        "total": 4,
+        "recomputed": 4,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "registration_union": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "replay_grouping": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "replication_terminal": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "request_retry": {
+        "total": 3,
+        "recomputed": 0,
+        "structure_only": 3,
+        "unknown": 0
+      },
+      "result_schema": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "run_boundary": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "same_time_order": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "scenario": {
+        "total": 5,
+        "recomputed": 0,
+        "structure_only": 5,
+        "unknown": 0
+      },
+      "selection_order": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "sequence_allocation": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "simultaneous_expiry": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "source_order": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "stale_timer": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "time_code": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "timer_arithmetic": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "timer_boundary": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "timer_overflow": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "timer_refresh": {
+        "total": 2,
+        "recomputed": 0,
+        "structure_only": 2,
+        "unknown": 0
+      },
+      "timestamp_bucket": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "unknown_field": {
+        "total": 1,
+        "recomputed": 0,
+        "structure_only": 1,
+        "unknown": 0
+      },
+      "wire_decode": {
+        "total": 13,
+        "recomputed": 0,
+        "structure_only": 13,
+        "unknown": 0
+      },
+      "wire_envelope": {
+        "total": 4,
+        "recomputed": 4,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "wire_mac_frame_fcs": {
+        "total": 19,
+        "recomputed": 0,
+        "structure_only": 19,
+        "unknown": 0
+      },
+      "wire_reject": {
+        "total": 7,
+        "recomputed": 0,
+        "structure_only": 7,
+        "unknown": 0
+      },
+      "wire_time": {
+        "total": 1,
+        "recomputed": 1,
+        "structure_only": 0,
+        "unknown": 0
+      },
+      "wire_timing": {
+        "total": 2,
+        "recomputed": 2,
+        "structure_only": 0,
+        "unknown": 0
+      }
+    }
+  },
+  "errors": []
+}

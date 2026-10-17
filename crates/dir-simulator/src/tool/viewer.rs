@@ -15,6 +15,8 @@ const ETHERNET_MODEL: &str = include_str!("viewer/assets/ethernet-model.js");
 const ETHERNET_APP: &str = include_str!("viewer/assets/ethernet-app.js");
 const TRANSACTION_MODEL: &str = include_str!("viewer/assets/transaction-model.js");
 const TRANSACTION_APP: &str = include_str!("viewer/assets/transaction-app.js");
+const CONTROLLED_MODEL: &str = include_str!("viewer/assets/controlled-model.js");
+const CONTROLLED_APP: &str = include_str!("viewer/assets/controlled-app.js");
 
 /// A published standalone Viewer and hashes for its fixed inline assets.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -100,7 +102,7 @@ fn render(result: &Value) -> Result<RenderedViewer, Diagnostic> {
         "<link rel=\"stylesheet\" href=\"style.css\">",
         &format!("<style>{style}</style>"),
     )?;
-    let mut script_hashes = Vec::with_capacity(6);
+    let mut script_hashes = Vec::with_capacity(8);
     for (index, (tag, asset)) in [
         ("<script src=\"model.js\"></script>", MODEL),
         (
@@ -115,6 +117,14 @@ fn render(result: &Value) -> Result<RenderedViewer, Diagnostic> {
         (
             "<script src=\"transaction-app.js\"></script>",
             TRANSACTION_APP,
+        ),
+        (
+            "<script src=\"controlled-model.js\"></script>",
+            CONTROLLED_MODEL,
+        ),
+        (
+            "<script src=\"controlled-app.js\"></script>",
+            CONTROLLED_APP,
         ),
         ("<script src=\"app.js\"></script>", APP),
     ]
@@ -161,13 +171,23 @@ pub(crate) fn render_input_with_policy(input: &Path) -> Result<RenderedViewer, D
     let result: Value = serde_json::from_slice(&bytes).map_err(|e| {
         Diagnostic::prepare(format!("Invalid result JSON {}: {e}", input.display()))
     })?;
-    if !matches!(result["schema_version"].as_u64(), Some(1 | 2)) {
+    if !matches!(result["schema_version"].as_u64(), Some(1..=3)) {
         return Err(Diagnostic::prepare(
-            "Viewer requires result schema_version 1 or 2",
+            "Viewer requires result schema_version 1, 2 or 3",
         ));
     }
     if !result["simulation"].is_object() {
         return Err(Diagnostic::prepare("Result simulation must be an object"));
+    }
+    if result["schema_version"] == 3
+        && (!result["simulation"]["model_records"].is_array()
+            || result["metadata"]["model_profile"]
+                .as_str()
+                .is_none_or(str::is_empty))
+    {
+        return Err(Diagnostic::prepare(
+            "Schema 3 viewer requires declared profile and model records",
+        ));
     }
     if result["schema_version"] == 2
         && (!matches!(
@@ -180,6 +200,10 @@ pub(crate) fn render_input_with_policy(input: &Path) -> Result<RenderedViewer, D
                     | "ethernet.l2.dynamic.v1"
                     | "can.ethernet.gateway.v1"
                     | "ethernet.tsn.v1"
+                    | "can.ethernet.tsn.v1"
+                    | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.preemption.abstract.v1"
+                    | "ethernet.control.wire.experimental.v1"
                     | "ethernet.l2.store-forward.v2"
                     | "ethernet.l2.100base-t1.v1"
                     | "can.fd.precomputed.v1"
@@ -323,7 +347,7 @@ mod policy_tests {
         let rendered = render(&result).unwrap();
         let scripts = bodies(&rendered.html, "<script>", "</script>");
         let styles = bodies(&rendered.html, "<style>", "</style>");
-        assert_eq!(scripts.len(), 6);
+        assert_eq!(scripts.len(), 8);
         assert_eq!(styles.len(), 1);
         assert_eq!(
             scripts
@@ -348,7 +372,7 @@ mod policy_tests {
         assert!(!embedded[0].contains('<'));
         assert!(!embedded[0].contains(['\u{2028}', '\u{2029}']));
         assert_eq!(serde_json::from_str::<Value>(embedded[0]).unwrap(), result);
-        assert_eq!(rendered.html.matches("</script>").count(), 7);
+        assert_eq!(rendered.html.matches("</script>").count(), 9);
         let different = render(&json!({"schema_version": 2, "simulation": {}})).unwrap();
         assert_eq!(rendered.script_hashes, different.script_hashes);
         assert_eq!(rendered.style_hashes, different.style_hashes);

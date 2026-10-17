@@ -1,0 +1,9 @@
+{
+  "case": "P-CHECKPOINT-T02-V02",
+  "before_sha256": "214c255b4cc71fdd1025a9e4d13e7afb663290bc3d6dda2e0d92e95421b90025",
+  "after_sha256": "ce029c1528bc7f5ec4dc6f480f921d327ae4b59f780b3836522ef46dca9667e8",
+  "change": "Unlisted file extra.bin becomes inputs/extra.bin; expected valid=false/reason=unlisted_file unchanged.",
+  "reason": "Root extra.bin first violates allowed bundle namespace. Use a permitted inputs path to isolate the intended exact-manifest file-set rejection. Original invalid root path remains a separate hardening regression.",
+  "basis": "実行制御・指標・checkpoint実装設計書 §checkpoint bundle format: only manifest/state/inputs/objects allowed.",
+  "product_execution_claimed": false
+}

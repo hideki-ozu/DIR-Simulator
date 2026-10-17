@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "status": "design_vectors_not_product_tests",
+  "vectors": [
+    {
+      "id": "P-RSTP-T01-V01",
+      "test_id": "P-RSTP-T01",
+      "kind": "readiness_gate",
+      "input": {
+        "protocol": "rstp",
+        "protocol_revision": "ieee802.1q-2022.rstp.initial.v1",
+        "normative_fulltext_verified": false,
+        "transition_tables_complete": false,
+        "independent_normative_vectors": 0
+      },
+      "expected": {
+        "design_ready": false,
+        "prepare": "reject_unapproved_revision",
+        "normative_test_status": "blocked"
+      },
+      "basis": "§5.5: hypothetical missing-design negative gate; not the current readiness result and not a standards conformance vector"
+    },
+    {
+      "id": "P-MVRP-T01-V01",
+      "test_id": "P-MVRP-T01",
+      "kind": "readiness_gate",
+      "input": {
+        "protocol": "mvrp",
+        "protocol_revision": "ieee802.1q-2022.mvrp.initial.v1",
+        "normative_fulltext_verified": false,
+        "transition_tables_complete": false,
+        "independent_normative_vectors": 0
+      },
+      "expected": {
+        "design_ready": false,
+        "prepare": "reject_unapproved_revision",
+        "normative_test_status": "blocked"
+      },
+      "basis": "§5.5: hypothetical missing-design negative gate; not the current readiness result and not a standards conformance vector"
+    },
+    {
+      "id": "P-RSTP-T02-V01",
+      "test_id": "P-RSTP-T02",
+      "kind": "hex_validation",
+      "input": {
+        "bytes_hex": ""
+      },
+      "expected": {
+        "prepare": "reject",
+        "reason": "empty",
+        "checksum": "not_applicable"
+      },
+      "basis": "3.3: outer hex validation, not BPDU bytes"
+    },
+    {
+      "id": "P-RSTP-T02-V02",
+      "test_id": "P-RSTP-T02",
+      "kind": "hex_validation",
+      "input": {
+        "bytes_hex": "0"
+      },
+      "expected": {
+        "prepare": "reject",
+        "reason": "odd_hex",
+        "checksum": "not_applicable"
+      },
+      "basis": "3.3: outer hex validation, not BPDU bytes"
+    },
+    {
+      "id": "P-RSTP-T02-V03",
+      "test_id": "P-RSTP-T02",
+      "kind": "hex_validation",
+      "input": {
+        "bytes_hex": "0g"
+      },
+      "expected": {
+        "prepare": "reject",
+        "reason": "non_hex",
+        "checksum": "not_applicable"
+      },
+      "basis": "3.3: outer hex validation, not BPDU bytes"
+    },
+    {
+      "id": "P-RSTP-T02-V04",
+      "test_id": "P-RSTP-T02",
+      "kind": "hex_decode",
+      "input": {
+        "bytes_hex": "00Aa10ff"
+      },
+      "expected": {
+        "bytes": [
+          0,
+          170,
+          16,
+          255
+        ],
+        "length_bytes": 4,
+        "canonical_hex": "00aa10ff",
+        "semantic": "opaque non-PDU bytes; frame_bounds if received",
+        "checksum": "not_applicable"
+      },
+      "basis": "3.3: hex only, not BPDU conformance"
+    },
+    {
+      "id": "P-RSTP-T02-V05",
+      "test_id": "P-RSTP-T02",
+      "kind": "wire_time",
+      "input": {
+        "mac_bytes": 64,
+        "preamble_sfd_bytes": 8,
+        "ifg_bytes": 12,
+        "rate_bps": "100000000",
+        "sof_ps": "0"
+      },
+      "expected": {
+        "eof_ps": "5760000",
+        "release_ps": "6720000",
+        "formula": "ceil((mac_bytes+preamble_sfd_bytes)*8*10^12/rate_bps); ceil((mac_bytes+preamble_sfd_bytes+ifg_bytes)*8*10^12/rate_bps)"
+      },
+      "basis": "6 / P-RSTP-T02: DIR media arithmetic, not a BPDU encoding"
+    },
+    {
+      "id": "P-RSTP-T02-V06",
+      "test_id": "P-RSTP-T02",
+      "kind": "timer_boundary",
+      "input": {
+        "deadline_ps": "100",
+        "run_end_ps": "101",
+        "observations_ps": [
+          "99",
+          "100",
+          "101"
+        ]
+      },
+      "expected": {
+        "expired": [
+          false,
+          true,
+          true
+        ],
+        "callback_times_ps": [
+          "100"
+        ]
+      },
+      "basis": "5.1: positive timer deadline executed once in [0,T)"
+    },
+    {
+      "id": "P-RSTP-T02-V07",
+      "test_id": "P-RSTP-T02",
+      "kind": "run_boundary",
+      "input": {
+        "arrival_ps": "100",
+        "deadline_ps": "100",
+        "run_end_ps": "100"
+      },
+      "expected": {
+        "receive_callbacks": 0,
+        "timer_callbacks": 0,
+        "pending": 2
+      },
+      "basis": "3.3 / 5.1: [0,T)"
+    },
+    {
+      "id": "P-RSTP-T02-V08",
+      "test_id": "P-RSTP-T02",
+      "kind": "timer_overflow",
+      "input": {
+        "now_ps": "18446744073709551615",
+        "duration_ps": "1"
+      },
+      "expected": {
+        "result": "run_failure",
+        "committed_effects": 0
+      },
+      "basis": "5.1 / 5.3: checked u64 addition"
+    },
+    {
+      "id": "P-RSTP-T02-V09",
+      "test_id": "P-RSTP-T02",
+      "kind": "port_policy",
+      "input": {
+        "link_up": true,
+        "role": "designated",
+        "learning": true,
+        "forwarding": false,
+        "vid_allowed": true
+      },
+      "expected": {
+        "learn_data": true,
+        "forward_data": false,
+        "drop_reason": "stp_discarding",
+        "control_lane_eligible": true
+      },
+      "basis": "5.2: DIR projection only; role name is illustrative, not normative machine output"
+    },
+    {
+      "id": "P-RSTP-T02-V10",
+      "test_id": "P-RSTP-T02",
+      "kind": "queue_revalidation",
+      "input": {
+        "link_up": true,
+        "forwarding": false,
+        "waiting_data": 2,
+        "active_data": 1
+      },
+      "expected": {
+        "waiting_dropped": 2,
+        "active_aborted": 0,
+        "reason": "stp_discarding"
+      },
+      "basis": "5.2: active media occupancy not cancelled"
+    },
+    {
+      "id": "P-RSTP-T02-V11",
+      "test_id": "P-RSTP-T02",
+      "kind": "atomic_capacity",
+      "input": {
+        "pending_tx": 1,
+        "max_pending_tx": 1,
+        "batch_tx_additions": 1,
+        "batch_policy_change": true,
+        "policy_epoch_before": "7"
+      },
+      "expected": {
+        "result": "run_failure",
+        "pending_tx": 1,
+        "policy_epoch_after": "7",
+        "committed_effects": 0
+      },
+      "basis": "5.3: all effects preflight; synthetic planner input, not BPDU"
+    },
+    {
+      "id": "P-MVRP-T02-V01",
+      "test_id": "P-MVRP-T02",
+      "kind": "registration_union",
+      "input": {
+        "static_vids": [
+          10
+        ],
+        "wire_registered_vids": [
+          20
+        ],
+        "authorized_vids": [
+          20
+        ],
+        "withdraw_vid": 20
+      },
+      "expected": {
+        "effective_before": [
+          10,
+          20
+        ],
+        "effective_after": [
+          10
+        ],
+        "formula": "S union (W intersection A)"
+      },
+      "basis": "5.2: static grant survives wire withdrawal"
+    },
+    {
+      "id": "P-MVRP-T02-V02",
+      "test_id": "P-MVRP-T02",
+      "kind": "registration_union",
+      "input": {
+        "static_vids": [
+          10
+        ],
+        "wire_registered_vids": [
+          10
+        ],
+        "authorized_vids": [
+          10
+        ],
+        "withdraw_vid": 10
+      },
+      "expected": {
+        "effective_before": [
+          10
+        ],
+        "effective_after": [
+          10
+        ],
+        "formula": "S union (W intersection A)"
+      },
+      "basis": "5.2: same VID static and wire"
+    },
+    {
+      "id": "P-MVRP-T02-V03",
+      "test_id": "P-MVRP-T02",
+      "kind": "stale_timer",
+      "input": {
+        "timer_token": "1",
+        "current_token": "2",
+        "policy_epoch": "9",
+        "registered_vids": [
+          20
+        ]
+      },
+      "expected": {
+        "outcome": "stale",
+        "reason": "timer_token",
+        "registered_vids": [
+          20
+        ],
+        "policy_epoch": "9",
+        "effects": []
+      },
+      "basis": "5.1 / 5.3: timer key generation not global policy epoch"
+    },
+    {
+      "id": "P-MVRP-T02-V04",
+      "test_id": "P-MVRP-T02",
+      "kind": "phase_order",
+      "input": {
+        "deadline_ps": "100",
+        "arrival_ps": "100",
+        "selection_ps": "100"
+      },
+      "expected": {
+        "ordered_events": [
+          "timer_phase0",
+          "receive_phase1",
+          "select_phase2"
+        ],
+        "formula": "phase0 < phase1 < phase2"
+      },
+      "basis": "5.1: no claim about normative registrar transition"
+    },
+    {
+      "id": "P-MVRP-T02-V05",
+      "test_id": "P-MVRP-T02",
+      "kind": "malformed_atomic",
+      "input": {
+        "synthetic_decoded_attributes": [
+          {
+            "vid": 20,
+            "valid": true
+          },
+          {
+            "vid": 4095,
+            "valid": false
+          }
+        ],
+        "registered_before": []
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "protocol_malformed",
+        "registered_after": [],
+        "effects": []
+      },
+      "basis": "3.3 / 5.3: malformed batch contract; not encoded PDU"
+    },
+    {
+      "id": "P-MVRP-T02-V06",
+      "test_id": "P-MVRP-T02",
+      "kind": "unknown_field",
+      "input": {
+        "packet_extra_field": "unexpected"
+      },
+      "expected": {
+        "prepare": "reject_unknown_field",
+        "committed_effects": 0
+      },
+      "basis": "3.2: all JSON objects reject unknown fields"
+    },
+    {
+      "id": "P-RSTP-T02-V12",
+      "test_id": "P-RSTP-T02",
+      "kind": "crc_arithmetic",
+      "input": {
+        "bytes_hex": "313233343536373839"
+      },
+      "expected": {
+        "length_bytes": 9,
+        "crc32_hex": "cbf43926",
+        "fcs_little_endian_hex": "2639f4cb",
+        "semantic": "ASCII 123456789; synthetic checksum input, not Ethernet/BPDU PDU"
+      },
+      "basis": "runtime/ethernet.rs::crc32 existing reflected CRC arithmetic; independent known input; not normative BPDU validation"
+    }
+  ]
+}

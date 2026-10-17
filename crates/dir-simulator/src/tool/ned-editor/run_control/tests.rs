@@ -1415,7 +1415,7 @@ fn real_worker_viewer_render_without_http() {
     let policy = viewer_server::render_with_limits(&m.shared, &r, &input.file, &output, 1).unwrap();
     let file = viewer.open_file(name).unwrap();
     assert_eq!(hash_file(&file).unwrap(), policy.sha256);
-    assert_eq!(policy.script_hashes.len(), 6);
+    assert_eq!(policy.script_hashes.len(), 8);
     assert_eq!(policy.style_hashes.len(), 1);
     let bytes = viewer.read(name, 1024 * 1024).unwrap();
     assert!(

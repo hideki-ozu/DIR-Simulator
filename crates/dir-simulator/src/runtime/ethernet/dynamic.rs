@@ -94,6 +94,22 @@ struct Topology {
     generation: u64,
     converge_at: Option<u64>,
 }
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+enum WireProjectionKey {
+    Membership(crate::runtime::wire::membership::Key),
+    Router(crate::runtime::wire::membership::Key),
+    Compatibility(String, u16, bool),
+}
+#[derive(Debug, Clone, Default)]
+struct WireProjection {
+    policies: BTreeMap<String, crate::snapshot::wire::WirePortPolicy>,
+    registered: BTreeSet<(String, u16)>,
+    memberships:
+        BTreeMap<crate::runtime::wire::membership::Key, crate::runtime::wire::membership::Filter>,
+    routers: BTreeSet<crate::runtime::wire::membership::Key>,
+    flood: BTreeSet<(String, u16, bool)>,
+    generations: BTreeMap<WireProjectionKey, u64>,
+}
 #[derive(Debug)]
 pub(crate) struct DynamicState {
     prepared: Arc<PreparedDynamicEthernet>,
@@ -106,10 +122,15 @@ pub(crate) struct DynamicState {
     epoch: u64,
     control_cursor: usize,
     audit_cursor: u64,
+    wire_enabled: bool,
+    wire_tree_bridges: BTreeSet<String>,
+    wire_registration_ports: BTreeSet<String>,
+    wire: WireProjection,
 }
 /// Changed partitions are fully built before commit and swapped without allocation.
 #[derive(Debug)]
 pub(crate) struct DynamicDelta {
+    wire: Option<WireProjection>,
     mac: Option<Partition<MacKey, String>>,
     membership: Option<Partition<MembershipKey, SourceFilter>>,
     routers: Option<Partition<RouterKey, bool>>,
@@ -125,12 +146,54 @@ pub(crate) struct DynamicDelta {
 }
 impl DynamicState {
     pub(crate) fn new(prepared: &PreparedDynamicEthernet, base: &PreparedEthernet) -> Result<Self> {
+        Self::new_with_wire(prepared, base, None)
+    }
+    pub(crate) fn new_with_wire(
+        prepared: &PreparedDynamicEthernet,
+        base: &PreparedEthernet,
+        wire: Option<&crate::types::wire::PreparedWire>,
+    ) -> Result<Self> {
+        use crate::types::wire::WireProtocol;
+        let wire_tree_bridges: BTreeSet<_> = wire
+            .into_iter()
+            .flat_map(|w| &w.adapters)
+            .filter(|a| a.protocol == WireProtocol::Rstp)
+            .map(|a| a.bridge.clone())
+            .collect();
+        let wire_registration_ports = wire
+            .into_iter()
+            .flat_map(|w| &w.adapters)
+            .filter(|a| a.protocol == WireProtocol::Mvrp)
+            .flat_map(|a| a.ports.clone())
+            .collect();
+        let mut projection = WireProjection::default();
+        for adapter in wire
+            .into_iter()
+            .flat_map(|w| &w.adapters)
+            .filter(|a| a.protocol == WireProtocol::Rstp)
+        {
+            for port in &adapter.ports {
+                projection.policies.insert(
+                    port.clone(),
+                    crate::snapshot::wire::WirePortPolicy {
+                        role: "disabled".into(),
+                        learning: false,
+                        forwarding: false,
+                        link_up: true,
+                    },
+                );
+            }
+        }
         let up = prepared
             .links
             .iter()
             .map(|l| (l.id.clone(), l.up))
             .collect();
-        let roles = tree(prepared, base, &up)?;
+        let mut abstract_prepared = prepared.clone();
+        abstract_prepared
+            .bridges
+            .retain(|bridge, _| !wire_tree_bridges.contains(bridge));
+        let roles = tree(&abstract_prepared, base, &up)?;
         Ok(Self {
             prepared: Arc::new(prepared.clone()),
             base: Arc::new(base.clone()),
@@ -147,10 +210,15 @@ impl DynamicState {
             epoch: 0,
             control_cursor: 0,
             audit_cursor: 0,
+            wire_enabled: wire.is_some(),
+            wire_tree_bridges,
+            wire_registration_ports,
+            wire: projection,
         })
     }
     fn delta(&self) -> DynamicDelta {
         DynamicDelta {
+            wire: None,
             mac: None,
             membership: None,
             routers: None,
@@ -227,6 +295,13 @@ impl DynamicState {
             .iter()
             .map(|p| (p.port.clone(), p.vlans.clone()))
             .collect();
+        let wire = d.wire.as_ref().unwrap_or(&self.wire);
+        for (port, vid) in &wire.registered {
+            effective_vlans
+                .entry(port.clone())
+                .or_default()
+                .insert(*vid, true);
+        }
         for key in d
             .registrations
             .as_ref()
@@ -234,15 +309,31 @@ impl DynamicState {
             .entries
             .keys()
         {
+            if self.wire_registration_ports.contains(&key.port) {
+                continue;
+            }
             effective_vlans
                 .entry(key.port.clone())
                 .or_default()
                 .insert(key.vid, true);
         }
+        let mut roles = topology.roles.clone();
+        for (port, policy) in &wire.policies {
+            let role = if !policy.link_up {
+                PortRole::Disabled
+            } else if !policy.forwarding {
+                PortRole::Alternate
+            } else if policy.role.eq_ignore_ascii_case("root") {
+                PortRole::Root
+            } else {
+                PortRole::Designated
+            };
+            roles.insert(port.clone(), role);
+        }
         PolicySnapshot {
             policy_epoch: d.epoch,
             topology_generation: topology.generation,
-            roles: topology.roles.clone(),
+            roles,
             link_up,
             effective_vlans,
         }
@@ -273,8 +364,15 @@ impl DynamicState {
         }
     }
     pub(crate) fn snapshot_tables(&self) -> Value {
-        json!({"policy":self.snapshot_policy(),"mac":rows(&self.mac),"membership":rows(&self.membership),"router":rows(&self.routers),"registration":rows(&self.registrations),"next_deadline":self.next_deadline(),"converge_at":self.topology.converge_at})
+        let mut snapshot = json!({"policy":self.snapshot_policy(),"mac":rows(&self.mac),"membership":rows(&self.membership),"router":rows(&self.routers),"registration":rows(&self.registrations),"next_deadline":self.next_deadline(),"converge_at":self.topology.converge_at});
+        if self.wire_enabled {
+            snapshot["wire_membership"]=json!(self.wire.memberships.iter().map(|(key,filter)|json!({"key":key,"filter":{"mode":if filter.exclude{"exclude"}else{"include"},"sources":filter.sources}})).collect::<Vec<_>>());
+            snapshot["wire_router"] = json!(self.wire.routers);
+            snapshot["wire_compatibility_flood"] = json!(self.wire.flood);
+        }
+        snapshot
     }
+
     fn finish(
         &self,
         mut d: DynamicDelta,
@@ -491,13 +589,35 @@ impl DynamicState {
                 .generation
                 .checked_add(1)
                 .ok_or_else(|| error("topology generation overflow"))?;
-            t.converge_at = Some(
-                now.checked_add(self.prepared.convergence_ps)
-                    .ok_or_else(|| error("convergence overflow"))?,
-            );
+            let abstract_changed = d.control_records.iter().any(|record| {
+                if record.kind != "link_set" || record.outcome != "changed" {
+                    return false;
+                }
+                record
+                    .key
+                    .get("link")
+                    .and_then(Value::as_str)
+                    .and_then(|id| self.prepared.links.iter().find(|l| l.id == id))
+                    .is_some_and(|link| {
+                        link.ports
+                            .iter()
+                            .all(|p| !self.wire_tree_bridges.contains(owner(&self.base, p)))
+                    })
+            });
+            t.converge_at = abstract_changed
+                .then(|| {
+                    now.checked_add(self.prepared.convergence_ps)
+                        .ok_or_else(|| error("convergence overflow"))
+                })
+                .transpose()?;
             t.roles = closed_roles(&self.prepared, &self.base, &t.link_up);
             let m = d.mac.get_or_insert_with(|| self.mac.clone());
-            let keys: Vec<_> = m.entries.keys().cloned().collect();
+            let keys: Vec<_> = m
+                .entries
+                .keys()
+                .filter(|key| !self.wire_tree_bridges.contains(&key.switch))
+                .cloned()
+                .collect();
             for key in keys {
                 let old = m.remove(&key, "mac", &mut changes);
                 audit(
@@ -564,7 +684,11 @@ impl DynamicState {
         {
             let t = d.topology.get_or_insert_with(|| self.topology.clone());
             let before = json!(t.roles);
-            t.roles = tree(&self.prepared, &self.base, &t.link_up)?;
+            let mut prepared = (*self.prepared).clone();
+            prepared
+                .bridges
+                .retain(|bridge, _| !self.wire_tree_bridges.contains(bridge));
+            t.roles = tree(&prepared, &self.base, &t.link_up)?;
             t.converge_at = None;
             changes.push(json!({"table":"roles","key":null,"before":before,"after":t.roles}));
             audit(
@@ -596,6 +720,14 @@ impl DynamicState {
             .find(|p| p.ingress == ingress || p.port == ingress)
             .ok_or_else(|| error("unknown learning ingress"))?;
         let device = &self.base.devices[p.device];
+        if self
+            .wire
+            .policies
+            .get(&p.port)
+            .is_some_and(|policy| !policy.learning)
+        {
+            return self.finish(d, now, changes);
+        }
         if device.kind != "switch" {
             return self.finish(d, now, changes);
         }
@@ -648,6 +780,9 @@ impl DynamicState {
         self.finish(d, now, changes)
     }
     pub(crate) fn apply(&mut self, d: DynamicDelta) {
+        if let Some(v) = d.wire {
+            self.wire = v;
+        }
         if let Some(v) = d.mac {
             self.mac = v;
         }
@@ -666,6 +801,337 @@ impl DynamicState {
         self.epoch = d.epoch;
         self.control_cursor = d.control_cursor;
         self.audit_cursor = d.audit_cursor;
+    }
+    /// Semantic reservations, including coalesced deadlines, rather than coordinator token count.
+    pub(crate) fn semantic_pending_after(&self, delta: Option<&DynamicDelta>) -> usize {
+        let current = self.delta();
+        let d = delta.unwrap_or(&current);
+        self.prepared
+            .controls
+            .len()
+            .saturating_sub(d.control_cursor)
+            .saturating_add(d.mac.as_ref().unwrap_or(&self.mac).entries.len())
+            .saturating_add(
+                d.membership
+                    .as_ref()
+                    .unwrap_or(&self.membership)
+                    .entries
+                    .len(),
+            )
+            .saturating_add(d.routers.as_ref().unwrap_or(&self.routers).entries.len())
+            .saturating_add(
+                d.registrations
+                    .as_ref()
+                    .unwrap_or(&self.registrations)
+                    .entries
+                    .len(),
+            )
+            .saturating_add(usize::from(
+                d.topology
+                    .as_ref()
+                    .unwrap_or(&self.topology)
+                    .converge_at
+                    .is_some(),
+            ))
+    }
+    pub(crate) fn wire_ingress_state(
+        &self,
+        ingress: &str,
+        delta: Option<&DynamicDelta>,
+    ) -> Option<(bool, bool)> {
+        let port = self
+            .base
+            .port_policies
+            .iter()
+            .find(|p| p.port == ingress || p.ingress == ingress)?;
+        let wire = delta.and_then(|d| d.wire.as_ref()).unwrap_or(&self.wire);
+        wire.policies
+            .get(&port.port)
+            .map(|p| (p.learning && p.link_up, p.forwarding && p.link_up))
+    }
+    /// Merge protocol projections and scoped removals into the same host callback.
+    /// FDB generation ledgers survive removals; matching stale expiry cannot remove relearned entries.
+    #[allow(clippy::too_many_arguments, clippy::type_complexity)]
+    pub(crate) fn plan_wire_in(
+        &self,
+        base: Option<DynamicDelta>,
+        now: u64,
+        policies: &BTreeMap<String, crate::snapshot::wire::WirePortPolicy>,
+        registered: &BTreeSet<(String, u16)>,
+        flush: &[crate::runtime::wire::WireFlushIntent],
+        policy_changed: bool,
+        topology_changed: bool,
+    ) -> Result<(
+        DynamicDelta,
+        Vec<Vec<crate::snapshot::wire::WireMacKey>>,
+        Vec<crate::snapshot::wire::WireMacEntry>,
+    )> {
+        use crate::snapshot::wire::{WireMacEntry, WireMacKey};
+        let mut d = base.unwrap_or_else(|| self.delta());
+        let mut changes = Vec::new();
+        let mut projection = d.wire.as_ref().unwrap_or(&self.wire).clone();
+        projection.policies = policies.clone();
+        projection.registered = registered.clone();
+        let previous = d.wire.as_ref().unwrap_or(&self.wire);
+        let changed = previous.policies != projection.policies
+            || previous.registered != projection.registered;
+        if changed {
+            d.dirty_ports.extend(
+                previous
+                    .policies
+                    .keys()
+                    .chain(projection.policies.keys())
+                    .cloned(),
+            );
+            d.dirty_ports.extend(
+                previous
+                    .registered
+                    .symmetric_difference(&projection.registered)
+                    .map(|(port, _)| port.clone()),
+            );
+            changes.push(json!({"table":"wire_projection","key":null,"before":{"ports":previous.policies,"registered":previous.registered},"after":{"ports":projection.policies,"registered":projection.registered}}));
+        }
+        d.wire = Some(projection);
+        if topology_changed {
+            let topology = d.topology.get_or_insert_with(|| self.topology.clone());
+            if topology.generation == self.topology.generation {
+                topology.generation = topology
+                    .generation
+                    .checked_add(1)
+                    .ok_or_else(|| error("topology generation overflow"))?;
+            }
+        }
+        let mut flushed = Vec::with_capacity(flush.len());
+        for intent in flush {
+            let table = d.mac.get_or_insert_with(|| self.mac.clone());
+            let keys: Vec<_> = table
+                .entries
+                .iter()
+                .filter(|(key, lease)| lease.value == intent.port && intent.vids.contains(&key.vid))
+                .map(|(key, _)| key.clone())
+                .collect();
+            let mut completed = Vec::with_capacity(keys.len());
+            for key in keys {
+                table.remove(&key, "mac", &mut changes);
+                completed.push(WireMacKey {
+                    switch: key.switch,
+                    vid: key.vid,
+                    mac: key.mac,
+                });
+            }
+            flushed.push(completed);
+        }
+        if changed || policy_changed || topology_changed || !changes.is_empty() {
+            d.epoch = self
+                .epoch
+                .checked_add(1)
+                .ok_or_else(|| error("policy epoch overflow"))?;
+            let mut record = d
+                .policy_record
+                .take()
+                .unwrap_or_else(|| DynamicPolicyRecord {
+                    time_ps: now,
+                    policy_epoch: d.epoch,
+                    topology_generation: 0,
+                    initial: false,
+                    changes: Vec::new(),
+                });
+            record.policy_epoch = d.epoch;
+            record.topology_generation = d.topology.as_ref().unwrap_or(&self.topology).generation;
+            record.changes.extend(changes);
+            d.policy_record = Some(record);
+            for record in &mut d.control_records {
+                record.epoch_after = d.epoch;
+            }
+        }
+        d.next_deadline = self.deadline(&d);
+        let mac = d
+            .mac
+            .as_ref()
+            .unwrap_or(&self.mac)
+            .entries
+            .iter()
+            .map(|(key, lease)| WireMacEntry {
+                switch: key.switch.clone(),
+                vid: key.vid,
+                mac: key.mac.clone(),
+                port: lease.value.clone(),
+                expires_at_ps: lease.expires_at.to_string(),
+                generation: lease.generation.to_string(),
+            })
+            .collect();
+        Ok((d, flushed, mac))
+    }
+    /// Store only effective source-filter projections. WireState retains every lease and expiry.
+    pub(crate) fn plan_wire_membership_in(
+        &self,
+        mut d: DynamicDelta,
+        now: u64,
+        memberships: &BTreeMap<
+            crate::runtime::wire::membership::Key,
+            crate::runtime::wire::membership::Filter,
+        >,
+        routers: &BTreeSet<crate::runtime::wire::membership::Key>,
+        flood: &BTreeSet<(String, u16, bool)>,
+    ) -> Result<DynamicDelta> {
+        use crate::runtime::wire::membership::{Filter, Key};
+        struct Change {
+            ledger: WireProjectionKey,
+            kind: &'static str,
+            key: Value,
+            before: Value,
+            after: Value,
+            order: (bool, u16, Option<std::net::IpAddr>, String, String),
+        }
+        let old = d.wire.as_ref().unwrap_or(&self.wire);
+        let key_json = |key: &Key, router: bool| json!({"switch":key.bridge,"vid":key.vid,"family":if key.group.is_ipv6(){"ipv6"}else{"ipv4"},"group":if router{None}else{Some(key.group.to_string())},"port":key.port});
+        let filter_json = |filter: Option<&Filter>| {
+            filter.map_or(Value::Null, |filter| {
+                json!(SourceFilter {
+                    mode: if filter.exclude {
+                        FilterMode::Exclude
+                    } else {
+                        FilterMode::Include
+                    },
+                    sources: filter.sources.clone()
+                })
+            })
+        };
+        let mut changes = Vec::new();
+        let keys: BTreeSet<_> = old
+            .memberships
+            .keys()
+            .chain(memberships.keys())
+            .cloned()
+            .collect();
+        for key in keys {
+            let before = old.memberships.get(&key);
+            let after = memberships.get(&key);
+            if before == after {
+                continue;
+            }
+            changes.push(Change {
+                ledger: WireProjectionKey::Membership(key.clone()),
+                kind: if after.is_some() {
+                    "wire_membership_set"
+                } else {
+                    "wire_membership_leave"
+                },
+                key: key_json(&key, false),
+                before: filter_json(before),
+                after: filter_json(after),
+                order: (
+                    key.group.is_ipv6(),
+                    key.vid,
+                    Some(key.group),
+                    key.port,
+                    key.bridge,
+                ),
+            });
+        }
+        for key in old.routers.union(routers) {
+            let before = old.routers.contains(key);
+            let after = routers.contains(key);
+            if before == after {
+                continue;
+            }
+            changes.push(Change {
+                ledger: WireProjectionKey::Router(key.clone()),
+                kind: if after {
+                    "wire_router_set"
+                } else {
+                    "wire_router_leave"
+                },
+                key: key_json(key, true),
+                before: if before { json!(true) } else { Value::Null },
+                after: if after { json!(true) } else { Value::Null },
+                order: (
+                    key.group.is_ipv6(),
+                    key.vid,
+                    None,
+                    key.port.clone(),
+                    key.bridge.clone(),
+                ),
+            });
+        }
+        for key in old.flood.union(flood) {
+            let before = old.flood.contains(key);
+            let after = flood.contains(key);
+            if before == after {
+                continue;
+            }
+            changes.push(Change {
+                ledger: WireProjectionKey::Compatibility(key.0.clone(), key.1, key.2),
+                kind: "wire_compatibility_flood",
+                key: json!({"switch":key.0,"vid":key.1,"family":if key.2{"ipv6"}else{"ipv4"}}),
+                before: json!(before),
+                after: json!(after),
+                order: (key.2, key.1, None, String::new(), key.0.clone()),
+            });
+        }
+        if changes.is_empty() {
+            return Ok(d);
+        }
+        changes.sort_by(|a, b| a.order.cmp(&b.order));
+        let mut projection = old.clone();
+        projection.memberships = memberships.clone();
+        projection.routers = routers.clone();
+        projection.flood = flood.clone();
+        d.epoch = self
+            .epoch
+            .checked_add(1)
+            .ok_or_else(|| error("policy epoch overflow"))?;
+        let mut policy_changes = Vec::new();
+        for change in changes {
+            let generation = projection
+                .generations
+                .get(&change.ledger)
+                .copied()
+                .unwrap_or(0)
+                .checked_add(1)
+                .ok_or_else(|| error("wire projection generation overflow"))?;
+            projection.generations.insert(change.ledger, generation);
+            let id = format!("@{}/{}", change.kind, d.audit_cursor);
+            d.audit_cursor = d
+                .audit_cursor
+                .checked_add(1)
+                .ok_or_else(|| error("audit ID overflow"))?;
+            policy_changes.push(json!({"table":change.kind,"key":change.key,"before":change.before,"after":change.after}));
+            d.control_records.push(DynamicControlRecord {
+                synthetic: true,
+                control_id: id,
+                kind: change.kind.into(),
+                scheduled_ps: now,
+                applied_ps: Some(now),
+                batch_ordinal: d.control_records.len() as u64,
+                epoch_before: self.epoch,
+                epoch_after: d.epoch,
+                generation: Some(generation),
+                outcome: "changed".into(),
+                key: change.key,
+                before: change.before,
+                after: change.after,
+            });
+        }
+        d.wire = Some(projection);
+        for record in &mut d.control_records {
+            record.epoch_after = d.epoch;
+        }
+        let mut record = d
+            .policy_record
+            .take()
+            .unwrap_or_else(|| DynamicPolicyRecord {
+                time_ps: now,
+                policy_epoch: d.epoch,
+                topology_generation: 0,
+                initial: false,
+                changes: Vec::new(),
+            });
+        record.policy_epoch = d.epoch;
+        record.topology_generation = d.topology.as_ref().unwrap_or(&self.topology).generation;
+        record.changes.extend(policy_changes);
+        d.policy_record = Some(record);
+        Ok(d)
     }
     pub(crate) fn select_egress(
         &self,
@@ -1015,7 +1481,7 @@ fn tree(
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
     use crate::types::ethernet::{EthernetDevice, EthernetDirection, EthernetPortPolicy};
     fn fixture() -> (PreparedEthernet, PreparedDynamicEthernet) {
@@ -1182,6 +1648,7 @@ mod tests {
             },
         ));
         let mut s = DynamicState::new(&p, &base).unwrap();
+        assert_eq!(s.snapshot_tables().as_object().unwrap().len(), 7);
         assert_eq!(
             s.snapshot_policy().roles["Net.s3.tx_c"],
             PortRole::Alternate
@@ -1595,4 +2062,236 @@ mod tests {
         assert_eq!(s.policy_epoch(), 0);
         assert!(s.mac.entries.is_empty());
     }
+    fn wire_config(base: &PreparedEthernet) -> crate::types::wire::PreparedWire {
+        use crate::types::wire::*;
+        let adapters = base
+            .devices
+            .iter()
+            .filter(|device| device.kind == "switch")
+            .map(|device| PreparedWireAdapter {
+                id: format!("rstp-{}", device.id),
+                protocol: WireProtocol::Rstp,
+                bridge: device.id.clone(),
+                ports: base
+                    .port_policies
+                    .iter()
+                    .filter(|p| base.devices[p.device].id == device.id)
+                    .map(|p| p.port.clone())
+                    .collect(),
+                max_pdu_bytes: 1500,
+                max_state_entries: 100,
+                max_pending_timers: 100,
+                max_pending_tx: 100,
+                max_control_steps: 10000,
+                options: WireOptions::Rstp(RstpConfig {
+                    bridge_id: 1,
+                    max_age: 5120,
+                    forward_delay: 3840,
+                    tx_hold_count: 6,
+                    ports: vec![],
+                }),
+            })
+            .collect();
+        PreparedWire {
+            adapters,
+            ports: BTreeMap::new(),
+            packets: vec![],
+            svre_exists: BTreeSet::new(),
+            registrar_modes: BTreeMap::new(),
+        }
+    }
+    fn wire_policy(learning: bool, forwarding: bool) -> crate::snapshot::wire::WirePortPolicy {
+        crate::snapshot::wire::WirePortPolicy {
+            role: "designated".into(),
+            learning,
+            forwarding,
+            link_up: true,
+        }
+    }
+    #[test]
+    fn wire_learning_scoped_flush_is_staged_and_preserves_relearn_generation() {
+        let (mut base, mut prepared) = fixture();
+        base.devices[3]
+            .vlan_fdb
+            .insert((10, "02:00:00:00:00:03".into()), "Net.s1.tx_a".into());
+        prepared.mac_keys.insert(MacKey {
+            switch: "Net.s1".into(),
+            vid: 20,
+            mac: "02:00:00:00:00:01".into(),
+        });
+        let mut state =
+            DynamicState::new_with_wire(&prepared, &base, Some(&wire_config(&base))).unwrap();
+        assert_eq!(
+            state.wire_ingress_state("Net.s1.rx_a", None),
+            Some((false, false))
+        );
+        state.apply(
+            state
+                .plan_learning("Net.s1.rx_a", 10, "02:00:00:00:00:01", 0)
+                .unwrap(),
+        );
+        assert!(state.mac.entries.is_empty());
+        let policies = BTreeMap::from([
+            ("Net.s1.tx_a".into(), wire_policy(true, false)),
+            ("Net.s1.tx_b".into(), wire_policy(true, true)),
+            ("Net.s1.tx_c".into(), wire_policy(false, false)),
+        ]);
+        let (delta, _, _) = state
+            .plan_wire_in(None, 0, &policies, &BTreeSet::new(), &[], true, true)
+            .unwrap();
+        assert_eq!(
+            state.wire_ingress_state("Net.s1.rx_a", Some(&delta)),
+            Some((true, false))
+        );
+        assert!(
+            state
+                .eligible_egress("Net.s1.tx_a", 10, &state.snapshot_policy_after(&delta))
+                .is_err()
+        );
+        assert_eq!(state.policy_epoch(), 0);
+        state.apply(delta);
+        for (port, vid, mac, time) in [
+            ("Net.s1.rx_a", 10, "02:00:00:00:00:01", 0),
+            ("Net.s1.rx_a", 20, "02:00:00:00:00:01", 1),
+            ("Net.s1.rx_b", 10, "02:00:00:00:00:02", 2),
+        ] {
+            state.apply(state.plan_learning(port, vid, mac, time).unwrap());
+        }
+        assert_eq!(state.mac.entries.len(), 3);
+        let flush = [crate::runtime::wire::WireFlushIntent {
+            reason: "rstp_topology_change".into(),
+            port: "Net.s1.tx_a".into(),
+            vids: vec![10],
+        }];
+        let (delta, removed, mac) = state
+            .plan_wire_in(None, 10, &policies, &BTreeSet::new(), &flush, false, false)
+            .unwrap();
+        assert_eq!(removed[0].len(), 1);
+        assert_eq!(removed[0][0].vid, 10);
+        assert_eq!(mac.len(), 2);
+        assert_eq!(state.mac.entries.len(), 3);
+        state.apply(delta);
+        assert_eq!(state.mac.entries.len(), 2);
+        assert_eq!(base.devices[3].vlan_fdb.len(), 1);
+        state.apply(
+            state
+                .plan_learning("Net.s1.rx_a", 10, "02:00:00:00:00:01", 20)
+                .unwrap(),
+        );
+        state.apply(state.plan_controls(1000).unwrap());
+        let entry = &state.mac.entries[&MacKey {
+            switch: "Net.s1".into(),
+            vid: 10,
+            mac: "02:00:00:00:00:01".into(),
+        }];
+        assert_eq!((entry.generation, entry.expires_at), (2, 1020));
+    }
+    #[test]
+    fn wire_link_change_does_not_run_abstract_tree_or_flush_all_mac() {
+        let (base, mut prepared) = fixture();
+        prepared.controls.push(control(
+            "down",
+            100,
+            ControlOp::LinkSet {
+                link: "L13".into(),
+                up: false,
+            },
+        ));
+        let mut state =
+            DynamicState::new_with_wire(&prepared, &base, Some(&wire_config(&base))).unwrap();
+        let policies = base
+            .port_policies
+            .iter()
+            .filter(|p| base.devices[p.device].kind == "switch")
+            .map(|p| (p.port.clone(), wire_policy(true, true)))
+            .collect();
+        let (delta, _, _) = state
+            .plan_wire_in(None, 0, &policies, &BTreeSet::new(), &[], true, false)
+            .unwrap();
+        state.apply(delta);
+        state.apply(
+            state
+                .plan_learning("Net.s1.rx_a", 10, "02:00:00:00:00:01", 0)
+                .unwrap(),
+        );
+        let delta = state.plan_controls(100).unwrap();
+        assert!(delta.mac.as_ref().unwrap_or(&state.mac).entries.len() == 1);
+        assert!(delta.topology.as_ref().unwrap().converge_at.is_none());
+        assert_eq!(state.semantic_pending_after(Some(&delta)), 1);
+        assert_eq!(state.mac.entries.len(), 1);
+    }
+    #[test]
+    fn passive_wire_projection_audits_are_atomic_without_duplicate_expiry_ownership() {
+        use crate::runtime::wire::membership::{Filter, Key};
+        let (base, prepared) = fixture();
+        let mut state = DynamicState::new(&prepared, &base).unwrap();
+        let key = Key {
+            bridge: "Net.s1".into(),
+            vid: 10,
+            group: "239.1.1.1".parse().unwrap(),
+            port: "Net.s1.tx_a".into(),
+        };
+        let memberships = BTreeMap::from([(
+            key.clone(),
+            Filter {
+                exclude: false,
+                sources: BTreeSet::from(["192.0.2.1".parse().unwrap()]),
+            },
+        )]);
+        let delta = state
+            .plan_wire_membership_in(
+                state.delta(),
+                10,
+                &memberships,
+                &BTreeSet::new(),
+                &BTreeSet::new(),
+            )
+            .unwrap();
+        assert!(state.wire.memberships.is_empty());
+        assert!(delta.next_deadline.is_none());
+        assert_eq!(delta.control_records.len(), 1);
+        assert_eq!(delta.control_records[0].kind, "wire_membership_set");
+        assert_eq!(delta.control_records[0].after["mode"], "include");
+        assert_eq!(delta.control_records[0].generation, Some(1));
+        assert_eq!(state.semantic_pending_after(Some(&delta)), 0);
+        state.apply(delta);
+        let noop = state
+            .plan_wire_membership_in(
+                state.delta(),
+                11,
+                &memberships,
+                &BTreeSet::new(),
+                &BTreeSet::new(),
+            )
+            .unwrap();
+        assert!(noop.control_records.is_empty());
+        assert_eq!(noop.epoch, 1);
+        let delta = state
+            .plan_wire_membership_in(
+                state.delta(),
+                20,
+                &BTreeMap::new(),
+                &BTreeSet::new(),
+                &BTreeSet::new(),
+            )
+            .unwrap();
+        assert_eq!(delta.control_records.len(), 1);
+        assert_eq!(delta.control_records[0].kind, "wire_membership_leave");
+        assert_eq!(delta.control_records[0].generation, Some(2));
+        assert!(delta.control_records[0].after.is_null());
+        state.apply(delta);
+        let delta = state
+            .plan_wire_membership_in(
+                state.delta(),
+                30,
+                &memberships,
+                &BTreeSet::new(),
+                &BTreeSet::new(),
+            )
+            .unwrap();
+        assert_eq!(delta.control_records[0].generation, Some(3));
+        assert_eq!(delta.control_records[0].epoch_before, 2);
+        assert_eq!(delta.control_records[0].epoch_after, 3);
+    }
+    include!("dynamic_vector_tests.rs");
 }

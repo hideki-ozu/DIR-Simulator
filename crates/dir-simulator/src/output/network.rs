@@ -3,6 +3,9 @@ use super::aggregate::Record;
 use crate::{Diagnostic, PreparedSimulation, snapshot::Snapshot};
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
+mod extensions;
+mod validation;
+mod wire;
 
 pub(crate) fn decimals(value: Value) -> Value {
     match value {
@@ -65,12 +68,20 @@ pub(super) fn metadata(
         super::json::canonical(&metadata["config"]).as_bytes()
     ));
     if let Some(dynamic) = &network.dynamic {
-        let initial =
-            crate::runtime::ethernet::dynamic::DynamicState::new(dynamic, &network.ethernet)?;
-        let raw = if prepared.common.profile == "ethernet.tsn.v1" {
-            &network.config["base"]["config"]["dynamic"]
-        } else {
-            &network.config["dynamic"]
+        let initial = crate::runtime::ethernet::dynamic::DynamicState::new_with_wire(
+            dynamic,
+            &network.ethernet,
+            network.wire.as_ref(),
+        )?;
+        let raw = match prepared.common.profile.as_str() {
+            "ethernet.tsn.v1" => &network.config["base"]["config"]["dynamic"],
+            "can.ethernet.tsn.v1" | "ethernet.control.wire.experimental.v1" => {
+                &network.config["ethernet"]["dynamic"]
+            }
+            "ethernet.redundancy.abstract.v1" | "ethernet.preemption.abstract.v1" => {
+                &network.config["base"]["config"]["base"]["config"]["dynamic"]
+            }
+            _ => &network.config["dynamic"],
         };
         metadata["ethernet_dynamic"] = json!({"config":raw,"initial_policy":decimals(serde_json::to_value(initial.snapshot_policy()).map_err(|error| Diagnostic::output(error.to_string()))?)});
         if let Some(flows) = metadata["flows"].as_array_mut() {
@@ -86,14 +97,40 @@ pub(super) fn metadata(
             }
         }
     }
-    if prepared.common.profile == "ethernet.tsn.v1" {
-        metadata["ethernet_tsn"] = network.config["tsn"].clone();
+    if let Some(tsn) = &network.tsn {
+        let mut body = if prepared.common.profile == "ethernet.tsn.v1" {
+            network.config["tsn"].clone()
+        } else {
+            tsn.metadata()
+        };
+        for field in ["abstract_rules", "initial_credit", "initial_tokens"] {
+            body.as_object_mut().unwrap().remove(field);
+        }
+        metadata["ethernet_tsn"] = body;
     }
     if let Some(bridge) = &network.bridge {
         metadata["topology"] = json!({"controllers":bridge.can.controllers.iter().enumerate().map(|(index,controller)|json!({"id":controller.id,"bus":bridge.can.buses[bridge.can.controller_buses[index]].id,"tx_channel_delay_ps":controller.tx_channel_ps.to_string(),"rx_channel_delay_ps":controller.rx_channel_ps.to_string()})).collect::<Vec<_>>()});
-        metadata["can_ethernet"] = json!({"gateways":network.config["gateways"]});
+        metadata["can_ethernet"] = json!({"gateways":if network.dynamic.is_some(){&network.config["bridge"]["gateways"]}else{&network.config["gateways"]}});
+        if network.dynamic.is_some() {
+            metadata["policing_reference_schemas"] =
+                json!(["dir.composite.ingress/1", "ethernet.dynamic.reception/1"]);
+        }
     }
     metadata["implementation_coverage"] = json!({"profile":prepared.common.profile,"reproduction_conditions":"identified","limitations":["abstract policies and codec; no IEEE protocol conformance claim"]});
+    if let Some(wire) = &network.wire {
+        let mac = |value: Option<[u8; 6]>| {
+            value.map(|bytes| {
+                bytes
+                    .iter()
+                    .map(|b| format!("{b:02x}"))
+                    .collect::<Vec<_>>()
+                    .join(":")
+            })
+        };
+        let packets=wire.packets.iter().map(|p|{let plan=p.boundary.as_ref();json!({"packet_id":p.id,"adapter_id":p.adapter_id,"ingress_port":p.ingress_port,"source_mac":mac(p.source_mac),"destination_mac":mac(p.destination_mac),"vid":p.vid,"bytes_hex":crate::runtime::wire::codec::hex(&p.bytes),"bitrate_bps":wire.ports[&p.output_port].bitrate_bps.to_string(),"mac_bytes":plan.map_or(p.bytes.len() as u64,|b|b.mac_bytes).to_string(),"planned_start_ps":plan.map(|b|b.start_ps.to_string()),"planned_arrival_ps":p.arrival_ps.to_string(),"planned_release_ps":plan.map(|b|b.release_ps.to_string()),"external_injection":true,"encapsulation":if plan.is_some(){"ip_packet"}else{"mac_frame_fcs"}})}).collect::<Vec<_>>();
+        metadata["ethernet_wire"] = json!({"config":network.config,"packets":packets});
+    }
+    extensions::metadata(network, &mut metadata);
     Ok(metadata)
 }
 
@@ -101,12 +138,15 @@ pub(super) fn summary(
     prepared: &PreparedSimulation,
     snapshot: &Snapshot,
 ) -> Result<Vec<Record>, Diagnostic> {
+    validation::validate(prepared, snapshot)?;
     if snapshot.ethernet.is_none() {
         return Ok(Vec::new());
     }
     let mut base = prepared.clone();
     base.common.profile = "ethernet.l2.vlan.v1".into();
-    let (_, mut summary) = super::ethernet::records(&base, snapshot)?;
+    let aggregate_view = extensions::aggregate_view(&base, snapshot)?;
+    let (_, mut summary) =
+        super::ethernet::records(&base, aggregate_view.as_ref().unwrap_or(snapshot))?;
     audit_summary(snapshot, &mut summary)?;
     if let Some(bridge) = prepared
         .registered
@@ -285,6 +325,8 @@ pub(super) fn summary(
             }
         }
     }
+    extensions::summary(prepared, snapshot, &mut summary)?;
+    wire::summary(prepared, snapshot, &mut summary)?;
     Ok(super::aggregate::finalize(Vec::new(), summary).1)
 }
 

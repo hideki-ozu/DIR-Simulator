@@ -57,3 +57,17 @@
 .comparison-scroll th, .comparison-scroll td {padding:8px; text-align:left; overflow-wrap:anywhere}
 .comparison-note {font-size:.85rem; line-height:1.7; color:var(--muted)}
 .comparison-time {font-family:monospace; white-space:nowrap}
+
+/* Controlled and extension results share a bounded, readable record view. */
+#controlled-dashboard { margin:0!important; padding:24px; max-width:100%; min-width:0 }
+#controlled-dashboard h1 { margin-bottom:10px }
+#controlled-dashboard h2 { margin:20px 0 10px }
+#controlled-dashboard p { margin:10px 0; line-height:1.7; overflow-wrap:anywhere }
+#controlled-dashboard .transport { flex-wrap:wrap; margin:16px 0 10px }
+#controlled-dashboard input[type=range] { width:100%; padding:0 }
+#controlled-dashboard .table-scroll { overflow:auto; max-width:100%; max-height:420px; margin:10px 0 }
+#controlled-dashboard table { min-width:600px; width:100% }
+#controlled-dashboard details { margin:10px 0; padding:10px; border:1px solid var(--line); border-radius:6px }
+#controlled-dashboard summary { cursor:pointer; overflow-wrap:anywhere }
+#controlled-dashboard pre { max-width:100%; max-height:340px; overflow:auto; margin:12px 0 0; font-size:11px; line-height:1.6 }
+@media(max-width:600px) { #controlled-dashboard { padding:16px 12px } #controlled-dashboard h1 { font-size:22px } }

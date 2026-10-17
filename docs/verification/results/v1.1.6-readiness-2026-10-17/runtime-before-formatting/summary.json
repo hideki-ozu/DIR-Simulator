@@ -1,0 +1,691 @@
+{
+  "schema_version": 1,
+  "started_at_utc": "2026-10-17T05:21:04.090620+00:00",
+  "repo": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source",
+  "commit": "033fccdfbd8a896a6852104b2218ea15bcdde780",
+  "tree": "5b5ec6608b221ecaa233ab1d6db0c84dd32f0828",
+  "build_audit": [
+    {
+      "name": "fmt",
+      "command": [
+        "/home/hideki/.cargo/bin/cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.289,
+      "log": "tmp/release-readiness-20261017/fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "workspace-tests",
+      "command": [
+        "/home/hideki/.cargo/bin/cargo",
+        "test",
+        "--workspace",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 250.668,
+      "log": "tmp/release-readiness-20261017/workspace-tests.log",
+      "sha256": "9bab832f9d47fd5f0a794a9711b6d21ef46761093ac7ee712c7334e460bc1ed2"
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "/home/hideki/.cargo/bin/cargo",
+        "clippy",
+        "--workspace",
+        "--locked",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 25.307,
+      "log": "tmp/release-readiness-20261017/clippy.log",
+      "sha256": "d18abdf6b53cbd473a1770f51e7355875cf6afe6c89ab9064e5eebbad0d72874"
+    },
+    {
+      "name": "build",
+      "command": [
+        "/home/hideki/.cargo/bin/cargo",
+        "build",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--bin",
+        "dir-simulator",
+        "--example",
+        "control_checkpoint"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.642,
+      "log": "tmp/release-readiness-20261017/build.log",
+      "sha256": "e262ba3de9868a609781ad43e933e7c3fbdb40e36885f05059f61d55bb5cfc6f"
+    }
+  ],
+  "runtime_environment": {
+    "node_version": "v22.22.0",
+    "cargo_version": "cargo 1.85.0 (d73d2caf9 2024-12-31)",
+    "rustc_version": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "variables": {
+      "DIR_SIMULATOR_BIN": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/target/debug/dir-simulator",
+      "DIR_NED_HTTP_BINARY": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/target/debug/dir-simulator",
+      "DIR_NED_RUN_TEST_BINARY": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/target/debug/dir-simulator",
+      "DIR_VIEWER_CAPABILITY_RESULT": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/capability-psfp/results.json",
+      "PLAYWRIGHT_MODULE": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules/playwright",
+      "NODE_PATH": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules"
+    }
+  },
+  "binaries": {
+    "dir_simulator_sha256": "68695c2c15619db1ca1ac46473bf3812bf99451368e9599880cd06d3cf81d761",
+    "control_checkpoint_sha256": "5978fb8ced48c691028269d0d1020afba0eb96f1a91bbf8fb698780b6d5efa16"
+  },
+  "commands": [
+    {
+      "name": "capability-cli-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/target/debug/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/capability-psfp"
+      ],
+      "shell": false,
+      "exit_code": 0,
+      "elapsed_seconds": 0.902,
+      "log": "tmp/release-readiness-20261017/runtime/logs/capability-cli-run.log",
+      "log_sha256": "79f572d725005b97a101ea1ea2a9da5961734ba895396115cd03d497a1e8c148"
+    },
+    {
+      "name": "node-tests",
+      "command": "node --test tests/*.test.cjs",
+      "shell": true,
+      "exit_code": 0,
+      "elapsed_seconds": 32.222,
+      "log": "tmp/release-readiness-20261017/runtime/logs/node-tests.log",
+      "log_sha256": "7b0dbf342c08797d59f92c34e30fba3c1b85b62fd986d0860ff1ed351ebd351a",
+      "node_counts": {
+        "tests": 229,
+        "pass": 228,
+        "fail": 0,
+        "skipped": 1
+      },
+      "skipped_test_lines": [
+        "ok 56 - native Mozc composition and source acknowledgement precede the NED run snapshot # SKIP Set DIR_NED_NATIVE_IME_PRIVATE=1 inside private X11/D-Bus with Playwright and IBus/Mozc"
+      ]
+    },
+    {
+      "name": "native-ignored-run-control",
+      "command": [
+        "/home/hideki/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--lib",
+        "tool::ned_editor::run_control",
+        "--",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "shell": false,
+      "exit_code": 0,
+      "elapsed_seconds": 60.324,
+      "log": "tmp/release-readiness-20261017/runtime/logs/native-ignored-run-control.log",
+      "log_sha256": "01659b1ea99dc981f8108b7c4f144bf0c3abed2ac71059ecbf8c20722d8c456f",
+      "test_result": {
+        "passed": 19,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 627
+      }
+    },
+    {
+      "name": "checkpoint-uninterrupted-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/target/debug/examples/control_checkpoint",
+        "run",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/control-checkpoint/scenario.ini",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/control-checkpoint/baseline"
+      ],
+      "shell": false,
+      "exit_code": 0,
+      "elapsed_seconds": 0.122,
+      "log": "tmp/release-readiness-20261017/runtime/logs/checkpoint-uninterrupted-run.log",
+      "log_sha256": "b97a21ed1ed1bf61b894e0ecf32321bf356e5d5895614ff39dc9de12f3ea63ea"
+    },
+    {
+      "name": "checkpoint-save",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/target/debug/examples/control_checkpoint",
+        "save",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/control-checkpoint/scenario.ini",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/control-checkpoint/saved"
+      ],
+      "shell": false,
+      "exit_code": 0,
+      "elapsed_seconds": 0.276,
+      "log": "tmp/release-readiness-20261017/runtime/logs/checkpoint-save.log",
+      "log_sha256": "f04c8e63d1cd0916cbfb6abb6cbd27465a0424e2e16bd4133377365a2c99e00b"
+    },
+    {
+      "name": "checkpoint-restore",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/target/debug/examples/control_checkpoint",
+        "restore",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/control-checkpoint/saved"
+      ],
+      "shell": false,
+      "exit_code": 0,
+      "elapsed_seconds": 0.237,
+      "log": "tmp/release-readiness-20261017/runtime/logs/checkpoint-restore.log",
+      "log_sha256": "5f74ea277ddf8891d62ac551fde091d35a934fdaac2d4c7f76e331d31d960d93"
+    }
+  ],
+  "checkpoint_comparison": {
+    "available": true,
+    "simulation_equal": true,
+    "baseline_results_sha256": "50a685db7c6ca83fd6712a75134e50a79a602597599c9be8085f50728116e152",
+    "restored_results_sha256": "e36e3d15ea640f7e6f0d90e3df10878aa492a3cbc943d7ebf0d8c654d72ea4f8",
+    "baseline_simulation_canonical_sha256": "0c045c290550d9b96b8ac0210007bb5b7b4683ffbeb7366ed48f1b8968bda3fb",
+    "restored_simulation_canonical_sha256": "0c045c290550d9b96b8ac0210007bb5b7b4683ffbeb7366ed48f1b8968bda3fb",
+    "baseline_simulation_keys": [
+      "committed_events",
+      "end_ps",
+      "last_event_time_ps",
+      "model_records",
+      "partial",
+      "pending_events",
+      "records",
+      "start_ps",
+      "summary",
+      "termination"
+    ],
+    "restored_simulation_keys": [
+      "committed_events",
+      "end_ps",
+      "last_event_time_ps",
+      "model_records",
+      "partial",
+      "pending_events",
+      "records",
+      "start_ps",
+      "summary",
+      "termination"
+    ],
+    "artifact_hashes": {
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/baseline/completed/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/baseline/completed/events.csv": "dc6c830d9504a28d305124fccc57255be1ace790915075be667eb78d2c501e32",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/baseline/completed/manifest.json": "179828ccc221ca2a1007b1af66d91c950ecf3056294076f3e48759412a69b75f",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/baseline/completed/results.json": "50a685db7c6ca83fd6712a75134e50a79a602597599c9be8085f50728116e152",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/baseline/completed/summary.csv": "6a714adb895952343f5f9571c8d6c86ca22ed029f1835a9d926d90df7bec20b3",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/checkpoint/inputs/0.bin": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/checkpoint/inputs/1.bin": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/checkpoint/manifest.json": "a1cb190f2673f19b04997d990c76d46358f436ce1b096740532f9e37f712c74d",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/checkpoint/objects/8d1f6ad7b0c0987472ba1e094d6205db8ae525e9ba88e73d64b2dd759f724c16.bin": "8d1f6ad7b0c0987472ba1e094d6205db8ae525e9ba88e73d64b2dd759f724c16",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/checkpoint/state.json": "85feefb1f04107103361f97353db0ba9c236b492248d07e1efd256875177b3f5",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/paused/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/paused/events.csv": "a28ecca7d1528604f111ea43bcabee15730bfd8b4422a8333cb99386afb7a900",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/paused/manifest.json": "06b980d0f93a1b0704b25b8c7586cbc27b659ef02a96f1921c12e96506756d9c",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/paused/results.json": "22757a489472c0fbd5f27da94edb32d0a78a9e23d0f220492cc26d0eb2c3e842",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/paused/summary.csv": "632da57d492af6538ed6750f6e2a554aba207b4249eaaa1475ea727e09732d2e",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/restored/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/restored/events.csv": "d93d9ecd6ed7b20380dea3834cbdadcea69e9da5252e5dc3cf5debad4a6170b9",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/restored/manifest.json": "0b508cfca881e7ab80dd1a8b527247863ae4db1241e799dc571a39459ef2579d",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/restored/results.json": "e36e3d15ea640f7e6f0d90e3df10878aa492a3cbc943d7ebf0d8c654d72ea4f8",
+      "tmp/release-readiness-20261017/runtime/control-checkpoint/saved/restored/summary.csv": "763a4859bb53d1877adaa3448a92302b910906e4f71566ab023b67c2c0cb6736"
+    }
+  },
+  "capability_product": {
+    "result_exists": true,
+    "result_sha256": "0452f167450270b534579754a9e3964df70134d78301cb9068774ea5a6069d20",
+    "manifest_exists": true,
+    "artifact_hashes": {
+      "tmp/release-readiness-20261017/runtime/capability-psfp/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/capability-psfp/events.csv": "3f6ad63fabcddbc9f731194f6eeb7ec9cd8505781fbf66e4a3a5f79b20e85844",
+      "tmp/release-readiness-20261017/runtime/capability-psfp/manifest.json": "02ecac758a898ee8bc0ca515beaab1b33fcbdfb0c0d0d50d29e5928bc24ed5e1",
+      "tmp/release-readiness-20261017/runtime/capability-psfp/results.json": "0452f167450270b534579754a9e3964df70134d78301cb9068774ea5a6069d20",
+      "tmp/release-readiness-20261017/runtime/capability-psfp/summary.csv": "cc9ed4d16217f4716a62c82c34643e7dce7a8fa9e7de58309531ff2af7397fe4"
+    }
+  },
+  "finished_at_utc": "2026-10-17T05:22:38.493538+00:00",
+  "acceptance": {
+    "capability_cli_run_passed": true,
+    "node_all_test_files_passed": true,
+    "native_ignored_tests_19_passed": true,
+    "checkpoint_simulation_equal": true
+  },
+  "status": "passed",
+  "viewer_exports": {
+    "started_at_utc": "2026-10-17T05:24:34.689387+00:00",
+    "source_commit": "033fccdfbd8a896a6852104b2218ea15bcdde780",
+    "binary_hashes": {
+      "dir_simulator_sha256": "68695c2c15619db1ca1ac46473bf3812bf99451368e9599880cd06d3cf81d761",
+      "control_checkpoint_sha256": "5978fb8ced48c691028269d0d1020afba0eb96f1a91bbf8fb698780b6d5efa16"
+    },
+    "playwright_module": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules/playwright",
+    "playwright_version": "1.64.0",
+    "commands": [
+      {
+        "name": "classic-viewer-browser",
+        "command": [
+          "node",
+          "tests/viewer_browser.cjs"
+        ],
+        "environment": {
+          "NODE_PATH": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 14.938,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-classic-viewer-browser.log",
+        "log_sha256": "81118045c9c92fe5b6c08237334b989dbc5afb48248749f1a069402500030984"
+      },
+      {
+        "name": "composite-run",
+        "command": [
+          "target/debug/dir-simulator",
+          "run",
+          "--config",
+          "examples/network-extensions/composite.ini",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/composite"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.238,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-composite-run.log",
+        "log_sha256": "3e10f888f8094262ee480180096fc8c1e779980783f472fb09e796d2b04a47d0"
+      },
+      {
+        "name": "composite-view",
+        "command": [
+          "target/debug/dir-simulator",
+          "view",
+          "--input",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/composite/results.json",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/composite.html"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.024,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-composite-view.log",
+        "log_sha256": "d9114b30ce352c970d37fe0be20ed8f4387fa4694036a485196f17139581ceff"
+      },
+      {
+        "name": "redundancy-run",
+        "command": [
+          "target/debug/dir-simulator",
+          "run",
+          "--config",
+          "examples/network-extensions/redundancy.ini",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/redundancy"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.893,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-redundancy-run.log",
+        "log_sha256": "562dd080c9068a25de3e812334cdfbfb3836470b3db8bde12477a73b9dee238b"
+      },
+      {
+        "name": "redundancy-view",
+        "command": [
+          "target/debug/dir-simulator",
+          "view",
+          "--input",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/redundancy/results.json",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/redundancy.html"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.069,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-redundancy-view.log",
+        "log_sha256": "e8ca48f00b2c9b7efeff131eb73818c73754e9f646ae34d66272b2d80c68db31"
+      },
+      {
+        "name": "preemption-run",
+        "command": [
+          "target/debug/dir-simulator",
+          "run",
+          "--config",
+          "examples/network-extensions/preemption.ini",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/preemption"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.23,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-preemption-run.log",
+        "log_sha256": "4c49b1f23961c8adafa78cdef8b8730e86fcd1f59aa81786c82ef94db2a80cf4"
+      },
+      {
+        "name": "preemption-view",
+        "command": [
+          "target/debug/dir-simulator",
+          "view",
+          "--input",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/preemption/results.json",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/preemption.html"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.025,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-preemption-view.log",
+        "log_sha256": "aa62bacff9448d3337bfb7d4f5ea0dbb4c8f2b3d976e95e44ad8203937061ab2"
+      },
+      {
+        "name": "active-run",
+        "command": [
+          "target/debug/dir-simulator",
+          "run",
+          "--config",
+          "examples/ethernet-wire/active.ini",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/active"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 27.49,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-active-run.log",
+        "log_sha256": "2ed9fe87aa9b769216c3989c5740a8cc225712af55da52101ab07a64d94a744d"
+      },
+      {
+        "name": "active-view",
+        "command": [
+          "target/debug/dir-simulator",
+          "view",
+          "--input",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/active/results.json",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/active.html"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 1.068,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-active-view.log",
+        "log_sha256": "82342dc2fd8513e8c4758ba538d8e1264c2849e802ee4097e91b1be968f78d9c"
+      },
+      {
+        "name": "passive-run",
+        "command": [
+          "target/debug/dir-simulator",
+          "run",
+          "--config",
+          "examples/ethernet-wire/passive.ini",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/passive"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.807,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-passive-run.log",
+        "log_sha256": "6a376c9042ae867e300106218c284c53c4b5f246be75525535e0c720231859e8"
+      },
+      {
+        "name": "passive-view",
+        "command": [
+          "target/debug/dir-simulator",
+          "view",
+          "--input",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/passive/results.json",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/passive.html"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.057,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-passive-view.log",
+        "log_sha256": "b05b103490e21f372e0fd4c7d2288813b483db14b65417ce11134974193b2091"
+      },
+      {
+        "name": "control-checkpoint-save",
+        "command": [
+          "target/debug/examples/control_checkpoint",
+          "save",
+          "examples/control-checkpoint/scenario.ini",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/control"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.264,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-control-checkpoint-save.log",
+        "log_sha256": "fbf9f60c7b4215905817686d52a974315ac353264d8032afefa18c40b32ef85e"
+      },
+      {
+        "name": "control-checkpoint-restore",
+        "command": [
+          "target/debug/examples/control_checkpoint",
+          "restore",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/control"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.231,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-control-checkpoint-restore.log",
+        "log_sha256": "bae623bc56b6c39b466723cec95cc159ea6a170d40e2187786929426d661718b"
+      },
+      {
+        "name": "paused-view",
+        "command": [
+          "target/debug/dir-simulator",
+          "view",
+          "--input",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/control/paused/results.json",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/paused.html"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.007,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-paused-view.log",
+        "log_sha256": "28e992a07ed2da7e4cfd79b37391b6211b1622304a2802e5bc3a9cd02a338f1c"
+      },
+      {
+        "name": "restored-view",
+        "command": [
+          "target/debug/dir-simulator",
+          "view",
+          "--input",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/control/restored/results.json",
+          "--output",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/restored.html"
+        ],
+        "environment": {},
+        "exit_code": 0,
+        "elapsed_seconds": 0.007,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-restored-view.log",
+        "log_sha256": "b418bf894fffe662fa0e654a1c83e39adbea4ea219ae104a4521c04374f6cb31"
+      },
+      {
+        "name": "controlled-viewer-browser",
+        "command": [
+          "node",
+          "tests/controlled_viewer_browser.cjs",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/composite/results.json",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/composite.html",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/redundancy/results.json",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/redundancy.html",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/preemption/results.json",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/preemption.html",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/active/results.json",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/active.html",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/passive/results.json",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/passive.html",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/control/paused/results.json",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/paused.html",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/control/restored/results.json",
+          "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/runtime/exports/products/restored.html"
+        ],
+        "environment": {
+          "PLAYWRIGHT_MODULE": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules/playwright"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 3.002,
+        "log": "tmp/release-readiness-20261017/runtime/logs/viewer-exports-controlled-viewer-browser.log",
+        "log_sha256": "c08d4472913a492c04734d19a511aef3960a3b8141447874c039dece9637f470"
+      }
+    ],
+    "products": {
+      "composite": {
+        "result_exists": true,
+        "html_exists": true,
+        "result_sha256": "274836ca261ffa392bbdd51eea824be43469421b764a9dd30966a5edec8f94a0",
+        "model_profile": "can.ethernet.tsn.v1",
+        "termination": "events_exhausted",
+        "end_ps": "1000000000",
+        "html_sha256": "872b64f8a4be489cd6efd2f8d6de810b6afcae49f47b909edbd486067277d0ab"
+      },
+      "redundancy": {
+        "result_exists": true,
+        "html_exists": true,
+        "result_sha256": "5ba41fd20e9dbd722e1b7df8f2a5ef74daaef17c99a42e42b7864b8edcbd6cda",
+        "model_profile": "ethernet.redundancy.abstract.v1",
+        "termination": "events_exhausted",
+        "end_ps": "10000000",
+        "html_sha256": "6943b3bbb4fc89948026f2a9989a7b1b52e72b31fd69aed147d9f42d77bcde24"
+      },
+      "preemption": {
+        "result_exists": true,
+        "html_exists": true,
+        "result_sha256": "a375c7ca0afe072488fa46b989481ac3db09fa5dce696cb3fea4b00b4f80b667",
+        "model_profile": "ethernet.preemption.abstract.v1",
+        "termination": "events_exhausted",
+        "end_ps": "2000000",
+        "html_sha256": "7a384a110ac848a831064965b3a4070d1bdf745a73540d4c49c63831360bdc9e"
+      },
+      "active": {
+        "result_exists": true,
+        "html_exists": true,
+        "result_sha256": "f2f2ae55366fff5887214eae098b01b32b978aff646c692456a931bbfbb2fe1f",
+        "model_profile": "ethernet.control.wire.experimental.v1",
+        "termination": "time_limit",
+        "end_ps": "4000000000000",
+        "html_sha256": "39a17c1cb9a17aba6c1a7fce06ea280e4b0c222b5d3a8185d938e7d074b3354a"
+      },
+      "passive": {
+        "result_exists": true,
+        "html_exists": true,
+        "result_sha256": "271b15d364a43f2cf338700e6c9d365150ebf077a45eda11f8ab8a23cebdbc75",
+        "model_profile": "ethernet.control.wire.experimental.v1",
+        "termination": "time_limit",
+        "end_ps": "100000000",
+        "html_sha256": "8fb345d631f6e87459f0910065223c667001e855c428753eb84be18cc7ac1ca8"
+      },
+      "paused": {
+        "result_exists": true,
+        "html_exists": true,
+        "result_sha256": "6157272978d2dd5f6692899383af1022f9920043523616540d8c72d447109052",
+        "model_profile": "demo.control.v1",
+        "termination": "paused",
+        "end_ps": "7",
+        "html_sha256": "ad58f18f84de21d4bfaa906c863918aae2cf9d855b9bd6467fad5db87d1613fb"
+      },
+      "restored": {
+        "result_exists": true,
+        "html_exists": true,
+        "result_sha256": "987312d7a1e38a79fb05e42cce7fe7cf34ff7ba5069dbdfca5b0dc362d416a16",
+        "model_profile": "demo.control.v1",
+        "termination": "events_exhausted",
+        "end_ps": "10",
+        "html_sha256": "991fcfecb33fe587d17e9781e2dcc9cc539df62fc4d7d3ea8ba9cc2dfdbb4367"
+      }
+    },
+    "browser_results": {
+      "classic_viewer_pass_lines": [
+        "PASS recorded-events: schema1/schema2/public CAN, adjacent u64, rewind/manual equivalence, playback 100ms focus/identity and Space/Enter, positive step cancellation, narrow layout, partial/empty, different request, file/profile/invalid reset, no network",
+        "PASS interval-comparison: schema1/schema2/public CAN, same-time replay peak, TX ratio, seek/manual/rewind, viewport/sort/search, narrow screen, file/reset, unchanged public input, no network"
+      ],
+      "controlled_viewer_pass_lines": [
+        "PASS can.ethernet.tsn.v1 (events_exhausted) exported HTML, both viewports, reversible cursor, no browser errors/external requests",
+        "PASS ethernet.redundancy.abstract.v1 (events_exhausted) exported HTML, both viewports, reversible cursor, no browser errors/external requests",
+        "PASS ethernet.preemption.abstract.v1 (events_exhausted) exported HTML, both viewports, reversible cursor, no browser errors/external requests",
+        "PASS ethernet.control.wire.experimental.v1 (time_limit) exported HTML, both viewports, reversible cursor, no browser errors/external requests",
+        "PASS ethernet.control.wire.experimental.v1 (time_limit) exported HTML, both viewports, reversible cursor, no browser errors/external requests",
+        "PASS demo.control.v1 (Paused) exported HTML, both viewports, reversible cursor, no browser errors/external requests",
+        "PASS demo.control.v1 (Completed) exported HTML, both viewports, reversible cursor, no browser errors/external requests"
+      ]
+    },
+    "artifact_hashes": {
+      "tmp/release-readiness-20261017/runtime/exports/products/active/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/exports/products/active/events.csv": "1ed4e738eebe0867e5d42cc5f5f7d86c9874ba89581fbe9bd7c7125d94dc1474",
+      "tmp/release-readiness-20261017/runtime/exports/products/active/manifest.json": "dbd97e0adc7fda0b7be9284fac2454bd2d79c67f408df455873d9d9d6c286005",
+      "tmp/release-readiness-20261017/runtime/exports/products/active/results.json": "f2f2ae55366fff5887214eae098b01b32b978aff646c692456a931bbfbb2fe1f",
+      "tmp/release-readiness-20261017/runtime/exports/products/active/summary.csv": "a945d9682c72c8dae89fe62506deccd872d892ee6a270e348d6d9856c8f5ece6",
+      "tmp/release-readiness-20261017/runtime/exports/products/active.html": "39a17c1cb9a17aba6c1a7fce06ea280e4b0c222b5d3a8185d938e7d074b3354a",
+      "tmp/release-readiness-20261017/runtime/exports/products/composite/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/exports/products/composite/events.csv": "511c636b371669005999f74ce97e47669af7725e178a32e5d2d006ee0750f9fd",
+      "tmp/release-readiness-20261017/runtime/exports/products/composite/manifest.json": "8df09f75d4cea9b29e2f8d6ebae3bf17a52295ea87cf0bb6b17200c64f599ffe",
+      "tmp/release-readiness-20261017/runtime/exports/products/composite/results.json": "274836ca261ffa392bbdd51eea824be43469421b764a9dd30966a5edec8f94a0",
+      "tmp/release-readiness-20261017/runtime/exports/products/composite/summary.csv": "6403566393a02767b89c4a44c52f82917163ee7a7528c149f4496798a07761ef",
+      "tmp/release-readiness-20261017/runtime/exports/products/composite.html": "872b64f8a4be489cd6efd2f8d6de810b6afcae49f47b909edbd486067277d0ab",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/checkpoint/inputs/0.bin": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/checkpoint/inputs/1.bin": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/checkpoint/manifest.json": "6f5908842dd9f88cada624878541b9cc64c5aa3b1cb6194987d3dbe852ff4d0c",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/checkpoint/objects/8d1f6ad7b0c0987472ba1e094d6205db8ae525e9ba88e73d64b2dd759f724c16.bin": "8d1f6ad7b0c0987472ba1e094d6205db8ae525e9ba88e73d64b2dd759f724c16",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/checkpoint/state.json": "16ef986c4d64501b1de7c5df164a5771e564bf41f1c91fa705edb4a8dcd74340",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/paused/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/paused/events.csv": "f2c8082cac2111ad1200a669f74727f12cbfa3dfd5cc646e1864bdbb61a2fb74",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/paused/manifest.json": "9beb795892ec3e722a0abfa62e1cc47ded9608a6252d9db87f782b10971e770a",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/paused/results.json": "6157272978d2dd5f6692899383af1022f9920043523616540d8c72d447109052",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/paused/summary.csv": "a6991c4301b668e662e4117a99b4d1203f690938ed80d801358ee71c770d4e61",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/restored/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/restored/events.csv": "7ae6bd014ff170cf0eee61d9f728e372e2e93fbea88cc572344efbd0d69e2e92",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/restored/manifest.json": "eebfc447d18e435523aca9f8d8a080afcacc5404bdba01af1e9c73467a97edda",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/restored/results.json": "987312d7a1e38a79fb05e42cce7fe7cf34ff7ba5069dbdfca5b0dc362d416a16",
+      "tmp/release-readiness-20261017/runtime/exports/products/control/restored/summary.csv": "50512055724ea88017f0da8d87923d3c8204f59dc072b50d8d51da6ea48d4591",
+      "tmp/release-readiness-20261017/runtime/exports/products/passive/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/exports/products/passive/events.csv": "79fdba61c11b1c526e2f5df4d57dff5a9000818e5c5398c25954a0186dcf3aba",
+      "tmp/release-readiness-20261017/runtime/exports/products/passive/manifest.json": "d37db11aab496fafdf66f64c257b0b3121b513bd05512a7651500246c1f00a23",
+      "tmp/release-readiness-20261017/runtime/exports/products/passive/results.json": "271b15d364a43f2cf338700e6c9d365150ebf077a45eda11f8ab8a23cebdbc75",
+      "tmp/release-readiness-20261017/runtime/exports/products/passive/summary.csv": "bf9b84f1c10a1378bd6b521d89b11d23231ebff9e07483f01df1a880befe0a19",
+      "tmp/release-readiness-20261017/runtime/exports/products/passive.html": "8fb345d631f6e87459f0910065223c667001e855c428753eb84be18cc7ac1ca8",
+      "tmp/release-readiness-20261017/runtime/exports/products/paused.html": "ad58f18f84de21d4bfaa906c863918aae2cf9d855b9bd6467fad5db87d1613fb",
+      "tmp/release-readiness-20261017/runtime/exports/products/preemption/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/exports/products/preemption/events.csv": "bf69b7b2bc4b67e156396773f892debcbf1cb251e9ae09b66fb3f4e968158b4a",
+      "tmp/release-readiness-20261017/runtime/exports/products/preemption/manifest.json": "f07b419acf454f96a32f92710220269343b14df4b4541e9ea065617891bd7453",
+      "tmp/release-readiness-20261017/runtime/exports/products/preemption/results.json": "a375c7ca0afe072488fa46b989481ac3db09fa5dce696cb3fea4b00b4f80b667",
+      "tmp/release-readiness-20261017/runtime/exports/products/preemption/summary.csv": "9da03d9630ee6a0168449b27dbefae8578a3d59fac70729a566d66a2ee26685b",
+      "tmp/release-readiness-20261017/runtime/exports/products/preemption.html": "7a384a110ac848a831064965b3a4070d1bdf745a73540d4c49c63831360bdc9e",
+      "tmp/release-readiness-20261017/runtime/exports/products/redundancy/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-readiness-20261017/runtime/exports/products/redundancy/events.csv": "0d8f914d08013641e268036fbde514a55014d301ee0a24968604f6b12359149f",
+      "tmp/release-readiness-20261017/runtime/exports/products/redundancy/manifest.json": "2c11a28ebe7e57a261182c7b1bab9972d4f058daf5e37c2648f73d60a294c047",
+      "tmp/release-readiness-20261017/runtime/exports/products/redundancy/results.json": "5ba41fd20e9dbd722e1b7df8f2a5ef74daaef17c99a42e42b7864b8edcbd6cda",
+      "tmp/release-readiness-20261017/runtime/exports/products/redundancy/summary.csv": "d452ec0949a224e3114b32275a1dd1cdbd2aaea97dcbdaccdb98c6c8a441215c",
+      "tmp/release-readiness-20261017/runtime/exports/products/redundancy.html": "6943b3bbb4fc89948026f2a9989a7b1b52e72b31fd69aed147d9f42d77bcde24",
+      "tmp/release-readiness-20261017/runtime/exports/products/restored.html": "991fcfecb33fe587d17e9781e2dcc9cc539df62fc4d7d3ea8ba9cc2dfdbb4367"
+    },
+    "acceptance": {
+      "prebuilt_binaries_match_prior_build": true,
+      "classic_viewer_browser_passed": true,
+      "all_seven_cli_results_and_html_exist": true,
+      "controlled_browser_passed_all_seven_pairs": true,
+      "all_commands_passed": true
+    },
+    "finished_at_utc": "2026-10-17T05:25:24.201631+00:00",
+    "status": "passed",
+    "classic_viewer_browser_pass_count": 2,
+    "controlled_viewer_pair_pass_count": 7,
+    "controlled_viewer_viewports": [
+      {
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "export_pair_count": 7
+  }
+}

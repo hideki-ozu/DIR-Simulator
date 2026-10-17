@@ -16,6 +16,12 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, VecDeque};
 use std::sync::Arc;
+mod preemption;
+mod wire;
+use wire::{HostEvent, WireHost};
+mod replication;
+use preemption::{PreemptionState, TransferFragments};
+use replication::{Circuit, ReplicationState};
 type Result<T> = std::result::Result<T, Diagnostic>;
 fn error(s: impl Into<String>) -> Diagnostic {
     Diagnostic::execution(s)
@@ -39,9 +45,11 @@ enum Event {
     Complete(usize),
     Bridge(BridgeTimer),
     Control(u64),
+    Wire(HostEvent),
 }
 #[derive(Debug, Clone)]
 struct Frame {
+    generator: Option<usize>,
     row: EthernetFrameRecord,
     ip: Option<IpMulticast>,
     visits: u64,
@@ -50,6 +58,8 @@ struct Frame {
 }
 #[derive(Debug, Clone)]
 struct Transfer {
+    circuit: Option<Circuit>,
+    fragments: Option<TransferFragments>,
     row: EthernetTransferRecord,
     frame: usize,
     direction: usize,
@@ -63,8 +73,11 @@ struct Reception {
     transfer: usize,
     visit: u64,
     epoch: u64,
+    // Processing delay must not turn Learning ingress into a relay opportunity.
+    ingress_no_relay_reason: Option<&'static str>,
 }
 struct CopyOrigin {
+    circuit: Option<Circuit>,
     frame: usize,
     parent: Option<usize>,
     visit: u64,
@@ -81,7 +94,20 @@ enum Completion {
     Release(usize),
     Ready(usize),
     Processed(usize),
+    Fragment {
+        direction: usize,
+        transfer: usize,
+        epoch: u64,
+        id: String,
+        payload: u64,
+    },
+    Gap {
+        direction: usize,
+        epoch: u64,
+        id: String,
+    },
     Bridge(BridgeTimer),
+    Wire(HostEvent),
 }
 #[derive(Debug, Clone)]
 struct Due {
@@ -97,6 +123,9 @@ pub(crate) struct NetworkState {
     queues: Vec<Queue>,
     dynamic: Option<DynamicState>,
     bridge: Option<BridgeState>,
+    replication: Option<ReplicationState>,
+    preemption: Option<PreemptionState>,
+    wire: Option<WireHost>,
     tsn: Option<TsnState>,
     tsn_wakes: Vec<Option<WakeToken>>,
     due: Vec<Due>,
@@ -105,6 +134,7 @@ pub(crate) struct NetworkState {
     record_sequence: u64,
     next_visit: u64,
     future_generation: bool,
+    pending_direct: u64,
 }
 pub(crate) struct NetworkDelta {
     pub(crate) points: Vec<Point>,
@@ -115,6 +145,9 @@ pub(crate) struct NetworkDelta {
     queues: BTreeMap<usize, Queue>,
     dynamic: Option<DynamicDelta>,
     bridge: Option<BridgeDelta>,
+    replication: Option<ReplicationState>,
+    preemption: Option<PreemptionState>,
+    wire: Option<WireHost>,
     tsn: TsnDelta,
     tsn_wakes: BTreeMap<usize, Option<WakeToken>>,
     due: Option<Vec<Due>>,
@@ -123,23 +156,48 @@ pub(crate) struct NetworkDelta {
     record_sequence: u64,
     next_visit: u64,
     future_generation: bool,
+    pending_direct: u64,
 }
 impl NetworkState {
     pub(crate) fn new(p: Arc<PreparedNetwork>) -> Result<Self> {
         let dynamic = p
             .dynamic
             .as_ref()
-            .map(|d| DynamicState::new(d, &p.ethernet))
+            .map(|d| DynamicState::new_with_wire(d, &p.ethernet, p.wire.as_ref()))
             .transpose()?;
         let tsn = p.tsn.as_ref().map(TsnState::new);
         let tsn_wakes = vec![None; p.tsn.as_ref().map_or(0, |t| t.outputs.len())];
-        let bridge = p.bridge.as_ref().map(BridgeState::new).transpose()?;
+        let bridge = p
+            .bridge
+            .as_ref()
+            .map(|bridge| {
+                if p.dynamic.is_some() && p.extensions.is_some() {
+                    BridgeState::new_with_policing(bridge, true)
+                } else {
+                    BridgeState::new(bridge)
+                }
+            })
+            .transpose()?;
         Ok(Self {
             cursors: vec![0; p.ethernet.generators.len()],
             bridge,
             tsn,
             tsn_wakes,
             queues: vec![Queue::default(); p.ethernet.directions.len()],
+            replication: p
+                .extensions
+                .as_ref()
+                .and_then(|e| e.replication.as_ref())
+                .map(ReplicationState::new),
+            preemption: p
+                .extensions
+                .as_ref()
+                .and_then(|e| e.preemption.as_ref())
+                .map(|e| PreemptionState::new(e.outputs.len())),
+            wire: p
+                .wire
+                .as_ref()
+                .map(|w| WireHost::new(w, p.ethernet.directions.len())),
             prepared: p,
             frames: vec![],
             transfers: vec![],
@@ -151,6 +209,7 @@ impl NetworkState {
             record_sequence: 0,
             next_visit: 1,
             future_generation: false,
+            pending_direct: 0,
         })
     }
     fn delta(&self) -> NetworkDelta {
@@ -163,6 +222,9 @@ impl NetworkState {
             queues: BTreeMap::new(),
             dynamic: None,
             bridge: self.bridge.as_ref().map(BridgeState::empty_delta),
+            replication: None,
+            preemption: None,
+            wire: None,
             tsn: TsnDelta::default(),
             tsn_wakes: BTreeMap::new(),
             due: None,
@@ -171,6 +233,7 @@ impl NetworkState {
             record_sequence: self.record_sequence,
             next_visit: self.next_visit,
             future_generation: self.future_generation,
+            pending_direct: self.pending_direct,
         }
     }
     fn frame<'a>(&'a self, d: &'a NetworkDelta, i: usize) -> &'a Frame {
@@ -220,8 +283,16 @@ impl NetworkState {
     fn epoch(&self) -> u64 {
         self.dynamic.as_ref().map_or(0, DynamicState::policy_epoch)
     }
-    fn schedule(c: &mut Context<'_>, at: u64, event: Event) -> Result<TimerToken> {
+    fn schedule(
+        c: &mut Context<'_>,
+        d: &mut NetworkDelta,
+        at: u64,
+        event: Event,
+    ) -> Result<TimerToken> {
         let phase = matches!(event, Event::Control(_));
+        if !phase {
+            d.pending_direct = add(d.pending_direct, 1)?;
+        }
         let bytes = serde_json::to_vec(&event).map_err(|e| error(e.to_string()))?;
         c.schedule_at(
             at,
@@ -361,7 +432,7 @@ impl NetworkState {
         d.control = Some(if let Some(at) = at {
             Some((
                 at,
-                Self::schedule(c, at, Event::Control(d.control_generation))?,
+                Self::schedule(c, d, at, Event::Control(d.control_generation))?,
             ))
         } else {
             None
@@ -386,6 +457,7 @@ impl NetworkState {
                 ),
             )?;
         }
+        self.initialize_wire(&mut d, c)?;
         if let Some(state) = &self.bridge {
             d.bridge = Some(state.initialize(limit)?);
             self.bridge_actions(&mut d, c, limit)?;
@@ -394,7 +466,7 @@ impl NetworkState {
             if let Ok(time) = u64::try_from(time) {
                 // Reserving the next cursor event is independent of the run
                 // horizon, so earlier callbacks retain identical FES sequences.
-                Self::schedule(c, time, Event::Dispatch)?;
+                Self::schedule(c, &mut d, time, Event::Dispatch)?;
             } else {
                 d.future_generation = true;
             }
@@ -405,6 +477,8 @@ impl NetworkState {
             }
         }
         self.emit_tsn(&mut d, c)?;
+        self.emit_extensions(&mut d, c)?;
+        self.check_extension_limits(&d)?;
         self.arm_control(&mut d, c)?;
         Ok(d)
     }
@@ -419,7 +493,14 @@ impl NetworkState {
         let mut d = self.delta();
         let now = c.now();
         let control_event = matches!(event, Event::Control(_));
+        if !control_event {
+            d.pending_direct = d
+                .pending_direct
+                .checked_sub(1)
+                .ok_or_else(|| error("network direct reservation underflow"))?;
+        }
         match event {
+            Event::Wire(event) => self.wire_event(event, &mut d, c)?,
             Event::Dispatch => {
                 let mut cursors = self.cursors.clone();
                 let g = self
@@ -434,10 +515,10 @@ impl NetworkState {
                     .ok_or_else(|| error("network generation cursor invariant"))?;
                 let ordinal = cursors[g];
                 cursors[g] = add(ordinal, 1)?;
-                Self::schedule(c, now, Event::Generate(g, ordinal))?;
+                Self::schedule(c, &mut d, now, Event::Generate(g, ordinal))?;
                 if let Some(time) = self.next_generation(&cursors) {
                     if let Ok(time) = u64::try_from(time) {
-                        Self::schedule(c, time, Event::Dispatch)?;
+                        Self::schedule(c, &mut d, time, Event::Dispatch)?;
                     } else {
                         d.future_generation = true;
                     }
@@ -480,6 +561,7 @@ impl NetworkState {
                 d.frames.push((
                     f,
                     Frame {
+                        generator: Some(g),
                         row,
                         ip,
                         visits: 0,
@@ -487,6 +569,7 @@ impl NetworkState {
                         branch_id: None,
                     },
                 ));
+                self.preemption_created(f, &mut d)?;
                 if ready == now {
                     self.source_offer(f, &mut d, c)?;
                 } else {
@@ -518,13 +601,32 @@ impl NetworkState {
                     }
                 });
                 d.due = Some(due);
+                let mut wire_timers = Vec::new();
                 for kind in current {
                     match kind {
+                        Completion::Wire(event @ HostEvent::Timer { .. }) => {
+                            wire_timers.push(event)
+                        }
+                        Completion::Wire(event) => self.wire_event(event, &mut d, c)?,
+                        Completion::Fragment {
+                            direction,
+                            transfer,
+                            epoch,
+                            id,
+                            payload,
+                        } => self.fragment_complete(
+                            direction, transfer, epoch, &id, payload, &mut d, c,
+                        )?,
+                        Completion::Gap {
+                            direction,
+                            epoch,
+                            id,
+                        } => self.gap_complete(direction, epoch, &id, &mut d, c)?,
                         Completion::Bridge(timer @ BridgeTimer::ConversionReady { .. }) => {
                             // Positive-delay conversion completion notifies phase 1.
                             // Admission (and RX release) must follow already-reserved
                             // arrivals, just like Ethernet processing completions.
-                            Self::schedule(c, now, Event::Bridge(timer))?;
+                            Self::schedule(c, &mut d, now, Event::Bridge(timer))?;
                         }
                         Completion::Bridge(timer) => {
                             self.bridge_event(&BridgeEvent::Timer(timer), &mut d, c, limit)?
@@ -533,27 +635,29 @@ impl NetworkState {
                             let mut row = self.transfer(&d, t).clone();
                             row.row.time_ps = now;
                             row.row.eof_ps = Some(now);
+                            self.preemption_eof(&mut row);
                             row.row.status = "serialized".into();
                             let arrival = row
                                 .row
                                 .planned_arrival_ps
                                 .ok_or_else(|| error("missing arrival"))?;
                             put(&mut d.transfers, t, row);
-                            Self::schedule(c, arrival, Event::Arrival(t))?;
+                            Self::schedule(c, &mut d, arrival, Event::Arrival(t))?;
                         }
                         Completion::Release(t) => {
                             let mut row = self.transfer(&d, t).clone();
                             row.row.time_ps = now;
                             row.row.release_ps = Some(now);
+                            self.preemption_release(&mut row, &mut d, now)?;
                             self.queue_mut(&mut d, row.direction).active = None;
                             put(&mut d.transfers, t, row);
                             c.request_arbitration("network").map_err(model)?;
                         }
                         Completion::Ready(f) => {
-                            Self::schedule(c, now, Event::Ready(f))?;
+                            Self::schedule(c, &mut d, now, Event::Ready(f))?;
                         }
                         Completion::Processed(r) => {
-                            Self::schedule(c, now, Event::Complete(r))?;
+                            Self::schedule(c, &mut d, now, Event::Complete(r))?;
                         }
                     }
                 }
@@ -565,6 +669,10 @@ impl NetworkState {
                         }
                         d.dynamic = Some(delta);
                     }
+                }
+                self.wire_links(&mut d, c)?;
+                for timer in wire_timers {
+                    self.wire_event(timer, &mut d, c)?;
                 }
                 self.refresh_tsn(&mut d, c, true)?;
             }
@@ -583,6 +691,8 @@ impl NetworkState {
             self.emit_dynamic(&mut d, c)?;
             self.emit_rows(&mut d, c)?;
         }
+        self.emit_extensions(&mut d, c)?;
+        self.check_extension_limits(&d)?;
         self.arm_control(&mut d, c)?;
         self.queue_points(&mut d, c.now());
         Ok(d)
@@ -616,8 +726,12 @@ impl NetworkState {
             .filter(|(_, v)| v.source == source)
             .map(|(i, _)| i)
             .collect();
+        if self.replication_offer(f, source, class, d, c)? {
+            return Ok(());
+        }
         self.offer(
             CopyOrigin {
+                circuit: None,
                 frame: f,
                 parent: None,
                 visit: 0,
@@ -640,6 +754,7 @@ impl NetworkState {
         c: &mut Context<'_>,
     ) -> Result<Vec<String>> {
         let CopyOrigin {
+            circuit,
             frame: f,
             parent,
             visit,
@@ -697,7 +812,13 @@ impl NetworkState {
                 .as_ref()
                 .zip(ps.as_ref())
                 .and_then(|(s, p)| s.eligible_egress(port, class.vid, p).err())
-                .map(|r| r.reason());
+                .filter(|r| circuit.is_none() || r.reason() != "stp_discarding")
+                .map(|r| self.data_reason(r, port, d));
+            let unadmittable = self.prepared.ethernet.devices[link.source].queue_capacity == 0
+                || config.is_some_and(|q| {
+                    q.capacity_frames == 0
+                        || q.capacity_bytes.is_some_and(|n| outgoing.mac_bytes > n)
+                });
             let admitted = policy_reason.is_none()
                 && l2::admission(
                     q.waiting.iter().map(|v| v.len() as u64).sum(),
@@ -727,7 +848,15 @@ impl NetworkState {
                 planned_release_ps: None,
                 planned_arrival_ps: None,
                 status: if admitted { "queued" } else { "dropped" }.into(),
-                drop_reason: (!admitted).then(|| policy_reason.unwrap_or("queue_full").into()),
+                drop_reason: (!admitted).then(|| {
+                    policy_reason
+                        .unwrap_or(if self.prepared.extensions.is_some() && unadmittable {
+                            "tx_unadmittable"
+                        } else {
+                            "queue_full"
+                        })
+                        .into()
+                }),
                 media: None,
             };
             if admitted {
@@ -739,6 +868,11 @@ impl NetworkState {
             d.transfers.push((
                 t,
                 Transfer {
+                    circuit: circuit.clone(),
+                    fragments: self
+                        .preemption
+                        .as_ref()
+                        .map(|_| TransferFragments::default()),
                     row,
                     frame: f,
                     direction,
@@ -747,6 +881,7 @@ impl NetworkState {
                     sof_epoch: None,
                 },
             ));
+            self.replication_offered(t, d, c.now())?;
             ids.push(id);
         }
         Ok(ids)
@@ -764,12 +899,19 @@ impl NetworkState {
             .ok_or_else(|| error("missing ingress policy"))?;
         let class = l2::classify(policy, &transfer.row.wire);
         let ps = self.policy(d);
-        let mut reason = self
-            .dynamic
-            .as_ref()
-            .zip(ps.as_ref())
-            .and_then(|(s, p)| s.eligible_egress(&policy.port, class.vid, p).err())
-            .map(|r| r.reason().to_string());
+        let mut reason =
+            self.dynamic
+                .as_ref()
+                .zip(ps.as_ref())
+                .and_then(|(s, p)| s.eligible_egress(&policy.port, class.vid, p).err())
+                .filter(|r| {
+                    r.reason() != "stp_discarding"
+                        || transfer.circuit.is_none()
+                            && self.dynamic.as_ref().and_then(|s| {
+                                s.wire_ingress_state(&link.to_port, d.dynamic.as_ref())
+                            }) != Some((true, false))
+                })
+                .map(|r| r.reason().to_string());
         if reason.is_none() && self.dynamic.is_none() && !policy.vlans.contains_key(&class.vid) {
             reason = Some("ingress_vlan_membership".into());
         }
@@ -879,9 +1021,16 @@ impl NetworkState {
                 transfer: t,
                 visit,
                 epoch: self.epoch(),
+                ingress_no_relay_reason: self.dynamic.as_ref().and_then(|s| {
+                    match s.wire_ingress_state(&link.to_port, d.dynamic.as_ref()) {
+                        Some((true, false)) => Some("stp_learning"),
+                        Some((false, false)) => Some("stp_discarding"),
+                        _ => None,
+                    }
+                }),
             },
         ));
-        if ready.is_some() {
+        if ready.is_some() && transfer.circuit.is_none() {
             if let Some(state) = &self.dynamic {
                 d.dynamic = Some(state.plan_learning(
                     &link.to_port,
@@ -890,6 +1039,9 @@ impl NetworkState {
                     c.now(),
                 )?);
             }
+        }
+        if ready.is_none() {
+            self.replication_drop(t, d, c.now(), "filtered")?;
         }
         if ready.is_some() && self.bridge.is_some() {
             let frame = self.frame(d, transfer.frame);
@@ -929,8 +1081,14 @@ impl NetworkState {
         let device = &self.prepared.ethernet.devices[link.destination];
         reception.row.time_ps = c.now();
         reception.row.ready_ps = Some(c.now());
+        if transfer.circuit.is_some() {
+            self.replication_complete(&mut reception, &transfer, d, c)?;
+            put(&mut d.receptions, r, reception);
+            return Ok(());
+        }
         if device.kind == "endpoint" {
             reception.row.status = "received".into();
+            self.preemption_received(&reception, d, c.now())?;
             let frame = self.frame(d, transfer.frame);
             d.points.push(Point {
                 event_seq: None,
@@ -959,9 +1117,32 @@ impl NetworkState {
                 )?;
             }
         } else {
+            if let Some(reason) = reception.ingress_no_relay_reason.or_else(|| {
+                self.dynamic.as_ref().and_then(|s| {
+                    match s.wire_ingress_state(&link.to_port, d.dynamic.as_ref()) {
+                        Some((true, false)) => Some("stp_learning"),
+                        Some((false, false)) => Some("stp_discarding"),
+                        _ => None,
+                    }
+                })
+            }) {
+                reception.row.status = "filtered".into();
+                reception.row.reason = Some(reason.into());
+                put(&mut d.receptions, r, reception);
+                return Ok(());
+            }
             let vid = reception.row.vlan_id.unwrap();
             let frame = self.frame(d, transfer.frame);
-            let selected = if let Some(state) = &self.dynamic {
+            let selected = if let Some(selected) = self.wire_multicast(
+                &device.id,
+                &link.to_port,
+                vid,
+                frame.ip.as_ref(),
+                &transfer.row.wire,
+                d,
+            ) {
+                selected
+            } else if let Some(state) = &self.dynamic {
                 d.dynamic.as_ref().map_or_else(
                     || {
                         state.select_egress(
@@ -1018,6 +1199,7 @@ impl NetworkState {
             };
             reception.row.egress_transfer_ids = self.offer(
                 CopyOrigin {
+                    circuit: None,
                     frame: transfer.frame,
                     parent: Some(reception.transfer),
                     visit: reception.visit,
@@ -1060,26 +1242,37 @@ impl NetworkState {
                             s.eligible_egress(&link.from_port, old.row.vlan_id.unwrap(), p)
                                 .err()
                         });
-                    if let Some(reason) = reason {
+                    if let Some(reason) =
+                        reason.filter(|r| old.circuit.is_none() || r.reason() != "stp_discarding")
+                    {
                         let mut row = old.clone();
                         row.row.time_ps = c.now();
                         row.row.status = "dropped".into();
-                        row.row.drop_reason = Some(reason.reason().into());
+                        row.row.drop_reason =
+                            Some(self.data_reason(reason, &link.from_port, &d).into());
                         let q = self.queue_mut(&mut d, direction);
                         q.waiting[priority].retain(|v| *v != t);
                         q.bytes[priority] = q.bytes[priority]
                             .checked_sub(row.row.wire.mac_bytes)
                             .ok_or_else(|| error("queue byte underflow"))?;
                         put(&mut d.transfers, t, row);
+                        self.replication_drop(t, &mut d, c.now(), reason.reason())?;
                     }
                 }
+            }
+            if self.preemption.is_some() {
+                self.preemption_arbitrate(direction, &mut d, c)?;
+                continue;
+            }
+            if self.wire_arbitrate(direction, &mut d, c)? {
+                continue;
             }
             let input = self.port_input(direction, &d)?;
             let tsn_selected = if let Some(tsn) = &self.tsn {
                 let next =
                     tsn.plan_port_in(std::mem::take(&mut d.tsn), &link.from_port, c.now(), &input)?;
                 let selected = next.selected.get(&link.from_port).copied();
-                self.stage_tsn(&mut d, next, &[link.from_port.clone()]);
+                self.stage_tsn(&mut d, next, &[link.from_port.clone()])?;
                 selected
             } else {
                 None
@@ -1149,6 +1342,7 @@ impl NetworkState {
                     kind: Completion::Release(t),
                 },
             ]);
+            self.replication_sof(t, &mut d, c.now())?;
             if self.bridge.is_some() {
                 let frame = self.frame(&d, self.transfer(&d, t).frame);
                 let source_sof = self.transfer(&d, t).row.parent_transfer_id.is_none();
@@ -1172,6 +1366,7 @@ impl NetworkState {
                 // Retry is a phase1 notification; phase2 naturally sends it to the next delta.
                 Self::schedule(
                     c,
+                    &mut d,
                     c.now(),
                     Event::Bridge(BridgeTimer::RetryEthernet {
                         source: link.source,
@@ -1193,7 +1388,7 @@ impl NetworkState {
                 if checked_eof != eof || checked_release != release {
                     return Err(error("TSN/shared wire timing mismatch"));
                 }
-                self.stage_tsn(&mut d, next, &[link.from_port.clone()]);
+                self.stage_tsn(&mut d, next, &[link.from_port.clone()])?;
             }
         }
         if let Some(state) = &self.bridge {
@@ -1209,6 +1404,8 @@ impl NetworkState {
             }
         }
         self.emit_tsn(&mut d, c)?;
+        self.emit_extensions(&mut d, c)?;
+        self.check_extension_limits(&d)?;
         self.arm_control(&mut d, c)?;
         self.emit_rows(&mut d, c)?;
         self.queue_points(&mut d, c.now());
@@ -1258,9 +1455,63 @@ impl NetworkState {
         self.bridge_actions(d, c, limit)
     }
     fn bridge_actions(&self, d: &mut NetworkDelta, c: &mut Context<'_>, limit: u64) -> Result<()> {
-        let actions = std::mem::take(&mut d.bridge.as_mut().unwrap().actions);
-        for action in actions {
+        let mut actions: VecDeque<_> =
+            std::mem::take(&mut d.bridge.as_mut().unwrap().actions).into();
+        while let Some(action) = actions.pop_front() {
             match action {
+                BridgeAction::PoliceEthernet {
+                    conversion,
+                    branch,
+                    conversion_id,
+                    branch_id,
+                    child_id,
+                    source,
+                    wire,
+                    vid,
+                    priority,
+                } => {
+                    let ingress = format!("{}.rx", self.prepared.ethernet.devices[source].id);
+                    let id = replication::identifier(&["synthetic", &branch_id]);
+                    if self.receptions.iter().any(|r| r.row.reception_id == id)
+                        || d.receptions.iter().any(|(_, r)| r.row.reception_id == id)
+                    {
+                        return Err(error("synthetic/native reception ID collision"));
+                    }
+                    let tsn = self
+                        .tsn
+                        .as_ref()
+                        .ok_or_else(|| error("composite policing requires TSN"))?;
+                    let delta = tsn.plan_arrival_in(
+                        std::mem::take(&mut d.tsn),
+                        &ingress,
+                        &wire.dst_mac,
+                        vid,
+                        priority,
+                        wire.mac_bytes,
+                        &id,
+                        c.now(),
+                    )?;
+                    let policing = delta
+                        .psfp
+                        .as_ref()
+                        .ok_or_else(|| error("missing synthetic policing verdict"))?;
+                    let reason = (policing.verdict == "drop").then(|| policing.reason.clone());
+                    let data = json!({"ingress_id":id,"conversion_id":conversion_id,"branch_id":branch_id,"ingress":ingress,"child_planned_id":child_id,"stream_id":policing.stream_id,"vid":vid.to_string(),"priority":priority.to_string(),"mac_bytes":wire.mac_bytes.to_string(),"offered_ps":c.now().to_string(),"verdict":policing.verdict,"reason":reason});
+                    d.tsn = delta;
+                    Self::record(c, d, "dir.composite.ingress", id, data)?;
+                    let tx = self.bridge_tx(d);
+                    self.bridge.as_ref().unwrap().resolve_ethernet_policing(
+                        d.bridge.as_mut().unwrap(),
+                        conversion,
+                        branch,
+                        c.now(),
+                        reason,
+                        &tx,
+                    )?;
+                    // Existing waiting-record intents precede the resolved verdict.
+                    // Append the continuation to avoid overwriting its final drop/admission.
+                    actions.extend(std::mem::take(&mut d.bridge.as_mut().unwrap().actions));
+                }
                 BridgeAction::Schedule { at, phase, event } => {
                     if phase == 0 {
                         if at == c.now() {
@@ -1272,7 +1523,7 @@ impl NetworkState {
                             });
                         }
                     } else {
-                        Self::schedule(c, at, Event::Bridge(event))?;
+                        Self::schedule(c, d, at, Event::Bridge(event))?;
                     }
                 }
                 BridgeAction::DirtyCan { bus } => {
@@ -1316,6 +1567,7 @@ impl NetworkState {
                     d.frames.push((
                         f,
                         Frame {
+                            generator: None,
                             row,
                             ip: None,
                             visits: 0,
@@ -1340,8 +1592,20 @@ impl NetworkState {
                         .map(|(i, _)| i)
                         .collect::<Vec<_>>();
                     let prior = d.transfers.len();
+                    #[cfg(test)]
+                    if d.frames
+                        .iter()
+                        .filter(|(i, _)| *i >= self.frames.len())
+                        .count()
+                        == 2
+                    {
+                        crate::allocation::reservation_checkpoint(
+                            "network_composite_second_branch",
+                        )?;
+                    }
                     self.offer(
                         CopyOrigin {
+                            circuit: None,
                             frame: f,
                             parent: None,
                             visit: 0,
@@ -1413,6 +1677,9 @@ impl NetworkState {
         targets
     }
     fn port_input(&self, direction: usize, d: &NetworkDelta) -> Result<PortInput> {
+        if self.preemption.is_some() {
+            return self.preemption_input(direction, d);
+        }
         let q = self.queue(d, direction);
         let link = &self.prepared.ethernet.directions[direction];
         let mut input = PortInput {
@@ -1441,10 +1708,27 @@ impl NetworkState {
         }
         Ok(input)
     }
-    fn stage_tsn(&self, d: &mut NetworkDelta, delta: TsnDelta, ports: &[String]) {
+    fn stage_tsn(&self, d: &mut NetworkDelta, delta: TsnDelta, ports: &[String]) -> Result<()> {
         if let Some(prepared) = &self.prepared.tsn {
             for port in ports {
                 if let Some(&i) = prepared.port_index.get(port) {
+                    if self.preemption.is_some() {
+                        let wake = delta.wakes.iter().rev().find(|w| &w.port == port).cloned();
+                        let previous = d.tsn_wakes.get(&i).unwrap_or(&self.tsn_wakes[i]);
+                        if previous != &wake {
+                            let direction = self
+                                .prepared
+                                .ethernet
+                                .directions
+                                .iter()
+                                .position(|d| &d.from_port == port)
+                                .ok_or_else(|| error("missing preemption direction"))?;
+                            let state = self.preemption_mut(d)?;
+                            let p = &mut state.ports[direction];
+                            p.wake_epoch = add(p.wake_epoch, 1)?;
+                            p.wake_due = wake.as_ref().map(|w| w.time_ps);
+                        }
+                    }
                     d.tsn_wakes.insert(
                         i,
                         delta.wakes.iter().rev().find(|w| &w.port == port).cloned(),
@@ -1453,6 +1737,7 @@ impl NetworkState {
             }
         }
         d.tsn = delta;
+        Ok(())
     }
     fn refresh_tsn(&self, d: &mut NetworkDelta, c: &mut Context<'_>, control: bool) -> Result<()> {
         let Some(state) = &self.tsn else {
@@ -1497,7 +1782,7 @@ impl NetworkState {
             if !delta.selected.is_empty() {
                 c.request_arbitration("network").map_err(model)?;
             }
-            self.stage_tsn(d, delta, &ports);
+            self.stage_tsn(d, delta, &ports)?;
         } else {
             for (port, input) in inputs {
                 let delta =
@@ -1505,7 +1790,7 @@ impl NetworkState {
                 if !delta.selected.is_empty() {
                     c.request_arbitration("network").map_err(model)?;
                 }
-                self.stage_tsn(d, delta, &[port]);
+                self.stage_tsn(d, delta, &[port])?;
             }
         }
         Ok(())
@@ -1591,11 +1876,11 @@ impl NetworkState {
             v["deadline_ps"] = opt(row.deadline_ps);
             v["source_vlan_id"] = opt(row.source_vlan_id.map(u64::from));
             v["ip_multicast"] = decimal(json!(f.ip));
-            if self.bridge.is_some() {
+            if self.bridge.is_some() && self.dynamic.is_none() {
                 v.as_object_mut().unwrap().remove("ip_multicast");
             }
             records.push((
-                if self.bridge.is_some() {
+                if self.bridge.is_some() && self.dynamic.is_none() {
                     "ethernet.frame"
                 } else {
                     "ethernet.dynamic.frame"
@@ -1606,8 +1891,16 @@ impl NetworkState {
         }
         for (_, t) in &d.transfers {
             let row = &t.row;
+            if self.preemption.is_some() {
+                records.push((
+                    "dir.preemption.transfer",
+                    row.transfer_id.clone(),
+                    self.preemption_transfer(t, c.now()),
+                ));
+                continue;
+            }
             let mut v = json!({"frame_id":row.frame_id,"parent_transfer_id":row.parent_transfer_id,"from_port":row.from_port,"to_port":row.to_port,"queued_ps":row.queued_ps.to_string(),"sof_ps":opt(row.sof_ps),"eof_ps":opt(row.eof_ps),"release_ps":opt(row.release_ps),"arrival_ps":opt(row.arrival_ps),"planned_eof_ps":opt(row.planned_eof_ps),"planned_release_ps":opt(row.planned_release_ps),"planned_arrival_ps":opt(row.planned_arrival_ps),"status":row.status,"drop_reason":row.drop_reason,"queue_id":row.queue_id,"priority":row.priority.to_string(),"vlan_id":opt(row.vlan_id.map(u64::from)),"wire":wire(&row.wire),"visit_id":t.visit.to_string(),"copy_id":row.transfer_id,"policy_epoch_offer":t.offer_epoch.to_string(),"policy_epoch_sof":opt(t.sof_epoch)});
-            if self.bridge.is_some() {
+            if self.bridge.is_some() && self.dynamic.is_none() {
                 for k in [
                     "visit_id",
                     "copy_id",
@@ -1618,7 +1911,7 @@ impl NetworkState {
                 }
             }
             records.push((
-                if self.bridge.is_some() {
+                if self.bridge.is_some() && self.dynamic.is_none() {
                     "ethernet.transfer"
                 } else {
                     "ethernet.dynamic.transfer"
@@ -1630,13 +1923,13 @@ impl NetworkState {
         for (_, r) in &d.receptions {
             let row = &r.row;
             let mut v = json!({"frame_id":row.frame_id,"transfer_id":row.transfer_id,"ingress":row.ingress,"observed_ps":row.observed_ps.to_string(),"ready_ps":opt(row.ready_ps),"planned_ready_ps":opt(row.planned_ready_ps),"status":row.status,"reason":row.reason,"egress_transfer_ids":row.egress_transfer_ids,"vlan_id":opt(row.vlan_id.map(u64::from)),"priority":row.priority.to_string(),"visit_id":r.visit.to_string(),"policy_epoch_ingress":r.epoch.to_string()});
-            if self.bridge.is_some() {
+            if self.bridge.is_some() && self.dynamic.is_none() {
                 for k in ["visit_id", "policy_epoch_ingress"] {
                     v.as_object_mut().unwrap().remove(k);
                 }
             }
             records.push((
-                if self.bridge.is_some() {
+                if self.bridge.is_some() && self.dynamic.is_none() {
                     "ethernet.reception"
                 } else {
                     "ethernet.dynamic.reception"
@@ -1688,6 +1981,15 @@ impl NetworkState {
         Ok(())
     }
     pub(crate) fn apply(&mut self, d: NetworkDelta) {
+        if let Some(state) = d.wire {
+            self.wire = Some(state);
+        }
+        if let Some(state) = d.replication {
+            self.replication = Some(state);
+        }
+        if let Some(state) = d.preemption {
+            self.preemption = Some(state);
+        }
         if let Some(cursors) = d.cursors {
             self.cursors = cursors;
         }
@@ -1719,6 +2021,7 @@ impl NetworkState {
         self.record_sequence = d.record_sequence;
         self.next_visit = d.next_visit;
         self.future_generation = d.future_generation;
+        self.pending_direct = d.pending_direct;
     }
     pub(crate) fn snapshot(&self) -> EthernetSnapshot {
         EthernetSnapshot {
@@ -1730,8 +2033,26 @@ impl NetworkState {
     }
     pub(crate) fn runtime_snapshot(&self, h: u64) -> Result<Value> {
         let tsn=self.tsn.as_ref().map(|s|s.snapshot(h)).transpose()?.map(|s|json!({"ports":s.ports.into_iter().map(|p|json!({"port":p.port,"schedule_id":p.schedule_id,"schedule_generation":p.schedule_generation.to_string(),"wake_generation":p.wake_generation.to_string(),"next_wake_ps":p.next_wake_ps.map(|v|v.to_string()),"credits":p.credits.into_iter().map(|c|json!({"priority":c.priority.to_string(),"credit":decimal(json!(c.credit)),"last_ps":c.last_ps.to_string(),"mode":c.mode,"backlog":c.backlog,"sending":c.sending})).collect::<Vec<_>>()})).collect::<Vec<_>>(),"meters":s.meters.into_iter().map(|m|json!({"stream_id":m.stream_id,"committed":m.committed.to_string(),"peak":m.peak.to_string(),"last_evaluated_ps":m.last_evaluated_ps.to_string()})).collect::<Vec<_>>(),"update_cursor":s.update_cursor.to_string()}));
+        let redundancy = self.replication.as_ref().map(|s| {
+            let mut snapshot = s.snapshot();
+            snapshot["transfer_circuits"] = json!(
+                self.transfers
+                    .iter()
+                    .filter_map(|t| {
+                        t.circuit.as_ref().map(|c| {
+                            json!({
+                                "branch_id": c.branch,
+                                "transfer_id": t.row.transfer_id,
+                                "hop_index": c.hop.to_string(),
+                            })
+                        })
+                    })
+                    .collect::<Vec<_>>()
+            );
+            snapshot
+        });
         Ok(
-            json!({"dynamic":self.dynamic.as_ref().map(|s|decimal(s.snapshot_tables())),"tsn":tsn,"bridge":self.bridge.as_ref().map(|b|decimal(b.snapshot()))}),
+            json!({"dynamic":self.dynamic.as_ref().map(|s|decimal(s.snapshot_tables())),"tsn":tsn,"bridge":self.bridge.as_ref().map(|b|decimal(b.snapshot())),"redundancy":redundancy,"preemption":self.preemption_snapshot(),"wire":self.wire_snapshot(h)?}),
         )
     }
     pub(crate) fn can_snapshot(&self) -> Option<crate::snapshot::CanSnapshot> {
@@ -1907,3 +2228,6 @@ mod tests {
         assert_eq!(targets.len(), 2);
     }
 }
+
+#[cfg(test)]
+pub(crate) mod network_vector_tests;

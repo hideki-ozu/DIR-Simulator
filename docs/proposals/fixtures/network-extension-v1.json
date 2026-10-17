@@ -1,0 +1,1160 @@
+{
+  "schema_version": 1,
+  "status": "design_vectors_not_product_tests",
+  "vectors": [
+    {
+      "id": "P-COMPOSITE-T01-V01",
+      "test_id": "P-COMPOSITE-T01",
+      "kind": "prepare_rejection",
+      "input": {
+        "cases": [
+          {
+            "pointer": "/bridge/ethernet",
+            "violation": "duplicate_resource_owner"
+          },
+          {
+            "pointer": "/limits/max_pending_branches",
+            "value": 0,
+            "violation": "positive_u32"
+          },
+          {
+            "pointer": "/limits/max_control_events",
+            "value": 4294967296,
+            "violation": "positive_u32"
+          },
+          {
+            "pointer": "/tsn/clock",
+            "value": "external",
+            "violation": "unsupported_clock"
+          },
+          {
+            "pointer": "/bridge/gateways/0/rules/0/egresses/0/pcp",
+            "value": 8,
+            "violation": "priority_range"
+          },
+          {
+            "pointer": "/schema_name",
+            "value": "dir.unknown",
+            "violation": "unknown_schema"
+          },
+          {
+            "pointer": "/bridge/can",
+            "value": {
+              "fd": true
+            },
+            "violation": "nonempty_can_object"
+          },
+          {
+            "pointer": "/unknown",
+            "value": 1,
+            "violation": "unknown_field"
+          },
+          {
+            "pointer": "/limits/max_control_events",
+            "value": true,
+            "violation": "bool_not_integer"
+          },
+          {
+            "pointer": "/tsn",
+            "value": null,
+            "violation": "null_not_allowed"
+          }
+        ]
+      },
+      "expected": {
+        "all_prepare_rejected": true,
+        "callbacks_committed": 0
+      },
+      "basis": "P-COMPOSITE-S01; P-COMPOSITE-T01"
+    },
+    {
+      "id": "P-COMPOSITE-T02-V01",
+      "test_id": "P-COMPOSITE-T02",
+      "kind": "composite_admission",
+      "input": {
+        "ready_ps": "10",
+        "offer_ps": "10",
+        "capacity_frames": 1,
+        "queued_frames": 0,
+        "mac_bytes": 68,
+        "capacity_bytes": null,
+        "port_capacity_frames": 2,
+        "port_queued_frames": 0,
+        "policing": "pass",
+        "gate_open_ps": "20"
+      },
+      "expected": {
+        "admission": "Admitted",
+        "admitted_ps": "10",
+        "rx_released_ps": "10",
+        "sof_ps": "20",
+        "policing_evaluations": 1
+      },
+      "basis": "P-COMPOSITE-S02; gate is selection eligibility, not admission"
+    },
+    {
+      "id": "P-COMPOSITE-T02-V02",
+      "test_id": "P-COMPOSITE-T02",
+      "kind": "composite_admission",
+      "input": {
+        "ready_ps": "10",
+        "offer_ps": "10",
+        "capacity_frames": 1,
+        "queued_frames": 1,
+        "mac_bytes": 68,
+        "capacity_bytes": 68,
+        "port_capacity_frames": 2,
+        "port_queued_frames": 1,
+        "policing": "pass",
+        "dequeue_ps": "20",
+        "prior_release_ps": "724020",
+        "gate_open_ps": "20"
+      },
+      "expected": {
+        "initial_admission": "Waiting",
+        "wake_delta": 1,
+        "admission": "Admitted",
+        "admitted_ps": "20",
+        "rx_released_ps": "20",
+        "earliest_sof_ps": "724020",
+        "policing_evaluations": 1,
+        "queued_bytes_after": "68"
+      },
+      "basis": "P-COMPOSITE-S02; queued capacity frees at SOF, port remains busy to release"
+    },
+    {
+      "id": "P-COMPOSITE-T02-V03",
+      "test_id": "P-COMPOSITE-T02",
+      "kind": "composite_admission",
+      "input": {
+        "offer_ps": "10",
+        "capacity_frames": 1,
+        "queued_frames": 0,
+        "mac_bytes": 68,
+        "capacity_bytes": 68,
+        "port_capacity_frames": 2,
+        "port_queued_frames": 0,
+        "policing": "psfp_gate_closed"
+      },
+      "expected": {
+        "admission": "Dropped",
+        "reason": "psfp_gate_closed",
+        "queued_frames_after": 0,
+        "rx_released_ps": "10",
+        "branch_drop_count": 1,
+        "terminal_success_count": 0
+      },
+      "basis": "P-COMPOSITE-S02"
+    },
+    {
+      "id": "P-COMPOSITE-T02-V04",
+      "test_id": "P-COMPOSITE-T02",
+      "kind": "composite_capacity",
+      "input": {
+        "mac_bytes": 68,
+        "cases": [
+          {
+            "capacity_frames": 0,
+            "capacity_bytes": null,
+            "queued_frames": 0,
+            "queued_bytes": 0,
+            "port_capacity_frames": 2,
+            "port_queued_frames": 0
+          },
+          {
+            "capacity_frames": 1,
+            "capacity_bytes": 67,
+            "queued_frames": 0,
+            "queued_bytes": 0,
+            "port_capacity_frames": 2,
+            "port_queued_frames": 0
+          },
+          {
+            "capacity_frames": 1,
+            "capacity_bytes": 68,
+            "queued_frames": 0,
+            "queued_bytes": 0,
+            "port_capacity_frames": 2,
+            "port_queued_frames": 0
+          },
+          {
+            "capacity_frames": 2,
+            "capacity_bytes": 136,
+            "queued_frames": 0,
+            "queued_bytes": 0,
+            "port_capacity_frames": 1,
+            "port_queued_frames": 1
+          }
+        ]
+      },
+      "expected": {
+        "admission": [
+          "Dropped",
+          "Dropped",
+          "Admitted",
+          "Waiting"
+        ],
+        "reason": [
+          "tx_unadmittable",
+          "tx_unadmittable",
+          null,
+          "queue_full"
+        ]
+      },
+      "basis": "P-COMPOSITE-S02; exact byte fit is admitted"
+    },
+    {
+      "id": "P-COMPOSITE-T03-V01",
+      "test_id": "P-COMPOSITE-T03",
+      "kind": "half_open",
+      "input": {
+        "event_ps": "20",
+        "T_ps": [
+          "19",
+          "20",
+          "21"
+        ],
+        "event_kind": "gate_open_and_sof"
+      },
+      "expected": {
+        "event_executed": [
+          false,
+          false,
+          true
+        ],
+        "sof_ps": [
+          null,
+          null,
+          "20"
+        ],
+        "target_count": [
+          0,
+          0,
+          1
+        ]
+      },
+      "basis": "P-COMPOSITE-S03; [0,T)"
+    },
+    {
+      "id": "P-COMPOSITE-T03-V02",
+      "test_id": "P-COMPOSITE-T03",
+      "kind": "atomic_failure",
+      "input": {
+        "failure": "reserve_second_fanout_branch",
+        "before": {
+          "rx_occupancy": 1,
+          "queue_frames": 0,
+          "meter_tokens": "1088",
+          "record_sequence": "7",
+          "fes_pending": 2,
+          "journal_rows": 4
+        },
+        "staged_branch_count": 2
+      },
+      "expected": {
+        "after": {
+          "rx_occupancy": 1,
+          "queue_frames": 0,
+          "meter_tokens": "1088",
+          "record_sequence": "7",
+          "fes_pending": 2,
+          "journal_rows": 4
+        },
+        "committed_effects": 0,
+        "run_state": "Failed"
+      },
+      "basis": "P-COMPOSITE-D03"
+    },
+    {
+      "id": "P-REPLICATION-T01-V01",
+      "test_id": "P-REPLICATION-T01",
+      "kind": "prepare_rejection",
+      "input": {
+        "cases": [
+          {
+            "field": "history_capacity",
+            "value": 0
+          },
+          {
+            "field": "history_capacity",
+            "value": 65537
+          },
+          {
+            "field": "egress_paths.length",
+            "value": 1
+          },
+          {
+            "field": "egress_paths.length",
+            "value": 17
+          },
+          {
+            "field": "ports",
+            "value": [
+              "A.tx",
+              "B.tx",
+              "A.tx"
+            ],
+            "violation": "cycle"
+          },
+          {
+            "field": "egress_paths",
+            "violation": "identical_ports"
+          },
+          {
+            "field": "controls",
+            "value": [
+              {
+                "kind": "link_down"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "all_prepare_rejected": true,
+        "callbacks_committed": 0
+      },
+      "basis": "P-REPLICATION-S01"
+    },
+    {
+      "id": "P-REPLICATION-T01-V02",
+      "test_id": "P-REPLICATION-T01",
+      "kind": "history_storage",
+      "input": {
+        "capacities": [
+          1,
+          65536
+        ],
+        "bits_per_word": 64
+      },
+      "expected": {
+        "words": [
+          1,
+          1024
+        ],
+        "bytes": [
+          8,
+          8192
+        ]
+      },
+      "basis": "P-REPLICATION-D01; words=ceil(N/64), bytes=8*words"
+    },
+    {
+      "id": "P-REPLICATION-T02-V01",
+      "test_id": "P-REPLICATION-T02",
+      "kind": "recovery_window",
+      "input": {
+        "history_capacity": 4,
+        "initial_high": null,
+        "initial_bitmap_hex": "0",
+        "sequences": [
+          "5",
+          "5",
+          "3",
+          "1",
+          "6",
+          "3"
+        ]
+      },
+      "expected": {
+        "decisions": [
+          "accept_first",
+          "duplicate",
+          "accept_late",
+          "stale",
+          "accept_advance",
+          "duplicate"
+        ],
+        "watermarks": [
+          "5",
+          "5",
+          "5",
+          "5",
+          "6",
+          "6"
+        ],
+        "bitmaps_hex": [
+          "1",
+          "1",
+          "5",
+          "5",
+          "b",
+          "b"
+        ],
+        "delivered_count": 3,
+        "duplicate_count": 2,
+        "stale_count": 1
+      },
+      "basis": "P-REPLICATION-S02; bit i means high-i"
+    },
+    {
+      "id": "P-REPLICATION-T02-V02",
+      "test_id": "P-REPLICATION-T02",
+      "kind": "recovery_window",
+      "input": {
+        "history_capacity": 4,
+        "initial_high": "5",
+        "initial_bitmap_hex": "1",
+        "sequences": [
+          "2",
+          "1",
+          "9",
+          "6",
+          "5"
+        ]
+      },
+      "expected": {
+        "decisions": [
+          "accept_late",
+          "stale",
+          "accept_advance",
+          "accept_late",
+          "stale"
+        ],
+        "watermarks": [
+          "5",
+          "5",
+          "9",
+          "9",
+          "9"
+        ],
+        "bitmaps_hex": [
+          "9",
+          "9",
+          "1",
+          "9",
+          "9"
+        ],
+        "delivered_count": 3,
+        "duplicate_count": 0,
+        "stale_count": 2
+      },
+      "basis": "P-REPLICATION-S02; diff N-1 accepted, diff N stale, advance N clears"
+    },
+    {
+      "id": "P-REPLICATION-T02-V03",
+      "test_id": "P-REPLICATION-T02",
+      "kind": "recovery_window",
+      "input": {
+        "history_capacity": 1,
+        "initial_high": null,
+        "initial_bitmap_hex": "0",
+        "sequences": [
+          "0",
+          "0",
+          "1",
+          "0"
+        ]
+      },
+      "expected": {
+        "decisions": [
+          "accept_first",
+          "duplicate",
+          "accept_advance",
+          "stale"
+        ],
+        "watermarks": [
+          "0",
+          "0",
+          "1",
+          "1"
+        ],
+        "bitmaps_hex": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "delivered_count": 2,
+        "duplicate_count": 1,
+        "stale_count": 1
+      },
+      "basis": "P-REPLICATION-S02; N=1"
+    },
+    {
+      "id": "P-REPLICATION-T02-V04",
+      "test_id": "P-REPLICATION-T02",
+      "kind": "recovery_window",
+      "input": {
+        "history_capacity": 4,
+        "initial_high": "18446744073709551613",
+        "initial_bitmap_hex": "1",
+        "sequences": [
+          "18446744073709551615",
+          "18446744073709551614",
+          "18446744073709551611"
+        ]
+      },
+      "expected": {
+        "decisions": [
+          "accept_advance",
+          "accept_late",
+          "stale"
+        ],
+        "watermarks": [
+          "18446744073709551615",
+          "18446744073709551615",
+          "18446744073709551615"
+        ],
+        "bitmaps_hex": [
+          "5",
+          "7",
+          "7"
+        ],
+        "delivered_count": 2,
+        "duplicate_count": 0,
+        "stale_count": 1
+      },
+      "basis": "P-REPLICATION-S02; unsigned comparison/subtraction without wrap"
+    },
+    {
+      "id": "P-REPLICATION-T02-V05",
+      "test_id": "P-REPLICATION-T02",
+      "kind": "sequence_allocation",
+      "input": {
+        "next_sequence": "18446744073709551615",
+        "exhausted": false,
+        "acceptance_attempts": 2
+      },
+      "expected": {
+        "assigned": [
+          "18446744073709551615"
+        ],
+        "exhausted": true,
+        "second_attempt": "E-0004",
+        "wrapped_to_zero": false
+      },
+      "basis": "P-REPLICATION-S02"
+    },
+    {
+      "id": "P-REPLICATION-T03-V01",
+      "test_id": "P-REPLICATION-T03",
+      "kind": "replication_terminal",
+      "input": {
+        "same_origin": true,
+        "arrivals": [
+          {
+            "path": "A",
+            "time_ps": "100",
+            "fes_seq": "20",
+            "sequence": "0"
+          },
+          {
+            "path": "B",
+            "time_ps": "100",
+            "fes_seq": "21",
+            "sequence": "0"
+          }
+        ],
+        "history_capacity": 4
+      },
+      "expected": {
+        "decisions": [
+          "accept_first",
+          "duplicate"
+        ],
+        "target_count": 1,
+        "completed_count": 1,
+        "delivered_branch": "A",
+        "branch_received": 2,
+        "duplicate_count": 1
+      },
+      "basis": "P-REPLICATION-S02; deterministic FES seq"
+    },
+    {
+      "id": "P-REPLICATION-T03-V02",
+      "test_id": "P-REPLICATION-T03",
+      "kind": "replication_terminal",
+      "input": {
+        "cases": [
+          {
+            "any_branch_sof": true,
+            "branch_outcomes": [
+              "dropped",
+              "delivered"
+            ]
+          },
+          {
+            "any_branch_sof": false,
+            "branch_outcomes": [
+              "dropped",
+              "dropped"
+            ]
+          },
+          {
+            "any_branch_sof": true,
+            "branch_outcomes": [
+              "dropped",
+              "dropped"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "target_count": [
+          1,
+          0,
+          1
+        ],
+        "completed_count": [
+          1,
+          0,
+          0
+        ],
+        "rates": [
+          "1",
+          null,
+          "0"
+        ]
+      },
+      "basis": "P-REPLICATION-S03"
+    },
+    {
+      "id": "P-REPLICATION-T03-V03",
+      "test_id": "P-REPLICATION-T03",
+      "kind": "atomic_failure",
+      "input": {
+        "failure": "deliver_effect_reserve_after_history_plan",
+        "before": {
+          "high": "5",
+          "bitmap_hex": "1",
+          "deliver_count": 1,
+          "record_sequence": "9",
+          "fes_pending": 2
+        },
+        "incoming_sequence": "6"
+      },
+      "expected": {
+        "after": {
+          "high": "5",
+          "bitmap_hex": "1",
+          "deliver_count": 1,
+          "record_sequence": "9",
+          "fes_pending": 2
+        },
+        "committed_effects": 0,
+        "run_state": "Failed"
+      },
+      "basis": "P-REPLICATION-D02; bitmap and deliver atomic"
+    },
+    {
+      "id": "P-REPLICATION-T03-V04",
+      "test_id": "P-REPLICATION-T03",
+      "kind": "half_open",
+      "input": {
+        "event_ps": "100",
+        "T_ps": [
+          "99",
+          "100",
+          "101"
+        ],
+        "event_kind": "recovery_accept"
+      },
+      "expected": {
+        "event_executed": [
+          false,
+          false,
+          true
+        ],
+        "completed_count": [
+          0,
+          0,
+          1
+        ]
+      },
+      "basis": "P-REPLICATION-S03; [0,T)"
+    },
+    {
+      "id": "P-PREEMPTION-T01-V01",
+      "test_id": "P-PREEMPTION-T01",
+      "kind": "prepare_rejection",
+      "input": {
+        "cases": [
+          {
+            "field": "fragment_payload_bytes",
+            "value": 0
+          },
+          {
+            "field": "express_classes",
+            "value": [
+              7,
+              7
+            ]
+          },
+          {
+            "field": "class_partition",
+            "violation": "overlap"
+          },
+          {
+            "field": "class_partition",
+            "violation": "missing_priority"
+          },
+          {
+            "field": "cbs.priority",
+            "violation": "preemptable_class"
+          },
+          {
+            "field": "bitrate_bps",
+            "value": "0"
+          },
+          {
+            "field": "duplex",
+            "value": "half"
+          },
+          {
+            "field": "unexpected",
+            "value": 1
+          }
+        ]
+      },
+      "expected": {
+        "all_prepare_rejected": true,
+        "callbacks_committed": 0
+      },
+      "basis": "P-PREEMPTION-S01"
+    },
+    {
+      "id": "P-PREEMPTION-T01-V02",
+      "test_id": "P-PREEMPTION-T01",
+      "kind": "fragment_formula",
+      "input": {
+        "kernel_only": true,
+        "mac_bytes": 100,
+        "fragment_payload_bytes": 40,
+        "fragment_overhead_bytes": 4,
+        "bitrate_bps": "1000000000"
+      },
+      "expected": {
+        "payloads": [
+          40,
+          40,
+          20
+        ],
+        "accounted_bytes": [
+          44,
+          44,
+          24
+        ],
+        "durations_ps": [
+          "352000",
+          "352000",
+          "192000"
+        ],
+        "total_occupied_ps": "896000",
+        "formula": "ceil(8*(L+O)*1000000000000/R)"
+      },
+      "basis": "P-PREEMPTION-S01"
+    },
+    {
+      "id": "P-PREEMPTION-T01-V03",
+      "test_id": "P-PREEMPTION-T01",
+      "kind": "fragment_formula",
+      "input": {
+        "kernel_only": true,
+        "mac_bytes": 1,
+        "fragment_payload_bytes": 1,
+        "fragment_overhead_bytes": 0,
+        "bitrate_bps": "3000000000"
+      },
+      "expected": {
+        "payloads": [
+          1
+        ],
+        "accounted_bytes": [
+          1
+        ],
+        "durations_ps": [
+          "2667"
+        ],
+        "total_occupied_ps": "2667",
+        "formula": "ceil(8*(L+O)*1000000000000/R)"
+      },
+      "basis": "P-PREEMPTION-S01; noninteger ps rounds upward"
+    },
+    {
+      "id": "P-PREEMPTION-T02-V01",
+      "test_id": "P-PREEMPTION-T02",
+      "kind": "preemption_timeline",
+      "input": {
+        "kernel_only": true,
+        "mac_bytes": 100,
+        "fragment_payload_bytes": 40,
+        "fragment_overhead_bytes": 4,
+        "bitrate_bps": "1000000000",
+        "express_arrival_ps": "100000",
+        "express_accounted_bytes": 14,
+        "resume_gap_ps": "8000"
+      },
+      "expected": {
+        "fragment_intervals_ps": [
+          [
+            "0",
+            "352000"
+          ],
+          [
+            "472000",
+            "824000"
+          ],
+          [
+            "824000",
+            "1016000"
+          ]
+        ],
+        "express_interval_ps": [
+          "352000",
+          "464000"
+        ],
+        "gap_interval_ps": [
+          "464000",
+          "472000"
+        ],
+        "frame_eof_ps": "1016000",
+        "fragment_busy_ps": "896000",
+        "express_busy_ps": "112000",
+        "total_busy_ps": "1008000",
+        "total_gap_ps": "8000"
+      },
+      "basis": "P-PREEMPTION-T02; legacy PV-P01 arithmetic kernel only; 14 bytes is not legal full Ethernet MAC"
+    },
+    {
+      "id": "P-PREEMPTION-T02-V02",
+      "test_id": "P-PREEMPTION-T02",
+      "kind": "preemption_timeline",
+      "input": {
+        "kernel_only": false,
+        "mac_bytes": 100,
+        "fragment_payload_bytes": 40,
+        "fragment_overhead_bytes": 4,
+        "bitrate_bps": "1000000000",
+        "express_arrival_ps": "100000",
+        "express_mac_bytes": 64,
+        "express_preamble_bytes": 8,
+        "express_ifg_bytes": 12,
+        "resume_gap_ps": "8000"
+      },
+      "expected": {
+        "fragment_intervals_ps": [
+          [
+            "0",
+            "352000"
+          ],
+          [
+            "1032000",
+            "1384000"
+          ],
+          [
+            "1384000",
+            "1576000"
+          ]
+        ],
+        "express_interval_ps": [
+          "352000",
+          "1024000"
+        ],
+        "express_eof_ps": "928000",
+        "gap_interval_ps": [
+          "1024000",
+          "1032000"
+        ],
+        "frame_eof_ps": "1576000",
+        "fragment_busy_ps": "896000",
+        "express_busy_ps": "672000",
+        "total_busy_ps": "1568000",
+        "total_gap_ps": "8000"
+      },
+      "basis": "P-PREEMPTION-S01; express uses existing M+8 serialization and M+20 occupancy"
+    },
+    {
+      "id": "P-PREEMPTION-T02-V03",
+      "test_id": "P-PREEMPTION-T02",
+      "kind": "preemption_timeline",
+      "input": {
+        "kernel_only": true,
+        "mac_bytes": 100,
+        "fragment_payload_bytes": 40,
+        "fragment_overhead_bytes": 4,
+        "bitrate_bps": "1000000000",
+        "express_arrival_ps": null,
+        "resume_gap_ps": "8000"
+      },
+      "expected": {
+        "fragment_intervals_ps": [
+          [
+            "0",
+            "352000"
+          ],
+          [
+            "352000",
+            "704000"
+          ],
+          [
+            "704000",
+            "896000"
+          ]
+        ],
+        "frame_eof_ps": "896000",
+        "total_busy_ps": "896000",
+        "total_gap_ps": "0"
+      },
+      "basis": "P-PREEMPTION-S02; no gap between uninterrupted fragments"
+    },
+    {
+      "id": "P-PREEMPTION-T02-V04",
+      "test_id": "P-PREEMPTION-T02",
+      "kind": "gate_fit",
+      "input": {
+        "kernel_only": true,
+        "start_ps": "0",
+        "duration_ps": "352000",
+        "window_end_ps": [
+          "351999",
+          "352000",
+          "352001"
+        ]
+      },
+      "expected": {
+        "fits": [
+          false,
+          true,
+          true
+        ],
+        "earliest_end_ps": "352000"
+      },
+      "basis": "P-PREEMPTION-S02; release<=open_end"
+    },
+    {
+      "id": "P-PREEMPTION-T02-V05",
+      "test_id": "P-PREEMPTION-T02",
+      "kind": "gap_rearrival",
+      "input": {
+        "kernel_only": true,
+        "initial_gap_interval_ps": [
+          "464000",
+          "472000"
+        ],
+        "new_express_arrival_ps": "468000",
+        "new_express_duration_ps": "80000",
+        "resume_gap_ps": "8000",
+        "continuation_duration_ps": "352000"
+      },
+      "expected": {
+        "new_express_interval_ps": [
+          "472000",
+          "552000"
+        ],
+        "new_gap_interval_ps": [
+          "552000",
+          "560000"
+        ],
+        "continuation_interval_ps": [
+          "560000",
+          "912000"
+        ],
+        "gap_extended_at_arrival": false,
+        "new_gap_count": 1
+      },
+      "basis": "P-PREEMPTION-S02; wait for existing gap expiry then new express group then one new gap"
+    },
+    {
+      "id": "P-PREEMPTION-T02-V06",
+      "test_id": "P-PREEMPTION-T02",
+      "kind": "selection_order",
+      "input": {
+        "kernel_only": true,
+        "express_classes": [
+          1,
+          7
+        ],
+        "preemptable_classes": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "express_eligible": {
+          "1": true,
+          "7": false
+        },
+        "suspended_priority": 6,
+        "suspended_eligible": true
+      },
+      "expected": {
+        "selected_priority": 1,
+        "selected_kind": "express",
+        "suspended_preserved": true
+      },
+      "basis": "P-PREEMPTION-S02; express set priority over higher numeric preemptable"
+    },
+    {
+      "id": "P-PREEMPTION-T03-V01",
+      "test_id": "P-PREEMPTION-T03",
+      "kind": "preemption_prefix",
+      "input": {
+        "kernel_only": true,
+        "T_ps": "500000",
+        "fragment_intervals_ps": [
+          [
+            "0",
+            "352000"
+          ],
+          [
+            "472000",
+            "824000"
+          ],
+          [
+            "824000",
+            "1016000"
+          ]
+        ],
+        "fragment_payloads": [
+          40,
+          40,
+          20
+        ],
+        "express_intervals_ps": [
+          [
+            "352000",
+            "464000"
+          ]
+        ],
+        "gap_intervals_ps": [
+          [
+            "464000",
+            "472000"
+          ]
+        ]
+      },
+      "expected": {
+        "fragments_started": 2,
+        "fragments_completed": 1,
+        "completed_mac_bytes": 40,
+        "active_fragment_ordinal": 1,
+        "active_fragment_end_ps": null,
+        "active_fragment_planned_end_ps": "824000",
+        "frame_eof_ps": null,
+        "busy_ps": "492000",
+        "gap_ps": "8000",
+        "frame_status": "in_flight",
+        "reception_count": 0
+      },
+      "basis": "P-PREEMPTION-T03; planned end is not completed"
+    },
+    {
+      "id": "P-PREEMPTION-T03-V02",
+      "test_id": "P-PREEMPTION-T03",
+      "kind": "preemption_prefix",
+      "input": {
+        "kernel_only": true,
+        "T_ps": "1016000",
+        "fragment_intervals_ps": [
+          [
+            "0",
+            "352000"
+          ],
+          [
+            "472000",
+            "824000"
+          ],
+          [
+            "824000",
+            "1016000"
+          ]
+        ],
+        "fragment_payloads": [
+          40,
+          40,
+          20
+        ],
+        "express_intervals_ps": [
+          [
+            "352000",
+            "464000"
+          ]
+        ],
+        "gap_intervals_ps": [
+          [
+            "464000",
+            "472000"
+          ]
+        ]
+      },
+      "expected": {
+        "fragments_started": 3,
+        "fragments_completed": 2,
+        "completed_mac_bytes": 80,
+        "active_fragment_ordinal": 2,
+        "active_fragment_end_ps": null,
+        "active_fragment_planned_end_ps": "1016000",
+        "frame_eof_ps": null,
+        "busy_ps": "1008000",
+        "gap_ps": "8000",
+        "frame_status": "in_flight",
+        "reception_count": 0
+      },
+      "basis": "P-PREEMPTION-S03; EOF exactly T is not committed, though interval prefix has full length"
+    },
+    {
+      "id": "P-PREEMPTION-T03-V03",
+      "test_id": "P-PREEMPTION-T03",
+      "kind": "atomic_failure",
+      "input": {
+        "failure": "final_fragment_arrival_reserve",
+        "before": {
+          "offset_bytes": 80,
+          "remaining_bytes": 20,
+          "frame_eof_ps": null,
+          "last_fragment_end_ps": null,
+          "record_sequence": "22",
+          "fes_pending": 1
+        }
+      },
+      "expected": {
+        "after": {
+          "offset_bytes": 80,
+          "remaining_bytes": 20,
+          "frame_eof_ps": null,
+          "last_fragment_end_ps": null,
+          "record_sequence": "22",
+          "fes_pending": 1
+        },
+        "committed_effects": 0,
+        "run_state": "Failed"
+      },
+      "basis": "P-PREEMPTION-D03"
+    },
+    {
+      "id": "P-PREEMPTION-T03-V04",
+      "test_id": "P-PREEMPTION-T03",
+      "kind": "epoch_noop",
+      "input": {
+        "current": {
+          "tx_epoch": "8",
+          "gap_epoch": "4",
+          "wake_epoch": "13"
+        },
+        "events": [
+          {
+            "kind": "fragment",
+            "epoch": "7"
+          },
+          {
+            "kind": "gap",
+            "epoch": "3"
+          },
+          {
+            "kind": "wake",
+            "epoch": "12"
+          }
+        ]
+      },
+      "expected": {
+        "state_changes": 0,
+        "records_added": 0,
+        "metrics_added": 0
+      },
+      "basis": "P-PREEMPTION-S02; epoch spaces independent"
+    }
+  ]
+}

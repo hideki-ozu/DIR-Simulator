@@ -1,0 +1,622 @@
+{
+  "status": "passed",
+  "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+  "source_sha": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+  "build": {
+    "required_command": "cargo build --locked -p dir-simulator",
+    "executed_by_capture_script": false,
+    "binary": {
+      "path": "target/debug/dir-simulator",
+      "sha256": "ea1655f105d02e3433371b9b9d07e6f44ffcd1b84e51f464e089d414c26d1494"
+    }
+  },
+  "provenance": {
+    "capture_runner": {
+      "path": "scripts/capture_function_reference.cjs",
+      "sha256": "e23e561ad315ced7fb3aab68d13cce46bd1a99200f8684939cc3e61106118091"
+    },
+    "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+    "source_integrity": {
+      "scope": [
+        "Cargo.toml",
+        "Cargo.lock",
+        "crates"
+      ],
+      "status": "clean",
+      "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "browser": {
+    "name": "Chromium",
+    "version": "156.0.8078.4",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    }
+  },
+  "screenshots": [
+    {
+      "file": "docs/guide/assets/reference/can-viewer.png",
+      "bytes": 142242,
+      "sha256": "be7db9c0133c228fc1d228b52203507404171b81826044f267d54d911aef99ed",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "can",
+      "selected_time": "238000000 ps",
+      "selected_request": "a:0",
+      "input_hashes": {
+        "examples/guide/can/minimal.ini": "35227f48bfdee4e708dd626713a37c12326cb737cb2ee7ad4e35a89502944fdd",
+        "examples/guide/can/minimal.json": "52930d8148468d2b74a7cc9d3d50d18b222b1ae1cb52d01394bf0ded7817176e",
+        "examples/guide/can/models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251"
+      },
+      "command_args": [
+        [
+          "validate",
+          "--config",
+          "examples/guide/can/minimal.ini"
+        ],
+        [
+          "run",
+          "--config",
+          "examples/guide/can/minimal.ini",
+          "--output",
+          "../evidence/retry7/results/can"
+        ],
+        [
+          "view",
+          "--input",
+          "../evidence/retry7/results/can/results.json",
+          "--output",
+          "../evidence/retry7/viewers/can-viewer.html"
+        ]
+      ],
+      "result": {
+        "status": "complete",
+        "partial": false,
+        "termination": "events_exhausted"
+      },
+      "browser": "156.0.8078.4",
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/can-detail.png",
+      "bytes": 70100,
+      "sha256": "ecb231bcda03df4b56d800cc8b0e001d87f114df30739f4362dd43cf8c4d0659",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "can",
+      "selected_time": "238000000 ps",
+      "selected_request": "a:0",
+      "input_hashes": {
+        "examples/guide/can/minimal.ini": "35227f48bfdee4e708dd626713a37c12326cb737cb2ee7ad4e35a89502944fdd",
+        "examples/guide/can/minimal.json": "52930d8148468d2b74a7cc9d3d50d18b222b1ae1cb52d01394bf0ded7817176e",
+        "examples/guide/can/models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251"
+      },
+      "command_args": [
+        [
+          "validate",
+          "--config",
+          "examples/guide/can/minimal.ini"
+        ],
+        [
+          "run",
+          "--config",
+          "examples/guide/can/minimal.ini",
+          "--output",
+          "../evidence/retry7/results/can"
+        ],
+        [
+          "view",
+          "--input",
+          "../evidence/retry7/results/can/results.json",
+          "--output",
+          "../evidence/retry7/viewers/can-viewer.html"
+        ]
+      ],
+      "result": {
+        "status": "complete",
+        "partial": false,
+        "termination": "events_exhausted"
+      },
+      "browser": "156.0.8078.4",
+      "capture": {
+        "mode": "locator screenshot",
+        "selector": ".inspector",
+        "viewport": {
+          "width": 1600,
+          "height": 1100
+        },
+        "scroll_y": 1037,
+        "image_dimensions": {
+          "width": 350,
+          "height": 1254
+        },
+        "displayed_data": {
+          "request_id": "a:0",
+          "request_fields": "送信ノード\nMain.a\nバス\nMain.bus\n最終記録\n送信成功\n受信先\n2 ノード",
+          "recorded_times": "生成\n0\nTX 処理完了\n0\nTX キュー投入\n0\nSOF\n0\nEOF\n238000000\nバス解放\n244000000\n予定 EOF\n238000000\n予定バス解放\n244000000",
+          "receivers": "Main.b\n受信完了\n観測 238000000 ps\n受信完了 238000000 ps\nMain.c\n受信完了\n観測 238000000 ps\n受信完了 238000000 ps"
+        }
+      },
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/gateway-viewer.png",
+      "bytes": 140417,
+      "sha256": "1739ccabf1e6723a5b423d3c69b65cc87e82f9da106a721c53a65b389ac837f1",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "gateway",
+      "selected_time": "400000000 ps",
+      "selected_request": "source:0",
+      "input_hashes": {
+        "examples/guide/gateway-delay/delay0.ini": "c41bf5aaacbf4a842d027dd7384af82dd70bcaf2f66383f8459121efb2aced96",
+        "examples/guide/gateway-delay/delay0.json": "b1ce81fcff4bcb4bc7e77a1ab3bbb921d11fdfc22fbf48483c7580d9300b553f",
+        "examples/guide/gateway-delay/workload.json": "162f9de8fae0b03ab1228b870e7d98c627e69d4301d705ab2d46e662e986e209",
+        "examples/guide/gateway-delay/models/gateway/Main.ned": "4dbe127bb949bf3c42af1142a99391ab3a74b8dcdfeded003db5c4992fd94d2f",
+        "examples/guide/gateway-delay/models/gateway/Types.ned": "1f926ca6c631e08ff7bb2529668ea01ee4ec943ee9e356e38e9594dd24a94114"
+      },
+      "command_args": [
+        [
+          "validate",
+          "--config",
+          "examples/guide/gateway-delay/delay0.ini"
+        ],
+        [
+          "run",
+          "--config",
+          "examples/guide/gateway-delay/delay0.ini",
+          "--output",
+          "../evidence/retry7/results/gateway"
+        ],
+        [
+          "view",
+          "--input",
+          "../evidence/retry7/results/gateway/results.json",
+          "--output",
+          "../evidence/retry7/viewers/gateway-viewer.html"
+        ]
+      ],
+      "result": {
+        "status": "complete",
+        "partial": false,
+        "termination": "events_exhausted"
+      },
+      "browser": "156.0.8078.4",
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/gateway-detail.png",
+      "bytes": 387010,
+      "sha256": "27ada30b2265c866002c01ae48b018d6146a655e4e065f0b70ae85a7264ef390",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "gateway",
+      "selected_time": "400000000 ps",
+      "selected_request": "source:0",
+      "input_hashes": {
+        "examples/guide/gateway-delay/delay0.ini": "c41bf5aaacbf4a842d027dd7384af82dd70bcaf2f66383f8459121efb2aced96",
+        "examples/guide/gateway-delay/delay0.json": "b1ce81fcff4bcb4bc7e77a1ab3bbb921d11fdfc22fbf48483c7580d9300b553f",
+        "examples/guide/gateway-delay/workload.json": "162f9de8fae0b03ab1228b870e7d98c627e69d4301d705ab2d46e662e986e209",
+        "examples/guide/gateway-delay/models/gateway/Main.ned": "4dbe127bb949bf3c42af1142a99391ab3a74b8dcdfeded003db5c4992fd94d2f",
+        "examples/guide/gateway-delay/models/gateway/Types.ned": "1f926ca6c631e08ff7bb2529668ea01ee4ec943ee9e356e38e9594dd24a94114"
+      },
+      "command_args": [
+        [
+          "validate",
+          "--config",
+          "examples/guide/gateway-delay/delay0.ini"
+        ],
+        [
+          "run",
+          "--config",
+          "examples/guide/gateway-delay/delay0.ini",
+          "--output",
+          "../evidence/retry7/results/gateway"
+        ],
+        [
+          "view",
+          "--input",
+          "../evidence/retry7/results/gateway/results.json",
+          "--output",
+          "../evidence/retry7/viewers/gateway-viewer.html"
+        ]
+      ],
+      "result": {
+        "status": "complete",
+        "partial": false,
+        "termination": "events_exhausted"
+      },
+      "browser": "156.0.8078.4",
+      "capture": {
+        "mode": "scrolled viewport screenshot",
+        "selectors": [
+          ".inspector",
+          "#gateway-panel"
+        ],
+        "viewport": {
+          "width": 1600,
+          "height": 3131
+        },
+        "scroll_y": 1201,
+        "visible_rects": {
+          ".inspector": {
+            "top": 21,
+            "bottom": 1380
+          },
+          "#gateway-panel": {
+            "top": 2664,
+            "bottom": 3111
+          }
+        },
+        "image_dimensions": {
+          "width": 1600,
+          "height": 3131
+        },
+        "displayed_data": {
+          "request_id": "source:0",
+          "request_fields": "送信ノード\nMain.src\nバス\nMain.busA\n最終記録\n送信成功\n受信先\n1 ノード\n元要求\nsource:0\n親要求\n—\nGW hop\n0\nGW RX Main.gw.a\n解放済み · 容量 4\n元要求の状態\n送信成功\n転送コピー\n2件 · 成功 1 / 破棄 0 / 未完了 1\n経路遅延 Main.sinkC\n357 µs",
+          "recorded_times": "生成\n0\nTX 処理完了\n0\nTX キュー投入\n0\nSOF\n0\nEOF\n238000000\nバス解放\n244000000\n予定 EOF\n238000000\n予定バス解放\n244000000",
+          "receivers": "Main.gw.a\n受信完了\n観測 238000000 ps\n受信完了 238000000 ps",
+          "gateway_copy_rows": [
+            "Main.gw / fanout\tsource:0\tMain.gw.b\tコピー生成済み\t1\t238 µs\t238 µs · 要求を見る",
+            "Main.gw / fanout\tsource:0\tMain.gw.c\tコピー生成済み\t1\t238 µs\t238 µs · 要求を見る"
+          ],
+          "gateway_summary": "元要求 1 · コピー要求 2"
+        }
+      },
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/ethernet-viewer.png",
+      "bytes": 108260,
+      "sha256": "8975c7d423764b7a3c357436b4c1aee0b9516eb00474323a62ee3daaa5d91124",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "ethernet",
+      "selected_time": "1248000 ps",
+      "selected_request": "psfp:1",
+      "input_hashes": {
+        "examples/guide/ethernet-psfp/pass.ini": "6d6a471709b36f8fd622f145dd55a020057ebe3022bd7215df228e2d41f12013",
+        "examples/guide/ethernet-psfp/pass.json": "88a0671a6f7eab7438ef7ffc37704614f3b2af2f79852c4ddee89f5b63d3b2cf",
+        "examples/guide/ethernet-psfp/workload.json": "2bb4b24bbcaa9a91a7ccda27dec84c2e567d1468c68982cf5d7797b68504fade",
+        "examples/guide/ethernet-psfp/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+      },
+      "command_args": [
+        [
+          "validate",
+          "--config",
+          "examples/guide/ethernet-psfp/pass.ini"
+        ],
+        [
+          "run",
+          "--config",
+          "examples/guide/ethernet-psfp/pass.ini",
+          "--output",
+          "../evidence/retry7/results/ethernet"
+        ],
+        [
+          "view",
+          "--input",
+          "../evidence/retry7/results/ethernet/results.json",
+          "--output",
+          "../evidence/retry7/viewers/ethernet-viewer.html"
+        ]
+      ],
+      "result": {
+        "status": "complete",
+        "partial": false,
+        "termination": "events_exhausted"
+      },
+      "browser": "156.0.8078.4",
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/ethernet-detail.png",
+      "bytes": 100201,
+      "sha256": "908e0c771e95a8e5b1ea81878c88a0a9d04202f693e256dc60b99ad346a5eb11",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "ethernet",
+      "selected_time": "1248000 ps",
+      "selected_request": "psfp:1",
+      "input_hashes": {
+        "examples/guide/ethernet-psfp/pass.ini": "6d6a471709b36f8fd622f145dd55a020057ebe3022bd7215df228e2d41f12013",
+        "examples/guide/ethernet-psfp/pass.json": "88a0671a6f7eab7438ef7ffc37704614f3b2af2f79852c4ddee89f5b63d3b2cf",
+        "examples/guide/ethernet-psfp/workload.json": "2bb4b24bbcaa9a91a7ccda27dec84c2e567d1468c68982cf5d7797b68504fade",
+        "examples/guide/ethernet-psfp/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+      },
+      "command_args": [
+        [
+          "validate",
+          "--config",
+          "examples/guide/ethernet-psfp/pass.ini"
+        ],
+        [
+          "run",
+          "--config",
+          "examples/guide/ethernet-psfp/pass.ini",
+          "--output",
+          "../evidence/retry7/results/ethernet"
+        ],
+        [
+          "view",
+          "--input",
+          "../evidence/retry7/results/ethernet/results.json",
+          "--output",
+          "../evidence/retry7/viewers/ethernet-viewer.html"
+        ]
+      ],
+      "result": {
+        "status": "complete",
+        "partial": false,
+        "termination": "events_exhausted"
+      },
+      "browser": "156.0.8078.4",
+      "capture": {
+        "mode": "locator screenshot",
+        "selector": "#eth-details",
+        "viewport": {
+          "width": 1600,
+          "height": 1100
+        },
+        "scroll_y": 1430,
+        "image_dimensions": {
+          "width": 348,
+          "height": 1549
+        },
+        "displayed_data": {
+          "transfer_detail": "psfp:1/v0/c1\n元フレーム\npsfp:1\nSource\nNet.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\na9e82eb4\n生成（ps）\n0\nFlow\npsfp\nSource Priority\n7\n相対deadline（ps）\n未指定\nClass queue\nNet.a.tx.queue.7\nHop Priority / class\n7\nSource VLAN\n10\nSource tag\nuntagged\nSource MAC bytes\n64\nSource FCS\na9e82eb4\nHop VLAN\n10\nHop tag\nuntagged\nHop MAC bytes\n64\nHop wire bits (preamble含む)\n576\nHop occupied bits (IFG含む)\n672\nHop FCS\na9e82eb4\nHop wire hex\n020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4\n状態\nEOF 到達\n親copy\nsource\n経路\nNet.a.tx → Net.b.rx\nqueued_ps\n0\nsof_ps\n672000\neof_ps\n1248000\nrelease_ps\n1344000\narrival_ps\n1248000\nplanned_eof_ps\n1248000\nplanned_release_ps\n1344000\nplanned_arrival_ps\n1248000\n現在のpolicy epoch\n0\nVisit\n0\nOffer policy epoch\n0\nSOF policy epoch\n0\nDrop reason\n—\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nNet.b: 受信完了 / observed 1248000 / ready 1248000 / planned ready 1248000 ps / ingress VLAN 10 · Priority 7\n\nNet.b 配送遅延: 1248000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"1248000\",\n    \"copy_id\": \"psfp:1/v0/c1\",\n    \"drop_reason\": null,\n    \"effect_seq\": \"32\",\n    \"eof_ps\": \"1248000\",\n    \"frame_id\": \"psfp:1\",\n    \"from_port\": \"Net.a.tx\",\n    \"parent_transfer_id\": null,\n    \"planned_arrival_ps\": \"1248000\",\n    \"planned_eof_ps\": \"1248000\",\n    \"planned_release_ps\": \"1344000\",\n    \"policy_epoch_offer\": \"0\",\n    \"policy_epoch_sof\": \"0\",\n    \"priority\": \"7\",\n    \"queue_id\": \"Net.a.tx.queue.7\",\n    \"queued_ps\": \"0\",\n    \"release_ps\": \"1344000\",\n    \"sof_ps\": \"672000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Net.b.rx\",\n    \"visit_id\": \"0\",\n    \"vlan_id\": \"10\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"a9e82eb4\",\n      \"mac_bytes\": \"64\",\n      \"mac_hex\": \"020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": null\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"psfp:1/v0/c1\",\n  \"request_id\": \"psfp:1\",\n  \"schema_name\": \"ethernet.dynamic.transfer\",\n  \"schema_version\": 1,\n  \"subject\": \"@network\",\n  \"time_ps\": \"1344000\"\n}"
+        }
+      },
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/transaction-viewer.png",
+      "bytes": 90773,
+      "sha256": "184444b7e1fc57be22a9828a7a7b125ef2abbb6cb9d3b4c1c76361ef616d8f9e",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "transaction",
+      "selected_time": "90000 ps",
+      "selected_request": "read:0",
+      "input_hashes": {
+        "examples/guide/axi-strobes/strobe5.ini": "96e65ec047347a26e0eed1be7e82b2006009bfbe83f5c82f5764a14ddde8ef6d",
+        "examples/guide/axi-strobes/strobe5.json": "3cb410431c0f46e6a90daff66dc690992a19eb3e82cdf2198ff809d0ec4654fc",
+        "examples/guide/axi-strobes/model.json": "271a0db7a5fd854a9698743a4dc30e900c47621df4c931a9051c2ae8720badef",
+        "examples/guide/axi-strobes/models/strobes/Main.ned": "f1e09007792229c30c2d662570bf63d8316e167b650344689d725ad4c17bec82"
+      },
+      "command_args": [
+        [
+          "validate",
+          "--config",
+          "examples/guide/axi-strobes/strobe5.ini"
+        ],
+        [
+          "run",
+          "--config",
+          "examples/guide/axi-strobes/strobe5.ini",
+          "--output",
+          "../evidence/retry7/results/transaction"
+        ],
+        [
+          "view",
+          "--input",
+          "../evidence/retry7/results/transaction/results.json",
+          "--output",
+          "../evidence/retry7/viewers/transaction-viewer.html"
+        ]
+      ],
+      "result": {
+        "status": "complete",
+        "partial": false,
+        "termination": "events_exhausted"
+      },
+      "browser": "156.0.8078.4",
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/transaction-detail.png",
+      "bytes": 207126,
+      "sha256": "5d2a0ace0843a615c4ecc1d35debec82d4796c7943a8e7557bd9edb3f662ef6c",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "transaction",
+      "selected_time": "90000 ps",
+      "selected_request": "read:0",
+      "input_hashes": {
+        "examples/guide/axi-strobes/strobe5.ini": "96e65ec047347a26e0eed1be7e82b2006009bfbe83f5c82f5764a14ddde8ef6d",
+        "examples/guide/axi-strobes/strobe5.json": "3cb410431c0f46e6a90daff66dc690992a19eb3e82cdf2198ff809d0ec4654fc",
+        "examples/guide/axi-strobes/model.json": "271a0db7a5fd854a9698743a4dc30e900c47621df4c931a9051c2ae8720badef",
+        "examples/guide/axi-strobes/models/strobes/Main.ned": "f1e09007792229c30c2d662570bf63d8316e167b650344689d725ad4c17bec82"
+      },
+      "command_args": [
+        [
+          "validate",
+          "--config",
+          "examples/guide/axi-strobes/strobe5.ini"
+        ],
+        [
+          "run",
+          "--config",
+          "examples/guide/axi-strobes/strobe5.ini",
+          "--output",
+          "../evidence/retry7/results/transaction"
+        ],
+        [
+          "view",
+          "--input",
+          "../evidence/retry7/results/transaction/results.json",
+          "--output",
+          "../evidence/retry7/viewers/transaction-viewer.html"
+        ]
+      ],
+      "result": {
+        "status": "complete",
+        "partial": false,
+        "termination": "events_exhausted"
+      },
+      "browser": "156.0.8078.4",
+      "capture": {
+        "mode": "scrolled viewport screenshot",
+        "selectors": [
+          "#txn-details",
+          "#txn-resources"
+        ],
+        "viewport": {
+          "width": 1600,
+          "height": 2665
+        },
+        "scroll_y": 971,
+        "visible_rects": {
+          "#txn-details": {
+            "top": 20,
+            "bottom": 513
+          },
+          "#txn-resources": {
+            "top": 2506,
+            "bottom": 2645
+          }
+        },
+        "image_dimensions": {
+          "width": 1600,
+          "height": 2665
+        },
+        "displayed_data": {
+          "request_detail": "read:0\n\n完了\n\n以下は実行全体の最終記録です。\n\n{\n  \"data\": {\n    \"address\": \"4096\",\n    \"beats\": \"1\",\n    \"completed_ps\": \"70000\",\n    \"drop_reason\": null,\n    \"eligible_ps\": \"50000\",\n    \"generated_ps\": \"50000\",\n    \"grant_ps\": \"50000\",\n    \"interconnect\": \"Main.bus\",\n    \"manager\": \"Main.m0\",\n    \"operation\": \"read\",\n    \"read_data\": [\n      \"11013303\"\n    ],\n    \"response\": \"OKAY\",\n    \"status\": \"completed\",\n    \"target\": \"Main.ram\"\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"read:0\",\n  \"request_id\": \"read:0\",\n  \"schema_name\": \"axi.transaction\",\n  \"schema_version\": 1,\n  \"subject\": \"Main.m0\",\n  \"time_ps\": \"70000\"\n}\nread:0:AR:0 · 60000 ps\nread:0:R:0 · 70000 ps",
+          "final_resources": "Main.ram · axi.memory · 更新 20000 ps\n{\n  \"base\": \"4096\",\n  \"data_hex\": \"11013303040506070000000000000000\",\n  \"size\": \"16\"\n}"
+        }
+      },
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/ned-editor.png",
+      "bytes": 184942,
+      "sha256": "5328910d8637cb3f4a6605a67535fcbf734d0b6d5f016c6010da207ce7ebb998",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "ned-editor",
+      "ui_state": {
+        "type": "demo.Main",
+        "selected_node": "a",
+        "source": "models/demo/Main.ned"
+      },
+      "redactions": {
+        "absolute_path_regions": 4,
+        "areas": [
+          "file navigation paths",
+          "source title"
+        ],
+        "method": "Playwright native screenshot mask"
+      },
+      "input_hashes": {
+        "examples/can/baseline.ini": "7917b7f205f7d0858ab30d9674bb0fad54ec64892793f0d35a6d7bc28f083386",
+        "examples/can/baseline.json": "48e3bd572d8c17cbbdbaca25a08c83cf8f3a9a17fb3f7f9832d87ba2df7dee37",
+        "examples/can/models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251"
+      },
+      "command_args": [
+        "ned-editor",
+        "--config",
+        "examples/can/baseline.ini",
+        "--export-root",
+        "../evidence/retry7/editor/exports",
+        "--state-root",
+        "../evidence/retry7/editor/state"
+      ],
+      "browser": "156.0.8078.4",
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    },
+    {
+      "file": "docs/guide/assets/reference/ned-editor-settings.png",
+      "bytes": 189123,
+      "sha256": "9110ecc60082e971f5a722cec21a19ec5e82c7dbe6d18e4a7e3ae7d1f07c34d1",
+      "source_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+      "scenario": "ned-editor",
+      "ui_state": {
+        "instance": "Main.a",
+        "parameter": "queueCapacity",
+        "source": "models/demo/Main.ned"
+      },
+      "redactions": {
+        "absolute_path_regions": 4,
+        "areas": [
+          "file navigation paths",
+          "source title"
+        ],
+        "method": "Playwright native screenshot mask"
+      },
+      "input_hashes": {
+        "examples/can/baseline.ini": "7917b7f205f7d0858ab30d9674bb0fad54ec64892793f0d35a6d7bc28f083386",
+        "examples/can/baseline.json": "48e3bd572d8c17cbbdbaca25a08c83cf8f3a9a17fb3f7f9832d87ba2df7dee37",
+        "examples/can/models/demo/Main.ned": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251"
+      },
+      "command_args": [
+        "ned-editor",
+        "--config",
+        "examples/can/baseline.ini",
+        "--export-root",
+        "../evidence/retry7/editor/exports",
+        "--state-root",
+        "../evidence/retry7/editor/state"
+      ],
+      "browser": "156.0.8078.4",
+      "errors": {
+        "page": [],
+        "console": [],
+        "failed_requests": [],
+        "external_requests": []
+      }
+    }
+  ],
+  "errors": {
+    "page": [],
+    "console": [],
+    "failed_requests": [],
+    "external_requests": []
+  },
+  "editor_command_args": [
+    "ned-editor",
+    "--config",
+    "examples/can/baseline.ini",
+    "--export-root",
+    "../evidence/retry7/editor/exports",
+    "--state-root",
+    "../evidence/retry7/editor/state"
+  ]
+}

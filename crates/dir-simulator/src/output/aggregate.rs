@@ -21,7 +21,7 @@ pub(super) fn mul(a: u128, b: u128) -> Result<u128, Diagnostic> {
 }
 /// Convert an exact positive u128 rational to binary64, with a single ties-even rounding.
 /// Long division avoids converting either operand to floating point first.
-pub(super) fn ratio(n: u128, denominator: u128) -> Result<MetricValue, Diagnostic> {
+pub(crate) fn ratio(n: u128, denominator: u128) -> Result<MetricValue, Diagnostic> {
     if denominator == 0 {
         return Ok(MetricValue::Null);
     }
@@ -88,7 +88,7 @@ pub(super) fn ratio(n: u128, denominator: u128) -> Result<MetricValue, Diagnosti
 
 /// Common result values retain exact counts until a writer renders them.
 #[derive(Clone, Debug, PartialEq)]
-pub(super) enum MetricValue {
+pub(crate) enum MetricValue {
     Integer(u128),
     Number(f64),
     Null,
@@ -177,6 +177,35 @@ impl Record {
 }
 
 pub(super) fn descriptor(metric: &str) -> (&'static str, &'static str, &'static str, &'static str) {
+    if metric == "redundancy.origin.completion_ratio" {
+        return ("1", "number", "summary", "ratio");
+    }
+    if metric.starts_with("redundancy.") || metric.starts_with("preemption.") {
+        return (
+            if metric.ends_with("_ps") {
+                "ps"
+            } else if metric.contains("mac_bytes") || metric.ends_with("overhead_bytes") {
+                "byte"
+            } else {
+                "count"
+            },
+            "integer",
+            "summary",
+            "sum",
+        );
+    }
+    if metric.starts_with("ethernet.wire.") {
+        let unit = if metric.ends_with("_ps") {
+            "ps"
+        } else if metric.ends_with("_bytes") {
+            "byte"
+        } else if metric.ends_with("_bits") {
+            "bit"
+        } else {
+            "count"
+        };
+        return (unit, "integer", "summary", "sum");
+    }
     if metric.starts_with("gateway.") {
         return match metric {
             "gateway.end_to_end.latency_ps" => ("ps", "integer", "summary", "sample_mean"),

@@ -1,0 +1,1712 @@
+{
+  "schema_version": 1,
+  "status": "design_vectors_not_product_tests",
+  "vectors": [
+    {
+      "id": "P-IGMP-T01-V01",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220029ef0000000101000001ef010203c0000209",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 44,
+        "message_offset": 24,
+        "message_length": 20,
+        "message_checksum_hex": "29ef",
+        "record_type": 1,
+        "record_count": 1,
+        "group": "239.1.2.3",
+        "sources": [
+          "192.0.2.9"
+        ],
+        "action": "insert_include",
+        "folded_checksum_sum": 65535,
+        "ipv4_header_checksum_hex": "82b4"
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-IGMP-T01-V02",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220028ef0000000102000001ef010203c0000209",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 44,
+        "message_offset": 24,
+        "message_length": 20,
+        "message_checksum_hex": "28ef",
+        "record_type": 2,
+        "record_count": 1,
+        "group": "239.1.2.3",
+        "sources": [
+          "192.0.2.9"
+        ],
+        "action": "insert_exclude",
+        "folded_checksum_sum": 65535,
+        "ipv4_header_checksum_hex": "82b4"
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-IGMP-T01-V03",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220027ef0000000103000001ef010203c0000209",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 44,
+        "message_offset": 24,
+        "message_length": 20,
+        "message_checksum_hex": "27ef",
+        "record_type": 3,
+        "record_count": 1,
+        "group": "239.1.2.3",
+        "sources": [
+          "192.0.2.9"
+        ],
+        "action": "insert_include",
+        "folded_checksum_sum": 65535,
+        "ipv4_header_checksum_hex": "82b4"
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-IGMP-T01-V04",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220026ef0000000104000001ef010203c0000209",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 44,
+        "message_offset": 24,
+        "message_length": 20,
+        "message_checksum_hex": "26ef",
+        "record_type": 4,
+        "record_count": 1,
+        "group": "239.1.2.3",
+        "sources": [
+          "192.0.2.9"
+        ],
+        "action": "insert_exclude",
+        "folded_checksum_sum": 65535,
+        "ipv4_header_checksum_hex": "82b4"
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-IGMP-T01-V05",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220025ef0000000105000001ef010203c0000209",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 44,
+        "message_offset": 24,
+        "message_length": 20,
+        "message_checksum_hex": "25ef",
+        "record_type": 5,
+        "record_count": 1,
+        "group": "239.1.2.3",
+        "sources": [
+          "192.0.2.9"
+        ],
+        "action": "insert_include",
+        "folded_checksum_sum": 65535,
+        "ipv4_header_checksum_hex": "82b4"
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-IGMP-T01-V06",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220024ef0000000106000001ef010203c0000209",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 44,
+        "message_offset": 24,
+        "message_length": 20,
+        "message_checksum_hex": "24ef",
+        "record_type": 6,
+        "record_count": 1,
+        "group": "239.1.2.3",
+        "sources": [
+          "192.0.2.9"
+        ],
+        "action": "no_op",
+        "folded_checksum_sum": 65535,
+        "ipv4_header_checksum_hex": "82b4"
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-IGMP-T01-V07",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002400000000010282d1c0000201e0000001940400001164ec1e00000000027d0000",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:01",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 36,
+        "message_offset": 24,
+        "message_length": 12,
+        "message_checksum_hex": "ec1e",
+        "folded_checksum_sum": 65535,
+        "message_kind": "query",
+        "qrv": 2,
+        "interval_ps": "125000000000000",
+        "response_ps": "10000000000000",
+        "membership_budget_ps": "260000000000000"
+      },
+      "basis": "RFC9776 §4.1,§8.4 / RFC9777 §5.1,§9.4; 2*125+10=260 s"
+    },
+    {
+      "id": "P-IGMP-T01-V08",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600003400000000010282acc0000201e0000016940400002200d5e80000000201000001ef010203c000020963000000ef010203",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "record_type",
+        "ip_packet_length": 52,
+        "message_offset": 24,
+        "message_length": 28,
+        "message_checksum_hex": "d5e8",
+        "folded_checksum_sum": 65535,
+        "membership_changes": 0,
+        "epoch_increment": 0
+      },
+      "basis": "設計書 §3.4 whole-PDU validation, §5.2 atomicity"
+    },
+    {
+      "id": "P-IGMP-T01-V09",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600003400000000010282acc0000201e0000016940400002200d5e80000000201000001ef010203c000020963000000ef010202",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "checksum",
+        "ip_packet_length": 52,
+        "message_offset": 24,
+        "message_length": 28,
+        "membership_changes": 0,
+        "epoch_increment": 0
+      },
+      "basis": "設計書 §3.4 validation ordering: checksum before record type"
+    },
+    {
+      "id": "P-IGMP-T01-V10",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600003300000000010282adc0000201e0000016940400002200af2b0000000101010001ef010203c000020901020304aabbcc",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 51,
+        "message_offset": 24,
+        "message_length": 27,
+        "message_checksum_hex": "af2b",
+        "folded_checksum_sum": 65535,
+        "aux_words": 1,
+        "trailing_bytes": 3,
+        "group": "239.1.2.3",
+        "sources": [
+          "192.0.2.9"
+        ]
+      },
+      "basis": "RFC9776 §4.2.11–12 / RFC9777 §5.2 auxiliary/additional data; odd checksum padding"
+    },
+    {
+      "id": "P-IGMP-T01-V11",
+      "test_id": "P-IGMP-T01",
+      "kind": "filter_union",
+      "input": {
+        "include": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c"
+          ]
+        ],
+        "exclude": [
+          [
+            "b",
+            "d"
+          ],
+          [
+            "b",
+            "e"
+          ]
+        ]
+      },
+      "expected": {
+        "mode": "exclude",
+        "sources": []
+      },
+      "basis": "設計書 §5.1: intersection {b} minus union {a,b,c} = {}"
+    },
+    {
+      "id": "P-IGMP-T01-V12",
+      "test_id": "P-IGMP-T01",
+      "kind": "lease_timeline",
+      "input": {
+        "membership_interval_ps": "100",
+        "events": [
+          {
+            "at_ps": "10",
+            "type": 1,
+            "sources": [
+              "a"
+            ]
+          },
+          {
+            "at_ps": "20",
+            "type": 5,
+            "sources": [
+              "b"
+            ]
+          },
+          {
+            "at_ps": "30",
+            "type": 6,
+            "sources": [
+              "a"
+            ]
+          },
+          {
+            "at_ps": "40",
+            "type": 3,
+            "sources": []
+          }
+        ]
+      },
+      "expected": {
+        "snapshots": [
+          {
+            "at_ps": "40",
+            "mode": "include",
+            "sources": [
+              "a",
+              "b"
+            ],
+            "expiries_ps": [
+              "110",
+              "120"
+            ]
+          },
+          {
+            "at_ps": "110",
+            "mode": "include",
+            "sources": [
+              "b"
+            ],
+            "expiries_ps": [
+              "120"
+            ]
+          },
+          {
+            "at_ps": "120",
+            "mode": null,
+            "sources": [],
+            "expiries_ps": []
+          }
+        ],
+        "generated_queries": 0,
+        "generated_reports": 0
+      },
+      "basis": "設計書 §5.1: 10+100=110,20+100=120; BLOCK/empty TO_IN do not prune/refresh"
+    },
+    {
+      "id": "P-IGMP-T01-V13",
+      "test_id": "P-IGMP-T01",
+      "kind": "timer_refresh",
+      "input": {
+        "interval_ps": "100",
+        "insert_ps": "10",
+        "refresh_ps": "50",
+        "stale_wake_ps": "110",
+        "end_ps": "150"
+      },
+      "expected": {
+        "first_expiry_ps": "110",
+        "refreshed_expiry_ps": "150",
+        "stale_changes": 0,
+        "final_expired": true
+      },
+      "basis": "設計書 §5.2; 50+100=150 and generation mismatch protects refreshed lease"
+    },
+    {
+      "id": "P-IGMP-T01-V14",
+      "test_id": "P-IGMP-T01",
+      "kind": "same_time_order",
+      "input": {
+        "expiry_ps": "110",
+        "report_ps": "110",
+        "interval_ps": "100",
+        "epoch_before": "7"
+      },
+      "expected": {
+        "actions": [
+          "phase0_expire",
+          "phase1_insert",
+          "phase2_select"
+        ],
+        "epoch_after": "9",
+        "new_expiry_ps": "210"
+      },
+      "basis": "設計書 §5.2: separate callbacks each increment epoch"
+    },
+    {
+      "id": "P-IGMP-T01-V15",
+      "test_id": "P-IGMP-T01",
+      "kind": "time_code",
+      "input": {
+        "response_code": 128,
+        "qqic": 128
+      },
+      "expected": {
+        "response_ps": "12800000000000",
+        "interval_ps": "128000000000000"
+      },
+      "basis": "設計書 §5.1: decode8(128)=16<<3=128; decode16(32768)=4096<<3=32768"
+    },
+    {
+      "id": "P-IGMP-T01-V16",
+      "test_id": "P-IGMP-T01",
+      "kind": "atomic_failure",
+      "input": {
+        "records": [
+          "valid_include_a",
+          "valid_exclude_b"
+        ],
+        "fail_at": "last_effect_reservation"
+      },
+      "expected": {
+        "callback": "failed",
+        "membership_changes": 0,
+        "router_changes": 0,
+        "epoch_increment": 0,
+        "new_audits": 0,
+        "new_copies": 0,
+        "success_prefix_preserved": true
+      },
+      "basis": "設計書 §5.2 failure atomicity"
+    },
+    {
+      "id": "P-MLD-T01-V01",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f0032c70000000101000001ff3e000000000000000000000000123420010db8000000000000000000000009",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 92,
+        "message_offset": 48,
+        "message_length": 44,
+        "message_checksum_hex": "32c7",
+        "record_type": 1,
+        "record_count": 1,
+        "group": "ff3e::1234",
+        "sources": [
+          "2001:db8::9"
+        ],
+        "action": "insert_include",
+        "folded_checksum_sum": 65535
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-MLD-T01-V02",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f0031c70000000102000001ff3e000000000000000000000000123420010db8000000000000000000000009",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 92,
+        "message_offset": 48,
+        "message_length": 44,
+        "message_checksum_hex": "31c7",
+        "record_type": 2,
+        "record_count": 1,
+        "group": "ff3e::1234",
+        "sources": [
+          "2001:db8::9"
+        ],
+        "action": "insert_exclude",
+        "folded_checksum_sum": 65535
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-MLD-T01-V03",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f0030c70000000103000001ff3e000000000000000000000000123420010db8000000000000000000000009",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 92,
+        "message_offset": 48,
+        "message_length": 44,
+        "message_checksum_hex": "30c7",
+        "record_type": 3,
+        "record_count": 1,
+        "group": "ff3e::1234",
+        "sources": [
+          "2001:db8::9"
+        ],
+        "action": "insert_include",
+        "folded_checksum_sum": 65535
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-MLD-T01-V04",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f002fc70000000104000001ff3e000000000000000000000000123420010db8000000000000000000000009",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 92,
+        "message_offset": 48,
+        "message_length": 44,
+        "message_checksum_hex": "2fc7",
+        "record_type": 4,
+        "record_count": 1,
+        "group": "ff3e::1234",
+        "sources": [
+          "2001:db8::9"
+        ],
+        "action": "insert_exclude",
+        "folded_checksum_sum": 65535
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-MLD-T01-V05",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f002ec70000000105000001ff3e000000000000000000000000123420010db8000000000000000000000009",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 92,
+        "message_offset": 48,
+        "message_length": 44,
+        "message_checksum_hex": "2ec7",
+        "record_type": 5,
+        "record_count": 1,
+        "group": "ff3e::1234",
+        "sources": [
+          "2001:db8::9"
+        ],
+        "action": "insert_include",
+        "folded_checksum_sum": 65535
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-MLD-T01-V06",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f002dc70000000106000001ff3e000000000000000000000000123420010db8000000000000000000000009",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 92,
+        "message_offset": 48,
+        "message_length": 44,
+        "message_checksum_hex": "2dc7",
+        "record_type": 6,
+        "record_count": 1,
+        "group": "ff3e::1234",
+        "sources": [
+          "2001:db8::9"
+        ],
+        "action": "no_op",
+        "folded_checksum_sum": 65535
+      },
+      "basis": "設計書 §3.2–3.3、§5.1; RFC9776 §4.2 / RFC9777 §5.2"
+    },
+    {
+      "id": "P-MLD-T01-V07",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000240001fe800000000000000000000000000001ff0200000000000000000000000000013a00050200000100820056962710000000000000000000000000000000000000027d0000",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:01",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 76,
+        "message_offset": 48,
+        "message_length": 28,
+        "message_checksum_hex": "5696",
+        "folded_checksum_sum": 65535,
+        "message_kind": "query",
+        "qrv": 2,
+        "interval_ps": "125000000000000",
+        "response_ps": "10000000000000",
+        "membership_budget_ps": "260000000000000"
+      },
+      "basis": "RFC9776 §4.1,§8.4 / RFC9777 §5.1,§9.4; 2*125+10=260 s"
+    },
+    {
+      "id": "P-MLD-T01-V08",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000480001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f00be3e0000000201000001ff3e000000000000000000000000123420010db800000000000000000000000963000000ff3e0000000000000000000000001234",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "record_type",
+        "ip_packet_length": 112,
+        "message_offset": 48,
+        "message_length": 64,
+        "message_checksum_hex": "be3e",
+        "folded_checksum_sum": 65535,
+        "membership_changes": 0,
+        "epoch_increment": 0
+      },
+      "basis": "設計書 §3.4 whole-PDU validation, §5.2 atomicity"
+    },
+    {
+      "id": "P-MLD-T01-V09",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000480001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f00be3e0000000201000001ff3e000000000000000000000000123420010db800000000000000000000000963000000ff3e0000000000000000000000001235",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "checksum",
+        "ip_packet_length": 112,
+        "message_offset": 48,
+        "message_length": 64,
+        "membership_changes": 0,
+        "epoch_increment": 0
+      },
+      "basis": "設計書 §3.4 validation ordering: checksum before record type"
+    },
+    {
+      "id": "P-MLD-T01-V10",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "60000000003b0001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f00b7fc0000000101010001ff3e000000000000000000000000123420010db800000000000000000000000901020304aabbcc",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 99,
+        "message_offset": 48,
+        "message_length": 51,
+        "message_checksum_hex": "b7fc",
+        "folded_checksum_sum": 65535,
+        "aux_words": 1,
+        "trailing_bytes": 3,
+        "group": "ff3e::1234",
+        "sources": [
+          "2001:db8::9"
+        ]
+      },
+      "basis": "RFC9776 §4.2.11–12 / RFC9777 §5.2 auxiliary/additional data; odd checksum padding"
+    },
+    {
+      "id": "P-MLD-T01-V11",
+      "test_id": "P-MLD-T01",
+      "kind": "filter_union",
+      "input": {
+        "include": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c"
+          ]
+        ],
+        "exclude": [
+          [
+            "b",
+            "d"
+          ],
+          [
+            "b",
+            "e"
+          ]
+        ]
+      },
+      "expected": {
+        "mode": "exclude",
+        "sources": []
+      },
+      "basis": "設計書 §5.1: intersection {b} minus union {a,b,c} = {}"
+    },
+    {
+      "id": "P-MLD-T01-V12",
+      "test_id": "P-MLD-T01",
+      "kind": "lease_timeline",
+      "input": {
+        "membership_interval_ps": "100",
+        "events": [
+          {
+            "at_ps": "10",
+            "type": 1,
+            "sources": [
+              "a"
+            ]
+          },
+          {
+            "at_ps": "20",
+            "type": 5,
+            "sources": [
+              "b"
+            ]
+          },
+          {
+            "at_ps": "30",
+            "type": 6,
+            "sources": [
+              "a"
+            ]
+          },
+          {
+            "at_ps": "40",
+            "type": 3,
+            "sources": []
+          }
+        ]
+      },
+      "expected": {
+        "snapshots": [
+          {
+            "at_ps": "40",
+            "mode": "include",
+            "sources": [
+              "a",
+              "b"
+            ],
+            "expiries_ps": [
+              "110",
+              "120"
+            ]
+          },
+          {
+            "at_ps": "110",
+            "mode": "include",
+            "sources": [
+              "b"
+            ],
+            "expiries_ps": [
+              "120"
+            ]
+          },
+          {
+            "at_ps": "120",
+            "mode": null,
+            "sources": [],
+            "expiries_ps": []
+          }
+        ],
+        "generated_queries": 0,
+        "generated_reports": 0
+      },
+      "basis": "設計書 §5.1: 10+100=110,20+100=120; BLOCK/empty TO_IN do not prune/refresh"
+    },
+    {
+      "id": "P-MLD-T01-V13",
+      "test_id": "P-MLD-T01",
+      "kind": "timer_refresh",
+      "input": {
+        "interval_ps": "100",
+        "insert_ps": "10",
+        "refresh_ps": "50",
+        "stale_wake_ps": "110",
+        "end_ps": "150"
+      },
+      "expected": {
+        "first_expiry_ps": "110",
+        "refreshed_expiry_ps": "150",
+        "stale_changes": 0,
+        "final_expired": true
+      },
+      "basis": "設計書 §5.2; 50+100=150 and generation mismatch protects refreshed lease"
+    },
+    {
+      "id": "P-MLD-T01-V14",
+      "test_id": "P-MLD-T01",
+      "kind": "same_time_order",
+      "input": {
+        "expiry_ps": "110",
+        "report_ps": "110",
+        "interval_ps": "100",
+        "epoch_before": "7"
+      },
+      "expected": {
+        "actions": [
+          "phase0_expire",
+          "phase1_insert",
+          "phase2_select"
+        ],
+        "epoch_after": "9",
+        "new_expiry_ps": "210"
+      },
+      "basis": "設計書 §5.2: separate callbacks each increment epoch"
+    },
+    {
+      "id": "P-MLD-T01-V15",
+      "test_id": "P-MLD-T01",
+      "kind": "time_code",
+      "input": {
+        "response_code": 32768,
+        "qqic": 128
+      },
+      "expected": {
+        "response_ps": "32768000000000",
+        "interval_ps": "128000000000000"
+      },
+      "basis": "設計書 §5.1: decode8(128)=16<<3=128; decode16(32768)=4096<<3=32768"
+    },
+    {
+      "id": "P-MLD-T01-V16",
+      "test_id": "P-MLD-T01",
+      "kind": "atomic_failure",
+      "input": {
+        "records": [
+          "valid_include_a",
+          "valid_exclude_b"
+        ],
+        "fail_at": "last_effect_reservation"
+      },
+      "expected": {
+        "callback": "failed",
+        "membership_changes": 0,
+        "router_changes": 0,
+        "epoch_increment": 0,
+        "new_audits": 0,
+        "new_copies": 0,
+        "success_prefix_preserved": true
+      },
+      "basis": "設計書 §5.2 failure atomicity"
+    },
+    {
+      "id": "P-IGMP-T01-V17",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220029ee0000000101000002ef010203c0000209",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "ip_packet_length": 44,
+        "message_offset": 24,
+        "message_length": 20,
+        "message_checksum_hex": "29ee",
+        "folded_checksum_sum": 65535,
+        "reason": "message_length",
+        "membership_changes": 0
+      },
+      "basis": "設計書 §3.4/§5.1"
+    },
+    {
+      "id": "P-IGMP-T01-V18",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002000000000010282c0c0000201e0000016940400002200ddff00000000",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 32,
+        "message_offset": 24,
+        "message_length": 8,
+        "message_checksum_hex": "ddff",
+        "folded_checksum_sum": 65535,
+        "record_count": 0,
+        "membership_changes": 0
+      },
+      "basis": "設計書 §3.4/§5.1"
+    },
+    {
+      "id": "P-IGMP-T01-V19",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002800000000010282b8c0000201e0000016940400002200ebf90000000101000000ef010203",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 40,
+        "message_offset": 24,
+        "message_length": 16,
+        "message_checksum_hex": "ebf9",
+        "folded_checksum_sum": 65535,
+        "record_type": 1,
+        "sources": [],
+        "action": "no_op"
+      },
+      "basis": "設計書 §3.4/§5.1"
+    },
+    {
+      "id": "P-IGMP-T01-V20",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002800000000010282b8c0000201e0000016940400002200eaf90000000102000000ef010203",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 40,
+        "message_offset": 24,
+        "message_length": 16,
+        "message_checksum_hex": "eaf9",
+        "folded_checksum_sum": 65535,
+        "record_type": 2,
+        "sources": [],
+        "action": "insert_exclude"
+      },
+      "basis": "設計書 §3.4/§5.1"
+    },
+    {
+      "id": "P-IGMP-T01-V21",
+      "test_id": "P-IGMP-T01",
+      "kind": "fallback",
+      "input": {
+        "old_version_valid": true,
+        "initial_compatibility_flood": false
+      },
+      "expected": {
+        "compatibility_flood": true,
+        "expires_ps": null,
+        "generated_queries": 0,
+        "generated_reports": 0
+      },
+      "basis": "設計書 §1/§3.4: legacy transparent flooding until run end"
+    },
+    {
+      "id": "P-IGMP-T01-V22",
+      "test_id": "P-IGMP-T01",
+      "kind": "query_budget",
+      "input": {
+        "qrv": 3,
+        "qqic": 125,
+        "response_ps": "10000000000000",
+        "membership_interval_ps": "260000000000000"
+      },
+      "expected": {
+        "budget_ps": "385000000000000",
+        "compatibility_flood": true
+      },
+      "basis": "設計書 §5.1: 3*125s+10s=385s >260s"
+    },
+    {
+      "id": "P-IGMP-T01-V23",
+      "test_id": "P-IGMP-T01",
+      "kind": "horizon",
+      "input": {
+        "interval_ps": "100",
+        "insert_ps": "10",
+        "horizon_ps": "110"
+      },
+      "expected": {
+        "expiry_ps": "110",
+        "expiry_executed": false,
+        "snapshot_contains_lease": true
+      },
+      "basis": "設計書 §5.2: half-open [0,110) excludes expiry at110"
+    },
+    {
+      "id": "P-MLD-T01-V17",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f0032c60000000101000002ff3e000000000000000000000000123420010db8000000000000000000000009",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "ip_packet_length": 92,
+        "message_offset": 48,
+        "message_length": 44,
+        "message_checksum_hex": "32c6",
+        "folded_checksum_sum": 65535,
+        "reason": "message_length",
+        "membership_changes": 0
+      },
+      "basis": "設計書 §3.4/§5.1"
+    },
+    {
+      "id": "P-MLD-T01-V18",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000100001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f00732200000000",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 56,
+        "message_offset": 48,
+        "message_length": 8,
+        "message_checksum_hex": "7322",
+        "folded_checksum_sum": 65535,
+        "record_count": 0,
+        "membership_changes": 0
+      },
+      "basis": "設計書 §3.4/§5.1"
+    },
+    {
+      "id": "P-MLD-T01-V19",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000240001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f00609a0000000101000000ff3e0000000000000000000000001234",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 76,
+        "message_offset": 48,
+        "message_length": 28,
+        "message_checksum_hex": "609a",
+        "folded_checksum_sum": 65535,
+        "record_type": 1,
+        "sources": [],
+        "action": "no_op"
+      },
+      "basis": "設計書 §3.4/§5.1"
+    },
+    {
+      "id": "P-MLD-T01-V20",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000240001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f005f9a0000000102000000ff3e0000000000000000000000001234",
+        "packet_layer": "ip",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1
+      },
+      "expected": {
+        "outcome": "accepted",
+        "ip_packet_length": 76,
+        "message_offset": 48,
+        "message_length": 28,
+        "message_checksum_hex": "5f9a",
+        "folded_checksum_sum": 65535,
+        "record_type": 2,
+        "sources": [],
+        "action": "insert_exclude"
+      },
+      "basis": "設計書 §3.4/§5.1"
+    },
+    {
+      "id": "P-MLD-T01-V21",
+      "test_id": "P-MLD-T01",
+      "kind": "fallback",
+      "input": {
+        "old_version_valid": true,
+        "initial_compatibility_flood": false
+      },
+      "expected": {
+        "compatibility_flood": true,
+        "expires_ps": null,
+        "generated_queries": 0,
+        "generated_reports": 0
+      },
+      "basis": "設計書 §1/§3.4: legacy transparent flooding until run end"
+    },
+    {
+      "id": "P-MLD-T01-V22",
+      "test_id": "P-MLD-T01",
+      "kind": "query_budget",
+      "input": {
+        "qrv": 3,
+        "qqic": 125,
+        "response_ps": "10000000000000",
+        "membership_interval_ps": "260000000000000"
+      },
+      "expected": {
+        "budget_ps": "385000000000000",
+        "compatibility_flood": true
+      },
+      "basis": "設計書 §5.1: 3*125s+10s=385s >260s"
+    },
+    {
+      "id": "P-MLD-T01-V23",
+      "test_id": "P-MLD-T01",
+      "kind": "horizon",
+      "input": {
+        "interval_ps": "100",
+        "insert_ps": "10",
+        "horizon_ps": "110"
+      },
+      "expected": {
+        "expiry_ps": "110",
+        "expiry_executed": false,
+        "snapshot_contains_lease": true
+      },
+      "basis": "設計書 §5.2: half-open [0,110) excludes expiry at110"
+    },
+    {
+      "id": "P-IGMP-T01-V24",
+      "test_id": "P-IGMP-T01",
+      "kind": "wire_timing",
+      "input": {
+        "ip_packet_length": 44,
+        "tagged": true,
+        "bitrate_bps": 1000000000,
+        "arrival_ps": "1000000"
+      },
+      "expected": {
+        "mac_bytes": 68,
+        "wire_duration_ps": "608000",
+        "source_start_ps": "392000",
+        "release_ps": "1096000"
+      },
+      "basis": "設計書 §3.1; existing serialize_vlan_frame 46-byte payload padding; D=(18+max(46,L)+4+8)*8*1000 ps, IFG=96000 ps"
+    },
+    {
+      "id": "P-MLD-T01-V24",
+      "test_id": "P-MLD-T01",
+      "kind": "wire_timing",
+      "input": {
+        "ip_packet_length": 92,
+        "tagged": true,
+        "bitrate_bps": 1000000000,
+        "arrival_ps": "1000000"
+      },
+      "expected": {
+        "mac_bytes": 114,
+        "wire_duration_ps": "976000",
+        "source_start_ps": "24000",
+        "release_ps": "1096000"
+      },
+      "basis": "設計書 §3.1; existing serialize_vlan_frame 46-byte payload padding; D=(18+max(46,L)+4+8)*8*1000 ps, IFG=96000 ps"
+    },
+    {
+      "id": "P-IGMP-T01-V25",
+      "test_id": "P-IGMP-T01",
+      "kind": "malformed_boundary",
+      "input": {
+        "bytes_hex": "46",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:16",
+        "vid": 1,
+        "arrival_ps": "1000000",
+        "bitrate_bps": 1000000000
+      },
+      "expected": {
+        "prepare": "accepted",
+        "decoded_byte_length": 1,
+        "mac_bytes": 68,
+        "planned_start_ps": "392000",
+        "planned_arrival_ps": "1000000",
+        "planned_release_ps": "1096000",
+        "arrival_outcome": "control_drop",
+        "reason": "ip_length",
+        "membership_changes": 0,
+        "completed_rx_frames": 1,
+        "completed_rx_mac_bytes": 68
+      },
+      "basis": "設計書 §3.1/§3.1.1: explicit DA permits runtime rejection of truncated L3; 18+46+4=68;76*8*1000=608000 ps"
+    },
+    {
+      "id": "P-IGMP-T01-V26",
+      "test_id": "P-IGMP-T01",
+      "kind": "boundary_prefix",
+      "input": {
+        "start_ps": "392000",
+        "arrival_ps": "1000000",
+        "release_ps": "1096000",
+        "mac_bytes": 68,
+        "horizons_ps": [
+          "392000",
+          "500000",
+          "1000000",
+          "1000001",
+          "1096000",
+          "1096001"
+        ]
+      },
+      "expected": {
+        "cases": [
+          {
+            "horizon_ps": "392000",
+            "status": "planned",
+            "boundary_records": 0,
+            "actual_start_ps": null,
+            "actual_arrival_ps": null,
+            "actual_release_ps": null,
+            "rx_wire_ps": "0",
+            "ifg_ps": "0",
+            "completed_rx_frames": 0,
+            "membership_callbacks": 0
+          },
+          {
+            "horizon_ps": "500000",
+            "status": "receiving",
+            "boundary_records": 1,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": null,
+            "actual_release_ps": null,
+            "rx_wire_ps": "108000",
+            "ifg_ps": "0",
+            "completed_rx_frames": 0,
+            "membership_callbacks": 0
+          },
+          {
+            "horizon_ps": "1000000",
+            "status": "receiving",
+            "boundary_records": 1,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": null,
+            "actual_release_ps": null,
+            "rx_wire_ps": "608000",
+            "ifg_ps": "0",
+            "completed_rx_frames": 0,
+            "membership_callbacks": 0
+          },
+          {
+            "horizon_ps": "1000001",
+            "status": "received",
+            "boundary_records": 2,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": "1000000",
+            "actual_release_ps": null,
+            "rx_wire_ps": "608000",
+            "ifg_ps": "1",
+            "completed_rx_frames": 1,
+            "membership_callbacks": 1
+          },
+          {
+            "horizon_ps": "1096000",
+            "status": "received",
+            "boundary_records": 2,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": "1000000",
+            "actual_release_ps": null,
+            "rx_wire_ps": "608000",
+            "ifg_ps": "96000",
+            "completed_rx_frames": 1,
+            "membership_callbacks": 1
+          },
+          {
+            "horizon_ps": "1096001",
+            "status": "released",
+            "boundary_records": 3,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": "1000000",
+            "actual_release_ps": "1096000",
+            "rx_wire_ps": "608000",
+            "ifg_ps": "96000",
+            "completed_rx_frames": 1,
+            "membership_callbacks": 1
+          }
+        ]
+      },
+      "basis": "設計書 §3.1.1: event executes iff time<T; frozen occupancy interval intersection"
+    },
+    {
+      "id": "P-IGMP-T01-V27",
+      "test_id": "P-IGMP-T01",
+      "kind": "source_order",
+      "input": {
+        "sources": [
+          "192.0.2.10",
+          "192.0.2.2"
+        ]
+      },
+      "expected": {
+        "sources": [
+          "192.0.2.2",
+          "192.0.2.10"
+        ],
+        "order": "unsigned_network_bytes"
+      },
+      "basis": "設計書 §5.1/§5.3: parse address bytes, sort, then canonical text; lexical string order prohibited"
+    },
+    {
+      "id": "P-IGMP-T01-V28",
+      "test_id": "P-IGMP-T01",
+      "kind": "simultaneous_expiry",
+      "input": {
+        "bridge": "sw1",
+        "vid": 1,
+        "port": "p1",
+        "group": "239.1.2.3",
+        "leases": [
+          {
+            "mode": "include",
+            "sources": [
+              "192.0.2.10"
+            ],
+            "expires_ps": "110",
+            "generation": "1"
+          },
+          {
+            "mode": "include",
+            "sources": [
+              "192.0.2.2"
+            ],
+            "expires_ps": "110",
+            "generation": "1"
+          }
+        ],
+        "epoch_before": "7",
+        "wake_ps": "110"
+      },
+      "expected": {
+        "epoch_after": "8",
+        "expired_leases": 2,
+        "remaining_leases": 0,
+        "timer_audits": 1,
+        "membership_audits": 1,
+        "membership_change_sources": [
+          [
+            "192.0.2.2"
+          ],
+          [
+            "192.0.2.10"
+          ]
+        ],
+        "dynamic_control_audits": 1,
+        "dynamic_kind": "wire_membership_leave",
+        "next_wake_ps": null
+      },
+      "basis": "設計書 §5.2: one bridge drain, one projection per K, one epoch; canonical source byte order"
+    },
+    {
+      "id": "P-IGMP-T01-V29",
+      "test_id": "P-IGMP-T01",
+      "kind": "boundary_overlap",
+      "input": {
+        "first_interval_ps": [
+          "392000",
+          "1096000"
+        ],
+        "candidate_starts_ps": [
+          "1095999",
+          "1096000"
+        ],
+        "candidate_duration_ps": "704000"
+      },
+      "expected": {
+        "prepare_results": [
+          "BoundaryOverlap",
+          "accepted"
+        ]
+      },
+      "basis": "設計書 §3.1.1: occupancy is [S,R), queue capacity1, boundary equality allowed"
+    },
+    {
+      "id": "P-IGMP-T01-V30",
+      "test_id": "P-IGMP-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220029ef0000000101000001ef010203c0000209",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "01:00:5e:00:00:01",
+        "vid": 1
+      },
+      "expected": {
+        "ip_packet_length": 44,
+        "message_offset": 24,
+        "message_length": 20,
+        "message_checksum_hex": "29ef",
+        "folded_checksum_sum": 65535,
+        "outcome": "control_drop",
+        "reason": "destination_mac",
+        "membership_changes": 0
+      },
+      "basis": "設計書 §3.1: independently supplied DA must match validated IP multicast destination; checksum remains valid"
+    },
+    {
+      "id": "P-MLD-T01-V25",
+      "test_id": "P-MLD-T01",
+      "kind": "malformed_boundary",
+      "input": {
+        "bytes_hex": "60",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:16",
+        "vid": 1,
+        "arrival_ps": "1000000",
+        "bitrate_bps": 1000000000
+      },
+      "expected": {
+        "prepare": "accepted",
+        "decoded_byte_length": 1,
+        "mac_bytes": 68,
+        "planned_start_ps": "392000",
+        "planned_arrival_ps": "1000000",
+        "planned_release_ps": "1096000",
+        "arrival_outcome": "control_drop",
+        "reason": "ip_length",
+        "membership_changes": 0,
+        "completed_rx_frames": 1,
+        "completed_rx_mac_bytes": 68
+      },
+      "basis": "設計書 §3.1/§3.1.1: explicit DA permits runtime rejection of truncated L3; 18+46+4=68;76*8*1000=608000 ps"
+    },
+    {
+      "id": "P-MLD-T01-V26",
+      "test_id": "P-MLD-T01",
+      "kind": "boundary_prefix",
+      "input": {
+        "start_ps": "392000",
+        "arrival_ps": "1000000",
+        "release_ps": "1096000",
+        "mac_bytes": 68,
+        "horizons_ps": [
+          "392000",
+          "500000",
+          "1000000",
+          "1000001",
+          "1096000",
+          "1096001"
+        ]
+      },
+      "expected": {
+        "cases": [
+          {
+            "horizon_ps": "392000",
+            "status": "planned",
+            "boundary_records": 0,
+            "actual_start_ps": null,
+            "actual_arrival_ps": null,
+            "actual_release_ps": null,
+            "rx_wire_ps": "0",
+            "ifg_ps": "0",
+            "completed_rx_frames": 0,
+            "membership_callbacks": 0
+          },
+          {
+            "horizon_ps": "500000",
+            "status": "receiving",
+            "boundary_records": 1,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": null,
+            "actual_release_ps": null,
+            "rx_wire_ps": "108000",
+            "ifg_ps": "0",
+            "completed_rx_frames": 0,
+            "membership_callbacks": 0
+          },
+          {
+            "horizon_ps": "1000000",
+            "status": "receiving",
+            "boundary_records": 1,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": null,
+            "actual_release_ps": null,
+            "rx_wire_ps": "608000",
+            "ifg_ps": "0",
+            "completed_rx_frames": 0,
+            "membership_callbacks": 0
+          },
+          {
+            "horizon_ps": "1000001",
+            "status": "received",
+            "boundary_records": 2,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": "1000000",
+            "actual_release_ps": null,
+            "rx_wire_ps": "608000",
+            "ifg_ps": "1",
+            "completed_rx_frames": 1,
+            "membership_callbacks": 1
+          },
+          {
+            "horizon_ps": "1096000",
+            "status": "received",
+            "boundary_records": 2,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": "1000000",
+            "actual_release_ps": null,
+            "rx_wire_ps": "608000",
+            "ifg_ps": "96000",
+            "completed_rx_frames": 1,
+            "membership_callbacks": 1
+          },
+          {
+            "horizon_ps": "1096001",
+            "status": "released",
+            "boundary_records": 3,
+            "actual_start_ps": "392000",
+            "actual_arrival_ps": "1000000",
+            "actual_release_ps": "1096000",
+            "rx_wire_ps": "608000",
+            "ifg_ps": "96000",
+            "completed_rx_frames": 1,
+            "membership_callbacks": 1
+          }
+        ]
+      },
+      "basis": "設計書 §3.1.1: event executes iff time<T; frozen occupancy interval intersection"
+    },
+    {
+      "id": "P-MLD-T01-V27",
+      "test_id": "P-MLD-T01",
+      "kind": "source_order",
+      "input": {
+        "sources": [
+          "2001:db8::10",
+          "2001:db8::2"
+        ]
+      },
+      "expected": {
+        "sources": [
+          "2001:db8::2",
+          "2001:db8::10"
+        ],
+        "order": "unsigned_network_bytes"
+      },
+      "basis": "設計書 §5.1/§5.3: parse address bytes, sort, then canonical text; lexical string order prohibited"
+    },
+    {
+      "id": "P-MLD-T01-V28",
+      "test_id": "P-MLD-T01",
+      "kind": "simultaneous_expiry",
+      "input": {
+        "bridge": "sw1",
+        "vid": 1,
+        "port": "p1",
+        "group": "ff3e::1234",
+        "leases": [
+          {
+            "mode": "include",
+            "sources": [
+              "2001:db8::10"
+            ],
+            "expires_ps": "110",
+            "generation": "1"
+          },
+          {
+            "mode": "include",
+            "sources": [
+              "2001:db8::2"
+            ],
+            "expires_ps": "110",
+            "generation": "1"
+          }
+        ],
+        "epoch_before": "7",
+        "wake_ps": "110"
+      },
+      "expected": {
+        "epoch_after": "8",
+        "expired_leases": 2,
+        "remaining_leases": 0,
+        "timer_audits": 1,
+        "membership_audits": 1,
+        "membership_change_sources": [
+          [
+            "2001:db8::2"
+          ],
+          [
+            "2001:db8::10"
+          ]
+        ],
+        "dynamic_control_audits": 1,
+        "dynamic_kind": "wire_membership_leave",
+        "next_wake_ps": null
+      },
+      "basis": "設計書 §5.2: one bridge drain, one projection per K, one epoch; canonical source byte order"
+    },
+    {
+      "id": "P-MLD-T01-V29",
+      "test_id": "P-MLD-T01",
+      "kind": "boundary_overlap",
+      "input": {
+        "first_interval_ps": [
+          "392000",
+          "1096000"
+        ],
+        "candidate_starts_ps": [
+          "1095999",
+          "1096000"
+        ],
+        "candidate_duration_ps": "704000"
+      },
+      "expected": {
+        "prepare_results": [
+          "BoundaryOverlap",
+          "accepted"
+        ]
+      },
+      "basis": "設計書 §3.1.1: occupancy is [S,R), queue capacity1, boundary equality allowed"
+    },
+    {
+      "id": "P-MLD-T01-V30",
+      "test_id": "P-MLD-T01",
+      "kind": "bytes",
+      "input": {
+        "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f0032c70000000101000001ff3e000000000000000000000000123420010db8000000000000000000000009",
+        "packet_layer": "ip",
+        "arrival_ps": "1000000000",
+        "source_mac": "02:00:00:00:00:01",
+        "destination_mac": "33:33:00:00:00:01",
+        "vid": 1
+      },
+      "expected": {
+        "ip_packet_length": 92,
+        "message_offset": 48,
+        "message_length": 44,
+        "message_checksum_hex": "32c7",
+        "folded_checksum_sum": 65535,
+        "outcome": "control_drop",
+        "reason": "destination_mac",
+        "membership_changes": 0
+      },
+      "basis": "設計書 §3.1: independently supplied DA must match validated IP multicast destination; checksum remains valid"
+    }
+  ]
+}

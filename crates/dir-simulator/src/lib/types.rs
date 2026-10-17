@@ -28,3 +28,5 @@ pub mod axi;
 pub mod memory_ipc;
 #[path = "types/soc.rs"]
 pub mod soc;
+#[path = "types/wire.rs"]
+pub mod wire;

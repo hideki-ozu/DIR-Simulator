@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "status": "design_review_only_not_product_tests",
+  "date": "2026-10-17",
+  "base_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+  "source_worktree_dirty": true,
+  "input_sha256": {
+    "docs/proposals/implementation/IGMPv3・MLDv2-wire実装設計書.md": "3f02490a541f08e606cb6fad7e3d17cdd6cff9389127815e9bbdf246205d8135",
+    "docs/proposals/implementation/MVRP規範仕様・詳細設計書.md": "4b68c65e7dd66d625f32b9e4d29ac6b0ec5cbcbe46350eeb040541a9d868da1c",
+    "docs/proposals/implementation/RSTP・MVRP-wire実装設計書.md": "e1833bb11be1be7013815862d26b683446907aa72e22e79ec632dc64950b8568",
+    "docs/proposals/implementation/RSTP規範仕様・詳細設計書.md": "f0d00d8608bdcfca5b6150b1d27992d28cac843ee452c3152e912912e41a53fa",
+    "docs/proposals/implementation/ネットワーク後続拡張実装設計書.md": "36c3341de9c987d5b94f2afcdcb6a54335a774bf440e54b380fe0f3ee6c2f6e2",
+    "docs/proposals/implementation/実行制御・指標・checkpoint実装設計書.md": "49dbb42689ceb3b8c7e11f29015e4058c9816f822700ce55548a8186e33006ae",
+    "docs/proposals/verification/実装準備設計検証記録.md": "02a6f918c4290acd3001ec2e20dc2359ba7db826c950febbd46712e15fe53b69",
+    "docs/proposals/後続拡張アーキテクチャ設計書.md": "2b128a9d44aa9fa89219889fb48cc899932e041b339897f1fa91df8a4208689c",
+    "docs/proposals/後続拡張契約提案仕様書.md": "b5e4a1c46d01dc502b0ca52c1985b456ab32ced28e99ebb77076f258f19a2fdd",
+    "docs/proposals/後続拡張契約提案検証仕様書.md": "6905c4cf02141d96dac62e8222b45e109f529070df8e293e8b2332715bb06571",
+    "docs/proposals/後続拡張契約提案設計書.md": "d2edd64766131a4511db8a3044a69dcb9df4f4d1058bc1059513bf54d81e07c0",
+    "docs/proposals/後続拡張機能仕様書.md": "74751502fb619b742d372880f07696491a92fe135d3487033c7d6f53fbcdbd88",
+    "docs/proposals/後続拡張要件定義書.md": "c0019c91bf9b8e4cb2ea55778b9d5e7d60ef0a3d9986b0624cd74efd4c8e8f17",
+    "docs/proposals/fixtures/bridge-integration-v1.json": "4578db19c64b15f18cb94aeaadeaece4243964c745ae3f4406784f3c58ce0bbf",
+    "docs/proposals/fixtures/bridge-wire-v1.json": "d87be84c5f2104f4e1d433c7909ac3145ce984e98b6151d4b89b899d518c6b89",
+    "docs/proposals/fixtures/common-contract-v1.json": "ae1ff045d761fe9ffc71b4c18665419b7f82746fd485483cc9294597a7dbeac0",
+    "docs/proposals/fixtures/control-metric-checkpoint-v1.json": "214c255b4cc71fdd1025a9e4d13e7afb663290bc3d6dda2e0d92e95421b90025",
+    "docs/proposals/fixtures/membership-wire-v1.json": "d3f87846170799f553990f93c302040e6d47fe37af1421f09ca62ab6a5334298",
+    "docs/proposals/fixtures/mvrp-standard-v1.json": "ee32fde32e2f8b7071709a75f6c19dcf3dba93c11f73b3fdabfc2a50fe9ac24b",
+    "docs/proposals/fixtures/network-extension-v1.json": "c16e1cc2f000b8b6a9d3a6333d63a7f144dbeff6a5eaec9535b42dc0847e5258",
+    "docs/proposals/fixtures/rstp-standard-v1.json": "8ba6288d50f5e23658596b482389ea32574a59f843cbbc40d98072acce650352",
+    "scripts/check_extension_design.py": "2e8d0c886285361bf9648d3c643ecc6612fa77841261c73787f37f6b506ed085",
+    "scripts/test_check_extension_design.py": "d505dcfbe76e1f37ab089f44d0c770e1e07e0f79457a1f9691614704eccbedbd",
+    "docs/proposals/verification/design-checks-2026-10-17.json": "d9a1b67cf8c8e1465bff76e0e1626183a6eaa93a000b06e86207c643fd8e96cc",
+    "docs/proposals/verification/ieee-8021q-source-2026-10-17.json": "daefd2ccd4db49e300c5fa5dcfe23b6658546829ee6de2bf660aaad690f99b24"
+  },
+  "checker_inputs": {
+    "proposal_trace_documents": 10,
+    "trace_nodes": 162,
+    "fixture_files": 8,
+    "vectors": 1322
+  },
+  "checker_vectors": {
+    "recomputed": 115,
+    "structure_only": 1207,
+    "unknown_kind": 0
+  },
+  "checker_negative_tests": {
+    "passed": 20,
+    "failed": 0
+  },
+  "independent_review": {
+    "scope": "network + passive membership + shared wire contract + active selected RSTP/CIST and MVRP Full Participant + dynamic FDB/learning/protocol integration + execution control + metric + checkpoint; limited design scope only",
+    "unresolved_p1_p2": 0,
+    "product_executed": false,
+    "normative_fixes": [
+      "Config version-independent rcvdSTP vs TCN version0/1",
+      "Superior conditions and normally unreachable Repeated branch",
+      "role0 RST normative classification takes priority over informative note",
+      "local LeaveAll rLA retained before txLA/txLAF; no coalescing",
+      "bridge/VID SVRE existence and per-port registrar map",
+      "static-to-Fixed mapping; Fixed outside S rejected initially",
+      "existing dynamic learning/aging retained with scoped FDB flush",
+      "per-bridge adapter ownership and peer ingress dispatch",
+      "run-global convergence scalar zero when any wire RSTP exists",
+      "MVRP initial domain requires every bridge and connected port"
+    ]
+  },
+  "browser_qa": {
+    "summary": {
+      "pass": 13,
+      "fail": 0,
+      "total": 13,
+      "result": "PASS"
+    },
+    "viewports": [
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1100
+      },
+      {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "scope": "standalone design HTML only"
+  },
+  "ready_families": [
+    "composite",
+    "abstract_replication",
+    "abstract_preemption",
+    "passive_igmp",
+    "passive_mld",
+    "cooperative_control",
+    "metric_v2",
+    "generic_checkpoint",
+    "active_rstp",
+    "active_mvrp"
+  ],
+  "blocked_families": {},
+  "product_test_status": "not_run; no implementation in this task",
+  "version_policy": "working supplement; no push or version/tag operation",
+  "checker_recomputation_scope": {
+    "bytes": "IP lengths/header and message checksums only; acceptance/action/state assertions remain design-review conditions",
+    "wire_envelope": "tagged packet envelope only; assumes valid base configuration and ports",
+    "wire_frames": "802.3/EtherType bounds and FCS input integrity only; protocol acceptance/action/state assertions remain structure-only",
+    "other_oracles": "only the fields explicitly compared by oracle(kind, vector)"
+  },
+  "partial_frame_integrity_checks": 39,
+  "normative_source": {
+    "metadata": "docs/proposals/verification/ieee-8021q-source-2026-10-17.json",
+    "edition": "IEEE Std 802.1Q-2022 base",
+    "source_sha256": "1653580bcae81ed4753ff2840b40d67239036078ed550cff23325d6fdd697114",
+    "source_pdf_committed": false,
+    "scope": "selected single CIST/full duplex p2p with legacy BPDU compatibility; MVRP Full Participant/context0; not whole-standard certification"
+  }
+}

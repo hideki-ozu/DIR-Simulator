@@ -5,12 +5,18 @@ on:
     branches: [main]
     paths:
       - 'crates/**'
+      - 'docs/proposals/fixtures/**'
+      - 'examples/network-extensions/**'
+      - 'examples/ethernet-wire/**'
+      - 'examples/control-checkpoint/**'
       - 'docs/third-party/**'
       - 'docs/guide/assets/licenses/**'
       - 'scripts/check_third_party_notices.py'
       - 'docs/verification/results/release-native-distribution-audit-2026-10-08/**'
       - '.github/workflows/release-audit.yml'
       - 'tests/viewer_model.test.cjs'
+      - 'tests/controlled_viewer_*.cjs'
+      - 'tests/fixtures/controlled-rewind.json'
       - 'tests/viewer_browser.cjs'
       - 'tests/viewer_fixtures.cjs'
       - 'tests/ned_editor_*.cjs'
@@ -95,12 +101,37 @@ jobs:
           npm --version
           npm install --prefix "$RUNNER_TEMP/viewer-tests" --no-package-lock --no-save playwright@1.64.0
           "$RUNNER_TEMP/viewer-tests/node_modules/.bin/playwright" install --with-deps chromium
-          node --test tests/viewer_model.test.cjs
+          node --test tests/viewer_model.test.cjs tests/controlled_viewer_model.test.cjs
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node tests/viewer_browser.cjs
           node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node --test tests/ned_editor_viewer_expiry_browser.test.cjs
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_extensions_browser.test.cjs
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_hostile_browser.test.cjs
+      - name: Extension Viewer exports and process checkpoint example
+        if: ${{ !cancelled() && steps.native-product.conclusion == 'success' }}
+        run: |
+          cargo build --locked -p dir-simulator --bin dir-simulator --example control_checkpoint
+          mkdir "$RUNNER_TEMP/extension-viewer"
+          for name in composite redundancy preemption; do
+            target/debug/dir-simulator run --config "examples/network-extensions/$name.ini" --output "$RUNNER_TEMP/extension-viewer/$name"
+            target/debug/dir-simulator view --input "$RUNNER_TEMP/extension-viewer/$name/results.json" --output "$RUNNER_TEMP/extension-viewer/$name.html"
+          done
+          for name in active passive; do
+            target/debug/dir-simulator run --config "examples/ethernet-wire/$name.ini" --output "$RUNNER_TEMP/extension-viewer/$name"
+            target/debug/dir-simulator view --input "$RUNNER_TEMP/extension-viewer/$name/results.json" --output "$RUNNER_TEMP/extension-viewer/$name.html"
+          done
+          target/debug/examples/control_checkpoint save examples/control-checkpoint/scenario.ini "$RUNNER_TEMP/extension-viewer/control"
+          target/debug/examples/control_checkpoint restore "$RUNNER_TEMP/extension-viewer/control"
+          target/debug/dir-simulator view --input "$RUNNER_TEMP/extension-viewer/control/paused/results.json" --output "$RUNNER_TEMP/extension-viewer/paused.html"
+          target/debug/dir-simulator view --input "$RUNNER_TEMP/extension-viewer/control/restored/results.json" --output "$RUNNER_TEMP/extension-viewer/restored.html"
+          PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" node tests/controlled_viewer_browser.cjs \
+            "$RUNNER_TEMP/extension-viewer/composite/results.json" "$RUNNER_TEMP/extension-viewer/composite.html" \
+            "$RUNNER_TEMP/extension-viewer/redundancy/results.json" "$RUNNER_TEMP/extension-viewer/redundancy.html" \
+            "$RUNNER_TEMP/extension-viewer/preemption/results.json" "$RUNNER_TEMP/extension-viewer/preemption.html" \
+            "$RUNNER_TEMP/extension-viewer/active/results.json" "$RUNNER_TEMP/extension-viewer/active.html" \
+            "$RUNNER_TEMP/extension-viewer/passive/results.json" "$RUNNER_TEMP/extension-viewer/passive.html" \
+            "$RUNNER_TEMP/extension-viewer/control/paused/results.json" "$RUNNER_TEMP/extension-viewer/paused.html" \
+            "$RUNNER_TEMP/extension-viewer/control/restored/results.json" "$RUNNER_TEMP/extension-viewer/restored.html"
       - name: Audit checker and comparison selftests
         if: ${{ !cancelled() && steps.native-product.conclusion == 'success' }}
         run: |

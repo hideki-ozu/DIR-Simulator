@@ -1,0 +1,849 @@
+{
+  "schema_version": 1,
+  "status": "design_vectors_not_product_tests",
+  "vectors": [
+    {
+      "id": "P-CONTROL-T01-V01",
+      "test_id": "P-CONTROL-T01",
+      "kind": "control_boundary",
+      "input": {
+        "state": "Running",
+        "callback": "success",
+        "at_natural_end": true,
+        "requests": [
+          "Pause"
+        ],
+        "commit_ordinal": "3",
+        "horizon_ps": "5"
+      },
+      "expected": {
+        "state": "Paused",
+        "ack_status": [
+          "Applied"
+        ],
+        "next_event_started": false
+      },
+      "basis": "P-CONTROL-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T01-V02",
+      "test_id": "P-CONTROL-T01",
+      "kind": "control_boundary",
+      "input": {
+        "state": "Running",
+        "callback": "success",
+        "at_natural_end": true,
+        "requests": [
+          "Pause",
+          "Stop"
+        ],
+        "commit_ordinal": "3",
+        "horizon_ps": "5"
+      },
+      "expected": {
+        "state": "Stopped",
+        "ack_status": [
+          "Superseded",
+          "Applied"
+        ],
+        "next_event_started": false
+      },
+      "basis": "P-CONTROL-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T01-V03",
+      "test_id": "P-CONTROL-T01",
+      "kind": "control_boundary",
+      "input": {
+        "state": "Running",
+        "callback": "success",
+        "at_natural_end": true,
+        "requests": [],
+        "commit_ordinal": "3",
+        "horizon_ps": "5"
+      },
+      "expected": {
+        "state": "Completed",
+        "ack_status": [],
+        "next_event_started": false
+      },
+      "basis": "P-CONTROL-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T01-V04",
+      "test_id": "P-CONTROL-T01",
+      "kind": "control_boundary",
+      "input": {
+        "state": "Running",
+        "callback": "failure",
+        "at_natural_end": false,
+        "requests": [
+          "Pause",
+          "Stop"
+        ],
+        "commit_ordinal": "2",
+        "horizon_ps": "5"
+      },
+      "expected": {
+        "state": "Failed",
+        "ack_status": [
+          "EngineFailed",
+          "EngineFailed"
+        ],
+        "committed_events": "2"
+      },
+      "basis": "P-CONTROL-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T01-V05",
+      "test_id": "P-CONTROL-T01",
+      "kind": "ready_pause",
+      "input": {
+        "state": "Ready",
+        "request": "Pause"
+      },
+      "expected": {
+        "state": "Paused",
+        "horizon_ps": "0",
+        "factory_calls": 0,
+        "initialize_calls": 0
+      },
+      "basis": "P-CONTROL-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T02-V01",
+      "test_id": "P-CONTROL-T02",
+      "kind": "mailbox_capacity",
+      "input": {
+        "pending": 32,
+        "acks": 32,
+        "next_id": "10",
+        "submit": "Pause"
+      },
+      "expected": {
+        "status": "Busy",
+        "next_id": "10",
+        "slots": 64
+      },
+      "basis": "P-CONTROL-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T02-V02",
+      "test_id": "P-CONTROL-T02",
+      "kind": "mailbox_capacity",
+      "input": {
+        "pending": 0,
+        "acks": 0,
+        "next_id": "18446744073709551615",
+        "submit": "Pause"
+      },
+      "expected": {
+        "status": "ResourceExhausted",
+        "next_id": "18446744073709551615",
+        "slots": 0
+      },
+      "basis": "P-CONTROL-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T02-V03",
+      "test_id": "P-CONTROL-T02",
+      "kind": "request_retry",
+      "input": {
+        "recorded_id": "7",
+        "original": "Pause",
+        "retry": "Pause",
+        "location": "ack"
+      },
+      "expected": {
+        "status": "same_ack",
+        "executions": 1
+      },
+      "basis": "P-CONTROL-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T02-V04",
+      "test_id": "P-CONTROL-T02",
+      "kind": "request_retry",
+      "input": {
+        "recorded_id": "7",
+        "original": "Pause",
+        "retry": "Stop",
+        "location": "ack"
+      },
+      "expected": {
+        "status": "RequestConflict",
+        "executions": 1
+      },
+      "basis": "P-CONTROL-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T02-V05",
+      "test_id": "P-CONTROL-T02",
+      "kind": "request_retry",
+      "input": {
+        "recorded_id": "7",
+        "original": "Pause",
+        "retry": "Pause",
+        "location": "forgotten"
+      },
+      "expected": {
+        "status": "DuplicateExpired",
+        "executions": 1
+      },
+      "basis": "P-CONTROL-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T02-V06",
+      "test_id": "P-CONTROL-T02",
+      "kind": "replay_grouping",
+      "input": {
+        "commit_ordinal": "3",
+        "snapshots": [
+          [
+            "Pause"
+          ],
+          [
+            "Export"
+          ],
+          [
+            "Resume"
+          ]
+        ],
+        "first_boundary_seq": "10"
+      },
+      "expected": {
+        "boundary_seq": [
+          "10",
+          "11",
+          "12"
+        ],
+        "states": [
+          "Paused",
+          "Paused",
+          "Running"
+        ],
+        "merge_allowed": false
+      },
+      "basis": "P-CONTROL-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T03-V01",
+      "test_id": "P-CONTROL-T03",
+      "kind": "frozen_export",
+      "input": {
+        "last_time_ps": "7",
+        "last_value": "1",
+        "area": "22",
+        "horizon_ps": "10",
+        "exports": 2
+      },
+      "expected": {
+        "view_area": "25",
+        "live_last_time_ps": "7",
+        "live_area": "22",
+        "token_consumed": false
+      },
+      "basis": "P-CONTROL-T03; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T03-V02",
+      "test_id": "P-CONTROL-T03",
+      "kind": "cleanup_order",
+      "input": {
+        "initialized_models": [
+          "a",
+          "b"
+        ],
+        "constructed_channels": [
+          "c",
+          "d"
+        ],
+        "close_calls": 2
+      },
+      "expected": {
+        "finish_order": [
+          "b",
+          "a",
+          "d",
+          "c"
+        ],
+        "calls_per_object": 1
+      },
+      "basis": "P-CONTROL-T03; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CONTROL-T03-V03",
+      "test_id": "P-CONTROL-T03",
+      "kind": "cleanup_order",
+      "input": {
+        "initialized_models": [],
+        "constructed_channels": [
+          "c",
+          "d"
+        ],
+        "initialize_failed": true,
+        "close_calls": 1
+      },
+      "expected": {
+        "finish_order": [
+          "d",
+          "c"
+        ],
+        "calls_per_object": 1
+      },
+      "basis": "P-CONTROL-T03; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T01-V01",
+      "test_id": "P-METRIC-T01",
+      "kind": "metric_descriptor",
+      "input": {
+        "sampling": "point",
+        "aggregation": "sum",
+        "targets": [
+          "a"
+        ],
+        "initial_gauges": {}
+      },
+      "expected": {
+        "prepare_valid": true
+      },
+      "basis": "P-METRIC-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T01-V02",
+      "test_id": "P-METRIC-T01",
+      "kind": "metric_descriptor",
+      "input": {
+        "sampling": "gauge",
+        "aggregation": "time_mean",
+        "targets": [
+          "a"
+        ],
+        "initial_gauges": {
+          "a": "2"
+        }
+      },
+      "expected": {
+        "prepare_valid": true
+      },
+      "basis": "P-METRIC-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T01-V03",
+      "test_id": "P-METRIC-T01",
+      "kind": "metric_descriptor",
+      "input": {
+        "sampling": "gauge",
+        "aggregation": "max",
+        "targets": [
+          "a"
+        ],
+        "initial_gauges": {
+          "a": "2"
+        }
+      },
+      "expected": {
+        "prepare_valid": false
+      },
+      "basis": "P-METRIC-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T01-V04",
+      "test_id": "P-METRIC-T01",
+      "kind": "metric_descriptor",
+      "input": {
+        "sampling": "gauge",
+        "aggregation": "time_mean",
+        "targets": [
+          "a"
+        ],
+        "initial_gauges": {}
+      },
+      "expected": {
+        "prepare_valid": false
+      },
+      "basis": "P-METRIC-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T02-V01",
+      "test_id": "P-METRIC-T02",
+      "kind": "point_summary",
+      "input": {
+        "samples": [
+          {
+            "t": "1",
+            "v": "1"
+          },
+          {
+            "t": "2",
+            "v": "2"
+          },
+          {
+            "t": "3",
+            "v": "7"
+          }
+        ],
+        "horizon_ps": "4",
+        "prefix": false
+      },
+      "expected": {
+        "count": "3",
+        "sum": "10",
+        "min": "1",
+        "max": "7",
+        "mean_numerator": "10",
+        "mean_denominator": "3"
+      },
+      "basis": "P-METRIC-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T03-V01",
+      "test_id": "P-METRIC-T03",
+      "kind": "point_summary",
+      "input": {
+        "samples": [],
+        "horizon_ps": "0",
+        "prefix": true
+      },
+      "expected": {
+        "count": "0",
+        "sum": "0",
+        "min": null,
+        "max": null,
+        "mean_numerator": null,
+        "mean_denominator": "0"
+      },
+      "basis": "P-METRIC-T03; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T02-V02",
+      "test_id": "P-METRIC-T02",
+      "kind": "gauge_integral",
+      "input": {
+        "initial": "2",
+        "changes": [
+          {
+            "t": "3",
+            "v": "4"
+          },
+          {
+            "t": "7",
+            "v": "9"
+          },
+          {
+            "t": "7",
+            "v": "1"
+          }
+        ],
+        "horizon_ps": "10",
+        "window_ps": "4"
+      },
+      "expected": {
+        "area": "25",
+        "duration": "10",
+        "windows": [
+          {
+            "start": "0",
+            "end": "4",
+            "area": "10"
+          },
+          {
+            "start": "4",
+            "end": "8",
+            "area": "13"
+          },
+          {
+            "start": "8",
+            "end": "10",
+            "area": "2"
+          }
+        ]
+      },
+      "basis": "P-METRIC-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T02-V03",
+      "test_id": "P-METRIC-T02",
+      "kind": "gauge_integral",
+      "input": {
+        "initial": "2",
+        "changes": [
+          {
+            "t": "3",
+            "v": "4"
+          },
+          {
+            "t": "7",
+            "v": "9"
+          },
+          {
+            "t": "7",
+            "v": "1"
+          }
+        ],
+        "horizon_ps": "7",
+        "window_ps": "4"
+      },
+      "expected": {
+        "area": "22",
+        "duration": "7",
+        "windows": [
+          {
+            "start": "0",
+            "end": "4",
+            "area": "10"
+          },
+          {
+            "start": "4",
+            "end": "7",
+            "area": "12"
+          }
+        ]
+      },
+      "basis": "P-METRIC-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T02-V04",
+      "test_id": "P-METRIC-T02",
+      "kind": "gauge_integral",
+      "input": {
+        "initial": "2",
+        "changes": [
+          {
+            "t": "3",
+            "v": "4"
+          },
+          {
+            "t": "7",
+            "v": "9"
+          },
+          {
+            "t": "7",
+            "v": "1"
+          }
+        ],
+        "horizon_ps": "0",
+        "window_ps": "4"
+      },
+      "expected": {
+        "area": "0",
+        "duration": "0",
+        "windows": []
+      },
+      "basis": "P-METRIC-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T02-V05",
+      "test_id": "P-METRIC-T02",
+      "kind": "timestamp_bucket",
+      "input": {
+        "points": [
+          {
+            "t": "3",
+            "v": "5"
+          },
+          {
+            "t": "7",
+            "v": "1"
+          }
+        ],
+        "horizon_ps": "7",
+        "prefix": true
+      },
+      "expected": {
+        "summary_min": "1",
+        "window_min": "5",
+        "held_bucket_time": "7",
+        "held_bucket_min": "1"
+      },
+      "basis": "P-METRIC-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T02-V06",
+      "test_id": "P-METRIC-T02",
+      "kind": "checked_sum",
+      "input": {
+        "accumulator": "340282366920938463463374607431768211455",
+        "new_value": "1",
+        "bits": 128
+      },
+      "expected": {
+        "commit": false,
+        "accumulator_after": "340282366920938463463374607431768211455"
+      },
+      "basis": "P-METRIC-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-METRIC-T03-V02",
+      "test_id": "P-METRIC-T03",
+      "kind": "gauge_resume",
+      "input": {
+        "initial": "2",
+        "changes": [
+          {
+            "t": "3",
+            "v": "4"
+          },
+          {
+            "t": "7",
+            "v": "9"
+          },
+          {
+            "t": "7",
+            "v": "1"
+          }
+        ],
+        "pause_ps": "7",
+        "finish_ps": "10",
+        "exports": 2
+      },
+      "expected": {
+        "pause_area": "22",
+        "final_area": "25",
+        "double_integral": false
+      },
+      "basis": "P-METRIC-T03; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T01-V01",
+      "test_id": "P-CHECKPOINT-T01",
+      "kind": "checkpoint_phase",
+      "input": {
+        "engine_phase": "uninitialized",
+        "declared_instances": 4
+      },
+      "expected": {
+        "blob_instances": 0,
+        "restore_factory_calls": 0,
+        "initialize_calls_during_restore": 0,
+        "state": "Paused"
+      },
+      "basis": "P-CHECKPOINT-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T01-V02",
+      "test_id": "P-CHECKPOINT-T01",
+      "kind": "checkpoint_phase",
+      "input": {
+        "engine_phase": "initialized",
+        "declared_instances": 4
+      },
+      "expected": {
+        "blob_instances": 4,
+        "restore_factory_calls": 4,
+        "initialize_calls_during_restore": 0,
+        "state": "Paused"
+      },
+      "basis": "P-CHECKPOINT-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T01-V03",
+      "test_id": "P-CHECKPOINT-T01",
+      "kind": "checkpoint_gate",
+      "input": {
+        "state": "Paused",
+        "pending": [
+          "Stop"
+        ],
+        "new_submit_during_gate": "Pause"
+      },
+      "expected": {
+        "save_allowed": false,
+        "state_after": "Stopped",
+        "new_submit_status": "Busy"
+      },
+      "basis": "P-CHECKPOINT-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T01-V04",
+      "test_id": "P-CHECKPOINT-T01",
+      "kind": "checkpoint_gate",
+      "input": {
+        "state": "Paused",
+        "pending": [
+          "Resume"
+        ],
+        "new_submit_during_gate": "Pause"
+      },
+      "expected": {
+        "save_allowed": false,
+        "state_after": "Running",
+        "new_submit_status": "Busy"
+      },
+      "basis": "P-CHECKPOINT-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T01-V05",
+      "test_id": "P-CHECKPOINT-T01",
+      "kind": "checkpoint_gate",
+      "input": {
+        "state": "Paused",
+        "pending": [],
+        "new_submit_during_gate": "Pause"
+      },
+      "expected": {
+        "save_allowed": true,
+        "state_after": "Paused",
+        "new_submit_status": "Busy"
+      },
+      "basis": "P-CHECKPOINT-T01; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T02-V01",
+      "test_id": "P-CHECKPOINT-T02",
+      "kind": "manifest_set",
+      "input": {
+        "listed": [
+          "state.json",
+          "objects/a.bin"
+        ],
+        "actual": [
+          "manifest.json",
+          "state.json",
+          "objects/a.bin"
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "manifest_self_hash": false
+      },
+      "basis": "P-CHECKPOINT-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T02-V02",
+      "test_id": "P-CHECKPOINT-T02",
+      "kind": "manifest_set",
+      "input": {
+        "listed": [
+          "state.json",
+          "objects/a.bin"
+        ],
+        "actual": [
+          "manifest.json",
+          "state.json",
+          "objects/a.bin",
+          "inputs/extra.bin"
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "reason": "unlisted_file"
+      },
+      "basis": "P-CHECKPOINT-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T02-V03",
+      "test_id": "P-CHECKPOINT-T02",
+      "kind": "checkpoint_publication",
+      "input": {
+        "failure_at": "before_rename",
+        "checkpoint_ordinal": "2"
+      },
+      "expected": {
+        "published": false,
+        "durability": null,
+        "ordinal_after": "2",
+        "delete_destination": false
+      },
+      "basis": "P-CHECKPOINT-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T02-V04",
+      "test_id": "P-CHECKPOINT-T02",
+      "kind": "checkpoint_publication",
+      "input": {
+        "failure_at": "parent_sync",
+        "checkpoint_ordinal": "2"
+      },
+      "expected": {
+        "published": true,
+        "durability": "unknown",
+        "ordinal_after": "3",
+        "delete_destination": false
+      },
+      "basis": "P-CHECKPOINT-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T02-V05",
+      "test_id": "P-CHECKPOINT-T02",
+      "kind": "checkpoint_publication",
+      "input": {
+        "failure_at": "none",
+        "checkpoint_ordinal": "2"
+      },
+      "expected": {
+        "published": true,
+        "durability": "durable",
+        "ordinal_after": "3",
+        "delete_destination": false
+      },
+      "basis": "P-CHECKPOINT-T02; 実行制御・指標・checkpoint実装設計書の同ID"
+    },
+    {
+      "id": "P-CHECKPOINT-T03-V01",
+      "test_id": "P-CHECKPOINT-T03",
+      "kind": "checkpoint_tokens",
+      "input": {
+        "owner": "Demo.a",
+        "next_event_id": "10",
+        "live_ids": [
+          "7"
+        ],
+        "retired_ids": [
+          "2"
+        ],
+        "serialized_model_refs": [
+          "2",
+          "7"
+        ],
+        "serialized_token_refs": [
+          {
+            "version": 1,
+            "owner": "Demo.a",
+            "id": "2",
+            "state": "retired"
+          },
+          {
+            "version": 1,
+            "owner": "Demo.a",
+            "id": "7",
+            "state": "live"
+          }
+        ]
+      },
+      "expected": {
+        "restored_model_refs": [
+          "2",
+          "7"
+        ],
+        "live_ids": [
+          "7"
+        ],
+        "initialize_calls": 0,
+        "new_process_session_id": true
+      },
+      "basis": "P-CHECKPOINT-T03; 実行制御・指標・checkpoint実装設計書の同ID。retired_idsは試験setupでありbundle独立表ではない。実際の保存参照はserialized_token_refs。"
+    },
+    {
+      "id": "P-CHECKPOINT-T03-V02",
+      "test_id": "P-CHECKPOINT-T03",
+      "kind": "checkpoint_mismatch",
+      "input": {
+        "fields": [
+          "binary_sha256",
+          "registry_fingerprint",
+          "input_fingerprint",
+          "codec_version"
+        ],
+        "any_mismatch": true
+      },
+      "expected": {
+        "restore_published": false,
+        "callbacks_started": 0,
+        "status": "FingerprintMismatch_or_UnsupportedCodec"
+      },
+      "basis": "P-CHECKPOINT-T03; 実行制御・指標・checkpoint実装設計書の同ID"
+    }
+  ]
+}

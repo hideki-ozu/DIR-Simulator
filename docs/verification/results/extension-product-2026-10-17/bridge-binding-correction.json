@@ -1,0 +1,9 @@
+{
+  "case": "P-CORE-T01-V202",
+  "before_sha256": "4578db19c64b15f18cb94aeaadeaece4243964c745ae3f4406784f3c58ce0bbf",
+  "after_sha256": "0d44e69425cb960cfef43ab8cbea43e8eeeacf6bbbdd74e1b0236674f918182b",
+  "change": "Both duplicate RSTP adapters list the complete connected bridge port set; expected duplicate_protocol_bridge is unchanged.",
+  "reason": "Original disjoint single-port lists violate the adopted all-connected-ports RSTP ownership precondition, masking the intended duplicate bridge owner diagnostic. No validation precedence was specified. Correct only input to isolate intended negative test.",
+  "basis": "RSTP規範仕様・詳細設計書 §2 first paragraph; input/wire.rs ownership then active port-set check. Original rejection/log retained under vector-closure.",
+  "product_execution_claimed": false
+}

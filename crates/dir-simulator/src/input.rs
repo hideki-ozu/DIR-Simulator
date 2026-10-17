@@ -11,6 +11,7 @@ mod memory_ipc;
 mod network;
 mod provenance;
 mod references;
+pub(crate) mod wire;
 use json_diagnostics::JsonDocument;
 pub(crate) use json_diagnostics::parse_json;
 pub(crate) use provenance::effective_value_provenance;
@@ -135,11 +136,14 @@ pub(crate) fn validate_parameter_literal(
             | "ethernet.l2.vlan.v1"
             | "ethernet.l2.dynamic.v1"
             | "ethernet.tsn.v1"
+            | "ethernet.redundancy.abstract.v1"
+            | "ethernet.preemption.abstract.v1"
+            | "ethernet.control.wire.experimental.v1"
             | "ethernet.l2.store-forward.v2"
             | "ethernet.l2.100base-t1.v1"
     ) {
         ethernet::validate_parameter_literal(declaration, name, value)
-    } else if profile == "can.ethernet.gateway.v1" {
+    } else if matches!(profile, "can.ethernet.gateway.v1" | "can.ethernet.tsn.v1") {
         network::topology::validate_parameter_literal(declaration, name, value)
     } else if profile == "can.fd.precomputed.v1" {
         canfd::validate_parameter_literal(declaration, name, value)
@@ -1159,6 +1163,62 @@ fn prepare_with_source_inner(
                 memory_ipc: None,
             });
         }
+        if profile == "can.ethernet.tsn.v1" {
+            let (can_base, ethernet, module_paths, channel_count) =
+                network::topology::resolve(&declarations, network, &overrides, &ini.channels)?;
+            let model_name = string_literal(ini.required("model-config")?)?;
+            valid_file_path(&model_name)?;
+            let model_path = absolute(Path::new(&model_name), base);
+            let content = read_file(&model_path, &mut snapshots, source)?;
+            let workload_name = string_literal(ini.required("workload")?)?;
+            valid_file_path(&workload_name)?;
+            let workload_path = absolute(Path::new(&workload_name), base);
+            let work = read_file(&workload_path, &mut snapshots, source)?;
+            let payload = network::prepare_composite(
+                ethernet,
+                can_base,
+                &module_paths,
+                parse_json(&content)?,
+                parse_json(&work)?,
+                (&content, &model_path),
+                Some((&work, &workload_path)),
+            )?;
+            let can = payload.bridge.as_ref().unwrap().can.clone();
+            let ethernet = payload.ethernet.clone();
+            return Ok(PreparedSimulation {
+                registered: Some(crate::registry::PreparedRegistered::network(
+                    payload,
+                    &profile,
+                    crate::registry::Registry::default(),
+                )),
+                common: crate::types::PreparedCommon {
+                    provenance: Default::default(),
+                    run_identity: None,
+                    profile,
+                    module_paths,
+                    network: network.into(),
+                    time_limit_ps,
+                    metrics_window_ps,
+                    max_events,
+                    max_delta_cycles,
+                    channel_count,
+                    config_path: config.clone(),
+                    model_config_path: Some(model_path),
+                    workload_path: Some(workload_path),
+                    inputs: snapshots,
+                },
+                can,
+                gateway: crate::types::PreparedGateway {
+                    gateways: Vec::new(),
+                    controller_gateways: Vec::new(),
+                },
+                ethernet: Some(ethernet),
+                canfd: None,
+                axi: None,
+                soc: None,
+                memory_ipc: None,
+            });
+        }
         if profile == "can.ethernet.gateway.v1" {
             let (can_base, mut ethernet, module_paths, channel_count) =
                 network::topology::resolve(&declarations, network, &overrides, &ini.channels)?;
@@ -1189,6 +1249,8 @@ fn prepare_with_source_inner(
                 dynamic: None,
                 tsn: None,
                 bridge: Some(bridge),
+                extensions: None,
+                wire: None,
                 config: config_value,
                 workload: workload_value,
             };
@@ -1233,6 +1295,9 @@ fn prepare_with_source_inner(
                 | "ethernet.l2.vlan.v1"
                 | "ethernet.l2.dynamic.v1"
                 | "ethernet.tsn.v1"
+                | "ethernet.redundancy.abstract.v1"
+                | "ethernet.preemption.abstract.v1"
+                | "ethernet.control.wire.experimental.v1"
                 | "ethernet.l2.store-forward.v2"
                 | "ethernet.l2.100base-t1.v1"
         ) {
@@ -1249,7 +1314,11 @@ fn prepare_with_source_inner(
             let content = read_file(&model_path, &mut snapshots, source)?;
             let extension = matches!(
                 profile.as_str(),
-                "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1"
+                "ethernet.l2.dynamic.v1"
+                    | "ethernet.tsn.v1"
+                    | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.preemption.abstract.v1"
+                    | "ethernet.control.wire.experimental.v1"
             );
             let extension_config = extension
                 .then(|| {
@@ -1283,16 +1352,87 @@ fn prepare_with_source_inner(
                 workload_path = Some(path);
             }
             let registered = if extension {
-                let network = network::prepare(
-                    ethernet,
-                    extension_config.unwrap(),
-                    extension_workload,
-                    &profile,
-                    (&content, &model_path),
-                    extension_workload_content
+                let network = if profile == "ethernet.control.wire.experimental.v1" {
+                    let config_value = extension_config.unwrap();
+                    let workload_source = extension_workload_content
                         .as_deref()
-                        .zip(workload_path.as_deref()),
-                )?;
+                        .zip(workload_path.as_deref())
+                        .ok_or_else(|| {
+                            ini.annotate("workload", error("wire profile requires workload"))
+                        })?;
+                    let config_document = JsonDocument::parse(&content)?;
+                    let workload_document = JsonDocument::parse(workload_source.0)?;
+                    let config_inner = config_value
+                        .get("ethernet")
+                        .filter(|v| v.is_object())
+                        .ok_or_else(|| {
+                            config_document
+                                .annotate(
+                                    "/ethernet",
+                                    error("wire config requires ethernet object"),
+                                )
+                                .with_source(&model_path)
+                        })?;
+                    let workload_inner = extension_workload
+                        .get("ethernet")
+                        .filter(|v| v.is_object())
+                        .ok_or_else(|| {
+                            workload_document
+                                .annotate(
+                                    "/ethernet",
+                                    error("wire workload requires ethernet object"),
+                                )
+                                .with_source(workload_source.1)
+                        })?;
+                    let config_text = config_inner.to_string();
+                    let workload_text = workload_inner.to_string();
+                    let mut network = network::prepare(
+                        ethernet,
+                        config_inner.clone(),
+                        workload_inner.clone(),
+                        "ethernet.l2.dynamic.v1",
+                        (&config_text, &model_path),
+                        Some((&workload_text, workload_source.1)),
+                    )
+                    .map_err(|diagnostic| {
+                        let pointer =
+                            format!("/ethernet{}", diagnostic.target.as_deref().unwrap_or(""));
+                        if diagnostic.source.as_deref().map(Path::new) == Some(workload_source.1) {
+                            workload_document
+                                .annotate(&pointer, diagnostic)
+                                .with_source(workload_source.1)
+                        } else {
+                            config_document
+                                .annotate(&pointer, diagnostic)
+                                .with_source(&model_path)
+                        }
+                    })?;
+                    network.wire = Some(
+                        wire::prepare(&config_value, &extension_workload, &network.ethernet)
+                            .map_err(|diagnostic| {
+                                config_document
+                                    .annotate(
+                                        diagnostic.target.as_deref().unwrap_or(""),
+                                        diagnostic.clone(),
+                                    )
+                                    .with_source(&model_path)
+                            })?,
+                    );
+                    network.config = config_value;
+                    network.workload = extension_workload;
+                    network
+                } else {
+                    network::prepare(
+                        ethernet,
+                        extension_config.unwrap(),
+                        extension_workload,
+                        &profile,
+                        (&content, &model_path),
+                        extension_workload_content
+                            .as_deref()
+                            .zip(workload_path.as_deref()),
+                    )?
+                };
                 ethernet = network.ethernet.clone();
                 Some(crate::registry::PreparedRegistered::network(
                     network,
