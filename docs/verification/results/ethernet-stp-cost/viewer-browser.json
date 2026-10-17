@@ -1,0 +1,168 @@
+{
+  "generated_by": "scripts/verify_ethernet_stp_cost_viewer.cjs",
+  "browser": "151.0.7922.34",
+  "input_hashes": {
+    "repository/low-viewer.html": "57b9a3eaeb907409059f1a3e281f7686a5d18f491676b0acd3a3663a5f296ddb",
+    "repository/low/results.json": "e8ca395cb0808085a82ce56d1ca75e41fbee773961247ecbeb37a28dff6aa044",
+    "repository/low/manifest.json": "a8b91b8e54545d22ebe9ce6cc0a226113062d3da61df2853a78713a6e00d2665",
+    "repository/high-viewer.html": "243950b989de8d479786476d6b90ffa3ed6528598807c5a63bc595185bd24c52",
+    "repository/high/results.json": "7652672ab24fdc660b38316773fa04e26e860381371773afa56b352ffa46059b",
+    "repository/high/manifest.json": "ccbc54b6cba527b0f84fd031049f2ccc5ee7008ad3a4c1b607c19818d576be63"
+  },
+  "conditions": {
+    "low": {
+      "initial_policy": "Policy epoch 0 · Topology generation 0\n\nポート\tLink\tSTP role\t有効VID\nNet.a.tx\tup\tdesignated\t10 tagged\nNet.b.tx\tup\tdesignated\t10 tagged\nNet.c.tx\tup\tdesignated\t10 tagged\nNet.s1.tx_a\tup\tdesignated\t10 tagged\nNet.s1.tx_b\tup\tdesignated\t10 tagged\nNet.s1.tx_c\tup\tdesignated\t10 tagged\nNet.s2.tx_a\tup\tdesignated\t10 tagged\nNet.s2.tx_b\tup\troot\t10 tagged\nNet.s2.tx_c\tup\tdesignated\t10 tagged\nNet.s3.tx_a\tup\tdesignated\t10 tagged\nNet.s3.tx_b\tup\troot\t10 tagged\nNet.s3.tx_c\tup\talternate\t10 tagged\nmac: 0\nmembership: 0\nrouter: 0\nregistration: 0",
+      "roles": {
+        "Net.s2.tx_b": "Net.s2.tx_b\tup\troot\t10 tagged",
+        "Net.s2.tx_c": "Net.s2.tx_c\tup\tdesignated\t10 tagged",
+        "Net.s3.tx_b": "Net.s3.tx_b\tup\troot\t10 tagged",
+        "Net.s3.tx_c": "Net.s3.tx_c\tup\talternate\t10 tagged"
+      },
+      "narrow_viewer": {
+        "viewport": 390,
+        "before": {
+          "clientWidth": 360,
+          "scrollWidth": 360,
+          "scrollLeft": 0,
+          "overflowX": "auto"
+        },
+        "after": {
+          "scrollLeft": 0,
+          "cellText": "10 tagged",
+          "cellRight": 375,
+          "containerRight": 375
+        },
+        "horizontal_wheel": false
+      },
+      "selected_b_transfer": {
+        "data": {
+          "arrival_ps": "1831000",
+          "copy_id": "unicast:0/v2/c3",
+          "drop_reason": null,
+          "effect_seq": "44",
+          "eof_ps": "1830000",
+          "frame_id": "unicast:0",
+          "from_port": "Net.s2.tx_a",
+          "parent_transfer_id": "unicast:0/v1/c1",
+          "planned_arrival_ps": "1831000",
+          "planned_eof_ps": "1830000",
+          "planned_release_ps": "1926000",
+          "policy_epoch_offer": "3",
+          "policy_epoch_sof": "3",
+          "priority": "0",
+          "queue_id": "Net.s2.tx_a.queue.0",
+          "queued_ps": "1222000",
+          "release_ps": "1926000",
+          "sof_ps": "1222000",
+          "status": "serialized",
+          "to_port": "Net.b.rx",
+          "visit_id": "2",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "e4c9eb3a",
+            "mac_bytes": "68",
+            "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "0",
+              "pcp": "0",
+              "vid": "10"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "unicast:0/v2/c3",
+        "request_id": "unicast:0",
+        "schema_name": "ethernet.dynamic.transfer",
+        "schema_version": 1,
+        "subject": "@network",
+        "time_ps": "1926000"
+      },
+      "blocked_selected_port": "Net.s2.tx_c",
+      "blocked_panel": "unicast:0/v2/c4\n元フレーム\nunicast:0\nSource\nNet.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\ne4c9eb3a\n生成（ps）\n0\nFlow\nunicast\nSource Priority\n0\n相対deadline（ps）\n未指定\nClass queue\nNet.s2.tx_c.queue.0\nHop Priority / class\n0\nSource VLAN\n10\nSource tag\nVID 10 · PCP 0 · DEI 0\nSource MAC bytes\n68\nSource FCS\ne4c9eb3a\nHop VLAN\n10\nHop tag\nVID 10 · PCP 0 · DEI 0\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\ne4c9eb3a\nHop wire hex\n0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\n状態\nEOF 到達\n親copy\nunicast:0/v1/c1\n経路\nNet.s2.tx_c → Net.s3.rx_c\nqueued_ps\n1222000\nsof_ps\n1222000\neof_ps\n1830000\nrelease_ps\n1926000\narrival_ps\n1831000\nplanned_eof_ps\n1830000\nplanned_release_ps\n1926000\nplanned_arrival_ps\n1831000\n現在のpolicy epoch\n3\nVisit\n2\nOffer policy epoch\n3\nSOF policy epoch\n3\nDrop reason\n—\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nNet.s1: 転送判断済み / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 10 · Priority 0\n\nNet.s2: 転送判断済み / observed 1220000 / ready 1222000 / planned ready 1222000 ps / ingress VLAN 10 · Priority 0\n\nNet.s3: 転送判断済み / observed 1220000 / ready 1222000 / planned ready 1222000 ps / ingress VLAN 10 · Priority 0\n\nNet.b: 受信完了 / observed 1831000 / ready 1831000 / planned ready 1831000 ps / ingress VLAN 10 · Priority 0\n\nNet.s3: フィルタ拒否 / observed 1831000 / ready 1831000 / planned ready 未指定 ps / ingress VLAN 10 · Priority 0 / reason stp_discarding\n\nNet.c: フィルタ拒否 / observed 1831000 / ready 1831000 / planned ready 未指定 ps / ingress VLAN 10 · Priority 0 / reason destination_mismatch\n\nNet.b 配送遅延: 1831000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"1831000\",\n    \"copy_id\": \"unicast:0/v2/c4\",\n    \"drop_reason\": null,\n    \"effect_seq\": \"45\",\n    \"eof_ps\": \"1830000\",\n    \"frame_id\": \"unicast:0\",\n    \"from_port\": \"Net.s2.tx_c\",\n    \"parent_transfer_id\": \"unicast:0/v1/c1\",\n    \"planned_arrival_ps\": \"1831000\",\n    \"planned_eof_ps\": \"1830000\",\n    \"planned_release_ps\": \"1926000\",\n    \"policy_epoch_offer\": \"3\",\n    \"policy_epoch_sof\": \"3\",\n    \"priority\": \"0\",\n    \"queue_id\": \"Net.s2.tx_c.queue.0\",\n    \"queued_ps\": \"1222000\",\n    \"release_ps\": \"1926000\",\n    \"sof_ps\": \"1222000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Net.s3.rx_c\",\n    \"visit_id\": \"2\",\n    \"vlan_id\": \"10\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"e4c9eb3a\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"0\",\n        \"pcp\": \"0\",\n        \"vid\": \"10\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"unicast:0/v2/c4\",\n  \"request_id\": \"unicast:0\",\n  \"schema_name\": \"ethernet.dynamic.transfer\",\n  \"schema_version\": 1,\n  \"subject\": \"@network\",\n  \"time_ps\": \"1926000\"\n}",
+      "reverse_seek": "3Mps -> 0ps policy identical"
+    },
+    "high": {
+      "initial_policy": "Policy epoch 0 · Topology generation 0\n\nポート\tLink\tSTP role\t有効VID\nNet.a.tx\tup\tdesignated\t10 tagged\nNet.b.tx\tup\tdesignated\t10 tagged\nNet.c.tx\tup\tdesignated\t10 tagged\nNet.s1.tx_a\tup\tdesignated\t10 tagged\nNet.s1.tx_b\tup\tdesignated\t10 tagged\nNet.s1.tx_c\tup\tdesignated\t10 tagged\nNet.s2.tx_a\tup\tdesignated\t10 tagged\nNet.s2.tx_b\tup\talternate\t10 tagged\nNet.s2.tx_c\tup\troot\t10 tagged\nNet.s3.tx_a\tup\tdesignated\t10 tagged\nNet.s3.tx_b\tup\troot\t10 tagged\nNet.s3.tx_c\tup\tdesignated\t10 tagged\nmac: 0\nmembership: 0\nrouter: 0\nregistration: 0",
+      "roles": {
+        "Net.s2.tx_b": "Net.s2.tx_b\tup\talternate\t10 tagged",
+        "Net.s2.tx_c": "Net.s2.tx_c\tup\troot\t10 tagged",
+        "Net.s3.tx_b": "Net.s3.tx_b\tup\troot\t10 tagged",
+        "Net.s3.tx_c": "Net.s3.tx_c\tup\tdesignated\t10 tagged"
+      },
+      "narrow_viewer": {
+        "viewport": 390,
+        "before": {
+          "clientWidth": 360,
+          "scrollWidth": 360,
+          "scrollLeft": 0,
+          "overflowX": "auto"
+        },
+        "after": {
+          "scrollLeft": 0,
+          "cellText": "10 tagged",
+          "cellRight": 375,
+          "containerRight": 375
+        },
+        "horizontal_wheel": false
+      },
+      "selected_b_transfer": {
+        "data": {
+          "arrival_ps": "2442000",
+          "copy_id": "unicast:0/v5/c5",
+          "drop_reason": null,
+          "effect_seq": "46",
+          "eof_ps": "2441000",
+          "frame_id": "unicast:0",
+          "from_port": "Net.s2.tx_a",
+          "parent_transfer_id": "unicast:0/v3/c4",
+          "planned_arrival_ps": "2442000",
+          "planned_eof_ps": "2441000",
+          "planned_release_ps": "2537000",
+          "policy_epoch_offer": "3",
+          "policy_epoch_sof": "3",
+          "priority": "0",
+          "queue_id": "Net.s2.tx_a.queue.0",
+          "queued_ps": "1833000",
+          "release_ps": "2537000",
+          "sof_ps": "1833000",
+          "status": "serialized",
+          "to_port": "Net.b.rx",
+          "visit_id": "5",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "e4c9eb3a",
+            "mac_bytes": "68",
+            "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": {
+              "dei": "0",
+              "pcp": "0",
+              "vid": "10"
+            }
+          }
+        },
+        "origin_request_id": null,
+        "record_id": "unicast:0/v5/c5",
+        "request_id": "unicast:0",
+        "schema_name": "ethernet.dynamic.transfer",
+        "schema_version": 1,
+        "subject": "@network",
+        "time_ps": "2537000"
+      },
+      "blocked_selected_port": "Net.s1.tx_b",
+      "blocked_panel": "unicast:0/v1/c1\n元フレーム\nunicast:0\nSource\nNet.a\nMAC\n02:00:00:00:00:01 → 02:00:00:00:00:02\nEtherType\n2048\nPayload\n空\nPadding bytes\n46\nFCS\ne4c9eb3a\n生成（ps）\n0\nFlow\nunicast\nSource Priority\n0\n相対deadline（ps）\n未指定\nClass queue\nNet.s1.tx_b.queue.0\nHop Priority / class\n0\nSource VLAN\n10\nSource tag\nVID 10 · PCP 0 · DEI 0\nSource MAC bytes\n68\nSource FCS\ne4c9eb3a\nHop VLAN\n10\nHop tag\nVID 10 · PCP 0 · DEI 0\nHop MAC bytes\n68\nHop wire bits (preamble含む)\n608\nHop occupied bits (IFG含む)\n704\nHop FCS\ne4c9eb3a\nHop wire hex\n0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\n状態\nEOF 到達\n親copy\nunicast:0/v0/c0\n経路\nNet.s1.tx_b → Net.s2.rx_b\nqueued_ps\n611000\nsof_ps\n611000\neof_ps\n1219000\nrelease_ps\n1315000\narrival_ps\n1220000\nplanned_eof_ps\n1219000\nplanned_release_ps\n1315000\nplanned_arrival_ps\n1220000\n現在のpolicy epoch\n3\nVisit\n1\nOffer policy epoch\n1\nSOF policy epoch\n1\nDrop reason\n—\n\n予定時刻は実到達ではありません。\n\nこのフレームの受信記録\n\nNet.s1: 転送判断済み / observed 609000 / ready 611000 / planned ready 611000 ps / ingress VLAN 10 · Priority 0\n\nNet.s2: フィルタ拒否 / observed 1220000 / ready 1220000 / planned ready 未指定 ps / ingress VLAN 10 · Priority 0 / reason stp_discarding\n\nNet.s3: 転送判断済み / observed 1220000 / ready 1222000 / planned ready 1222000 ps / ingress VLAN 10 · Priority 0\n\nNet.c: フィルタ拒否 / observed 1831000 / ready 1831000 / planned ready 未指定 ps / ingress VLAN 10 · Priority 0 / reason destination_mismatch\n\nNet.s2: 転送判断済み / observed 1831000 / ready 1833000 / planned ready 1833000 ps / ingress VLAN 10 · Priority 0\n\nNet.b: 受信完了 / observed 2442000 / ready 2442000 / planned ready 2442000 ps / ingress VLAN 10 · Priority 0\n\nNet.b 配送遅延: 2442000 ps\n\n{\n  \"data\": {\n    \"arrival_ps\": \"1220000\",\n    \"copy_id\": \"unicast:0/v1/c1\",\n    \"drop_reason\": null,\n    \"effect_seq\": \"28\",\n    \"eof_ps\": \"1219000\",\n    \"frame_id\": \"unicast:0\",\n    \"from_port\": \"Net.s1.tx_b\",\n    \"parent_transfer_id\": \"unicast:0/v0/c0\",\n    \"planned_arrival_ps\": \"1220000\",\n    \"planned_eof_ps\": \"1219000\",\n    \"planned_release_ps\": \"1315000\",\n    \"policy_epoch_offer\": \"1\",\n    \"policy_epoch_sof\": \"1\",\n    \"priority\": \"0\",\n    \"queue_id\": \"Net.s1.tx_b.queue.0\",\n    \"queued_ps\": \"611000\",\n    \"release_ps\": \"1315000\",\n    \"sof_ps\": \"611000\",\n    \"status\": \"serialized\",\n    \"to_port\": \"Net.s2.rx_b\",\n    \"visit_id\": \"1\",\n    \"vlan_id\": \"10\",\n    \"wire\": {\n      \"data_hex\": \"\",\n      \"dst_mac\": \"02:00:00:00:00:02\",\n      \"ether_type\": \"2048\",\n      \"fcs_hex\": \"e4c9eb3a\",\n      \"mac_bytes\": \"68\",\n      \"mac_hex\": \"0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a\",\n      \"pad_bytes\": \"46\",\n      \"src_mac\": \"02:00:00:00:00:01\",\n      \"tag\": {\n        \"dei\": \"0\",\n        \"pcp\": \"0\",\n        \"vid\": \"10\"\n      }\n    }\n  },\n  \"origin_request_id\": null,\n  \"record_id\": \"unicast:0/v1/c1\",\n  \"request_id\": \"unicast:0\",\n  \"schema_name\": \"ethernet.dynamic.transfer\",\n  \"schema_version\": 1,\n  \"subject\": \"@network\",\n  \"time_ps\": \"1315000\"\n}",
+      "reverse_seek": "3Mps -> 0ps policy identical"
+    }
+  },
+  "status": "passed",
+  "errors": []
+}
