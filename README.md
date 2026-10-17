@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.32`
+文書バージョン：`1.1.33`
 対象GitHubバージョン：`v1.1.4`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.33` | `2026-10-16` | 動的VID登録の寿命1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・22 ZIPを維持 |
 | `1.1.32` | `2026-10-16` | 源別multicastのmode1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・21 ZIPを維持 |
 | `1.1.31` | `2026-10-16` | link復旧時刻の1ps比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・共通導線・20 ZIPを維持 |
 | `1.1.30` | `2026-10-15` | MAC学習のaging1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・ZIP・共通導線を維持 |
@@ -94,6 +95,8 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [Ethernetのlink復旧時刻と受信判定](docs/guide/Ethernetのlink復旧時刻と受信判定.md)では復旧時刻だけを1ps変え、送信済みcopyの継続と到着時のlink判定を正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-link-control-inputs.zip)で再現できます。
 
 [Ethernetの源別multicastとINCLUDE・EXCLUDE](docs/guide/Ethernetの源別multicastとINCLUDE・EXCLUDE.md)ではmembershipのmodeだけを変え、送信元集合による配送候補と期限後のunknown floodを正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-source-filter-inputs.zip)で再現できます。
+
+[Ethernetの動的VID登録と有効期限](docs/guide/Ethernetの動的VID登録と有効期限.md)では出口portの登録寿命だけを変え、portごとの有効VIDと既知宛先の配送可否を正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-vid-registration-inputs.zip)で再現できます。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 

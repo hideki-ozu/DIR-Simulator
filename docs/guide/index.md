@@ -1,6 +1,6 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.26`
+文書バージョン：`1.1.27`
 対象GitHubバージョン：`v1.1.4`
 文書ID：`guide-index`  
 文書状態：公開済み。mainへのpush時に検証後、GitHub Pagesを自動更新
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.27` | `2026-10-16` | 動的VID登録の寿命1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・22 ZIPを維持 |
 | `1.1.26` | `2026-10-16` | 源別multicastのmode1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・21 ZIPを維持 |
 | `1.1.25` | `2026-10-16` | link復旧時刻の1ps比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・共通導線・20 ZIPを維持 |
 | `1.1.24` | `2026-10-15` | MAC学習のaging1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・ZIP・共通導線を維持 |
@@ -74,6 +75,7 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信とメモリ読
 | Ethernet MAC学習の実験 | [EthernetのMAC学習とagingによる転送先](EthernetのMAC学習とagingによる転送先.md) | mac_age_psだけを変え、学習期限・既知unicastとfloodを区別 |
 | link復旧と受信の境界を調べたい | [Ethernetのlink復旧時刻と受信判定](Ethernetのlink復旧時刻と受信判定.md) | 復旧時刻だけを1ps変え、送信継続と受信filterを分ける |
 | 源別multicastの実験 | [Ethernetの源別multicastとINCLUDE・EXCLUDE](Ethernetの源別multicastとINCLUDE・EXCLUDE.md) | modeだけを変え、送信元集合・候補0・期限後のfloodを区別 |
+| VID登録の期限を比較する | [Ethernetの動的VID登録と有効期限](Ethernetの動的VID登録と有効期限.md) | 出口portのlifetimeだけを変え、対向portと有効VIDを区別 |
 | 設定・用語・FAQ | [設定・用語・FAQ](設定・用語・FAQ.md) | パス、単位、上書きエラー、学習時の疑問 |
 
 上から3ページを順に読むと、一つの小さな実験がつながります。入門は3要求だけに絞り、実際に保存された結果と画面を掲載しています。
@@ -105,3 +107,5 @@ MAC学習の実習は正式v1.1.4の`ethernet.l2.dynamic.v1`を使い、[独立6
 link復旧の実習は正式v1.1.4の`ethernet.l2.dynamic.v1`を使い、[独立6入力ZIP](downloads/ethernet-link-control-inputs.zip)で再現できます。
 
 源別multicastの実習は正式v1.1.4の`ethernet.l2.dynamic.v1`を使い、[独立6入力ZIP](downloads/ethernet-source-filter-inputs.zip)で再現できます。
+
+動的VID登録の実習は正式v1.1.4の`ethernet.l2.dynamic.v1`を使い、[独立6入力ZIP](downloads/ethernet-vid-registration-inputs.zip)で再現できます。
