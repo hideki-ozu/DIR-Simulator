@@ -9,7 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-17` | 後続10分野、Timer通知API、機能リファレンス、監査修正をv1.1.6へ収録し、文書採番・公開前の再検証範囲を確定 |
+| `1.1.0` | `2026-10-17` | 後続10分野、Timer通知API、機能リファレンス、監査修正をv1.1.6へ収録し、文書採番・schema 3準備失敗修正・公開前の再検証範囲を確定 |
 
 ## 収録内容
 
@@ -22,6 +22,8 @@
 | `ethernet.preemption.abstract.v1` | fragment境界でのexpress割込みとpreemptable frameの再開。MAC Merge/SMD/verify handshakeは対象外 |
 | `ethernet.control.wire.experimental.v1` | 受動IGMPv3/MLDv2と、採用した能動RSTP/CIST・MVRPのadapterを選択する。wireとTSN/Gateway/冗長/preemptionの合成は対象外 |
 | `RunSession` / Metric V2 / checkpoint | 協調Pause/Resume/Stop/Export、明示登録した整数指標・集計、全codecを備える汎用registered backendの同一binary別process復元。network checkpointは明示拒否 |
+
+schema 3 profileの準備失敗でも、`model_profile`・`model_schemas`・`model_records`を出力し、診断用の結果をViewerで参照できる。公開前の自動レビューで見つかったlegacy形式への分岐漏れを修正し、schema 1/2/3の回帰検査を追加した。
 
 Timer通知tokenを公開APIで取得できる。既存入力、同期run、V1計測、schema1/2の互換性を保持し、制御exportとMetric V2にはschema3を使用する。詳細な設定・API・固定値・利用条件は[現行利用ガイド](../../guide/reference/後続10分野の現行実装と利用境界.md)、[採用仕様](../../specs/後続拡張採用詳細機能仕様書.md)、[採用設計](../../design/後続拡張採用詳細設計書.md)を参照する。
 
@@ -39,7 +41,7 @@ Cargo package / `metadata.runtime_version`の`0.1.0`は既存の実行形式の�
 
 | 検証対象 | 今回の結果 |
 | --- | --- |
-| Rust | workspace 1,038件成功・失敗0。通常実行で除外するnative 19件は別実行で19/19成功。fmt・build・clippy成功 |
+| Rust | workspace 1,039件成功・失敗0。通常実行で除外するnative 19件は別実行で19/19成功。fmt・build・clippy成功 |
 | Node | 228件成功・失敗0・任意のMozc IME 1件skip |
 | 実CLI / Viewer | 20受入コマンド成功、7 export、制御Viewerの7組をdesktop/mobileで確認、従来Viewerも成功 |
 | 別process checkpoint | 中断なしと復元後の`simulation`がcanonical SHA-256 `0c045c290550d9b96b8ac0210007bb5b7b4683ffbeb7366ed48f1b8968bda3fb`で一致 |
@@ -47,7 +49,7 @@ Cargo package / `metadata.runtime_version`の`0.1.0`は既存の実行形式の�
 | ガイドbrowser | 131/131成功、desktop/mobile計78ページ読込・38クリック、console/request/HTTPエラー0 |
 | 公開Markdown | 196文書・相対参照13,911件、確認された欠落0。生成時だけ存在する検索asset 3件は生成siteで実在を確認 |
 
-今回実行したbinaryのbuild source SHA-256は`5a0ea90ec3b1d6f14f63f317fb8b06c8eaa43faff6d42ee168f86b5eae9afd78`である。これはコード・採用仕様・採用物台帳等の入力を識別し、最終タグのcommitとは区別する。実行時はmain `033fccd`に変更を重ねた状態であり、binary hashと詳細な環境を機械可読記録へ残した。
+今回実行したbinaryのbuild source SHA-256は`7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd`である。これはコード・採用仕様・採用物台帳等の入力を識別し、最終タグのcommitとは区別する。初回検証はmain `033fccd`に変更を重ねた状態であり、schema 3準備失敗の修正後は公開準備commit `b93867c`に変更を重ねたソースで最終検証した。修正前の証拠を保持し、最終検証は`revision-2`配下に分け、binary hashと詳細な環境を機械可読記録へ残した。
 
 初回のnative検証では必要な`DIR_NED_RUN_TEST_BINARY`指定漏れにより6件失敗した。初回logと原因を`attempt_history`に保持し、正しいbinaryを指定した再実行19/19を受入結果とする。ガイドの従来52クリック計画中14件はホーム本文に対象リンクが存在しない無効なprobeであり、実際の38クリックと区別した。リンク調査は外部URLの可用性や公開Markdown全体のfragment妥当性を保証しない。ガイドsite内のroute/fragmentはbrowserで別途検査した。
 

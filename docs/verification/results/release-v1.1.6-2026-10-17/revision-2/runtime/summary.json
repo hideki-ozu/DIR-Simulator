@@ -1,0 +1,875 @@
+{
+  "schema_version": 1,
+  "target": "fresh v1.1.6 runtime verification for schema-3 preparation-export fix",
+  "status": "passed",
+  "completed_at_utc": "2026-10-17T10:01:06.320081+00:00",
+  "source": {
+    "repository_root": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source",
+    "head_commit": "b93867c65cca7127270f9a15d6d9a292962accf5",
+    "head_tree": "21f7a9c5a74aadd9da52703e79300ac7c7b8be50"
+  },
+  "preflight": {
+    "rust_audit_path": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/rust-audit.json",
+    "all_four_gates_passed": true,
+    "gates": [
+      {
+        "name": "fmt",
+        "command": [
+          "/home/hideki/.cargo/bin/cargo",
+          "fmt",
+          "--all",
+          "--",
+          "--check"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 1.097,
+        "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/fmt.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "build",
+        "command": [
+          "/home/hideki/.cargo/bin/cargo",
+          "build",
+          "--locked",
+          "-p",
+          "dir-simulator",
+          "--bin",
+          "dir-simulator",
+          "--example",
+          "control_checkpoint"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 6.362,
+        "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/build.log",
+        "log_sha256": "00400ef5e3c1b4e38a5b2481e4460ae4902354e6b01a9d2127fa9a2c3012581b"
+      },
+      {
+        "name": "workspace-tests",
+        "command": [
+          "/home/hideki/.cargo/bin/cargo",
+          "test",
+          "--workspace",
+          "--locked"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 230.638,
+        "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/workspace-tests.log",
+        "log_sha256": "f09485990df62bc8254a5a7a5d6c670f866a4c6d8a6f24cc6d6e4508e64352d4"
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "/home/hideki/.cargo/bin/cargo",
+          "clippy",
+          "--workspace",
+          "--locked",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 8.64,
+        "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/clippy.log",
+        "log_sha256": "ccd4abf513a37d6162af0e55c3846167244d72850ee0346ba40fc3ccfaa9c7c8"
+      }
+    ],
+    "workspace_test_totals": {
+      "test_result_rows": 39,
+      "passed": 1039,
+      "failed": 0,
+      "ignored": 19
+    },
+    "binary_manifest_path": "tmp/release-v1.1.6-publication/revision-2/preflight/binaries.json",
+    "binary_manifest_sha256": "a727617af042d1ab3a0acdda48c537d812b64346276e5f88057049a28a309fa9",
+    "frozen_binaries": {
+      "dir_simulator": {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2"
+      },
+      "control_checkpoint": {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/bin/control_checkpoint",
+        "sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84"
+      }
+    }
+  },
+  "fresh_build_identity": {
+    "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+    "cli_binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+    "control_checkpoint_binary_sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84",
+    "capability_results_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/results.json",
+    "capability_results_sha256": "ada3ba7ec516073939205506b81ad124c13bc1a31fb4b67ed166543f94625446",
+    "embedded_metadata_canonical_sha256": "971bb911d3320f135f43e7b6a5a6c507a4a9741406b499f397f984754b5f12bf",
+    "embedded_metadata_fields": {
+      "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+      "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+      "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+      "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+      "adoption_ledger_version": "1.1.3",
+      "adoption_ledger_sha256": "3151f564f5c4f37671981166553b2a60af845a373074fd75385ce1422b03cec4"
+    },
+    "all_nine_result_metadata_records_match_frozen_binaries_and_source": true,
+    "result_metadata_checks": [
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/results.json",
+        "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      },
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/results.json",
+        "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      },
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/results.json",
+        "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      },
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/results.json",
+        "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      },
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/results.json",
+        "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      },
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/results.json",
+        "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      },
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline/completed/results.json",
+        "binary_sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      },
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/results.json",
+        "binary_sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      },
+      {
+        "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/results.json",
+        "binary_sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "matches": true
+      }
+    ]
+  },
+  "commands": [
+    {
+      "name": "capability-cli-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/psfp-queued-membership-leave.ini",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.938,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/capability-cli-run.log",
+      "log_sha256": "9e84b771d8707a6465cf67eed95b331454673badc0099246eadaf106949af311",
+      "env": {
+        "DIR_SIMULATOR_BIN": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "DIR_NED_HTTP_BINARY": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "DIR_NED_RUN_TEST_BINARY": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "DIR_VIEWER_CAPABILITY_RESULT": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/results.json",
+        "PLAYWRIGHT_MODULE": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules/playwright",
+        "NODE_PATH": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules",
+        "TMPDIR": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/tmp"
+      }
+    },
+    {
+      "name": "node-tests",
+      "command": [
+        "node",
+        "--test",
+        "tests/*.test.cjs"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 36.689,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/node-tests.log",
+      "log_sha256": "fe0f287c7083230fe00bfb8cce77ee707d779338ebcedb63ad7d87c4eb446fcb",
+      "env": {
+        "DIR_SIMULATOR_BIN": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "DIR_NED_HTTP_BINARY": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "DIR_NED_RUN_TEST_BINARY": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "DIR_VIEWER_CAPABILITY_RESULT": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/results.json",
+        "PLAYWRIGHT_MODULE": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules/playwright",
+        "NODE_PATH": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules",
+        "TMPDIR": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/tmp"
+      },
+      "summary": {
+        "tests": 229,
+        "pass": 228,
+        "fail": 0,
+        "skipped": 1
+      },
+      "optional_skip": "ok 56 - native Mozc composition and source acknowledgement precede the NED run snapshot # SKIP Set DIR_NED_NATIVE_IME_PRIVATE=1 inside private X11/D-Bus with Playwright and IBus/Mozc"
+    },
+    {
+      "name": "composite-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/network-extensions/composite.ini",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.278,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/composite-run.log",
+      "log_sha256": "0811c03cf3f2e1da312eae697549ea87535913ae09c6ad2eb7f33d3d47e0a941",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite"
+    },
+    {
+      "name": "redundancy-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/network-extensions/redundancy.ini",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.019,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/redundancy-run.log",
+      "log_sha256": "6ae28d3ccd330b7f4eee010a582052964a539776a844c261908a324164f034ab",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy"
+    },
+    {
+      "name": "preemption-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/network-extensions/preemption.ini",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.309,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/preemption-run.log",
+      "log_sha256": "7b608463dfd82fd86d3b9e49e420fe742259e07bc9d4ada67468e3870dbd6809",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption"
+    },
+    {
+      "name": "active-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/ethernet-wire/active.ini",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 33.458,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/active-run.log",
+      "log_sha256": "acdf36cb031e73d0e67967d63b7e26401b294cd91fceaf6e3e29d8e479f43768",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active"
+    },
+    {
+      "name": "passive-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "run",
+        "--config",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/ethernet-wire/passive.ini",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.889,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/passive-run.log",
+      "log_sha256": "2bf16e910effef142fbe07881579e4cb64275a7ad697e2f3da95402e9660bee5",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive"
+    },
+    {
+      "name": "checkpoint-uninterrupted-run",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/control_checkpoint",
+        "run",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/control-checkpoint/scenario.ini",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.149,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/checkpoint-uninterrupted-run.log",
+      "log_sha256": "f387059e7fbb6a57745bf9d60b1c6d347640add822aa569f8d0f343d7b7eea56",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline"
+    },
+    {
+      "name": "checkpoint-save",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/control_checkpoint",
+        "save",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/examples/control-checkpoint/scenario.ini",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.292,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/checkpoint-save.log",
+      "log_sha256": "ea2756712e7a386adce82fb24d83dacdd8001baa0acb08fa077e75d6a34bc135",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved"
+    },
+    {
+      "name": "checkpoint-restore",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/control_checkpoint",
+        "restore",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.268,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/checkpoint-restore.log",
+      "log_sha256": "95c7f794e3859741af56df98522d4666a719399064ed98de48e193e3c040257c",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored"
+    },
+    {
+      "name": "composite-view",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "view",
+        "--input",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/results.json",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite.html"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.027,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/composite-view.log",
+      "log_sha256": "be0be1e2502060ea2cf802f14ee27b8834bc95f72a7353d4acaf7d8e0f7cc821",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite.html"
+    },
+    {
+      "name": "redundancy-view",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "view",
+        "--input",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/results.json",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy.html"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.076,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/redundancy-view.log",
+      "log_sha256": "56b4989a8abe9c4853c33da64cf0c1146e76285cca3066cf5931db444b8fa1ce",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy.html"
+    },
+    {
+      "name": "preemption-view",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "view",
+        "--input",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/results.json",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption.html"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.028,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/preemption-view.log",
+      "log_sha256": "b4d10b103945952b58589eface8c40cc0f8cb9473facf9f2c9c7af5b78f64dbc",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption.html"
+    },
+    {
+      "name": "active-view",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "view",
+        "--input",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/results.json",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active.html"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.172,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/active-view.log",
+      "log_sha256": "43a4da6813d9e7c9e056134b66af822f452d1fa2ae6e6d7daa57903f230e18f9",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active.html"
+    },
+    {
+      "name": "passive-view",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "view",
+        "--input",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/results.json",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive.html"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.064,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/passive-view.log",
+      "log_sha256": "f0b372d0359ee5d0e53f0fe7e1d8c5f9fde26cbea11e3707f6159689c5d91a36",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive.html"
+    },
+    {
+      "name": "paused-view",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "view",
+        "--input",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/results.json",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/paused.html"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.009,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/paused-view.log",
+      "log_sha256": "5cfaf9fe5d10bb6f8392b019a47c416aa6958e67c6fadae900a5b540e2c9be23",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/paused.html"
+    },
+    {
+      "name": "restored-view",
+      "command": [
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "view",
+        "--input",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/results.json",
+        "--output",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/restored.html"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.008,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/restored-view.log",
+      "log_sha256": "269166e4240e1a7aeaeb0687c3816e9d4388229080f5872264ce6276fe36f60f",
+      "output_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/restored.html"
+    },
+    {
+      "name": "native-ignored-run-control",
+      "command": [
+        "/home/hideki/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--lib",
+        "tool::ned_editor::run_control",
+        "--",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 47.958,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/native-ignored-run-control.log",
+      "log_sha256": "91e8e8fd85a7941391f3d9f7c87707c20c2f3b8f51a67182916a29e047afe0b8",
+      "test_summary": {
+        "passed": 19,
+        "failed": 0,
+        "ignored": 0
+      },
+      "env": {
+        "DIR_SIMULATOR_BIN": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "DIR_NED_RUN_TEST_BINARY": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "TMPDIR": "unset (system default /tmp)"
+      },
+      "rust_preflight_audit": [
+        {
+          "name": "fmt",
+          "exit_code": 0,
+          "log": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/fmt.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "build",
+          "exit_code": 0,
+          "log": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/build.log",
+          "sha256": "00400ef5e3c1b4e38a5b2481e4460ae4902354e6b01a9d2127fa9a2c3012581b"
+        },
+        {
+          "name": "workspace-tests",
+          "exit_code": 0,
+          "log": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/workspace-tests.log",
+          "sha256": "f09485990df62bc8254a5a7a5d6c670f866a4c6d8a6f24cc6d6e4508e64352d4"
+        },
+        {
+          "name": "clippy",
+          "exit_code": 0,
+          "log": "tmp/release-v1.1.6-publication/revision-2/preflight/rust/clippy.log",
+          "sha256": "ccd4abf513a37d6162af0e55c3846167244d72850ee0346ba40fc3ccfaa9c7c8"
+        }
+      ],
+      "frozen_cli_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2"
+    },
+    {
+      "name": "classic-viewer-browser",
+      "command": [
+        "node",
+        "tests/viewer_browser.cjs"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 15.316,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/classic-viewer-browser.log",
+      "log_sha256": "81118045c9c92fe5b6c08237334b989dbc5afb48248749f1a069402500030984",
+      "env": {
+        "DIR_SIMULATOR_BIN": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "PLAYWRIGHT_MODULE": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules/playwright",
+        "NODE_PATH": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules",
+        "TMPDIR": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/tmp"
+      }
+    },
+    {
+      "name": "controlled-viewer-browser",
+      "command": [
+        "node",
+        "tests/controlled_viewer_browser.cjs",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/results.json",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite.html",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/results.json",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy.html",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/results.json",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption.html",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/results.json",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active.html",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/results.json",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive.html",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/results.json",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/paused.html",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/results.json",
+        "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/restored.html"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.129,
+      "pass_count": 7,
+      "expected_pass_count": 7,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/controlled-viewer-browser.log",
+      "log_sha256": "c08d4472913a492c04734d19a511aef3960a3b8141447874c039dece9637f470",
+      "env": {
+        "PLAYWRIGHT_MODULE": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules/playwright",
+        "NODE_PATH": "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/browser-tests/node_modules",
+        "TMPDIR": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/tmp"
+      }
+    }
+  ],
+  "attempt_history": [],
+  "results": {
+    "node_tests": {
+      "tests": 229,
+      "passed": 228,
+      "failed": 0,
+      "skipped": 1,
+      "skip_line": "ok 56 - native Mozc composition and source acknowledgement precede the NED run snapshot # SKIP Set DIR_NED_NATIVE_IME_PRIVATE=1 inside private X11/D-Bus with Playwright and IBus/Mozc",
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/node-tests.log",
+      "log_sha256": "fe0f287c7083230fe00bfb8cce77ee707d779338ebcedb63ad7d87c4eb446fcb"
+    },
+    "native_ignored_run_control": {
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0,
+      "elapsed_seconds": 47.958,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/native-ignored-run-control.log",
+      "log_sha256": "91e8e8fd85a7941391f3d9f7c87707c20c2f3b8f51a67182916a29e047afe0b8",
+      "env": {
+        "DIR_SIMULATOR_BIN": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "DIR_NED_RUN_TEST_BINARY": "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/revision-2/preflight/bin/dir-simulator",
+        "TMPDIR": "unset (system default /tmp)"
+      }
+    },
+    "checkpoint_comparison": {
+      "available": true,
+      "simulation_equal": true,
+      "baseline_results_sha256": "bb0535a153e0ed7b5a7e8b5b251498829f8cbf819f03d8e7a13a32605f110901",
+      "paused_results_sha256": "234139b66a0c6cc53d658bd71ab2f9f46e13f6b5c6a45e1899c09a35ba7dae6b",
+      "restored_results_sha256": "657dce3bfd4694f5e7fc9400f94e129a1bd7bd6fc541fab85460c8e37f236989",
+      "baseline_simulation_canonical_sha256": "0c045c290550d9b96b8ac0210007bb5b7b4683ffbeb7366ed48f1b8968bda3fb",
+      "restored_simulation_canonical_sha256": "0c045c290550d9b96b8ac0210007bb5b7b4683ffbeb7366ed48f1b8968bda3fb",
+      "metadata": {
+        "capability_result_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/results.json",
+        "capability_result_sha256": "ada3ba7ec516073939205506b81ad124c13bc1a31fb4b67ed166543f94625446",
+        "metadata_canonical_sha256": "971bb911d3320f135f43e7b6a5a6c507a4a9741406b499f397f984754b5f12bf",
+        "embedded_metadata_fields": {
+          "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+          "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "adoption_ledger_version": "1.1.3",
+          "adoption_ledger_sha256": "3151f564f5c4f37671981166553b2a60af845a373074fd75385ce1422b03cec4"
+        },
+        "fresh_cli_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+        "fresh_control_checkpoint_sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84",
+        "all_nine_result_metadata_records_match": true,
+        "result_metadata_checks": [
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/results.json",
+            "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          },
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/results.json",
+            "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          },
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/results.json",
+            "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          },
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/results.json",
+            "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          },
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/results.json",
+            "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          },
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/results.json",
+            "binary_sha256": "c5c05c13c3bea40ed44d3a8e58c1d72bc209356c25a01e21a712c0da336671c2",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          },
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline/completed/results.json",
+            "binary_sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          },
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/results.json",
+            "binary_sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          },
+          {
+            "path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/results.json",
+            "binary_sha256": "68ee12f2c1f68cb59159ca44fd9d35eb3819922659088e622313be31288ada84",
+            "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+            "matches": true
+          }
+        ]
+      }
+    },
+    "cli_viewer_exports": {
+      "passed": 7,
+      "html_paths": [
+        "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite.html",
+        "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy.html",
+        "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption.html",
+        "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active.html",
+        "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive.html",
+        "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/paused.html",
+        "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/restored.html"
+      ]
+    },
+    "classic_viewer_browser": {
+      "passed_sections": 3,
+      "pass_lines": [
+        "PASS recorded-events: schema1/schema2/public CAN, adjacent u64, rewind/manual equivalence, playback 100ms focus/identity and Space/Enter, positive step cancellation, narrow layout, partial/empty, different request, file/profile/invalid reset, no network",
+        "PASS interval-comparison: schema1/schema2/public CAN, same-time replay peak, TX ratio, seek/manual/rewind, viewport/sort/search, narrow screen, file/reset, unchanged public input, no network",
+        "PASS: sequential step TX/RX animation, directional blue/orange/gray lines, cancellation/resize/rewind; viewer playback, seek, filters/details, responsive layout, validation, exact times, topology animation, schema2 independent buses/Gateway processing/copy/origin/boundary, RX capacity/fanout/TX wait/rewind, zero horizon; no network or browser errors"
+      ],
+      "elapsed_seconds": 15.316,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/classic-viewer-browser.log",
+      "log_sha256": "81118045c9c92fe5b6c08237334b989dbc5afb48248749f1a069402500030984"
+    },
+    "controlled_viewer_browser": {
+      "passed_pairs": 7,
+      "expected_pairs": 7,
+      "elapsed_seconds": 3.129,
+      "log_path": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/controlled-viewer-browser.log",
+      "log_sha256": "c08d4472913a492c04734d19a511aef3960a3b8141447874c039dece9637f470"
+    }
+  },
+  "integrity": {
+    "accepted_command_count": 20,
+    "accepted_command_failures": 0,
+    "all_accepted_log_hashes_verified": true,
+    "all_rust_preflight_log_hashes_verified": true,
+    "all_result_manifest_entries_verified": true,
+    "manifest_validation": [
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline/completed",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/checkpoint",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      },
+      {
+        "directory": "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy",
+        "declared_file_count": 4,
+        "all_declared_files_match": true
+      }
+    ],
+    "runtime_artifact_sha256": {
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/events.csv": "cf13fad67fef44fc154369cff806e06fbb24fd2eaa870bc0c06f137d5721a929",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/manifest.json": "c44fec44e2cb35be85fe332db3e5c861e6993d8506147c8b4bb1bb1ca9daa321",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/results.json": "ada3ba7ec516073939205506b81ad124c13bc1a31fb4b67ed166543f94625446",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/capability-psfp/summary.csv": "8a7c9d9e2886926a3d9bf4ec1db58d011c4fdf9339f6cc7707e926be687b651f",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline/completed/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline/completed/events.csv": "fa76ce6e133ef960f2c0db14401cf35c9fdce92a925c102e5fbaf0d3d7a4808a",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline/completed/manifest.json": "66022ae3586ee1ce24d09c3020916c1daf47fea0c564acc475884da3615b4a15",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline/completed/results.json": "bb0535a153e0ed7b5a7e8b5b251498829f8cbf819f03d8e7a13a32605f110901",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/baseline/completed/summary.csv": "e4adee84ec6f05e7b0dcdc1b3deb4335fcd1a4997bf674a99a6d29352b81cbbc",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/checkpoint/inputs/0.bin": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/checkpoint/inputs/1.bin": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/checkpoint/manifest.json": "fe7979a620d5c45d7427af40f8be944e97b2953013a3e3f7dd7223da4c1bd1a9",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/checkpoint/objects/8d1f6ad7b0c0987472ba1e094d6205db8ae525e9ba88e73d64b2dd759f724c16.bin": "8d1f6ad7b0c0987472ba1e094d6205db8ae525e9ba88e73d64b2dd759f724c16",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/checkpoint/state.json": "1dcdc070e7326ed53302d0ffbec4e5da27d9c4fca58bd01c651f1b01fa446d1c",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/events.csv": "41237a894b86fcb0eef1f1a6b7a9adccb6eb49c2f7daae4161361714a0ffec4c",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/manifest.json": "804c5c93a25befda52f4c5065a43a144d6b27b0c298186c65ac399bd73a99ebd",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/results.json": "234139b66a0c6cc53d658bd71ab2f9f46e13f6b5c6a45e1899c09a35ba7dae6b",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/paused/summary.csv": "d99c0ef08cfcedb5008f6e27d0045380b115d774449bc622bd9f4755b1633e98",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/events.csv": "b44c05bc93e042315fd305d92d443a32f212658c1d6025edca39a35c730a99cc",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/manifest.json": "d971a3a365b276f258385b5ea44efa64f49084b0c13fc1168ea2ab89486c3757",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/results.json": "657dce3bfd4694f5e7fc9400f94e129a1bd7bd6fc541fab85460c8e37f236989",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint/saved/restored/summary.csv": "ba5c649f1aecd04fce0dfc8272ae474a59cc302fa0df619a9d1bc109361734fa",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/checkpoint-comparison.json": "f8387809051876be2645c6003435c53666c322902311c19ee21092f893534a5b",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/controlled-viewer-stage.json": "7c9f3f38d65b485f400492c7619b168d8db920a7b461558771e6ecaae6d86fa1",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/empty-multibus-created-module-prepare-failed.png": "4e2e4e60c67033402f4100d28d79dce3c87ffafe8736541d3117eac812864ca3",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/empty-multibus-same-file-repaired-run-completed.png": "3deb04ebfdb8c26db6f5c50963fd754c9033dd54dca9fe574e6b31110faaf1e2",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/evidence.json": "ea0a60d1b5731c257b651acf542ab0cc42ae3d1aaa9978750358715ee5026f0e",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/last-visible-state.png": "3deb04ebfdb8c26db6f5c50963fd754c9033dd54dca9fe574e6b31110faaf1e2",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/model-after-same-file-cow-redo.png": "0a2316e014d62b5ed9c463f7cb60b7d159c518013749057eccd566bb830ec2e0",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/normal-results-before-viewer-failure.json": "c1af416df34b579f464165c6b02c593b00cc7fdb667fb07a610189a53ac1f287",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/normal-run-completed.png": "0ef4f68b771cb700757c96c9e50909d05931ecb55d6de0eb43c20e78e501b3c9",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/normal-run-marked-past-after-input-edit.png": "87e05a55305362b67effbc8b64e7ff92a83a761369d00a779e0352d791b2d960",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/partial-run-published.png": "050a692dc83aba23a56799e4ca1817c6952f0ebf1969a905b7eb57ba729adce1",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/partial-viewer-after-next-event.png": "17029f0c2427ff97e70829620df85d0391187548d36e1e568ab6542e2784c036",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/past-prepare-failed-run-current-diagnostics-isolated.png": "352769470ff98309b50950d2e08ae7b3b78e2a6986d34664caa1c1461ac6a075",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/saved-project.png": "d1317599b9b8db6a29976ef72acc976bf9945461094fe13f7ba2337515dd45a0",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/unsaved-create-cow-rename-run-viewer.png": "8342d85e53463d756e39be425138c86f9dd668815161c43e64bd753217187c30",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/extensions/viewer-failed-integrity-mismatch.png": "f8c1413151ad802a3cc2a6b7e348a99adbb868f4e920a43f7eb244f1b4985dd3",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/hostile/cli-hostile-identifiers-viewer-after-step.png": "a084430c9c26b7440bd4030078cd524bc571e853f8c13c3751a79502a995f046",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/hostile/hostile-browser-evidence.json": "60853199adb0388be8e7718f261a270267c494761c5fe4b1501090ab76eec1e5",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/hostile/hostile-ned-name-diagnostic-as-text.png": "378f6c6b5929aa5715f93c9a7c2546691942d868860b259f56ac5f1def12cb75",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/hostile/hostile-results.json": "e2fdb224d071376edf934a5fe394f76e06a287aed747cef26a6103e5f38f0f40",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/hostile/hostile-viewer.html": "ff9a4792adf355b420aa889b8c00204198ccf9a385f6761b0ae7c48b94c5f284",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/hostile/native-hostile-source-viewer-after-step.png": "c8ae4114aab27de4479534c5a947664e72143181809ff16e5c4d3e50b9be0b32",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/node-evidence/http/native-http-evidence.json": "ba566f6445b74915415788cd1c22e43d2525d61badb8884072cc5ad687ad4350",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/events.csv": "1f106b85c3aa298155259cd4cfd5e458807c5fe053104d7e97a4a13dc0bd26c1",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/manifest.json": "be59a07bf119005b5d3ca5a606d3567ae6eedfb380f2c70e33212680ef324d04",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/results.json": "3af8e7bbbf9d49cb4c1f49bb65bd056a071a1b0280cab1852561357aa5db4c16",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active/summary.csv": "20863d4d8cced11fa75286563b2cab885415ed0eb99fd6ffb88852b8e2374e03",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/active.html": "378409f03466ec138109396800f72100a7d9876293f8fa8716a1600fb13263dd",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/events.csv": "86150551a1ab121bb0562800280080fcb8ff59d07d95a647ec3f54c165487859",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/manifest.json": "331ce513a007e8af87b9373d72aba4e79d251799c546757694b6414ac850e920",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/results.json": "bbf5c5007c830d1bfa4eef79a04a56022b6254dade181b66688a0558d6c6caf1",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite/summary.csv": "c9e50866baf669c5e44b1e5c5f78668c9a3c0a15e407fbf120f44efdfdbde2ca",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/composite.html": "518452b2075efc9dd32d20a47385150d3e2c79a637289a6726c6d0a8bbcdeb97",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/events.csv": "14ba0682643844eb10990e7d76fa8a86f068d5b602f430d673b8499d5bbf2e84",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/manifest.json": "fcf774ae5e111051b0fa57686e40ec367c56a262769b34f4016ec080bb384aea",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/results.json": "55cace37c7054af024fe9e4f353202289ed0c2c32c6d87fe4ccc240037f51f6c",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive/summary.csv": "349330f54cbf1ae3f05ac6d0869215b3d1a22653190af9c11279c87ac70040d6",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/passive.html": "5936d3f37ae0f393ba9130fbca4de6d07b98c03b53b68fb15aa1079c90c6f1fe",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/paused.html": "724817b822ed07ecf0421bcfb6a212af4d155349ba990fe830953dab7be992e5",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/events.csv": "12463cf698a4447a2a39b8fddd3dff3332cc15086aace3d64aaa28ff0a3c5b76",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/manifest.json": "0a816970b8ed4202c9e9b502b158df885605813bc3dbaacf3133027d1b9b0eaf",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/results.json": "c95a1cd8068ea4bbdb5ed686373959e50e0dd1841f5bd0c3b40ecc749ba08e7e",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption/summary.csv": "2f4afe6a0362c1f6499e35265062df2082ca859328ab86f259b2c1ebf9e6fe2f",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/preemption.html": "c8114dfd7dffde516dbf3f903dcbdfb87e88b5d8e755f867f9cbb7a887cae028",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/diagnostics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/events.csv": "6574a4875919be9b0c7d99479ee3445318e489f36a3ee86d857ff83f954cf844",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/manifest.json": "0d612ba9b4e4d2ebf3522fea043226210577b3f42445de9a8fdad7a539eb65c0",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/results.json": "483f6c10f8752db0c8c9fc453e88481c49c17ed17d7f27fcbe8b72f6477ed791",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy/summary.csv": "0baa5f003a287f3d3f2562e54973709d4852d9814b87252b95e7ba3c2fe76274",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/redundancy.html": "329c71d8b64e085541bd4de2dda77970926d9141ad6bbf604c5c58acbca278fd",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/products/restored.html": "dcca1d63b14a1cf71e90894d4eb953d6e1731c7b3c5ef0d6d2382fb959dfad6b",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/stage-a.json": "bb724acdbfe073022839b9d73f737f7f508dd51068a941c05d8af0831fc1730a",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/stage-b.json": "6025698e396467ca1a7f9829fbc1bd835e2c559d978dd7f0477ac0c343eadc70",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/stage-c.json": "a9cbef48e025dac14060cf189b1e5dc2fbb03f0b8b7a27a3146db24cf21e43d2",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/viewer-stage.json": "d874463426aac5cf6fbca6f34db100f8f76764fc95fdfa4b4e9e89a3b7547250"
+    },
+    "runtime_log_sha256": {
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/capability-cli-run.log": "9e84b771d8707a6465cf67eed95b331454673badc0099246eadaf106949af311",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/node-tests.log": "fe0f287c7083230fe00bfb8cce77ee707d779338ebcedb63ad7d87c4eb446fcb",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/composite-run.log": "0811c03cf3f2e1da312eae697549ea87535913ae09c6ad2eb7f33d3d47e0a941",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/redundancy-run.log": "6ae28d3ccd330b7f4eee010a582052964a539776a844c261908a324164f034ab",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/preemption-run.log": "7b608463dfd82fd86d3b9e49e420fe742259e07bc9d4ada67468e3870dbd6809",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/active-run.log": "acdf36cb031e73d0e67967d63b7e26401b294cd91fceaf6e3e29d8e479f43768",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/passive-run.log": "2bf16e910effef142fbe07881579e4cb64275a7ad697e2f3da95402e9660bee5",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/checkpoint-uninterrupted-run.log": "f387059e7fbb6a57745bf9d60b1c6d347640add822aa569f8d0f343d7b7eea56",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/checkpoint-save.log": "ea2756712e7a386adce82fb24d83dacdd8001baa0acb08fa077e75d6a34bc135",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/checkpoint-restore.log": "95c7f794e3859741af56df98522d4666a719399064ed98de48e193e3c040257c",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/composite-view.log": "be0be1e2502060ea2cf802f14ee27b8834bc95f72a7353d4acaf7d8e0f7cc821",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/redundancy-view.log": "56b4989a8abe9c4853c33da64cf0c1146e76285cca3066cf5931db444b8fa1ce",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/preemption-view.log": "b4d10b103945952b58589eface8c40cc0f8cb9473facf9f2c9c7af5b78f64dbc",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/active-view.log": "43a4da6813d9e7c9e056134b66af822f452d1fa2ae6e6d7daa57903f230e18f9",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/passive-view.log": "f0b372d0359ee5d0e53f0fe7e1d8c5f9fde26cbea11e3707f6159689c5d91a36",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/paused-view.log": "5cfaf9fe5d10bb6f8392b019a47c416aa6958e67c6fadae900a5b540e2c9be23",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/restored-view.log": "269166e4240e1a7aeaeb0687c3816e9d4388229080f5872264ce6276fe36f60f",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/native-ignored-run-control.log": "91e8e8fd85a7941391f3d9f7c87707c20c2f3b8f51a67182916a29e047afe0b8",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/classic-viewer-browser.log": "81118045c9c92fe5b6c08237334b989dbc5afb48248749f1a069402500030984",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/runtime/verification-20261017/logs/controlled-viewer-browser.log": "c08d4472913a492c04734d19a511aef3960a3b8141447874c039dece9637f470"
+    },
+    "rust_preflight_log_sha256": {
+      "tmp/release-v1.1.6-publication/revision-2/preflight/rust/fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/rust/build.log": "00400ef5e3c1b4e38a5b2481e4460ae4902354e6b01a9d2127fa9a2c3012581b",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/rust/workspace-tests.log": "f09485990df62bc8254a5a7a5d6c670f866a4c6d8a6f24cc6d6e4508e64352d4",
+      "tmp/release-v1.1.6-publication/revision-2/preflight/rust/clippy.log": "ccd4abf513a37d6162af0e55c3846167244d72850ee0346ba40fc3ccfaa9c7c8"
+    },
+    "frozen_binary_manifest_hashes_match_actual": true,
+    "fresh_result_metadata_matches_binaries_and_build_source": true,
+    "checkpoint_baseline_restored_simulations_equal": true
+  }
+}

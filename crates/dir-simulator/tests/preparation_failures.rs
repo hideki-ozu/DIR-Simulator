@@ -101,6 +101,23 @@ fn selected_profile_failures_publish_empty_results_with_registered_descriptors()
         assert_eq!(sim["committed_events"], "0");
         assert_eq!(sim["end_ps"], "0");
         assert_eq!(sim["records"], serde_json::json!([]));
+        if index == 0 {
+            assert_eq!(result["schema_version"], 1);
+            assert_eq!(sim["requests"], serde_json::json!([]));
+            assert_eq!(sim["receivers"], serde_json::json!([]));
+            assert!(sim.get("model_records").is_none());
+            assert!(result["metadata"].get("model_profile").is_none());
+            assert!(result["metadata"].get("model_schemas").is_none());
+        } else {
+            assert_eq!(result["schema_version"], 2);
+            assert_eq!(sim["model_records"], serde_json::json!([]));
+            assert!(sim.get("requests").is_none());
+            assert!(sim.get("receivers").is_none());
+            assert_eq!(
+                result["metadata"]["model_profile"],
+                header.profile.as_deref().unwrap()
+            );
+        }
         assert_eq!(result["metadata"]["config"], serde_json::json!([]));
         assert_eq!(result["metadata"]["initial_state"], serde_json::json!([]));
         let prepared = dir_simulator::prepare(&source).unwrap();
@@ -174,5 +191,64 @@ fn unknown_profile_and_unreadable_config_use_schema_one_and_preserve_existing_fi
     assert_eq!(
         check_files(&missing.output_path)["metadata"]["sources"],
         serde_json::json!([])
+    );
+}
+
+#[test]
+fn schema_three_preparation_failure_publishes_registered_shape_accepted_by_viewer() {
+    use dir_simulator::registry::{ModelRecordDescriptor, ProfileDescriptor, Registry, Schema};
+
+    let temp = Temp::new();
+    let config = temp.0.join("schema-three.ini");
+    fs::write(
+        &config,
+        "[General]\nnetwork = demo.Main\nned-path = \"missing\"\nmodel-profile = \"test.preparation.v1\"\nsim-time-limit = 1ms\n",
+    )
+    .unwrap();
+    let mut registry = Registry::new();
+    let schema = Schema::new("test.record", 1);
+    registry
+        .register_model_record(ModelRecordDescriptor {
+            schema: schema.clone(),
+            validate: |_| Ok(()),
+        })
+        .unwrap();
+    registry
+        .register_profile(ProfileDescriptor {
+            name: "test.preparation.v1".into(),
+            implementation_version: "1".into(),
+            modules: vec![],
+            channels: vec![],
+            events: vec![],
+            metrics: vec![],
+            model_records: vec![schema],
+            output_schema_version: 3,
+            validate: |_, _| Ok(()),
+        })
+        .unwrap();
+    let output = temp.0.join("result");
+    let report = dir_simulator::run_config_with_registry(&config, &output, registry).unwrap();
+    assert_eq!(report.exit_code, 2);
+    assert_eq!(report.termination, "prep_failed");
+    let result = check_files(&output);
+    assert_eq!(result["schema_version"], 3);
+    assert_eq!(result["metadata"]["model_profile"], "test.preparation.v1");
+    assert_eq!(
+        result["metadata"]["model_schemas"],
+        serde_json::json!([{"schema_name":"test.record","schema_version":1}])
+    );
+    let sim = &result["simulation"];
+    assert_eq!(sim["model_records"], serde_json::json!([]));
+    assert_eq!(sim["records"], serde_json::json!([]));
+    assert_eq!(sim["committed_events"], "0");
+    assert_eq!(sim["end_ps"], "0");
+    assert!(sim.get("requests").is_none());
+    assert!(sim.get("receivers").is_none());
+    let viewer = temp.0.join("viewer.html");
+    dir_simulator::viewer::write(&output.join("results.json"), &viewer).unwrap();
+    assert!(
+        fs::read_to_string(viewer)
+            .unwrap()
+            .contains("DIRControlledModel")
     );
 }

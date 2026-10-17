@@ -1,0 +1,1295 @@
+   Compiling dir-simulator v0.1.0 (/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/crates/dir-simulator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.39s
+     Running unittests src/lib.rs (target/debug/deps/dir_simulator-f039f590bfbc6613)
+
+running 646 tests
+test allocation::tests::capacity_overflow_is_structured_and_keeps_vector_intact ... ok
+test input::can::tests::can_instance_counts_precede_channel_override_validation ... ok
+test input::editor_api_tests::snapshot_missing_paths_never_fall_back_to_disk ... ok
+test input::editor_api_tests::crlf_line_comments_preserve_valid_ned_and_reject_bare_carriage_returns ... ok
+test input::editor_api_tests::existing_profile_error_precedes_time_and_root_errors ... ok
+test input::can::tests::selected_instance_profile_mismatch_precedes_later_instance_values ... ok
+test input::editor_api_tests::syntax_api_exposes_structure_without_model_value_validation ... ok
+test input::editor_api_tests::inspect_is_structural_and_preserves_invalid_execution_values ... ok
+test input::ethernet::tsn::tests::rejects_missing_unknown_numeric_bool_and_noncanonical_fields ... ok
+test input::ethernet::tsn::tests::rejects_output_and_cbs_combinations_and_accepts_zero_bounds ... ok
+test input::ethernet::tsn::tests::validates_every_future_update_and_normalizes_order ... ok
+test input::ethernet::tsn::tests::validates_stream_tuple_gate_and_meter ... ok
+test input::editor_api_tests::semantic_invalid_values_are_parseable_but_fail_full_snapshot_prepare ... ok
+test input::ned::tests::metadata_instances_reference_one_declaration_without_affecting_schema_or_values ... ok
+test input::ned::tests::non_can_rules_reject_payload_mismatch_through_compound_boundary ... ok
+test input::ned::tests::non_can_rules_resolve_values_compound_paths_and_shared_channels ... ok
+test input::ned::tests::non_can_rules_validate_unused_declarations_and_defaults_before_overrides ... ok
+test input::ethernet::tests::qos_config_duplicate_json_key_is_rejected_before_overwrite ... ok
+test input::ethernet::tests::qos_config_canonicalizes_outputs_and_all_eight_queues ... ok
+test input::ethernet::tests::media_profiles_keep_phy_allowlists_disjoint ... ok
+test input::editor_api_tests::deferred_directory_errors_keep_sorted_traversal_order ... ok
+test input::ethernet::tests::qos_fields_and_kinds_remain_rejected_by_v1 ... ok
+test input::ethernet::tests::media_config_rejects_every_missing_physical_and_phy_field_without_panicking ... ok
+test input::references::tests::references_include_unused_types_all_members_endpoints_and_required_json_fields ... ok
+test input::ethernet::tests::qos_burst_schedule_validates_last_offset_and_empty_count ... ok
+test input::references::tests::references_other_valid_profiles_return_explicit_unsupported_without_uses ... ok
+test input::tests::bus_requires_equal_input_output_counts_and_two_controllers ... ok
+test input::ethernet::tests::qos_shared_flow_requires_consistent_contract_even_empty_future_inputs ... ok
+test input::references::tests::references_bom_crlf_escaped_json_and_channel_spans_keep_nonreferences_untouched ... ok
+test input::tests::exact_units_and_extreme_decimal_precision ... ok
+test input::can_ethernet::tests::source_ownership_checked_for_zero_count_and_future_time ... ok
+test input::ethernet::tests::vlan_group_membership_is_static_and_old_profile_rejects_schema3 ... ok
+test input::tests::bus_gate_names_and_same_bus_output_permutations_are_valid ... ok
+test input::references::tests::references_qualified_type_tokens_exclude_internal_trivia_for_safe_name_patches ... ok
+test input::tests::compound_boundary_channels_are_independent_and_sum ... ok
+test input::tests::defaults_overrides_empty_workload_and_limits ... ok
+test input::wire::tests::abstract_membership_cannot_double_own ... ok
+test input::wire::tests::malformed_ip_is_runtime_drop_and_boundary_exact ... ok
+test input::wire::tests::strict_root_and_defaults ... ok
+test output::contribution_sort::tests::codec_is_fixed_and_rejects_invalid_kind ... ok
+test input::ethernet::tests::qos_config_rejects_missing_duplicates_unknowns_and_noncanonical_capacities ... ok
+test output::contribution_sort::tests::pr37_contribution_reader_rejects_truncation_after_open ... ok
+test output::contribution_sort::tests::pr37_finalized_contribution_producer_rejects_whole_row_loss ... ok
+test input::tests::ini_rejects_unknown_duplicate_and_malformed_inputs ... ok
+test output::contribution_sort::tests::pr37_intermediate_contribution_merge_rejects_whole_row_loss ... ok
+test input::ethernet::tests::qos_periodic_schedule_validates_nullable_bounds_and_exclusive_end ... ok
+test output::disk_sort::tests::a_single_row_larger_than_chunk_has_no_new_row_size_limit ... ok
+test input::tests::all_can_fixtures_load_and_preserve_snapshots ... ok
+test output::disk_sort::tests::binary_value_tags_and_numeric_bits_match_authored_vectors ... ok
+test input::wire::supplied_vectors::supplied_membership_boundaries ... ok
+test input::tests::root_overlap_missing_files_and_symlinks_fail ... ok
+test input::can_ethernet::tests::complete_native_r01_r02_inputs_validate ... ok
+test input::references::tests::references_rejections_match_prepare_without_additional_acquisition ... ok
+test input::can_ethernet::tests::strict_rules_ownership_and_ranges_reject ... ok
+test output::disk_sort::tests::escaped_byte_keys_preserve_vector_string_order_and_roundtrip ... ok
+test input::tests::invalid_ned_declarations_and_wiring_are_rejected ... ok
+test output::disk_sort::tests::malformed_payload_tags_counts_utf8_depth_and_trailing_bytes_reject ... ok
+test output::disk_sort::tests::late_violation_replays_entire_prefix_with_stable_duplicates ... ok
+test output::disk_sort::tests::ordered_records_take_direct_path_and_merge_point_ties_first ... ok
+test output::contribution_sort::tests::same_time_order_survives_multiple_runs_and_truncation_is_reported ... ok
+test output::disk_sort::tests::multi_pass_sort_is_stable_and_cleans_owned_files ... ok
+test output::contribution_sort::tests::pr37_fixed_rows_reject_every_partial_record_in_reader_and_merge ... ok
+test output::disk_sort::tests::pr37_finalized_general_and_ordered_producers_reject_whole_row_loss ... ok
+test output::disk_sort::tests::pr37_intermediate_general_merge_rejects_whole_row_loss ... ok
+test output::disk_sort::tests::binary_multi_pass_sort_preserves_special_keys_full_values_and_stable_ties ... ok
+test output::disk_sort::tests::pr37_retained_fallback_producer_rejects_whole_row_loss ... ok
+test output::disk_sort::tests::pr37_valid_empty_and_record_boundary_eof_remain_accepted ... ok
+test output::metadata::reproduction::adoption_tests::ledger_version_and_other_build_fields_must_be_identified ... ok
+test output::metadata::reproduction::adoption_tests::missing_ledger_never_identifies_reproduction ... ok
+test output::disk_sort::tests::pr37_binary_reader_rejects_late_shrink_beyond_prefetched_rows ... ok
+test output::disk_sort::tests::corrupt_fallback_input_cleans_both_owned_directories ... ok
+test output::disk_sort::tests::merge_keeps_payload_opaque_and_failure_cleans_owned_files ... ok
+test output::publish::acceptance_tests::preparation_publication_leaves_only_single_link_outputs ... ok
+test output::publish::acceptance_tests::paired_writer_failure_never_publishes_either_output ... ok
+test output::publish::acceptance_tests::publication_child ... ok
+test output::publish::acceptance_tests::preparation_publication_refuses_all_existing_destination_types ... ok
+test output::publish::acceptance_tests::failed_data_and_manifest_publication_preserve_external_paths ... ok
+test output::reservation::publication_tests::reservation_excludes_other_writers_without_a_bundle_entry ... ok
+test output::scratch::tests::cleanup_preserves_unknown_and_replaced_entries ... ok
+test output::disk_sort::tests::binary_ordered_late_fallback_and_merge_reopen_preserve_special_values ... ok
+test output::stream::tests::borrowed_non_callback_order_matches_wire_key ... ok
+test input::references::tests::references_fs_snapshot_and_ordinary_prepare_preserve_acquisition_and_results ... ok
+test output::stream::tests::failed_sort_reservation_cleans_runs_without_publishing_manifest ... ok
+test input::wire::supplied_vectors::supplied_mvrp_preparation ... ok
+test input::ethernet::tests::vlan_empty_future_workloads_still_validate_tag_and_source_contract ... ok
+test output::stream::tests::topology_ids_cover_queues_and_unknown_targets_are_diagnostic ... ok
+test output::tests::abnormal_boundary_points_are_summary_only ... ok
+test output::tests::analytic_summary_and_conservation ... ok
+test output::tests::canonical_nested_values_preserve_exact_wire_bytes ... ok
+test output::tests::callback_order_is_not_reservation_order_and_effects_are_unique ... ok
+test input::ethernet::tests::vlan_config_rejects_invalid_memberships_tables_and_strict_fields ... ok
+test output::tests::in_flight_and_intermission_are_clipped ... ok
+test output::stream::tests::baseline_records_use_two_ordered_streams ... ok
+test output::tests::missing_gateway_lineage_is_an_output_error ... ok
+test input::tests::truncated_ned_returns_diagnostics_without_panicking ... ok
+test output::tests::metadata_hashes_raw_input_and_canonical_configuration ... ok
+test output::tests::rational_conversion_is_single_rounding_and_checked ... ok
+test output::tests::typed_csv_quotes_commas_quotes_cr_lf_and_preserves_unicode ... ok
+test output::tests::typed_sort_preserves_numeric_effects_callback_groups_and_option_order ... ok
+test output::tests::typed_writers_distinguish_zero_null_and_exact_float_spelling ... ok
+test output::tests::typed_writers_preserve_large_integers_and_nullable_cells ... ok
+test output::tests::diagnostic_time_is_failed_boundary_not_last_successful_event ... ok
+test output::tests::direct_export_numbers_primary_and_secondary_diagnostics ... ok
+test output::tests::windows_are_half_open_and_short_window_uses_actual_length ... ok
+test output::tests::publication_collision_keeps_existing_file_and_omits_manifest ... ok
+test output::disk_sort::tests::truncated_run_is_reported_and_removed ... ok
+test output::disk_sort::tests::direct_and_fallback_binary_lengths_use_the_producers_bound ... ok
+test output::tests::zero_time_peak_and_overlapping_occupancy_are_preserved ... ok
+test output::tests::zero_duration_and_capacity_have_null_ratios ... ok
+test cli_runtime_boundary_tests::cli_validate_does_not_enter_runtime_and_run_positive_control_does ... ok
+test output::tests::publication_hashes_and_csv_match_json_and_existing_files_survive ... ok
+test output::validation::tests::authenticated_descriptor_survives_path_replacement_without_following_it ... ok
+test output::stream::tests::corrupt_archive_fails_before_manifest_publication ... ok
+test output::stream::tests::unknown_archived_statistics_target_is_a_diagnostic ... ok
+test output::wire::tests::event_timer_and_reason_catalog_is_closed ... ok
+test output::wire::tests::nested_effect_catalog_is_exact_and_typed ... ok
+test output::wire::tests::membership_query_change_key_and_sources_are_strict ... ok
+test output::wire::tests::policy_nested_rows_and_required_nullable_keys_are_closed ... ok
+test registry::tests::prepare_rechecks_model_record_versions_before_input_or_factories ... ok
+test runtime::axi::protocol::tests::strict_payload_keys_types_and_canonical_decimal ... ok
+test output::validation::tests::exported_complete_and_partial_bundles_validate_with_report_and_manifest_only ... ok
+test runtime::can::tests::independent_bit_vectors ... ok
+test runtime::can::tests::priority_uses_arbitration_bits ... ok
+test runtime::can::tests::timing_rounds_from_sof_and_checks_overflow ... ok
+test runtime::can_archive::tests::truncated_owned_archive_reports_output_error_and_reclaims_storage ... ok
+test runtime::can_ethernet::protocol::tests::every_invalid_field_and_padding ... ok
+test runtime::can_ethernet::protocol::tests::fixed_vectors ... ok
+test runtime::can_ethernet::tests::acceptance_last_can_branch_id_failure_preserves_processing_prefix ... ok
+test runtime::can_ethernet::tests::acceptance_last_ethernet_branch_byte_overflow_does_not_commit_first_branch ... ok
+test run::tests::publication_failure_preserves_execution_diagnostics_without_duplicates ... ok
+test runtime::axi::tests::malformed_or_mismatched_timer_preserves_initial_committed_prefix ... ok
+test runtime::can_ethernet::tests::can_controller_queue_uses_can_arbitration_priority ... ok
+test runtime::can_ethernet::tests::fanout_buses_start_together_with_independent_wire_times ... ok
+test runtime::can_ethernet::tests::fanout_wait_keeps_rx_and_retries_only_unadmitted_branch_at_sof ... ok
+test runtime::can_ethernet::tests::future_native_generation_flag_without_synthesized_rows ... ok
+test runtime::can_ethernet::tests::conversion_upserts_preserve_milestone_times_on_retries_and_late_sof ... ok
+test runtime::can_ethernet::tests::malformed_timer_handles_and_impossible_transition_do_not_mutate ... ok
+test runtime::can_ethernet::tests::r02_exact_timing_native_can_and_terminal_completion ... ok
+test runtime::can_ethernet::tests::r01_exact_store_and_forward_and_rx_hold ... ok
+test runtime::can_ethernet::tests::rx_capacity_and_loop_hop_rule_order ... ok
+test runtime::can_ethernet::tests::segment_denominator_freezes_and_duplicate_completion_does_not_increment ... ok
+test runtime::can_ethernet::tests::same_batch_branch_sof_emits_each_changed_branch_once ... ok
+test runtime::can_ethernet::tests::staged_multiple_ingress_capacity_and_error_atomicity ... ok
+test runtime::can_ethernet::tests::zero_delay_admits_and_unadmittable_terminates ... ok
+test runtime::can_ethernet::tests::shared_ethernet_port_retry_wakes_all_classes_in_stable_order ... ok
+test runtime::canfd::protocol::tests::exact_required_notification_schema_and_canonical_encoding ... ok
+test runtime::checkpoint_bundle::tests::checkpoint_bundle_limits_and_strict_json ... ok
+test output::validation::tests::unused_frozen_blobs_are_not_fabricated_as_acquired_inputs ... ok
+test runtime::checkpoint_bundle::tests::checkpoint_bundle_rejects_path_escape_and_object_alias ... ok
+test input::tests::json_duplicate_unknown_fields_and_inactive_owner_conflicts ... ok
+test output::disk_sort::tests::late_binary_decode_and_truncation_failures_clean_the_paired_publication_stage ... ok
+test runtime::ethernet::dynamic::tests::atomic_capacity_failure_retains_state_and_epoch ... ok
+test runtime::ethernet::dynamic::tests::control_refresh_at_expiry_and_registration_eligibility ... ok
+test runtime::ethernet::dynamic::tests::isolated_components ... ok
+test runtime::ethernet::dynamic::tests::known_source_mismatch_does_not_flood_and_router_unions ... ok
+test runtime::ethernet::dynamic::tests::learning_refresh_move_capacity_and_expiry ... ok
+test runtime::ethernet::dynamic::tests::parallel_same_cost_chooses_lexical_ports ... ok
+test runtime::ethernet::dynamic::tests::passive_wire_projection_audits_are_atomic_without_duplicate_expiry_ownership ... ok
+test runtime::ethernet::dynamic::tests::source_filter_static_union_router_and_ip_collision ... ok
+test runtime::ethernet::dynamic::tests::staged_learning_lookup_observes_delta_before_commit ... ok
+test runtime::ethernet::dynamic::tests::stale_convergence_replaced_and_noop_epoch ... ok
+test runtime::ethernet::dynamic::tests::static_shadow_and_known_ineligible_do_not_flood ... ok
+test runtime::ethernet::dynamic::tests::strict_input_validates_future_controls_and_ip ... ok
+test output::validation::tests::rejects_internally_consistent_other_run_identity_and_report_mismatch ... ok
+test runtime::ethernet::dynamic::tests::tree_triangle_deterministic_and_break_before_make ... ok
+test runtime::ethernet::dynamic::tests::vector_bridge_binding_minimal_topology_prepare ... ok
+test output::validation::tests::rejects_symlinks_external_hardlinks_and_writable_result_directory ... ok
+test runtime::ethernet::dynamic::tests::vector_bridge_flush_and_relearning_real_partitions ... ok
+test runtime::ethernet::dynamic::tests::timer_refresh_bounded_and_generation_overflow_atomic ... ok
+test runtime::ethernet::dynamic::tests::vector_crc_and_wire_time_use_product_arithmetic ... ok
+test runtime::ethernet::dynamic::tests::vector_engine_phase_delta_timer_and_half_open_boundaries ... ok
+test output::validation::tests::rejects_artifact_tamper_sizes_hashes_and_missing_artifacts ... ok
+test runtime::ethernet::dynamic::tests::vector_metric_descriptors_points_gauges_bucket_and_overflow ... ok
+test runtime::ethernet::dynamic::tests::vector_bridge_catalog_defaults_fixed_override_and_restricted_registration ... ok
+test runtime::ethernet::dynamic::tests::vector_port_policy_learning_separate_from_generic_forwarding_gate ... ok
+test runtime::ethernet::dynamic::tests::vector_registration_static_wire_authorized_union ... ok
+test runtime::ethernet::dynamic::tests::vector_hex_decode_and_malformed_batch_use_product_codec_planner ... ok
+test runtime::ethernet::dynamic::tests::wire_learning_scoped_flush_is_staged_and_preserves_relearn_generation ... ok
+test runtime::ethernet::dynamic::tests::vector_timer_overflow_rolls_back_callback_effects ... ok
+test runtime::ethernet::media::tests::cancellation_preserves_unrelated_same_time_logical_changes ... ok
+test runtime::ethernet::media::tests::independent_sha256_beb_vectors_match ... ok
+test runtime::ethernet::dynamic::tests::wire_link_change_does_not_run_abstract_tree_or_flush_all_mac ... ok
+test runtime::ethernet::tests::arithmetic_failure_preserves_callback_prefix ... ok
+test runtime::ethernet::media::tests::sixteen_collisions_drop_current_without_sixteenth_draw_or_seventeenth_attempt ... ok
+test runtime::ethernet::tests::arrival_reservation_commits_with_eof_and_failure_preserves_prefix ... ok
+test runtime::ethernet::tests::broadcast_fanout_drops_only_full_output ... ok
+test runtime::ethernet::tests::endpoint_processing_stop_retains_planned_time_only ... ok
+test runtime::ethernet::tests::fanout_sequence_failure_preserves_all_candidates_and_reception ... ok
+test runtime::ethernet::tests::fdb_same_ingress_filters_without_copy ... ok
+test runtime::ethernet::tests::generation_dispatch_validates_future_input_without_reserving_all_events ... ok
+test runtime::ethernet::tests::processing_overflow_discards_arrival_atomically ... ok
+test runtime::ethernet::tests::fixture_preparation_rejects_invalid_inputs ... ok
+test runtime::ethernet::tests::published_serializer_vectors ... ok
+test output::publish::acceptance_tests::snapshot_journals_remain_reusable_after_strict_publication ... ok
+test output::validation::tests::exported_schema_two_gateway_bundle_uses_the_same_validator ... ok
+test runtime::ethernet::tests::qos_capacity_bytes_counts_mac_and_excludes_active_frame ... ok
+test runtime::ethernet::tests::qos_fanout_byte_overflow_discards_entire_batch ... ok
+test runtime::ethernet::tests::qos_device_capacity_bounds_all_priority_classes ... ok
+test runtime::ethernet::tests::qos_future_u128_schedule_is_not_truncated_to_u64 ... ok
+test runtime::ethernet::tests::qos_periodic_and_burst_generation_obey_count_end_and_global_stop ... ok
+test runtime::ethernet::tests::qos_unbounded_same_time_burst_respects_max_events_without_expansion ... ok
+test runtime::ethernet::dynamic::tests::vector_mvrp_new_flush_exact_port_vid_kernel ... ok
+test runtime::ethernet::tests::queue_points_use_reservation_sequence_and_local_effect_order ... ok
+test runtime::ethernet::tests::source_processing_overflow_discards_generation ... ok
+test runtime::ethernet::tests::qos_strict_priority_is_nonpreemptive_and_fifo_preserves_offer_order ... ok
+test runtime::ethernet::tests::release_does_not_preempt_same_time_admission ... ok
+test runtime::ethernet::tests::vlan_each_copy_owns_wire_classification_and_capacity_length ... ok
+test runtime::ethernet::tests::vlan_serializer_matches_independent_crc_lengths_and_tag_vectors ... ok
+test runtime::ethernet::tsn::tests::cbs_ifg_and_two_frame_independent_timeline ... ok
+test runtime::ethernet::tsn::tests::cbs_lazy_freeze_and_old_timer_noop ... ok
+test runtime::ethernet::tsn::tests::cbs_saturation_reset_fractional_recovery_and_full_u128 ... ok
+test runtime::ethernet::tsn::tests::composed_arrivals_share_staged_meter_but_never_mutate_before_apply ... ok
+test runtime::ethernet::tsn::tests::composed_control_selection_sof_commits_once_and_stale_wake_stays_empty ... ok
+test runtime::ethernet::tsn::tests::every_independent_design_vector_runs_against_production_planners ... ok
+test runtime::ethernet::tsn::tests::initial_base_never_borrows_prior_cycle_and_elapsed_skips_cycles ... ok
+test runtime::ethernet::tsn::tests::lower_ready_class_can_send_and_fifo_head_never_bypassed ... ok
+test runtime::ethernet::tests::vlan_zero_delay_arrival_batch_failure_keeps_arrival_uncommitted ... ok
+test runtime::ethernet::tsn::tests::metadata_roundtrips_and_snapshot_json_stays_decimal ... ok
+test runtime::ethernet::tsn::tests::partial_snapshot_keeps_unexecuted_boundary_and_records_decimal ... ok
+test runtime::ethernet::tsn::tests::overflow_plans_are_atomic_future_wake_u128_and_no_busy_loop ... ok
+test runtime::ethernet::tsn::tests::psfp_five_arrival_independent_vector_and_yellow_drop ... ok
+test runtime::ethernet::tsn::tests::psfp_red_refill_saturation_fraction_no_refund_and_discarded_delta ... ok
+test runtime::ethernet::tsn::tests::psfp_sdu_and_gate_drops_preserve_meter_last_time_and_bypass_tuple ... ok
+test runtime::ethernet::tsn::tests::schedule_generation_overflow_and_empty_control_noop_are_atomic ... ok
+test runtime::ethernet::tsn::tests::staged_return_to_committed_mode_emits_correcting_credit_observation ... ok
+test runtime::ethernet::tsn::tests::tas_01_to_05_ifg_exact_fit_adjacent_and_circular ... ok
+test runtime::ethernet::tsn::tests::tas_06_07_future_base_closed_and_oversized_no_periodic_tick ... ok
+test runtime::memory_ipc::protocol::tests::fixed_codec_rejects_unknown_duplicate_and_nondecimal_fields ... ok
+test runtime::ethernet::tsn::tests::tas_08_09_10_control_clips_all_open_invalidates_old_wake ... ok
+test runtime::metric_v2::tests::failed_preflight_does_not_flush_h_bucket_or_publish_overflow ... ok
+test runtime::metric_v2::tests::gauge_independent_area_and_non_destructive_horizon ... ok
+test runtime::metric_v2::tests::invalid_descriptor_combinations_and_cross_version_names_rejected ... ok
+test runtime::metric_v2::tests::point_selected_aggregates_and_empty_targets ... ok
+test runtime::ethernet::tests::vlan_generate_source_ready_offer_and_complete_failures_keep_callback_prefix ... ok
+test runtime::memory_ipc::tests::codec_binds_kind_node_request_generation_and_live_owner ... ok
+test runtime::ethernet::tests::published_scenarios_and_half_open_boundaries ... ok
+test runtime::ethernet::tests::vlan_group_policies_membership_and_ingress_admission_have_single_reasons ... ok
+test output::stream::tests::multibus_stats_slots_and_reopened_pair_match_materialized_output ... ok
+test runtime::network::network_vector_tests::exact_gate_fit_vector ... ok
+test runtime::network::network_vector_tests::exact_composite_atomic_failure_vector ... ok
+test runtime::network::network_vector_tests::exact_gap_rearrival_vector ... ok
+test runtime::network::network_vector_tests::exact_preemption_atomic_failure_vector ... ok
+test runtime::network::network_vector_tests::exact_fragment_formula_and_uninterrupted_timeline ... ok
+test runtime::network::network_vector_tests::exact_recovery_windows_storage_and_allocation ... ok
+test runtime::network::network_vector_tests::exact_composite_half_open_vector ... ok
+test runtime::network::network_vector_tests::exact_replication_atomic_failure_vector ... ok
+test runtime::network::network_vector_tests::exact_selection_and_epoch_vectors ... ok
+test runtime::network::preemption::atomic_tests::final_fragment_reservation_failure_preserves_uncompleted_prefix ... ok
+test runtime::network::preemption::tests::exact_fragment_arithmetic ... ok
+test runtime::network::network_vector_tests::exact_kernel_express_timeline_and_prefixes ... ok
+test runtime::network::preemption::epoch_tests::obsolete_fragment_and_gap_tokens_do_not_touch_state_records_or_metrics ... ok
+test runtime::network::replication::design_tests::every_designed_recovery_sequence_and_exhaustion ... ok
+test runtime::network::replication::tests::finite_window_independent_vectors ... ok
+test input::editor_api_tests::filesystem_and_snapshot_match_can_gateway_success_and_failure_fixtures ... ok
+test runtime::network::network_vector_tests::exact_composite_admission_and_capacity_vectors ... ok
+test runtime::network::replication::atomic_tests::second_branch_failure_keeps_sequence_history_and_queue_prefix ... ok
+test runtime::network::tests::intended_terminal_set_uses_source_vid_and_ignores_static_misrouting ... ok
+test runtime::network::tests::intended_terminal_survives_ingress_rejection_without_completion ... ok
+test runtime::network::wire::atomic_tests::boundary_receive_failure_preserves_started_only_prefix ... ok
+test runtime::network::network_vector_tests::exact_replication_terminal_vectors ... ok
+test runtime::network::wire::gate_tests::ordinary_data_learns_in_learning_state_without_relay_and_discard_does_not_learn ... ok
+test runtime::network::network_vector_tests::exact_replication_half_open_vector ... ok
+test runtime::network::replication::atomic_tests::history_and_delivery_rollback_together ... ok
+test runtime::network::wire::gate_tests::vector_host_fifo_capacity_rolls_back_policy_epoch_seven ... ok
+test output::publish::acceptance_tests::killed_publication_has_strict_bundle_exactly_after_manifest ... ok
+test runtime::network::wire::gate_tests::vector_host_waiting_two_drop_active_one_survives_and_control_lane_eligible ... ok
+test runtime::network::wire::gate_tests::vector_host_learning_forwarding_and_vlan_gates ... ok
+test runtime::registered::tests::failed_arbitration_reservation_keeps_dirty_resources_and_sequence ... ok
+test runtime::registered::tests::staged_effect_validation_keeps_frame_queue_and_failed_event_uncommitted ... ok
+test output::validation::tests::rejects_absolute_traversal_duplicates_unknown_schema_and_unknown_entries ... ok
+test runtime::network::wire::wire_order_tests::supplied_membership_last_journal_reservation_is_atomic ... ok
+test runtime::registered::tests::staged_duplicate_time_generation_obeys_generator_id_then_ordinal ... ok
+test runtime::network::wire::gate_tests::stale_host_timer_audits_without_displacing_current_reservation ... ok
+test runtime::registered::tests::staged_never_eligible_retains_queue_without_infinite_gate_ticks ... ok
+test runtime::registered::tests::staged_large_record_batch_sorts_validates_folds_and_merges_without_commit_allocation ... ok
+test runtime::registered::tests::staged_non_object_record_preserves_committed_journal_and_reservations ... ok
+test runtime::registered::tests::staged_filtered_receptions_do_not_reuse_visit_ids ... ok
+test runtime::network::wire::atomic_tests::control_fifo_reservation_failure_rolls_back_protocol_initialization ... ok
+test runtime::scheduler::tests::initial_schedule_allocation_failure_is_diagnostic ... ok
+test runtime::session::spool_checkpoint_tests::vector_mailbox_exact_mixed_slots_and_id_sentinel ... ok
+test runtime::registered::tests::staged_publication_reservation_failure_keeps_fes_and_journal_prefix ... ok
+test runtime::session::tests::mailbox_id_sentinel_and_busy_do_not_consume_ids ... ok
+test runtime::registered::tests::staged_sof_overflow_preserves_admitted_copy_without_planned_transmission ... ok
+test runtime::soc::protocol::tests::codec_exact_keys_canonical_decimal_and_phases ... ok
+test runtime::session::tests::close_acknowledges_pending_requests_as_session_closed ... ok
+test runtime::registered::tests::staged_record_batch_rejects_invalid_intermediate_upsert_and_merge_allocation_failure ... ok
+test runtime::soc::tests::defensive_deadlock ... ok
+test runtime::spool::publication_tests::detached_journal_has_independent_readers_and_preserves_replacement ... ok
+test runtime::soc::tests::checkpoint_copies_only_touched_rows_and_restores_journal_append_boundaries ... ok
+test runtime::spool::tests::truncated_journal_is_reported_and_owned_storage_is_reclaimed ... ok
+test runtime::spool::tests::unavailable_spool_directory_keeps_output_error_classification ... ok
+test runtime::session::tests::pause_generation_exhaustion_is_an_ack_without_state_change ... ok
+test runtime::tests::failed_arbitration_batch_preserves_all_dirty_buses ... ok
+test runtime::tests::failed_gateway_preflight_does_not_register_children ... ok
+test runtime::network::wire::wire_order_tests::supplied_bridge_map_order_uses_actual_atomic_publication ... ok
+test runtime::tests::simultaneous_buses_reserve_arbitration_as_one_batch ... ok
+test runtime::timing::tests::counts_only_scoped_work_and_restores_nested_measurements ... ok
+test runtime::wire::boundary::tests::actual_prefix_only ... ok
+test runtime::wire::codec::tests::independent_crc ... ok
+test runtime::wire::codec::tests::odd_checksum ... ok
+test runtime::wire::guards::tests::ambiguous_rstp_paths_require_actual_satisfying_before_conditions ... ok
+test runtime::wire::guards::tests::applicant_identity_uses_actual_post_registrar_input_in_the_reducer_order ... ok
+test runtime::wire::guards::tests::dedicated_fixture_ids_use_only_input_identity_and_real_reducers ... ok
+test runtime::soc::tests::failed_completion_cohort_restores_rows_transfers_counters_and_reservation ... ok
+test runtime::network::wire::wire_order_tests::tree_batch_late_preflight_failure_publishes_no_stages_or_policy ... ok
+test runtime::wire::guards::tests::rstp_real_flag_clear_and_fdb_completion_are_distinct_rows ... ok
+test runtime::tests::lineage_tracks_only_committed_requests_across_gateway_boundaries ... ok
+test runtime::network::wire::wire_order_tests::actual_host_map_new_and_withdrawal_preserve_demand_changes ... ok
+test runtime::wire::guards::tests::unknown_discriminators_never_silently_choose_a_representative ... ok
+test runtime::wire::guards::tests::rstp_real_transmit_uct_returns_keep_their_transmit_rule_rows ... ok
+test runtime::wire::membership::tests::predicate_union ... ok
+test runtime::wire::mvrp::tests::canonical ... ok
+test runtime::wire::mvrp::tests::local_leaveall ... ok
+test runtime::wire::mvrp::tests::malformed_tail ... ok
+test runtime::wire::guards::tests::rstp_real_migration_and_edge_branches_have_truthful_ids ... ok
+test runtime::wire::mvrp_state::supplied_vectors::begin_reset_journals_actual_attribute_changes ... ok
+test runtime::tests::archived_ledgers_preserve_gateway_holds_delayed_receivers_and_partial_prefixes ... ok
+test runtime::wire::mvrp_state::supplied_vectors::map_journals_demand_only_join_and_withdrawal ... ok
+test runtime::wire::guards::tests::validation_is_exact_scoped_and_rejects_replaced_fallback_cells ... ok
+test runtime::wire::guards::tests::every_finite_input_cell_resolves_purely_and_is_unique_except_begin ... ok
+test runtime::wire::rstp::closure_tests::consumed_message_is_retained_in_snapshot ... ok
+test runtime::wire::rstp::closure_tests::legacy_learning_is_separate_from_forwarding ... ok
+test runtime::wire::guards::tests::rstp_real_transient_returns_keep_their_own_frozen_rows ... ok
+test runtime::wire::rstp::closure_tests::supplied_rcv_info_vectors ... ok
+test runtime::wire::rstp::closure_tests::own_other_port_selects_backup ... ok
+test runtime::wire::rstp::closure_tests::transmit_hold_releases_one_credit_per_tick ... ok
+test runtime::wire::rstp::supplied_vectors::prs_observation_rows_do_not_consume_machine_entry_budget ... ok
+test runtime::wire::mvrp_state::supplied_vectors::simultaneous_tree_changes_keep_continuous_map_demand ... ok
+test runtime::wire::rstp::closure_tests::legacy_migration_and_return_to_rstp ... ok
+test runtime::wire::rstp::supplied_vectors::supplied_rstp_calculations ... ok
+test runtime::wire::rstp::supplied_vectors::supplied_rstp_remaining_units ... ok
+test runtime::wire::rstp::supplied_vectors::supplied_guard_transitions ... ok
+test runtime::wire::rstp::tests::codec ... ok
+test runtime::wire::rstp::supplied_vectors::supplied_state_entries ... ok
+test runtime::wire::rstp::tests::tick_autoedge ... ok
+test runtime::wire::rstp::supplied_vectors::supplied_rstp_wire_fields ... ok
+test runtime::wire::tests::atomic_capacity_keeps_original ... ok
+test runtime::wire::rstp::tests::two_bridge_handshake ... ok
+test runtime::wire::tests::membership_families_share_one_wake_and_expire_before_refresh ... ok
+test runtime::wire::tests::malformed_receive_and_stale_timer_are_noop ... ok
+test runtime::wire::tests::mvrp_auxiliary_records_use_real_state_and_trigger ... ok
+test runtime::wire::tests::paired_rstp_link_keeps_derived_tc_detected ... ok
+test runtime::wire::tests::staged_membership_selection_precedes_commit ... ok
+test runtime::wire::tests::mvrp_local_leaveall_runs_real_tx ... ok
+test runtime::wire::mvrp_state::supplied_vectors::supplied_mvrp_lifecycle ... ok
+test runtime::wire::tests::supplied_membership_bytes_exact ... ok
+test runtime::wire::rstp::supplied_vectors::supplied_rstp_scenarios ... ok
+test runtime::wire::tests::supplied_membership_leases_and_timers ... ok
+test runtime::wire::tests::supplied_membership_audit_and_failure ... ok
+test output::disk_sort::tests::pr37_binary_fallback_and_merge_reject_partial_headers_lengths_and_bodies ... ok
+test runtime::wire::tests::transition_priority_is_lossless_and_catalog_checked ... ok
+test runtime::wire::tests::vector_bridge_coordinator_flush_masks_and_completion ... ok
+test runtime::wire::tests::triangle_converges_without_a_central_tree ... ok
+test runtime::wire::tests::vector_stale_timer_generation_one_vs_two_preserves_registration_epoch ... ok
+test runtime::wire::mvrp_state::supplied_vectors::supplied_map_rules ... ok
+test runtime::wire::tests::vector_mvrp_new_exact_fdb_deletion_and_completed_effect ... ok
+test runtime::wire::transition::tests::every_machine_state_and_catalog_type_is_closed ... ok
+test runtime::wire::tests::supplied_rstp_scoped_flush_and_mvrp_effective ... ok
+test runtime::wire::transition::tests::metadata_boundary_is_lossless_and_keeps_private_source_intact ... ok
+test runtime::wire::transition::tests::full_source_projection_preserves_precision_buffers_and_real_initial_root ... ok
+test runtime::wire::transition::tests::mvrp_projects_only_own_variables_and_typed_auxiliary_actions ... ok
+test runtime::wire::transition::tests::strict_outer_machine_state_scope_and_guard_rejections ... ok
+test runtime::wire::transition::tests::tree_action_observations_derive_sorted_actual_sets ... ok
+test runtime::wire::transition::tests::negative_nested_types_keys_decimals_and_machine_writes ... ok
+test runtime::wire::transition::tests::every_catalog_value_rejects_null_and_other_machine_membership ... ok
+test runtime::wire::transition::tests::actual_rstp_reducer_journals_project_without_losing_typed_changes ... ok
+test tool::ned_editor::acceptance_file_tests::xc04_real_symlink_is_rejected_during_capture_without_replacing_session ... ok
+test tool::ned_editor::acceptance_file_tests::xc04_real_captured_casefold_sidecar_paths_roles_and_empty_ned_reject_atomically ... ok
+test tool::ned_editor::acceptance_file_tests::xc01_second_root_creation_preserves_first_root_disk_and_network_semantics ... ok
+test runtime::wire::tests::supplied_active_bad_pdus_preserve_protocol_timer_and_tx_state ... ok
+test runtime::wire::tests::active_peer_exchange_converges_and_registers ... ok
+test output::disk_sort::tests::oversized_truncated_and_inconsistent_frames_reject_before_allocation ... ok
+test input::tests::workload_validates_schedule_and_frame_beyond_time_limit ... ok
+test runtime::ethernet::dynamic::tests::vector_checkpoint_manifest_exact_set_and_no_self_hash ... ok
+test runtime::checkpoint_bundle::tests::checkpoint_bundle_roundtrip_and_no_self_hash ... ok
+test runtime::tests::archived_request_storage_tracks_live_work_not_generated_history ... ok
+test tool::ned_editor::acceptance_file_tests::xc07_external_creation_after_preview_before_save_is_an_ordered_no_clobber_barrier ... ok
+test runtime::checkpoint_bundle::tests::checkpoint_bundle_parent_sync_failure_is_published_receipt ... ok
+test tool::ned_editor::composition::tests::all_parent_files_and_instances_are_checked_before_gate_deletion ... ok
+test tool::ned_editor::composition::tests::bus_gate_batches_and_deletions_enforce_pair_count_and_atomic_history ... ok
+test tool::ned_editor::acceptance_mapping_tests::xc23_multirole_mapping_policy_has_two_outputs_but_does_not_bypass_profile_validation ... ok
+test tool::ned_editor::composition::tests::default_package_is_rejected_by_the_common_grammar ... ok
+test tool::ned_editor::composition::tests::compound_single_and_pair_deletion_preserve_comments_and_other_source_bytes ... ok
+test tool::ned_editor::composition::tests::bad_names_collisions_payloads_and_late_failures_leave_the_entire_model_unchanged ... ok
+test tool::ned_editor::composition::tests::port_controller_adapts_to_can_without_changing_profile_or_settings ... ok
+test tool::ned_editor::composition::tests::stale_and_unparseable_dependencies_prevent_proving_a_gate_unused ... ok
+test runtime::checkpoint_bundle::tests::checkpoint_bundle_prepublication_failure_cleans_only_owned_staging ... ok
+test output::validation::tests::rejects_result_identity_termination_and_frozen_provenance_tampering ... ok
+test output::disk_sort::tests::pr37_every_partial_binary_frame_rejects_in_sorted_and_ordered_streams ... ok
+test runtime::checkpoint_bundle::tests::checkpoint_bundle_rejects_symlinks_and_hardlinks ... ok
+test tool::ned_editor::composition::tests::create_module_three_ports_and_inside_connections_are_atomic_drafts ... ok
+test tool::ned_editor::acceptance_mapping_tests::xc23_mapping_does_not_authorize_foreign_paths_or_duplicate_pairs ... ok
+test runtime::checkpoint_bundle::tests::checkpoint_bundle_rejects_corruption_missing_and_extra_files ... ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc20_writer_takeover_alone_invalidates_preview_without_editing_inputs ... ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc20_actual_reload_invalidates_same_bytes_preview_before_apply ... ok
+test tool::ned_editor::controller::tests::changed_payload_or_revision_invalidates_confirmation ... ok
+test runtime::session::spool_checkpoint_tests::committed_spool_prefix_is_captured_without_a_process_file_path ... ok
+test tool::ned_editor::controller::tests::edit_plan_tests::apply_is_ledger_idempotent_and_undo_redo_reuses_added_file_id_and_layout ... ok
+test tool::ned_editor::controller::tests::destinations_require_the_current_writer_before_registry_mutation ... ok
+test tool::ned_editor::controller::tests::edit_plan_tests::apply_requires_matching_confirmation_and_rejects_missing_wrong_and_stale_plan ... ok
+test tool::ned_editor::controller::tests::dirty_reload_requires_confirmation_and_failed_reload_preserves_model ... ok
+test tool::ned_editor::controller::tests::edit_plan_tests::expired_and_replaced_edit_plans_return_gone_without_sleeping ... ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc22_actual_preview_and_apply_candidate_panics_never_adopt_or_destroy_redo ... ok
+test tool::ned_editor::controller::tests::edit_plan_tests::bad_plan_cursors_and_unknown_query_fields_are_400_and_preserve_source ... ok
+test tool::ned_editor::controller::tests::edit_plan_tests::preview_edit_is_read_only_and_page_contains_source_diff_id_and_hashes ... ok
+test tool::ned_editor::controller::tests::edit_plan_tests::plan_reads_enforce_writer_and_current_writer_sees_stale_revision_conflict ... ok
+test tool::ned_editor::controller::tests::edit_plan_tests::preview_job_reserves_sequence_until_terminal ... ok
+test tool::ned_editor::acceptance_mapping_tests::xc23_tampered_recovery_mapping_cannot_redirect_publication ... ok
+test tool::ned_editor::controller::tests::first_tab_writer_claim_requires_idle_epoch_and_preserves_replay ... ok
+test tool::ned_editor::controller::tests::commands_preserve_invalid_source_and_idempotent_terminal_results ... ok
+test tool::ned_editor::controller::tests::acceptance_controller_tests::xc32_exact_hundred_inflight_and_terminal_retries_preserve_one_frozen_run ... ok
+test tool::ned_editor::controller::tests::graph_confirmations_are_bound_one_use_and_jobs_share_terminal_ledger ... ok
+test tool::ned_editor::controller::tests::inflight_jobs_leave_get_responsive_and_reserve_sequence_until_terminal ... ok
+test tool::ned_editor::controller::tests::malformed_auth_epoch_busy_and_revision_have_distinct_acceptance_boundaries ... ok
+test tool::ned_editor::controller::tests::invalid_save_keeps_dirty_and_creates_no_output ... ok
+test tool::ned_editor::controller::tests::malformed_confirmation_payload_is_rejected_without_panicking_or_locking_session ... ok
+test tool::ned_editor::controller::tests::failed_startup_is_browsable_and_reload_can_load_after_source_appears ... ok
+test tool::ned_editor::controller::tests::ledger_retains_a_thousand_responses_and_high_watermark_prevents_reexecution ... ok
+test tool::ned_editor::controller::tests::new_command_payloads_reject_unknown_fields_and_settings_stale_confirmation ... ok
+test tool::ned_editor::controller::tests::overwrite_requires_exact_preview_and_detects_external_change ... ok
+test tool::ned_editor::controller::tests::new_project_requires_confirmation_and_replay_preserves_one_replacement ... ok
+test runtime::session::spool_checkpoint_tests::vector_checkpoint_gates_and_ordinal_faults ... ok
+test tool::ned_editor::controller::tests::recovery_protection_blocks_commands_and_destination_registration ... ok
+test tool::ned_editor::acceptance_mapping_tests::xc23_real_save_mapping_preserves_every_output_byte_and_snapshot_logical_path ... ok
+test tool::ned_editor::controller::tests::run_command_tests::invalid_run_payload_is_unconsumed_and_leaves_model_and_run_inventory_unchanged ... ok
+test tool::ned_editor::controller::tests::run_command_tests::project_generation_changes_only_on_successful_replacement ... ok
+test tool::ned_editor::controller::tests::no_config_creates_virtual_default_without_source_target ... ok
+test tool::ned_editor::controller::tests::save_completion_retains_new_recovery_enumeration_error ... ok
+test tool::ned_editor::controller::tests::settings_use_bound_confirmations_async_ledger_and_instance_scope ... ok
+test tool::ned_editor::controller::tests::strict_json_rejects_nested_duplicate_keys_and_trailing_tokens ... ok
+test tool::ned_editor::controller::tests::source_hash_role_and_undo_redo_are_checked_without_losing_history ... ok
+test tool::ned_editor::controller::tests::parse_debounce_adopts_latest_input_without_revision_increment ... ok
+test tool::ned_editor::file_creation::tests::file_creation_commit_boundary_rejects_forged_roles_packages_and_partial_changes ... ok
+test tool::ned_editor::controller::tests::protected_layout_replacement_needs_bound_ack_and_preserves_input_revision ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_history_exact_32mib_and_one_byte_over_are_distinct_atomic_boundaries ... ok
+test tool::ned_editor::file_creation::tests::file_creation_distinct_roots_allow_same_relative_path_but_not_same_type ... ok
+test tool::ned_editor::file_creation::tests::file_creation_initial_layout_delta_is_reversible_and_json_path_is_quoted ... ok
+test tool::ned_editor::controller::tests::validation_is_async_and_semantic_failure_uses_common_diagnostic ... ok
+test tool::ned_editor::file_creation::tests::file_creation_nested_edit_undo_twice_redo_twice_has_no_residue ... ok
+test tool::ned_editor::file_creation::tests::file_creation_missing_json_and_ini_are_one_reversible_transaction ... ok
+test tool::ned_editor::file_creation::tests::file_creation_roles_templates_paths_and_snapshot_collisions_are_atomic ... ok
+test tool::ned_editor::controller::tests::run_command_tests::run_command_freezes_dirty_input_once_and_preserves_history_and_checkpoint ... ok
+test tool::ned_editor::controller::tests::run_command_tests::failed_publication_terminal_replay_allows_new_http_command_after_durable_repair ... ok
+test tool::ned_editor::controller::tests::run_command_tests::run_frozen_source_survives_later_edit_reload_new_project_and_creation ... ok
+test tool::ned_editor::acceptance_file_tests::xc06_save_as_undo_shape_rejection_redo_preserve_all_disk_bytes_and_hashes ... ok
+test tool::ned_editor::controller::tests::ini_json_source_edits_update_settings_and_undo_without_changing_paths ... ok
+test tool::ned_editor::controller::tests::run_command_tests::run_capacity_rejection_does_not_consume_sequence_or_create_run ... ok
+test tool::ned_editor::file_creation::tests::file_creation_seven_templates_and_encoding_use_common_parser ... ok
+test tool::ned_editor::controller::tests::run_command_tests::run_command_completion_failure_preserves_current_diagnostics ... ok
+test tool::ned_editor::controller::tests::save_as_uses_snapshot_after_source_removal_and_marks_only_complete ... ok
+test tool::ned_editor::acceptance_mapping_tests::xc23_recovery_keeps_mapping_and_legacy_absence_does_not_guess_input_ids ... ok
+test tool::ned_editor::controller::tests::run_command_tests::run_command_completion_panic_preserves_current_diagnostics ... ok
+test tool::ned_editor::controller::tests::run_command_tests::run_command_completion_success_preserves_current_diagnostics ... ok
+test tool::ned_editor::output::tests::new_target_foreign_entry_and_existing_external_changes_are_preserved ... ok
+test tool::ned_editor::controller::tests::successful_operation_clears_controller_diagnostics_for_its_origin ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_added_file_64_65_and_rename_1000_1001_limits_are_separate ... ok
+test tool::ned_editor::controller::tests::startup_checks_recovery_before_missing_input_and_can_complete_without_model ... ok
+test tool::ned_editor::output::tests::nonreplace_publication_collision_never_clobbers_external_inode ... ok
+test tool::ned_editor::output::tests::completed_manifest_repairs_registry_after_crash_gap ... ok
+test tool::ned_editor::output::tests::invalid_layout_needs_explicit_replacement_confirmation ... ok
+test tool::ned_editor::file_creation::tests::file_creation_save_checkpoint_undo_shape_redo_and_external_collision ... ok
+test tool::ned_editor::output::tests::export_uses_snapshot_after_source_deleted_and_plan_digest_is_deterministic ... ok
+test tool::ned_editor::file_creation::tests::file_creation_preserves_captured_parent_metadata_and_incomplete_save_writes_nothing ... ok
+test tool::ned_editor::output::tests::malformed_retirement_allowlist_cannot_escape_private_journal ... ok
+test tool::ned_editor::output::tests::recovery_action_cannot_flip_and_untrusted_manifest_cannot_authorize_new_paths ... ok
+test tool::ned_editor::output::tests::directory_identity_journal_gap_can_restart_without_unknown_directory_cleanup ... ok
+test tool::ned_editor::output::tests::recovery_third_party_change_stops_before_any_other_target_changes ... ok
+test tool::ned_editor::output::tests::export_copies_workload_valid_layout_and_multiple_ordered_ned_roots ... ok
+test tool::ned_editor::output::tests::cached_registry_clients_preserve_each_others_registered_destinations ... ok
+test tool::ned_editor::output::tests::same_json_input_is_planned_in_both_reference_roles ... ok
+test tool::ned_editor::output::tests::completed_checkpoint_failure_can_be_finalized_without_restarting ... ok
+test tool::ned_editor::output::tests::recovery_checkpoint_failure_keeps_finalization_available_for_retry ... ok
+test tool::ned_editor::output::tests::semantic_invalid_output_creates_no_output_or_journal ... ok
+test runtime::wire::tests::three_bridge_mvrp_map_stabilizes_with_static_sources ... ok
+test tool::ned_editor::output::tests::restore_partial_source_overwrite_returns_exact_before_bytes ... ok
+test tool::ned_editor::output::tests::restore_allows_semantically_invalid_before_content_and_preserves_invalid_utf8_layout ... ok
+test tool::ned_editor::refactor::tests::changed_private_layout_candidate_cannot_bypass_confirmation_digest ... ok
+test tool::ned_editor::output::tests::source_symlink_hardlink_and_permission_changes_are_conflicts ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc08_shared_cow_compares_every_path_value_channel_and_runtime_binding ... ok
+test tool::ned_editor::output::tests::legacy_unmapped_journal_recovers_without_inventing_mapping ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc12_detach_invalid_targets_and_limits_are_atomic ... ok
+test tool::ned_editor::file_creation::tests::file_creation_history_exact_limit_and_oversized_rejection_preserve_redo ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc09_xc11_multiroot_ancestors_crosspackage_layout_and_source_identity_roundtrip ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc10_unique_stop_and_unused_incoming_reference_compare_all_bindings ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc16_segment_boundaries_other_owner_and_unused_type_references_are_independent ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc13_xc15_aggregate_rename_updates_all_roles_channels_layout_and_ids ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc17_every_unsupported_reference_variant_refuses_without_exact_override_compensation ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc18_equal_value_collisions_in_each_namespace_are_preview_rejections ... ok
+test tool::ned_editor::output::tests::restored_journal_with_unknown_entry_remains_visible_and_protected ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc19_bom_mixed_newlines_unicode_and_json_escape_keep_every_nonpatch_byte ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc14_swap_three_cycle_and_parent_child_each_have_one_exact_history_entry ... ok
+test tool::ned_editor::output::tests::restart_completes_partial_no_clobber_publication_using_hash_truth ... ok
+test tool::ned_editor::refactor_symbols::tests::derived_primary_bus_allowance_does_not_hide_other_runtime_changes ... ok
+test tool::ned_editor::refactor_symbols::tests::detach_cross_package_new_file_preserves_comments_and_required_ancestor_chain ... ok
+test tool::ned_editor::refactor_symbols::tests::detach_layout_copy_retains_original_and_destination_extra ... ok
+test tool::ned_editor::refactor_symbols::tests::detach_deep_shared_chain_and_inactive_network_remain_unchanged ... ok
+test tool::ned_editor::refactor_symbols::tests::detach_shared_parent_keeps_other_bindings_and_undo_redo ... ok
+test tool::ned_editor::refactor_symbols::tests::rename_all_kinds_network_and_shared_paths_preserves_values_and_undo ... ok
+test tool::ned_editor::refactor_symbols::tests::detach_second_root_new_package_and_collision_rejection ... ok
+test tool::ned_editor::refactor_symbols::tests::detach_unique_parent_stops_before_network_and_unused_use_forces_copy ... ok
+test tool::ned_editor::refactor_symbols::tests::rename_bus_order_cycle_keeps_all_bus_settings ... ok
+test tool::ned_editor::refactor_symbols::tests::rename_escaped_json_and_ned_trivia_keep_nonreference_bytes ... ok
+test tool::ned_editor::run_control::acceptance_fault_tests::fault_child ... ok
+test tool::ned_editor::run_control::acceptance_fault_tests::xc23_actual_sigkill_at_each_observed_saveas_checkpoint_recovers_exact_bytes ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc30_actual_partial_report_manifest_and_records_are_consistent ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc31_real_enospc_and_eacces_after_execution_preserve_original_diagnostics ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc33_real_cancellation_at_prepare_execute_export_and_completion_barriers ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc34_actual_worker_address_space_and_sparse_file_hard_limits ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc34_actual_worker_stdout_stderr_tails_keep_exact_one_mib_suffix ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc34_real_timeout_soft_storage_monitor_and_exact_log_tail ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc35_actual_coordinator_sigkill_covers_snapshot_publication_manifest_and_response_cuts ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc36_actual_publication_conflicts_preserve_external_files_and_other_roots ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc37_one_actual_worker_two_waiters_nonowner_and_concurrent_edit_save ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::acceptance_fault_tests::xc38_independently_valid_cross_run_bundle_substitution_and_unsafe_paths_are_denied ... ignored, Requires Linux fault isolation; run explicitly with --ignored --test-threads=1
+test tool::ned_editor::run_control::cleanup::can_ledger_cleanup_requires_recorded_worker_and_regular_leaf ... ok
+test tool::ned_editor::run_control::tests::acceptance_snapshot_tests::xc26_real_worker_never_falls_back_to_an_uncaptured_existing_disk_file ... ignored, Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY; run explicitly
+test tool::ned_editor::refactor_symbols::tests::rename_gateway_json_tokens_and_indices_follow_path_identity ... ok
+test tool::ned_editor::run_control::tests::bounded_frames_reject_oversize_duplicate_keys_and_short_data ... ok
+test tool::ned_editor::refactor_symbols::tests::rename_layout_cycles_preserve_extra_and_stale_collisions_refuse ... ok
+test tool::ned_editor::refactor_symbols::tests::rename_type_swap_composes_original_owner_member_namespaces ... ok
+test tool::ned_editor::refactor_symbols::tests::rename_simultaneous_cycles_and_schema_rejection ... ok
+test tool::ned_editor::refactor_symbols::acceptance_refactor_tests::xc20_edit_undo_and_reload_context_each_invalidate_a_rename_plan ... ok
+test tool::ned_editor::run_control::tests::executable_hash_authenticates_all_chunks_and_partial_tail ... ok
+test tool::ned_editor::output::tests::source_overwrite_requires_exact_plan_confirmation_and_preserves_ini ... ok
+test tool::ned_editor::output::tests::managed_save_allows_reserved_layout_creation_and_undo_to_empty_layout ... ok
+test tool::ned_editor::run_control::tests::hash_uses_position_independent_reads ... ok
+test tool::ned_editor::output::tests::retired_legacy_unmapped_manifest_hash_keeps_original_serialization ... ok
+test tool::ned_editor::output::tests::unknown_orphan_and_symlinked_journal_roots_are_never_collected ... ok
+test tool::ned_editor::output::tests::successful_recovery_clears_marker_when_completion_journal_was_not_persisted ... ok
+test tool::ned_editor::run_control::tests::existing_shared_readable_state_parent_can_hold_private_runs ... ok
+test tool::ned_editor::run_control::tests::failed_worker_retains_prior_diagnostics_and_original_termination ... ok
+test tool::ned_editor::output::tests::replay_of_old_completed_save_does_not_roll_back_newer_baseline ... ok
+test tool::ned_editor::run_control::tests::deleted_command_mapping_never_creates_a_second_run ... ok
+test tool::ned_editor::run_control::tests::active_cross_process_reference_prevents_delete ... ok
+test tool::ned_editor::output::tests::recovery_rejects_mapping_role_or_input_id_change_with_original_plan_digest ... ok
+test tool::ned_editor::run_control::tests::explicit_delete_keeps_tombstone_and_preserves_unknown_or_linked_objects ... ok
+test tool::ned_editor::run_control::tests::capacity_rejects_before_freeze_and_pin_bounds_are_independent ... ok
+test tool::ned_editor::output::tests::successful_saves_reclaim_all_private_backups_immediately ... ok
+test tool::ned_editor::acceptance_file_tests::xc21_plan_encoded_64mib_boundary_and_ten_minute_expiry_are_independent ... ok
+test tool::ned_editor::run_control::tests::large_responses::normal_prepare_response_remains_unchanged_and_creates_no_large_artifact ... ok
+test tool::ned_editor::run_control::tests::real_worker_matches_saved_baseline_cli_manifest_records_metrics_and_diagnostics ... ignored, Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY and Python 3; run explicitly
+test tool::ned_editor::run_control::tests::real_worker_prepare_failure_timeout_force_kill_and_shutdown ... ignored, Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY; run explicitly
+test tool::ned_editor::run_control::tests::real_worker_smoke_when_binary_supplied ... ignored, Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY; run explicitly
+test tool::ned_editor::run_control::tests::real_worker_syntax_and_semantic_prepare_failures_map_frozen_source_without_output ... ignored, Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY; run explicitly
+test tool::ned_editor::run_control::tests::real_worker_viewer_render_without_http ... ignored, Requires freshly built same binary in DIR_NED_RUN_TEST_BINARY; run explicitly
+test tool::ned_editor::run_control::tests::failed_stop_persistence_does_not_accept_or_publish_stopping ... ok
+test tool::ned_editor::output::tests::stage_identity_journal_gap_can_restart_complete_or_restore_without_unknown_cleanup ... ok
+test tool::ned_editor::run_control::tests::pinned_capacity_exact_boundary_and_one_byte_over_do_not_create_files ... ok
+test tool::ned_editor::run_control::tests::large_failure_keeps_output_classification_and_original_ordered_diagnostics ... ok
+test tool::ned_editor::run_control::tests::queued_cancel_is_terminal_and_noop_repeated ... ok
+test tool::ned_editor::run_control::tests::post_rename_fsync_failure_keeps_one_assigned_identity_on_retry ... ok
+test tool::ned_editor::run_control::tests::manifest_only_recovery_requires_every_reconstructed_acquired_input ... ok
+test tool::ned_editor::run_control::tests::manifest_only_recovery_has_null_wall_metrics_and_no_report ... ok
+test tool::ned_editor::run_control::tests::owned_internal_hard_links_can_be_removed_but_external_links_cannot ... ok
+test tool::ned_editor::run_control::tests::published_restart_keeps_completion_time_and_diagnostic_count ... ok
+test tool::ned_editor::run_control::tests::safety_tests::shutdown_waits_for_a_viewer_renderer_after_coordinator_finishes ... ok
+test tool::ned_editor::run_control::tests::readonly_coordinator_keeps_reads_and_rejects_mutations ... ok
+test tool::ned_editor::run_control::tests::report_value_cannot_disagree_with_authenticated_worker_evidence ... ok
+test tool::ned_editor::run_control::tests::run_creation_is_durable_exactly_once_and_does_not_edit_project ... ok
+test tool::ned_editor::run_control::tests::restart_preserves_durable_cancellation_and_same_command_identity ... ok
+test tool::ned_editor::output::tests::reclamation_preserves_unknown_identities_links_contents_and_unrecovered_journals ... ok
+test tool::ned_editor::run_control::tests::recovered_pre_manifest_run_can_be_deleted ... ok
+test tool::ned_editor::run_control::tests::large_responses::large_prepare_diagnostic_bounds_every_string_with_json_escaping_and_utf8 ... ok
+test tool::ned_editor::run_control::tests::safety_tests::viewer_recovery_snapshot_serializes_late_response_reclamation ... ok
+test tool::ned_editor::run_control::tests::terminal_classification_preserves_engine_meaning ... ok
+test tool::ned_editor::run_control::tests::timeout_payload_is_strict_and_bounded ... ok
+test tool::ned_editor::run_control::tests::safety_tests::monitored_limits_stop_even_when_durable_record_cannot_be_written ... ok
+test tool::ned_editor::run_control::tests::safety_tests::viewer_reserved_name_never_authorizes_an_unknown_file_identity ... ok
+test tool::ned_editor::run_control::viewer_server::tests::csp_has_only_hash_script_sources ... ok
+test tool::ned_editor::run_control::tests::safety_tests::viewer_recovery_reconciles_missing_files_but_preserves_unknown_and_replaced_files ... ok
+test tool::ned_editor::run_control::viewer_server::tests::http_deadline_change_during_receive_releases_pin_and_keeps_tombstone ... ignored, Requires loopback sockets; run explicitly in permitted integration environment
+test tool::ned_editor::run_control::viewer_server::tests::http_repeated_get_head_revoke_and_headers ... ignored, Requires loopback sockets; run explicitly in permitted integration environment
+test tool::ned_editor::run_control::viewer_server::tests::revocation_invalidates_a_render_already_in_progress ... ok
+test tool::ned_editor::run_control::viewer_server::tests::strict_request_gates ... ok
+test tool::ned_editor::run_control::tests::soft_quota_counts_internal_staging_links_once ... ok
+test tool::ned_editor::output::tests::invalid_journal_is_protected_without_hiding_other_recoveries_or_blocking_startup ... ok
+test tool::ned_editor::run_snapshot::tests::corrupted_memory_hashes_fail_before_writing ... ok
+test tool::ned_editor::run_snapshot::tests::bounds_fail_before_writing_and_length_boundary_is_inclusive ... ok
+test tool::ned_editor::run_snapshot::tests::non_utf8_file_paths_and_roles_roundtrip_in_bundle_and_evidence ... ok
+test tool::ned_editor::run_snapshot::tests::blob_manifest_commit_and_expected_identity_tampering_are_rejected ... ok
+test tool::ned_editor::run_snapshot::tests::roundtrip_preserves_memory_bytes_header_metadata_origins_and_layout ... ok
+test tool::ned_editor::run_snapshot::tests::source_deletion_does_not_change_prepare_and_unknown_paths_never_fall_back ... ok
+test tool::ned_editor::run_control::tests::restart_never_reruns_queued_and_recovers_published_manifest ... ok
+test tool::ned_editor::run_snapshot::tests::syntactically_invalid_edited_source_is_frozen_and_restored_for_prepare ... ok
+test tool::ned_editor::run_snapshot::tests::unavailable_invalid_utf8_layout_retains_warning_and_hash_without_disk_read ... ok
+test tool::ned_editor::settings::tests::empty_project_has_no_stale_overrides_and_remains_an_editable_draft ... ok
+test tool::ned_editor::settings::tests::gateway_and_workload_forms_reject_invalid_ownership_and_preserve_other_settings ... ok
+test tool::ned_editor::settings::tests::gateway_settings_can_be_removed_after_the_module_instance_was_deleted ... ok
+test tool::ned_editor::settings::tests::instance_parameters_validate_common_rules_and_undo_preserves_type_defaults ... ok
+test tool::ned_editor::run_snapshot::tests::unexpected_entries_are_preserved_and_rejected ... ok
+test tool::ned_editor::settings::tests::malformed_or_unknown_json_is_never_silently_replaced_by_forms ... ok
+test tool::ned_editor::run_snapshot::tests::unsafe_blob_names_are_rejected_even_with_recomputed_bundle_digest ... ok
+test tool::ned_editor::run_control::tests::stamp_and_correspondence_tampering_are_integrity_failures ... ok
+test tool::ned_editor::run_control::tests::pending_manifest_cleanup_rejects_foreign_names_directories_and_symlinks ... ok
+test tool::ned_editor::settings::tests::unrepresentable_route_ports_never_get_silently_normalized_by_a_form ... ok
+test tool::ned_editor::settings::tests::json_identifiers_accept_ned_reserved_words_and_disabled_generators ... ok
+test tool::ned_editor::settings::tests::workload_forms_accept_explicit_and_periodic_and_reject_invalid_frames ... ok
+test tool::ned_editor::template::tests::modules_use_fresh_multibus_dependencies_and_stable_catalog_ids ... ok
+test tool::ned_editor::settings::tests::bom_json_forms_match_common_parsers_and_preserve_encoding_through_history ... ok
+test tool::ned_editor::template::tests::gateway_reference_is_exposed_and_prepares_complete_routing ... ok
+test tool::ned_editor::template::tests::snapshot_provenance_paths_hashes_roles_and_layouts_are_consistent ... ok
+test tool::ned_editor::run_control::tests::worker_unavailability_rejects_admission_without_disabling_history_reads ... ok
+test tool::ned_editor::settings::tests::missing_workload_file_is_added_virtually_and_undo_restores_input_set ... ok
+test tool::ned_editor::tests::bad_graph_candidate_does_not_change_revision_or_history ... ok
+test tool::ned_editor::tests::atomic_graph_child_delete_preserves_comments_and_is_undoable ... ok
+test tool::ned_editor::tests::builtin_collision_and_invalid_payload_preserve_user_definitions ... ok
+test tool::ned_editor::tests::default_literal_and_layout_undo_preserve_input_revision_boundary ... ok
+test tool::ned_editor::template::tests::starters_prepare_with_all_settings_and_zero_traffic_without_disk_creation ... ok
+test tool::ned_editor::tests::default_and_reconnect_change_only_the_selected_token_span ... ok
+test tool::ned_editor::tests::default_literal_cannot_hide_other_statements_in_a_comment ... ok
+test tool::ned_editor::tests::default_literal_cannot_inject_ignored_property_statement ... ok
+test tool::ned_editor::template::tests::invalid_names_templates_and_relative_cwd_are_rejected ... ok
+test tool::ned_editor::tests::edits_preserve_captured_empty_directories ... ok
+test tool::ned_editor::tests::input_is_released_and_snapshot_prepare_survives_source_removal ... ok
+test tool::ned_editor::tests::builtin_gateway_migrates_atomically_and_undo_restores_entire_baseline ... ok
+test tool::ned_editor::tests::graph_can_pair_is_one_transaction_with_two_edges ... ok
+test tool::ned_editor::tests::input_rejects_non_utf8_ned_symlink_and_overlapping_roots ... ok
+test tool::ned_editor::run_control::viewer_server::tests::expiry_releases_route_files_but_pins_an_accepted_response ... ok
+test tool::ned_editor::tests::invalid_utf8_layout_warns_and_preserves_original_hash ... ok
+test tool::ned_editor::tests::malformed_reconnect_channel_is_rejected_without_deleting_original ... ok
+test tool::ned_editor::tests::old_parse_result_never_replaces_newer_source ... ok
+test tool::ned_editor::tests::no_op_keeps_redo_and_reload_resets_history_with_new_context ... ok
+test tool::ned_editor::tests::syntax_load_is_rejected_but_semantic_error_is_imported ... ok
+test tool::viewer::policy_tests::csp_hash_matches_known_sha256_base64_vectors ... ok
+test tool::ned_editor::tests::migration_preserves_unrelated_profile_parameters_and_original_values ... ok
+test tool::viewer::policy_tests::emitted_asset_hashes_exclude_and_protect_json ... ok
+test tool::viewer::tests::raw_text_assets_cannot_close_their_html_element ... ok
+test tool::viewer::policy_tests::policy_publication_matches_legacy_and_preserves_existing_files ... ok
+test tool::ned_editor::run_control::tests::tampered_frozen_input_and_result_are_rejected ... ok
+test tool::ned_editor::template::tests::catalog_materialization_allocates_fresh_parseable_definitions_for_both_profiles ... ok
+test tool::ned_editor::run_control::tests::running_plus_two_waiters_rejects_third_and_cancel_releases_one_slot ... ok
+test tool::ned_editor::run_control::tests::unknown_descendants_are_preserved_before_delete_and_during_tombstone_recovery ... ok
+test tool::ned_editor::tests::history_evicts_the_oldest_operation_after_two_hundred_edits ... ok
+test tool::ned_editor::tests::pending_dependency_gates_are_unresolved_in_other_file_projection ... ok
+test tool::ned_editor::tests::instance_projection_distinguishes_ini_override_from_prepared_value ... ok
+test tool::ned_editor::run_control::tests::staged_creation_and_tombstoned_deletion_recover_without_loading_partial_records ... ok
+test tool::ned_editor::run_control::tests::stop_race_keeps_valid_complete_or_partial_result ... ok
+test tool::ned_editor::run_control::tests::restart_after_durable_stop_classifies_manifest_and_response_independently ... ok
+test tool::ned_editor::run_control::tests::large_responses::large_prepare_response_preserves_full_bytes_hash_code_position_and_protocol_kind ... ok
+test tool::ned_editor::tests::history_limit_counts_forward_and_reverse_bytes_and_rejects_atomically ... ok
+test tool::ned_editor::run_control::tests::safety_tests::obsolete_viewer_generations_are_reclaimed_after_the_last_response_reference ... ok
+test tool::ned_editor::tests::template_export_is_standalone_and_draft_cannot_register_source ... ok
+test tool::ned_editor::output::tests::retired_journal_rejects_mapping_changes_before_and_after_backup_reclamation ... ok
+test tool::ned_editor::run_control::tests::large_responses::actual_giant_unknown_network_prepare_failure_remains_prepare_failed_after_restart ... ok
+test tool::ned_editor::run_control::tests::run_list_pages_at_fifty_and_cursor_is_opaque_run_id ... ok
+test tool::ned_editor::output::tests::retirement_and_each_reclamation_boundary_resume_after_restart_and_retry ... ok
+
+test result: ok. 627 passed; 0 failed; 19 ignored; 0 measured; 0 filtered out; finished in 13.99s
+
+     Running unittests src/main.rs (target/debug/deps/dir_simulator-237a23398bccaff7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ac0008_attributes.rs (target/debug/deps/ac0008_attributes-f634f9bbf8954d3e)
+
+running 4 tests
+test public_attributes_retain_unicode_escapes_and_typed_owners_with_exact_bom_crlf_spans ... ok
+test comments_inside_strings_are_data_and_class_unit_values_keep_existing_accessors ... ok
+test duplicate_metadata_unknown_property_and_invalid_escape_are_rejected ... ok
+test supplied_fixture_keeps_grammar_rejection_and_valid_order_retains_quote_backslash ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ac0008_ned_rejections.rs (target/debug/deps/ac0008_ned_rejections-a5b67ef3daa7ea1d)
+
+running 24 tests
+test bare_extends_remains_syntax_error ... ok
+test complete_import_does_not_change_later_bad_expression_reason_or_priority ... ok
+test allowunconnected_is_explicitly_rejected_with_ned_source ... ok
+test inheritance_does_not_change_later_lexical_failure_reason_or_priority ... ok
+test complete_import_does_not_change_later_malformed_string_reason ... ok
+test inout_is_explicitly_rejected_with_ned_source ... ok
+test bare_import_remains_syntax_error ... ok
+test import_like_string_does_not_change_lexical_failure_reason ... ok
+test extends_without_name_remains_syntax_error ... ok
+test incomplete_import_name_remains_syntax_error ... ok
+test vector_is_explicitly_rejected_with_ned_source ... ok
+test import_without_name_remains_syntax_error ... ok
+test import_like_comment_does_not_change_lexical_failure_reason ... ok
+test missing_opening_brace_remains_syntax_error ... ok
+test malformed_import_path_wildcard_remains_syntax_error ... ok
+test malformed_string_remains_syntax_error ... ok
+test nested_import_wildcard_remains_syntax_error ... ok
+test unqualified_child_type_is_explicitly_rejected_with_ned_source ... ok
+test ordinary_bad_token_remains_syntax_error ... ok
+test missing_closing_brace_remains_syntax_error ... ok
+test explicit_import_name_is_rejected_with_ned_keyword_source ... ok
+test import_is_explicitly_rejected_with_ned_source ... ok
+test unknown_property_still_reports_unsupported_syntax ... ok
+test inheritance_is_explicitly_rejected_with_ned_source ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/ac0008_paths.rs (target/debug/deps/ac0008_paths-0b403e20d2cd3ef3)
+
+running 6 tests
+test classical_can_cli_validate_accepts_fixture_and_rejects_missing_config ... ok
+test classical_can_prepare_and_run_preserve_analytic_competition ... ok
+test classical_can_prepare_with_registry_and_run_uses_builtin_adapter ... ok
+test classical_can_run_config_matches_plain_observable_projection ... ok
+test classical_can_explicit_run_config_preserves_plain_projection ... ok
+test classical_can_cli_run_matches_plain_observable_projection ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s
+
+     Running tests/acceptance_bridge.rs (target/debug/deps/acceptance_bridge-b9ee29b26c7c1a5a)
+
+running 17 tests
+test dir_test_0106_n04_n05_n06_strict_prepare_failures_do_not_start_run ... ok
+test dir_test_0108_p09_event_limit_every_callback_keeps_successful_journal_prefix ... ok
+test dir_test_0105_c03f_native_standard_2048_is_rejected_before_dispatch ... ok
+test dir_test_0106_n05_connected_switch_cycle_and_n06_duplicate_json_rule_key_reject ... ok
+test dir_test_0106_n04_forbidden_models_reject_zero_count_and_future_sources ... ok
+test positive_conversion_delay_offers_after_existing_same_time_ingress ... ok
+test dir_test_0107_r03_r05_0108_p10_fanout_and_egress_permutation_and_unadmittable_branches ... ok
+test dir_test_0107_r01_tag_and_each_one_ps_delay_changes_only_causal_milestones ... ok
+test dir_test_0108_p02_hop_limit_in_second_gateway_is_finite ... ok
+test dir_test_0105_c07_0107_r08_r11_0108_p01_two_gateway_wire_loop_and_multicast ... ok
+test dir_test_0105_c01_c04_c03ef_fixed_wire_vectors_and_independent_crc ... ok
+test dir_test_0105_c03g_c05_c06_format_rewrite_and_pcp_reclassification ... ok
+test dir_test_0107_r08_r13_native_multicast_two_gateways_and_distinct_lineages ... ok
+test dir_test_0106_n01_n01f_n03_n07_receive_rejection_precedence ... ok
+test dir_test_0108_p10_reversed_gateway_rule_port_queue_arrays_preserve_records_and_metrics ... ok
+test dir_test_0107_r01_r02_and_0108_p03_p06_every_milestone_half_open_boundary ... ok
+test dir_test_0107_r10_r11_r12_0108_p12e_two_terminal_tuples_and_partial_completion ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.10s
+
+     Running tests/acceptance_dynamic_tsn.rs (target/debug/deps/acceptance_dynamic_tsn-be6a30d1f1c25f3c)
+
+running 19 tests
+test psfp_untagged_tuple_uses_receiver_pvid_and_default_priority ... ok
+test registration_capacity_error_preserves_successful_control_prefix ... ok
+test strict_dynamic_and_tsn_negatives_are_rejected_even_beyond_horizon ... ok
+test queued_linkdown_at_release_preserves_completed_wire_and_drops_waiting_copy ... ok
+test psfp_three_egress_partial_fanout_consumes_once_without_refund ... ok
+test psfp_actual_arrival_refill_gate_and_sdu_before_meter ... ok
+test same_time_wire_policy_aging_registration_gcl_and_arrival_order ... ok
+test gcl_update_t_minus_one_t_t_plus_one_prefix_and_permutation ... ok
+test tas_all_ten_declared_vectors_execute_real_wire ... ok
+test dynamic_revisit_has_unique_copy_parent_dag_and_visit_limit ... ok
+test psfp_queued_vid_expiry_preserves_tokens_and_resets_positive_credit ... ok
+test dynamic_wire_down_and_up_receptions_use_arrival_policy ... ok
+test canonical_input_order_and_disabled_tsn_preserve_dynamic_media ... ok
+test cbs_wire_gate_and_recovery_t_minus_one_t_t_plus_one_prefix ... ok
+test membership_expiry_unknown_policy_and_queued_copy_target_remain_distinct ... ok
+test dynamic_ipv4_ipv6_source_filters_static_union_and_endpoint_subscription ... ok
+test dynamic_learning_capacity_and_cancelled_expiry_remain_bounded ... ok
+test dynamic_wire_control_and_expiry_t_minus_one_t_t_plus_one_prefix ... ok
+test fixtures_prepare_and_execute_all_positive_cases has been running for over 60 seconds
+test fixtures_prepare_and_execute_all_positive_cases ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 107.90s
+
+     Running tests/acceptance_output.rs (target/debug/deps/acceptance_output-872ea1711d780ce6)
+
+running 6 tests
+test dir_test_0073_h10_clips_in_flight_and_does_not_pre_generate ... ok
+test dir_test_0072_h29_receiver_observations_at_h_remain_pending ... ok
+test dir_test_0072_input_a_complete_ledgers_per_receiver_and_conservation ... ok
+test dir_test_0070_zero_capacity_points_and_0073_empty_zero_and_short_windows ... ok
+test dir_test_0073_instantaneous_peak_and_overlapping_interval_union ... ok
+test dir_test_0070_0071_input_a_all_37_descriptors_points_windows_and_csv ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/acceptance_prefix.rs (target/debug/deps/acceptance_prefix-b47453d4576b0a8a)
+
+running 1 test
+test native_can_and_ethernet_future_dispatch_preserve_exact_committed_prefix ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/acceptance_resources.rs (target/debug/deps/acceptance_resources-1c46be7344cbc6bd)
+
+running 2 tests
+test failed_winner_time_reservation_keeps_waiting_request_and_queue ... ok
+test finite_waiting_capacity_release_arrival_and_independent_resource ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/axi.rs (target/debug/deps/axi-61c1d14f8204aa59)
+
+running 11 tests
+test zero_fixed_delay_is_accepted_and_positive_delay_or_crossed_suffix_rejected ... ok
+test config_required_duplicate_unknown_and_numeric_types_are_strict ... ok
+test invalid_transactions_are_rejected_including_after_time_limit ... ok
+test future_clock_edge_is_preserved_beyond_time_limit ... ok
+test eligible_overflow_fails_before_generation_commit ... ok
+test sparse_clock_and_large_timestamps_remain_exact_beyond_binary64_integer_precision ... ok
+test callback_failure_retains_only_committed_write_prefix ... ok
+test failure_after_write_keeps_committed_ram_and_bit_metrics ... ok
+test compound_manager_wrapper_preserves_five_path_topology_and_initial_state ... ok
+test empty_and_zero_horizon_emit_exact_finite_metric_set ... ok
+test all_analytic_fixtures_execute_with_exact_handshakes_memory_and_metrics ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
+
+     Running tests/build_ledger_identity.rs (target/debug/deps/build_ledger_identity-c06fd1c83c9fcdd9)
+
+running 1 test
+test ledger_identity_requires_a_real_document_version ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/can_scenarios.rs (target/debug/deps/can_scenarios-ca33c2fb3b979b41)
+
+running 5 tests
+test zero_horizon_and_future_only_generation_do_not_generate_requests ... ok
+test overflow_in_eof_delivery_keeps_request_in_flight_without_receivers ... ok
+test mixed_identifier_formats_follow_wire_priority ... ok
+test event_limit_keeps_committed_prefix_and_can_finish_normally_at_exact_count ... ok
+test all_documented_can_scenarios_match_analytic_expectations ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/canfd.rs (target/debug/deps/canfd-bc025390e745dd72)
+
+running 9 tests
+test rates_filters_capacities_and_cross_protocol_types_are_strict ... ok
+test frame_binding_schema_and_generator_errors_fail_before_execution ... ok
+test zero_capacity_drops_ready_and_exact_limit_generation_never_commits ... ok
+test overflow_preserves_previous_commit_and_does_not_fabricate_sof ... ok
+test filter_rejection_keeps_planned_completion_and_no_success_count ... ok
+test uppercase_payload_normalizes_and_rebinding_preserves_structural_boundary ... ok
+test arbitration_standard_vs_extended_and_capacity_generation_order ... ok
+test strict_stop_eof_arrival_and_processing_boundaries ... ok
+test external_vectors_match_dlc_combined_ceiling_and_committed_metrics ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+
+     Running tests/cli.rs (target/debug/deps/cli-bbc0081c3114448f)
+
+running 8 tests
+test validate_counts_simple_instances_without_gateway_compounds ... ok
+test output_failure_keeps_the_preceding_execution_diagnostic ... ok
+test help_version_argument_errors_and_validate ... ok
+test examples_show_contention_then_overload ... ok
+test prepared_inputs_are_not_reopened_during_run ... ok
+test errors_do_not_destroy_inputs_or_existing_directories ... ok
+test execution_limit_exports_consistent_partial_results ... ok
+test run_publishes_results_and_refuses_to_overwrite ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+     Running tests/control_metric_checkpoint.rs (target/debug/deps/control_metric_checkpoint-174dd884add50cff)
+
+running 45 tests
+test process_checkpoint_worker ... ok
+test ready_pause_mailbox_and_cleanup ... ok
+test initialize_failure_cleans_constructed_channel_once ... ok
+test metric_v2_failure_horizon_is_successful_prefix_and_legacy_v1_keeps_failure_time ... ok
+test replay_preserves_multiple_polls_at_one_commit_ordinal ... ok
+test snapshot_boundary_closed_ack_preserves_completed_observation_horizon ... ok
+test network_owned_step_pause_resume_matches_synchronous_result ... ok
+test failed_callback_wins_over_pause_stop_and_discards_metric_batch ... ok
+test snapshot_boundary_failed_callback_exposes_last_success_for_both_drivers ... ok
+test replay_zero_event_terminal_operations_run_initialization_and_completion ... ok
+test replay_reaches_completed_before_post_completion_stop_and_export ... ok
+test pause_at_same_time_export_is_non_destructive_and_resume_matches ... ok
+test snapshot_boundary_ready_and_ready_pause_are_zero_without_factories ... ok
+test snapshot_boundary_time_limit_completion_keeps_unexecuted_candidate_pending ... ok
+test snapshot_boundary_both_completion_drivers_restore_t_and_match_sync ... ok
+test stop_supersedes_ready_pause_without_factories_and_foreign_token_is_rejected ... ok
+test synchronous_run_keeps_virtual_metric_results ... ok
+test snapshot_boundary_running_pause_stop_and_same_time_pending_keep_successful_h ... ok
+test snapshot_boundary_zero_event_resume_completes_at_t_with_no_last_event ... ok
+test vector_cleanup_two_models_two_channels_reverse_once ... ok
+test vector_control_final_boundary_and_failed_callback ... ok
+test vector_frozen_export_at_ten_preserves_area_twenty_two_time_seven_and_token ... ok
+test vector_ready_pause_horizon_zero_and_retry_id_seven ... ok
+test vector_replay_three_distinct_snapshots_at_commit_three ... ok
+test vector_schema_two_normal_and_three_controlled_exports ... ok
+test vector_token_process_worker ... ok
+test checkpoint_continues_in_a_new_process_with_source_files_removed ... ok
+test snapshot_boundary_network_ready_pause_is_empty_and_resume_matches_sync ... ok
+test checkpoint_captures_an_explicit_empty_ned_root_without_disk_fallback ... ok
+test restore_rejects_model_record_map_key_that_disagrees_with_schema_and_id ... ok
+test ready_checkpoint_restores_empty_arena_and_pending_stop_rejects_save ... ok
+test checkpoint_publication_failure_preserves_token_and_does_not_consume_ordinal ... ok
+test restore_generation_overflow_is_rejected_before_any_private_factory ... ok
+test snapshot_boundary_checkpoint_journal_restore_and_resume_match_public_h ... ok
+test disk_checkpoint_restores_without_initialize_and_rejects_corruption ... ok
+test failed_restore_drops_private_prefix_without_finish_and_preserves_bundle ... ok
+test replay_writes_real_paused_exports_and_checkpoints_in_an_isolated_namespace ... ok
+test vector_checkpoint_exact_live_retired_tokens_in_new_process ... ok
+test checkpoint_fingerprint_and_codec_mismatch_are_rejected_before_factories ... ok
+test vector_checkpoint_four_declared_instances_empty_and_initialized ... ok
+test vector_checkpoint_all_fingerprint_fields_fail_before_callbacks ... ok
+test restore_rejects_same_time_pending_work_before_last_committed_delta_phase_or_sequence ... ok
+test ready_pause_restore_requires_the_exact_initial_metric_state ... ok
+test snapshot_boundary_wire_busy_and_preemption_occupied_are_clipped_before_export ... ok
+test snapshot_boundary_restore_rejects_inconsistent_journal_end_before_factories ... ok
+
+test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.05s
+
+     Running tests/diagnostics.rs (target/debug/deps/diagnostics-c4a5047ebbf3c11e)
+
+running 15 tests
+test ned_eof_has_empty_range_and_correct_unicode_scalar_column ... ok
+test ini_unknown_key_points_to_key_after_bom_crlf_and_unicode_comment ... ok
+test wire_contract_is_complete_nullable_and_string_only ... ok
+test ini_invalid_value_points_to_adopted_value_not_same_default ... ok
+test ini_unknown_parameter_points_to_complete_assignment_key ... ok
+test duplicate_json_key_points_to_second_key_and_retains_related_location ... ok
+test ned_unknown_child_reference_points_to_type_token ... ok
+test unreadable_input_has_path_and_null_positions ... ok
+test channel_errors_use_ini_section_reference_or_adopted_value ... ok
+test nested_json_error_uses_exact_value_despite_repeated_keys ... ok
+test json_eof_is_a_zero_width_range_after_final_scalar_or_newline ... ok
+test every_model_family_locates_semantic_json_field_by_identity ... ok
+test preparation_stderr_and_jsonl_share_primary_object ... ok
+test runtime_guard_retains_candidate_time_and_reserved_sequence ... ok
+test stderr_and_jsonl_use_same_control_character_escaping ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/ethernet.rs (target/debug/deps/ethernet-94881df82404f844)
+
+running 6 tests
+test frame_serializer_matches_independent_golden_bytes_and_crc ... ok
+test eof_boundary_has_no_completed_bits_or_fabricated_reception ... ok
+test unicast_metrics_keep_mac_occupancy_and_delivery_boundaries_separate ... ok
+test qos_metadata_preserves_future_candidate_without_invalid_u64_time ... ok
+test failure_boundary_counts_committed_eof_and_release_only_in_summary ... ok
+test ethernet_product_matches_all_existing_golden_scenarios ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s
+
+     Running tests/ethernet_media.rs (target/debug/deps/ethernet_media-02c6cc95d417c9fa)
+
+running 14 tests
+test canceled_pair_reservations_are_excluded_from_partial_pending_count ... ok
+test dedicated_100base_t1_uses_independent_policy_and_full_pipeline ... ok
+test pair_start_overflow_preflights_both_directions_before_any_sof_commit ... ok
+test carrier_on_ifg_deadline_resets_continuous_idle_and_post_preamble_collision_jams_immediately ... ok
+test strict_media_prepare_boundaries_report_specific_rules ... ok
+test public_media_examples_execute_with_the_selected_profiles ... ok
+test current_retry_is_excluded_from_fifo_capacity ... ok
+test mixed_switch_pair_timelines_preserve_independent_transfers ... ok
+test t1_duplex_and_pipeline_keep_mac_release_independent_of_phy ... ok
+test arrival_boundary_and_media_schema_metrics_are_exact ... ok
+test delayed_carrier_and_same_time_carrier_prevent_false_collisions ... ok
+test half_stop_preserves_incomplete_jam_and_backoff_without_delivery ... ok
+test repeat_collisions_and_max_frame_match_remaining_catalog_cases ... ok
+test collisions_jam_beb_retries_match_analytic_vectors ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+     Running tests/ethernet_qos.rs (target/debug/deps/ethernet_qos-3502f3be6b66c010)
+
+running 5 tests
+test byte_and_device_queue_capacities_match_golden_admission ... ok
+test strict_priority_and_fifo_schedulers_match_golden_source_order ... ok
+test active_frame_is_nonpreemptive_and_periodic_burst_times_are_exact ... ok
+test public_ethernet_examples_prepare_and_execute ... ok
+test flow_metrics_check_deadlines_nearest_rank_and_empty_samples ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
+
+     Running tests/ethernet_vlan.rs (target/debug/deps/ethernet_vlan-1569e648df6df7b5)
+
+running 7 tests
+test invalid_vlan_types_boundaries_duplicate_and_missing_keys_fail_prepare ... ok
+test fanout_checks_byte_capacity_after_per_copy_tag_rewrite ... ok
+test static_multicast_distinguishes_known_unknown_empty_and_unsubscribed ... ok
+test priority_tracks_hop_class_and_untagged_reception_resets_dei ... ok
+test vlan_fdb_uses_vid_and_broadcast_skips_nonmember_ports ... ok
+test readable_examples_run_and_unicast_matches_the_64_68_64_byte_timing ... ok
+test exact_wire_and_processing_stops_exclude_t_and_commit_at_t_plus_one ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.26s
+
+     Running tests/event_timing.rs (target/debug/deps/event_timing-7480fa41e9bf9350)
+
+running 1 test
+test cli_reports_event_loop_time_for_complete_and_partial_runs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+     Running tests/extension_envelope_vectors.rs (target/debug/deps/extension_envelope_vectors-2baf018e8cf3d9b2)
+
+running 3 tests
+test vector_bridge_scope_public_prepare ... ok
+test vector_outer_hex_and_ownership_rejected_by_public_prepare ... ok
+test vector_envelope_discriminants_and_unknown_fields_public_prepare ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/extension_publication.rs (target/debug/deps/extension_publication-3e0ae9cd5ae44c92)
+
+running 3 tests
+test rejected_candidate_time_does_not_extend_new_profile_busy_integrals ... ok
+test network_extension_envelopes_identify_the_original_request_and_owning_target ... ok
+test wire_export_validates_the_host_ordering_field_before_domain_projection ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.06s
+
+     Running tests/gateway.rs (target/debug/deps/gateway-9e3b0387968cca01)
+
+running 16 tests
+test gateway_rx_overflow_drops_newest_without_changing_source_success ... ok
+test gateway_rx_holds_full_tx_copy_until_sof_frees_a_slot ... ok
+test wrong_bus_rx_and_bus_to_bus_paths_are_rejected ... ok
+test gateway_same_egress_waits_follow_first_ready_order_across_ingresses ... ok
+test gateway_rx_fanout_keeps_only_unadmitted_egress_and_does_not_duplicate_copies ... ok
+test gateway_rx_capacity_counts_both_gateway_and_tx_processing ... ok
+test gateway_default_rx_capacity_accepts_64_and_drops_the_65th ... ok
+test gateway_zero_rx_and_unmatched_receptions_have_defined_capacity_semantics ... ok
+test same_priority_copies_follow_ready_commit_order_and_configuration_permutations ... ok
+test gateway_failures_keep_the_last_committed_prefix_without_partial_fanout ... ok
+test gateway_rx_capacity_json_is_strict_and_normalized ... ok
+test inactive_reservations_and_mutated_routing_are_validated_before_execution ... ok
+test all_gateway_fixtures_match_independent_expectations ... ok
+test input_roles_and_gateway_initial_state_survive_arbitrary_extensions_and_bom ... ok
+test arbitrary_bus_gate_names_preserve_multibus_results_and_timing ... ok
+test schema2_publication_preserves_references_hashes_and_per_bus_metrics ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.63s
+
+     Running tests/memory_ipc.rs (target/debug/deps/memory_ipc-705731a6fd364e68)
+
+running 11 tests
+test preparation_is_strict_and_validates_after_stop ... ok
+test independent_invalid_fixture_rules_are_diagnosed ... ok
+test service_overflow_retains_admitted_request_and_unmodified_memory ... ok
+test simultaneous_generator_prefix_uses_generator_then_ordinal ... ok
+test failure_during_admission_preserves_awaiting_child_and_offered_conservation ... ok
+test final_dma_write_and_notification_reservation_fail_atomically ... ok
+test metadata_registries_sorted_and_cohort_owner_survives_later_port_reuse ... ok
+test zero_horizon_empty_metrics_are_null_without_points ... ok
+test metric_points_preserve_reservation_and_callback_effect_order ... ok
+test dma_uses_row_boundary_chunks_and_same_memory_nonoverlap ... ok
+test every_fixture_matches_independent_bytes_times_and_prefixes ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+     Running tests/network_extension_profiles.rs (target/debug/deps/network_extension_profiles-227e236f6ae22068)
+
+running 19 tests
+test composite_design_prepare_vectors_report_the_original_json_pointer ... ok
+test workload_controls_unknown_fields_and_duplicate_keys_reject ... ok
+test exact_prepare_rejects_invalid_partitions_and_paths ... ok
+test composite_synthetic_psfp_drop_creates_no_child_and_releases_rx ... ok
+test suspended_guard_wait_is_idle_medium_and_not_an_extra_resume_gap ... ok
+test legal_frame_preemption_matches_independent_design_vector ... ok
+test runtime_pending_limit_fails_atomically_with_prefix_output ... ok
+test network_design_vectors::exact_legal_preemption_timeline_vector ... ok
+test express_arriving_during_gap_waits_then_starts_new_group ... ok
+test composite_polices_once_before_capacity_and_releases_before_gate_sof ... ok
+test composite_and_preemption_pending_caps_preserve_the_successful_prefix ... ok
+test composite_completed_branches_return_capacity_and_control_cap_is_semantic ... ok
+test fragment_guard_accepts_equality_and_rejects_one_ps_short ... ok
+test uninterrupted_fragments_and_low_numbered_express_priority ... ok
+test preemption_half_open_and_active_prefix_are_actual ... ok
+test replication_uses_each_path_and_delivers_once ... ok
+test empty_class_sets_minimum_fragments_and_sequence_window_edges_prepare ... ok
+test network_design_vectors::exact_prepare_rejection_vectors ... ok
+test replication_admission_drop_and_sof_denominators ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s
+
+     Running tests/network_extensions.rs (target/debug/deps/network_extensions-2ed055be9de9d61f)
+
+running 11 tests
+test network_prepare_diagnostics_use_original_json_source_and_pointer ... ok
+test can_ethernet_product_preserves_r01_and_r02_processing_and_wire_times ... ok
+test psfp_product_arrivals_consume_once_and_stream_gate_drops_before_meter ... ok
+test identical_native_generator_ids_keep_media_qualified_origins_and_latencies ... ok
+test bridge_fanout_rx_limit_and_partial_denominators_preserve_native_contracts ... ok
+test tsn_wire_scheduling_matches_independent_tas_and_cbs_boundaries ... ok
+test time_limited_dynamic_run_keeps_planned_and_observed_receptions_separate ... ok
+test dynamic_triangle_matches_independent_three_hop_timing ... ok
+test dynamic_large_cost_tree_and_at_prefixed_control_id_remain_valid ... ok
+test registrable_source_and_fdb_use_effective_membership_and_drop_expired_queue_copy ... ok
+test empty_and_control_only_workloads_run_on_the_same_prepared_profile ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.68s
+
+     Running tests/network_wire_host.rs (target/debug/deps/network_wire_host-f6bfc18f9c8b7ddb)
+
+running 6 tests
+test external_rx_start_arrival_release_are_all_half_open ... ok
+test control_fifo_waits_for_started_data_and_shares_one_port_occupancy ... ok
+test pause_resume_protocol_state_and_records_match_synchronous_api ... ok
+test ready_pause_resume_and_stopped_boundary_export_remain_frozen ... ok
+test redundancy_snapshot_maps_only_actual_transfers_even_before_sof_and_after_drop ... ok
+test learning_ingress_never_relays_after_forwarding_transition_during_processing ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.74s
+
+     Running tests/preparation_failures.rs (target/debug/deps/preparation_failures-9e01d44ef648e978)
+
+running 3 tests
+test schema_three_preparation_failure_publishes_registered_shape_accepted_by_viewer ... ok
+test unknown_profile_and_unreadable_config_use_schema_one_and_preserve_existing_files ... ok
+test selected_profile_failures_publish_empty_results_with_registered_descriptors ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.19s
+
+     Running tests/provenance.rs (target/debug/deps/provenance-01919fc9b592ebf4)
+
+running 12 tests
+test separate_roots_lineage_and_deleted_sources_survive_export ... ok
+test execution_settings_adjusted_after_prepare_override_captured_source_values ... ok
+test relocation_preserves_canonical_configuration_and_input_hashes ... ok
+test composed_tsn_large_cbs_credit_is_hashed_without_truncation ... ok
+test composed_tsn_large_meter_capacity_is_hashed_without_truncation ... ok
+test composed_tsn_policy_changes_effective_configuration_hash ... ok
+test composed_bridge_rule_changes_effective_configuration_hash ... ok
+test composed_registered_parameters_and_channels_remain_in_effective_configuration ... ok
+test composed_dynamic_policy_changes_effective_configuration_hash ... ok
+test composed_dynamic_control_changes_effective_configuration_hash ... ok
+test composed_registered_subject_changes_execution_and_effective_configuration_hash ... ok
+test every_builtin_profile_shares_build_and_effective_reproduction_data ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.64s
+
+     Running tests/registry.rs (target/debug/deps/registry-937729b07543eb4d)
+
+running 38 tests
+test duplicate_registration_does_not_replace_original ... ok
+test channel_capability_checks_descriptor_even_when_implementation_is_permissive ... ok
+test backwards_phase_runs_after_current_arbitration_and_hits_delta_guard_with_context ... ok
+test coordinator_borrows_frozen_output_preserves_lineage_and_finishes_before_simples ... ok
+test callback_failure_discards_every_effect_and_preserves_pending_current ... ok
+test cancellation_excludes_current_timer_and_removes_future_tombstones_from_pending ... ok
+test custom_profile_validates_owned_json_and_factory_receives_it ... ok
+test custom_profile_cannot_publish_schema_two_layout_under_schema_one ... ok
+test custom_payload_channel_timer_cancel_and_arbitration_execute_deterministically ... ok
+test current_timer_token_identifies_reservations_and_is_scoped_to_timer_callbacks ... ok
+test failed_callback_does_not_commit_cancellation_of_an_existing_timer ... ok
+test event_limit_and_half_open_time_boundary_are_enforced ... ok
+test generic_invalid_channel_parameter_never_reaches_factories ... ok
+test generic_channel_factories_receive_frozen_inputs_in_stable_order ... ok
+test generic_channel_factory_failure_releases_only_constructed_prefix ... ok
+test generic_prepare_defers_model_factories_until_runtime ... ok
+test initialization_error_discards_effects_and_finishes_successful_initializations ... ok
+test panic_is_diagnostic_and_cleanup_receives_committed_prefix ... ok
+test profile_rejects_module_schemas_outside_its_allowlist ... ok
+test profile_model_record_versions_are_unique_per_name ... ok
+test strategy_registrations_are_executable ... ok
+test unknown_schema_and_port_version_are_prepare_errors ... ok
+test zero_time_limit_without_initial_events_still_reports_time_limit ... ok
+test coordinator_rejects_noncompound_targets_and_unowned_or_incompatible_outputs ... ok
+test registered_builtin_adapter_preserves_builtin_result ... ok
+test acceptance_lifecycle_failures_release_models_and_keep_frozen_prefix ... ok
+test acceptance_phase_fixed_point_resource_order_and_next_delta_repeat ... ok
+test custom_profile_can_use_a_builtin_name_without_inheriting_its_catalog ... ok
+test custom_preparation_failure_uses_registered_implementation_versions ... ok
+test custom_run_publishes_registered_records_and_metrics ... ok
+test live_channel_settings_override_captured_initial_state_after_prepare ... ok
+test custom_dynamic_builtin_name_uses_custom_registry ... ok
+test custom_tsn_builtin_name_uses_custom_registry ... ok
+test custom_gateway_builtin_name_uses_custom_registry ... ok
+test empty_and_nested_model_record_objects_reach_validator_and_publication ... ok
+test explicit_run_config_selects_custom_registry_instead_of_default ... ok
+test non_object_model_record_data_is_rejected_before_validator_and_preserves_prefix ... ok
+test finish_can_retain_frozen_spool_after_full_buffer_and_tail_are_committed ... ok
+
+test result: ok. 38 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.30s
+
+     Running tests/registry_diagnostics.rs (target/debug/deps/registry_diagnostics-55f5d4526f7d658f)
+
+running 8 tests
+test structural_config_reference_errors_use_known_value_spans ... ok
+test unused_registered_declaration_defaults_still_obey_registry_bounds ... ok
+test static_input_callback_failure_does_not_invent_source_or_target ... ok
+test generic_parameter_bounds_select_default_and_override_sources ... ok
+test generic_unknown_types_and_declaration_schema_retain_ned_sources ... ok
+test unused_registered_double_and_channel_defaults_obey_bounds ... ok
+test generic_execution_settings_use_adopted_ini_token_and_stable_reason ... ok
+test generic_run_publishes_same_annotated_preparation_diagnostic ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+     Running tests/soc.rs (target/debug/deps/soc-a181a29cbbfb78f4)
+
+running 20 tests
+test noc_arbitration_overflow_rolls_back_prior_grants_and_gauges_in_same_batch ... ok
+test strict_validation_includes_unexecuted_workload ... ok
+test zero_delay_channels_are_valid_and_nonzero_delays_reject ... ok
+test arithmetic_overflow_keeps_generated_pending_prefix ... ok
+test simultaneous_opposite_links_are_independent ... ok
+test bus_decode_crossing_and_error_cycles ... ok
+test noc_three_parallel_outputs_and_final_delivery_only ... ok
+test failure_prefix_keeps_completion_at_h_but_excludes_half_open_window ... ok
+test fixed_priority_and_fifo_selection ... ok
+test zero_horizon_empty_metrics_and_descriptors ... ok
+test multi_target_shared_resource_gap_and_full_interval_decode ... ok
+test noc_rr_head_of_line_and_same_router_parallel_outputs ... ok
+test priority_tie_path_and_nonpreemption ... ok
+test single_manager_ahb_error_phase_and_exact_completion_boundary ... ok
+test exact_queue_means_sample_denominators_and_window_boundary ... ok
+test invalid_topology_ranges_bool_duplicate_json_and_empty_load ... ok
+test ahb_stop_in_every_stage_preserves_busy_and_no_completion ... ok
+test all_analytic_fixtures_execute ... ok
+test future_generation_uses_one_dispatcher_and_failed_ordinal_stays_pending ... ok
+test long_sequential_histories_keep_fifo_capacity_and_completion_accounting ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.15s
+
+     Running tests/spooling.rs (target/debug/deps/spooling-2411a736c5a86642)
+
+running 5 tests
+test archived_delayed_receive_and_lexical_ids_match_materialized_output ... ok
+test every_builtin_profile_has_identical_memory_and_spooled_outputs ... ok
+test can_gateway_archives_match_all_valid_fixtures_and_edge_windows ... ok
+test spilled_can_observations_and_partial_failure_prefix_match_memory ... ok
+test archive_output_matches_every_partial_event_boundary ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.80s
+
+     Running tests/viewer_cli.rs (target/debug/deps/viewer_cli-198ffedf31627aa4)
+
+running 6 tests
+test relative_output_reports_an_absolute_path ... ok
+test dangling_output_symlink_is_preserved ... ok
+test invalid_input_and_unknown_schema_do_not_create_output ... ok
+test help_and_argument_errors ... ok
+test local_html_is_self_contained_and_hostile_json_is_inert ... ok
+test output_collisions_equal_input_and_missing_parent_preserve_data ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/wire_codecs.rs (target/debug/deps/wire_codecs-ffd89076a4c00097)
+
+running 40 tests
+test codec::tests::independent_crc ... ok
+test codec::tests::odd_checksum ... ok
+test guards::tests::unknown_discriminators_never_silently_choose_a_representative ... ok
+test membership::tests::predicate_union ... ok
+test mvrp::tests::canonical ... ok
+test mvrp::tests::malformed_tail ... ok
+test mvrp::tests::local_leaveall ... ok
+test guards::tests::ambiguous_rstp_paths_require_actual_satisfying_before_conditions ... ok
+test guards::tests::applicant_identity_uses_actual_post_registrar_input_in_the_reducer_order ... ok
+test guards::tests::rstp_real_flag_clear_and_fdb_completion_are_distinct_rows ... ok
+test guards::tests::rstp_real_transmit_uct_returns_keep_their_transmit_rule_rows ... ok
+test rstp::closure_tests::legacy_learning_is_separate_from_forwarding ... ok
+test rstp::closure_tests::transmit_hold_releases_one_credit_per_tick ... ok
+test rstp::closure_tests::own_other_port_selects_backup ... ok
+test rstp::closure_tests::supplied_rcv_info_vectors ... ok
+test rstp::supplied_vectors::prs_observation_rows_do_not_consume_machine_entry_budget ... ok
+test rstp::closure_tests::consumed_message_is_retained_in_snapshot ... ok
+test rstp::supplied_vectors::supplied_rstp_remaining_units ... ok
+test rstp::closure_tests::legacy_migration_and_return_to_rstp ... ok
+test rstp::tests::codec ... ok
+test rstp::supplied_vectors::supplied_rstp_calculations ... ok
+test rstp::tests::tick_autoedge ... ok
+test guards::tests::rstp_real_migration_and_edge_branches_have_truthful_ids ... ok
+test rstp::tests::two_bridge_handshake ... ok
+test guards::tests::validation_is_exact_scoped_and_rejects_replaced_fallback_cells ... ok
+test guards::tests::dedicated_fixture_ids_use_only_input_identity_and_real_reducers ... ok
+test rstp::supplied_vectors::supplied_guard_transitions ... ok
+test supplied_local_leaveall_fsm_sequence ... ok
+test independent_mvrp_packing ... ok
+test independent_wire_decoders ... ok
+test independent_auxiliary_states ... ok
+test supplied_mvrp_wire_fields ... ok
+test independent_mvrp_admin_and_capacity ... ok
+test rstp::supplied_vectors::supplied_rstp_wire_fields ... ok
+test rstp::supplied_vectors::supplied_state_entries ... ok
+test independent_mvrp_registrar_matrix ... ok
+test guards::tests::rstp_real_transient_returns_keep_their_own_frozen_rows ... ok
+test guards::tests::every_finite_input_cell_resolves_purely_and_is_unique_except_begin ... ok
+test independent_mvrp_applicant_matrix ... ok
+test rstp::supplied_vectors::supplied_rstp_scenarios ... ok
+
+test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+     Running tests/wire_profiles.rs (target/debug/deps/wire_profiles-3bfb05d1e247e689)
+
+running 4 tests
+test active_invalid_revision_and_partial_ownership_rejected ... ok
+test malformed_report_completes_rx_but_changes_no_membership ... ok
+test passive_reports_have_physical_boundary_and_membership ... ok
+test active_profiles_exchange_actual_wire_and_converge ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 31.29s
+
+   Doc-tests dir_simulator
+
+running 1 test
+test crates/dir-simulator/src/lib.rs - (line 3) - compile ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

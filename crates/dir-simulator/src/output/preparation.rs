@@ -330,13 +330,13 @@ pub(crate) fn export_preparation_failure(
     if let Some(catalog) = selected {
         metadata["metrics"] = catalog["metrics"].clone();
         metadata["models"] = json!(models);
-        if version == 2 {
+        if matches!(version, 2 | 3) {
             metadata["model_profile"] = json!(profile);
             metadata["model_schemas"] = catalog["model_schemas"].clone();
         }
     }
     let mut simulation = json!({"termination":"prep_failed","partial":true,"start_ps":"0","end_ps":"0","last_event_time_ps":null,"committed_events":"0","pending_events":"0","records":[],"summary":[]});
-    if version == 2 {
+    if matches!(version, 2 | 3) {
         simulation["model_records"] = json!([]);
     } else {
         simulation["requests"] = json!([]);
