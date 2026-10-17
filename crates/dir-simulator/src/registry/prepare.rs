@@ -58,7 +58,13 @@ pub fn prepare_with_registry_and_source(
     if registry.builtin_profiles.contains(profile)
         && matches!(
             profile,
-            "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1" | "can.ethernet.gateway.v1"
+            "ethernet.l2.dynamic.v1"
+                | "ethernet.tsn.v1"
+                | "can.ethernet.gateway.v1"
+                | "can.ethernet.tsn.v1"
+                | "ethernet.redundancy.abstract.v1"
+                | "ethernet.preemption.abstract.v1"
+                | "ethernet.control.wire.experimental.v1"
         )
     {
         let mut prepared = input::prepare_with_source(&config, cwd, source)?;
@@ -84,9 +90,9 @@ pub fn prepare_with_registry_and_source(
         return Ok(prepared);
     }
     let descriptor = &registry.profiles[profile];
-    if descriptor.output_schema_version != 2 {
+    if !matches!(descriptor.output_schema_version, 2 | 3) {
         return Err(error(
-            "registered extension profiles require output schema version 2",
+            "registered extension profiles require output schema version 2 or 3",
         ));
     }
     let network = header.network.as_deref().ok_or_else(|| {
@@ -417,6 +423,7 @@ pub fn prepare_with_registry_and_source(
             output_sources,
         });
     }
+    registry.validate_metric_targets(profile, &models)?;
     std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         (descriptor.validate)(&models, &channels)
     }))

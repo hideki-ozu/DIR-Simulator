@@ -3,17 +3,30 @@ use super::{Result, error};
 use crate::types::{ethernet::PreparedEthernet, network::PreparedNetwork};
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, path::Path};
+mod extensions;
 pub(crate) mod topology;
+pub(crate) use extensions::prepare_composite;
 
 fn exact(value: &Value, fields: &[&str], label: &str) -> Result<()> {
     let object = value
         .as_object()
         .ok_or_else(|| error(format!("{label} must be object")))?;
     if object.len() != fields.len() || fields.iter().any(|key| !object.contains_key(*key)) {
-        return Err(error(format!(
-            "{label} requires exactly {}",
-            fields.join(", ")
-        )));
+        let field = object
+            .keys()
+            .find(|key| !fields.contains(&key.as_str()))
+            .map(String::as_str)
+            .or_else(|| {
+                fields
+                    .iter()
+                    .find(|key| !object.contains_key(**key))
+                    .copied()
+            })
+            .unwrap_or("");
+        return Err(
+            error(format!("{label} requires exactly {}", fields.join(", ")))
+                .with_target(format!("/{field}")),
+        );
     }
     Ok(())
 }
@@ -25,6 +38,19 @@ pub(crate) fn prepare(
     config_source: (&str, &Path),
     workload_source: Option<(&str, &Path)>,
 ) -> Result<PreparedNetwork> {
+    if matches!(
+        profile,
+        "ethernet.redundancy.abstract.v1" | "ethernet.preemption.abstract.v1"
+    ) {
+        return extensions::prepare(
+            ethernet,
+            config,
+            workload,
+            profile,
+            config_source,
+            workload_source,
+        );
+    }
     let config_document = super::JsonDocument::parse(config_source.0)?;
     let workload_document = workload_source
         .map(|(text, _)| super::JsonDocument::parse(text))
@@ -167,6 +193,8 @@ pub(crate) fn prepare(
         dynamic: Some(dynamic),
         tsn,
         bridge: None,
+        extensions: None,
+        wire: None,
         config,
         workload,
     })

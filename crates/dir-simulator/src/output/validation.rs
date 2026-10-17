@@ -411,7 +411,7 @@ pub(crate) fn validate_result_bundle(
     }
     let manifest: Manifest =
         serde_json::from_reader(BufReader::new(&mut manifest_artifact.file)).map_err(io)?;
-    if ![1, 2].contains(&manifest.schema_version)
+    if ![1, 2, 3].contains(&manifest.schema_version)
         || manifest.run_id != expected.run_id
         || manifest.status != "complete"
         || manifest.metadata_ref != "results.json#/metadata"

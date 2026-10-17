@@ -1,0 +1,48 @@
+[
+  {
+    "name": "python-tests",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.864,
+    "log": "tmp/release-readiness-20261017/documents-after-formatting/python-tests.log",
+    "sha256": "95a5c7a4e8e46a374e7c25bc3e1d74827511a67b407765215e93b203c2be93f5"
+  },
+  {
+    "name": "script-tests",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.211,
+    "log": "tmp/release-readiness-20261017/documents-after-formatting/script-tests.log",
+    "sha256": "554a9378cec27393ee95669c7684bb959da47ac6e06a3474ff4a634686b8c355"
+  },
+  {
+    "name": "trace-strict",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_traceability.py",
+      "--strict"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 0.136,
+    "log": "tmp/release-readiness-20261017/documents-after-formatting/trace-strict.log",
+    "sha256": "b00a8b818420fc0e141b6e93c3f622d06e2d07bbd69c1061a229689c2352116e"
+  }
+]

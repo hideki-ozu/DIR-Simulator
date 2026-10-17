@@ -1,0 +1,40 @@
+   Compiling dir-simulator v0.1.0 ([source-root]/crates/dir-simulator)
+error[E0599]: no method named `current_timer_token` found for mutable reference `&mut dir_simulator::registry::Context<'_>` in the current scope
+    --> crates/dir-simulator/tests/registry.rs:1512:23
+     |
+1512 |             assert!(c.current_timer_token().is_none());
+     |                       ^^^^^^^^^^^^^^^^^^^ method not found in `&mut Context<'_>`
+
+error[E0599]: no method named `current_timer_token` found for mutable reference `&mut dir_simulator::registry::Context<'_>` in the current scope
+    --> crates/dir-simulator/tests/registry.rs:1529:23
+     |
+1529 |             assert!(c.current_timer_token().is_none());
+     |                       ^^^^^^^^^^^^^^^^^^^ method not found in `&mut Context<'_>`
+
+error[E0599]: no method named `current_timer_token` found for mutable reference `&mut dir_simulator::registry::Context<'_>` in the current scope
+    --> crates/dir-simulator/tests/registry.rs:1535:27
+     |
+1535 |                 assert!(c.current_timer_token().is_none());
+     |                           ^^^^^^^^^^^^^^^^^^^ method not found in `&mut Context<'_>`
+
+error[E0599]: no method named `current_timer_token` found for mutable reference `&mut dir_simulator::registry::Context<'_>` in the current scope
+    --> crates/dir-simulator/tests/registry.rs:1538:31
+     |
+1538 |                 let token = c.current_timer_token().cloned().expect("timer token");
+     |                               ^^^^^^^^^^^^^^^^^^^ method not found in `&mut Context<'_>`
+
+error[E0599]: no method named `current_timer_token` found for mutable reference `&mut dir_simulator::registry::Context<'_>` in the current scope
+    --> crates/dir-simulator/tests/registry.rs:1547:30
+     |
+1547 |                 assert_eq!(c.current_timer_token(), Some(&token));
+     |                              ^^^^^^^^^^^^^^^^^^^ method not found in `&mut Context<'_>`
+
+error[E0599]: no method named `current_timer_token` found for mutable reference `&mut dir_simulator::registry::Context<'_>` in the current scope
+    --> crates/dir-simulator/tests/registry.rs:1552:23
+     |
+1552 |             assert!(c.current_timer_token().is_none());
+     |                       ^^^^^^^^^^^^^^^^^^^ method not found in `&mut Context<'_>`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `dir-simulator` (test "registry") due to 6 previous errors
+warning: build failed, waiting for other jobs to finish...

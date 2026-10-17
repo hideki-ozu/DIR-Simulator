@@ -86,16 +86,19 @@ pub(super) fn metadata(
         .into_iter()
         .map(|(key, value)| json!({"key":key,"value":value}))
         .collect();
-    let metrics:Vec<_>=profile.metrics.iter().map(|name| {let unit=registered.registry.metrics.get(name).map(|m|m.unit.as_str()).unwrap_or("count");json!({"metric_id":name,"version":"1","unit":unit,"value_kind":"integer","sampling":"point","aggregation":"identity"})}).collect();
+    let metrics:Vec<_>=profile.metrics.iter().filter(|name|registered.registry.metrics.contains_key(*name)).map(|name| {let unit=registered.registry.metrics.get(name).map(|m|m.unit.as_str()).unwrap_or("count");json!({"metric_id":name,"version":"1","unit":unit,"value_kind":"integer","sampling":"point","aggregation":"identity"})}).collect();
     let schemas: Vec<_> = profile
         .model_records
         .iter()
         .map(|s| json!({"schema_name":s.name,"schema_version":s.version}))
         .collect();
     let models:BTreeMap<_,_>=registered.models.iter().map(|m|(m.implementation_key.clone(),json!({"type":m.implementation_key,"version":registered.registry.modules[&m.implementation_key].descriptor.implementation_version,"assumptions":[]}))).collect();
-    Ok(
-        json!({"started_at_utc":timestamp,"finished_at_utc":super::metadata::utc_now(),"sources":sources,"input_sha256":digest(canonical(&json!(hashes)).as_bytes()),"config_sha256":digest(canonical(&json!(config)).as_bytes()),"config":config,"runtime_version":env!("CARGO_PKG_VERSION"),"model_registry_version":"1","model_profile":profile.name,"models":models.into_values().collect::<Vec<_>>(),"initial_state":registered.models.iter().map(|m|json!({"instance":m.id,"state":canonical(&json!({"parameters":m.parameters}))})).collect::<Vec<_>>(),"metrics":metrics,"model_schemas":schemas,"time_resolution_ps":"1","window_ps":prepared.common.metrics_window_ps.to_string(),"seed":null,"implementation_coverage":{"profile":profile.name,"reproduction_conditions":"identified","limitations":[]}}),
-    )
+    let mut result = json!({"started_at_utc":timestamp,"finished_at_utc":super::metadata::utc_now(),"sources":sources,"input_sha256":digest(canonical(&json!(hashes)).as_bytes()),"config_sha256":digest(canonical(&json!(config)).as_bytes()),"config":config,"runtime_version":env!("CARGO_PKG_VERSION"),"model_registry_version":"1","model_profile":profile.name,"models":models.into_values().collect::<Vec<_>>(),"initial_state":registered.models.iter().map(|m|json!({"instance":m.id,"state":canonical(&json!({"parameters":m.parameters}))})).collect::<Vec<_>>(),"metrics":metrics,"model_schemas":schemas,"time_resolution_ps":"1","window_ps":prepared.common.metrics_window_ps.to_string(),"seed":null,"implementation_coverage":{"profile":profile.name,"reproduction_conditions":"identified","limitations":[]}});
+    let metrics_v2=profile.metrics.iter().filter_map(|name|registered.registry.metrics_v2.get(name)).map(|m|json!({"name":m.descriptor.name,"unit":m.descriptor.unit,"version":m.descriptor.version.to_string(),"value_kind":m.descriptor.value_kind,"sampling":m.descriptor.sampling,"aggregation":m.descriptor.aggregation,"targets":m.targets,"initial_gauges":m.initial_gauges.iter().map(|(k,v)|(k,v.to_string())).collect::<BTreeMap<_,_>>(),"max_metric_targets":registered.registry.metric_v2_limits.max_metric_targets.to_string(),"max_observations_per_batch":registered.registry.metric_v2_limits.max_observations_per_batch.to_string()})).collect::<Vec<_>>();
+    if !metrics_v2.is_empty() {
+        result["metrics_v2"] = json!(metrics_v2);
+    }
+    Ok(result)
 }
 
 fn row(prepared: &PreparedSimulation, seq: usize, p: &crate::snapshot::Point) -> Value {
@@ -118,9 +121,15 @@ fn bytes(writer: &mut dyn std::io::Write, value: &[u8]) -> Result<(), Diagnostic
 fn value(writer: &mut dyn std::io::Write, v: &Value) -> Result<(), Diagnostic> {
     bytes(writer, canonical(v).as_bytes())
 }
+// Length-prefixed root namespace is shared with the specified network identifier format.
+fn qualified_frame_id(id: &str) -> String {
+    let schema = "ethernet.dynamic.frame";
+    format!("{}:{schema}{}:{id}", schema.len(), id.len())
+}
 fn model_record_value(
     prepared: &PreparedSimulation,
     record: &crate::registry::ModelRecord,
+    records: &BTreeMap<String, crate::registry::ModelRecord>,
 ) -> Value {
     let network = prepared.registered.as_ref().unwrap().network.is_some();
     let mut data = record.data.clone();
@@ -137,7 +146,89 @@ fn model_record_value(
             request = json!(record.id);
         }
         origin = data.get("origin_id").cloned().unwrap_or(Value::Null);
+        let referenced = |schema: &str, id: &Value| -> Option<&Value> {
+            id.as_str()
+                .and_then(|id| records.get(&format!("{schema}:{id}")))
+                .map(|record| &record.data)
+        };
         match record.schema.name.as_str() {
+            "dir.redundancy.origin" | "dir.redundancy.branch" | "dir.redundancy.recovery" => {
+                subject = data["stream_id"].as_str().unwrap_or(&subject).into();
+                let root = if record.schema.name == "dir.redundancy.origin" {
+                    Some(&data)
+                } else {
+                    referenced("dir.redundancy.origin", &data["origin_id"])
+                };
+                request = root
+                    .map(|root| root["source_frame_id"].clone())
+                    .unwrap_or(Value::Null);
+                origin = data["origin_id"].clone();
+            }
+            "dir.preemption.transfer"
+            | "dir.preemption.fragment"
+            | "dir.preemption.gap"
+            | "dir.preemption.decision"
+            | "dir.preemption.delivery" => {
+                let transfer_id = data
+                    .get("transfer_id")
+                    .filter(|id| !id.is_null())
+                    .or_else(|| data.get("active_transfer_id").filter(|id| !id.is_null()))
+                    .or_else(|| data.get("suspended_transfer_id").filter(|id| !id.is_null()))
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                let transfer = referenced("dir.preemption.transfer", &transfer_id);
+                request = data
+                    .get("frame_id")
+                    .cloned()
+                    .or_else(|| transfer.map(|t| t["frame_id"].clone()))
+                    .unwrap_or(Value::Null);
+                if record.schema.name == "dir.preemption.delivery" {
+                    subject = referenced("ethernet.dynamic.frame", &request)
+                        .and_then(|f| f["source"].as_str())
+                        .unwrap_or(&subject)
+                        .into();
+                } else {
+                    subject = data
+                        .get("from_port")
+                        .or_else(|| data.get("port"))
+                        .and_then(Value::as_str)
+                        .unwrap_or(&subject)
+                        .into();
+                }
+                origin = request
+                    .as_str()
+                    .map(|id| json!(qualified_frame_id(id)))
+                    .unwrap_or(Value::Null);
+            }
+            "dir.composite.ingress" => {
+                if let Some(conversion) =
+                    referenced("dir.can_ethernet.conversion", &data["conversion_id"])
+                {
+                    subject = conversion["gateway"].as_str().unwrap_or(&subject).into();
+                    request = conversion["parent_id"].clone();
+                    origin = conversion["origin_id"].clone();
+                }
+            }
+            "ethernet.control.wire.event" | "ethernet.control.wire.transition" => {
+                subject = data
+                    .get("port")
+                    .and_then(Value::as_str)
+                    .filter(|p| !p.is_empty())
+                    .or_else(|| data.get("bridge").and_then(Value::as_str))
+                    .unwrap_or(&subject)
+                    .into();
+                request = data.get("packet_id").cloned().unwrap_or(Value::Null);
+                origin = Value::Null;
+            }
+            "ethernet.wire.boundary" | "ethernet.wire.membership" => {
+                subject = data["ingress_port"].as_str().unwrap_or(&subject).into();
+                request = data.get("packet_id").cloned().unwrap_or(Value::Null);
+                origin = Value::Null;
+            }
+            "ethernet.wire.membership_timer" => {
+                subject = data["switch"].as_str().unwrap_or(&subject).into();
+            }
+
             "ethernet.frame" => {
                 subject = data["source"].as_str().unwrap_or(&subject).into();
                 data.as_object_mut().unwrap().remove("effect_seq");
@@ -226,7 +317,11 @@ pub(super) fn write_result(
         writer,
         format!(
             ",\"schema_version\":{},\"simulation\":{{\"committed_events\":",
-            descriptor.output_schema_version
+            if registered.control.is_some() {
+                3
+            } else {
+                descriptor.output_schema_version
+            }
         )
         .as_bytes(),
     )?;
@@ -247,18 +342,21 @@ pub(super) fn write_result(
         if i > 0 {
             bytes(writer, b",")?;
         }
-        value(writer, &model_record_value(prepared, r))?;
+        value(
+            writer,
+            &model_record_value(prepared, r, &registered.model_records),
+        )?;
     }
     bytes(writer, b"],\"partial\":")?;
     value(writer, &json!(snapshot.common.partial))?;
     bytes(writer, b",\"pending_events\":")?;
     value(writer, &json!(snapshot.common.pending_events.to_string()))?;
     bytes(writer, b",\"records\":[")?;
-    for (seq, p) in snapshot.common.iter_points()?.enumerate() {
+    for (seq, record) in metric_record_values(prepared, snapshot)?.iter().enumerate() {
         if seq > 0 {
             bytes(writer, b",")?;
         }
-        value(writer, &row(prepared, seq, &p?))?;
+        value(writer, record)?;
     }
     bytes(writer, b"],\"start_ps\":\"0\",\"summary\":")?;
     let summary = if prepared.registered.as_ref().unwrap().network.is_some() {
@@ -266,18 +364,22 @@ pub(super) fn write_result(
     } else {
         Vec::new()
     };
-    value(
-        writer,
-        &json!(
-            summary
-                .iter()
-                .map(super::json::record_value)
-                .collect::<Vec<_>>()
-        ),
-    )?;
+    let mut summary_values = summary
+        .iter()
+        .map(super::json::record_value)
+        .collect::<Vec<_>>();
+    summary_values.extend(metric_summary_values(prepared, snapshot)?);
+    value(writer, &json!(summary_values))?;
+    if !registered.metrics_v2.accumulators.is_empty() { /* V2 summaries are written by the combined projection below. */
+    }
     bytes(writer, b",\"termination\":")?;
     value(writer, &json!(snapshot.common.termination))?;
-    bytes(writer, b"}}\n")
+    bytes(writer, b"}")?;
+    if let Some(control) = &registered.control {
+        bytes(writer, b",\"control\":")?;
+        value(writer, control)?;
+    }
+    bytes(writer, b"}\n")
 }
 
 pub(super) fn write_csv(
@@ -305,8 +407,8 @@ pub(super) fn write_csv(
         "sample_count",
     ];
     bytes(writer,b"schema_version,run_id,seq,event_seq,effect_seq,target,metric,unit,value_kind,value,time_ps,start_ps,end_ps,request_id,receiver,reason,sample_count\n")?;
-    for (seq, p) in snapshot.common.iter_points()?.enumerate() {
-        let row = row(prepared, seq, &p?);
+    let rows = metric_record_values(prepared, snapshot)?;
+    for row in rows {
         bytes(writer, format!("{version},{run_id}").as_bytes())?;
         for field in fields {
             bytes(writer, b",")?;
@@ -324,4 +426,118 @@ pub(super) fn write_csv(
         bytes(writer, b"\n")?;
     }
     Ok(())
+}
+
+pub(super) fn metric_summary_values(
+    prepared: &PreparedSimulation,
+    snapshot: &Snapshot,
+) -> Result<Vec<Value>, Diagnostic> {
+    let registered = snapshot
+        .registered
+        .as_ref()
+        .ok_or_else(|| Diagnostic::output("registered snapshot missing"))?;
+    registered
+        .metrics_v2
+        .summary(
+            &prepared.registered.as_ref().unwrap().registry,
+            snapshot.common.end_ps,
+            prepared.common.metrics_window_ps,
+        )
+        .map_err(|e| Diagnostic::output(e.0))
+}
+pub(super) fn write_summary_csv(
+    writer: &mut dyn std::io::Write,
+    prepared: &PreparedSimulation,
+    snapshot: &Snapshot,
+    run_id: &str,
+    version: u32,
+) -> Result<(), Diagnostic> {
+    bytes(writer,b"schema_version,run_id,seq,event_seq,effect_seq,target,metric,unit,value_kind,value,time_ps,start_ps,end_ps,request_id,receiver,reason,sample_count\n")?;
+    for (seq, row) in metric_summary_values(prepared, snapshot)?
+        .iter()
+        .enumerate()
+    {
+        bytes(writer, format!("{version},{run_id},{seq}").as_bytes())?;
+        for field in [
+            "event_seq",
+            "effect_seq",
+            "target",
+            "metric",
+            "unit",
+            "value_kind",
+            "value",
+            "time_ps",
+            "start_ps",
+            "end_ps",
+            "request_id",
+            "receiver",
+            "reason",
+            "sample_count",
+        ] {
+            bytes(writer, b",")?;
+            let text = match &row[field] {
+                Value::String(s) => s.clone(),
+                Value::Number(n) => n.to_string(),
+                _ => String::new(),
+            };
+            if text.contains([',', '"', '\r', '\n']) {
+                bytes(
+                    writer,
+                    format!("\"{}\"", text.replace('"', "\"\"")).as_bytes(),
+                )?;
+            } else {
+                bytes(writer, text.as_bytes())?;
+            }
+        }
+        bytes(writer, b"\n")?;
+    }
+    Ok(())
+}
+
+fn metric_record_values(
+    prepared: &PreparedSimulation,
+    snapshot: &Snapshot,
+) -> Result<Vec<Value>, Diagnostic> {
+    let legacy = snapshot
+        .common
+        .iter_points()?
+        .collect::<Result<Vec<_>, _>>()?;
+    let metrics = &snapshot.registered.as_ref().unwrap().metrics_v2;
+    if metrics.records.is_empty() {
+        return Ok(legacy
+            .iter()
+            .enumerate()
+            .map(|(seq, p)| row(prepared, seq, p))
+            .collect());
+    }
+    let total = legacy
+        .len()
+        .checked_add(metrics.records.len())
+        .ok_or_else(|| Diagnostic::output("record count overflow"))?;
+    let metric_rows = metrics.record_values(&prepared.registered.as_ref().unwrap().registry, 0);
+    let mut legacy = legacy.iter();
+    let mut next_metric = metric_rows.into_iter().peekable();
+    let mut result = Vec::with_capacity(total);
+    for seq in 0..total {
+        if next_metric
+            .peek()
+            .is_some_and(|v| v["seq"].as_str() == Some(seq.to_string().as_str()))
+        {
+            result.push(next_metric.next().unwrap());
+        } else {
+            result.push(row(
+                prepared,
+                seq,
+                legacy
+                    .next()
+                    .ok_or_else(|| Diagnostic::output("metric journal sequence is inconsistent"))?,
+            ));
+        }
+    }
+    if next_metric.next().is_some() || legacy.next().is_some() {
+        return Err(Diagnostic::output(
+            "metric journal sequence is inconsistent",
+        ));
+    }
+    Ok(result)
 }

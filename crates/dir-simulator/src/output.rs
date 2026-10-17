@@ -3,7 +3,7 @@ use crate::snapshot::Snapshot;
 use crate::types::{Diagnostic, PreparedSimulation};
 use std::path::Path;
 
-mod aggregate;
+pub(crate) mod aggregate;
 mod axi;
 mod canfd;
 mod contribution_sort;
@@ -23,6 +23,7 @@ mod scratch;
 mod soc;
 mod stream;
 mod validation;
+pub(crate) mod wire;
 pub(crate) use preparation::export_preparation_failure;
 pub(crate) use preparation::profile_catalog;
 pub(crate) use validation::{
@@ -60,14 +61,22 @@ pub fn export(
     let run_id = identity.run_id;
     let timestamp = identity.started_at_utc;
     if prepared.registered.as_ref().is_some_and(|r| r.is_generic()) {
-        let version = prepared
+        let version = if snapshot
             .registered
             .as_ref()
-            .unwrap()
-            .registry
-            .profile(&prepared.common.profile)
-            .unwrap()
-            .output_schema_version;
+            .is_some_and(|r| r.control.is_some())
+        {
+            3
+        } else {
+            prepared
+                .registered
+                .as_ref()
+                .unwrap()
+                .registry
+                .profile(&prepared.common.profile)
+                .unwrap()
+                .output_schema_version
+        };
         return publish::stream(output, &run_id, version, snapshot, |stage| {
             stage.write("results.json", |writer| {
                 registered::write_result(writer, prepared, snapshot, &run_id, &timestamp)
@@ -76,6 +85,15 @@ pub fn export(
                 registered::write_csv(writer, prepared, snapshot, &run_id, version)
             })?;
             stage.write("summary.csv", |writer| {
+                if snapshot
+                    .registered
+                    .as_ref()
+                    .is_some_and(|r| !r.metrics_v2.accumulators.is_empty())
+                {
+                    return registered::write_summary_csv(
+                        writer, prepared, snapshot, &run_id, version,
+                    );
+                }
                 let summary = if prepared
                     .registered
                     .as_ref()

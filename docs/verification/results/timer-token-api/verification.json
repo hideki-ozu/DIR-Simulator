@@ -1,0 +1,242 @@
+{
+  "status": "passed_timer_notification_contract",
+  "date_jst": "2026-10-17",
+  "source": {
+    "base_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+    "state": "uncommitted working tree changes",
+    "source_sha256": {
+      "crates/dir-simulator/src/registry/mod.rs": "beaa1ce0fda5c8fba96aa99e399ff0381ff4c0e3b30f5ef66fe555c25cfa6e65",
+      "crates/dir-simulator/tests/registry.rs": "0b1b6f1a4ae4f0792ce0eb2e93eafaaa84a6b8f2e725c892d6642d3869334f75"
+    },
+    "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+    "product_patch": "product.patch",
+    "product_patch_sha256": "13a830efc2cf3f81e11f666aa994a17bf23ecc6b74f097e858fb25240fd35d99"
+  },
+  "environment": {
+    "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "cargo": "cargo 1.85.0 (d73d2caf9 2024-12-31)",
+    "os": "Linux",
+    "machine": "x86_64"
+  },
+  "before_fix": {
+    "status": "expected_compile_failure",
+    "exit_code": 101,
+    "reason": "E0599: no method named current_timer_token",
+    "log": "before-fix.log"
+  },
+  "registry_tests": {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "dir-simulator",
+      "--test",
+      "registry"
+    ],
+    "exit_code": 0,
+    "passed": 38,
+    "new_regression_tests": 1,
+    "regression_test": "current_timer_token_identifies_reservations_and_is_scoped_to_timer_callbacks",
+    "log": "registry-tests.log"
+  },
+  "rust_gates": [
+    {
+      "name": "workspace-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 136.0117907130043
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 17.910519081982784
+    }
+  ],
+  "workspace_counts": {
+    "passed": 778,
+    "failed": 0,
+    "ignored": 19,
+    "suites": 32
+  },
+  "ignored_scope": "19 existing tests require explicit native-worker, socket or Linux fault-isolation runs; not executed for this accessor change",
+  "contract_checks": [
+    "original schedule_at and schedule_after tokens returned",
+    "identical payload/schema/time timers distinguished",
+    "cancelled timer never delivered",
+    "current and expired token cancellation returns false",
+    "None during initialize, port delivery and arbitration",
+    "current token stable during callback mutation",
+    "13 committed events, zero pending, no diagnostics"
+  ],
+  "logs_sha256": {
+    "clippy.log": "2e166e70c68590e441bc8980c06dccab4ce1e190770c5b8c9a0d1c862b48facb",
+    "before-fix.log": "897fa0ff3748233dcedbea6d9f033f42a4c45207a1392e5e95d105ed889e8f7e",
+    "workspace-tests.log": "a0b13a7fa099282882686f4f7cdfcc6232f62243e797276f348ffcb6c8a49ee2",
+    "registry-tests.log": "c9cb2d781a418144091db86753f33f4c2f881859bc835d7fd2f52ecf5392dbee"
+  },
+  "scope": "Generic registered-model callback notification regression; no blanket product conformance or performance claim",
+  "final_gates": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "All traceability reports and the hierarchy annex are up to date\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "output": "traceability: 231 requirements, 60 functions, 274 nodes, 0 structural error(s), 0 incomplete requirement(s), 0 incomplete item(s)\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_guide_links.py"
+      ],
+      "exit_code": 0,
+      "output": "PASS: 34 HTML files, 2689 local links/assets/anchors.\nPASS: authoring memo absent from generated HTML, navigation, links and search index.\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "canonical_document_links": {
+    "links_checked": 256,
+    "errors": []
+  },
+  "standalone_html_qa": {
+    "summary": {
+      "pass": 11,
+      "fail": 0,
+      "total": 11,
+      "result": "PASS"
+    },
+    "checks": [
+      {
+        "name": "file opens",
+        "ok": true,
+        "viewport": "desktop",
+        "status": 200,
+        "title": "DIR機能・動作仕様ガイド — 調査・変更検討用"
+      },
+      {
+        "name": "all local fragments resolve",
+        "ok": true,
+        "viewport": "desktop",
+        "count": 106,
+        "broken": [],
+        "ids": 184
+      },
+      {
+        "name": "all embedded images load",
+        "ok": true,
+        "viewport": "desktop",
+        "count": 13,
+        "bad": []
+      },
+      {
+        "name": "no document horizontal overflow",
+        "ok": true,
+        "viewport": "desktop",
+        "width": 1440,
+        "viewportWidth": 1440,
+        "overflow": 0
+      },
+      {
+        "name": "file opens",
+        "ok": true,
+        "viewport": "mobile",
+        "status": 200,
+        "title": "DIR機能・動作仕様ガイド — 調査・変更検討用"
+      },
+      {
+        "name": "all local fragments resolve",
+        "ok": true,
+        "viewport": "mobile",
+        "count": 106,
+        "broken": [],
+        "ids": 184
+      },
+      {
+        "name": "all embedded images load",
+        "ok": true,
+        "viewport": "mobile",
+        "count": 13,
+        "bad": []
+      },
+      {
+        "name": "no document horizontal overflow",
+        "ok": true,
+        "viewport": "mobile",
+        "width": 390,
+        "viewportWidth": 390,
+        "overflow": 0
+      },
+      {
+        "name": "no JavaScript page errors",
+        "ok": true,
+        "count": 0,
+        "items": []
+      },
+      {
+        "name": "no JavaScript console errors",
+        "ok": true,
+        "count": 0,
+        "items": []
+      },
+      {
+        "name": "no browser request failures",
+        "ok": true,
+        "count": 0,
+        "items": []
+      }
+    ]
+  },
+  "document_sha256": {
+    "docs/specs/インタフェース詳細機能仕様書.md": "1a25ea8b649a8ff5e4a86cc79157d7734ac073085ed3746d328ca89ec9038152",
+    "docs/specs/実行詳細機能仕様書.md": "1c13c4d6b94939a8799eea3666cd9744b8466c7d9ada6e24783bef6e4a93515c",
+    "docs/design/実行詳細設計書.md": "90508bb75860c82831f0901bda66e21ab032889184172854c4c84927d3bc5dde",
+    "docs/アーキテクチャ設計書.md": "057ef484f0291d85be570eac5a3be09af06f178cbd06df716735566af047a2a3",
+    "docs/verification/cases/共通実行検証仕様書.md": "9a1f7b303df67e159e845dd1e395f6e6ffc21dd7fa085f7343cac0a017b31f84",
+    "docs/verification/results/timer-token-api-2026-10-17.md": "9f5f7ad4dc2ffc9cb66e2eee63cce2281065c026fd1c298410585e4c2275179b"
+  }
+}

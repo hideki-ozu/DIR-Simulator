@@ -223,7 +223,14 @@ pub(super) fn resolve_prepared(
         }
         if d.source < d.destination
             && !edges.insert((d.source, d.destination))
-            && !matches!(profile, "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1")
+            && !matches!(
+                profile,
+                "ethernet.l2.dynamic.v1"
+                    | "ethernet.tsn.v1"
+                    | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.preemption.abstract.v1"
+                    | "ethernet.control.wire.experimental.v1"
+            )
         {
             return Err(error("Ethernet parallel connection"));
         }
@@ -241,8 +248,14 @@ pub(super) fn resolve_prepared(
             break;
         }
     }
-    if !matches!(profile, "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1")
-        && (seen.len() != devices.len() || edges.len() + 1 != devices.len())
+    if !matches!(
+        profile,
+        "ethernet.l2.dynamic.v1"
+            | "ethernet.tsn.v1"
+            | "ethernet.redundancy.abstract.v1"
+            | "ethernet.preemption.abstract.v1"
+            | "ethernet.control.wire.experimental.v1"
+    ) && (seen.len() != devices.len() || edges.len() + 1 != devices.len())
     {
         let (root, declaration) = r
             .instances()

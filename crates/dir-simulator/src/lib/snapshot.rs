@@ -7,6 +7,8 @@ pub mod can_ethernet;
 pub mod common;
 #[path = "snapshot/gateway.rs"]
 pub mod gateway;
+#[path = "snapshot/wire.rs"]
+pub mod wire;
 
 #[path = "snapshot/ethernet.rs"]
 pub mod ethernet;

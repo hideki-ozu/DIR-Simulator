@@ -1498,6 +1498,82 @@ fn zero_time_limit_without_initial_events_still_reports_time_limit() {
 }
 
 #[test]
+fn current_timer_token_identifies_reservations_and_is_scoped_to_timer_callbacks() {
+    #[derive(Default)]
+    struct TimerProbe {
+        expected: Vec<TimerToken>,
+        fired: usize,
+        deliveries: usize,
+        arbitrations: usize,
+        receives_port: bool,
+    }
+    impl Model for TimerProbe {
+        fn initialize(&mut self, c: &mut Context<'_>) -> ModelResult {
+            assert!(c.current_timer_token().is_none());
+            self.receives_port = c.self_id() == "Demo.b";
+            // Same payload and schema, including two timers at the same time:
+            // identity must come from the reservation, not the event contents.
+            let later = c.schedule_at(3, schema(), vec![7])?;
+            let first = c.schedule_after(1, schema(), vec![7])?;
+            let second = c.schedule_at(1, schema(), vec![7])?;
+            assert_ne!(first, second);
+            assert_ne!(first, later);
+            self.expected = vec![first, second, later];
+            let cancelled = c.schedule_at(2, schema(), vec![7])?;
+            assert!(c.cancel(&cancelled));
+            assert!(!c.cancel(&cancelled));
+            if c.self_id() == "Demo.a" {
+                c.send_at("out", 1, schema(), vec![7])?;
+            }
+            c.request_arbitration("select")?;
+            assert!(c.current_timer_token().is_none());
+            Ok(())
+        }
+        fn on_event(&mut self, e: &Envelope, c: &mut Context<'_>) -> ModelResult {
+            assert_eq!(e.payload, vec![7]);
+            if e.input_port.is_some() {
+                assert!(c.current_timer_token().is_none());
+                self.deliveries += 1;
+            } else {
+                let token = c.current_timer_token().cloned().expect("timer token");
+                assert_eq!(token, self.expected[self.fired]);
+                assert_eq!(c.now(), if self.fired < 2 { 1 } else { 3 });
+                assert!(!c.cancel(&token));
+                if self.fired > 0 {
+                    assert!(!c.cancel(&self.expected[self.fired - 1]));
+                }
+                self.fired += 1;
+                c.request_arbitration("select")?;
+                assert_eq!(c.current_timer_token(), Some(&token));
+            }
+            Ok(())
+        }
+        fn on_arbitration(&mut self, _: &str, c: &mut Context<'_>) -> ModelResult {
+            assert!(c.current_timer_token().is_none());
+            self.arbitrations += 1;
+            Ok(())
+        }
+        fn finish(&mut self, _: &FinishContext<'_>) -> ModelResult {
+            assert_eq!(self.fired, 3);
+            assert_eq!(self.arbitrations, 3);
+            assert_eq!(self.deliveries, usize::from(self.receives_port));
+            Ok(())
+        }
+    }
+    let f = Fixture::new();
+    let r = registry_factories(
+        |_| Ok(Box::new(TimerProbe::default())),
+        |_| Ok(Box::new(TimerProbe::default())),
+    );
+    let snapshot = runtime::simulate(&prepare_with_registry(&f.config(), r).unwrap()).unwrap();
+    assert_eq!(snapshot.common.termination, "events_exhausted");
+    assert!(snapshot.common.diagnostics.is_empty());
+    // Six timers, one port delivery, and three arbitrations for each model.
+    assert_eq!(snapshot.common.committed_events, 13);
+    assert_eq!(snapshot.common.pending_events, 0);
+}
+
+#[test]
 fn cancellation_excludes_current_timer_and_removes_future_tombstones_from_pending() {
     struct Cancels {
         current: Option<TimerToken>,

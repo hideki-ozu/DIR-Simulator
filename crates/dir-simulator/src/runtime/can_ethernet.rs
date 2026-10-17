@@ -78,6 +78,17 @@ pub(crate) struct BridgeTxView {
 #[derive(Debug, Clone)]
 #[allow(clippy::large_enum_variant)] // Inline owned buffers are moved at the single commit boundary.
 pub(crate) enum BridgeAction {
+    PoliceEthernet {
+        conversion: usize,
+        branch: usize,
+        conversion_id: String,
+        branch_id: String,
+        child_id: String,
+        source: usize,
+        wire: EthernetWireFrame,
+        vid: u16,
+        priority: u8,
+    },
     Schedule {
         at: u64,
         phase: u8,
@@ -114,6 +125,7 @@ struct Branch {
     packet: DirCanPacket,
     lineage: BridgeLineage,
     wire: Option<EthernetWireFrame>,
+    policed: bool,
 }
 #[derive(Debug, Clone)]
 struct Conversion {
@@ -136,6 +148,7 @@ struct CanQueue {
 }
 #[derive(Debug)]
 pub(crate) struct BridgeState {
+    synthetic_policing: bool,
     prepared: Arc<PreparedCanEthernet>,
     conversions: Vec<Conversion>,
     requests: Vec<CanRequest>,
@@ -163,10 +176,17 @@ pub(crate) struct BridgeDelta {
 }
 impl BridgeState {
     pub(crate) fn new(p: &PreparedCanEthernet) -> Result<Self> {
+        Self::new_with_policing(p, false)
+    }
+    pub(crate) fn new_with_policing(
+        p: &PreparedCanEthernet,
+        synthetic_policing: bool,
+    ) -> Result<Self> {
         for g in &p.can.generators {
             can_wire::serialize(&g.frame)?;
         }
         Ok(Self {
+            synthetic_policing,
             prepared: Arc::new(p.clone()),
             conversions: vec![],
             requests: vec![],
@@ -567,6 +587,7 @@ impl BridgeState {
                 packet: packet.clone(),
                 lineage: branch_lineage,
                 wire,
+                policed: false,
             });
         }
         let occupancy = add(*d.rx.get(&gw).unwrap_or(&self.rx[gw]), 1)?;
@@ -642,6 +663,25 @@ impl BridgeState {
             return Ok(());
         }
         b.row.offer_ps.get_or_insert(now);
+        if self.synthetic_policing && !b.policed {
+            if let BridgeEgress::Ethernet {
+                source, vid, pcp, ..
+            } = &b.egress
+            {
+                d.actions.push(BridgeAction::PoliceEthernet {
+                    conversion: index,
+                    branch,
+                    conversion_id: c.row.conversion_id.clone(),
+                    branch_id: b.row.branch_id.clone(),
+                    child_id: b.row.planned_child_id.clone(),
+                    source: *source,
+                    wire: b.wire.clone().unwrap(),
+                    vid: *vid,
+                    priority: *pcp,
+                });
+                return self.stage_conversion(d, index, c, now);
+            }
+        }
         let (unadmittable, available);
         match &b.egress {
             BridgeEgress::Can { source, .. } => {
@@ -731,6 +771,15 @@ impl BridgeState {
                 }
             }
         }
+        self.finish_admission(d, index, c, now)
+    }
+    fn finish_admission(
+        &self,
+        d: &mut BridgeDelta,
+        index: usize,
+        mut c: Conversion,
+        now: u64,
+    ) -> Result<()> {
         if c.branches.iter().all(|b| b.row.status != "waiting") {
             c.row.status = "released".into();
             c.row.released_ps = Some(now);
@@ -744,6 +793,37 @@ impl BridgeState {
             );
         }
         self.stage_conversion(d, index, c, now)
+    }
+    pub(crate) fn resolve_ethernet_policing(
+        &self,
+        d: &mut BridgeDelta,
+        index: usize,
+        branch: usize,
+        now: u64,
+        drop_reason: Option<String>,
+        tx: &BridgeTxView,
+    ) -> Result<()> {
+        let mut c = self.conversion(d, index).clone();
+        let b = c
+            .branches
+            .get_mut(branch)
+            .ok_or_else(|| error("unknown synthetic branch"))?;
+        if !self.synthetic_policing
+            || b.policed
+            || b.row.status != "waiting"
+            || !matches!(b.egress, BridgeEgress::Ethernet { .. })
+        {
+            return Err(error("invalid synthetic policing completion"));
+        }
+        b.policed = true;
+        if let Some(reason) = drop_reason {
+            b.row.status = "dropped".into();
+            b.row.reason = Some(reason);
+            self.finish_admission(d, index, c, now)
+        } else {
+            self.stage_conversion(d, index, c, now)?;
+            self.offer(d, index, branch, now, tx)
+        }
     }
     #[allow(clippy::too_many_arguments)]
     fn create_can(
@@ -1424,6 +1504,57 @@ impl BridgeState {
                 )
             })
             .collect()
+    }
+    pub(crate) fn branch_rows_after(&self, d: &BridgeDelta) -> Vec<BranchRecord> {
+        let length = self
+            .conversions
+            .len()
+            .max(d.conversions.iter().map(|(i, _)| i + 1).max().unwrap_or(0));
+        (0..length)
+            .flat_map(|i| {
+                let conversion = d
+                    .conversions
+                    .iter()
+                    .rev()
+                    .find(|(index, _)| *index == i)
+                    .map(|(_, v)| v)
+                    .or_else(|| self.conversions.get(i));
+                conversion.into_iter().flat_map(|conversion| {
+                    conversion.branches.iter().map(|branch| branch.row.clone())
+                })
+            })
+            .collect()
+    }
+    pub(crate) fn can_snapshot_after(&self, d: &BridgeDelta) -> crate::snapshot::CanSnapshot {
+        let mut snapshot = self.can_snapshot();
+        for (i, request) in &d.requests {
+            if *i < snapshot.requests.len() {
+                snapshot.requests[*i] = request.row.clone();
+            } else {
+                snapshot.requests.push(request.row.clone());
+            }
+        }
+        for (i, receiver) in &d.receivers {
+            if *i < snapshot.receivers.len() {
+                snapshot.receivers[*i] = receiver.clone();
+            } else {
+                snapshot.receivers.push(receiver.clone());
+            }
+        }
+        for (i, active) in &d.active {
+            snapshot.bus_states[*i] = if active.is_some() {
+                "transmitting"
+            } else {
+                "idle"
+            }
+            .into();
+        }
+        snapshot.bus_state = snapshot
+            .bus_states
+            .first()
+            .cloned()
+            .unwrap_or_else(|| "idle".into());
+        snapshot
     }
     pub(crate) fn can_snapshot(&self) -> crate::snapshot::CanSnapshot {
         let bus_states = self

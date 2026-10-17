@@ -1,8 +1,10 @@
 //! Static extension registration. A prepared run owns an immutable registry snapshot.
+mod extensions;
 mod prepare;
 use crate::types::Diagnostic;
+pub use extensions::*;
 pub use prepare::{prepare_with_registry, prepare_with_registry_and_source};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
@@ -27,7 +29,7 @@ impl From<String> for ModelError {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Schema {
     pub name: String,
     pub version: u32,
@@ -40,7 +42,7 @@ impl Schema {
         }
     }
 }
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Envelope {
     pub event_id: u64,
     pub source: String,
@@ -151,6 +153,9 @@ pub struct ChannelConfig {
     pub parameters: Parameters,
 }
 pub trait Model: Send {
+    fn checkpoint(&self, _context: &CheckpointEncodeContext<'_>) -> ModelResult<Vec<u8>> {
+        Err("UnsupportedCodec".into())
+    }
     fn initialize(&mut self, _context: &mut Context<'_>) -> ModelResult {
         Ok(())
     }
@@ -171,6 +176,9 @@ impl Model for NetworkPlaceholder {
 /// One instance is constructed per explicit NED connection. Capabilities are queried
 /// by models; send_at never adds a channel delay a second time.
 pub trait Channel: Send {
+    fn checkpoint(&self, _context: &CheckpointEncodeContext<'_>) -> ModelResult<Vec<u8>> {
+        Err("UnsupportedCodec".into())
+    }
     fn capability(&self, name: &Schema, now_ps: u64, payload: &[u8])
     -> ModelResult<ParameterValue>;
     fn finish(&mut self, _context: &FinishContext<'_>) -> ModelResult {
@@ -207,7 +215,7 @@ pub struct ModelRecordDescriptor {
     pub schema: Schema,
     pub validate: fn(&Value) -> ModelResult,
 }
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ModelRecord {
     pub schema: Schema,
     pub id: String,
@@ -215,10 +223,12 @@ pub struct ModelRecord {
     pub time_ps: u64,
     pub data: Value,
 }
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct RegisteredSnapshot {
     pub model_records: BTreeMap<String, ModelRecord>,
     pub deliveries: Vec<Envelope>,
+    pub metrics_v2: crate::runtime::metric_v2::MetricStateV2,
+    pub control: Option<Value>,
 }
 impl RegisteredSnapshot {
     /// Latest committed record, keyed by schema name and model-assigned record ID.
@@ -253,6 +263,11 @@ pub struct Registry {
     pub(crate) events: BTreeMap<Schema, EventDescriptor>,
     pub(crate) profiles: BTreeMap<String, ProfileDescriptor>,
     pub(crate) metrics: BTreeMap<String, MetricDescriptor>,
+    pub(crate) metrics_v2: BTreeMap<String, MetricRegistrationV2>,
+    pub(crate) metric_v2_limits: MetricV2Limits,
+    pub(crate) execution_capabilities: BTreeMap<String, ExecutionCapabilities>,
+    pub(crate) model_codecs: BTreeMap<String, extensions::ModelCodec>,
+    pub(crate) channel_codecs: BTreeMap<String, extensions::ChannelCodec>,
     pub(crate) records: BTreeMap<Schema, ModelRecordDescriptor>,
     arbitration: BTreeMap<String, ArbitrationStrategy>,
     queues: BTreeMap<String, QueueStrategy>,
@@ -352,6 +367,11 @@ impl Registry {
             events: BTreeMap::new(),
             profiles: BTreeMap::new(),
             metrics: BTreeMap::new(),
+            metrics_v2: BTreeMap::new(),
+            metric_v2_limits: MetricV2Limits::default(),
+            execution_capabilities: BTreeMap::new(),
+            model_codecs: BTreeMap::new(),
+            channel_codecs: BTreeMap::new(),
             records: BTreeMap::new(),
             arbitration: BTreeMap::new(),
             queues: BTreeMap::new(),
@@ -491,7 +511,7 @@ impl Registry {
         // Profile identifiers contain version components such as v1, never bare digits.
         check_name(&descriptor.name)?;
         if descriptor.implementation_version.is_empty()
-            || !matches!(descriptor.output_schema_version, 1 | 2)
+            || !matches!(descriptor.output_schema_version, 1..=3)
         {
             return Err(Diagnostic::prepare(
                 "invalid profile version or output schema",
@@ -516,6 +536,9 @@ impl Registry {
     }
     pub fn register_metric(&mut self, descriptor: MetricDescriptor) -> Result<(), Diagnostic> {
         check_name(&descriptor.name)?;
+        if self.metrics_v2.contains_key(&descriptor.name) {
+            return Err(Diagnostic::prepare("duplicate V1/V2 metric"));
+        }
         insert(&mut self.metrics, descriptor.name.clone(), descriptor)
     }
     pub fn register_model_record(
@@ -642,7 +665,7 @@ impl Registry {
             }
         }
         for key in &p.metrics {
-            if !self.metrics.contains_key(key) {
+            if !self.metrics.contains_key(key) && !self.metrics_v2.contains_key(key) {
                 return Err(Diagnostic::prepare(format!("unregistered metric: {key}")));
             }
         }
@@ -700,6 +723,11 @@ pub(crate) enum Effect {
         target: String,
         value: u64,
     },
+    MetricV2 {
+        metric: String,
+        target: String,
+        value: u64,
+    },
     Record(ModelRecord),
 }
 /// Effects belong to one callback and are published only after it succeeds.
@@ -722,6 +750,17 @@ pub struct Context<'a> {
 impl Context<'_> {
     pub fn now(&self) -> u64 {
         self.now
+    }
+    /// Returns the token of the timer currently delivered to [`Model::on_event`].
+    ///
+    /// It equals the token returned by [`Self::schedule_at`] or
+    /// [`Self::schedule_after`] for that reservation. Initialization, port
+    /// deliveries and arbitration callbacks return `None`.
+    ///
+    /// Clone the token to retain it or to call a mutable context operation.
+    /// Cancelling the currently firing timer still returns `false`.
+    pub fn current_timer_token(&self) -> Option<&TimerToken> {
+        self.executing_timer
     }
     pub fn self_id(&self) -> &str {
         &self.config.id
@@ -1085,6 +1124,10 @@ impl Default for Registry {
             "ethernet.l2.dynamic.v1",
             "ethernet.tsn.v1",
             "can.ethernet.gateway.v1",
+            "can.ethernet.tsn.v1",
+            "ethernet.redundancy.abstract.v1",
+            "ethernet.preemption.abstract.v1",
+            "ethernet.control.wire.experimental.v1",
         ] {
             let catalog = crate::output::profile_catalog(name).expect("built-in profile catalog");
             let metrics = catalog["metrics"]
@@ -1129,8 +1172,24 @@ impl Default for Registry {
                 .collect();
             let composed = matches!(
                 name,
-                "ethernet.l2.dynamic.v1" | "ethernet.tsn.v1" | "can.ethernet.gateway.v1"
+                "ethernet.l2.dynamic.v1"
+                    | "ethernet.tsn.v1"
+                    | "can.ethernet.gateway.v1"
+                    | "can.ethernet.tsn.v1"
+                    | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.preemption.abstract.v1"
+                    | "ethernet.control.wire.experimental.v1"
             );
+            if composed {
+                registry.execution_capabilities.insert(
+                    name.into(),
+                    ExecutionCapabilities {
+                        cooperative_control: true,
+                        metrics_v2: false,
+                        checkpoint: false,
+                    },
+                );
+            }
             // Built-in preparation is selected by registration provenance,
             // including composed profiles that execute through the generic runtime.
             registry.builtin_profiles.insert(name.into());

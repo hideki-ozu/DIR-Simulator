@@ -12,9 +12,13 @@ pub(crate) mod timing;
 
 pub mod axi;
 pub mod canfd;
+pub mod checkpoint_bundle;
 pub mod ethernet;
 pub mod memory_ipc;
+pub mod metric_v2;
+pub mod session;
 pub mod soc;
+pub(crate) mod wire;
 pub fn simulate(
     prepared: &crate::types::PreparedSimulation,
 ) -> Result<crate::snapshot::Snapshot, crate::types::Diagnostic> {

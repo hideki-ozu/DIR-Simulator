@@ -1,0 +1,3882 @@
+{
+  "schema_version": 1,
+  "status": "design_vectors_not_product_tests",
+  "standard": "IEEE802.1Q-2022",
+  "standard_pdf_sha256": "1653580bcae81ed4753ff2840b40d67239036078ed550cff23325d6fdd697114",
+  "entry_action_baseline_v1": {
+    "all_unspecified_booleans": false,
+    "all_unspecified_counters": 0,
+    "sendRSTP": true,
+    "HelloTime": 2,
+    "FwdDelay": 15,
+    "MaxAge": 20,
+    "portEnabled": true,
+    "selected": true,
+    "role": "Designated",
+    "selectedRole": "Alternate",
+    "message": {
+      "kind": "RST",
+      "role": "Designated",
+      "learning": true,
+      "age_ticks": 0,
+      "max_age_ticks": 5120,
+      "hello_ticks": 512,
+      "forward_delay_ticks": 3840
+    },
+    "disputed": true,
+    "restrictedTcn": false,
+    "adminEdge": false,
+    "autoEdge": true,
+    "autoIsolate": false,
+    "portPriority": "local_bridge_self_vector",
+    "designatedPriority": "local_bridge_self_vector",
+    "msgPriority": "better_external_root_vector"
+  },
+  "coverage": {
+    "state_inventory": {
+      "PTI": [
+        "ONE_SECOND",
+        "TICK"
+      ],
+      "PRX": [
+        "DISCARD",
+        "RECEIVE"
+      ],
+      "PPM": [
+        "CHECKING_RSTP",
+        "SELECTING_STP",
+        "SENSING"
+      ],
+      "BDM": [
+        "NOT_EDGE",
+        "EDGE",
+        "ISOLATED"
+      ],
+      "PTX": [
+        "TRANSMIT_INIT",
+        "IDLE",
+        "TRANSMIT_PERIODIC",
+        "TRANSMIT_CONFIG",
+        "TRANSMIT_TCN",
+        "TRANSMIT_RSTP"
+      ],
+      "PIM": [
+        "DISABLED",
+        "AGED",
+        "UPDATE",
+        "CURRENT",
+        "RECEIVE",
+        "SUPERIOR_DESIGNATED",
+        "REPEATED_DESIGNATED",
+        "INFERIOR_DESIGNATED",
+        "NOT_DESIGNATED",
+        "OTHER"
+      ],
+      "PRS": [
+        "INIT_TREE",
+        "ROLE_SELECTION"
+      ],
+      "PRT": [
+        "INIT_PORT",
+        "DISABLE_PORT",
+        "DISABLED_PORT",
+        "ROOT_PORT",
+        "ROOT_DISCARD",
+        "ROOT_PROPOSED",
+        "ROOT_AGREED",
+        "ROOT_SYNCED",
+        "REROOT",
+        "REROOTED",
+        "ROOT_LEARN",
+        "ROOT_FORWARD",
+        "DESIGNATED_PORT",
+        "DESIGNATED_DISCARD",
+        "DESIGNATED_PROPOSE",
+        "DESIGNATED_AGREE",
+        "DESIGNATED_SYNCED",
+        "DESIGNATED_RETIRED",
+        "DESIGNATED_LEARN",
+        "DESIGNATED_FORWARD",
+        "BLOCK_PORT",
+        "ALTERNATE_PORT",
+        "ALTERNATE_PROPOSED",
+        "ALTERNATE_AGREED",
+        "BACKUP_PORT"
+      ],
+      "PST": [
+        "DISCARDING",
+        "LEARNING",
+        "FORWARDING"
+      ],
+      "TCM": [
+        "INACTIVE",
+        "LEARNING",
+        "DETECTED",
+        "ACTIVE",
+        "NOTIFIED_TCN",
+        "NOTIFIED_TC",
+        "PROPAGATING",
+        "ACKNOWLEDGED"
+      ]
+    },
+    "state_entry_coverage": "all enumerated states; forced entry does not prove reachability",
+    "unreachable_states_under_literal_base_edition": [
+      "PIM.REPEATED_DESIGNATED"
+    ],
+    "product_transition_execution": "not_run",
+    "full_guard_cross_product": "not_exhaustively_vectored",
+    "guard_transition_cases": 45
+  },
+  "vectors": [
+    {
+      "id": "P-RSTP-T01-V101",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c20000000200000000010027424203000002020e800002000000000100000000800002000000000180010000140002000f000000000000000000ac8abeee",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "ac8abeee"
+      },
+      "expected": {
+        "bpdu_kind": "RST",
+        "bpdu_length": 36,
+        "mac_bytes": 64,
+        "flags": {
+          "role": "Designated",
+          "proposal": true,
+          "tc": false
+        },
+        "root_id": "8000020000000001",
+        "designated_bridge_id": "8000020000000001",
+        "designated_port_id": 32769,
+        "message_age_ticks": 0,
+        "max_age_ticks": 5120,
+        "hello_time_ticks": 512,
+        "forward_delay_ticks": 3840
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V102",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100264242030000000081800002000000000100000000800002000000000180010000140002000f0000000000000000006199b064",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "6199b064"
+      },
+      "expected": {
+        "bpdu_kind": "Config",
+        "bpdu_length": 35,
+        "role": "Designated",
+        "tc": true,
+        "tc_ack": true,
+        "rcvdSTP": true
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V103",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100074242030000008000000000000000000000000000000000000000000000000000000000000000000000000000000060a37bc8",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "60a37bc8"
+      },
+      "expected": {
+        "bpdu_kind": "TCN",
+        "bpdu_length": 4,
+        "rcvd_tcn": true,
+        "priority_fields_read": false
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V104",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c2000000020000000001002a4242030000ff007e800002000000000100000000800002000000000180010000140002000f00deadbeef0000000031404192",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "31404192"
+      },
+      "expected": {
+        "bpdu_kind": "Config",
+        "extra_octets_ignored": 4,
+        "proposal": false,
+        "agreement": false,
+        "learning": false,
+        "forwarding": false,
+        "rcvdSTP": true
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V105",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100074242030000ff80000000000000000000000000000000000000000000000000000000000000000000000000000000c2a24af5",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "c2a24af5"
+      },
+      "expected": {
+        "bpdu_kind": "TCN",
+        "protocol_version_checked": false
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V106",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c20000000200000000010027424203000002028e800002000000000100000000800002000000000180010000140002000f00090000000000000076ef35b7",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "76ef35b7"
+      },
+      "expected": {
+        "bpdu_kind": "RST",
+        "tc_ack": false,
+        "version1_length_checked": false
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V107",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c2000000020000000001006d424203000003020e800002000000000100000000800002000000000180010000140002000f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000054ab4c61",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "54ab4c61"
+      },
+      "expected": {
+        "bpdu_kind": "RST",
+        "normalized_version": 2,
+        "mst_fields_processed": false,
+        "extra_octets_ignored": 70
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V108",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100274242030000ff020e800002000000000100000000800002000000000180010000140002000f0000000000000000000dacd1d8",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "0dacd1d8"
+      },
+      "expected": {
+        "bpdu_kind": "RST",
+        "normalized_version": 2
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V109",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100274242030000020200800002000000000100000000800002000000000180010000140002000f00000000000000000090e2228b",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "90e2228b"
+      },
+      "expected": {
+        "bpdu_kind": "RST",
+        "role_code": 0,
+        "rcvdInfo": "OtherInfo",
+        "rcvdRSTP": true,
+        "rcvdSTP_set_by_receive": false,
+        "tc_ack": false,
+        "cist_master_port_created": false
+      },
+      "basis": "14.5(c) PDF596;14.4(g) PDF593;13.29.12 PDF565;14.2.9 informative note PDF592; notes status PDF80 footnote10"
+    },
+    {
+      "id": "P-RSTP-T01-V110",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c20000000200000000010027424203000002020e800002000000000100000000800002000000000180011400140002000f000000000000000000b5f8a8dc",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "b5f8a8dc"
+      },
+      "expected": {
+        "decode": "accepted",
+        "rcvdInfoWhile_after_record": 0,
+        "next_information_state": "AGED"
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V111",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_reject",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c20000000200000000010026424203000002020e800002000000000100000000800002000000000180010000140002000f000000000000000000c981c787",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "c981c787"
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "rst_short",
+        "protocol_mutations": 0
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V112",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_reject",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c20000000200000000010027424203000001020e800002000000000100000000800002000000000180010000140002000f0000000000000000000e3df70d",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "0e3df70d"
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "unsupported_version",
+        "protocol_mutations": 0
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V113",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_reject",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c20000000200000000010027424203000102020e800002000000000100000000800002000000000180010000140002000f000000000000000000420e874f",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "420e874f"
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "protocol_id",
+        "protocol_mutations": 0
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V114",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_reject",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100074242030000027f00000000000000000000000000000000000000000000000000000000000000000000000000000006f1b12a",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "06f1b12a"
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "unsupported_type",
+        "protocol_mutations": 0
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V115",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_reject",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c20000000200000000010027424303000002020e800002000000000100000000800002000000000180010000140002000f000000000000000000e0a2284d",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "e0a2284d"
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "llc",
+        "protocol_mutations": 0
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V116",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_reject",
+      "input": {
+        "bytes_hex": "0180c20000000200000000010027424203000002020e800002000000000100000000800002000000000180010000140002000f000000000000000000ac8abeef",
+        "stimulus": "bad_fcs",
+        "computed_fcs_hex": "ac8abeee"
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "fcs",
+        "protocol_mutations": 0
+      },
+      "basis": "common MAC envelope CRC32"
+    },
+    {
+      "id": "P-RSTP-T01-V117",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_reject",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c20000000200000000010050424203000002020e800002000000000100000000800002000000000180010000140002000f000000000000000000bde358cc",
+        "stimulus": "valid_mac_frame",
+        "computed_fcs_hex": "bde358cc"
+      },
+      "expected": {
+        "outcome": "control_drop",
+        "reason": "frame_bounds",
+        "protocol_mutations": 0
+      },
+      "basis": "IEEE802.1Q-2022 8.13.3 PDF258; 14.4-14.6 PDF593-597"
+    },
+    {
+      "id": "P-RSTP-T01-V118",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "updtRcvdInfoWhile",
+        "message_age_ticks": 4863,
+        "max_age_ticks": 5120,
+        "hello_time_s": 2
+      },
+      "expected": {
+        "rounded_message_age_plus_one_s": 20,
+        "rcvdInfoWhile": 6
+      },
+      "basis": "13.29.33 PDF571; DIR half-up tie rule"
+    },
+    {
+      "id": "P-RSTP-T01-V119",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "updtRcvdInfoWhile",
+        "message_age_ticks": 4864,
+        "max_age_ticks": 5120,
+        "hello_time_s": 2
+      },
+      "expected": {
+        "rounded_message_age_plus_one_s": 20,
+        "rcvdInfoWhile": 6
+      },
+      "basis": "13.29.33 PDF571; DIR half-up tie rule"
+    },
+    {
+      "id": "P-RSTP-T01-V120",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "updtRcvdInfoWhile",
+        "message_age_ticks": 4991,
+        "max_age_ticks": 5120,
+        "hello_time_s": 2
+      },
+      "expected": {
+        "rounded_message_age_plus_one_s": 20,
+        "rcvdInfoWhile": 6
+      },
+      "basis": "13.29.33 PDF571; DIR half-up tie rule"
+    },
+    {
+      "id": "P-RSTP-T01-V121",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "updtRcvdInfoWhile",
+        "message_age_ticks": 4992,
+        "max_age_ticks": 5120,
+        "hello_time_s": 2
+      },
+      "expected": {
+        "rounded_message_age_plus_one_s": 21,
+        "rcvdInfoWhile": 0
+      },
+      "basis": "13.29.33 PDF571; DIR half-up tie rule"
+    },
+    {
+      "id": "P-RSTP-T01-V122",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "updtRcvdInfoWhile",
+        "message_age_ticks": 5120,
+        "max_age_ticks": 5120,
+        "hello_time_s": 2
+      },
+      "expected": {
+        "rounded_message_age_plus_one_s": 21,
+        "rcvdInfoWhile": 0
+      },
+      "basis": "13.29.33 PDF571; DIR half-up tie rule"
+    },
+    {
+      "id": "P-RSTP-T01-V123",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "updtRcvdInfoWhile",
+        "message_age_ticks": 65535,
+        "max_age_ticks": 5120,
+        "hello_time_s": 2
+      },
+      "expected": {
+        "rounded_message_age_plus_one_s": 257,
+        "rcvdInfoWhile": 0
+      },
+      "basis": "13.29.33 PDF571; DIR half-up tie rule"
+    },
+    {
+      "id": "P-RSTP-T01-V124",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "recordTimes",
+        "received_hello_ticks": 256
+      },
+      "expected": {
+        "port_hello_time_s": 2,
+        "received_wire_value_preserved_in_message": 256
+      },
+      "basis": "13.29.20 PDF567"
+    },
+    {
+      "id": "P-RSTP-T01-V125",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "lexicographic_tie_break",
+        "first_differing_field": "root",
+        "left": "8000020000000001",
+        "right": "8000020000000002",
+        "earlier_fields_equal": true
+      },
+      "expected": {
+        "winner": "left"
+      },
+      "basis": "13.9-13.10 PDF519-522"
+    },
+    {
+      "id": "P-RSTP-T01-V126",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "lexicographic_tie_break",
+        "first_differing_field": "external_cost",
+        "left": 100,
+        "right": 101,
+        "earlier_fields_equal": true
+      },
+      "expected": {
+        "winner": "left"
+      },
+      "basis": "13.9-13.10 PDF519-522"
+    },
+    {
+      "id": "P-RSTP-T01-V127",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "lexicographic_tie_break",
+        "first_differing_field": "designated_port_id",
+        "left": 32769,
+        "right": 32770,
+        "earlier_fields_equal": true
+      },
+      "expected": {
+        "winner": "left"
+      },
+      "basis": "13.9-13.10 PDF519-522"
+    },
+    {
+      "id": "P-RSTP-T01-V128",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "lexicographic_tie_break",
+        "first_differing_field": "receiving_port_id",
+        "left": 32769,
+        "right": 32770,
+        "earlier_fields_equal": true
+      },
+      "expected": {
+        "winner": "left"
+      },
+      "basis": "13.9-13.10 PDF519-522"
+    },
+    {
+      "id": "P-RSTP-T01-V129",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "root_path_vector",
+        "local_bridge": "8000020000000002",
+        "received": [
+          "8000020000000001",
+          20000,
+          "8000020000000001",
+          0,
+          "8000020000000001",
+          32769,
+          32770
+        ],
+        "external_path_cost": 20000
+      },
+      "expected": {
+        "root_path_vector": [
+          "8000020000000001",
+          40000,
+          "8000020000000002",
+          0,
+          "8000020000000001",
+          32769,
+          32770
+        ]
+      },
+      "basis": "13.10 PDF521"
+    },
+    {
+      "id": "P-RSTP-T01-V130",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "root_path_vector",
+        "external_cost": 4294967295,
+        "external_path_cost": 1
+      },
+      "expected": {
+        "outcome": "run_failure",
+        "reason": "arithmetic_overflow",
+        "committed_effects": 0
+      },
+      "basis": "DIR checked u32 cost boundary"
+    },
+    {
+      "id": "P-RSTP-T01-V131",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "rcvInfo",
+        "infoIs": "Received",
+        "msg_equals_port": true,
+        "timers_equal": true,
+        "role": "Designated",
+        "same_sender": true
+      },
+      "expected": {
+        "rcvdInfo": "SuperiorDesignatedInfo",
+        "repeated_branch_reachable": false
+      },
+      "basis": "13.10 PDF521 literal superior formula; 13.29.12 PDF565 ordered classification"
+    },
+    {
+      "id": "P-RSTP-T01-V132",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "rcvInfo",
+        "msg_worse_than_port": true,
+        "role": "Designated",
+        "same_sender": true
+      },
+      "expected": {
+        "rcvdInfo": "SuperiorDesignatedInfo"
+      },
+      "basis": "13.10 PDF521 same-sender replacement"
+    },
+    {
+      "id": "P-RSTP-T01-V133",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "rcvInfo",
+        "msg_worse_than_port": true,
+        "role": "Designated",
+        "same_sender": false,
+        "learning_bit": true
+      },
+      "expected": {
+        "rcvdInfo": "InferiorDesignatedInfo",
+        "entry_effects": {
+          "disputed": true,
+          "agreed": false
+        }
+      },
+      "basis": "13.29.12/16 PDF565/567"
+    },
+    {
+      "id": "P-RSTP-T01-V134",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTI",
+        "before": {
+          "txCount": 6,
+          "helloWhen": 2,
+          "rcvdInfoWhile": 1,
+          "tcWhile": 0
+        },
+        "event": "tick"
+      },
+      "expected": {
+        "after": {
+          "txCount": 5,
+          "helloWhen": 1,
+          "rcvdInfoWhile": 0,
+          "tcWhile": 0
+        },
+        "state": "ONE_SECOND"
+      },
+      "basis": "13.30 Figure13-15 PDF574"
+    },
+    {
+      "id": "P-RSTP-T01-V135",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "tick_expiry",
+        "assigned_at_ps": "500000000000",
+        "counter": 6,
+        "tick_origin_ps": "0",
+        "tick_period_ps": "1000000000000"
+      },
+      "expected": {
+        "expires_at_ps": "6000000000000",
+        "not_at_ps": "6500000000000"
+      },
+      "basis": "13.30 PDF574; DIR FES tick origin"
+    },
+    {
+      "id": "P-RSTP-T01-V136",
+      "test_id": "P-RSTP-T01",
+      "kind": "scenario",
+      "input": {
+        "events": [
+          {
+            "time_ps": "6000000000000",
+            "kind": "tick"
+          },
+          {
+            "time_ps": "6000000000000",
+            "kind": "receive",
+            "packet": "V101"
+          }
+        ],
+        "before": {
+          "infoIs": "Received",
+          "rcvdInfoWhile": 1
+        }
+      },
+      "expected": {
+        "order": [
+          "tick_expiry_and_settle",
+          "receive_and_settle"
+        ],
+        "rx_refresh_undoes_prior_commits": false,
+        "final_infoIs": "Received",
+        "final_rcvdInfoWhile": 6
+      },
+      "basis": "DIR phase0 before phase1; 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V137",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTX",
+        "state": "IDLE",
+        "before": {
+          "selected": true,
+          "updtInfo": false,
+          "sendRSTP": true,
+          "newInfo": true,
+          "txCount": 6,
+          "TxHoldCount": 6,
+          "helloWhen": 2
+        },
+        "event": "settle"
+      },
+      "expected": {
+        "tx_intents": 0,
+        "newInfo": true
+      },
+      "basis": "13.34 PDF576 TxHoldCount strict less than"
+    },
+    {
+      "id": "P-RSTP-T01-V138",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTX",
+        "state": "IDLE",
+        "before": {
+          "selected": true,
+          "updtInfo": false,
+          "sendRSTP": true,
+          "newInfo": true,
+          "txCount": 5,
+          "TxHoldCount": 6,
+          "helloWhen": 1
+        },
+        "event": "settle"
+      },
+      "expected": {
+        "tx_intents": 1,
+        "txCount": 6,
+        "newInfo": false,
+        "helloWhen": 2
+      },
+      "basis": "13.34 PDF576 RST TX then IDLE entry"
+    },
+    {
+      "id": "P-RSTP-T01-V139",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTI",
+        "operation": "entry_action_only",
+        "enter_state": "ONE_SECOND",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "tick": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.30 PDF574"
+    },
+    {
+      "id": "P-RSTP-T01-V140",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTI",
+        "operation": "entry_action_only",
+        "enter_state": "TICK",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "decrement_all_positive_counters_by": 1
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.30 PDF574"
+    },
+    {
+      "id": "P-RSTP-T01-V141",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRX",
+        "operation": "entry_action_only",
+        "enter_state": "DISCARD",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rcvdMsg": false,
+          "rcvdBpdu": false,
+          "edgeDelayWhile": 3
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.31 PDF574"
+    },
+    {
+      "id": "P-RSTP-T01-V142",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRX",
+        "operation": "entry_action_only",
+        "enter_state": "RECEIVE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rcvdMsg": true,
+          "operEdge": false,
+          "isolate": false,
+          "edgeDelayWhile": 3
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.31 PDF574"
+    },
+    {
+      "id": "P-RSTP-T01-V143",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PPM",
+        "operation": "entry_action_only",
+        "enter_state": "CHECKING_RSTP",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "mcheck": false,
+          "sendRSTP": true,
+          "mdelayWhile": 3
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.32 PDF575"
+    },
+    {
+      "id": "P-RSTP-T01-V144",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PPM",
+        "operation": "entry_action_only",
+        "enter_state": "SELECTING_STP",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "sendRSTP": false,
+          "mdelayWhile": 3
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.32 PDF575"
+    },
+    {
+      "id": "P-RSTP-T01-V145",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PPM",
+        "operation": "entry_action_only",
+        "enter_state": "SENSING",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rcvdRSTP": false,
+          "rcvdSTP": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.32 PDF575"
+    },
+    {
+      "id": "P-RSTP-T01-V146",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "BDM",
+        "operation": "entry_action_only",
+        "enter_state": "NOT_EDGE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "operEdge": false,
+          "isolate": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.33 PDF575"
+    },
+    {
+      "id": "P-RSTP-T01-V147",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "BDM",
+        "operation": "entry_action_only",
+        "enter_state": "EDGE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "operEdge": true,
+          "isolate": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.33 PDF575"
+    },
+    {
+      "id": "P-RSTP-T01-V148",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "BDM",
+        "operation": "entry_action_only",
+        "enter_state": "ISOLATED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "operEdge": false,
+          "isolate": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.33 PDF575"
+    },
+    {
+      "id": "P-RSTP-T01-V149",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTX",
+        "operation": "entry_action_only",
+        "enter_state": "TRANSMIT_INIT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "newInfo": true,
+          "txCount": 0
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.34 PDF576"
+    },
+    {
+      "id": "P-RSTP-T01-V150",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTX",
+        "operation": "entry_action_only",
+        "enter_state": "IDLE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "helloWhen": 2
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.34 PDF576"
+    },
+    {
+      "id": "P-RSTP-T01-V151",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTX",
+        "operation": "entry_action_only",
+        "enter_state": "TRANSMIT_PERIODIC",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "newInfo": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.34 PDF576"
+    },
+    {
+      "id": "P-RSTP-T01-V152",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTX",
+        "operation": "entry_action_only",
+        "enter_state": "TRANSMIT_CONFIG",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "newInfo": false,
+          "tx_intent_kind": "Config",
+          "tcAck": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.34 PDF576"
+    },
+    {
+      "id": "P-RSTP-T01-V153",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTX",
+        "operation": "entry_action_only",
+        "enter_state": "TRANSMIT_TCN",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "newInfo": false,
+          "tx_intent_kind": "TCN"
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.34 PDF576"
+    },
+    {
+      "id": "P-RSTP-T01-V154",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PTX",
+        "operation": "entry_action_only",
+        "enter_state": "TRANSMIT_RSTP",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "newInfo": false,
+          "tx_intent_kind": "RST",
+          "tcAck": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.34 PDF576"
+    },
+    {
+      "id": "P-RSTP-T01-V155",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "DISABLED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "infoIs": "Disabled",
+          "selected": false,
+          "reselect": true,
+          "rcvdInfoWhile": 0
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V156",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "AGED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "infoIs": "Aged",
+          "selected": false,
+          "reselect": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V157",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "UPDATE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "infoIs": "Mine",
+          "updtInfo": false,
+          "newInfo": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V158",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "CURRENT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "additional_effects": []
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V159",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "RECEIVE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "classify_message": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V160",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "SUPERIOR_DESIGNATED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "infoIs": "Received",
+          "reselect": true,
+          "selected": false,
+          "rcvdMsg": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V161",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "REPEATED_DESIGNATED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": true
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rcvdMsg": false,
+          "rcvdInfoWhile": 6
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V162",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "INFERIOR_DESIGNATED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "disputed": true,
+          "agreed": false,
+          "rcvdMsg": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V163",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "NOT_DESIGNATED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rcvdMsg": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V164",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "entry_action_only",
+        "enter_state": "OTHER",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rcvdMsg": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.35 PDF577"
+    },
+    {
+      "id": "P-RSTP-T01-V165",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRS",
+        "operation": "entry_action_only",
+        "enter_state": "INIT_TREE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "all_selectedRole": "Disabled"
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.36 PDF578"
+    },
+    {
+      "id": "P-RSTP-T01-V166",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRS",
+        "operation": "entry_action_only",
+        "enter_state": "ROLE_SELECTION",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "self_root_when_no_received": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.36 PDF578"
+    },
+    {
+      "id": "P-RSTP-T01-V167",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "INIT_PORT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "role": "Disabled",
+          "learn": false,
+          "forward": false,
+          "sync": true,
+          "reRoot": true,
+          "rrWhile": 15,
+          "fdWhile": 20,
+          "rbWhile": 0
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V168",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DISABLE_PORT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "role": "Disabled",
+          "learn": false,
+          "forward": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V169",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DISABLED_PORT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "fdWhile": 20,
+          "synced": true,
+          "rrWhile": 0,
+          "sync": false,
+          "reRoot": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V170",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ROOT_PORT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "role": "Root",
+          "rrWhile": 15
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V171",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ROOT_DISCARD",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rbWhile": 6,
+          "learn": false,
+          "forward": false,
+          "disputed": false,
+          "fdWhile": 15
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V172",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ROOT_PROPOSED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "all_sync": true,
+          "proposed": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V173",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ROOT_AGREED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "proposed": false,
+          "sync": false,
+          "agree": true,
+          "newInfo": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V174",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ROOT_SYNCED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "synced": true,
+          "sync": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V175",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "REROOT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "all_reRoot": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V176",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "REROOTED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "reRoot": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V177",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ROOT_LEARN",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "learn": true,
+          "fdWhile": 2
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V178",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ROOT_FORWARD",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "forward": true,
+          "fdWhile": 0
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V179",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DESIGNATED_PORT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "role": "Designated"
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V180",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DESIGNATED_DISCARD",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "learn": false,
+          "forward": false,
+          "disputed": false,
+          "fdWhile": 2
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V181",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DESIGNATED_PROPOSE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "proposing": true,
+          "edgeDelayWhile": 3,
+          "newInfo": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V182",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DESIGNATED_AGREE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "proposed": false,
+          "sync": false,
+          "agree": true,
+          "newInfo": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V183",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DESIGNATED_SYNCED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rrWhile": 0,
+          "synced": true,
+          "sync": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V184",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DESIGNATED_RETIRED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "reRoot": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V185",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DESIGNATED_LEARN",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "learn": true,
+          "fdWhile": 2
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V186",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "DESIGNATED_FORWARD",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "forward": true,
+          "fdWhile": 0,
+          "agreed": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V187",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "BLOCK_PORT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "role": "Alternate",
+          "learn": false,
+          "forward": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V188",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ALTERNATE_PORT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "fdWhile": 2,
+          "synced": true,
+          "rrWhile": 0,
+          "sync": false,
+          "reRoot": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V189",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ALTERNATE_PROPOSED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "all_sync": true,
+          "proposed": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V190",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "ALTERNATE_AGREED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "proposed": false,
+          "agree": true,
+          "newInfo": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V191",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "entry_action_only",
+        "enter_state": "BACKUP_PORT",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rbWhile": 4
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.37 PDF579-583"
+    },
+    {
+      "id": "P-RSTP-T01-V192",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PST",
+        "operation": "entry_action_only",
+        "enter_state": "DISCARDING",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "learning": false,
+          "forwarding": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.38 PDF583"
+    },
+    {
+      "id": "P-RSTP-T01-V193",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PST",
+        "operation": "entry_action_only",
+        "enter_state": "LEARNING",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "learning": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.38 PDF583"
+    },
+    {
+      "id": "P-RSTP-T01-V194",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PST",
+        "operation": "entry_action_only",
+        "enter_state": "FORWARDING",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "forwarding": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.38 PDF583"
+    },
+    {
+      "id": "P-RSTP-T01-V195",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "entry_action_only",
+        "enter_state": "INACTIVE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "fdbFlush": true,
+          "tcDetected": 0,
+          "tcWhile": 0,
+          "tcAck": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.39 PDF585"
+    },
+    {
+      "id": "P-RSTP-T01-V196",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "entry_action_only",
+        "enter_state": "LEARNING",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rcvdTc": false,
+          "rcvdTcn": false,
+          "rcvdTcAck": false,
+          "tcProp": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.39 PDF585"
+    },
+    {
+      "id": "P-RSTP-T01-V197",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "entry_action_only",
+        "enter_state": "DETECTED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "tcWhile": 3,
+          "tcDetected": 3,
+          "other_ports_tcProp": true,
+          "newInfo": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.39 PDF585"
+    },
+    {
+      "id": "P-RSTP-T01-V198",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "entry_action_only",
+        "enter_state": "ACTIVE",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "additional_effects": []
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.39 PDF585"
+    },
+    {
+      "id": "P-RSTP-T01-V199",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "entry_action_only",
+        "enter_state": "NOTIFIED_TCN",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "tcWhile": 3
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.39 PDF585"
+    },
+    {
+      "id": "P-RSTP-T01-V200",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "entry_action_only",
+        "enter_state": "NOTIFIED_TC",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "rcvdTcn": false,
+          "rcvdTc": false,
+          "tcAck": true,
+          "other_ports_tcProp": true
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.39 PDF585"
+    },
+    {
+      "id": "P-RSTP-T01-V201",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "entry_action_only",
+        "enter_state": "PROPAGATING",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "tcWhile": 3,
+          "fdbFlush": true,
+          "tcProp": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.39 PDF585"
+    },
+    {
+      "id": "P-RSTP-T01-V202",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "entry_action_only",
+        "enter_state": "ACKNOWLEDGED",
+        "baseline": "entry_action_baseline_v1",
+        "forced_unreachable_state": false
+      },
+      "expected": {
+        "entry_effect_subset": {
+          "tcWhile": 0,
+          "rcvdTcAck": false
+        },
+        "reachability_claim": false
+      },
+      "basis": "IEEE802.1Q-2022 13.39 PDF585"
+    },
+    {
+      "id": "P-RSTP-T01-V203",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRS",
+        "operation": "role_case",
+        "case": "Root",
+        "local_bridge": "8000020000000002",
+        "port_id": 32770,
+        "restricted_role": false,
+        "root_selected_port_id": 32770,
+        "infoIs": "Received",
+        "portPriority": [
+          "8000020000000001",
+          0,
+          "8000020000000001",
+          0,
+          "8000020000000001",
+          32769,
+          32770
+        ]
+      },
+      "expected": {
+        "selectedRole": "Root",
+        "updtInfo": false
+      },
+      "basis": "13.29.34 PDF572-573; concrete priority and information origin cases"
+    },
+    {
+      "id": "P-RSTP-T01-V204",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRS",
+        "operation": "role_case",
+        "case": "Designated",
+        "local_bridge": "8000020000000002",
+        "port_id": 32770,
+        "restricted_role": false,
+        "root_selected_port_id": 32769,
+        "infoIs": "Aged"
+      },
+      "expected": {
+        "selectedRole": "Designated",
+        "updtInfo": true
+      },
+      "basis": "13.29.34 PDF572-573; concrete priority and information origin cases"
+    },
+    {
+      "id": "P-RSTP-T01-V205",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRS",
+        "operation": "role_case",
+        "case": "Alternate",
+        "local_bridge": "8000020000000002",
+        "port_id": 32770,
+        "restricted_role": false,
+        "root_selected_port_id": 32769,
+        "infoIs": "Received",
+        "portPriority": [
+          "8000020000000001",
+          0,
+          "8000020000000001",
+          0,
+          "8000020000000001",
+          32770,
+          32770
+        ],
+        "designatedPriority": [
+          "8000020000000001",
+          20000,
+          "8000020000000002",
+          0,
+          "8000020000000002",
+          32770,
+          32770
+        ]
+      },
+      "expected": {
+        "selectedRole": "Alternate",
+        "updtInfo": false
+      },
+      "basis": "13.29.34 PDF572-573; concrete priority and information origin cases"
+    },
+    {
+      "id": "P-RSTP-T01-V206",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRS",
+        "operation": "role_case",
+        "case": "Backup",
+        "local_bridge": "8000020000000002",
+        "port_id": 32770,
+        "restricted_role": false,
+        "root_selected_port_id": 32769,
+        "infoIs": "Received",
+        "portPriority": [
+          "8000020000000002",
+          0,
+          "8000020000000002",
+          0,
+          "8000020000000002",
+          32769,
+          32770
+        ],
+        "designatedPriority": [
+          "8000020000000002",
+          0,
+          "8000020000000002",
+          0,
+          "8000020000000002",
+          32770,
+          32770
+        ]
+      },
+      "expected": {
+        "selectedRole": "Backup",
+        "updtInfo": false
+      },
+      "basis": "13.29.34 PDF572-573; concrete priority and information origin cases"
+    },
+    {
+      "id": "P-RSTP-T01-V207",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRS",
+        "operation": "role_case",
+        "case": "Disabled",
+        "local_bridge": "8000020000000002",
+        "port_id": 32770,
+        "restricted_role": false,
+        "root_selected_port_id": 32769,
+        "infoIs": "Disabled",
+        "updtInfo": false
+      },
+      "expected": {
+        "selectedRole": "Disabled",
+        "updtInfo": false
+      },
+      "basis": "13.29.34 PDF572-573; concrete priority and information origin cases"
+    },
+    {
+      "id": "P-RSTP-T01-V208",
+      "test_id": "P-RSTP-T01",
+      "kind": "scenario",
+      "input": {
+        "topology": "two_bridges_one_full_duplex_link",
+        "bridges": [
+          {
+            "id": "8000020000000001",
+            "port": 32769
+          },
+          {
+            "id": "8000020000000002",
+            "port": 32769
+          }
+        ],
+        "path_cost": 20000,
+        "admin_edge": false,
+        "auto_edge": true,
+        "queue": "lossless_serialized_control_fifo"
+      },
+      "expected": {
+        "eventually": {
+          "root_id": "8000020000000001",
+          "A.port.role": "Designated",
+          "B.port.role": "Root",
+          "B.root_cost": 20000,
+          "both_ports.forwarding": true
+        },
+        "convergence_deadline_ps": null,
+        "deadline_reason": "depends_on_actual_link_rate_queue_and_propagation"
+      },
+      "basis": "13.10/13.35-13.39; no synthetic convergence timer"
+    },
+    {
+      "id": "P-RSTP-T01-V209",
+      "test_id": "P-RSTP-T01",
+      "kind": "scenario",
+      "input": {
+        "topology": "triangle",
+        "bridges": [
+          "8000020000000001",
+          "8000020000000002",
+          "8000020000000003"
+        ],
+        "equal_path_cost": 20000,
+        "links": [
+          "A:1-B:1",
+          "A:2-C:1",
+          "B:2-C:2"
+        ],
+        "queue": "lossless_serialized_control_fifo"
+      },
+      "expected": {
+        "eventually": {
+          "A:1": "Designated",
+          "A:2": "Designated",
+          "B:1": "Root",
+          "C:1": "Root",
+          "B:2": "Designated",
+          "C:2": "Alternate"
+        },
+        "forwarding_loop": false
+      },
+      "basis": "13.10 lexicographic tie uses bridge B before C"
+    },
+    {
+      "id": "P-RSTP-T01-V210",
+      "test_id": "P-RSTP-T01",
+      "kind": "scenario",
+      "input": {
+        "topology": "two_bridges_stable",
+        "event": "identical_designated_bpdu",
+        "infoIs": "Received",
+        "sender_equals_stored": true
+      },
+      "expected": {
+        "pim_branch": "SUPERIOR_DESIGNATED",
+        "prs_reexecuted": true,
+        "final_root_role_priority_unchanged": true,
+        "finite_settle": true,
+        "reason": "received message consumed once; reselect cleared once; unchanged role does not reenter role-change global transition"
+      },
+      "basis": "13.10 literal same-sender superiority; 13.35/13.36"
+    },
+    {
+      "id": "P-RSTP-T01-V211",
+      "test_id": "P-RSTP-T01",
+      "kind": "scenario",
+      "input": {
+        "topology": "triangle_stable",
+        "event": "link_down",
+        "link": "A:2-C:1"
+      },
+      "expected": {
+        "eventually": {
+          "C:1": "Disabled",
+          "C:2": "Root",
+          "B:2": "Designated",
+          "C.root_cost": 40000
+        },
+        "abstract_tree_recalculation": false
+      },
+      "basis": "13.29.34/13.35/13.37"
+    },
+    {
+      "id": "P-RSTP-T01-V212",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "fdb_flush",
+        "port": "p1",
+        "operEdge": false,
+        "fixed_vids_on_nonedge_ports": [
+          10
+        ],
+        "entries": [
+          {
+            "port": "p1",
+            "vid": 10,
+            "kind": "dynamic"
+          },
+          {
+            "port": "p1",
+            "vid": 20,
+            "kind": "dynamic"
+          },
+          {
+            "port": "p2",
+            "vid": 10,
+            "kind": "dynamic"
+          },
+          {
+            "port": "p1",
+            "vid": 10,
+            "kind": "static"
+          }
+        ]
+      },
+      "expected": {
+        "removed_entry_indices": [
+          0
+        ],
+        "fdbFlush_after_completion": false
+      },
+      "basis": "13.27.28 PDF554; fixed-registration and port-scoped dynamic FDB"
+    },
+    {
+      "id": "P-RSTP-T01-V213",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "fdb_flush",
+        "operEdge": true,
+        "eligible_dynamic_entries": 5
+      },
+      "expected": {
+        "removed_count": 0,
+        "fdbFlush_after_completion": false
+      },
+      "basis": "13.27.28 PDF554"
+    },
+    {
+      "id": "P-RSTP-T01-V214",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "newTcWhile",
+        "before": {
+          "tcWhile": 0,
+          "sendRSTP": false,
+          "ForceProtocolVersion": 2,
+          "rootMaxAge": 20,
+          "rootForwardDelay": 15
+        }
+      },
+      "expected": {
+        "tcWhile": 35,
+        "fdb_flush_style": "immediate_if_requested",
+        "stpVersion": false
+      },
+      "basis": "13.29.10 PDF564; 13.27.28 PDF554"
+    },
+    {
+      "id": "P-RSTP-T01-V215",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PPM",
+        "state": "SENSING",
+        "before": {
+          "portEnabled": true,
+          "sendRSTP": true,
+          "rcvdSTP": true
+        },
+        "event": "settle"
+      },
+      "expected": {
+        "state": "SELECTING_STP",
+        "sendRSTP": false,
+        "mdelayWhile": 3
+      },
+      "basis": "13.32 PDF575"
+    },
+    {
+      "id": "P-RSTP-T01-V216",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PPM",
+        "state": "CHECKING_RSTP",
+        "before": {
+          "portEnabled": true,
+          "mdelayWhile": 0
+        },
+        "event": "settle"
+      },
+      "expected": {
+        "state": "SENSING",
+        "sendRSTP": true,
+        "rcvdSTP": false,
+        "rcvdRSTP": false
+      },
+      "basis": "13.32 PDF575 arrow CHECKING_RSTP to SENSING, not SELECTING_STP"
+    },
+    {
+      "id": "P-RSTP-T01-V217",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PST",
+        "state": "LEARNING",
+        "before": {
+          "learn": true,
+          "forward": false
+        },
+        "event": "data_receive"
+      },
+      "expected": {
+        "learning_allowed": true,
+        "forwarding_allowed": false
+      },
+      "basis": "13.38 PDF583; DIR projection"
+    },
+    {
+      "id": "P-RSTP-T01-V218",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRX",
+        "operation": "one_guard_transition",
+        "state": "DISCARD",
+        "before": {
+          "rcvdBpdu": true,
+          "portEnabled": true,
+          "enableBPDUrx": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "RECEIVE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V219",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRX",
+        "operation": "one_guard_transition",
+        "state": "RECEIVE",
+        "before": {
+          "rcvdBpdu": true,
+          "rcvdMsg": true,
+          "portEnabled": true,
+          "enableBPDUrx": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "RECEIVE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": true
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V220",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PPM",
+        "operation": "one_guard_transition",
+        "state": "SELECTING_STP",
+        "before": {
+          "mdelayWhile": 1,
+          "portEnabled": true,
+          "mcheck": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "SELECTING_STP",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V221",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PPM",
+        "operation": "one_guard_transition",
+        "state": "SELECTING_STP",
+        "before": {
+          "mdelayWhile": 0,
+          "portEnabled": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "SENSING",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V222",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PPM",
+        "operation": "one_guard_transition",
+        "state": "SENSING",
+        "before": {
+          "portEnabled": true,
+          "mcheck": false,
+          "sendRSTP": false,
+          "rcvdRSTP": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "CHECKING_RSTP",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V223",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "BDM",
+        "operation": "one_guard_transition",
+        "state": "NOT_EDGE",
+        "before": {
+          "portEnabled": true,
+          "edgeDelayWhile": 0,
+          "AutoEdge": true,
+          "sendRSTP": true,
+          "proposing": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "EDGE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V224",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "BDM",
+        "operation": "one_guard_transition",
+        "state": "EDGE",
+        "before": {
+          "operEdge": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "NOT_EDGE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V225",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "BDM",
+        "operation": "one_guard_transition",
+        "state": "ISOLATED",
+        "before": {
+          "AutoEdge": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "NOT_EDGE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V226",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "one_guard_transition",
+        "state": "DISABLED",
+        "before": {
+          "portEnabled": true,
+          "rcvdMsg": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "AGED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V227",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "one_guard_transition",
+        "state": "CURRENT",
+        "before": {
+          "portEnabled": true,
+          "selected": true,
+          "updtInfo": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "UPDATE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V228",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "one_guard_transition",
+        "state": "CURRENT",
+        "before": {
+          "portEnabled": true,
+          "updtInfo": false,
+          "rcvdMsg": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "RECEIVE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V229",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PIM",
+        "operation": "one_guard_transition",
+        "state": "CURRENT",
+        "before": {
+          "portEnabled": true,
+          "updtInfo": false,
+          "rcvdMsg": false,
+          "infoIs": "Received",
+          "rcvdInfoWhile": 0
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "AGED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V230",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRS",
+        "operation": "one_guard_transition",
+        "state": "ROLE_SELECTION",
+        "before": {
+          "any_reselect": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ROLE_SELECTION",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V231",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "DISABLE_PORT",
+        "before": {
+          "selected": true,
+          "updtInfo": false,
+          "role": "Disabled",
+          "selectedRole": "Disabled",
+          "learning": false,
+          "forwarding": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DISABLED_PORT",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V232",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ROOT_PORT",
+        "before": {
+          "selected": true,
+          "role": "Root",
+          "selectedRole": "Root",
+          "rrWhile": 15,
+          "disputed": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ROOT_DISCARD",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V233",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ROOT_PORT",
+        "before": {
+          "selected": true,
+          "role": "Root",
+          "selectedRole": "Root",
+          "rrWhile": 15,
+          "proposed": true,
+          "agree": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ROOT_PROPOSED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V234",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ROOT_PORT",
+        "before": {
+          "selected": true,
+          "role": "Root",
+          "selectedRole": "Root",
+          "rrWhile": 15,
+          "allSynced": true,
+          "agree": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ROOT_AGREED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V235",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ROOT_PORT",
+        "before": {
+          "selected": true,
+          "role": "Root",
+          "selectedRole": "Root",
+          "rrWhile": 15,
+          "agreed": true,
+          "synced": false,
+          "agree": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ROOT_SYNCED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V236",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ROOT_PORT",
+        "before": {
+          "selected": true,
+          "role": "Root",
+          "selectedRole": "Root",
+          "rrWhile": 15,
+          "forward": false,
+          "rbWhile": 0,
+          "reRoot": false,
+          "agree": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "REROOT",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V237",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ROOT_PORT",
+        "before": {
+          "selected": true,
+          "role": "Root",
+          "selectedRole": "Root",
+          "rrWhile": 15,
+          "forward": true,
+          "reRoot": true,
+          "agree": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "REROOTED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V238",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ROOT_PORT",
+        "before": {
+          "selected": true,
+          "role": "Root",
+          "selectedRole": "Root",
+          "rrWhile": 15,
+          "reRoot": true,
+          "rbWhile": 0,
+          "reRooted": true,
+          "learn": false,
+          "agree": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ROOT_LEARN",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V239",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ROOT_PORT",
+        "before": {
+          "selected": true,
+          "role": "Root",
+          "selectedRole": "Root",
+          "rrWhile": 15,
+          "reRoot": true,
+          "rbWhile": 0,
+          "reRooted": true,
+          "learn": true,
+          "forward": false,
+          "agree": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ROOT_FORWARD",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V240",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "DESIGNATED_PORT",
+        "before": {
+          "selected": true,
+          "role": "Designated",
+          "selectedRole": "Designated",
+          "learn": true,
+          "forward": true,
+          "disputed": true,
+          "operEdge": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DESIGNATED_DISCARD",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V241",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "DESIGNATED_PORT",
+        "before": {
+          "selected": true,
+          "role": "Designated",
+          "selectedRole": "Designated",
+          "forward": false,
+          "agreed": false,
+          "proposing": false,
+          "operEdge": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DESIGNATED_PROPOSE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V242",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "DESIGNATED_PORT",
+        "before": {
+          "selected": true,
+          "role": "Designated",
+          "selectedRole": "Designated",
+          "proposing": true,
+          "allSynced": true,
+          "agree": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DESIGNATED_AGREE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V243",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "DESIGNATED_PORT",
+        "before": {
+          "selected": true,
+          "role": "Designated",
+          "selectedRole": "Designated",
+          "proposing": true,
+          "agree": true,
+          "learning": false,
+          "forwarding": false,
+          "synced": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DESIGNATED_SYNCED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V244",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "DESIGNATED_PORT",
+        "before": {
+          "selected": true,
+          "role": "Designated",
+          "selectedRole": "Designated",
+          "proposing": true,
+          "agree": true,
+          "synced": true,
+          "reRoot": true,
+          "rrWhile": 0
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DESIGNATED_RETIRED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V245",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "DESIGNATED_PORT",
+        "before": {
+          "selected": true,
+          "role": "Designated",
+          "selectedRole": "Designated",
+          "proposing": true,
+          "agree": true,
+          "synced": true,
+          "agreed": true,
+          "learn": false,
+          "sync": false,
+          "isolate": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DESIGNATED_LEARN",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V246",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "DESIGNATED_PORT",
+        "before": {
+          "selected": true,
+          "role": "Designated",
+          "selectedRole": "Designated",
+          "proposing": true,
+          "agree": true,
+          "synced": true,
+          "agreed": true,
+          "learn": true,
+          "forward": false,
+          "sync": false,
+          "isolate": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DESIGNATED_FORWARD",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V247",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "BLOCK_PORT",
+        "before": {
+          "selected": true,
+          "role": "Alternate",
+          "selectedRole": "Alternate",
+          "learning": false,
+          "forwarding": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ALTERNATE_PORT",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V248",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ALTERNATE_PORT",
+        "before": {
+          "selected": true,
+          "role": "Alternate",
+          "selectedRole": "Alternate",
+          "fdWhile": 2,
+          "synced": true,
+          "proposed": true,
+          "agree": false,
+          "sendRSTP": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ALTERNATE_PROPOSED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V249",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ALTERNATE_PORT",
+        "before": {
+          "selected": true,
+          "role": "Alternate",
+          "selectedRole": "Alternate",
+          "fdWhile": 2,
+          "synced": true,
+          "proposed": true,
+          "agree": true,
+          "sendRSTP": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ALTERNATE_AGREED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V250",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PRT",
+        "operation": "one_guard_transition",
+        "state": "ALTERNATE_PORT",
+        "before": {
+          "selected": true,
+          "role": "Backup",
+          "selectedRole": "Backup",
+          "fdWhile": 2,
+          "synced": true,
+          "rbWhile": 3,
+          "sendRSTP": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "BACKUP_PORT",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V251",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PST",
+        "operation": "one_guard_transition",
+        "state": "DISCARDING",
+        "before": {
+          "learn": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "LEARNING",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V252",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PST",
+        "operation": "one_guard_transition",
+        "state": "LEARNING",
+        "before": {
+          "learn": true,
+          "forward": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "FORWARDING",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V253",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PST",
+        "operation": "one_guard_transition",
+        "state": "LEARNING",
+        "before": {
+          "learn": false,
+          "forward": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DISCARDING",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V254",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "PST",
+        "operation": "one_guard_transition",
+        "state": "FORWARDING",
+        "before": {
+          "forward": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DISCARDING",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V255",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "one_guard_transition",
+        "state": "INACTIVE",
+        "before": {
+          "learn": true,
+          "fdbFlush": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "LEARNING",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V256",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "one_guard_transition",
+        "state": "LEARNING",
+        "before": {
+          "role": "Root",
+          "forward": true,
+          "operEdge": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "DETECTED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V257",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "one_guard_transition",
+        "state": "ACTIVE",
+        "before": {
+          "role": "Root",
+          "operEdge": false,
+          "rcvdTcn": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "NOTIFIED_TCN",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V258",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "one_guard_transition",
+        "state": "ACTIVE",
+        "before": {
+          "role": "Root",
+          "operEdge": false,
+          "rcvdTc": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "NOTIFIED_TC",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V259",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "one_guard_transition",
+        "state": "ACTIVE",
+        "before": {
+          "role": "Root",
+          "operEdge": false,
+          "tcProp": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "PROPAGATING",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V260",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "one_guard_transition",
+        "state": "ACTIVE",
+        "before": {
+          "role": "Root",
+          "operEdge": false,
+          "rcvdTcAck": true
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "ACKNOWLEDGED",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V261",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "one_guard_transition",
+        "state": "ACTIVE",
+        "before": {
+          "role": "Alternate"
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "LEARNING",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V262",
+      "test_id": "P-RSTP-T01",
+      "kind": "fsm_unit",
+      "input": {
+        "machine": "TCM",
+        "operation": "one_guard_transition",
+        "state": "LEARNING",
+        "before": {
+          "role": "Alternate",
+          "learn": false,
+          "learning": false
+        },
+        "unspecified_booleans": false,
+        "unspecified_counters": 0,
+        "HelloTime": 2,
+        "FwdDelay": 15,
+        "MaxAge": 20
+      },
+      "expected": {
+        "next_state": "INACTIVE",
+        "entry_effects": "see entry_action_only vector for destination",
+        "stays_without_reentry": false
+      },
+      "basis": "IEEE802.1Q-2022 state diagram; design table local guard priority"
+    },
+    {
+      "id": "P-RSTP-T01-V263",
+      "test_id": "P-RSTP-T01",
+      "kind": "calculation",
+      "input": {
+        "operation": "counter_assignment",
+        "wire_ticks": 385,
+        "rounding": "ceil"
+      },
+      "expected": {
+        "counter_seconds": 2,
+        "wire_ticks_preserved": 385
+      },
+      "basis": "DIR counter resolution rule; 13.25 integer seconds / 14.2.8 1/256 second wire"
+    },
+    {
+      "id": "P-RSTP-T01-V264",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100264242030000020000800002000000000100000000800002000000000180010000140002000f0000000000000000003acba367",
+        "stimulus": "version2_config_compatibility",
+        "computed_fcs_hex": "3acba367"
+      },
+      "expected": {
+        "bpdu_kind": "Config",
+        "rcvdSTP": true,
+        "rcvdRSTP": false,
+        "migration_if_preexisting_state_sensing_sendrstp_true": "SELECTING_STP"
+      },
+      "basis": "13.29.31 PDF570: version0/1 restriction applies to TCN, Config has no version condition; 14.5(a) PDF596"
+    },
+    {
+      "id": "P-RSTP-T01-V265",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100274242030000020200800002000000000100000000800002000000000180010000140002000f00000000000000000090e2228b",
+        "stimulus": "rst_role_zero",
+        "flags": 0,
+        "computed_fcs_hex": "90e2228b",
+        "initial_receive_version_flags": {
+          "rcvdSTP": false,
+          "rcvdRSTP": false
+        }
+      },
+      "expected": {
+        "bpdu_kind": "RST",
+        "role_code": 0,
+        "rcvdInfo": "OtherInfo",
+        "rcvdSTP": false,
+        "rcvdRSTP": true,
+        "tc_ack": false,
+        "rcvdTcAck_set_by_receive": false,
+        "cist_master_port_created": false,
+        "record_priority": false
+      },
+      "basis": "14.5(c) PDF596;14.4(g) PDF593;13.29.12/31 PDF565/570; informative notes status PDF80 footnote10"
+    },
+    {
+      "id": "P-RSTP-T01-V266",
+      "test_id": "P-RSTP-T01",
+      "kind": "wire_decode",
+      "input": {
+        "encapsulation": "mac_frame_fcs",
+        "bytes_hex": "0180c200000002000000000100274242030000020280800002000000000100000000800002000000000180010000140002000f000000000000000000619ce6cd",
+        "stimulus": "rst_role_zero",
+        "flags": 128,
+        "computed_fcs_hex": "619ce6cd",
+        "initial_receive_version_flags": {
+          "rcvdSTP": false,
+          "rcvdRSTP": false
+        }
+      },
+      "expected": {
+        "bpdu_kind": "RST",
+        "role_code": 0,
+        "rcvdInfo": "OtherInfo",
+        "rcvdSTP": false,
+        "rcvdRSTP": true,
+        "tc_ack": false,
+        "rcvdTcAck_set_by_receive": false,
+        "cist_master_port_created": false,
+        "record_priority": false
+      },
+      "basis": "14.5(c) PDF596;14.4(g) PDF593;13.29.12/31 PDF565/570; informative notes status PDF80 footnote10"
+    }
+  ]
+}

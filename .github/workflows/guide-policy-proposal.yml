@@ -33,3 +33,7 @@ jobs:
         run: python scripts/check_traceability.py --strict
       - name: Check generated reports and hierarchy freshness
         run: python scripts/generate_traceability.py --check
+      - name: Extension design consistency checks
+        run: |
+          python -m unittest discover -s scripts -p 'test_check_extension_design.py' -v
+          python scripts/check_extension_design.py

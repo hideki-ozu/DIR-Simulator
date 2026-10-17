@@ -13,6 +13,97 @@ use serde_json::{Value, json};
 use std::{collections::BTreeMap, path::Path};
 
 pub(crate) fn profile_catalog(profile: &str) -> Option<Value> {
+    if matches!(
+        profile,
+        "can.ethernet.tsn.v1"
+            | "ethernet.redundancy.abstract.v1"
+            | "ethernet.preemption.abstract.v1"
+            | "ethernet.control.wire.experimental.v1"
+    ) {
+        let mut base = profile_catalog(if profile == "ethernet.control.wire.experimental.v1" {
+            "ethernet.l2.dynamic.v1"
+        } else {
+            "ethernet.tsn.v1"
+        })?;
+        let mut metric_names: Vec<String> = base["metrics"]
+            .as_array()?
+            .iter()
+            .map(|m| m["metric_id"].as_str().unwrap().to_owned())
+            .collect();
+        let mut schemas = base["model_schemas"].as_array()?.clone();
+        let (extra_schemas, extra_metrics): (&[&str], &str) = match profile {
+            "can.ethernet.tsn.v1" => {
+                let bridge = profile_catalog("can.ethernet.gateway.v1")?;
+                metric_names.extend(
+                    bridge["metrics"]
+                        .as_array()?
+                        .iter()
+                        .map(|m| m["metric_id"].as_str().unwrap().to_owned()),
+                );
+                schemas.extend(bridge["model_schemas"].as_array()?.iter().cloned());
+                (&["dir.composite.ingress"], "")
+            }
+            "ethernet.redundancy.abstract.v1" => (
+                &[
+                    "dir.redundancy.branch",
+                    "dir.redundancy.recovery",
+                    "dir.redundancy.origin",
+                ],
+                "redundancy.origin.target_count redundancy.origin.completed redundancy.branch.created redundancy.branch.dropped redundancy.recovery.accepted redundancy.recovery.duplicate redundancy.recovery.stale redundancy.branch.mac_bytes redundancy.branch.busy_ps redundancy.origin.completion_ratio",
+            ),
+            "ethernet.preemption.abstract.v1" => (
+                &[
+                    "dir.preemption.transfer",
+                    "dir.preemption.fragment",
+                    "dir.preemption.gap",
+                    "dir.preemption.delivery",
+                    "dir.preemption.decision",
+                ],
+                "preemption.fragments.started preemption.fragments.completed preemption.frames.completed preemption.mac_bytes.completed preemption.fragment_overhead_bytes preemption.port.busy_ps preemption.port.resume_gap_ps preemption.delivery.target_count preemption.delivery.completed",
+            ),
+            _ => (
+                &[
+                    "ethernet.wire.boundary",
+                    "ethernet.wire.membership",
+                    "ethernet.wire.membership_timer",
+                    "ethernet.control.wire.event",
+                    "ethernet.control.wire.policy",
+                    "ethernet.control.wire.transition",
+                ],
+                "ethernet.wire.accepted ethernet.wire.dropped ethernet.wire.transmitted ethernet.wire.tx_busy_ps ethernet.wire.tx_started ethernet.wire.tx_completed ethernet.wire.tx_mac_bytes ethernet.wire.rx_wire_ps ethernet.wire.rx_ifg_ps ethernet.wire.rx_completed ethernet.wire.rx_mac_bytes ethernet.wire.rx_bits ethernet.dynamic.filtered.stp_learning",
+            ),
+        };
+        if profile == "can.ethernet.tsn.v1" {
+            schemas.retain(|s| {
+                !matches!(
+                    s["schema_name"].as_str(),
+                    Some("ethernet.frame" | "ethernet.transfer" | "ethernet.reception")
+                )
+            });
+        }
+        if profile == "ethernet.preemption.abstract.v1" {
+            schemas.retain(|s| s["schema_name"] != "ethernet.dynamic.transfer");
+        }
+        schemas.extend(
+            extra_schemas
+                .iter()
+                .map(|name| json!({"schema_name":name,"schema_version":1})),
+        );
+        schemas.sort_by(|a, b| {
+            a["schema_name"]
+                .as_str()
+                .cmp(&b["schema_name"].as_str())
+                .then_with(|| {
+                    a["schema_version"]
+                        .as_u64()
+                        .cmp(&b["schema_version"].as_u64())
+                })
+        });
+        schemas.dedup();
+        metric_names.extend(extra_metrics.split_whitespace().map(String::from));
+        base = catalog(profile, metric_names, schemas);
+        return Some(base);
+    }
     let mut names: Vec<String> = Vec::new();
     let mut schemas: Vec<(&str, u32)> = Vec::new();
     let metrics = match profile {

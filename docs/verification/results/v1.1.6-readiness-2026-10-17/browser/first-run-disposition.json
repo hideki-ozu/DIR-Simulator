@@ -1,0 +1,56 @@
+{
+  "disposition": "superseded diagnostic run; preserve original artifacts",
+  "first_report": "tmp/release-readiness-20261017/browser/run-2026-10-17T05-20-07-320Z/browser-qa-report.json",
+  "original_harness": "tmp/release-readiness-20261017/browser/guide_browser_qa-pre-fix.cjs",
+  "original_harness_sha256": "b171ca36dcf5230ee0aa69e1a689395015f817b4b3c1adf4e4b37c02c3c8cff8",
+  "first_report_summary": {
+    "result": "FAIL",
+    "pass": 130,
+    "fail": 15,
+    "check_count": 145,
+    "browser_page_loads": 78,
+    "expected_browser_page_loads": 78,
+    "index_navigation_clicks": 52,
+    "expected_index_navigation_clicks": 52,
+    "same_origin_routes_per_viewport": [
+      {
+        "viewport": "desktop",
+        "count": 94,
+        "failures": 0
+      },
+      {
+        "viewport": "mobile",
+        "count": 94,
+        "failures": 0
+      }
+    ],
+    "same_origin_fragments_per_viewport": [
+      {
+        "viewport": "desktop",
+        "count": 775,
+        "failures": 0
+      },
+      {
+        "viewport": "mobile",
+        "count": 775,
+        "failures": 0
+      }
+    ],
+    "page_console_request_http_errors": {
+      "page": 0,
+      "console": 0,
+      "request": 0,
+      "http": 0
+    },
+    "screenshots": [
+      "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/browser/run-2026-10-17T05-20-07-320Z/01-index-desktop.png",
+      "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/browser/run-2026-10-17T05-20-07-320Z/02-reference-ethernet-desktop.png",
+      "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-readiness-20261017/browser/run-2026-10-17T05-20-07-320Z/03-new-ethernet-mobile.png"
+    ]
+  },
+  "explanations": [
+    "14 failed body-link probes were invalid assumptions: seven reference chapters are exposed through the index navbar, not as seven article-body links, across two viewports.",
+    "The last mobile STP navbar result was interrupted by TERM while the process was closing; do not treat the incomplete diagnostic result as final."
+  ],
+  "corrected_scope": "All 13 index navbar targets at both viewports, plus the six actual index body links (overall reference overview and five upstream Ethernet guides) at both viewports."
+}

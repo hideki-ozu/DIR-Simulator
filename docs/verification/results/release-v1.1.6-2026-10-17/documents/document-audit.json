@@ -1,0 +1,515 @@
+[
+  {
+    "name": "python-tests",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.85,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/python-tests.log",
+    "sha256": "10d2ceeb28f84880487446e5fc3e032ad83890532b7d0e6b14ba6fd8a2e46b03"
+  },
+  {
+    "name": "script-tests",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.247,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/script-tests.log",
+    "sha256": "67c7a89d96f8b41667f78da54a76e8e89304826f12eb738bf74980a56cdb7b6b"
+  },
+  {
+    "name": "trace-strict",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_traceability.py",
+      "--strict"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.144,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/trace-strict.log",
+    "sha256": "164ddfe7f4db60d5752dc1ca623e059d4520ceb63fbdeef299d237409e56adfc"
+  },
+  {
+    "name": "trace-generated",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/generate_traceability.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.957,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/trace-generated.log",
+    "sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3"
+  },
+  {
+    "name": "diagrams",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/render_diagrams.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 12.944,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/diagrams.log",
+    "sha256": "c295344843ecd20b18de8a77e836e4011d1709446e421d9c8f4bb5e6638dba07"
+  },
+  {
+    "name": "design",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_extension_design.py",
+      "--report",
+      "/home/hideki/DIR-Simulator-audits/release-v1.1.6-20261017/source/tmp/release-v1.1.6-publication/preflight/documents/design.json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.157,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/design.log",
+    "sha256": "a544b63f8d690e9ca419da58fb6a3a283c7a1e9d6a78ca6420584285fc57b05d"
+  },
+  {
+    "name": "guide-inputs",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/build_guide_inputs.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.194,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/guide-inputs.log",
+    "sha256": "a187ce4364ec126be0516da458bc0086eef4e34ca45b9c3f03fe4f99252edc69"
+  },
+  {
+    "name": "mkdocs",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "-m",
+      "mkdocs",
+      "build",
+      "--strict"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.314,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/mkdocs.log",
+    "sha256": "fb43fcdd6d5185b78cdd330701ddaa0419a51959fff371adebd18dba497289bf"
+  },
+  {
+    "name": "guide-links",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_guide_links.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.435,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/guide-links.log",
+    "sha256": "9efddeb4d0912ab1a5e4e40fe9f06ccbf0c95f1f6120dfa8c60b67a1e3d30540"
+  },
+  {
+    "name": "notices",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_third_party_notices.py",
+      "--guide-dir",
+      "build/guide"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.102,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/notices.log",
+    "sha256": "84578dbd285edc4e870c37c990a13be3bcc0b13322e072ef4b022c569d392e63"
+  },
+  {
+    "name": "notice-tests",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "tests/test_third_party_notices.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.488,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/notice-tests.log",
+    "sha256": "a6c06226a57ee0019e042445d5abaedbf469aeedf994b08e50fb3960a62d3ec6"
+  },
+  {
+    "name": "check_ahb_wait_error_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ahb_wait_error_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.102,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ahb_wait_error_document_metadata.log",
+    "sha256": "da487459d1e72d85fbcdb2df7b8d55935e65c1dfad11c1ae1abf3d6382bfc8ba"
+  },
+  {
+    "name": "check_axi_strobes_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_axi_strobes_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.088,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_axi_strobes_document_metadata.log",
+    "sha256": "212867d849bf8677de6d19c5a88c0f677581cfd9dc3bd45fefa7f96f05965fd7"
+  },
+  {
+    "name": "check_ddr_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ddr_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.089,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ddr_document_metadata.log",
+    "sha256": "207626306fafd108afb42b012cab371c7d409874cd623ec2d0582bac0183f7ce"
+  },
+  {
+    "name": "check_ethernet_cbs_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_cbs_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.079,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_cbs_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_learning_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_learning_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.067,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_learning_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_link_control_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_link_control_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.067,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_link_control_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_multicast_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_multicast_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.061,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_multicast_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_priority_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_priority_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.058,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_priority_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_psfp_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_psfp_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.058,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_psfp_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_source_filter_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_source_filter_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.06,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_source_filter_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_stp_cost_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_stp_cost_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.059,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_stp_cost_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_tas_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_tas_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.057,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_tas_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_vid_registration_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_vid_registration_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.062,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_vid_registration_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_ethernet_vlan_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_vlan_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.056,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_vlan_document_metadata.log",
+    "sha256": "88bc5a8935170efc01a9bf0283ba5924c53e4f06a86c639bfd432a166992d722"
+  },
+  {
+    "name": "check_noc_input_fifo_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_noc_input_fifo_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.059,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_noc_input_fifo_document_metadata.log",
+    "sha256": "72981fc37883f6031587c29471383ae6756452d6793f488ca768de4e657796a0"
+  },
+  {
+    "name": "check_shared_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_shared_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.062,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_shared_document_metadata.log",
+    "sha256": "d8c7b34a577b5041cf13c029aa1e95e5dba5a72968ef12c78699c4a7c3fe3e57"
+  },
+  {
+    "name": "check_soc_arbitration_document_metadata",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_soc_arbitration_document_metadata.py",
+      "--source-only"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.058,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_soc_arbitration_document_metadata.log",
+    "sha256": "b2f16de4f462f9a528773f1e7a6359aafd48354949e64b210fe534067aa9f077"
+  },
+  {
+    "name": "check_ahb_wait_error_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ahb_wait_error_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.031,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ahb_wait_error_site_inventory.log",
+    "sha256": "be00f4ca272b06fa72522e03f4f194ffca9f446e36669871a25ea0038c576c80"
+  },
+  {
+    "name": "check_axi_strobes_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_axi_strobes_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.031,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_axi_strobes_site_inventory.log",
+    "sha256": "bb38176d524d92831d333a7c5ad15b866e2ba94be1c32f581c940544dbdbbb96"
+  },
+  {
+    "name": "check_ethernet_cbs_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_cbs_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.031,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_cbs_site_inventory.log",
+    "sha256": "017ca5822ec8076b53ec6863dbdda4e368a7c87ff0880473da2f57deb3567384"
+  },
+  {
+    "name": "check_ethernet_learning_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_learning_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.03,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_learning_site_inventory.log",
+    "sha256": "b6a3cfb0f77dd25bcad66a2178b87e5e385c7ab1b14e86abc12357a36b2535aa"
+  },
+  {
+    "name": "check_ethernet_link_control_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_link_control_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.028,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_link_control_site_inventory.log",
+    "sha256": "2fbc3647455c4f851da67453a89e43977786f7a7f2c39304652ce642e75db285"
+  },
+  {
+    "name": "check_ethernet_multicast_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_multicast_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.026,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_multicast_site_inventory.log",
+    "sha256": "0f7ac89383bdee8fb4f2b70663664898dcd98a9213b83c648f3ef02ece3ecb17"
+  },
+  {
+    "name": "check_ethernet_priority_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_priority_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.03,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_priority_site_inventory.log",
+    "sha256": "5144461819b40b0c8488e72fe30e8c107af987a4e55da8615779e7e7fc165130"
+  },
+  {
+    "name": "check_ethernet_psfp_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_psfp_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.026,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_psfp_site_inventory.log",
+    "sha256": "c5de36b039ee977e99da697229c46fc9abe56a9129f733d3de705c3897ce9053"
+  },
+  {
+    "name": "check_ethernet_source_filter_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_source_filter_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.027,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_source_filter_site_inventory.log",
+    "sha256": "ae856f3603b8127d66f16ecf57c7ec238127ce6d7746daa8275cfde00e3eb932"
+  },
+  {
+    "name": "check_ethernet_stp_cost_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_stp_cost_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.027,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_stp_cost_site_inventory.log",
+    "sha256": "49949781f980ec17e30b2bda2deebe30e0281624a61babe46000912219061d5e"
+  },
+  {
+    "name": "check_ethernet_tas_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_tas_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.028,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_tas_site_inventory.log",
+    "sha256": "a98f59d2f0fab2ffd4bc41d637adef8d1961bf4ccae4297451fd068b302c5dc1"
+  },
+  {
+    "name": "check_ethernet_vid_registration_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_vid_registration_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.029,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_vid_registration_site_inventory.log",
+    "sha256": "1a4f1db42ef4d6920cd1871f56898042a8abd04cab78406c41f81fcfaa679d6b"
+  },
+  {
+    "name": "check_ethernet_vlan_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_ethernet_vlan_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.027,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_ethernet_vlan_site_inventory.log",
+    "sha256": "e7683be4c80cb057b6de5fd4b082e63f497ba79b0b67c5467684c70d27d45d04"
+  },
+  {
+    "name": "check_noc_input_fifo_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_noc_input_fifo_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.028,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_noc_input_fifo_site_inventory.log",
+    "sha256": "0e7b54ae43b6e8c2592e85996d1b614d75c6c8055a548d4a70c2c8ac1cde387d"
+  },
+  {
+    "name": "check_soc_arbitration_site_inventory",
+    "command": [
+      "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+      "scripts/check_soc_arbitration_site_inventory.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.036,
+    "log": "tmp/release-v1.1.6-publication/preflight/documents/check_soc_arbitration_site_inventory.log",
+    "sha256": "d8cfd7ae5fd91f3cbbca96d3292199f3234497a8bddee9c7904c193e30df8d29"
+  }
+]

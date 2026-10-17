@@ -1,0 +1,507 @@
+{
+  "schema_name": "dir.extension.product_verification",
+  "schema_version": 1,
+  "status": "passed_for_adopted_scope",
+  "verified_at": "2026-10-17T04:09:20.075467+00:00",
+  "source_state": "uncommitted_worktree",
+  "base_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+  "full_ieee_conformance_claimed": false,
+  "external_interoperability_verified": false,
+  "large_scale_performance_verified": false,
+  "network_checkpoint_supported": false,
+  "checkpoint_scope": "registered generic backend, all model/channel codecs, same executable bytes; Unix durable-directory operations; Linux verified",
+  "implemented_domains": [
+    "Gateway+TSN",
+    "abstract replication",
+    "abstract preemption",
+    "passive IGMPv3",
+    "passive MLDv2",
+    "cooperative RunSession",
+    "Metric V2",
+    "cross-process checkpoint",
+    "selected active RSTP/CIST",
+    "MVRP FullParticipant"
+  ],
+  "vector_coverage": {
+    "file": "extension-product-2026-10-17/vector-coverage.json",
+    "sha256": "b3386bd18bb6351cdfa73f4ac1226cbfb8ef873b3fbc1669fb7cf65325dce6b6",
+    "summary": {
+      "total": 1322,
+      "passed": 1320,
+      "not_applicable_design_only": 2,
+      "not_run": 0,
+      "failed": 0,
+      "evidence_kinds": {
+        "assertion_receipt": 1208,
+        "assertion_receipt_and_source_crosswalk": 31,
+        "assertion_crosswalk_with_prepare_diagnostic": 11,
+        "assertion_crosswalk": 70,
+        "design_only_readiness_gate": 2
+      }
+    }
+  },
+  "design_checker_is_product_execution_evidence": false,
+  "rust": {
+    "counts": {
+      "passed": 1038,
+      "failed": 0,
+      "ignored": 19,
+      "target_summaries": 39
+    },
+    "gates": [
+      {
+        "name": "fmt",
+        "command": [
+          "/home/hideki/.cargo/bin/cargo",
+          "fmt",
+          "--all",
+          "--",
+          "--check"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 1.202,
+        "log": "extension-product-2026-10-17/fmt.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "workspace-tests",
+        "command": [
+          "/home/hideki/.cargo/bin/cargo",
+          "test",
+          "--workspace",
+          "--locked"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 221.805,
+        "log": "extension-product-2026-10-17/workspace-tests.log",
+        "log_sha256": "362621a6415528cd0cfa2d5d9ea4985cd1b0473a8aa1c0e221a9502fac4c3cb6"
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "/home/hideki/.cargo/bin/cargo",
+          "clippy",
+          "--workspace",
+          "--locked",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 9.041,
+        "log": "extension-product-2026-10-17/clippy.log",
+        "log_sha256": "2b1cec66aeab09d4433d41534fefbf61e8f3ee516e0bee2b6bb6b90d2abda7cf"
+      },
+      {
+        "name": "build-products",
+        "command": [
+          "/home/hideki/.cargo/bin/cargo",
+          "build",
+          "--locked",
+          "-p",
+          "dir-simulator",
+          "--bin",
+          "dir-simulator",
+          "--example",
+          "control_checkpoint"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.082,
+        "log": "extension-product-2026-10-17/build-products.log",
+        "log_sha256": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd"
+      }
+    ]
+  },
+  "native_ignored_suite": {
+    "counts": {
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0
+    },
+    "gate": {
+      "name": "native-ignored-suite",
+      "command": [
+        "/home/hideki/.cargo/bin/cargo",
+        "test",
+        "--locked",
+        "-p",
+        "dir-simulator",
+        "--lib",
+        "tool::ned_editor::run_control",
+        "--",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 57.578,
+      "binary": "tmp/extension-implementation-20261017/final-products/active-run/bin/dir-simulator",
+      "binary_sha256": "de7c09e8052a4ea508bc252b2d767a6243208ec7b755682af455b09e0c5650c3",
+      "log": "extension-product-2026-10-17/native.log",
+      "log_sha256": "1ab8ae77ccaeb86e4f6577e811482dc21614d72353f2cb70a567202c40cf6b7a"
+    },
+    "counting_note": "Use final outer summary, not nested child summaries."
+  },
+  "node": {
+    "counts": {
+      "tests": 229,
+      "pass": 228,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 1,
+      "todo": 0
+    },
+    "skips": [
+      {
+        "test": "native Mozc composition and source acknowledgement precede the NED run snapshot",
+        "reason": "Set DIR_NED_NATIVE_IME_PRIVATE=1 inside private X11/D-Bus with Playwright and IBus/Mozc"
+      }
+    ],
+    "gates": [
+      {
+        "name": "node-tests",
+        "command": [
+          "node",
+          "--test",
+          "tests/controlled_viewer_model.test.cjs",
+          "tests/ethernet_viewer_model.test.cjs",
+          "tests/media_fd_viewer_model.test.cjs",
+          "tests/ned_editor_acceptance_http.test.cjs",
+          "tests/ned_editor_browser.test.cjs",
+          "tests/ned_editor_composition_browser.test.cjs",
+          "tests/ned_editor_extensions_browser.test.cjs",
+          "tests/ned_editor_extensions_ui.test.cjs",
+          "tests/ned_editor_hostile_browser.test.cjs",
+          "tests/ned_editor_native_ime.test.cjs",
+          "tests/ned_editor_recovery.test.cjs",
+          "tests/ned_editor_run_shutdown.test.cjs",
+          "tests/ned_editor_startup.test.cjs",
+          "tests/ned_editor_startup_failure.test.cjs",
+          "tests/ned_editor_ui.test.cjs",
+          "tests/ned_editor_viewer_expiry_browser.test.cjs",
+          "tests/network_viewer_model.test.cjs",
+          "tests/simulator_binary.test.cjs",
+          "tests/transaction_viewer_model.test.cjs",
+          "tests/viewer_model.test.cjs"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 32.629,
+        "log": "extension-product-2026-10-17/node-tests.log",
+        "log_sha256": "1c2d6540d673ae354817a9c0d162079bd2d5ceb1b9ca98622aa0b9e2d8da4414"
+      }
+    ]
+  },
+  "documentation": {
+    "gates": [
+      {
+        "name": "trace-tests",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_*traceability*.py",
+          "-v"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 4.905,
+        "log": "extension-product-2026-10-17/trace-tests.log",
+        "log_sha256": "e6002ad373a740fbb081c49c806fc227174ff1374b73960dd365cbc92a23be74"
+      },
+      {
+        "name": "pdf-tests",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_document_pdf.py",
+          "-v"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.142,
+        "log": "extension-product-2026-10-17/pdf-tests.log",
+        "log_sha256": "ceadefa70fb4389331bc1ed79e5682069adfd6032ebdcb5da6765a779ab1a4f5"
+      },
+      {
+        "name": "design-tests",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "scripts",
+          "-p",
+          "test_check_extension_design.py",
+          "-v"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.161,
+        "log": "extension-product-2026-10-17/design-tests.log",
+        "log_sha256": "03477cdc70bb24f006a99e5b541043c628b6b13145756c7d052c8f5e5be77f97"
+      },
+      {
+        "name": "trace-strict",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "scripts/check_traceability.py",
+          "--strict"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.193,
+        "log": "extension-product-2026-10-17/trace-strict.log",
+        "log_sha256": "164ddfe7f4db60d5752dc1ca623e059d4520ceb63fbdeef299d237409e56adfc"
+      },
+      {
+        "name": "trace-generated",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "scripts/generate_traceability.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.918,
+        "log": "extension-product-2026-10-17/trace-generated.log",
+        "log_sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3"
+      },
+      {
+        "name": "design-check",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "scripts/check_extension_design.py",
+          "--report",
+          "/home/hideki/DIR-Simulator-audits/functional-reference-20261016/source/tmp/extension-implementation-20261017/final-gates/design.json"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.119,
+        "log": "extension-product-2026-10-17/design-check.log",
+        "log_sha256": "a544b63f8d690e9ca419da58fb6a3a283c7a1e9d6a78ca6420584285fc57b05d"
+      },
+      {
+        "name": "guide-inputs",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "scripts/build_guide_inputs.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.164,
+        "log": "extension-product-2026-10-17/guide-inputs.log",
+        "log_sha256": "15d5467a6f5812057a41134682e53fbfcee325c4d77351c908172f42715c0664"
+      },
+      {
+        "name": "mkdocs",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "-m",
+          "mkdocs",
+          "build",
+          "--strict"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.685,
+        "log": "extension-product-2026-10-17/mkdocs.log",
+        "log_sha256": "acc077e67805260ea6fca31b5e553f32551fb481a04903ed3289035b8edfce6c"
+      },
+      {
+        "name": "guide-links",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "scripts/check_guide_links.py"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.307,
+        "log": "extension-product-2026-10-17/guide-links.log",
+        "log_sha256": "20756a43dfe2c1b46642286e629ac98fecef0bebcca0034734192e0189d59c23"
+      },
+      {
+        "name": "notices",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "scripts/check_third_party_notices.py",
+          "--guide-dir",
+          "build/guide"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.096,
+        "log": "extension-product-2026-10-17/notices.log",
+        "log_sha256": "84578dbd285edc4e870c37c990a13be3bcc0b13322e072ef4b022c569d392e63"
+      },
+      {
+        "name": "notice-tests",
+        "command": [
+          "/home/hideki/DIR-Simulator-audits/spec-contract-gaps-20261014/venv/bin/python",
+          "tests/test_third_party_notices.py"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 1.078,
+        "log": "extension-product-2026-10-17/notice-tests.log",
+        "log_sha256": "4d10f0db694612df267adf6dd5d18423e9ab1d5adb41af32442d9f34860dc692"
+      }
+    ],
+    "traceability": {
+      "requirements": 258,
+      "functions": 71,
+      "nodes": 318,
+      "structural_errors": 0,
+      "incomplete_requirements": 0,
+      "incomplete_items": 0
+    },
+    "site": {
+      "html_files": 35,
+      "local_links_assets_anchors": 2826
+    }
+  },
+  "frozen_products": {
+    "cli": {
+      "path": "bin/dir-simulator",
+      "sha256": "de7c09e8052a4ea508bc252b2d767a6243208ec7b755682af455b09e0c5650c3"
+    },
+    "checkpoint_example": {
+      "path": "bin/control_checkpoint",
+      "sha256": "235ea1fd6f018962d32be0dc95b064e35406d56684ac117a538be9b2b04cc5eb"
+    },
+    "build_source_sha256": "51f85805d5724c6ab4ea58553912ef343f889c5b9cca4c17e53a426e155c5008",
+    "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+    "git_commit": "c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533",
+    "result_metadata_binary_hashes": {
+      "cli": {
+        "composite": "de7c09e8052a4ea508bc252b2d767a6243208ec7b755682af455b09e0c5650c3",
+        "redundancy": "de7c09e8052a4ea508bc252b2d767a6243208ec7b755682af455b09e0c5650c3",
+        "preemption": "de7c09e8052a4ea508bc252b2d767a6243208ec7b755682af455b09e0c5650c3",
+        "wire-active": "de7c09e8052a4ea508bc252b2d767a6243208ec7b755682af455b09e0c5650c3",
+        "wire-passive": "de7c09e8052a4ea508bc252b2d767a6243208ec7b755682af455b09e0c5650c3"
+      },
+      "checkpoint_example": {
+        "baseline": "235ea1fd6f018962d32be0dc95b064e35406d56684ac117a538be9b2b04cc5eb",
+        "paused": "235ea1fd6f018962d32be0dc95b064e35406d56684ac117a538be9b2b04cc5eb",
+        "restored": "235ea1fd6f018962d32be0dc95b064e35406d56684ac117a538be9b2b04cc5eb"
+      }
+    }
+  },
+  "checkpoint_comparison": {
+    "simulation_equal": true,
+    "baseline_end_ps": "10",
+    "restored_end_ps": "10",
+    "paused_state": "Paused",
+    "restored_state": "Completed"
+  },
+  "active_wire_journal": {
+    "typed_model_records": 25769,
+    "schema_counts": {
+      "ethernet.control.wire.event": 401,
+      "ethernet.control.wire.policy": 10,
+      "ethernet.control.wire.transition": 25348,
+      "ethernet.dynamic.policy": 10
+    },
+    "event_kinds": {
+      "initialize": 6,
+      "local": 15,
+      "receive": 74,
+      "timer": 84,
+      "tx_completed": 74,
+      "tx_queued": 74,
+      "tx_started": 74
+    },
+    "protocols": {
+      "mvrp": 281,
+      "rstp": 120
+    },
+    "transition_machines": {
+      "Applicant": 24694,
+      "BDM": 9,
+      "LeaveAll": 9,
+      "PIM": 101,
+      "PPM": 18,
+      "PRS": 37,
+      "PRT": 160,
+      "PRX": 28,
+      "PST": 25,
+      "PTI": 54,
+      "PTX": 90,
+      "Periodic": 36,
+      "Registrar": 13,
+      "TCM": 74
+    },
+    "first_event": {
+      "record_id": "@wire/event/1/164",
+      "time_ps": "0",
+      "event_kind": "initialize",
+      "protocol": "rstp"
+    },
+    "latest_wire_policy": {
+      "record_id": "@wire/record/ethernet.control.wire.policy/25262",
+      "time_ps": "100002498002",
+      "policy_epoch": "10",
+      "typed_ports": 9,
+      "subject": "@network"
+    }
+  },
+  "screenshot_evidence": {
+    "file": "../../guide/assets/reference/extensions/screenshot-evidence.json",
+    "sha256": "a69d349260fe6bc9d7fbef017a877b5ebf6a4015a4ab902d61567b2394d84220"
+  },
+  "evidence_file_sha256": {
+    "extension-product-2026-10-17/product-active-typed-journal.json": "3bbe2ca3cbaebfdcdfad1c39bb9c1fcf0e6c87e387b2028b9c869c2baf55f182",
+    "extension-product-2026-10-17/product-binary-build-metadata.json": "332210601fd46aec3545a8884b54a50fc4a065c1f8a1a3723dbefec362a46f78",
+    "extension-product-2026-10-17/product-checkpoint-comparison.json": "3d541cd275b9bffcdc577fd110f19915f5d614c4883c3a6ef32cec7b5a63bdea",
+    "extension-product-2026-10-17/bridge-binding-correction.json": "f8cb42cbce51dc6fcfb5cd6e96938e0b3d44643aa5a73046d9dd819d3db30580",
+    "extension-product-2026-10-17/checkpoint-unlisted-correction.json": "cdcd4618a1d0b508bf85819bcf1bd47adf34c2c5bd4c323b0ec2e2d3e7b8c6b3",
+    "extension-product-2026-10-17/correction.json": "a3a9a89b08a718d60e958d2406d80d79dee0148c25a6952805ab2e15ebf82121",
+    "extension-product-2026-10-17/controlled-viewer-proof.json": "2f2e435a5182356b0a4cf0b53566b4fbf9a70887b3321f75921d352ff60b6f1e"
+  },
+  "review_closures": [
+    {
+      "finding": "MAP demand overwritten before journal before-state",
+      "fix": "existing Attribute trace retains pre-MAP value",
+      "tests": [
+        "actual_host_map_new_and_withdrawal_preserve_demand_changes",
+        "map_journals_demand_only_join_and_withdrawal"
+      ]
+    },
+    {
+      "finding": "Begin reset actual changes missing",
+      "fix": "record changed attributes under genuine Begin entries; omit unchanged companions",
+      "tests": [
+        "begin_reset_journals_actual_attribute_changes"
+      ]
+    },
+    {
+      "finding": "Tree/MAP intermediate withdrawal and duplicate paired Link",
+      "fix": "one staged TreeBatch and one MAP; RSTP owns paired Link projection",
+      "tests": [
+        "simultaneous_tree_changes_keep_continuous_map_demand",
+        "supplied_bridge_map_order_uses_actual_atomic_publication",
+        "tree_batch_late_preflight_failure_publishes_no_stages_or_policy"
+      ]
+    },
+    {
+      "finding": "Controlled snapshot T/H disagreement",
+      "fix": "successful H except Completed T; Closed preserves frozen observation end; validate restored journal end before factories",
+      "tests": [
+        "snapshot_boundary_closed_ack_preserves_completed_observation_horizon"
+      ]
+    }
+  ],
+  "preserved_original_failures": {
+    "workspace_csp_old_asset_count": "fe5f4ad508aa575ba8cac9aadceb42c4b7841f84200235c3e0a4b670a51ad3dd",
+    "all_target_style_lints": "113925845a9197226488e1b44ad0f1747f070760acea8455b899c8f5b727bfb0",
+    "native_csp_old_asset_count": "07114b343ee72a0a630dd471e42bb869a6787c221091c2d2351fc83e75001be1",
+    "storage": "ignored tmp/extension-implementation-20261017; older evidence retained without overwriting"
+  },
+  "limitations": [
+    "Two hypothetical missing-design readiness gates remain design-only, not product passes.",
+    "Seventy common/control/bridge cases retain source assertion crosswalks without captured raw per-case values.",
+    "Kernel-only/forced-entry/synthetic stimuli establish the stated layer only.",
+    "Optional environment-dependent Node skips are listed explicitly.",
+    "Independent review and fixtures do not certify all IEEE features/guards or external equipment interoperability."
+  ]
+}

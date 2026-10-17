@@ -1,0 +1,38 @@
+[
+  {
+    "name": "stage-complete-snapshot",
+    "command": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.173,
+    "log": "tmp/release-readiness-20261017/stage-complete-snapshot.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "staged-hook",
+    "command": [
+      "python3",
+      ".githooks/pre-commit"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.958,
+    "log": "tmp/release-readiness-20261017/staged-hook.log",
+    "sha256": "15c627da6ba9fc521118001b8c5be1d6e56b87c4d57413d3c02163a888b60b24"
+  },
+  {
+    "name": "staged-diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit_code": 2,
+    "elapsed_seconds": 0.075,
+    "log": "tmp/release-readiness-20261017/staged-diff-check.log",
+    "sha256": "534771723391b5075aef41a0e38b26a125359fa73a3807f32a0cad0f565ec33b"
+  }
+]

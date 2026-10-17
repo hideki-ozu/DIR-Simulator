@@ -1,0 +1,33 @@
+{
+  "schema_name": "dir.ethernet_control_wire.workload",
+  "schema_version": 1,
+  "ethernet": {
+    "schema_version": 4,
+    "generators": [],
+    "controls": []
+  },
+  "packets": [
+    {
+      "id": "igmp-include",
+      "adapter_id": "igmp-s1",
+      "ingress_port": "Net.s1.rx_a",
+      "arrival_ps": "10000000",
+      "encapsulation": "ip_packet",
+      "bytes_hex": "4600002c00000000010282b4c0000201e000001694040000220029ef0000000101000001ef010203c0000209",
+      "vid": 10,
+      "source_mac": "02:00:00:00:00:01",
+      "destination_mac": "01:00:5e:00:00:16"
+    },
+    {
+      "id": "mld-include",
+      "adapter_id": "mld-s1",
+      "ingress_port": "Net.s1.rx_a",
+      "arrival_ps": "20000000",
+      "encapsulation": "ip_packet",
+      "bytes_hex": "6000000000340001fe800000000000000000000000000001ff0200000000000000000000000000163a000502000001008f0032c70000000101000001ff3e000000000000000000000000123420010db8000000000000000000000009",
+      "vid": 10,
+      "source_mac": "02:00:00:00:00:01",
+      "destination_mac": "33:33:00:00:00:16"
+    }
+  ]
+}

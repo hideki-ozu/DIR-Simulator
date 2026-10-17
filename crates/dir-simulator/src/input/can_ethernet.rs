@@ -15,8 +15,19 @@ fn object<'a>(value: &'a Value, fields: &[&str], path: &str) -> Result<&'a Map<S
         || fields.iter().any(|f| !o.contains_key(*f))
         || o.keys().any(|k| !fields.contains(&k.as_str()))
     {
+        let target = if fields.is_empty() {
+            path.to_owned()
+        } else {
+            let field = o
+                .keys()
+                .find(|key| !fields.contains(&key.as_str()))
+                .map(String::as_str)
+                .or_else(|| fields.iter().find(|key| !o.contains_key(**key)).copied())
+                .unwrap_or("");
+            format!("{path}/{field}")
+        };
         return Err(error(
-            path,
+            &target,
             format!("required exact fields: {}", fields.join(", ")),
         ));
     }
@@ -67,7 +78,7 @@ pub(crate) fn configure(
     paths: &[String],
 ) -> Result<PreparedCanEthernet> {
     let document = JsonDocument::parse(content)?;
-    configure_inner(content, can_base, ethernet_base, paths).map_err(|diagnostic| {
+    configure_inner(content, can_base, ethernet_base, paths, false).map_err(|diagnostic| {
         let pointer = diagnostic.target.clone().unwrap_or_default();
         document.annotate(&pointer, diagnostic)
     })
@@ -77,6 +88,7 @@ fn configure_inner(
     can_base: &PreparedCan,
     ethernet_base: &mut PreparedEthernet,
     paths: &[String],
+    resolved: bool,
 ) -> Result<PreparedCanEthernet> {
     let doc = JsonDocument::parse(content)?;
     let root = object(
@@ -91,15 +103,17 @@ fn configure_inner(
         ));
     }
     object(&root["can"], &[], "/can")?;
-    ethernet::configure(
-        &root["ethernet"].to_string(),
-        ethernet_base,
-        "ethernet.l2.vlan.v1",
-    )
-    .map_err(|diagnostic| {
-        let pointer = format!("/ethernet{}", diagnostic.target.as_deref().unwrap_or(""));
-        diagnostic.with_target(pointer)
-    })?;
+    if !resolved {
+        ethernet::configure(
+            &root["ethernet"].to_string(),
+            ethernet_base,
+            "ethernet.l2.vlan.v1",
+        )
+        .map_err(|diagnostic| {
+            let pointer = format!("/ethernet{}", diagnostic.target.as_deref().unwrap_or(""));
+            diagnostic.with_target(pointer)
+        })?;
+    }
     let mut gateways = Vec::new();
     let mut instances = BTreeSet::new();
     let mut owned_can = BTreeSet::new();
@@ -361,6 +375,19 @@ fn workload_inner(content: &str, p: &mut PreparedCanEthernet) -> Result<()> {
         }
     }
     Ok(())
+}
+
+/// Validate bridge ownership and codecs against an already resolved dynamic instance.
+pub(crate) fn configure_projected(
+    bridge: &Value,
+    can: &PreparedCan,
+    ethernet: &mut PreparedEthernet,
+    paths: &[String],
+) -> Result<PreparedCanEthernet> {
+    object(bridge, &["schema_version", "can", "gateways"], "/bridge")?;
+    let mut adapted = bridge.clone();
+    adapted["ethernet"] = serde_json::json!({});
+    configure_inner(&adapted.to_string(), can, ethernet, paths, true)
 }
 
 #[cfg(test)]

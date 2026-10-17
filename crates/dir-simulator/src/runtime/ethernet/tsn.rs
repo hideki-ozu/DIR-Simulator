@@ -297,6 +297,8 @@ pub(crate) struct TsnDelta {
     pub wakes: Vec<WakeToken>,
     /// One highest ready class per affected port, FIFO heads supplied by parent.
     pub selected: BTreeMap<String, u8>,
+    /// All ready classes, for profile-specific express/continuation selection.
+    pub ready: BTreeMap<String, u8>,
     pub psfp: Option<PolicingRecord>,
     pub gcl_updates: u64,
     pub guard_blocked: Vec<(String, u8)>,
@@ -348,6 +350,12 @@ impl TsnState {
             .updates
             .get(self.update_cursor)
             .map(|u| u.effective_at_ps)
+    }
+    pub(crate) fn pending_controls_after(&self, delta: &TsnDelta) -> usize {
+        self.prepared
+            .updates
+            .len()
+            .saturating_sub(delta.update_cursor.unwrap_or(self.update_cursor))
     }
     pub(crate) fn next_control_after(&self, delta: &TsnDelta) -> Option<u64> {
         match delta.update_cursor {
@@ -487,6 +495,8 @@ impl TsnState {
         d: &mut TsnDelta,
     ) -> Result<()> {
         let o = &self.prepared.outputs[i];
+        d.ready.insert(o.port.clone(), 0);
+        d.selected.remove(&o.port);
         let clip = self.next_update(&o.port, cursor);
         if input
             .sending
@@ -636,6 +646,7 @@ impl TsnState {
                 }
                 if state == "ready" {
                     d.selected.insert(o.port.clone(), c as u8);
+                    *d.ready.entry(o.port.clone()).or_default() |= 1 << c;
                 }
             }
             decisions.push((c as u8, state));
@@ -694,11 +705,27 @@ impl TsnState {
     #[allow(clippy::too_many_arguments)]
     pub(crate) fn plan_start_in(
         &self,
-        mut d: TsnDelta,
+        d: TsnDelta,
         port: &str,
         priority: u8,
         now: u64,
         mac_bytes: u64,
+        post: &PortInput,
+    ) -> Result<(TsnDelta, u64, u64)> {
+        let (serialization, occupancy) =
+            wire_times(mac_bytes, self.prepared.outputs[self.index(port)?].link_bps)?;
+        self.plan_start_duration_in(d, port, priority, now, serialization, occupancy, post)
+    }
+    /// Same TAS/CBS preflight with a profile-owned occupied interval.
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn plan_start_duration_in(
+        &self,
+        mut d: TsnDelta,
+        port: &str,
+        priority: u8,
+        now: u64,
+        serialization: u64,
+        occupancy: u64,
         post: &PortInput,
     ) -> Result<(TsnDelta, u64, u64)> {
         let cursor = d.update_cursor.unwrap_or(self.update_cursor);
@@ -716,7 +743,6 @@ impl TsnState {
         let i = self.index(port)?;
         let mut p = self.staged_port(&mut d, i);
         self.advance_port(i, &mut p, now)?;
-        let (serialization, occupancy) = wire_times(mac_bytes, self.prepared.outputs[i].link_bps)?;
         let eof = now
             .checked_add(serialization)
             .ok_or_else(|| error(port, "SOF+serialization overflow"))?;

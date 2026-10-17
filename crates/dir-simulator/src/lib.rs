@@ -26,6 +26,7 @@ pub use run::{
     RunFailure, RunReport, run, run_config, run_config_with_registry, run_with_diagnostics,
 };
 pub use runtime::can::protocol as can;
+pub use runtime::session::*;
 pub use tool::viewer;
 pub use types::{Diagnostic, PreparedSimulation};
 

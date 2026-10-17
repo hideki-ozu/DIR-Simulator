@@ -109,6 +109,7 @@
     if (model && changedMode) renderNetwork(API.networkAt(model, current));
   }
   function clearResult() {
+    window.DIRControlledApp?.unmount();
     window.DIREthernetApp?.unmount();
     window.DIRTransactionApp?.unmount();
     pause();
@@ -167,6 +168,10 @@
     }
   }
   function loadObject(raw, filename) {
+    if(raw?.schema_version===3||window.DIRControlledModel?.extensionProfiles.has(raw?.metadata?.model_profile)){
+      clearResult();window.DIRControlledApp.mount(raw,filename);
+      $("empty-state").hidden=true;$("loading").hidden=true;$("error-banner").hidden=true;return;
+    }
     if (window.DIRTransactionModel?.profiles.has(raw?.metadata?.model_profile)) {
       clearResult();
       window.DIRTransactionApp.mount(raw, filename);

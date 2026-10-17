@@ -1,0 +1,617 @@
+{
+  "schema_version": 1,
+  "status": "design_vectors_not_product_tests",
+  "vectors": [
+    {
+      "id": "P-MVRP-T02-V201",
+      "test_id": "P-MVRP-T02",
+      "kind": "bridge_catalog",
+      "input": {
+        "ports": [
+          "a",
+          "b"
+        ],
+        "static": {
+          "a": [
+            10
+          ],
+          "b": []
+        },
+        "allowed": {
+          "a": [],
+          "b": [
+            20
+          ]
+        },
+        "overrides": []
+      },
+      "expected": {
+        "accept": true,
+        "svre_vids": [
+          10,
+          20
+        ],
+        "modes": {
+          "a/10": "fixed_ignore_new",
+          "b/10": "normal",
+          "a/20": "normal",
+          "b/20": "normal"
+        },
+        "restricted_b_vid10": true
+      },
+      "basis": "bridge §5.6; SVRE VID単位、欠損port Normal"
+    },
+    {
+      "id": "P-MVRP-T02-V202",
+      "test_id": "P-MVRP-T02",
+      "kind": "bridge_catalog",
+      "input": {
+        "ports": [
+          "a",
+          "b"
+        ],
+        "static": {
+          "a": [
+            10
+          ],
+          "b": []
+        },
+        "allowed": {
+          "a": [],
+          "b": [
+            20
+          ]
+        },
+        "overrides": [
+          {
+            "port": "b",
+            "vid": 30,
+            "mode": "fixed_ignore_new"
+          }
+        ]
+      },
+      "expected": {
+        "accept": false,
+        "reason": "fixed_outside_static"
+      },
+      "basis": "bridge §5.6 DIR initial mapping"
+    },
+    {
+      "id": "P-CORE-T01-V201",
+      "test_id": "P-CORE-T01",
+      "kind": "bridge_binding",
+      "input": {
+        "adapters": [
+          {
+            "protocol": "rstp",
+            "bridge": "a",
+            "ports": [
+              "a.p"
+            ]
+          },
+          {
+            "protocol": "rstp",
+            "bridge": "b",
+            "ports": [
+              "b.p"
+            ]
+          }
+        ],
+        "port_identities": [
+          {
+            "port": "a.p",
+            "source_mac": "02:00:00:00:00:01"
+          },
+          {
+            "port": "b.p",
+            "source_mac": "02:00:00:00:00:02"
+          }
+        ]
+      },
+      "expected": {
+        "accept": true
+      },
+      "basis": "common wire §2.1; 所有とSA部分だけを検査しvalid topologyを前提"
+    },
+    {
+      "id": "P-CORE-T01-V202",
+      "test_id": "P-CORE-T01",
+      "kind": "bridge_binding",
+      "input": {
+        "adapters": [
+          {
+            "protocol": "rstp",
+            "bridge": "a",
+            "ports": [
+              "a.p",
+              "a.q"
+            ]
+          },
+          {
+            "protocol": "rstp",
+            "bridge": "a",
+            "ports": [
+              "a.p",
+              "a.q"
+            ]
+          }
+        ],
+        "port_identities": [
+          {
+            "port": "a.p",
+            "source_mac": "02:00:00:00:00:01"
+          },
+          {
+            "port": "a.q",
+            "source_mac": "02:00:00:00:00:02"
+          }
+        ]
+      },
+      "expected": {
+        "accept": false,
+        "reason": "duplicate_protocol_bridge"
+      },
+      "basis": "common wire §2.1; 所有とSA部分だけを検査しvalid topologyを前提"
+    },
+    {
+      "id": "P-CORE-T01-V203",
+      "test_id": "P-CORE-T01",
+      "kind": "bridge_binding",
+      "input": {
+        "adapters": [
+          {
+            "protocol": "rstp",
+            "bridge": "a",
+            "ports": [
+              "a.p"
+            ]
+          },
+          {
+            "protocol": "mvrp",
+            "bridge": "a",
+            "ports": [
+              "a.p"
+            ]
+          }
+        ],
+        "port_identities": [
+          {
+            "port": "a.p",
+            "source_mac": "02:00:00:00:00:01"
+          }
+        ]
+      },
+      "expected": {
+        "accept": true
+      },
+      "basis": "common wire §2.1; 所有とSA部分だけを検査しvalid topologyを前提"
+    },
+    {
+      "id": "P-RSTP-T02-V201",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_fdb_flush",
+      "input": {
+        "kind": "rstp",
+        "target_port": "a",
+        "target_vid": null,
+        "oper_edge": {
+          "a": false,
+          "b": true
+        },
+        "fixed": {
+          "a": [
+            10
+          ],
+          "b": [
+            20
+          ]
+        },
+        "entries": [
+          {
+            "id": "x",
+            "vid": 10,
+            "port": "a",
+            "static": false
+          },
+          {
+            "id": "y",
+            "vid": 20,
+            "port": "a",
+            "static": false
+          },
+          {
+            "id": "z",
+            "vid": 10,
+            "port": "b",
+            "static": false
+          },
+          {
+            "id": "s",
+            "vid": 10,
+            "port": "a",
+            "static": true
+          }
+        ]
+      },
+      "expected": {
+        "removed": [
+          "x"
+        ],
+        "kept": [
+          "y",
+          "z",
+          "s"
+        ],
+        "fixed_vid_mask": [
+          10
+        ],
+        "flush_completed": true
+      },
+      "basis": "bridge §5.6; RSTP mask/edge vs MVRP New exact portVID"
+    },
+    {
+      "id": "P-RSTP-T02-V202",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_fdb_flush",
+      "input": {
+        "kind": "rstp",
+        "target_port": "b",
+        "target_vid": null,
+        "oper_edge": {
+          "a": false,
+          "b": true
+        },
+        "fixed": {
+          "a": [
+            10
+          ],
+          "b": [
+            20
+          ]
+        },
+        "entries": [
+          {
+            "id": "x",
+            "vid": 10,
+            "port": "a",
+            "static": false
+          },
+          {
+            "id": "y",
+            "vid": 20,
+            "port": "a",
+            "static": false
+          },
+          {
+            "id": "z",
+            "vid": 10,
+            "port": "b",
+            "static": false
+          },
+          {
+            "id": "s",
+            "vid": 10,
+            "port": "a",
+            "static": true
+          }
+        ]
+      },
+      "expected": {
+        "removed": [],
+        "kept": [
+          "x",
+          "y",
+          "z",
+          "s"
+        ],
+        "fixed_vid_mask": [
+          10
+        ],
+        "flush_completed": true
+      },
+      "basis": "bridge §5.6; RSTP mask/edge vs MVRP New exact portVID"
+    },
+    {
+      "id": "P-RSTP-T02-V203",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_fdb_flush",
+      "input": {
+        "kind": "mvrp_new",
+        "target_port": "a",
+        "target_vid": 20,
+        "oper_edge": {
+          "a": false,
+          "b": true
+        },
+        "fixed": {
+          "a": [
+            10
+          ],
+          "b": [
+            20
+          ]
+        },
+        "entries": [
+          {
+            "id": "x",
+            "vid": 10,
+            "port": "a",
+            "static": false
+          },
+          {
+            "id": "y",
+            "vid": 20,
+            "port": "a",
+            "static": false
+          },
+          {
+            "id": "z",
+            "vid": 10,
+            "port": "b",
+            "static": false
+          },
+          {
+            "id": "s",
+            "vid": 10,
+            "port": "a",
+            "static": true
+          }
+        ]
+      },
+      "expected": {
+        "removed": [
+          "y"
+        ],
+        "kept": [
+          "x",
+          "z",
+          "s"
+        ],
+        "fixed_vid_mask": null,
+        "flush_completed": true
+      },
+      "basis": "bridge §5.6; RSTP mask/edge vs MVRP New exact portVID"
+    },
+    {
+      "id": "P-RSTP-T02-V204",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_fdb_flush",
+      "input": {
+        "kind": "mvrp_new",
+        "target_port": "b",
+        "target_vid": 10,
+        "oper_edge": {
+          "a": false,
+          "b": true
+        },
+        "fixed": {
+          "a": [
+            10
+          ],
+          "b": [
+            20
+          ]
+        },
+        "entries": [
+          {
+            "id": "x",
+            "vid": 10,
+            "port": "a",
+            "static": false
+          },
+          {
+            "id": "y",
+            "vid": 20,
+            "port": "a",
+            "static": false
+          },
+          {
+            "id": "z",
+            "vid": 10,
+            "port": "b",
+            "static": false
+          },
+          {
+            "id": "s",
+            "vid": 10,
+            "port": "a",
+            "static": true
+          }
+        ]
+      },
+      "expected": {
+        "removed": [
+          "z"
+        ],
+        "kept": [
+          "x",
+          "y",
+          "s"
+        ],
+        "fixed_vid_mask": null,
+        "flush_completed": true
+      },
+      "basis": "bridge §5.6; RSTP mask/edge vs MVRP New exact portVID"
+    },
+    {
+      "id": "P-RSTP-T02-V205",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_learning",
+      "input": {
+        "learning": false,
+        "forwarding": false,
+        "link_up": true,
+        "admit": true,
+        "vid_eligible": true,
+        "individual_source": true
+      },
+      "expected": {
+        "learn": false,
+        "relay": false,
+        "reason": "stp_discarding"
+      },
+      "basis": "bridge §5.6 data ingress gates; forwarding is separate from learning"
+    },
+    {
+      "id": "P-RSTP-T02-V206",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_learning",
+      "input": {
+        "learning": true,
+        "forwarding": false,
+        "link_up": true,
+        "admit": true,
+        "vid_eligible": true,
+        "individual_source": true
+      },
+      "expected": {
+        "learn": true,
+        "relay": false,
+        "reason": "stp_learning"
+      },
+      "basis": "bridge §5.6 data ingress gates; forwarding is separate from learning"
+    },
+    {
+      "id": "P-RSTP-T02-V207",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_learning",
+      "input": {
+        "learning": true,
+        "forwarding": true,
+        "link_up": true,
+        "admit": true,
+        "vid_eligible": true,
+        "individual_source": true
+      },
+      "expected": {
+        "learn": true,
+        "relay": true,
+        "reason": null
+      },
+      "basis": "bridge §5.6 data ingress gates; forwarding is separate from learning"
+    },
+    {
+      "id": "P-RSTP-T02-V208",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_learning",
+      "input": {
+        "learning": true,
+        "forwarding": true,
+        "link_up": true,
+        "admit": true,
+        "vid_eligible": false,
+        "individual_source": true
+      },
+      "expected": {
+        "learn": false,
+        "relay": false,
+        "reason": "vlan_unregistered"
+      },
+      "basis": "bridge §5.6 data ingress gates; forwarding is separate from learning"
+    },
+    {
+      "id": "P-RSTP-T02-V209",
+      "test_id": "P-RSTP-T02",
+      "kind": "bridge_relearning",
+      "input": {
+        "generation_before": "7",
+        "flush": true,
+        "relearn": true,
+        "stale_expiry_generation": "7"
+      },
+      "expected": {
+        "generation_after": "8",
+        "stale_removes_new_entry": false
+      },
+      "basis": "bridge §5.6; generation tombstone retained after flush"
+    },
+    {
+      "id": "P-CORE-T02-V201",
+      "test_id": "P-CORE-T02",
+      "kind": "bridge_map_order",
+      "input": {
+        "old_role": "Root",
+        "new_role": "Designated",
+        "forwarding_added": [
+          "c"
+        ],
+        "tc_detected": "3"
+      },
+      "expected": {
+        "order": [
+          "registrar_flush",
+          "leaveall_timer",
+          "forwarding_difference",
+          "map_recompute",
+          "mvrp_settle",
+          "new_fdb_flush",
+          "policy_commit"
+        ]
+      },
+      "basis": "bridge §5.7 DIR因果順序、規範がcallback順を定めるとの主張ではない"
+    },
+    {
+      "id": "P-CORE-T01-V204",
+      "test_id": "P-CORE-T01",
+      "kind": "bridge_scope",
+      "input": {
+        "wire_rstp": true,
+        "convergence_ps": "1",
+        "bridges": [
+          "a"
+        ],
+        "mvrp_bridges": [],
+        "all_mvrp_ports_owned": true
+      },
+      "expected": {
+        "accept": false,
+        "reason": "wire_convergence_nonzero"
+      },
+      "basis": "common wire §2.1; connected bridge domain given; DIR initial scope restriction"
+    },
+    {
+      "id": "P-CORE-T01-V205",
+      "test_id": "P-CORE-T01",
+      "kind": "bridge_scope",
+      "input": {
+        "wire_rstp": true,
+        "convergence_ps": "0",
+        "bridges": [
+          "a",
+          "b"
+        ],
+        "mvrp_bridges": [
+          "a"
+        ],
+        "all_mvrp_ports_owned": true
+      },
+      "expected": {
+        "accept": false,
+        "reason": "mvrp_domain_incomplete"
+      },
+      "basis": "common wire §2.1; connected bridge domain given; DIR initial scope restriction"
+    },
+    {
+      "id": "P-CORE-T01-V206",
+      "test_id": "P-CORE-T01",
+      "kind": "bridge_scope",
+      "input": {
+        "wire_rstp": true,
+        "convergence_ps": "0",
+        "bridges": [
+          "a",
+          "b"
+        ],
+        "mvrp_bridges": [
+          "a",
+          "b"
+        ],
+        "all_mvrp_ports_owned": true
+      },
+      "expected": {
+        "accept": true
+      },
+      "basis": "common wire §2.1; connected bridge domain given; DIR initial scope restriction"
+    }
+  ]
+}
