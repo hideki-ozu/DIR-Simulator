@@ -1,0 +1,1467 @@
+{
+  "generated_by": "scripts/verify_guide_metric_windows.py",
+  "status": "passed",
+  "source_tag": "v1.1.6",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "single_variable": "metrics-window",
+  "cli_operations": 12,
+  "zip_input_count": 6,
+  "input_sha256": {
+    "examples/guide/metric-windows/README.md": "d2eba835eeba29e1dd9e53c30165283980f9d9d276b154342a54eee9ee8065b3",
+    "examples/guide/metric-windows/window-10.ini": "412780250cc821501083bd48d08ae175d96dab25e76284fc2c7317fa9f0255fd",
+    "examples/guide/metric-windows/window-4.ini": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf",
+    "examples/guide/metric-windows/window-7.ini": "0ce63931d87cb0929b69b98447e8487e7b91ab249c6553583df7fc640d893e3b",
+    "examples/guide/metric-windows/reference/control_checkpoint.rs": "99f5fe31ebd25ccd56b4adec8c1a4a921aaae43bc8261bbc779845ede0bd2ff4",
+    "examples/guide/metric-windows/ned/demo/model.ned": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+  },
+  "conditions": {
+    "window-4": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "4",
+            "metric": "demo.depth",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "8",
+            "metric": "demo.depth",
+            "sample_count": "2",
+            "start_ps": "4",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 3.25,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "0",
+            "start_ps": "8",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 1.0,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "4",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "8",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "4",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "0",
+            "start_ps": "8",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": null,
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "e0fcc0e69eeca2b8ffbcf732738e3ef13311b2bfabafd7359418aaea830b104c",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/metric-windows/window-4.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 4ps\n",
+            "logical_path": "config",
+            "sha256": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        10,
+        13,
+        2
+      ],
+      "window_average_fractions": [
+        "5/2",
+        "13/4",
+        "1"
+      ],
+      "viewer_html_sha256": "c77100fc98808127f96b0fe9fa785c9b01d5fb46ade5b7fab3e1ab758de4cfbc"
+    },
+    "window-7": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "7",
+            "metric": "demo.depth",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 3.142857142857143,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "2",
+            "start_ps": "7",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 1.0,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "7",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "7",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "e0fcc0e69eeca2b8ffbcf732738e3ef13311b2bfabafd7359418aaea830b104c",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/metric-windows/window-7.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 7ps\n",
+            "logical_path": "config",
+            "sha256": "0ce63931d87cb0929b69b98447e8487e7b91ab249c6553583df7fc640d893e3b"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        22,
+        3
+      ],
+      "window_average_fractions": [
+        "22/7",
+        "1"
+      ],
+      "viewer_html_sha256": "bf3bbb0f7451cc1a63273c2110b28cbf598d1459bd6fc4aaa62357339ffe2918"
+    },
+    "window-10": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "e0fcc0e69eeca2b8ffbcf732738e3ef13311b2bfabafd7359418aaea830b104c",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/metric-windows/window-10.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 10ps\n",
+            "logical_path": "config",
+            "sha256": "412780250cc821501083bd48d08ae175d96dab25e76284fc2c7317fa9f0255fd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        25
+      ],
+      "window_average_fractions": [
+        "5/2"
+      ],
+      "viewer_html_sha256": "a4bdbd744e79809c617f958efe3aa2eabf39ccdf1b4e4b24672bae1a9d3f5df7"
+    }
+  },
+  "zip_conditions": {
+    "window-4": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "4",
+            "metric": "demo.depth",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "8",
+            "metric": "demo.depth",
+            "sample_count": "2",
+            "start_ps": "4",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 3.25,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "0",
+            "start_ps": "8",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 1.0,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "4",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "8",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "4",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "0",
+            "start_ps": "8",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": null,
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "e0fcc0e69eeca2b8ffbcf732738e3ef13311b2bfabafd7359418aaea830b104c",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles112-113/metric-verified/isolated/examples/guide/metric-windows/window-4.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 4ps\n",
+            "logical_path": "config",
+            "sha256": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles112-113/metric-verified/isolated/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        10,
+        13,
+        2
+      ],
+      "window_average_fractions": [
+        "5/2",
+        "13/4",
+        "1"
+      ],
+      "viewer_html_sha256": "437bb4fb2316abf8c5e7e02a53db4550cac9c258bcb4aa09ea4b3701418a4a33"
+    },
+    "window-7": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "7",
+            "metric": "demo.depth",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 3.142857142857143,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "2",
+            "start_ps": "7",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 1.0,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "7",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "7",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "e0fcc0e69eeca2b8ffbcf732738e3ef13311b2bfabafd7359418aaea830b104c",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles112-113/metric-verified/isolated/examples/guide/metric-windows/window-7.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 7ps\n",
+            "logical_path": "config",
+            "sha256": "0ce63931d87cb0929b69b98447e8487e7b91ab249c6553583df7fc640d893e3b"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles112-113/metric-verified/isolated/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        22,
+        3
+      ],
+      "window_average_fractions": [
+        "22/7",
+        "1"
+      ],
+      "viewer_html_sha256": "a8fa11acd56206b03b03408bd444e7ec1235d7708c64e72f650838e9f32c34b6"
+    },
+    "window-10": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "e0fcc0e69eeca2b8ffbcf732738e3ef13311b2bfabafd7359418aaea830b104c",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles112-113/metric-verified/isolated/examples/guide/metric-windows/window-10.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 10ps\n",
+            "logical_path": "config",
+            "sha256": "412780250cc821501083bd48d08ae175d96dab25e76284fc2c7317fa9f0255fd"
+          },
+          {
+            "canonical_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles112-113/metric-verified/isolated/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        25
+      ],
+      "window_average_fractions": [
+        "5/2"
+      ],
+      "viewer_html_sha256": "817311c43123ce4a0f80417a20873a13ed169ca280d4081ea0ee7a12d7b95c29"
+    }
+  }
+}

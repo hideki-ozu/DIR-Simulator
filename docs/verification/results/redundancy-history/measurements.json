@@ -1,0 +1,4544 @@
+{
+  "status": "passed",
+  "issue": 111,
+  "source_tag": "v1.1.6",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "source_status": "",
+  "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+  "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+  "input_sha256": {
+    "examples/guide/ethernet-redundancy-history/capacity-1-model.json": "3d122e241730b0163745f0006a102de7b25337b1ae5a904ec0372b949d7fce7b",
+    "examples/guide/ethernet-redundancy-history/capacity-1.ini": "1c2ce240a6e5280d1a730ccd270afa1f64ca28be507ab42b5afd99b9f957e50a",
+    "examples/guide/ethernet-redundancy-history/capacity-4-model.json": "5a21c827d8e739d71b196920e06326244611d3609ec7aa2d7282f21fda33df3d",
+    "examples/guide/ethernet-redundancy-history/capacity-4.ini": "f0f36abea99f4f5d8b5c296ff7058d9d23d2f33c331d4b6311a8c0be50752482",
+    "examples/guide/ethernet-redundancy-history/models/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+    "examples/guide/ethernet-redundancy-history/redundancy-workload.json": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+  },
+  "conditions": {
+    "capacity-1": {
+      "commands": {
+        "validate": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "validate",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-redundancy-history/capacity-1.ini"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "channel_count": "12",
+            "network": "ethdynamic.Net",
+            "node_count": "6",
+            "schema_version": 1,
+            "status": "valid"
+          }
+        },
+        "run": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-redundancy-history/capacity-1.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-1/result"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "termination": "events_exhausted",
+            "exit_code": 0,
+            "partial": false,
+            "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-1/result",
+            "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-1/result/manifest.json",
+            "primary_diagnostic": null,
+            "committed_events": "88",
+            "finish_ps": "10000000",
+            "last_event_time_ps": "9535000",
+            "event_processing_wall_seconds": 0.0
+          }
+        },
+        "view": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "view",
+            "--input",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-1/result/results.json",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-1/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "status": "complete",
+            "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-1/viewer.html"
+          }
+        }
+      },
+      "input_sha256": {
+        "examples/guide/ethernet-redundancy-history/capacity-1-model.json": "3d122e241730b0163745f0006a102de7b25337b1ae5a904ec0372b949d7fce7b",
+        "examples/guide/ethernet-redundancy-history/capacity-1.ini": "1c2ce240a6e5280d1a730ccd270afa1f64ca28be507ab42b5afd99b9f957e50a",
+        "examples/guide/ethernet-redundancy-history/models/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+        "examples/guide/ethernet-redundancy-history/redundancy-workload.json": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+      },
+      "provenance": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+      },
+      "source_sha256": {
+        "config": "1c2ce240a6e5280d1a730ccd270afa1f64ca28be507ab42b5afd99b9f957e50a",
+        "model-config": "3d122e241730b0163745f0006a102de7b25337b1ae5a904ec0372b949d7fce7b",
+        "root0/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+        "workload": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+      },
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 93680,
+            "sha256": "f37591a4f17f83ee0947f2a5493444ea5256a3b7a7c2d32297f301e8c95d7da6"
+          },
+          "results.json": {
+            "bytes": 1209463,
+            "sha256": "6b54eac229e1b9bfaf231a4581552c788aac642c14aa6e3d86899148c56d99e0"
+          },
+          "summary.csv": {
+            "bytes": 94765,
+            "sha256": "15c492e139a9382dcd8ff8b8668e83210806413439f9e0110a6731ea7df5e964"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "summary": {
+        "sequence_rows": [
+          {
+            "sequence": "0",
+            "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+            "source_frame_id": "unicast:0",
+            "created_ps": "0",
+            "first_sof_ps": "0",
+            "completed_ps": "2535000",
+            "completed_count": "1",
+            "target_count": "1",
+            "delivered_branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+            "branches": [
+              {
+                "branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+                "completed_ps": "7440000",
+                "created_ps": "0",
+                "current_transfer_id": null,
+                "effect_seq": "426",
+                "first_sof_ps": "0",
+                "hop_index": "3",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                "path_id": "alternate",
+                "path_index": "0",
+                "path_ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_c",
+                  "Net.s3.tx_c",
+                  "Net.s2.tx_a"
+                ],
+                "reason": null,
+                "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+                "sequence": "0",
+                "status": "stale",
+                "stream_id": "redundant"
+              },
+              {
+                "branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+                "completed_ps": "2535000",
+                "created_ps": "0",
+                "current_transfer_id": null,
+                "effect_seq": "203",
+                "first_sof_ps": "704000",
+                "hop_index": "2",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                "path_id": "direct",
+                "path_index": "1",
+                "path_ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_b",
+                  "Net.s2.tx_a"
+                ],
+                "reason": null,
+                "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct7:recover",
+                "sequence": "0",
+                "status": "delivered",
+                "stream_id": "redundant"
+              }
+            ],
+            "recoveries": [
+              {
+                "bitmap_after_hex": "1",
+                "bitmap_before_hex": "0",
+                "decision": "accept_first",
+                "delivered": true,
+                "effect_seq": "202",
+                "eliminate_at": "Net.b",
+                "history_capacity": "1",
+                "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+                "new_watermark": "0",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                "previous_watermark": null,
+                "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct7:recover",
+                "sequence": "0",
+                "stream_id": "redundant"
+              },
+              {
+                "bitmap_after_hex": "1",
+                "bitmap_before_hex": "1",
+                "decision": "stale",
+                "delivered": false,
+                "effect_seq": "425",
+                "eliminate_at": "Net.b",
+                "history_capacity": "1",
+                "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+                "new_watermark": "1",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                "previous_watermark": "1",
+                "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+                "sequence": "0",
+                "stream_id": "redundant"
+              }
+            ],
+            "hop_transfers": [
+              {
+                "transfer_id": "unicast:0/v0/c0",
+                "arrival_ps": "609000",
+                "copy_id": "unicast:0/v0/c0",
+                "drop_reason": null,
+                "effect_seq": "74",
+                "eof_ps": "608000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.a.tx",
+                "parent_transfer_id": null,
+                "planned_arrival_ps": "609000",
+                "planned_eof_ps": "608000",
+                "planned_release_ps": "704000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.a.tx.queue.0",
+                "queued_ps": "0",
+                "release_ps": "704000",
+                "sof_ps": "0",
+                "status": "serialized",
+                "to_port": "Net.s1.rx_a",
+                "visit_id": "0",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v0/c1",
+                "arrival_ps": "1313000",
+                "copy_id": "unicast:0/v0/c1",
+                "drop_reason": null,
+                "effect_seq": "121",
+                "eof_ps": "1312000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.a.tx",
+                "parent_transfer_id": null,
+                "planned_arrival_ps": "1313000",
+                "planned_eof_ps": "1312000",
+                "planned_release_ps": "1408000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.a.tx.queue.0",
+                "queued_ps": "0",
+                "release_ps": "1408000",
+                "sof_ps": "704000",
+                "status": "serialized",
+                "to_port": "Net.s1.rx_a",
+                "visit_id": "0",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v1/c2",
+                "arrival_ps": "1220000",
+                "copy_id": "unicast:0/v1/c2",
+                "drop_reason": null,
+                "effect_seq": "99",
+                "eof_ps": "1219000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s1.tx_c",
+                "parent_transfer_id": "unicast:0/v0/c0",
+                "planned_arrival_ps": "1220000",
+                "planned_eof_ps": "1219000",
+                "planned_release_ps": "1315000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s1.tx_c.queue.0",
+                "queued_ps": "611000",
+                "release_ps": "1315000",
+                "sof_ps": "611000",
+                "status": "serialized",
+                "to_port": "Net.s3.rx_b",
+                "visit_id": "1",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v3/c3",
+                "arrival_ps": "1924000",
+                "copy_id": "unicast:0/v3/c3",
+                "drop_reason": null,
+                "effect_seq": "184",
+                "eof_ps": "1923000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s1.tx_b",
+                "parent_transfer_id": "unicast:0/v0/c1",
+                "planned_arrival_ps": "1924000",
+                "planned_eof_ps": "1923000",
+                "planned_release_ps": "2019000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s1.tx_b.queue.0",
+                "queued_ps": "1315000",
+                "release_ps": "2019000",
+                "sof_ps": "1315000",
+                "status": "serialized",
+                "to_port": "Net.s2.rx_b",
+                "visit_id": "3",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v4/c4",
+                "arrival_ps": "2535000",
+                "copy_id": "unicast:0/v4/c4",
+                "drop_reason": null,
+                "effect_seq": "229",
+                "eof_ps": "2534000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s2.tx_a",
+                "parent_transfer_id": "unicast:0/v3/c3",
+                "planned_arrival_ps": "2535000",
+                "planned_eof_ps": "2534000",
+                "planned_release_ps": "2630000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s2.tx_a.queue.0",
+                "queued_ps": "1926000",
+                "release_ps": "2630000",
+                "sof_ps": "1926000",
+                "status": "serialized",
+                "to_port": "Net.b.rx",
+                "visit_id": "4",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v2/c10",
+                "arrival_ps": "6829000",
+                "copy_id": "unicast:0/v2/c10",
+                "drop_reason": null,
+                "effect_seq": "407",
+                "eof_ps": "6828000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s3.tx_c",
+                "parent_transfer_id": "unicast:0/v1/c2",
+                "planned_arrival_ps": "6829000",
+                "planned_eof_ps": "6828000",
+                "planned_release_ps": "6924000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s3.tx_c.queue.0",
+                "queued_ps": "6220000",
+                "release_ps": "6924000",
+                "sof_ps": "6220000",
+                "status": "serialized",
+                "to_port": "Net.s2.rx_c",
+                "visit_id": "2",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v11/c11",
+                "arrival_ps": "7440000",
+                "copy_id": "unicast:0/v11/c11",
+                "drop_reason": null,
+                "effect_seq": "427",
+                "eof_ps": "7439000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s2.tx_a",
+                "parent_transfer_id": "unicast:0/v2/c10",
+                "planned_arrival_ps": "7440000",
+                "planned_eof_ps": "7439000",
+                "planned_release_ps": "7535000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s2.tx_a.queue.0",
+                "queued_ps": "6831000",
+                "release_ps": "7535000",
+                "sof_ps": "6831000",
+                "status": "serialized",
+                "to_port": "Net.b.rx",
+                "visit_id": "11",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              }
+            ],
+            "receptions": [
+              {
+                "effect_seq": "56",
+                "egress_transfer_ids": [
+                  "unicast:0/v1/c2"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s1.rx_a",
+                "observed_ps": "609000",
+                "planned_ready_ps": "611000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "611000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v0/c0",
+                "visit_id": "1",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "365",
+                "egress_transfer_ids": [
+                  "unicast:0/v2/c10"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s3.rx_b",
+                "observed_ps": "1220000",
+                "planned_ready_ps": "6220000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "6220000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v1/c2",
+                "visit_id": "2",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "103",
+                "egress_transfer_ids": [
+                  "unicast:0/v3/c3"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s1.rx_a",
+                "observed_ps": "1313000",
+                "planned_ready_ps": "1315000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "1315000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v0/c1",
+                "visit_id": "3",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "141",
+                "egress_transfer_ids": [
+                  "unicast:0/v4/c4"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s2.rx_b",
+                "observed_ps": "1924000",
+                "planned_ready_ps": "1926000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "1926000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v3/c3",
+                "visit_id": "4",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "201",
+                "egress_transfer_ids": [],
+                "frame_id": "unicast:0",
+                "ingress": "Net.b.rx",
+                "observed_ps": "2535000",
+                "planned_ready_ps": "2535000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "2535000",
+                "reason": null,
+                "status": "received",
+                "transfer_id": "unicast:0/v4/c4",
+                "visit_id": "5",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "389",
+                "egress_transfer_ids": [
+                  "unicast:0/v11/c11"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s2.rx_c",
+                "observed_ps": "6829000",
+                "planned_ready_ps": "6831000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "6831000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v2/c10",
+                "visit_id": "11",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "424",
+                "egress_transfer_ids": [],
+                "frame_id": "unicast:0",
+                "ingress": "Net.b.rx",
+                "observed_ps": "7440000",
+                "planned_ready_ps": "7440000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "7440000",
+                "reason": null,
+                "status": "received",
+                "transfer_id": "unicast:0/v11/c11",
+                "visit_id": "12",
+                "vlan_id": "10"
+              }
+            ]
+          },
+          {
+            "sequence": "1",
+            "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+            "source_frame_id": "unicast:1",
+            "created_ps": "2000000",
+            "first_sof_ps": "2000000",
+            "completed_ps": "4535000",
+            "completed_count": "1",
+            "target_count": "1",
+            "delivered_branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+            "branches": [
+              {
+                "branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+                "completed_ps": "9440000",
+                "created_ps": "2000000",
+                "current_transfer_id": null,
+                "effect_seq": "504",
+                "first_sof_ps": "2000000",
+                "hop_index": "3",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                "path_id": "alternate",
+                "path_index": "0",
+                "path_ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_c",
+                  "Net.s3.tx_c",
+                  "Net.s2.tx_a"
+                ],
+                "reason": null,
+                "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate7:recover",
+                "sequence": "1",
+                "status": "duplicate",
+                "stream_id": "redundant"
+              },
+              {
+                "branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+                "completed_ps": "4535000",
+                "created_ps": "2000000",
+                "current_transfer_id": null,
+                "effect_seq": "347",
+                "first_sof_ps": "2704000",
+                "hop_index": "2",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                "path_id": "direct",
+                "path_index": "1",
+                "path_ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_b",
+                  "Net.s2.tx_a"
+                ],
+                "reason": null,
+                "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct7:recover",
+                "sequence": "1",
+                "status": "delivered",
+                "stream_id": "redundant"
+              }
+            ],
+            "recoveries": [
+              {
+                "bitmap_after_hex": "1",
+                "bitmap_before_hex": "1",
+                "decision": "accept_advance",
+                "delivered": true,
+                "effect_seq": "346",
+                "eliminate_at": "Net.b",
+                "history_capacity": "1",
+                "input_branch": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+                "new_watermark": "1",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                "previous_watermark": "0",
+                "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct7:recover",
+                "sequence": "1",
+                "stream_id": "redundant"
+              },
+              {
+                "bitmap_after_hex": "1",
+                "bitmap_before_hex": "1",
+                "decision": "duplicate",
+                "delivered": false,
+                "effect_seq": "503",
+                "eliminate_at": "Net.b",
+                "history_capacity": "1",
+                "input_branch": "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+                "new_watermark": "1",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                "previous_watermark": "1",
+                "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate7:recover",
+                "sequence": "1",
+                "stream_id": "redundant"
+              }
+            ],
+            "hop_transfers": [
+              {
+                "transfer_id": "unicast:1/v0/c5",
+                "arrival_ps": "2609000",
+                "copy_id": "unicast:1/v0/c5",
+                "drop_reason": null,
+                "effect_seq": "243",
+                "eof_ps": "2608000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.a.tx",
+                "parent_transfer_id": null,
+                "planned_arrival_ps": "2609000",
+                "planned_eof_ps": "2608000",
+                "planned_release_ps": "2704000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.a.tx.queue.0",
+                "queued_ps": "2000000",
+                "release_ps": "2704000",
+                "sof_ps": "2000000",
+                "status": "serialized",
+                "to_port": "Net.s1.rx_a",
+                "visit_id": "0",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v0/c6",
+                "arrival_ps": "3313000",
+                "copy_id": "unicast:1/v0/c6",
+                "drop_reason": null,
+                "effect_seq": "290",
+                "eof_ps": "3312000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.a.tx",
+                "parent_transfer_id": null,
+                "planned_arrival_ps": "3313000",
+                "planned_eof_ps": "3312000",
+                "planned_release_ps": "3408000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.a.tx.queue.0",
+                "queued_ps": "2000000",
+                "release_ps": "3408000",
+                "sof_ps": "2704000",
+                "status": "serialized",
+                "to_port": "Net.s1.rx_a",
+                "visit_id": "0",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v6/c7",
+                "arrival_ps": "3220000",
+                "copy_id": "unicast:1/v6/c7",
+                "drop_reason": null,
+                "effect_seq": "268",
+                "eof_ps": "3219000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s1.tx_c",
+                "parent_transfer_id": "unicast:1/v0/c5",
+                "planned_arrival_ps": "3220000",
+                "planned_eof_ps": "3219000",
+                "planned_release_ps": "3315000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s1.tx_c.queue.0",
+                "queued_ps": "2611000",
+                "release_ps": "3315000",
+                "sof_ps": "2611000",
+                "status": "serialized",
+                "to_port": "Net.s3.rx_b",
+                "visit_id": "6",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v8/c8",
+                "arrival_ps": "3924000",
+                "copy_id": "unicast:1/v8/c8",
+                "drop_reason": null,
+                "effect_seq": "328",
+                "eof_ps": "3923000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s1.tx_b",
+                "parent_transfer_id": "unicast:1/v0/c6",
+                "planned_arrival_ps": "3924000",
+                "planned_eof_ps": "3923000",
+                "planned_release_ps": "4019000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s1.tx_b.queue.0",
+                "queued_ps": "3315000",
+                "release_ps": "4019000",
+                "sof_ps": "3315000",
+                "status": "serialized",
+                "to_port": "Net.s2.rx_b",
+                "visit_id": "8",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v9/c9",
+                "arrival_ps": "4535000",
+                "copy_id": "unicast:1/v9/c9",
+                "drop_reason": null,
+                "effect_seq": "349",
+                "eof_ps": "4534000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s2.tx_a",
+                "parent_transfer_id": "unicast:1/v8/c8",
+                "planned_arrival_ps": "4535000",
+                "planned_eof_ps": "4534000",
+                "planned_release_ps": "4630000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s2.tx_a.queue.0",
+                "queued_ps": "3926000",
+                "release_ps": "4630000",
+                "sof_ps": "3926000",
+                "status": "serialized",
+                "to_port": "Net.b.rx",
+                "visit_id": "9",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v7/c12",
+                "arrival_ps": "8829000",
+                "copy_id": "unicast:1/v7/c12",
+                "drop_reason": null,
+                "effect_seq": "485",
+                "eof_ps": "8828000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s3.tx_c",
+                "parent_transfer_id": "unicast:1/v6/c7",
+                "planned_arrival_ps": "8829000",
+                "planned_eof_ps": "8828000",
+                "planned_release_ps": "8924000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s3.tx_c.queue.0",
+                "queued_ps": "8220000",
+                "release_ps": "8924000",
+                "sof_ps": "8220000",
+                "status": "serialized",
+                "to_port": "Net.s2.rx_c",
+                "visit_id": "7",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v13/c13",
+                "arrival_ps": "9440000",
+                "copy_id": "unicast:1/v13/c13",
+                "drop_reason": null,
+                "effect_seq": "505",
+                "eof_ps": "9439000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s2.tx_a",
+                "parent_transfer_id": "unicast:1/v7/c12",
+                "planned_arrival_ps": "9440000",
+                "planned_eof_ps": "9439000",
+                "planned_release_ps": "9535000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s2.tx_a.queue.0",
+                "queued_ps": "8831000",
+                "release_ps": "9535000",
+                "sof_ps": "8831000",
+                "status": "serialized",
+                "to_port": "Net.b.rx",
+                "visit_id": "13",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              }
+            ],
+            "receptions": [
+              {
+                "effect_seq": "211",
+                "egress_transfer_ids": [
+                  "unicast:1/v6/c7"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s1.rx_a",
+                "observed_ps": "2609000",
+                "planned_ready_ps": "2611000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "2611000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v0/c5",
+                "visit_id": "6",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "443",
+                "egress_transfer_ids": [
+                  "unicast:1/v7/c12"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s3.rx_b",
+                "observed_ps": "3220000",
+                "planned_ready_ps": "8220000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "8220000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v6/c7",
+                "visit_id": "7",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "272",
+                "egress_transfer_ids": [
+                  "unicast:1/v8/c8"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s1.rx_a",
+                "observed_ps": "3313000",
+                "planned_ready_ps": "3315000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "3315000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v0/c6",
+                "visit_id": "8",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "310",
+                "egress_transfer_ids": [
+                  "unicast:1/v9/c9"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s2.rx_b",
+                "observed_ps": "3924000",
+                "planned_ready_ps": "3926000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "3926000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v8/c8",
+                "visit_id": "9",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "345",
+                "egress_transfer_ids": [],
+                "frame_id": "unicast:1",
+                "ingress": "Net.b.rx",
+                "observed_ps": "4535000",
+                "planned_ready_ps": "4535000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "4535000",
+                "reason": null,
+                "status": "received",
+                "transfer_id": "unicast:1/v9/c9",
+                "visit_id": "10",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "467",
+                "egress_transfer_ids": [
+                  "unicast:1/v13/c13"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s2.rx_c",
+                "observed_ps": "8829000",
+                "planned_ready_ps": "8831000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "8831000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v7/c12",
+                "visit_id": "13",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "502",
+                "egress_transfer_ids": [],
+                "frame_id": "unicast:1",
+                "ingress": "Net.b.rx",
+                "observed_ps": "9440000",
+                "planned_ready_ps": "9440000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "9440000",
+                "reason": null,
+                "status": "received",
+                "transfer_id": "unicast:1/v13/c13",
+                "visit_id": "14",
+                "vlan_id": "10"
+              }
+            ]
+          }
+        ],
+        "origin_count": 2,
+        "branch_count": 4,
+        "recovery_count": 4,
+        "incomplete_branches": [],
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "10000000",
+        "last_event_time_ps": "9535000",
+        "pending_events": "0",
+        "schemas": {
+          "dir.redundancy.branch": 4,
+          "dir.redundancy.origin": 2,
+          "dir.redundancy.recovery": 4
+        }
+      },
+      "viewer_sha256": "ac03c25a1ebfec0b0a72e3ef42cb385672830d612576a3b5eca734670d5c7462"
+    },
+    "capacity-4": {
+      "commands": {
+        "validate": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "validate",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-redundancy-history/capacity-4.ini"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "channel_count": "12",
+            "network": "ethdynamic.Net",
+            "node_count": "6",
+            "schema_version": 1,
+            "status": "valid"
+          }
+        },
+        "run": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-redundancy-history/capacity-4.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-4/result"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "termination": "events_exhausted",
+            "exit_code": 0,
+            "partial": false,
+            "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-4/result",
+            "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-4/result/manifest.json",
+            "primary_diagnostic": null,
+            "committed_events": "88",
+            "finish_ps": "10000000",
+            "last_event_time_ps": "9535000",
+            "event_processing_wall_seconds": 0.0
+          }
+        },
+        "view": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "view",
+            "--input",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-4/result/results.json",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-4/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "status": "complete",
+            "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix/capacity-4/viewer.html"
+          }
+        }
+      },
+      "input_sha256": {
+        "examples/guide/ethernet-redundancy-history/capacity-4-model.json": "5a21c827d8e739d71b196920e06326244611d3609ec7aa2d7282f21fda33df3d",
+        "examples/guide/ethernet-redundancy-history/capacity-4.ini": "f0f36abea99f4f5d8b5c296ff7058d9d23d2f33c331d4b6311a8c0be50752482",
+        "examples/guide/ethernet-redundancy-history/models/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+        "examples/guide/ethernet-redundancy-history/redundancy-workload.json": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+      },
+      "provenance": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+      },
+      "source_sha256": {
+        "config": "f0f36abea99f4f5d8b5c296ff7058d9d23d2f33c331d4b6311a8c0be50752482",
+        "model-config": "5a21c827d8e739d71b196920e06326244611d3609ec7aa2d7282f21fda33df3d",
+        "root0/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+        "workload": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+      },
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 93680,
+            "sha256": "8bf4ae990c917b2f0ef88a0eb66c01b44a7258adb0d58e7cc32e0031e056ba85"
+          },
+          "results.json": {
+            "bytes": 1209471,
+            "sha256": "742b241210a6a7801023670642cac1b8a1cc0d93f244677634ca481870ee87c9"
+          },
+          "summary.csv": {
+            "bytes": 94765,
+            "sha256": "57c037a80023f0e95a56e73246f2fa1f57ab3a4a188950933daa2b132e8d0f0d"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "summary": {
+        "sequence_rows": [
+          {
+            "sequence": "0",
+            "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+            "source_frame_id": "unicast:0",
+            "created_ps": "0",
+            "first_sof_ps": "0",
+            "completed_ps": "2535000",
+            "completed_count": "1",
+            "target_count": "1",
+            "delivered_branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+            "branches": [
+              {
+                "branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+                "completed_ps": "7440000",
+                "created_ps": "0",
+                "current_transfer_id": null,
+                "effect_seq": "426",
+                "first_sof_ps": "0",
+                "hop_index": "3",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                "path_id": "alternate",
+                "path_index": "0",
+                "path_ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_c",
+                  "Net.s3.tx_c",
+                  "Net.s2.tx_a"
+                ],
+                "reason": null,
+                "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+                "sequence": "0",
+                "status": "duplicate",
+                "stream_id": "redundant"
+              },
+              {
+                "branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+                "completed_ps": "2535000",
+                "created_ps": "0",
+                "current_transfer_id": null,
+                "effect_seq": "203",
+                "first_sof_ps": "704000",
+                "hop_index": "2",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                "path_id": "direct",
+                "path_index": "1",
+                "path_ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_b",
+                  "Net.s2.tx_a"
+                ],
+                "reason": null,
+                "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct7:recover",
+                "sequence": "0",
+                "status": "delivered",
+                "stream_id": "redundant"
+              }
+            ],
+            "recoveries": [
+              {
+                "bitmap_after_hex": "1",
+                "bitmap_before_hex": "0",
+                "decision": "accept_first",
+                "delivered": true,
+                "effect_seq": "202",
+                "eliminate_at": "Net.b",
+                "history_capacity": "4",
+                "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+                "new_watermark": "0",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                "previous_watermark": null,
+                "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct7:recover",
+                "sequence": "0",
+                "stream_id": "redundant"
+              },
+              {
+                "bitmap_after_hex": "3",
+                "bitmap_before_hex": "3",
+                "decision": "duplicate",
+                "delivered": false,
+                "effect_seq": "425",
+                "eliminate_at": "Net.b",
+                "history_capacity": "4",
+                "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+                "new_watermark": "1",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                "previous_watermark": "1",
+                "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+                "sequence": "0",
+                "stream_id": "redundant"
+              }
+            ],
+            "hop_transfers": [
+              {
+                "transfer_id": "unicast:0/v0/c0",
+                "arrival_ps": "609000",
+                "copy_id": "unicast:0/v0/c0",
+                "drop_reason": null,
+                "effect_seq": "74",
+                "eof_ps": "608000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.a.tx",
+                "parent_transfer_id": null,
+                "planned_arrival_ps": "609000",
+                "planned_eof_ps": "608000",
+                "planned_release_ps": "704000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.a.tx.queue.0",
+                "queued_ps": "0",
+                "release_ps": "704000",
+                "sof_ps": "0",
+                "status": "serialized",
+                "to_port": "Net.s1.rx_a",
+                "visit_id": "0",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v0/c1",
+                "arrival_ps": "1313000",
+                "copy_id": "unicast:0/v0/c1",
+                "drop_reason": null,
+                "effect_seq": "121",
+                "eof_ps": "1312000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.a.tx",
+                "parent_transfer_id": null,
+                "planned_arrival_ps": "1313000",
+                "planned_eof_ps": "1312000",
+                "planned_release_ps": "1408000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.a.tx.queue.0",
+                "queued_ps": "0",
+                "release_ps": "1408000",
+                "sof_ps": "704000",
+                "status": "serialized",
+                "to_port": "Net.s1.rx_a",
+                "visit_id": "0",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v1/c2",
+                "arrival_ps": "1220000",
+                "copy_id": "unicast:0/v1/c2",
+                "drop_reason": null,
+                "effect_seq": "99",
+                "eof_ps": "1219000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s1.tx_c",
+                "parent_transfer_id": "unicast:0/v0/c0",
+                "planned_arrival_ps": "1220000",
+                "planned_eof_ps": "1219000",
+                "planned_release_ps": "1315000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s1.tx_c.queue.0",
+                "queued_ps": "611000",
+                "release_ps": "1315000",
+                "sof_ps": "611000",
+                "status": "serialized",
+                "to_port": "Net.s3.rx_b",
+                "visit_id": "1",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v3/c3",
+                "arrival_ps": "1924000",
+                "copy_id": "unicast:0/v3/c3",
+                "drop_reason": null,
+                "effect_seq": "184",
+                "eof_ps": "1923000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s1.tx_b",
+                "parent_transfer_id": "unicast:0/v0/c1",
+                "planned_arrival_ps": "1924000",
+                "planned_eof_ps": "1923000",
+                "planned_release_ps": "2019000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s1.tx_b.queue.0",
+                "queued_ps": "1315000",
+                "release_ps": "2019000",
+                "sof_ps": "1315000",
+                "status": "serialized",
+                "to_port": "Net.s2.rx_b",
+                "visit_id": "3",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v4/c4",
+                "arrival_ps": "2535000",
+                "copy_id": "unicast:0/v4/c4",
+                "drop_reason": null,
+                "effect_seq": "229",
+                "eof_ps": "2534000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s2.tx_a",
+                "parent_transfer_id": "unicast:0/v3/c3",
+                "planned_arrival_ps": "2535000",
+                "planned_eof_ps": "2534000",
+                "planned_release_ps": "2630000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s2.tx_a.queue.0",
+                "queued_ps": "1926000",
+                "release_ps": "2630000",
+                "sof_ps": "1926000",
+                "status": "serialized",
+                "to_port": "Net.b.rx",
+                "visit_id": "4",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v2/c10",
+                "arrival_ps": "6829000",
+                "copy_id": "unicast:0/v2/c10",
+                "drop_reason": null,
+                "effect_seq": "407",
+                "eof_ps": "6828000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s3.tx_c",
+                "parent_transfer_id": "unicast:0/v1/c2",
+                "planned_arrival_ps": "6829000",
+                "planned_eof_ps": "6828000",
+                "planned_release_ps": "6924000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s3.tx_c.queue.0",
+                "queued_ps": "6220000",
+                "release_ps": "6924000",
+                "sof_ps": "6220000",
+                "status": "serialized",
+                "to_port": "Net.s2.rx_c",
+                "visit_id": "2",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:0/v11/c11",
+                "arrival_ps": "7440000",
+                "copy_id": "unicast:0/v11/c11",
+                "drop_reason": null,
+                "effect_seq": "427",
+                "eof_ps": "7439000",
+                "frame_id": "unicast:0",
+                "from_port": "Net.s2.tx_a",
+                "parent_transfer_id": "unicast:0/v2/c10",
+                "planned_arrival_ps": "7440000",
+                "planned_eof_ps": "7439000",
+                "planned_release_ps": "7535000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s2.tx_a.queue.0",
+                "queued_ps": "6831000",
+                "release_ps": "7535000",
+                "sof_ps": "6831000",
+                "status": "serialized",
+                "to_port": "Net.b.rx",
+                "visit_id": "11",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              }
+            ],
+            "receptions": [
+              {
+                "effect_seq": "56",
+                "egress_transfer_ids": [
+                  "unicast:0/v1/c2"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s1.rx_a",
+                "observed_ps": "609000",
+                "planned_ready_ps": "611000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "611000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v0/c0",
+                "visit_id": "1",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "365",
+                "egress_transfer_ids": [
+                  "unicast:0/v2/c10"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s3.rx_b",
+                "observed_ps": "1220000",
+                "planned_ready_ps": "6220000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "6220000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v1/c2",
+                "visit_id": "2",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "103",
+                "egress_transfer_ids": [
+                  "unicast:0/v3/c3"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s1.rx_a",
+                "observed_ps": "1313000",
+                "planned_ready_ps": "1315000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "1315000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v0/c1",
+                "visit_id": "3",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "141",
+                "egress_transfer_ids": [
+                  "unicast:0/v4/c4"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s2.rx_b",
+                "observed_ps": "1924000",
+                "planned_ready_ps": "1926000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "1926000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v3/c3",
+                "visit_id": "4",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "201",
+                "egress_transfer_ids": [],
+                "frame_id": "unicast:0",
+                "ingress": "Net.b.rx",
+                "observed_ps": "2535000",
+                "planned_ready_ps": "2535000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "2535000",
+                "reason": null,
+                "status": "received",
+                "transfer_id": "unicast:0/v4/c4",
+                "visit_id": "5",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "389",
+                "egress_transfer_ids": [
+                  "unicast:0/v11/c11"
+                ],
+                "frame_id": "unicast:0",
+                "ingress": "Net.s2.rx_c",
+                "observed_ps": "6829000",
+                "planned_ready_ps": "6831000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "6831000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:0/v2/c10",
+                "visit_id": "11",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "424",
+                "egress_transfer_ids": [],
+                "frame_id": "unicast:0",
+                "ingress": "Net.b.rx",
+                "observed_ps": "7440000",
+                "planned_ready_ps": "7440000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "7440000",
+                "reason": null,
+                "status": "received",
+                "transfer_id": "unicast:0/v11/c11",
+                "visit_id": "12",
+                "vlan_id": "10"
+              }
+            ]
+          },
+          {
+            "sequence": "1",
+            "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+            "source_frame_id": "unicast:1",
+            "created_ps": "2000000",
+            "first_sof_ps": "2000000",
+            "completed_ps": "4535000",
+            "completed_count": "1",
+            "target_count": "1",
+            "delivered_branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+            "branches": [
+              {
+                "branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+                "completed_ps": "9440000",
+                "created_ps": "2000000",
+                "current_transfer_id": null,
+                "effect_seq": "504",
+                "first_sof_ps": "2000000",
+                "hop_index": "3",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                "path_id": "alternate",
+                "path_index": "0",
+                "path_ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_c",
+                  "Net.s3.tx_c",
+                  "Net.s2.tx_a"
+                ],
+                "reason": null,
+                "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate7:recover",
+                "sequence": "1",
+                "status": "duplicate",
+                "stream_id": "redundant"
+              },
+              {
+                "branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+                "completed_ps": "4535000",
+                "created_ps": "2000000",
+                "current_transfer_id": null,
+                "effect_seq": "347",
+                "first_sof_ps": "2704000",
+                "hop_index": "2",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                "path_id": "direct",
+                "path_index": "1",
+                "path_ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_b",
+                  "Net.s2.tx_a"
+                ],
+                "reason": null,
+                "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct7:recover",
+                "sequence": "1",
+                "status": "delivered",
+                "stream_id": "redundant"
+              }
+            ],
+            "recoveries": [
+              {
+                "bitmap_after_hex": "3",
+                "bitmap_before_hex": "1",
+                "decision": "accept_advance",
+                "delivered": true,
+                "effect_seq": "346",
+                "eliminate_at": "Net.b",
+                "history_capacity": "4",
+                "input_branch": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+                "new_watermark": "1",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                "previous_watermark": "0",
+                "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct7:recover",
+                "sequence": "1",
+                "stream_id": "redundant"
+              },
+              {
+                "bitmap_after_hex": "3",
+                "bitmap_before_hex": "3",
+                "decision": "duplicate",
+                "delivered": false,
+                "effect_seq": "503",
+                "eliminate_at": "Net.b",
+                "history_capacity": "4",
+                "input_branch": "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+                "new_watermark": "1",
+                "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                "previous_watermark": "1",
+                "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate7:recover",
+                "sequence": "1",
+                "stream_id": "redundant"
+              }
+            ],
+            "hop_transfers": [
+              {
+                "transfer_id": "unicast:1/v0/c5",
+                "arrival_ps": "2609000",
+                "copy_id": "unicast:1/v0/c5",
+                "drop_reason": null,
+                "effect_seq": "243",
+                "eof_ps": "2608000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.a.tx",
+                "parent_transfer_id": null,
+                "planned_arrival_ps": "2609000",
+                "planned_eof_ps": "2608000",
+                "planned_release_ps": "2704000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.a.tx.queue.0",
+                "queued_ps": "2000000",
+                "release_ps": "2704000",
+                "sof_ps": "2000000",
+                "status": "serialized",
+                "to_port": "Net.s1.rx_a",
+                "visit_id": "0",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v0/c6",
+                "arrival_ps": "3313000",
+                "copy_id": "unicast:1/v0/c6",
+                "drop_reason": null,
+                "effect_seq": "290",
+                "eof_ps": "3312000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.a.tx",
+                "parent_transfer_id": null,
+                "planned_arrival_ps": "3313000",
+                "planned_eof_ps": "3312000",
+                "planned_release_ps": "3408000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.a.tx.queue.0",
+                "queued_ps": "2000000",
+                "release_ps": "3408000",
+                "sof_ps": "2704000",
+                "status": "serialized",
+                "to_port": "Net.s1.rx_a",
+                "visit_id": "0",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v6/c7",
+                "arrival_ps": "3220000",
+                "copy_id": "unicast:1/v6/c7",
+                "drop_reason": null,
+                "effect_seq": "268",
+                "eof_ps": "3219000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s1.tx_c",
+                "parent_transfer_id": "unicast:1/v0/c5",
+                "planned_arrival_ps": "3220000",
+                "planned_eof_ps": "3219000",
+                "planned_release_ps": "3315000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s1.tx_c.queue.0",
+                "queued_ps": "2611000",
+                "release_ps": "3315000",
+                "sof_ps": "2611000",
+                "status": "serialized",
+                "to_port": "Net.s3.rx_b",
+                "visit_id": "6",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v8/c8",
+                "arrival_ps": "3924000",
+                "copy_id": "unicast:1/v8/c8",
+                "drop_reason": null,
+                "effect_seq": "328",
+                "eof_ps": "3923000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s1.tx_b",
+                "parent_transfer_id": "unicast:1/v0/c6",
+                "planned_arrival_ps": "3924000",
+                "planned_eof_ps": "3923000",
+                "planned_release_ps": "4019000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s1.tx_b.queue.0",
+                "queued_ps": "3315000",
+                "release_ps": "4019000",
+                "sof_ps": "3315000",
+                "status": "serialized",
+                "to_port": "Net.s2.rx_b",
+                "visit_id": "8",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v9/c9",
+                "arrival_ps": "4535000",
+                "copy_id": "unicast:1/v9/c9",
+                "drop_reason": null,
+                "effect_seq": "349",
+                "eof_ps": "4534000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s2.tx_a",
+                "parent_transfer_id": "unicast:1/v8/c8",
+                "planned_arrival_ps": "4535000",
+                "planned_eof_ps": "4534000",
+                "planned_release_ps": "4630000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s2.tx_a.queue.0",
+                "queued_ps": "3926000",
+                "release_ps": "4630000",
+                "sof_ps": "3926000",
+                "status": "serialized",
+                "to_port": "Net.b.rx",
+                "visit_id": "9",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v7/c12",
+                "arrival_ps": "8829000",
+                "copy_id": "unicast:1/v7/c12",
+                "drop_reason": null,
+                "effect_seq": "485",
+                "eof_ps": "8828000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s3.tx_c",
+                "parent_transfer_id": "unicast:1/v6/c7",
+                "planned_arrival_ps": "8829000",
+                "planned_eof_ps": "8828000",
+                "planned_release_ps": "8924000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s3.tx_c.queue.0",
+                "queued_ps": "8220000",
+                "release_ps": "8924000",
+                "sof_ps": "8220000",
+                "status": "serialized",
+                "to_port": "Net.s2.rx_c",
+                "visit_id": "7",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              },
+              {
+                "transfer_id": "unicast:1/v13/c13",
+                "arrival_ps": "9440000",
+                "copy_id": "unicast:1/v13/c13",
+                "drop_reason": null,
+                "effect_seq": "505",
+                "eof_ps": "9439000",
+                "frame_id": "unicast:1",
+                "from_port": "Net.s2.tx_a",
+                "parent_transfer_id": "unicast:1/v7/c12",
+                "planned_arrival_ps": "9440000",
+                "planned_eof_ps": "9439000",
+                "planned_release_ps": "9535000",
+                "policy_epoch_offer": "0",
+                "policy_epoch_sof": "0",
+                "priority": "0",
+                "queue_id": "Net.s2.tx_a.queue.0",
+                "queued_ps": "8831000",
+                "release_ps": "9535000",
+                "sof_ps": "8831000",
+                "status": "serialized",
+                "to_port": "Net.b.rx",
+                "visit_id": "13",
+                "vlan_id": "10",
+                "wire": {
+                  "data_hex": "",
+                  "dst_mac": "02:00:00:00:00:02",
+                  "ether_type": "2048",
+                  "fcs_hex": "e4c9eb3a",
+                  "mac_bytes": "68",
+                  "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                  "pad_bytes": "46",
+                  "src_mac": "02:00:00:00:00:01",
+                  "tag": {
+                    "dei": "0",
+                    "pcp": "0",
+                    "vid": "10"
+                  }
+                }
+              }
+            ],
+            "receptions": [
+              {
+                "effect_seq": "211",
+                "egress_transfer_ids": [
+                  "unicast:1/v6/c7"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s1.rx_a",
+                "observed_ps": "2609000",
+                "planned_ready_ps": "2611000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "2611000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v0/c5",
+                "visit_id": "6",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "443",
+                "egress_transfer_ids": [
+                  "unicast:1/v7/c12"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s3.rx_b",
+                "observed_ps": "3220000",
+                "planned_ready_ps": "8220000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "8220000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v6/c7",
+                "visit_id": "7",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "272",
+                "egress_transfer_ids": [
+                  "unicast:1/v8/c8"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s1.rx_a",
+                "observed_ps": "3313000",
+                "planned_ready_ps": "3315000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "3315000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v0/c6",
+                "visit_id": "8",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "310",
+                "egress_transfer_ids": [
+                  "unicast:1/v9/c9"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s2.rx_b",
+                "observed_ps": "3924000",
+                "planned_ready_ps": "3926000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "3926000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v8/c8",
+                "visit_id": "9",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "345",
+                "egress_transfer_ids": [],
+                "frame_id": "unicast:1",
+                "ingress": "Net.b.rx",
+                "observed_ps": "4535000",
+                "planned_ready_ps": "4535000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "4535000",
+                "reason": null,
+                "status": "received",
+                "transfer_id": "unicast:1/v9/c9",
+                "visit_id": "10",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "467",
+                "egress_transfer_ids": [
+                  "unicast:1/v13/c13"
+                ],
+                "frame_id": "unicast:1",
+                "ingress": "Net.s2.rx_c",
+                "observed_ps": "8829000",
+                "planned_ready_ps": "8831000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "8831000",
+                "reason": null,
+                "status": "forwarded",
+                "transfer_id": "unicast:1/v7/c12",
+                "visit_id": "13",
+                "vlan_id": "10"
+              },
+              {
+                "effect_seq": "502",
+                "egress_transfer_ids": [],
+                "frame_id": "unicast:1",
+                "ingress": "Net.b.rx",
+                "observed_ps": "9440000",
+                "planned_ready_ps": "9440000",
+                "policy_epoch_ingress": "0",
+                "priority": "0",
+                "ready_ps": "9440000",
+                "reason": null,
+                "status": "received",
+                "transfer_id": "unicast:1/v13/c13",
+                "visit_id": "14",
+                "vlan_id": "10"
+              }
+            ]
+          }
+        ],
+        "origin_count": 2,
+        "branch_count": 4,
+        "recovery_count": 4,
+        "incomplete_branches": [],
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "10000000",
+        "last_event_time_ps": "9535000",
+        "pending_events": "0",
+        "schemas": {
+          "dir.redundancy.branch": 4,
+          "dir.redundancy.origin": 2,
+          "dir.redundancy.recovery": 4
+        }
+      },
+      "viewer_sha256": "98c6eb464fac7adaa63f1b73ae53b166095186035455790777a1c47680bdf55f"
+    }
+  },
+  "zip_reproduction": {
+    "archive": "docs/guide/downloads/ethernet-redundancy-history-inputs.zip",
+    "archive_bytes": 5109,
+    "archive_sha256": "355582452a75228ebb19967dd019b5a2120b5e90fd4fd87349dbde534d7aea55",
+    "member_count": 6,
+    "members": {
+      "examples/guide/ethernet-redundancy-history/capacity-1-model.json": {
+        "bytes": 28798,
+        "sha256": "3d122e241730b0163745f0006a102de7b25337b1ae5a904ec0372b949d7fce7b"
+      },
+      "examples/guide/ethernet-redundancy-history/capacity-1.ini": {
+        "bytes": 210,
+        "sha256": "1c2ce240a6e5280d1a730ccd270afa1f64ca28be507ab42b5afd99b9f957e50a"
+      },
+      "examples/guide/ethernet-redundancy-history/capacity-4-model.json": {
+        "bytes": 28798,
+        "sha256": "5a21c827d8e739d71b196920e06326244611d3609ec7aa2d7282f21fda33df3d"
+      },
+      "examples/guide/ethernet-redundancy-history/capacity-4.ini": {
+        "bytes": 210,
+        "sha256": "f0f36abea99f4f5d8b5c296ff7058d9d23d2f33c331d4b6311a8c0be50752482"
+      },
+      "examples/guide/ethernet-redundancy-history/models/ethdynamic/Main.ned": {
+        "bytes": 1288,
+        "sha256": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d"
+      },
+      "examples/guide/ethernet-redundancy-history/redundancy-workload.json": {
+        "bytes": 529,
+        "sha256": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+      }
+    },
+    "member_bytes_equal_source_tree": true,
+    "extraction_root": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/redundancy-history",
+    "input_root": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/redundancy-history/examples/guide/ethernet-redundancy-history",
+    "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+    "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+    "source_status": "",
+    "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "cli_operations": 6,
+    "conditions": {
+      "capacity-1": {
+        "commands": {
+          "validate": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/redundancy-history/examples/guide/ethernet-redundancy-history/capacity-1.ini"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "channel_count": "12",
+              "network": "ethdynamic.Net",
+              "node_count": "6",
+              "schema_version": 1,
+              "status": "valid"
+            }
+          },
+          "run": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/redundancy-history/examples/guide/ethernet-redundancy-history/capacity-1.ini",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-1/result"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "termination": "events_exhausted",
+              "exit_code": 0,
+              "partial": false,
+              "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-1/result",
+              "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-1/result/manifest.json",
+              "primary_diagnostic": null,
+              "committed_events": "88",
+              "finish_ps": "10000000",
+              "last_event_time_ps": "9535000",
+              "event_processing_wall_seconds": 0.0
+            }
+          },
+          "view": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "view",
+              "--input",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-1/result/results.json",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-1/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "status": "complete",
+              "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-1/viewer.html"
+            }
+          }
+        },
+        "input_sha256": {
+          "examples/guide/ethernet-redundancy-history/capacity-1-model.json": "3d122e241730b0163745f0006a102de7b25337b1ae5a904ec0372b949d7fce7b",
+          "examples/guide/ethernet-redundancy-history/capacity-1.ini": "1c2ce240a6e5280d1a730ccd270afa1f64ca28be507ab42b5afd99b9f957e50a",
+          "examples/guide/ethernet-redundancy-history/models/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+          "examples/guide/ethernet-redundancy-history/redundancy-workload.json": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+        },
+        "provenance": {
+          "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+          "git_dirty": "false",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+          "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+        },
+        "source_sha256": {
+          "config": "1c2ce240a6e5280d1a730ccd270afa1f64ca28be507ab42b5afd99b9f957e50a",
+          "model-config": "3d122e241730b0163745f0006a102de7b25337b1ae5a904ec0372b949d7fce7b",
+          "root0/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+          "workload": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+        },
+        "manifest": {
+          "status": "complete",
+          "partial": false,
+          "files": {
+            "diagnostics.jsonl": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "events.csv": {
+              "bytes": 93680,
+              "sha256": "32cef68e2b739096254c8b471a6d0db14dd9a1d77faa29ce5d2bf63526f3e5ef"
+            },
+            "results.json": {
+              "bytes": 1209768,
+              "sha256": "ba94b429005d13e459ad16740a0162ba6bd447f398ddd0e62457869dfbe115a1"
+            },
+            "summary.csv": {
+              "bytes": 94765,
+              "sha256": "e2ec987be09dfe0579284c6a193aeb905644fa5d3dddec0097427b18af42653b"
+            }
+          },
+          "diagnostic_lines": []
+        },
+        "summary": {
+          "sequence_rows": [
+            {
+              "sequence": "0",
+              "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+              "source_frame_id": "unicast:0",
+              "created_ps": "0",
+              "first_sof_ps": "0",
+              "completed_ps": "2535000",
+              "completed_count": "1",
+              "target_count": "1",
+              "delivered_branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+              "branches": [
+                {
+                  "branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+                  "completed_ps": "7440000",
+                  "created_ps": "0",
+                  "current_transfer_id": null,
+                  "effect_seq": "426",
+                  "first_sof_ps": "0",
+                  "hop_index": "3",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                  "path_id": "alternate",
+                  "path_index": "0",
+                  "path_ports": [
+                    "Net.a.tx",
+                    "Net.s1.tx_c",
+                    "Net.s3.tx_c",
+                    "Net.s2.tx_a"
+                  ],
+                  "reason": null,
+                  "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+                  "sequence": "0",
+                  "status": "stale",
+                  "stream_id": "redundant"
+                },
+                {
+                  "branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+                  "completed_ps": "2535000",
+                  "created_ps": "0",
+                  "current_transfer_id": null,
+                  "effect_seq": "203",
+                  "first_sof_ps": "704000",
+                  "hop_index": "2",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                  "path_id": "direct",
+                  "path_index": "1",
+                  "path_ports": [
+                    "Net.a.tx",
+                    "Net.s1.tx_b",
+                    "Net.s2.tx_a"
+                  ],
+                  "reason": null,
+                  "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct7:recover",
+                  "sequence": "0",
+                  "status": "delivered",
+                  "stream_id": "redundant"
+                }
+              ],
+              "recoveries": [
+                {
+                  "bitmap_after_hex": "1",
+                  "bitmap_before_hex": "0",
+                  "decision": "accept_first",
+                  "delivered": true,
+                  "effect_seq": "202",
+                  "eliminate_at": "Net.b",
+                  "history_capacity": "1",
+                  "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+                  "new_watermark": "0",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                  "previous_watermark": null,
+                  "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct7:recover",
+                  "sequence": "0",
+                  "stream_id": "redundant"
+                },
+                {
+                  "bitmap_after_hex": "1",
+                  "bitmap_before_hex": "1",
+                  "decision": "stale",
+                  "delivered": false,
+                  "effect_seq": "425",
+                  "eliminate_at": "Net.b",
+                  "history_capacity": "1",
+                  "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+                  "new_watermark": "1",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                  "previous_watermark": "1",
+                  "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+                  "sequence": "0",
+                  "stream_id": "redundant"
+                }
+              ],
+              "hop_transfers": [
+                {
+                  "transfer_id": "unicast:0/v0/c0",
+                  "arrival_ps": "609000",
+                  "copy_id": "unicast:0/v0/c0",
+                  "drop_reason": null,
+                  "effect_seq": "74",
+                  "eof_ps": "608000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.a.tx",
+                  "parent_transfer_id": null,
+                  "planned_arrival_ps": "609000",
+                  "planned_eof_ps": "608000",
+                  "planned_release_ps": "704000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.a.tx.queue.0",
+                  "queued_ps": "0",
+                  "release_ps": "704000",
+                  "sof_ps": "0",
+                  "status": "serialized",
+                  "to_port": "Net.s1.rx_a",
+                  "visit_id": "0",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v0/c1",
+                  "arrival_ps": "1313000",
+                  "copy_id": "unicast:0/v0/c1",
+                  "drop_reason": null,
+                  "effect_seq": "121",
+                  "eof_ps": "1312000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.a.tx",
+                  "parent_transfer_id": null,
+                  "planned_arrival_ps": "1313000",
+                  "planned_eof_ps": "1312000",
+                  "planned_release_ps": "1408000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.a.tx.queue.0",
+                  "queued_ps": "0",
+                  "release_ps": "1408000",
+                  "sof_ps": "704000",
+                  "status": "serialized",
+                  "to_port": "Net.s1.rx_a",
+                  "visit_id": "0",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v1/c2",
+                  "arrival_ps": "1220000",
+                  "copy_id": "unicast:0/v1/c2",
+                  "drop_reason": null,
+                  "effect_seq": "99",
+                  "eof_ps": "1219000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s1.tx_c",
+                  "parent_transfer_id": "unicast:0/v0/c0",
+                  "planned_arrival_ps": "1220000",
+                  "planned_eof_ps": "1219000",
+                  "planned_release_ps": "1315000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s1.tx_c.queue.0",
+                  "queued_ps": "611000",
+                  "release_ps": "1315000",
+                  "sof_ps": "611000",
+                  "status": "serialized",
+                  "to_port": "Net.s3.rx_b",
+                  "visit_id": "1",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v3/c3",
+                  "arrival_ps": "1924000",
+                  "copy_id": "unicast:0/v3/c3",
+                  "drop_reason": null,
+                  "effect_seq": "184",
+                  "eof_ps": "1923000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s1.tx_b",
+                  "parent_transfer_id": "unicast:0/v0/c1",
+                  "planned_arrival_ps": "1924000",
+                  "planned_eof_ps": "1923000",
+                  "planned_release_ps": "2019000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s1.tx_b.queue.0",
+                  "queued_ps": "1315000",
+                  "release_ps": "2019000",
+                  "sof_ps": "1315000",
+                  "status": "serialized",
+                  "to_port": "Net.s2.rx_b",
+                  "visit_id": "3",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v4/c4",
+                  "arrival_ps": "2535000",
+                  "copy_id": "unicast:0/v4/c4",
+                  "drop_reason": null,
+                  "effect_seq": "229",
+                  "eof_ps": "2534000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s2.tx_a",
+                  "parent_transfer_id": "unicast:0/v3/c3",
+                  "planned_arrival_ps": "2535000",
+                  "planned_eof_ps": "2534000",
+                  "planned_release_ps": "2630000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s2.tx_a.queue.0",
+                  "queued_ps": "1926000",
+                  "release_ps": "2630000",
+                  "sof_ps": "1926000",
+                  "status": "serialized",
+                  "to_port": "Net.b.rx",
+                  "visit_id": "4",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v2/c10",
+                  "arrival_ps": "6829000",
+                  "copy_id": "unicast:0/v2/c10",
+                  "drop_reason": null,
+                  "effect_seq": "407",
+                  "eof_ps": "6828000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s3.tx_c",
+                  "parent_transfer_id": "unicast:0/v1/c2",
+                  "planned_arrival_ps": "6829000",
+                  "planned_eof_ps": "6828000",
+                  "planned_release_ps": "6924000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s3.tx_c.queue.0",
+                  "queued_ps": "6220000",
+                  "release_ps": "6924000",
+                  "sof_ps": "6220000",
+                  "status": "serialized",
+                  "to_port": "Net.s2.rx_c",
+                  "visit_id": "2",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v11/c11",
+                  "arrival_ps": "7440000",
+                  "copy_id": "unicast:0/v11/c11",
+                  "drop_reason": null,
+                  "effect_seq": "427",
+                  "eof_ps": "7439000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s2.tx_a",
+                  "parent_transfer_id": "unicast:0/v2/c10",
+                  "planned_arrival_ps": "7440000",
+                  "planned_eof_ps": "7439000",
+                  "planned_release_ps": "7535000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s2.tx_a.queue.0",
+                  "queued_ps": "6831000",
+                  "release_ps": "7535000",
+                  "sof_ps": "6831000",
+                  "status": "serialized",
+                  "to_port": "Net.b.rx",
+                  "visit_id": "11",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                }
+              ],
+              "receptions": [
+                {
+                  "effect_seq": "56",
+                  "egress_transfer_ids": [
+                    "unicast:0/v1/c2"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s1.rx_a",
+                  "observed_ps": "609000",
+                  "planned_ready_ps": "611000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "611000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v0/c0",
+                  "visit_id": "1",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "365",
+                  "egress_transfer_ids": [
+                    "unicast:0/v2/c10"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s3.rx_b",
+                  "observed_ps": "1220000",
+                  "planned_ready_ps": "6220000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "6220000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v1/c2",
+                  "visit_id": "2",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "103",
+                  "egress_transfer_ids": [
+                    "unicast:0/v3/c3"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s1.rx_a",
+                  "observed_ps": "1313000",
+                  "planned_ready_ps": "1315000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "1315000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v0/c1",
+                  "visit_id": "3",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "141",
+                  "egress_transfer_ids": [
+                    "unicast:0/v4/c4"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s2.rx_b",
+                  "observed_ps": "1924000",
+                  "planned_ready_ps": "1926000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "1926000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v3/c3",
+                  "visit_id": "4",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "201",
+                  "egress_transfer_ids": [],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.b.rx",
+                  "observed_ps": "2535000",
+                  "planned_ready_ps": "2535000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "2535000",
+                  "reason": null,
+                  "status": "received",
+                  "transfer_id": "unicast:0/v4/c4",
+                  "visit_id": "5",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "389",
+                  "egress_transfer_ids": [
+                    "unicast:0/v11/c11"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s2.rx_c",
+                  "observed_ps": "6829000",
+                  "planned_ready_ps": "6831000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "6831000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v2/c10",
+                  "visit_id": "11",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "424",
+                  "egress_transfer_ids": [],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.b.rx",
+                  "observed_ps": "7440000",
+                  "planned_ready_ps": "7440000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "7440000",
+                  "reason": null,
+                  "status": "received",
+                  "transfer_id": "unicast:0/v11/c11",
+                  "visit_id": "12",
+                  "vlan_id": "10"
+                }
+              ]
+            },
+            {
+              "sequence": "1",
+              "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+              "source_frame_id": "unicast:1",
+              "created_ps": "2000000",
+              "first_sof_ps": "2000000",
+              "completed_ps": "4535000",
+              "completed_count": "1",
+              "target_count": "1",
+              "delivered_branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+              "branches": [
+                {
+                  "branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+                  "completed_ps": "9440000",
+                  "created_ps": "2000000",
+                  "current_transfer_id": null,
+                  "effect_seq": "504",
+                  "first_sof_ps": "2000000",
+                  "hop_index": "3",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                  "path_id": "alternate",
+                  "path_index": "0",
+                  "path_ports": [
+                    "Net.a.tx",
+                    "Net.s1.tx_c",
+                    "Net.s3.tx_c",
+                    "Net.s2.tx_a"
+                  ],
+                  "reason": null,
+                  "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate7:recover",
+                  "sequence": "1",
+                  "status": "duplicate",
+                  "stream_id": "redundant"
+                },
+                {
+                  "branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+                  "completed_ps": "4535000",
+                  "created_ps": "2000000",
+                  "current_transfer_id": null,
+                  "effect_seq": "347",
+                  "first_sof_ps": "2704000",
+                  "hop_index": "2",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                  "path_id": "direct",
+                  "path_index": "1",
+                  "path_ports": [
+                    "Net.a.tx",
+                    "Net.s1.tx_b",
+                    "Net.s2.tx_a"
+                  ],
+                  "reason": null,
+                  "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct7:recover",
+                  "sequence": "1",
+                  "status": "delivered",
+                  "stream_id": "redundant"
+                }
+              ],
+              "recoveries": [
+                {
+                  "bitmap_after_hex": "1",
+                  "bitmap_before_hex": "1",
+                  "decision": "accept_advance",
+                  "delivered": true,
+                  "effect_seq": "346",
+                  "eliminate_at": "Net.b",
+                  "history_capacity": "1",
+                  "input_branch": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+                  "new_watermark": "1",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                  "previous_watermark": "0",
+                  "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct7:recover",
+                  "sequence": "1",
+                  "stream_id": "redundant"
+                },
+                {
+                  "bitmap_after_hex": "1",
+                  "bitmap_before_hex": "1",
+                  "decision": "duplicate",
+                  "delivered": false,
+                  "effect_seq": "503",
+                  "eliminate_at": "Net.b",
+                  "history_capacity": "1",
+                  "input_branch": "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+                  "new_watermark": "1",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                  "previous_watermark": "1",
+                  "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate7:recover",
+                  "sequence": "1",
+                  "stream_id": "redundant"
+                }
+              ],
+              "hop_transfers": [
+                {
+                  "transfer_id": "unicast:1/v0/c5",
+                  "arrival_ps": "2609000",
+                  "copy_id": "unicast:1/v0/c5",
+                  "drop_reason": null,
+                  "effect_seq": "243",
+                  "eof_ps": "2608000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.a.tx",
+                  "parent_transfer_id": null,
+                  "planned_arrival_ps": "2609000",
+                  "planned_eof_ps": "2608000",
+                  "planned_release_ps": "2704000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.a.tx.queue.0",
+                  "queued_ps": "2000000",
+                  "release_ps": "2704000",
+                  "sof_ps": "2000000",
+                  "status": "serialized",
+                  "to_port": "Net.s1.rx_a",
+                  "visit_id": "0",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v0/c6",
+                  "arrival_ps": "3313000",
+                  "copy_id": "unicast:1/v0/c6",
+                  "drop_reason": null,
+                  "effect_seq": "290",
+                  "eof_ps": "3312000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.a.tx",
+                  "parent_transfer_id": null,
+                  "planned_arrival_ps": "3313000",
+                  "planned_eof_ps": "3312000",
+                  "planned_release_ps": "3408000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.a.tx.queue.0",
+                  "queued_ps": "2000000",
+                  "release_ps": "3408000",
+                  "sof_ps": "2704000",
+                  "status": "serialized",
+                  "to_port": "Net.s1.rx_a",
+                  "visit_id": "0",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v6/c7",
+                  "arrival_ps": "3220000",
+                  "copy_id": "unicast:1/v6/c7",
+                  "drop_reason": null,
+                  "effect_seq": "268",
+                  "eof_ps": "3219000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s1.tx_c",
+                  "parent_transfer_id": "unicast:1/v0/c5",
+                  "planned_arrival_ps": "3220000",
+                  "planned_eof_ps": "3219000",
+                  "planned_release_ps": "3315000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s1.tx_c.queue.0",
+                  "queued_ps": "2611000",
+                  "release_ps": "3315000",
+                  "sof_ps": "2611000",
+                  "status": "serialized",
+                  "to_port": "Net.s3.rx_b",
+                  "visit_id": "6",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v8/c8",
+                  "arrival_ps": "3924000",
+                  "copy_id": "unicast:1/v8/c8",
+                  "drop_reason": null,
+                  "effect_seq": "328",
+                  "eof_ps": "3923000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s1.tx_b",
+                  "parent_transfer_id": "unicast:1/v0/c6",
+                  "planned_arrival_ps": "3924000",
+                  "planned_eof_ps": "3923000",
+                  "planned_release_ps": "4019000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s1.tx_b.queue.0",
+                  "queued_ps": "3315000",
+                  "release_ps": "4019000",
+                  "sof_ps": "3315000",
+                  "status": "serialized",
+                  "to_port": "Net.s2.rx_b",
+                  "visit_id": "8",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v9/c9",
+                  "arrival_ps": "4535000",
+                  "copy_id": "unicast:1/v9/c9",
+                  "drop_reason": null,
+                  "effect_seq": "349",
+                  "eof_ps": "4534000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s2.tx_a",
+                  "parent_transfer_id": "unicast:1/v8/c8",
+                  "planned_arrival_ps": "4535000",
+                  "planned_eof_ps": "4534000",
+                  "planned_release_ps": "4630000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s2.tx_a.queue.0",
+                  "queued_ps": "3926000",
+                  "release_ps": "4630000",
+                  "sof_ps": "3926000",
+                  "status": "serialized",
+                  "to_port": "Net.b.rx",
+                  "visit_id": "9",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v7/c12",
+                  "arrival_ps": "8829000",
+                  "copy_id": "unicast:1/v7/c12",
+                  "drop_reason": null,
+                  "effect_seq": "485",
+                  "eof_ps": "8828000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s3.tx_c",
+                  "parent_transfer_id": "unicast:1/v6/c7",
+                  "planned_arrival_ps": "8829000",
+                  "planned_eof_ps": "8828000",
+                  "planned_release_ps": "8924000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s3.tx_c.queue.0",
+                  "queued_ps": "8220000",
+                  "release_ps": "8924000",
+                  "sof_ps": "8220000",
+                  "status": "serialized",
+                  "to_port": "Net.s2.rx_c",
+                  "visit_id": "7",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v13/c13",
+                  "arrival_ps": "9440000",
+                  "copy_id": "unicast:1/v13/c13",
+                  "drop_reason": null,
+                  "effect_seq": "505",
+                  "eof_ps": "9439000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s2.tx_a",
+                  "parent_transfer_id": "unicast:1/v7/c12",
+                  "planned_arrival_ps": "9440000",
+                  "planned_eof_ps": "9439000",
+                  "planned_release_ps": "9535000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s2.tx_a.queue.0",
+                  "queued_ps": "8831000",
+                  "release_ps": "9535000",
+                  "sof_ps": "8831000",
+                  "status": "serialized",
+                  "to_port": "Net.b.rx",
+                  "visit_id": "13",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                }
+              ],
+              "receptions": [
+                {
+                  "effect_seq": "211",
+                  "egress_transfer_ids": [
+                    "unicast:1/v6/c7"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s1.rx_a",
+                  "observed_ps": "2609000",
+                  "planned_ready_ps": "2611000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "2611000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v0/c5",
+                  "visit_id": "6",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "443",
+                  "egress_transfer_ids": [
+                    "unicast:1/v7/c12"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s3.rx_b",
+                  "observed_ps": "3220000",
+                  "planned_ready_ps": "8220000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "8220000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v6/c7",
+                  "visit_id": "7",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "272",
+                  "egress_transfer_ids": [
+                    "unicast:1/v8/c8"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s1.rx_a",
+                  "observed_ps": "3313000",
+                  "planned_ready_ps": "3315000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "3315000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v0/c6",
+                  "visit_id": "8",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "310",
+                  "egress_transfer_ids": [
+                    "unicast:1/v9/c9"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s2.rx_b",
+                  "observed_ps": "3924000",
+                  "planned_ready_ps": "3926000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "3926000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v8/c8",
+                  "visit_id": "9",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "345",
+                  "egress_transfer_ids": [],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.b.rx",
+                  "observed_ps": "4535000",
+                  "planned_ready_ps": "4535000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "4535000",
+                  "reason": null,
+                  "status": "received",
+                  "transfer_id": "unicast:1/v9/c9",
+                  "visit_id": "10",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "467",
+                  "egress_transfer_ids": [
+                    "unicast:1/v13/c13"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s2.rx_c",
+                  "observed_ps": "8829000",
+                  "planned_ready_ps": "8831000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "8831000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v7/c12",
+                  "visit_id": "13",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "502",
+                  "egress_transfer_ids": [],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.b.rx",
+                  "observed_ps": "9440000",
+                  "planned_ready_ps": "9440000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "9440000",
+                  "reason": null,
+                  "status": "received",
+                  "transfer_id": "unicast:1/v13/c13",
+                  "visit_id": "14",
+                  "vlan_id": "10"
+                }
+              ]
+            }
+          ],
+          "origin_count": 2,
+          "branch_count": 4,
+          "recovery_count": 4,
+          "incomplete_branches": [],
+          "termination": "events_exhausted",
+          "partial": false,
+          "end_ps": "10000000",
+          "last_event_time_ps": "9535000",
+          "pending_events": "0",
+          "schemas": {
+            "dir.redundancy.branch": 4,
+            "dir.redundancy.origin": 2,
+            "dir.redundancy.recovery": 4
+          }
+        },
+        "viewer_sha256": "45aef79fda0e528adb6a5ff4be17428d8def7fdf879116cdfd04511482ad9c9f",
+        "repository_baseline": {
+          "results_sha256": "6b54eac229e1b9bfaf231a4581552c788aac642c14aa6e3d86899148c56d99e0",
+          "simulation_equal": true,
+          "simulation_sha256": "8ee3214d88aa05858bf25b1717d4782ecb74f030fcd235644f96509a6a66a20a"
+        }
+      },
+      "capacity-4": {
+        "commands": {
+          "validate": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/redundancy-history/examples/guide/ethernet-redundancy-history/capacity-4.ini"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "channel_count": "12",
+              "network": "ethdynamic.Net",
+              "node_count": "6",
+              "schema_version": 1,
+              "status": "valid"
+            }
+          },
+          "run": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/redundancy-history/examples/guide/ethernet-redundancy-history/capacity-4.ini",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-4/result"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "termination": "events_exhausted",
+              "exit_code": 0,
+              "partial": false,
+              "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-4/result",
+              "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-4/result/manifest.json",
+              "primary_diagnostic": null,
+              "committed_events": "88",
+              "finish_ps": "10000000",
+              "last_event_time_ps": "9535000",
+              "event_processing_wall_seconds": 0.0
+            }
+          },
+          "view": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "view",
+              "--input",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-4/result/results.json",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-4/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "status": "complete",
+              "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/redundancy/capacity-4/viewer.html"
+            }
+          }
+        },
+        "input_sha256": {
+          "examples/guide/ethernet-redundancy-history/capacity-4-model.json": "5a21c827d8e739d71b196920e06326244611d3609ec7aa2d7282f21fda33df3d",
+          "examples/guide/ethernet-redundancy-history/capacity-4.ini": "f0f36abea99f4f5d8b5c296ff7058d9d23d2f33c331d4b6311a8c0be50752482",
+          "examples/guide/ethernet-redundancy-history/models/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+          "examples/guide/ethernet-redundancy-history/redundancy-workload.json": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+        },
+        "provenance": {
+          "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+          "git_dirty": "false",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+          "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+        },
+        "source_sha256": {
+          "config": "f0f36abea99f4f5d8b5c296ff7058d9d23d2f33c331d4b6311a8c0be50752482",
+          "model-config": "5a21c827d8e739d71b196920e06326244611d3609ec7aa2d7282f21fda33df3d",
+          "root0/ethdynamic/Main.ned": "19bfa33a1f0d05927a878ee185a58e5c0e358ad99d9220a8715e48072d25684d",
+          "workload": "7e8e39923f2b49234fe982f6b8adebc605c1dc6f03409e717ccff1f5d0d30bd5"
+        },
+        "manifest": {
+          "status": "complete",
+          "partial": false,
+          "files": {
+            "diagnostics.jsonl": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "events.csv": {
+              "bytes": 93680,
+              "sha256": "0054b0f45dbd98e0f7c58f3d602d4f8f5b99fe78faf82d1762f6d7d92b191fb2"
+            },
+            "results.json": {
+              "bytes": 1209776,
+              "sha256": "db870edddd4c3bcaa5eb31df0a168910f6c244903aa06514fb8b0f2b9c61d83f"
+            },
+            "summary.csv": {
+              "bytes": 94765,
+              "sha256": "13c8344f3cd080b0501bce4a52001bbbd26c030ae5827b3e4c5da9ff3a4f6c85"
+            }
+          },
+          "diagnostic_lines": []
+        },
+        "summary": {
+          "sequence_rows": [
+            {
+              "sequence": "0",
+              "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+              "source_frame_id": "unicast:0",
+              "created_ps": "0",
+              "first_sof_ps": "0",
+              "completed_ps": "2535000",
+              "completed_count": "1",
+              "target_count": "1",
+              "delivered_branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+              "branches": [
+                {
+                  "branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+                  "completed_ps": "7440000",
+                  "created_ps": "0",
+                  "current_transfer_id": null,
+                  "effect_seq": "426",
+                  "first_sof_ps": "0",
+                  "hop_index": "3",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                  "path_id": "alternate",
+                  "path_index": "0",
+                  "path_ports": [
+                    "Net.a.tx",
+                    "Net.s1.tx_c",
+                    "Net.s3.tx_c",
+                    "Net.s2.tx_a"
+                  ],
+                  "reason": null,
+                  "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+                  "sequence": "0",
+                  "status": "duplicate",
+                  "stream_id": "redundant"
+                },
+                {
+                  "branch_id": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+                  "completed_ps": "2535000",
+                  "created_ps": "0",
+                  "current_transfer_id": null,
+                  "effect_seq": "203",
+                  "first_sof_ps": "704000",
+                  "hop_index": "2",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                  "path_id": "direct",
+                  "path_index": "1",
+                  "path_ports": [
+                    "Net.a.tx",
+                    "Net.s1.tx_b",
+                    "Net.s2.tx_a"
+                  ],
+                  "reason": null,
+                  "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct7:recover",
+                  "sequence": "0",
+                  "status": "delivered",
+                  "stream_id": "redundant"
+                }
+              ],
+              "recoveries": [
+                {
+                  "bitmap_after_hex": "1",
+                  "bitmap_before_hex": "0",
+                  "decision": "accept_first",
+                  "delivered": true,
+                  "effect_seq": "202",
+                  "eliminate_at": "Net.b",
+                  "history_capacity": "4",
+                  "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+                  "new_watermark": "0",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                  "previous_watermark": null,
+                  "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct7:recover",
+                  "sequence": "0",
+                  "stream_id": "redundant"
+                },
+                {
+                  "bitmap_after_hex": "3",
+                  "bitmap_before_hex": "3",
+                  "decision": "duplicate",
+                  "delivered": false,
+                  "effect_seq": "425",
+                  "eliminate_at": "Net.b",
+                  "history_capacity": "4",
+                  "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+                  "new_watermark": "1",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+                  "previous_watermark": "1",
+                  "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+                  "sequence": "0",
+                  "stream_id": "redundant"
+                }
+              ],
+              "hop_transfers": [
+                {
+                  "transfer_id": "unicast:0/v0/c0",
+                  "arrival_ps": "609000",
+                  "copy_id": "unicast:0/v0/c0",
+                  "drop_reason": null,
+                  "effect_seq": "74",
+                  "eof_ps": "608000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.a.tx",
+                  "parent_transfer_id": null,
+                  "planned_arrival_ps": "609000",
+                  "planned_eof_ps": "608000",
+                  "planned_release_ps": "704000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.a.tx.queue.0",
+                  "queued_ps": "0",
+                  "release_ps": "704000",
+                  "sof_ps": "0",
+                  "status": "serialized",
+                  "to_port": "Net.s1.rx_a",
+                  "visit_id": "0",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v0/c1",
+                  "arrival_ps": "1313000",
+                  "copy_id": "unicast:0/v0/c1",
+                  "drop_reason": null,
+                  "effect_seq": "121",
+                  "eof_ps": "1312000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.a.tx",
+                  "parent_transfer_id": null,
+                  "planned_arrival_ps": "1313000",
+                  "planned_eof_ps": "1312000",
+                  "planned_release_ps": "1408000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.a.tx.queue.0",
+                  "queued_ps": "0",
+                  "release_ps": "1408000",
+                  "sof_ps": "704000",
+                  "status": "serialized",
+                  "to_port": "Net.s1.rx_a",
+                  "visit_id": "0",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v1/c2",
+                  "arrival_ps": "1220000",
+                  "copy_id": "unicast:0/v1/c2",
+                  "drop_reason": null,
+                  "effect_seq": "99",
+                  "eof_ps": "1219000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s1.tx_c",
+                  "parent_transfer_id": "unicast:0/v0/c0",
+                  "planned_arrival_ps": "1220000",
+                  "planned_eof_ps": "1219000",
+                  "planned_release_ps": "1315000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s1.tx_c.queue.0",
+                  "queued_ps": "611000",
+                  "release_ps": "1315000",
+                  "sof_ps": "611000",
+                  "status": "serialized",
+                  "to_port": "Net.s3.rx_b",
+                  "visit_id": "1",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v3/c3",
+                  "arrival_ps": "1924000",
+                  "copy_id": "unicast:0/v3/c3",
+                  "drop_reason": null,
+                  "effect_seq": "184",
+                  "eof_ps": "1923000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s1.tx_b",
+                  "parent_transfer_id": "unicast:0/v0/c1",
+                  "planned_arrival_ps": "1924000",
+                  "planned_eof_ps": "1923000",
+                  "planned_release_ps": "2019000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s1.tx_b.queue.0",
+                  "queued_ps": "1315000",
+                  "release_ps": "2019000",
+                  "sof_ps": "1315000",
+                  "status": "serialized",
+                  "to_port": "Net.s2.rx_b",
+                  "visit_id": "3",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v4/c4",
+                  "arrival_ps": "2535000",
+                  "copy_id": "unicast:0/v4/c4",
+                  "drop_reason": null,
+                  "effect_seq": "229",
+                  "eof_ps": "2534000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s2.tx_a",
+                  "parent_transfer_id": "unicast:0/v3/c3",
+                  "planned_arrival_ps": "2535000",
+                  "planned_eof_ps": "2534000",
+                  "planned_release_ps": "2630000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s2.tx_a.queue.0",
+                  "queued_ps": "1926000",
+                  "release_ps": "2630000",
+                  "sof_ps": "1926000",
+                  "status": "serialized",
+                  "to_port": "Net.b.rx",
+                  "visit_id": "4",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v2/c10",
+                  "arrival_ps": "6829000",
+                  "copy_id": "unicast:0/v2/c10",
+                  "drop_reason": null,
+                  "effect_seq": "407",
+                  "eof_ps": "6828000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s3.tx_c",
+                  "parent_transfer_id": "unicast:0/v1/c2",
+                  "planned_arrival_ps": "6829000",
+                  "planned_eof_ps": "6828000",
+                  "planned_release_ps": "6924000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s3.tx_c.queue.0",
+                  "queued_ps": "6220000",
+                  "release_ps": "6924000",
+                  "sof_ps": "6220000",
+                  "status": "serialized",
+                  "to_port": "Net.s2.rx_c",
+                  "visit_id": "2",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:0/v11/c11",
+                  "arrival_ps": "7440000",
+                  "copy_id": "unicast:0/v11/c11",
+                  "drop_reason": null,
+                  "effect_seq": "427",
+                  "eof_ps": "7439000",
+                  "frame_id": "unicast:0",
+                  "from_port": "Net.s2.tx_a",
+                  "parent_transfer_id": "unicast:0/v2/c10",
+                  "planned_arrival_ps": "7440000",
+                  "planned_eof_ps": "7439000",
+                  "planned_release_ps": "7535000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s2.tx_a.queue.0",
+                  "queued_ps": "6831000",
+                  "release_ps": "7535000",
+                  "sof_ps": "6831000",
+                  "status": "serialized",
+                  "to_port": "Net.b.rx",
+                  "visit_id": "11",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                }
+              ],
+              "receptions": [
+                {
+                  "effect_seq": "56",
+                  "egress_transfer_ids": [
+                    "unicast:0/v1/c2"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s1.rx_a",
+                  "observed_ps": "609000",
+                  "planned_ready_ps": "611000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "611000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v0/c0",
+                  "visit_id": "1",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "365",
+                  "egress_transfer_ids": [
+                    "unicast:0/v2/c10"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s3.rx_b",
+                  "observed_ps": "1220000",
+                  "planned_ready_ps": "6220000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "6220000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v1/c2",
+                  "visit_id": "2",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "103",
+                  "egress_transfer_ids": [
+                    "unicast:0/v3/c3"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s1.rx_a",
+                  "observed_ps": "1313000",
+                  "planned_ready_ps": "1315000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "1315000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v0/c1",
+                  "visit_id": "3",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "141",
+                  "egress_transfer_ids": [
+                    "unicast:0/v4/c4"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s2.rx_b",
+                  "observed_ps": "1924000",
+                  "planned_ready_ps": "1926000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "1926000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v3/c3",
+                  "visit_id": "4",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "201",
+                  "egress_transfer_ids": [],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.b.rx",
+                  "observed_ps": "2535000",
+                  "planned_ready_ps": "2535000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "2535000",
+                  "reason": null,
+                  "status": "received",
+                  "transfer_id": "unicast:0/v4/c4",
+                  "visit_id": "5",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "389",
+                  "egress_transfer_ids": [
+                    "unicast:0/v11/c11"
+                  ],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.s2.rx_c",
+                  "observed_ps": "6829000",
+                  "planned_ready_ps": "6831000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "6831000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:0/v2/c10",
+                  "visit_id": "11",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "424",
+                  "egress_transfer_ids": [],
+                  "frame_id": "unicast:0",
+                  "ingress": "Net.b.rx",
+                  "observed_ps": "7440000",
+                  "planned_ready_ps": "7440000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "7440000",
+                  "reason": null,
+                  "status": "received",
+                  "transfer_id": "unicast:0/v11/c11",
+                  "visit_id": "12",
+                  "vlan_id": "10"
+                }
+              ]
+            },
+            {
+              "sequence": "1",
+              "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+              "source_frame_id": "unicast:1",
+              "created_ps": "2000000",
+              "first_sof_ps": "2000000",
+              "completed_ps": "4535000",
+              "completed_count": "1",
+              "target_count": "1",
+              "delivered_branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+              "branches": [
+                {
+                  "branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+                  "completed_ps": "9440000",
+                  "created_ps": "2000000",
+                  "current_transfer_id": null,
+                  "effect_seq": "504",
+                  "first_sof_ps": "2000000",
+                  "hop_index": "3",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                  "path_id": "alternate",
+                  "path_index": "0",
+                  "path_ports": [
+                    "Net.a.tx",
+                    "Net.s1.tx_c",
+                    "Net.s3.tx_c",
+                    "Net.s2.tx_a"
+                  ],
+                  "reason": null,
+                  "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate7:recover",
+                  "sequence": "1",
+                  "status": "duplicate",
+                  "stream_id": "redundant"
+                },
+                {
+                  "branch_id": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+                  "completed_ps": "4535000",
+                  "created_ps": "2000000",
+                  "current_transfer_id": null,
+                  "effect_seq": "347",
+                  "first_sof_ps": "2704000",
+                  "hop_index": "2",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                  "path_id": "direct",
+                  "path_index": "1",
+                  "path_ports": [
+                    "Net.a.tx",
+                    "Net.s1.tx_b",
+                    "Net.s2.tx_a"
+                  ],
+                  "reason": null,
+                  "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct7:recover",
+                  "sequence": "1",
+                  "status": "delivered",
+                  "stream_id": "redundant"
+                }
+              ],
+              "recoveries": [
+                {
+                  "bitmap_after_hex": "3",
+                  "bitmap_before_hex": "1",
+                  "decision": "accept_advance",
+                  "delivered": true,
+                  "effect_seq": "346",
+                  "eliminate_at": "Net.b",
+                  "history_capacity": "4",
+                  "input_branch": "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+                  "new_watermark": "1",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                  "previous_watermark": "0",
+                  "recovery_id": "58:36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct7:recover",
+                  "sequence": "1",
+                  "stream_id": "redundant"
+                },
+                {
+                  "bitmap_after_hex": "3",
+                  "bitmap_before_hex": "3",
+                  "decision": "duplicate",
+                  "delivered": false,
+                  "effect_seq": "503",
+                  "eliminate_at": "Net.b",
+                  "history_capacity": "4",
+                  "input_branch": "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+                  "new_watermark": "1",
+                  "origin_id": "22:ethernet.dynamic.frame9:unicast:1",
+                  "previous_watermark": "1",
+                  "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate7:recover",
+                  "sequence": "1",
+                  "stream_id": "redundant"
+                }
+              ],
+              "hop_transfers": [
+                {
+                  "transfer_id": "unicast:1/v0/c5",
+                  "arrival_ps": "2609000",
+                  "copy_id": "unicast:1/v0/c5",
+                  "drop_reason": null,
+                  "effect_seq": "243",
+                  "eof_ps": "2608000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.a.tx",
+                  "parent_transfer_id": null,
+                  "planned_arrival_ps": "2609000",
+                  "planned_eof_ps": "2608000",
+                  "planned_release_ps": "2704000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.a.tx.queue.0",
+                  "queued_ps": "2000000",
+                  "release_ps": "2704000",
+                  "sof_ps": "2000000",
+                  "status": "serialized",
+                  "to_port": "Net.s1.rx_a",
+                  "visit_id": "0",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v0/c6",
+                  "arrival_ps": "3313000",
+                  "copy_id": "unicast:1/v0/c6",
+                  "drop_reason": null,
+                  "effect_seq": "290",
+                  "eof_ps": "3312000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.a.tx",
+                  "parent_transfer_id": null,
+                  "planned_arrival_ps": "3313000",
+                  "planned_eof_ps": "3312000",
+                  "planned_release_ps": "3408000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.a.tx.queue.0",
+                  "queued_ps": "2000000",
+                  "release_ps": "3408000",
+                  "sof_ps": "2704000",
+                  "status": "serialized",
+                  "to_port": "Net.s1.rx_a",
+                  "visit_id": "0",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v6/c7",
+                  "arrival_ps": "3220000",
+                  "copy_id": "unicast:1/v6/c7",
+                  "drop_reason": null,
+                  "effect_seq": "268",
+                  "eof_ps": "3219000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s1.tx_c",
+                  "parent_transfer_id": "unicast:1/v0/c5",
+                  "planned_arrival_ps": "3220000",
+                  "planned_eof_ps": "3219000",
+                  "planned_release_ps": "3315000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s1.tx_c.queue.0",
+                  "queued_ps": "2611000",
+                  "release_ps": "3315000",
+                  "sof_ps": "2611000",
+                  "status": "serialized",
+                  "to_port": "Net.s3.rx_b",
+                  "visit_id": "6",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v8/c8",
+                  "arrival_ps": "3924000",
+                  "copy_id": "unicast:1/v8/c8",
+                  "drop_reason": null,
+                  "effect_seq": "328",
+                  "eof_ps": "3923000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s1.tx_b",
+                  "parent_transfer_id": "unicast:1/v0/c6",
+                  "planned_arrival_ps": "3924000",
+                  "planned_eof_ps": "3923000",
+                  "planned_release_ps": "4019000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s1.tx_b.queue.0",
+                  "queued_ps": "3315000",
+                  "release_ps": "4019000",
+                  "sof_ps": "3315000",
+                  "status": "serialized",
+                  "to_port": "Net.s2.rx_b",
+                  "visit_id": "8",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v9/c9",
+                  "arrival_ps": "4535000",
+                  "copy_id": "unicast:1/v9/c9",
+                  "drop_reason": null,
+                  "effect_seq": "349",
+                  "eof_ps": "4534000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s2.tx_a",
+                  "parent_transfer_id": "unicast:1/v8/c8",
+                  "planned_arrival_ps": "4535000",
+                  "planned_eof_ps": "4534000",
+                  "planned_release_ps": "4630000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s2.tx_a.queue.0",
+                  "queued_ps": "3926000",
+                  "release_ps": "4630000",
+                  "sof_ps": "3926000",
+                  "status": "serialized",
+                  "to_port": "Net.b.rx",
+                  "visit_id": "9",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v7/c12",
+                  "arrival_ps": "8829000",
+                  "copy_id": "unicast:1/v7/c12",
+                  "drop_reason": null,
+                  "effect_seq": "485",
+                  "eof_ps": "8828000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s3.tx_c",
+                  "parent_transfer_id": "unicast:1/v6/c7",
+                  "planned_arrival_ps": "8829000",
+                  "planned_eof_ps": "8828000",
+                  "planned_release_ps": "8924000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s3.tx_c.queue.0",
+                  "queued_ps": "8220000",
+                  "release_ps": "8924000",
+                  "sof_ps": "8220000",
+                  "status": "serialized",
+                  "to_port": "Net.s2.rx_c",
+                  "visit_id": "7",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                },
+                {
+                  "transfer_id": "unicast:1/v13/c13",
+                  "arrival_ps": "9440000",
+                  "copy_id": "unicast:1/v13/c13",
+                  "drop_reason": null,
+                  "effect_seq": "505",
+                  "eof_ps": "9439000",
+                  "frame_id": "unicast:1",
+                  "from_port": "Net.s2.tx_a",
+                  "parent_transfer_id": "unicast:1/v7/c12",
+                  "planned_arrival_ps": "9440000",
+                  "planned_eof_ps": "9439000",
+                  "planned_release_ps": "9535000",
+                  "policy_epoch_offer": "0",
+                  "policy_epoch_sof": "0",
+                  "priority": "0",
+                  "queue_id": "Net.s2.tx_a.queue.0",
+                  "queued_ps": "8831000",
+                  "release_ps": "9535000",
+                  "sof_ps": "8831000",
+                  "status": "serialized",
+                  "to_port": "Net.b.rx",
+                  "visit_id": "13",
+                  "vlan_id": "10",
+                  "wire": {
+                    "data_hex": "",
+                    "dst_mac": "02:00:00:00:00:02",
+                    "ether_type": "2048",
+                    "fcs_hex": "e4c9eb3a",
+                    "mac_bytes": "68",
+                    "mac_hex": "0200000000020200000000018100000a080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4c9eb3a",
+                    "pad_bytes": "46",
+                    "src_mac": "02:00:00:00:00:01",
+                    "tag": {
+                      "dei": "0",
+                      "pcp": "0",
+                      "vid": "10"
+                    }
+                  }
+                }
+              ],
+              "receptions": [
+                {
+                  "effect_seq": "211",
+                  "egress_transfer_ids": [
+                    "unicast:1/v6/c7"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s1.rx_a",
+                  "observed_ps": "2609000",
+                  "planned_ready_ps": "2611000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "2611000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v0/c5",
+                  "visit_id": "6",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "443",
+                  "egress_transfer_ids": [
+                    "unicast:1/v7/c12"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s3.rx_b",
+                  "observed_ps": "3220000",
+                  "planned_ready_ps": "8220000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "8220000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v6/c7",
+                  "visit_id": "7",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "272",
+                  "egress_transfer_ids": [
+                    "unicast:1/v8/c8"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s1.rx_a",
+                  "observed_ps": "3313000",
+                  "planned_ready_ps": "3315000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "3315000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v0/c6",
+                  "visit_id": "8",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "310",
+                  "egress_transfer_ids": [
+                    "unicast:1/v9/c9"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s2.rx_b",
+                  "observed_ps": "3924000",
+                  "planned_ready_ps": "3926000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "3926000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v8/c8",
+                  "visit_id": "9",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "345",
+                  "egress_transfer_ids": [],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.b.rx",
+                  "observed_ps": "4535000",
+                  "planned_ready_ps": "4535000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "4535000",
+                  "reason": null,
+                  "status": "received",
+                  "transfer_id": "unicast:1/v9/c9",
+                  "visit_id": "10",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "467",
+                  "egress_transfer_ids": [
+                    "unicast:1/v13/c13"
+                  ],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.s2.rx_c",
+                  "observed_ps": "8829000",
+                  "planned_ready_ps": "8831000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "8831000",
+                  "reason": null,
+                  "status": "forwarded",
+                  "transfer_id": "unicast:1/v7/c12",
+                  "visit_id": "13",
+                  "vlan_id": "10"
+                },
+                {
+                  "effect_seq": "502",
+                  "egress_transfer_ids": [],
+                  "frame_id": "unicast:1",
+                  "ingress": "Net.b.rx",
+                  "observed_ps": "9440000",
+                  "planned_ready_ps": "9440000",
+                  "policy_epoch_ingress": "0",
+                  "priority": "0",
+                  "ready_ps": "9440000",
+                  "reason": null,
+                  "status": "received",
+                  "transfer_id": "unicast:1/v13/c13",
+                  "visit_id": "14",
+                  "vlan_id": "10"
+                }
+              ]
+            }
+          ],
+          "origin_count": 2,
+          "branch_count": 4,
+          "recovery_count": 4,
+          "incomplete_branches": [],
+          "termination": "events_exhausted",
+          "partial": false,
+          "end_ps": "10000000",
+          "last_event_time_ps": "9535000",
+          "pending_events": "0",
+          "schemas": {
+            "dir.redundancy.branch": 4,
+            "dir.redundancy.origin": 2,
+            "dir.redundancy.recovery": 4
+          }
+        },
+        "viewer_sha256": "7cce6e731c47c6249a1f37a3e2ee0e8c9ff227c99f4419eaba2d9b8d1923a45c",
+        "repository_baseline": {
+          "results_sha256": "742b241210a6a7801023670642cac1b8a1cc0d93f244677634ca481870ee87c9",
+          "simulation_equal": true,
+          "simulation_sha256": "5713115a1b11487cf776db852dac6a8e43b312dab241161d71b364b5fb1c209d"
+        }
+      }
+    },
+    "baseline_output": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/redundancy/run-v1.1.6-reportfix"
+  }
+}
