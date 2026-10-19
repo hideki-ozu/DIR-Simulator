@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.35`
+文書バージョン：`1.1.36`
 対象GitHubバージョン：`v1.1.6`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.36` | `2026-10-19` | 正式v1.1.6を使うpreemption・冗長履歴・PSFP gate・Metric V2の実測4記事と入力ZIPへの入口を追加 |
 | `1.1.35` | `2026-10-17` | 後続10分野の実装・機能リファレンスと最新mainの記事を統合し、v1.1.6収録範囲と過去実測の基準を明記 |
 | `1.1.34` | `2026-10-17` | 抽象STPのcost1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・23 ZIPを維持 |
 | `1.1.33` | `2026-10-16` | 動的VID登録の寿命1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・22 ZIPを維持 |
@@ -105,6 +106,14 @@ Ethernet L2・負荷・QoS・viewerを`v1.1.0`へ追加しました。Cargoパ�
 [Ethernetの動的VID登録と有効期限](docs/guide/Ethernetの動的VID登録と有効期限.md)では出口portの登録寿命だけを変え、portごとの有効VIDと既知宛先の配送可否を正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-vid-registration-inputs.zip)で再現できます。
 
 [Ethernetの抽象STPとリンクcostによる配送経路](docs/guide/Ethernetの抽象STPとリンクcostによる配送経路.md)では三角網のL12 costだけを変え、初期STP role・copy経路とbへの配送時間を正式v1.1.4で比較します。[6入力ZIP](docs/guide/downloads/ethernet-stp-cost-inputs.zip)で再現できます。
+
+[抽象preemptionのfragment長とexpress待ち時間](docs/guide/抽象preemptionのfragment長とexpress待ち時間.md)ではfragment長20/40/100byteだけを変え、express待ちとslowの送信占有・再開gapを正式v1.1.6で比較します。[8入力ZIP](docs/guide/downloads/ethernet-preemption-fragments-inputs.zip)で再現できます。
+
+[抽象冗長配送の履歴容量とduplicate・stale](docs/guide/抽象冗長配送の履歴容量とduplicate・stale.md)では履歴容量1/4だけを変え、2 originの配送数と遅いコピーの除去理由を正式v1.1.6で分けて読みます。[6入力ZIP](docs/guide/downloads/ethernet-redundancy-history-inputs.zip)で再現できます。
+
+[Ethernet PSFPのstream gateと1ps境界](<docs/guide/Ethernet PSFPのstream gateと1ps境界.md>)ではgate開始だけを1ps変え、同じ到着576000psの受理・拒否を正式v1.1.6で比較します。[7ファイルZIP](docs/guide/downloads/ethernet-psfp-gate-inputs.zip)を配布しています。
+
+[Metric V2の集計窓幅と時間平均](<docs/guide/Metric V2の集計窓幅と時間平均.md>)では窓幅4/7/10psだけを変え、イベント列の不変と時間積分・空窓・保存集計を確認します。正式v1.1.6の独自登録Rust exampleと[入力ZIP](docs/guide/downloads/metric-windows-inputs.zip)を使用します。
 
 **DIR = Definition（定義）、Initialization（初期化）、Runtime（実行）**
 

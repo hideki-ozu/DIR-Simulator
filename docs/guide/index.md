@@ -1,6 +1,6 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.29`
+文書バージョン：`1.1.30`
 対象GitHubバージョン：`v1.1.6`
 文書ID：`guide-index`  
 文書状態：公開済み。mainへのpush時に検証後、GitHub Pagesを自動更新
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.30` | `2026-10-19` | preemption・冗長履歴・PSFP gate・Metric V2の正式v1.1.6実測4記事と独立入力ZIPを追加 |
 | `1.1.29` | `2026-10-17` | 機能リファレンス8章と最新mainの5記事を共存させ、v1.1.6の入口・入力ZIP・過去実測の基準を整理 |
 | `1.1.28` | `2026-10-17` | 抽象STPのcost1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・23 ZIPを維持 |
 | `1.1.27` | `2026-10-16` | 動的VID登録の寿命1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・22 ZIPを維持 |
@@ -83,6 +84,10 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信とメモリ読
 | 源別multicastの実験 | [Ethernetの源別multicastとINCLUDE・EXCLUDE](Ethernetの源別multicastとINCLUDE・EXCLUDE.md) | modeだけを変え、送信元集合・候補0・期限後のfloodを区別 |
 | VID登録の期限を比較する | [Ethernetの動的VID登録と有効期限](Ethernetの動的VID登録と有効期限.md) | 出口portのlifetimeだけを変え、対向portと有効VIDを区別 |
 | 抽象STPの経路を比べる | [Ethernetの抽象STPとリンクcostによる配送経路](Ethernetの抽象STPとリンクcostによる配送経路.md) | L12 costだけを変え、初期role・枝のcopyと配送時間を区別 |
+| fragment長と待ちを比べる | [抽象preemptionのfragment長とexpress待ち時間](抽象preemptionのfragment長とexpress待ち時間.md) | fragment長だけを変え、express待ち・slow占有・IFGと再開gapを区別 |
+| 冗長コピーの除去理由を読む | [抽象冗長配送の履歴容量とduplicate・stale](抽象冗長配送の履歴容量とduplicate・stale.md) | 履歴容量だけを変え、物理受信・一度だけの配送・duplicateとstaleを区別 |
+| 受信gateの境界を比べる | [Ethernet PSFPのstream gateと1ps境界](<Ethernet PSFPのstream gateと1ps境界.md>) | gate開始だけを1ps変え、同じ送信copyと異なる受信判定を読む |
+| 集計窓と時間平均を読む | [Metric V2の集計窓幅と時間平均](<Metric V2の集計窓幅と時間平均.md>) | 窓幅だけを変え、同じイベント列・窓別の時間平均・現在値を区別 |
 | 設定・用語・FAQ | [設定・用語・FAQ](設定・用語・FAQ.md) | パス、単位、上書きエラー、学習時の疑問 |
 
 上から3ページを順に読むと、一つの小さな実験がつながります。入門は3要求だけに絞り、実際に保存された結果と画面を掲載しています。
@@ -118,3 +123,7 @@ link復旧の実習は正式v1.1.4の`ethernet.l2.dynamic.v1`を使い、[独立
 動的VID登録の実習は正式v1.1.4の`ethernet.l2.dynamic.v1`を使い、[独立6入力ZIP](downloads/ethernet-vid-registration-inputs.zip)で再現できます。
 
 抽象STPの実習は正式v1.1.4の`ethernet.l2.dynamic.v1`を使い、[独立6入力ZIP](downloads/ethernet-stp-cost-inputs.zip)で再現できます。
+
+抽象preemptionと冗長配送の実習は正式v1.1.6の`ethernet.preemption.abstract.v1`／`ethernet.redundancy.abstract.v1`を使い、[fragment比較ZIP](downloads/ethernet-preemption-fragments-inputs.zip)／[履歴容量比較ZIP](downloads/ethernet-redundancy-history-inputs.zip)で再現できます。PSFP gateの実習も正式v1.1.6の`ethernet.tsn.v1`を使い、[gate境界ZIP](downloads/ethernet-psfp-gate-inputs.zip)を配布しています。
+
+Metric V2の実習は正式v1.1.6に同梱されたRust exampleの独自登録profile`demo.control.v1`です。通常CLIのrunでは実行できません。[独立入力ZIP](downloads/metric-windows-inputs.zip)と正式版のexampleを使う手順を記事内に記載しています。

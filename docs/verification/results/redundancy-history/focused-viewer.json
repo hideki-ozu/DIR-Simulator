@@ -1,0 +1,296 @@
+{
+  "generated_by": "scripts/verify_redundancy_history_focused_viewer.cjs",
+  "command": [
+    "node",
+    "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/scripts/verify_redundancy_history_focused_viewer.cjs",
+    ".",
+    "../evidence/articles110-111/redundancy/run-v1.1.6-reportfix",
+    "../evidence/articles110-111/redundancy/focused-final-20261019"
+  ],
+  "source_tag": "v1.1.6",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+  "measurements_sha256": "d9741fbb302bb4714055b1c90f8edcea89ab8ffcbde739606307378ac3ff5862",
+  "captures": [
+    {
+      "condition": "capacity-1",
+      "time_ps": "4535000",
+      "displayed_time": "4535000 ps / 10000000 ps",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "locator": "冗長配送の枝: following table-scroll",
+      "source_html_sha256": "ac03c25a1ebfec0b0a72e3ef42cb385672830d612576a3b5eca734670d5c7462",
+      "source_results_sha256": "6b54eac229e1b9bfaf231a4581552c788aac642c14aa6e3d86899148c56d99e0",
+      "asset": "docs/guide/assets/guide-redundancy-history-capacity-1-branches-t4535000ps-desktop-focused.png",
+      "asset_reused": true,
+      "sha256": "7f52a2551bbdacb9bc5538fec247205657e7b6bd8ee2bbbfe7dfe7395d736a02",
+      "bytes": 29362,
+      "width": 1318,
+      "height": 192,
+      "branches": [
+        [
+          "redundant",
+          "alternate",
+          "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+          "in_flight",
+          "0",
+          "—",
+          "—"
+        ],
+        [
+          "redundant",
+          "alternate",
+          "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+          "in_flight",
+          "2000000",
+          "—",
+          "—"
+        ],
+        [
+          "redundant",
+          "direct",
+          "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+          "delivered",
+          "704000",
+          "2535000",
+          "—"
+        ],
+        [
+          "redundant",
+          "direct",
+          "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+          "delivered",
+          "2704000",
+          "4535000",
+          "—"
+        ]
+      ]
+    },
+    {
+      "condition": "capacity-1",
+      "time_ps": "7440000",
+      "displayed_time": "7440000 ps / 10000000 ps",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "locator": "dir.redundancy.recovery details: late unicast:0",
+      "source_html_sha256": "ac03c25a1ebfec0b0a72e3ef42cb385672830d612576a3b5eca734670d5c7462",
+      "source_results_sha256": "6b54eac229e1b9bfaf231a4581552c788aac642c14aa6e3d86899148c56d99e0",
+      "asset": "docs/guide/assets/guide-redundancy-history-capacity-1-recovery-t7440000ps-desktop-focused.png",
+      "asset_reused": true,
+      "sha256": "86839dfa77b6816ea07cd2cb9ad8c3d33c5470a2af87a2fc6764e970943b669c",
+      "bytes": 41338,
+      "width": 1318,
+      "height": 332,
+      "recovery": {
+        "bitmap_after_hex": "1",
+        "bitmap_before_hex": "1",
+        "decision": "stale",
+        "delivered": false,
+        "effect_seq": "425",
+        "eliminate_at": "Net.b",
+        "history_capacity": "1",
+        "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+        "new_watermark": "1",
+        "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+        "previous_watermark": "1",
+        "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+        "sequence": "0",
+        "stream_id": "redundant"
+      },
+      "branches": [
+        [
+          "redundant",
+          "alternate",
+          "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+          "in_flight",
+          "2000000",
+          "—",
+          "—"
+        ],
+        [
+          "redundant",
+          "direct",
+          "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+          "delivered",
+          "704000",
+          "2535000",
+          "—"
+        ],
+        [
+          "redundant",
+          "direct",
+          "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+          "delivered",
+          "2704000",
+          "4535000",
+          "—"
+        ],
+        [
+          "redundant",
+          "alternate",
+          "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+          "stale",
+          "0",
+          "7440000",
+          "—"
+        ]
+      ]
+    },
+    {
+      "condition": "capacity-4",
+      "time_ps": "7440000",
+      "displayed_time": "7440000 ps / 10000000 ps",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "locator": "dir.redundancy.recovery details: late unicast:0",
+      "source_html_sha256": "98c6eb464fac7adaa63f1b73ae53b166095186035455790777a1c47680bdf55f",
+      "source_results_sha256": "742b241210a6a7801023670642cac1b8a1cc0d93f244677634ca481870ee87c9",
+      "asset": "docs/guide/assets/guide-redundancy-history-capacity-4-recovery-t7440000ps-desktop-focused.png",
+      "asset_reused": true,
+      "sha256": "96e3bad8b955373c787b7f74b91645ac4ff06395c76635cab6de4ef1c128a6bf",
+      "bytes": 41846,
+      "width": 1318,
+      "height": 332,
+      "recovery": {
+        "bitmap_after_hex": "3",
+        "bitmap_before_hex": "3",
+        "decision": "duplicate",
+        "delivered": false,
+        "effect_seq": "425",
+        "eliminate_at": "Net.b",
+        "history_capacity": "4",
+        "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+        "new_watermark": "1",
+        "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+        "previous_watermark": "1",
+        "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+        "sequence": "0",
+        "stream_id": "redundant"
+      },
+      "branches": [
+        [
+          "redundant",
+          "alternate",
+          "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+          "in_flight",
+          "2000000",
+          "—",
+          "—"
+        ],
+        [
+          "redundant",
+          "direct",
+          "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+          "delivered",
+          "704000",
+          "2535000",
+          "—"
+        ],
+        [
+          "redundant",
+          "direct",
+          "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+          "delivered",
+          "2704000",
+          "4535000",
+          "—"
+        ],
+        [
+          "redundant",
+          "alternate",
+          "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+          "duplicate",
+          "0",
+          "7440000",
+          "—"
+        ]
+      ]
+    },
+    {
+      "condition": "capacity-4",
+      "time_ps": "7440000",
+      "displayed_time": "7440000 ps / 10000000 ps",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "locator": "dir.redundancy.recovery details: late unicast:0",
+      "source_html_sha256": "98c6eb464fac7adaa63f1b73ae53b166095186035455790777a1c47680bdf55f",
+      "source_results_sha256": "742b241210a6a7801023670642cac1b8a1cc0d93f244677634ca481870ee87c9",
+      "asset": "docs/guide/assets/guide-redundancy-history-capacity-4-recovery-t7440000ps-mobile-focused.png",
+      "asset_reused": true,
+      "sha256": "cd7ff09423081644a461c6019de34530f300bb9d916f8ddfdeae5ccdce42b309",
+      "bytes": 31826,
+      "width": 336,
+      "height": 365,
+      "recovery": {
+        "bitmap_after_hex": "3",
+        "bitmap_before_hex": "3",
+        "decision": "duplicate",
+        "delivered": false,
+        "effect_seq": "425",
+        "eliminate_at": "Net.b",
+        "history_capacity": "4",
+        "input_branch": "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+        "new_watermark": "1",
+        "origin_id": "22:ethernet.dynamic.frame9:unicast:0",
+        "previous_watermark": "1",
+        "recovery_id": "61:36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate7:recover",
+        "sequence": "0",
+        "stream_id": "redundant"
+      },
+      "branches": [
+        [
+          "redundant",
+          "alternate",
+          "36:22:ethernet.dynamic.frame9:unicast:19:redundant9:alternate",
+          "in_flight",
+          "2000000",
+          "—",
+          "—"
+        ],
+        [
+          "redundant",
+          "direct",
+          "36:22:ethernet.dynamic.frame9:unicast:09:redundant6:direct",
+          "delivered",
+          "704000",
+          "2535000",
+          "—"
+        ],
+        [
+          "redundant",
+          "direct",
+          "36:22:ethernet.dynamic.frame9:unicast:19:redundant6:direct",
+          "delivered",
+          "2704000",
+          "4535000",
+          "—"
+        ],
+        [
+          "redundant",
+          "alternate",
+          "36:22:ethernet.dynamic.frame9:unicast:09:redundant9:alternate",
+          "duplicate",
+          "0",
+          "7440000",
+          "—"
+        ]
+      ]
+    }
+  ],
+  "errors": {
+    "page": [],
+    "console": [],
+    "external_requests": [],
+    "failed_requests": []
+  },
+  "browser": "156.0.8078.4",
+  "status": "passed"
+}

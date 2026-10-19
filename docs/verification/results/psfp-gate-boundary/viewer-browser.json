@@ -1,0 +1,455 @@
+{
+  "generated_by": "scripts/verify_psfp_gate_boundary_viewer.cjs",
+  "source_tag": "v1.1.6",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "measurement_sha256": "f68ddef66ee6586304a779e19fc30f1cbe5eb8acf4d2de143e155523dc52cc1a",
+  "input_sha256": {
+    "examples/guide/ethernet-psfp-gate/gate-76001.ini": "1d76eb63e5d2277b255a6725973d2b5d23faee7cf66b37b797acfebcc532cce8",
+    "examples/guide/ethernet-psfp-gate/README.md": "1eef9d7d120f71f80c353f9e0fb5ecb92537b2bf7820f608276cf77b481826e7",
+    "examples/guide/ethernet-psfp-gate/gate-76001.json": "a778a3f7e12dfcadc3c8c51570ab83735a4c549eb3a0393a4154ba3c40cfc8aa",
+    "examples/guide/ethernet-psfp-gate/gate-76000.json": "d702cd1f883873909ddce762aa1a8e251cef370b00167324d767debd7a7cf87a",
+    "examples/guide/ethernet-psfp-gate/gate-76000.ini": "710f3f3c275e262faa609ea16b757d968850d2760aecc67fbeb9342c3b422d41",
+    "examples/guide/ethernet-psfp-gate/workload.json": "613d1ea23c33438faf186a27204f7aae732fcbf77cb3dcb9ec743bb7d9efe13c",
+    "examples/guide/ethernet-psfp-gate/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+  },
+  "conditions": {
+    "repository/gate-76000": {
+      "viewer_html_sha256": "e267d300a26ba03c2c7b74d1e6ee0f76b7d02bb077ff5da9247b7f5c8fb25b60",
+      "results_sha256": "489e4eefada2967097744ebef4e2282f1b9a9a2e3c6a6ea720d6d411f4dfa80b",
+      "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+      "before_time_ps": 575999,
+      "before_card": "s0\n\n未到着 · color 未評価 · consumed 0 bit\n\n最後のmeter評価 0 ps · committed 512000000000000 · peak 1024000000000000\n\n潜在refill（未消費） committed 512000000000000 · peak 1024000000000000",
+      "time_ps": 576000,
+      "card": "s0\n\npsfp_gate_closed · color 未評価 · consumed 0 bit\n\n最後のmeter評価 0 ps · committed 512000000000000 · peak 1024000000000000\n\n潜在refill（未消費） committed 512000000000000 · peak 1024000000000000",
+      "counts": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "transfer": {
+        "arrival_ps": "576000",
+        "copy_id": "psfp_gate:0/v0/c0",
+        "drop_reason": null,
+        "effect_seq": "16",
+        "eof_ps": "576000",
+        "frame_id": "psfp_gate:0",
+        "from_port": "Net.a.tx",
+        "parent_transfer_id": null,
+        "planned_arrival_ps": "576000",
+        "planned_eof_ps": "576000",
+        "planned_release_ps": "672000",
+        "policy_epoch_offer": "0",
+        "policy_epoch_sof": "0",
+        "priority": "7",
+        "queue_id": "Net.a.tx.queue.7",
+        "queued_ps": "0",
+        "release_ps": "672000",
+        "sof_ps": "0",
+        "status": "serialized",
+        "to_port": "Net.b.rx",
+        "visit_id": "0",
+        "vlan_id": "10",
+        "wire": {
+          "data_hex": "",
+          "dst_mac": "02:00:00:00:00:02",
+          "ether_type": "2048",
+          "fcs_hex": "a9e82eb4",
+          "mac_bytes": "64",
+          "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+          "pad_bytes": "46",
+          "src_mac": "02:00:00:00:00:01",
+          "tag": null
+        }
+      },
+      "reception": {
+        "effect_seq": "15",
+        "egress_transfer_ids": [],
+        "frame_id": "psfp_gate:0",
+        "ingress": "Net.b.rx",
+        "observed_ps": "576000",
+        "planned_ready_ps": null,
+        "policy_epoch_ingress": "0",
+        "priority": "7",
+        "ready_ps": "576000",
+        "reason": "psfp_gate_closed",
+        "status": "filtered",
+        "transfer_id": "psfp_gate:0/v0/c0",
+        "visit_id": "1",
+        "vlan_id": "10"
+      },
+      "policing": {
+        "color": null,
+        "committed_after": null,
+        "committed_before": null,
+        "consumed_bits": "0",
+        "effect_seq": "13",
+        "ingress": "Net.b.rx",
+        "mac_bytes": "64",
+        "peak_after": null,
+        "peak_before": null,
+        "reception_id": "psfp_gate:0/v0/c0@rx",
+        "stream_id": "s0",
+        "verdict": "psfp_gate_closed"
+      },
+      "rewind_equal": true,
+      "desktop": {
+        "width": 1440,
+        "height": 1100
+      },
+      "mobile": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    "repository/gate-76001": {
+      "viewer_html_sha256": "76927fe4f1252110062d6a34daf51af7c887c31b2abdd494b83e58a743e1ba88",
+      "results_sha256": "f14ced5aead04728c9a07e8f9c16abb0f2feae90b332f33c5863d495699127d2",
+      "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+      "before_time_ps": 575999,
+      "before_card": "s0\n\n未到着 · color 未評価 · consumed 0 bit\n\n最後のmeter評価 0 ps · committed 512000000000000 · peak 1024000000000000\n\n潜在refill（未消費） committed 512000000000000 · peak 1024000000000000",
+      "time_ps": 576000,
+      "card": "s0\n\npass · color green · consumed 1024 bit\n\n最後のmeter評価 576000 ps · committed 0 · peak 512000000000000\n\n潜在refill（未消費） committed 0 · peak 512000000000000",
+      "counts": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "transfer": {
+        "arrival_ps": "576000",
+        "copy_id": "psfp_gate:0/v0/c0",
+        "drop_reason": null,
+        "effect_seq": "16",
+        "eof_ps": "576000",
+        "frame_id": "psfp_gate:0",
+        "from_port": "Net.a.tx",
+        "parent_transfer_id": null,
+        "planned_arrival_ps": "576000",
+        "planned_eof_ps": "576000",
+        "planned_release_ps": "672000",
+        "policy_epoch_offer": "0",
+        "policy_epoch_sof": "0",
+        "priority": "7",
+        "queue_id": "Net.a.tx.queue.7",
+        "queued_ps": "0",
+        "release_ps": "672000",
+        "sof_ps": "0",
+        "status": "serialized",
+        "to_port": "Net.b.rx",
+        "visit_id": "0",
+        "vlan_id": "10",
+        "wire": {
+          "data_hex": "",
+          "dst_mac": "02:00:00:00:00:02",
+          "ether_type": "2048",
+          "fcs_hex": "a9e82eb4",
+          "mac_bytes": "64",
+          "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+          "pad_bytes": "46",
+          "src_mac": "02:00:00:00:00:01",
+          "tag": null
+        }
+      },
+      "reception": {
+        "effect_seq": "15",
+        "egress_transfer_ids": [],
+        "frame_id": "psfp_gate:0",
+        "ingress": "Net.b.rx",
+        "observed_ps": "576000",
+        "planned_ready_ps": "576000",
+        "policy_epoch_ingress": "0",
+        "priority": "7",
+        "ready_ps": "576000",
+        "reason": null,
+        "status": "received",
+        "transfer_id": "psfp_gate:0/v0/c0",
+        "visit_id": "1",
+        "vlan_id": "10"
+      },
+      "policing": {
+        "color": "green",
+        "committed_after": "0",
+        "committed_before": "512000000000000",
+        "consumed_bits": "1024",
+        "effect_seq": "13",
+        "ingress": "Net.b.rx",
+        "mac_bytes": "64",
+        "peak_after": "512000000000000",
+        "peak_before": "1024000000000000",
+        "reception_id": "psfp_gate:0/v0/c0@rx",
+        "stream_id": "s0",
+        "verdict": "pass"
+      },
+      "rewind_equal": true,
+      "desktop": {
+        "width": 1440,
+        "height": 1100
+      },
+      "mobile": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    "zip/gate-76000": {
+      "viewer_html_sha256": "b069d1888e8e434523e7511b55f129821b9670c2cc998ef2e580b991ea4cb8a8",
+      "results_sha256": "0bda7b47736f76f1e8229b904aba535957096fe7b492cebf31f90ff1194a975c",
+      "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+      "before_time_ps": 575999,
+      "before_card": "s0\n\n未到着 · color 未評価 · consumed 0 bit\n\n最後のmeter評価 0 ps · committed 512000000000000 · peak 1024000000000000\n\n潜在refill（未消費） committed 512000000000000 · peak 1024000000000000",
+      "time_ps": 576000,
+      "card": "s0\n\npsfp_gate_closed · color 未評価 · consumed 0 bit\n\n最後のmeter評価 0 ps · committed 512000000000000 · peak 1024000000000000\n\n潜在refill（未消費） committed 512000000000000 · peak 1024000000000000",
+      "counts": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "transfer": {
+        "arrival_ps": "576000",
+        "copy_id": "psfp_gate:0/v0/c0",
+        "drop_reason": null,
+        "effect_seq": "16",
+        "eof_ps": "576000",
+        "frame_id": "psfp_gate:0",
+        "from_port": "Net.a.tx",
+        "parent_transfer_id": null,
+        "planned_arrival_ps": "576000",
+        "planned_eof_ps": "576000",
+        "planned_release_ps": "672000",
+        "policy_epoch_offer": "0",
+        "policy_epoch_sof": "0",
+        "priority": "7",
+        "queue_id": "Net.a.tx.queue.7",
+        "queued_ps": "0",
+        "release_ps": "672000",
+        "sof_ps": "0",
+        "status": "serialized",
+        "to_port": "Net.b.rx",
+        "visit_id": "0",
+        "vlan_id": "10",
+        "wire": {
+          "data_hex": "",
+          "dst_mac": "02:00:00:00:00:02",
+          "ether_type": "2048",
+          "fcs_hex": "a9e82eb4",
+          "mac_bytes": "64",
+          "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+          "pad_bytes": "46",
+          "src_mac": "02:00:00:00:00:01",
+          "tag": null
+        }
+      },
+      "reception": {
+        "effect_seq": "15",
+        "egress_transfer_ids": [],
+        "frame_id": "psfp_gate:0",
+        "ingress": "Net.b.rx",
+        "observed_ps": "576000",
+        "planned_ready_ps": null,
+        "policy_epoch_ingress": "0",
+        "priority": "7",
+        "ready_ps": "576000",
+        "reason": "psfp_gate_closed",
+        "status": "filtered",
+        "transfer_id": "psfp_gate:0/v0/c0",
+        "visit_id": "1",
+        "vlan_id": "10"
+      },
+      "policing": {
+        "color": null,
+        "committed_after": null,
+        "committed_before": null,
+        "consumed_bits": "0",
+        "effect_seq": "13",
+        "ingress": "Net.b.rx",
+        "mac_bytes": "64",
+        "peak_after": null,
+        "peak_before": null,
+        "reception_id": "psfp_gate:0/v0/c0@rx",
+        "stream_id": "s0",
+        "verdict": "psfp_gate_closed"
+      },
+      "rewind_equal": true,
+      "desktop": {
+        "width": 1440,
+        "height": 1100
+      },
+      "mobile": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    "zip/gate-76001": {
+      "viewer_html_sha256": "bd7667193c0818665bdfae32a72bf2591cab0f57622e8f2f4f6d4875efc63db7",
+      "results_sha256": "dc43acab14775494ad1a840bda869250bef8de9b7dab22e9ce8acba1b3ce43c9",
+      "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+      "before_time_ps": 575999,
+      "before_card": "s0\n\n未到着 · color 未評価 · consumed 0 bit\n\n最後のmeter評価 0 ps · committed 512000000000000 · peak 1024000000000000\n\n潜在refill（未消費） committed 512000000000000 · peak 1024000000000000",
+      "time_ps": 576000,
+      "card": "s0\n\npass · color green · consumed 1024 bit\n\n最後のmeter評価 576000 ps · committed 0 · peak 512000000000000\n\n潜在refill（未消費） committed 0 · peak 512000000000000",
+      "counts": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "transfer": {
+        "arrival_ps": "576000",
+        "copy_id": "psfp_gate:0/v0/c0",
+        "drop_reason": null,
+        "effect_seq": "16",
+        "eof_ps": "576000",
+        "frame_id": "psfp_gate:0",
+        "from_port": "Net.a.tx",
+        "parent_transfer_id": null,
+        "planned_arrival_ps": "576000",
+        "planned_eof_ps": "576000",
+        "planned_release_ps": "672000",
+        "policy_epoch_offer": "0",
+        "policy_epoch_sof": "0",
+        "priority": "7",
+        "queue_id": "Net.a.tx.queue.7",
+        "queued_ps": "0",
+        "release_ps": "672000",
+        "sof_ps": "0",
+        "status": "serialized",
+        "to_port": "Net.b.rx",
+        "visit_id": "0",
+        "vlan_id": "10",
+        "wire": {
+          "data_hex": "",
+          "dst_mac": "02:00:00:00:00:02",
+          "ether_type": "2048",
+          "fcs_hex": "a9e82eb4",
+          "mac_bytes": "64",
+          "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+          "pad_bytes": "46",
+          "src_mac": "02:00:00:00:00:01",
+          "tag": null
+        }
+      },
+      "reception": {
+        "effect_seq": "15",
+        "egress_transfer_ids": [],
+        "frame_id": "psfp_gate:0",
+        "ingress": "Net.b.rx",
+        "observed_ps": "576000",
+        "planned_ready_ps": "576000",
+        "policy_epoch_ingress": "0",
+        "priority": "7",
+        "ready_ps": "576000",
+        "reason": null,
+        "status": "received",
+        "transfer_id": "psfp_gate:0/v0/c0",
+        "visit_id": "1",
+        "vlan_id": "10"
+      },
+      "policing": {
+        "color": "green",
+        "committed_after": "0",
+        "committed_before": "512000000000000",
+        "consumed_bits": "1024",
+        "effect_seq": "13",
+        "ingress": "Net.b.rx",
+        "mac_bytes": "64",
+        "peak_after": "512000000000000",
+        "peak_before": "1024000000000000",
+        "reception_id": "psfp_gate:0/v0/c0@rx",
+        "stream_id": "s0",
+        "verdict": "pass"
+      },
+      "rewind_equal": true,
+      "desktop": {
+        "width": 1440,
+        "height": 1100
+      },
+      "mobile": {
+        "width": 390,
+        "height": 844
+      }
+    }
+  },
+  "screenshots": [
+    {
+      "file": "repository-gate-76000-575999ps.png",
+      "sha256": "a594e8f42ee263b0dc87cf47481a06e84f4feec9b8039d8c2e4aa96273d4a0ef",
+      "source": "repository/gate-76000"
+    },
+    {
+      "file": "repository-gate-76000-576000ps-desktop.png",
+      "sha256": "539091c3338be6cfd7acf822b103e2127266ceda4ee88d27d7e88400171b0259",
+      "source": "repository/gate-76000",
+      "article_asset": "guide-psfp-gate-76000-576000ps-desktop.png"
+    },
+    {
+      "file": "repository-gate-76000-576000ps-mobile.png",
+      "sha256": "c844e3ff4832c064063a25811de43931f525793f69d5c2693b3ac7e04200dbcb",
+      "source": "repository/gate-76000",
+      "article_asset": "guide-psfp-gate-76000-576000ps-mobile.png"
+    },
+    {
+      "file": "repository-gate-76001-575999ps.png",
+      "sha256": "a594e8f42ee263b0dc87cf47481a06e84f4feec9b8039d8c2e4aa96273d4a0ef",
+      "source": "repository/gate-76001"
+    },
+    {
+      "file": "repository-gate-76001-576000ps-desktop.png",
+      "sha256": "40e442305c3daceaf2aafbab905a34948aac5a09cf5f4a6d56b65fe406f0eb9d",
+      "source": "repository/gate-76001",
+      "article_asset": "guide-psfp-gate-76001-576000ps-desktop.png"
+    },
+    {
+      "file": "repository-gate-76001-576000ps-mobile.png",
+      "sha256": "1ba1083259f7e7bb8bec920baa0eb0d75a346e02415a8f05e8a86bfbcdf8d799",
+      "source": "repository/gate-76001",
+      "article_asset": "guide-psfp-gate-76001-576000ps-mobile.png"
+    },
+    {
+      "file": "zip-gate-76000-575999ps.png",
+      "sha256": "a594e8f42ee263b0dc87cf47481a06e84f4feec9b8039d8c2e4aa96273d4a0ef",
+      "source": "zip/gate-76000"
+    },
+    {
+      "file": "zip-gate-76000-576000ps-desktop.png",
+      "sha256": "ce36ae37787e0682d70faa2b3306b95b25d321d14acd9d316aaf58e7a8c05af7",
+      "source": "zip/gate-76000"
+    },
+    {
+      "file": "zip-gate-76000-576000ps-mobile.png",
+      "sha256": "c844e3ff4832c064063a25811de43931f525793f69d5c2693b3ac7e04200dbcb",
+      "source": "zip/gate-76000"
+    },
+    {
+      "file": "zip-gate-76001-575999ps.png",
+      "sha256": "a594e8f42ee263b0dc87cf47481a06e84f4feec9b8039d8c2e4aa96273d4a0ef",
+      "source": "zip/gate-76001"
+    },
+    {
+      "file": "zip-gate-76001-576000ps-desktop.png",
+      "sha256": "8e9501948fdffd3756c61becfb52bb1f35e7ec32a490c2844ec47f090d3f9802",
+      "source": "zip/gate-76001"
+    },
+    {
+      "file": "zip-gate-76001-576000ps-mobile.png",
+      "sha256": "1ba1083259f7e7bb8bec920baa0eb0d75a346e02415a8f05e8a86bfbcdf8d799",
+      "source": "zip/gate-76001"
+    }
+  ],
+  "errors": {
+    "page": [],
+    "console": [],
+    "request_failed": [],
+    "external_requests": []
+  },
+  "browser": "156.0.8078.4",
+  "status": "passed"
+}

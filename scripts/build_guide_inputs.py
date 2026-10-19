@@ -56,6 +56,10 @@ def main():
     build(ROOT / 'examples/guide/ethernet-source-filter', OUTPUT.with_name('ethernet-source-filter-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-vid-registration', OUTPUT.with_name('ethernet-vid-registration-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-stp-cost', OUTPUT.with_name('ethernet-stp-cost-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-preemption-fragments', OUTPUT.with_name('ethernet-preemption-fragments-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-redundancy-history', OUTPUT.with_name('ethernet-redundancy-history-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-psfp-gate', OUTPUT.with_name('ethernet-psfp-gate-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/metric-windows', OUTPUT.with_name('metric-windows-inputs.zip'), args.check)
 
 
 if __name__ == '__main__':

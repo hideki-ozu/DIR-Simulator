@@ -1,0 +1,32 @@
+// Compact locator captures from unchanged formal Viewer HTML; no page content/style changes.
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const {pathToFileURL}=require('node:url'),{chromium}=require(process.env.GUIDE_PLAYWRIGHT||'playwright');
+const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const targets=[{capacity:1,time:'4535000',kind:'branches',width:1440,height:1000},{capacity:1,time:'7440000',kind:'recovery',width:1440,height:1000},{capacity:4,time:'7440000',kind:'recovery',width:1440,height:1000},{capacity:4,time:'7440000',kind:'recovery',width:390,height:844}];
+(async()=>{
+ const root=path.resolve(process.argv[2]||'.'),evidence=path.resolve(process.argv[3]||''),output=path.resolve(process.argv[4]||'');assert(process.argv[3]&&process.argv[4],'Usage: node scripts/verify_redundancy_history_focused_viewer.cjs <repository-root> <formal-redundancy-evidence> <new-capture-directory>');fs.mkdirSync(output);
+ const measurements=JSON.parse(fs.readFileSync(path.join(root,'docs/verification/results/redundancy-history/measurements.json'),'utf8'));assert.equal(measurements.status,'passed');assert.equal(measurements.source_commit,'397900451015c9bca6a33d24feac0a88b9b7b8fe');
+ const report={generated_by:'scripts/verify_redundancy_history_focused_viewer.cjs',command:['node',...process.argv.slice(1)],source_tag:measurements.source_tag,source_commit:measurements.source_commit,binary_sha256:measurements.binary_sha256,measurements_sha256:sha(fs.readFileSync(path.join(root,'docs/verification/results/redundancy-history/measurements.json'))),captures:[],errors:{page:[],console:[],external_requests:[],failed_requests:[]}};
+ const browser=await chromium.launch({headless:true,executablePath:process.env.GUIDE_CHROMIUM||undefined});report.browser=browser.version();
+ try{
+  for(const target of targets){
+   const condition='capacity-'+target.capacity,html=path.join(evidence,condition,'viewer.html'),result=path.join(evidence,condition,'result/results.json'),raw=JSON.parse(fs.readFileSync(result,'utf8'));
+   assert.equal(sha(fs.readFileSync(html)),measurements.conditions[condition].viewer_sha256);assert.equal(raw.metadata.git_commit,measurements.source_commit);assert.equal(raw.metadata.binary_sha256,measurements.binary_sha256);
+   const page=await browser.newPage({viewport:{width:target.width,height:target.height}});page.on('pageerror',error=>report.errors.page.push(error.message));page.on('console',message=>{if(message.type()==='error')report.errors.console.push(message.text());});page.on('request',request=>{if(!request.url().startsWith('file:'))report.errors.external_requests.push(request.url());});page.on('requestfailed',request=>report.errors.failed_requests.push({url:request.url(),error:request.failure()?.errorText}));
+   await page.goto(pathToFileURL(html).href);await page.locator('#controlled-dashboard').waitFor({state:'visible'});assert.equal(await page.locator('#error-banner').isVisible(),false);assert.deepEqual(await page.locator('#embedded-results').evaluate(node=>JSON.parse(node.textContent)),raw);
+   await page.locator('#controlled-dashboard input[type="range"]').fill(String(BigInt(target.time)*10000n/10000000n));const displayed=await page.locator('#controlled-dashboard .transport strong').innerText();assert.equal(displayed,target.time+' ps / 10000000 ps');
+   const branchTable=page.locator('#controlled-dashboard h2').filter({hasText:'冗長配送の枝'}).locator('xpath=following-sibling::*[1]');const branches=await branchTable.locator('tbody tr').evaluateAll(nodes=>nodes.map(node=>[...node.children].map(cell=>cell.innerText)));assert.equal(branches.length,4);
+   let region=branchTable,observed;
+   if(target.kind==='branches'){
+    assert.equal(branches.filter(row=>row[1]==='direct'&&row[3]==='delivered').length,2);assert.equal(branches.filter(row=>row[1]==='alternate'&&row[3]==='in_flight').length,2);assert.equal(branches.find(row=>row[1]==='direct'&&row[2].includes('unicast:1'))[5],'4535000');observed={branches};
+   }else{
+    region=page.locator('#controlled-dashboard details').filter({hasText:'dir.redundancy.recovery'}).filter({hasText:target.time+' ps'}).filter({hasText:'unicast:0'});assert.equal(await region.count(),1);await region.locator('summary').click();const recovery=JSON.parse(await region.locator('pre').innerText());assert.equal(recovery.sequence,'0');assert.equal(recovery.decision,target.capacity===1?'stale':'duplicate');assert.equal(recovery.delivered,false);assert.equal(branches.find(row=>row[1]==='alternate'&&row[2].includes('unicast:0'))[3],recovery.decision);observed={recovery,branches};
+   }
+   const viewport=target.width===390?'mobile':'desktop',name=`guide-redundancy-history-capacity-${target.capacity}-${target.kind}-t${target.time}ps-${viewport}-focused.png`,file=path.join(output,name),png=await region.screenshot({path:file});assert.equal(png.toString('hex',0,8),'89504e470d0a1a0a');const dimensions={width:png.readUInt32BE(16),height:png.readUInt32BE(20)};assert(dimensions.height<1600,'Focused image unexpectedly tall: '+JSON.stringify(dimensions));
+   const asset=path.join(root,'docs/guide/assets',name),assetReused=fs.existsSync(asset);if(assetReused)assert.deepEqual(fs.readFileSync(asset),png,'Existing focused image changed; rebuild and site verification required');else fs.copyFileSync(file,asset,fs.constants.COPYFILE_EXCL);
+   report.captures.push({condition,time_ps:target.time,displayed_time:displayed,viewport:{width:target.width,height:target.height},locator:target.kind==='branches'?'冗長配送の枝: following table-scroll':'dir.redundancy.recovery details: late unicast:0',source_html_sha256:sha(fs.readFileSync(html)),source_results_sha256:sha(fs.readFileSync(result)),asset:path.relative(root,asset),asset_reused:assetReused,sha256:sha(png),bytes:png.length,...dimensions,...observed});await page.close();
+  }
+  for(const errors of Object.values(report.errors))assert.deepEqual(errors,[]);report.status='passed';const text=JSON.stringify(report,null,2)+'\n';fs.writeFileSync(path.join(output,'focused-viewer.json'),text);fs.writeFileSync(path.join(root,'docs/verification/results/redundancy-history/focused-viewer.json'),text);console.log('PASS: four compact real Viewer branch/recovery captures, formal HTML/results provenance, exact times/decisions, zero browser/network errors');
+ }finally{await browser.close();}
+})().catch(error=>{console.error(error);process.exitCode=1;});

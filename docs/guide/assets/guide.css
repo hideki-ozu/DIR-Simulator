@@ -9,6 +9,12 @@ td, th { padding: .65rem !important; vertical-align: top; }
 /* Long setting names and wide reference tables stay inside the article. */
 [role="main"] { min-width: 0; overflow-wrap: anywhere; }
 [role="main"] table { display: block; max-width: 100%; overflow-x: auto; }
+/* Keep comparison columns readable; wide tables scroll inside these articles. */
+[role="main"]:has(#guide-preemption-fragments, #guide-redundancy-history, #guide-psfp-gate-boundary, #guide-metric-windows) table th {
+  min-width: 7rem;
+  overflow-wrap: normal;
+  word-break: normal;
+}
 img { border: 1px solid #d8e5eb; border-radius: 8px; max-width: 100%; height: auto; }
 blockquote { border-left: 4px solid #167b95; padding-left: 1rem; color: #455b68; }
 @media(max-width: 767px) { h1 { font-size: 1.8rem; } table { display:block; overflow-x:auto; } }

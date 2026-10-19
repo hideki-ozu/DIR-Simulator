@@ -1,0 +1,1477 @@
+{
+  "status": "passed",
+  "issue": 110,
+  "source_tag": "v1.1.6",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "source_status": "",
+  "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+  "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+  "input_sha256": {
+    "examples/guide/ethernet-preemption-fragments/fragment-100-model.json": "cbe82a05a5a26e5a12b97efd8cc8d446bd2449174f8386c0a54b5baf8a0194e2",
+    "examples/guide/ethernet-preemption-fragments/fragment-100.ini": "5699cd5b290ff80ba5048733a9bb17fb0fd7e05619f8d3d18c445b6b11f6fd61",
+    "examples/guide/ethernet-preemption-fragments/fragment-20-model.json": "6c36f366019d10bddbb0ec46640ed3eac2bcaf434ed9d44a1514b4fe98688027",
+    "examples/guide/ethernet-preemption-fragments/fragment-20.ini": "9563cf92e2c52e810dbc6ad5c204b14055e703691f24cdbeea5b54ac769a0c68",
+    "examples/guide/ethernet-preemption-fragments/fragment-40-model.json": "a5d5dfb7237323f9112608e32df838aa814e8b20cc1e0a0b760594fb398692b2",
+    "examples/guide/ethernet-preemption-fragments/fragment-40.ini": "2c59f185bc7ab5ac7f38b8cf5fb06ee0b3465e15b49ff53b578b376f4fcee7e6",
+    "examples/guide/ethernet-preemption-fragments/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+    "examples/guide/ethernet-preemption-fragments/preemption-workload.json": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+  },
+  "conditions": {
+    "fragment-20": {
+      "commands": {
+        "validate": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "validate",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-preemption-fragments/fragment-20.ini"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "channel_count": "2",
+            "network": "ethtsn.Net",
+            "node_count": "2",
+            "schema_version": 1,
+            "status": "valid"
+          }
+        },
+        "run": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-preemption-fragments/fragment-20.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-20/result"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "termination": "events_exhausted",
+            "exit_code": 0,
+            "partial": false,
+            "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-20/result",
+            "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-20/result/manifest.json",
+            "primary_diagnostic": null,
+            "committed_events": "23",
+            "finish_ps": "2000000",
+            "last_event_time_ps": "1640000",
+            "event_processing_wall_seconds": 0.0
+          }
+        },
+        "view": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "view",
+            "--input",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-20/result/results.json",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-20/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "status": "complete",
+            "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-20/viewer.html"
+          }
+        }
+      },
+      "input_sha256": {
+        "examples/guide/ethernet-preemption-fragments/fragment-20-model.json": "6c36f366019d10bddbb0ec46640ed3eac2bcaf434ed9d44a1514b4fe98688027",
+        "examples/guide/ethernet-preemption-fragments/fragment-20.ini": "9563cf92e2c52e810dbc6ad5c204b14055e703691f24cdbeea5b54ac769a0c68",
+        "examples/guide/ethernet-preemption-fragments/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+        "examples/guide/ethernet-preemption-fragments/preemption-workload.json": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+      },
+      "provenance": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+      },
+      "source_sha256": {
+        "config": "9563cf92e2c52e810dbc6ad5c204b14055e703691f24cdbeea5b54ac769a0c68",
+        "model-config": "6c36f366019d10bddbb0ec46640ed3eac2bcaf434ed9d44a1514b4fe98688027",
+        "root0/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+        "workload": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+      },
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 28401,
+            "sha256": "773185b47961332256f83f122b5d084867d1934f202a680d58e645429f23c3b6"
+          },
+          "results.json": {
+            "bytes": 333472,
+            "sha256": "6dc16f08fee430c3859f72d306140251fd9e8538f6e0d4a761df698cbc65727c"
+          },
+          "summary.csv": {
+            "bytes": 34477,
+            "sha256": "01a9ff4a9327609a58e28e9a58f374c4110b4b28d620eaa6a01dd1e8ac7b64e4"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "summary": {
+        "express": {
+          "record_id": "express:0/v0/c1",
+          "queued_ps": "100000",
+          "sof_ps": "192000",
+          "wait_ps": 92000,
+          "eof_ps": "768000",
+          "release_ps": "864000",
+          "status": "completed"
+        },
+        "slow": {
+          "record_id": "slow:0/v0/c0",
+          "queued_ps": "0",
+          "sof_ps": "0",
+          "eof_ps": "1640000",
+          "occupied_ps": "960000",
+          "status": "completed",
+          "fragment_count": 5,
+          "fragments": [
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "28",
+                "end_ps": "192000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:0",
+                "frame_id": "slow:0",
+                "offset_bytes": "0",
+                "ordinal": "0",
+                "overhead_bytes": "4",
+                "payload_bytes": "20",
+                "planned_end_ps": "192000",
+                "port": "Net.a.tx",
+                "start_ps": "0",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "1"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:0",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "192000"
+            },
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "60",
+                "end_ps": "1064000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:1",
+                "frame_id": "slow:0",
+                "offset_bytes": "20",
+                "ordinal": "1",
+                "overhead_bytes": "4",
+                "payload_bytes": "20",
+                "planned_end_ps": "1064000",
+                "port": "Net.a.tx",
+                "start_ps": "872000",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "5"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:1",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "1064000"
+            },
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "70",
+                "end_ps": "1256000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:2",
+                "frame_id": "slow:0",
+                "offset_bytes": "40",
+                "ordinal": "2",
+                "overhead_bytes": "4",
+                "payload_bytes": "20",
+                "planned_end_ps": "1256000",
+                "port": "Net.a.tx",
+                "start_ps": "1064000",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "7"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:2",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "1256000"
+            },
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "80",
+                "end_ps": "1448000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:3",
+                "frame_id": "slow:0",
+                "offset_bytes": "60",
+                "ordinal": "3",
+                "overhead_bytes": "4",
+                "payload_bytes": "20",
+                "planned_end_ps": "1448000",
+                "port": "Net.a.tx",
+                "start_ps": "1256000",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "9"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:3",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "1448000"
+            },
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "90",
+                "end_ps": "1640000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:4",
+                "frame_id": "slow:0",
+                "offset_bytes": "80",
+                "ordinal": "4",
+                "overhead_bytes": "4",
+                "payload_bytes": "20",
+                "planned_end_ps": "1640000",
+                "port": "Net.a.tx",
+                "start_ps": "1448000",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "11"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:4",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "1640000"
+            }
+          ],
+          "gap_count": 1,
+          "gaps": [
+            {
+              "data": {
+                "effect_seq": "50",
+                "end_ps": "872000",
+                "gap_epoch": "1",
+                "gap_id": "12:slow:0/v0/c03:gap1:0",
+                "planned_end_ps": "872000",
+                "port": "Net.a.tx",
+                "start_ps": "864000",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c03:gap1:0",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.gap",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "872000"
+            }
+          ]
+        },
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "2000000",
+        "last_event_time_ps": "1640000",
+        "pending_events": "0",
+        "schemas": {
+          "dir.preemption.decision": 18,
+          "dir.preemption.delivery": 2,
+          "dir.preemption.fragment": 5,
+          "dir.preemption.gap": 1,
+          "dir.preemption.transfer": 2
+        }
+      },
+      "viewer_sha256": "09e6afdc7b303d62de8533e3088cbc8bd399c923f5a4afbe07b10da3842c3c82"
+    },
+    "fragment-40": {
+      "commands": {
+        "validate": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "validate",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-preemption-fragments/fragment-40.ini"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "channel_count": "2",
+            "network": "ethtsn.Net",
+            "node_count": "2",
+            "schema_version": 1,
+            "status": "valid"
+          }
+        },
+        "run": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-preemption-fragments/fragment-40.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-40/result"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "termination": "events_exhausted",
+            "exit_code": 0,
+            "partial": false,
+            "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-40/result",
+            "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-40/result/manifest.json",
+            "primary_diagnostic": null,
+            "committed_events": "19",
+            "finish_ps": "2000000",
+            "last_event_time_ps": "1576000",
+            "event_processing_wall_seconds": 0.0
+          }
+        },
+        "view": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "view",
+            "--input",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-40/result/results.json",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-40/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "status": "complete",
+            "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-40/viewer.html"
+          }
+        }
+      },
+      "input_sha256": {
+        "examples/guide/ethernet-preemption-fragments/fragment-40-model.json": "a5d5dfb7237323f9112608e32df838aa814e8b20cc1e0a0b760594fb398692b2",
+        "examples/guide/ethernet-preemption-fragments/fragment-40.ini": "2c59f185bc7ab5ac7f38b8cf5fb06ee0b3465e15b49ff53b578b376f4fcee7e6",
+        "examples/guide/ethernet-preemption-fragments/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+        "examples/guide/ethernet-preemption-fragments/preemption-workload.json": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+      },
+      "provenance": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+      },
+      "source_sha256": {
+        "config": "2c59f185bc7ab5ac7f38b8cf5fb06ee0b3465e15b49ff53b578b376f4fcee7e6",
+        "model-config": "a5d5dfb7237323f9112608e32df838aa814e8b20cc1e0a0b760594fb398692b2",
+        "root0/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+        "workload": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+      },
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 21231,
+            "sha256": "6159a1a9b97c22e702fbf490cf953b5ea91ef1d1e001077a0a986034342b5c57"
+          },
+          "results.json": {
+            "bytes": 309516,
+            "sha256": "e42b8fe6425885a54fa95c349376d5dc59d569c45b371df021309f365eacb890"
+          },
+          "summary.csv": {
+            "bytes": 34477,
+            "sha256": "0ca1c9076569ab7f7b84fe8270f7ed374eca2c194af097befe1ae67e0c5b2b1c"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "summary": {
+        "express": {
+          "record_id": "express:0/v0/c1",
+          "queued_ps": "100000",
+          "sof_ps": "352000",
+          "wait_ps": 252000,
+          "eof_ps": "928000",
+          "release_ps": "1024000",
+          "status": "completed"
+        },
+        "slow": {
+          "record_id": "slow:0/v0/c0",
+          "queued_ps": "0",
+          "sof_ps": "0",
+          "eof_ps": "1576000",
+          "occupied_ps": "896000",
+          "status": "completed",
+          "fragment_count": 3,
+          "fragments": [
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "28",
+                "end_ps": "352000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:0",
+                "frame_id": "slow:0",
+                "offset_bytes": "0",
+                "ordinal": "0",
+                "overhead_bytes": "4",
+                "payload_bytes": "40",
+                "planned_end_ps": "352000",
+                "port": "Net.a.tx",
+                "start_ps": "0",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "1"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:0",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "352000"
+            },
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "60",
+                "end_ps": "1384000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:1",
+                "frame_id": "slow:0",
+                "offset_bytes": "40",
+                "ordinal": "1",
+                "overhead_bytes": "4",
+                "payload_bytes": "40",
+                "planned_end_ps": "1384000",
+                "port": "Net.a.tx",
+                "start_ps": "1032000",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "5"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:1",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "1384000"
+            },
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "70",
+                "end_ps": "1576000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:2",
+                "frame_id": "slow:0",
+                "offset_bytes": "80",
+                "ordinal": "2",
+                "overhead_bytes": "4",
+                "payload_bytes": "20",
+                "planned_end_ps": "1576000",
+                "port": "Net.a.tx",
+                "start_ps": "1384000",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "7"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:2",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "1576000"
+            }
+          ],
+          "gap_count": 1,
+          "gaps": [
+            {
+              "data": {
+                "effect_seq": "50",
+                "end_ps": "1032000",
+                "gap_epoch": "1",
+                "gap_id": "12:slow:0/v0/c03:gap1:0",
+                "planned_end_ps": "1032000",
+                "port": "Net.a.tx",
+                "start_ps": "1024000",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c03:gap1:0",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.gap",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "1032000"
+            }
+          ]
+        },
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "2000000",
+        "last_event_time_ps": "1576000",
+        "pending_events": "0",
+        "schemas": {
+          "dir.preemption.decision": 14,
+          "dir.preemption.delivery": 2,
+          "dir.preemption.fragment": 3,
+          "dir.preemption.gap": 1,
+          "dir.preemption.transfer": 2
+        }
+      },
+      "viewer_sha256": "a42fba07c75e5c662b4812228e557f86921e8f8333b8b962c375c3b03e68e454"
+    },
+    "fragment-100": {
+      "commands": {
+        "validate": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "validate",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-preemption-fragments/fragment-100.ini"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "channel_count": "2",
+            "network": "ethtsn.Net",
+            "node_count": "2",
+            "schema_version": 1,
+            "status": "valid"
+          }
+        },
+        "run": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "run",
+            "--config",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/source/examples/guide/ethernet-preemption-fragments/fragment-100.ini",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-100/result"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "termination": "events_exhausted",
+            "exit_code": 0,
+            "partial": false,
+            "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-100/result",
+            "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-100/result/manifest.json",
+            "primary_diagnostic": null,
+            "committed_events": "13",
+            "finish_ps": "2000000",
+            "last_event_time_ps": "1504000",
+            "event_processing_wall_seconds": 0.0
+          }
+        },
+        "view": {
+          "command": [
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+            "view",
+            "--input",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-100/result/results.json",
+            "--output",
+            "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-100/viewer.html"
+          ],
+          "exit_code": 0,
+          "stdout": {
+            "schema_version": 1,
+            "status": "complete",
+            "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6/fragment-100/viewer.html"
+          }
+        }
+      },
+      "input_sha256": {
+        "examples/guide/ethernet-preemption-fragments/fragment-100-model.json": "cbe82a05a5a26e5a12b97efd8cc8d446bd2449174f8386c0a54b5baf8a0194e2",
+        "examples/guide/ethernet-preemption-fragments/fragment-100.ini": "5699cd5b290ff80ba5048733a9bb17fb0fd7e05619f8d3d18c445b6b11f6fd61",
+        "examples/guide/ethernet-preemption-fragments/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+        "examples/guide/ethernet-preemption-fragments/preemption-workload.json": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+      },
+      "provenance": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+      },
+      "source_sha256": {
+        "config": "5699cd5b290ff80ba5048733a9bb17fb0fd7e05619f8d3d18c445b6b11f6fd61",
+        "model-config": "cbe82a05a5a26e5a12b97efd8cc8d446bd2449174f8386c0a54b5baf8a0194e2",
+        "root0/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+        "workload": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+      },
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 14027,
+            "sha256": "7e6062f5d190ed225616abb9f3cbf883f1836b773151cc020ecb43ae98485c79"
+          },
+          "results.json": {
+            "bytes": 282696,
+            "sha256": "2cf3fb94ec0b394cadce1d3f5b03a39a9244531302e6e9bec37b94fe5ee499c3"
+          },
+          "summary.csv": {
+            "bytes": 34473,
+            "sha256": "b05bbb0e046042cea2602ccf3fbeef8e1382e0addf14e9d87559fe05b70cdb03"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "summary": {
+        "express": {
+          "record_id": "express:0/v0/c1",
+          "queued_ps": "100000",
+          "sof_ps": "832000",
+          "wait_ps": 732000,
+          "eof_ps": "1408000",
+          "release_ps": "1504000",
+          "status": "completed"
+        },
+        "slow": {
+          "record_id": "slow:0/v0/c0",
+          "queued_ps": "0",
+          "sof_ps": "0",
+          "eof_ps": "832000",
+          "occupied_ps": "832000",
+          "status": "completed",
+          "fragment_count": 1,
+          "fragments": [
+            {
+              "data": {
+                "bitrate_bps": "1000000000",
+                "effect_seq": "27",
+                "end_ps": "832000",
+                "fragment_id": "12:slow:0/v0/c08:fragment1:0",
+                "frame_id": "slow:0",
+                "offset_bytes": "0",
+                "ordinal": "0",
+                "overhead_bytes": "4",
+                "payload_bytes": "100",
+                "planned_end_ps": "832000",
+                "port": "Net.a.tx",
+                "start_ps": "0",
+                "status": "completed",
+                "transfer_id": "slow:0/v0/c0",
+                "tx_epoch": "1"
+              },
+              "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+              "record_id": "12:slow:0/v0/c08:fragment1:0",
+              "request_id": "slow:0",
+              "schema_name": "dir.preemption.fragment",
+              "schema_version": 1,
+              "subject": "Net.a.tx",
+              "time_ps": "832000"
+            }
+          ],
+          "gap_count": 0,
+          "gaps": []
+        },
+        "termination": "events_exhausted",
+        "partial": false,
+        "end_ps": "2000000",
+        "last_event_time_ps": "1504000",
+        "pending_events": "0",
+        "schemas": {
+          "dir.preemption.decision": 8,
+          "dir.preemption.delivery": 2,
+          "dir.preemption.fragment": 1,
+          "dir.preemption.transfer": 2
+        }
+      },
+      "viewer_sha256": "0f6be9361b50905742dc2b9f60c4c04e8fa61449aacbc3c96519743f7d832776"
+    }
+  },
+  "zip_reproduction": {
+    "archive": "docs/guide/downloads/ethernet-preemption-fragments-inputs.zip",
+    "archive_bytes": 5045,
+    "archive_sha256": "70576e49f07a163da6d550ce3cca4d24aa27e1feba843db5490b8edd8abeefc7",
+    "member_count": 8,
+    "members": {
+      "examples/guide/ethernet-preemption-fragments/fragment-100-model.json": {
+        "bytes": 5938,
+        "sha256": "cbe82a05a5a26e5a12b97efd8cc8d446bd2449174f8386c0a54b5baf8a0194e2"
+      },
+      "examples/guide/ethernet-preemption-fragments/fragment-100.ini": {
+        "bytes": 207,
+        "sha256": "5699cd5b290ff80ba5048733a9bb17fb0fd7e05619f8d3d18c445b6b11f6fd61"
+      },
+      "examples/guide/ethernet-preemption-fragments/fragment-20-model.json": {
+        "bytes": 5937,
+        "sha256": "6c36f366019d10bddbb0ec46640ed3eac2bcaf434ed9d44a1514b4fe98688027"
+      },
+      "examples/guide/ethernet-preemption-fragments/fragment-20.ini": {
+        "bytes": 206,
+        "sha256": "9563cf92e2c52e810dbc6ad5c204b14055e703691f24cdbeea5b54ac769a0c68"
+      },
+      "examples/guide/ethernet-preemption-fragments/fragment-40-model.json": {
+        "bytes": 5937,
+        "sha256": "a5d5dfb7237323f9112608e32df838aa814e8b20cc1e0a0b760594fb398692b2"
+      },
+      "examples/guide/ethernet-preemption-fragments/fragment-40.ini": {
+        "bytes": 206,
+        "sha256": "2c59f185bc7ab5ac7f38b8cf5fb06ee0b3465e15b49ff53b578b376f4fcee7e6"
+      },
+      "examples/guide/ethernet-preemption-fragments/models/ethtsn/Main.ned": {
+        "bytes": 548,
+        "sha256": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+      },
+      "examples/guide/ethernet-preemption-fragments/preemption-workload.json": {
+        "bytes": 983,
+        "sha256": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+      }
+    },
+    "member_bytes_equal_source_tree": true,
+    "extraction_root": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/preemption-fragments",
+    "input_root": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/preemption-fragments/examples/guide/ethernet-preemption-fragments",
+    "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+    "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+    "source_status": "",
+    "rustc": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+    "cli_operations": 9,
+    "conditions": {
+      "fragment-20": {
+        "commands": {
+          "validate": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/preemption-fragments/examples/guide/ethernet-preemption-fragments/fragment-20.ini"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "channel_count": "2",
+              "network": "ethtsn.Net",
+              "node_count": "2",
+              "schema_version": 1,
+              "status": "valid"
+            }
+          },
+          "run": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/preemption-fragments/examples/guide/ethernet-preemption-fragments/fragment-20.ini",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-20/result"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "termination": "events_exhausted",
+              "exit_code": 0,
+              "partial": false,
+              "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-20/result",
+              "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-20/result/manifest.json",
+              "primary_diagnostic": null,
+              "committed_events": "23",
+              "finish_ps": "2000000",
+              "last_event_time_ps": "1640000",
+              "event_processing_wall_seconds": 0.0
+            }
+          },
+          "view": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "view",
+              "--input",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-20/result/results.json",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-20/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "status": "complete",
+              "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-20/viewer.html"
+            }
+          }
+        },
+        "input_sha256": {
+          "examples/guide/ethernet-preemption-fragments/fragment-20-model.json": "6c36f366019d10bddbb0ec46640ed3eac2bcaf434ed9d44a1514b4fe98688027",
+          "examples/guide/ethernet-preemption-fragments/fragment-20.ini": "9563cf92e2c52e810dbc6ad5c204b14055e703691f24cdbeea5b54ac769a0c68",
+          "examples/guide/ethernet-preemption-fragments/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+          "examples/guide/ethernet-preemption-fragments/preemption-workload.json": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+        },
+        "provenance": {
+          "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+          "git_dirty": "false",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+          "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+        },
+        "source_sha256": {
+          "config": "9563cf92e2c52e810dbc6ad5c204b14055e703691f24cdbeea5b54ac769a0c68",
+          "model-config": "6c36f366019d10bddbb0ec46640ed3eac2bcaf434ed9d44a1514b4fe98688027",
+          "root0/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+          "workload": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+        },
+        "manifest": {
+          "status": "complete",
+          "partial": false,
+          "files": {
+            "diagnostics.jsonl": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "events.csv": {
+              "bytes": 28401,
+              "sha256": "5066a9637038937f2b55fc50cc6c44cf5f6d00c5e979db83231bb00aa07d97e1"
+            },
+            "results.json": {
+              "bytes": 333787,
+              "sha256": "d4c586313fa46297ddba7de7c5d52fae0cb25abba66249017a28625707d84fc7"
+            },
+            "summary.csv": {
+              "bytes": 34477,
+              "sha256": "b1fe8a65658b4c5f016123daba520e6ec03b3f75775fb3d11eb4237285932886"
+            }
+          },
+          "diagnostic_lines": []
+        },
+        "summary": {
+          "express": {
+            "record_id": "express:0/v0/c1",
+            "queued_ps": "100000",
+            "sof_ps": "192000",
+            "wait_ps": 92000,
+            "eof_ps": "768000",
+            "release_ps": "864000",
+            "status": "completed"
+          },
+          "slow": {
+            "record_id": "slow:0/v0/c0",
+            "queued_ps": "0",
+            "sof_ps": "0",
+            "eof_ps": "1640000",
+            "occupied_ps": "960000",
+            "status": "completed",
+            "fragment_count": 5,
+            "fragments": [
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "28",
+                  "end_ps": "192000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:0",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "0",
+                  "ordinal": "0",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "20",
+                  "planned_end_ps": "192000",
+                  "port": "Net.a.tx",
+                  "start_ps": "0",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "1"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:0",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "192000"
+              },
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "60",
+                  "end_ps": "1064000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:1",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "20",
+                  "ordinal": "1",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "20",
+                  "planned_end_ps": "1064000",
+                  "port": "Net.a.tx",
+                  "start_ps": "872000",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "5"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:1",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "1064000"
+              },
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "70",
+                  "end_ps": "1256000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:2",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "40",
+                  "ordinal": "2",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "20",
+                  "planned_end_ps": "1256000",
+                  "port": "Net.a.tx",
+                  "start_ps": "1064000",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "7"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:2",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "1256000"
+              },
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "80",
+                  "end_ps": "1448000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:3",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "60",
+                  "ordinal": "3",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "20",
+                  "planned_end_ps": "1448000",
+                  "port": "Net.a.tx",
+                  "start_ps": "1256000",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "9"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:3",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "1448000"
+              },
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "90",
+                  "end_ps": "1640000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:4",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "80",
+                  "ordinal": "4",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "20",
+                  "planned_end_ps": "1640000",
+                  "port": "Net.a.tx",
+                  "start_ps": "1448000",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "11"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:4",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "1640000"
+              }
+            ],
+            "gap_count": 1,
+            "gaps": [
+              {
+                "data": {
+                  "effect_seq": "50",
+                  "end_ps": "872000",
+                  "gap_epoch": "1",
+                  "gap_id": "12:slow:0/v0/c03:gap1:0",
+                  "planned_end_ps": "872000",
+                  "port": "Net.a.tx",
+                  "start_ps": "864000",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c03:gap1:0",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.gap",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "872000"
+              }
+            ]
+          },
+          "termination": "events_exhausted",
+          "partial": false,
+          "end_ps": "2000000",
+          "last_event_time_ps": "1640000",
+          "pending_events": "0",
+          "schemas": {
+            "dir.preemption.decision": 18,
+            "dir.preemption.delivery": 2,
+            "dir.preemption.fragment": 5,
+            "dir.preemption.gap": 1,
+            "dir.preemption.transfer": 2
+          }
+        },
+        "viewer_sha256": "c6b21c85008c86eff94b4cc68ed4d456a7893874812d7413115d688663f00ff0",
+        "repository_baseline": {
+          "results_sha256": "6dc16f08fee430c3859f72d306140251fd9e8538f6e0d4a761df698cbc65727c",
+          "simulation_equal": true,
+          "simulation_sha256": "ec95e83a7cecaeb00a8bc5620a94fb3d9f0a5bb5ae083899298823c65d2776c3"
+        }
+      },
+      "fragment-40": {
+        "commands": {
+          "validate": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/preemption-fragments/examples/guide/ethernet-preemption-fragments/fragment-40.ini"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "channel_count": "2",
+              "network": "ethtsn.Net",
+              "node_count": "2",
+              "schema_version": 1,
+              "status": "valid"
+            }
+          },
+          "run": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/preemption-fragments/examples/guide/ethernet-preemption-fragments/fragment-40.ini",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-40/result"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "termination": "events_exhausted",
+              "exit_code": 0,
+              "partial": false,
+              "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-40/result",
+              "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-40/result/manifest.json",
+              "primary_diagnostic": null,
+              "committed_events": "19",
+              "finish_ps": "2000000",
+              "last_event_time_ps": "1576000",
+              "event_processing_wall_seconds": 0.0
+            }
+          },
+          "view": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "view",
+              "--input",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-40/result/results.json",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-40/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "status": "complete",
+              "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-40/viewer.html"
+            }
+          }
+        },
+        "input_sha256": {
+          "examples/guide/ethernet-preemption-fragments/fragment-40-model.json": "a5d5dfb7237323f9112608e32df838aa814e8b20cc1e0a0b760594fb398692b2",
+          "examples/guide/ethernet-preemption-fragments/fragment-40.ini": "2c59f185bc7ab5ac7f38b8cf5fb06ee0b3465e15b49ff53b578b376f4fcee7e6",
+          "examples/guide/ethernet-preemption-fragments/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+          "examples/guide/ethernet-preemption-fragments/preemption-workload.json": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+        },
+        "provenance": {
+          "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+          "git_dirty": "false",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+          "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+        },
+        "source_sha256": {
+          "config": "2c59f185bc7ab5ac7f38b8cf5fb06ee0b3465e15b49ff53b578b376f4fcee7e6",
+          "model-config": "a5d5dfb7237323f9112608e32df838aa814e8b20cc1e0a0b760594fb398692b2",
+          "root0/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+          "workload": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+        },
+        "manifest": {
+          "status": "complete",
+          "partial": false,
+          "files": {
+            "diagnostics.jsonl": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "events.csv": {
+              "bytes": 21231,
+              "sha256": "610b339184fb1324c43955516c10462ecd433ef3bb605b163c7e5c8b7f20bd6e"
+            },
+            "results.json": {
+              "bytes": 309831,
+              "sha256": "d80bc98c9434e42215aacdd718a4be7ddc2acedcd4ff3dba942d0971b44f97de"
+            },
+            "summary.csv": {
+              "bytes": 34477,
+              "sha256": "95a1cf07d432d8fcb98795548155c2acdf3fc3e4e14e0dccb26fcce43a6960d3"
+            }
+          },
+          "diagnostic_lines": []
+        },
+        "summary": {
+          "express": {
+            "record_id": "express:0/v0/c1",
+            "queued_ps": "100000",
+            "sof_ps": "352000",
+            "wait_ps": 252000,
+            "eof_ps": "928000",
+            "release_ps": "1024000",
+            "status": "completed"
+          },
+          "slow": {
+            "record_id": "slow:0/v0/c0",
+            "queued_ps": "0",
+            "sof_ps": "0",
+            "eof_ps": "1576000",
+            "occupied_ps": "896000",
+            "status": "completed",
+            "fragment_count": 3,
+            "fragments": [
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "28",
+                  "end_ps": "352000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:0",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "0",
+                  "ordinal": "0",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "40",
+                  "planned_end_ps": "352000",
+                  "port": "Net.a.tx",
+                  "start_ps": "0",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "1"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:0",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "352000"
+              },
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "60",
+                  "end_ps": "1384000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:1",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "40",
+                  "ordinal": "1",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "40",
+                  "planned_end_ps": "1384000",
+                  "port": "Net.a.tx",
+                  "start_ps": "1032000",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "5"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:1",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "1384000"
+              },
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "70",
+                  "end_ps": "1576000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:2",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "80",
+                  "ordinal": "2",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "20",
+                  "planned_end_ps": "1576000",
+                  "port": "Net.a.tx",
+                  "start_ps": "1384000",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "7"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:2",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "1576000"
+              }
+            ],
+            "gap_count": 1,
+            "gaps": [
+              {
+                "data": {
+                  "effect_seq": "50",
+                  "end_ps": "1032000",
+                  "gap_epoch": "1",
+                  "gap_id": "12:slow:0/v0/c03:gap1:0",
+                  "planned_end_ps": "1032000",
+                  "port": "Net.a.tx",
+                  "start_ps": "1024000",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c03:gap1:0",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.gap",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "1032000"
+              }
+            ]
+          },
+          "termination": "events_exhausted",
+          "partial": false,
+          "end_ps": "2000000",
+          "last_event_time_ps": "1576000",
+          "pending_events": "0",
+          "schemas": {
+            "dir.preemption.decision": 14,
+            "dir.preemption.delivery": 2,
+            "dir.preemption.fragment": 3,
+            "dir.preemption.gap": 1,
+            "dir.preemption.transfer": 2
+          }
+        },
+        "viewer_sha256": "9869b895e84dff633a3a671638da2e31768cd20f74fce764fc0546e1dce2d9b5",
+        "repository_baseline": {
+          "results_sha256": "e42b8fe6425885a54fa95c349376d5dc59d569c45b371df021309f365eacb890",
+          "simulation_equal": true,
+          "simulation_sha256": "24ce1e282630b008d3c8d55521b8e95ab3878d4a47fef8d3afbc70d408c29934"
+        }
+      },
+      "fragment-100": {
+        "commands": {
+          "validate": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "validate",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/preemption-fragments/examples/guide/ethernet-preemption-fragments/fragment-100.ini"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "channel_count": "2",
+              "network": "ethtsn.Net",
+              "node_count": "2",
+              "schema_version": 1,
+              "status": "valid"
+            }
+          },
+          "run": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "run",
+              "--config",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/inputs/preemption-fragments/examples/guide/ethernet-preemption-fragments/fragment-100.ini",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-100/result"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "termination": "events_exhausted",
+              "exit_code": 0,
+              "partial": false,
+              "output_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-100/result",
+              "manifest_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-100/result/manifest.json",
+              "primary_diagnostic": null,
+              "committed_events": "13",
+              "finish_ps": "2000000",
+              "last_event_time_ps": "1504000",
+              "event_processing_wall_seconds": 0.0
+            }
+          },
+          "view": {
+            "command": [
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/formal-bin/dir-simulator",
+              "view",
+              "--input",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-100/result/results.json",
+              "--output",
+              "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-100/viewer.html"
+            ],
+            "exit_code": 0,
+            "stdout": {
+              "schema_version": 1,
+              "status": "complete",
+              "viewer_path": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/zip-reproduction/preemption/fragment-100/viewer.html"
+            }
+          }
+        },
+        "input_sha256": {
+          "examples/guide/ethernet-preemption-fragments/fragment-100-model.json": "cbe82a05a5a26e5a12b97efd8cc8d446bd2449174f8386c0a54b5baf8a0194e2",
+          "examples/guide/ethernet-preemption-fragments/fragment-100.ini": "5699cd5b290ff80ba5048733a9bb17fb0fd7e05619f8d3d18c445b6b11f6fd61",
+          "examples/guide/ethernet-preemption-fragments/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+          "examples/guide/ethernet-preemption-fragments/preemption-workload.json": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+        },
+        "provenance": {
+          "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+          "git_dirty": "false",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "binary_sha256": "f172101c3d3b44fda7132d051dacb8aa1c0901eef21a456f18f5e8f802880ad7",
+          "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80"
+        },
+        "source_sha256": {
+          "config": "5699cd5b290ff80ba5048733a9bb17fb0fd7e05619f8d3d18c445b6b11f6fd61",
+          "model-config": "cbe82a05a5a26e5a12b97efd8cc8d446bd2449174f8386c0a54b5baf8a0194e2",
+          "root0/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+          "workload": "a6fc3d138eefe515cca9817efff732fcc9f308dd8575deb604d03c7c864e7562"
+        },
+        "manifest": {
+          "status": "complete",
+          "partial": false,
+          "files": {
+            "diagnostics.jsonl": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "events.csv": {
+              "bytes": 14027,
+              "sha256": "628c3d1cfaf68a64f44ad0ccb9863f8a226052540976a682f6bf51ed390157ec"
+            },
+            "results.json": {
+              "bytes": 283011,
+              "sha256": "fcd9108bd84f6cfdb9826b34abf8509a54f87de65b987a6db66b712fea0c1835"
+            },
+            "summary.csv": {
+              "bytes": 34473,
+              "sha256": "8e2eacab3ccfb4871b79bc2a267c2eb2679c992fbba8ec7dbc0c74f5b778f9d0"
+            }
+          },
+          "diagnostic_lines": []
+        },
+        "summary": {
+          "express": {
+            "record_id": "express:0/v0/c1",
+            "queued_ps": "100000",
+            "sof_ps": "832000",
+            "wait_ps": 732000,
+            "eof_ps": "1408000",
+            "release_ps": "1504000",
+            "status": "completed"
+          },
+          "slow": {
+            "record_id": "slow:0/v0/c0",
+            "queued_ps": "0",
+            "sof_ps": "0",
+            "eof_ps": "832000",
+            "occupied_ps": "832000",
+            "status": "completed",
+            "fragment_count": 1,
+            "fragments": [
+              {
+                "data": {
+                  "bitrate_bps": "1000000000",
+                  "effect_seq": "27",
+                  "end_ps": "832000",
+                  "fragment_id": "12:slow:0/v0/c08:fragment1:0",
+                  "frame_id": "slow:0",
+                  "offset_bytes": "0",
+                  "ordinal": "0",
+                  "overhead_bytes": "4",
+                  "payload_bytes": "100",
+                  "planned_end_ps": "832000",
+                  "port": "Net.a.tx",
+                  "start_ps": "0",
+                  "status": "completed",
+                  "transfer_id": "slow:0/v0/c0",
+                  "tx_epoch": "1"
+                },
+                "origin_request_id": "22:ethernet.dynamic.frame6:slow:0",
+                "record_id": "12:slow:0/v0/c08:fragment1:0",
+                "request_id": "slow:0",
+                "schema_name": "dir.preemption.fragment",
+                "schema_version": 1,
+                "subject": "Net.a.tx",
+                "time_ps": "832000"
+              }
+            ],
+            "gap_count": 0,
+            "gaps": []
+          },
+          "termination": "events_exhausted",
+          "partial": false,
+          "end_ps": "2000000",
+          "last_event_time_ps": "1504000",
+          "pending_events": "0",
+          "schemas": {
+            "dir.preemption.decision": 8,
+            "dir.preemption.delivery": 2,
+            "dir.preemption.fragment": 1,
+            "dir.preemption.transfer": 2
+          }
+        },
+        "viewer_sha256": "73ae2aa788fe5d93b5bed501da775265e35aafbc25919113bacc275c5c8204e1",
+        "repository_baseline": {
+          "results_sha256": "2cf3fb94ec0b394cadce1d3f5b03a39a9244531302e6e9bec37b94fe5ee499c3",
+          "simulation_equal": true,
+          "simulation_sha256": "cc71a7ac3783ce0210ce8aa6019b9a8dcab1cbd832b1eeb138ae2fc1ccd0112f"
+        }
+      }
+    },
+    "baseline_output": "/home/hideki/DIR-Simulator-audits/open-issues-20261019/evidence/articles110-111/preemption/run-v1.1.6"
+  }
+}
