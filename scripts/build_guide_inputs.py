@@ -60,6 +60,11 @@ def main():
     build(ROOT / 'examples/guide/ethernet-redundancy-history', OUTPUT.with_name('ethernet-redundancy-history-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/ethernet-psfp-gate', OUTPUT.with_name('ethernet-psfp-gate-inputs.zip'), args.check)
     build(ROOT / 'examples/guide/metric-windows', OUTPUT.with_name('metric-windows-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-beb-seed', OUTPUT.with_name('ethernet-beb-seed-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/axi-outstanding', OUTPUT.with_name('axi-outstanding-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/ethernet-cbs-gate', OUTPUT.with_name('ethernet-cbs-gate-inputs.zip'), args.check)
+    build(ROOT / 'examples/guide/gateway-rx-capacity', OUTPUT.with_name('gateway-rx-capacity-inputs.zip'), args.check)
+
 
 
 if __name__ == '__main__':

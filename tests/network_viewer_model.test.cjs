@@ -251,3 +251,66 @@ test('current CLI queued-membership-leave result loads declared subscriptions an
  const raw=JSON.parse(require('node:fs').readFileSync(capabilityProductPath,'utf8')),m=E.parseResults(raw);assert(m.dynamic&&m.tsn);assert.equal(m.policies.get('Net.a.tx').members.has('20'),false);assert([...m.frames.values()].some(f=>f.source_vlan_id==='20'));
  assert.equal(Object.hasOwn(raw.metadata.ethernet_dynamic.initial_policy.effective_vlans['Net.a.tx'],'20'),false);assert.equal(Object.hasOwn(E.stateAt(m,0n).policy.snapshot.effective_vlans['Net.a.tx'],'20'),true);assert.equal(Object.hasOwn(E.stateAt(m,100000000n).policy.snapshot.effective_vlans['Net.a.tx'],'20'),false);
 });
+
+test('origin chronology extracts committed milestones independently and annotates terminal reception once',()=>{
+ const raw=admittedCompositeFixture(),before=JSON.stringify(raw),m=E.parseResults(raw),groups=E.originEvents(m,'ethernet:g:0'),events=groups.flatMap(g=>g.events);
+ assert(groups.every((g,i)=>typeof g.time==='bigint'&&(!i||groups[i-1].time<g.time)));
+ for(const row of raw.simulation.model_records.filter(r=>r.schema_name.startsWith('ethernet.'))){
+  const keys=row.schema_name==='ethernet.frame'?['generated_ps','ready_ps']:row.schema_name==='ethernet.transfer'?['queued_ps','sof_ps','eof_ps','release_ps','arrival_ps']:['observed_ps','ready_ps'];
+  for(const key of keys)if(row.data[key]!==null)assert(events.some(e=>e.id===row.record_id&&e.time===BigInt(row.data[key])),`${row.record_id} ${key}`);
+ }
+ assert.deepEqual(events.filter(e=>e.id==='branch/to-can').map(e=>[e.kind,e.time,e.branchLineage]),[['branch.admitted',1200000n,['branch/to-can']],['branch.offer',1200000n,['branch/to-can']]]);
+ assert(events.some(e=>e.id==='child-can'&&e.media==='can'&&e.kind==='can.generated'&&e.branchLineage[0]==='branch/to-can'));
+ assert(!events.some(e=>e.id==='child-can'&&e.kind==='can.sof'));
+ assert(!events.some(e=>e.id==='can:0'));
+ E.stateAt(m,m.end);E.stateAt(m,0n);assert.deepEqual(E.originEvents(m,'ethernet:g:0'),groups);assert.equal(JSON.stringify(raw),before);
+ const complete=E.originEvents(E.parseResults(compositeFixture()),'ethernet:g:0').flatMap(g=>g.events),terminals=complete.filter(e=>e.terminals.length);
+ assert.equal(terminals.length,1);assert.equal(terminals[0].kind,'ethernet.received');assert.equal(terminals[0].time,1198000n);assert.equal(terminals[0].terminals[0].terminal,'N.c');
+ assert.deepEqual(E.originEvents(m,null),[]);assert.deepEqual(E.originEvents(E.parseResults(vlanFixture()),'ethernet:g:0'),[]);
+});
+test('origin chronology keeps native collisions media-qualified and exact adjacent u64 times',()=>{
+ const m=E.parseResults(collisionCompositeFixture()),can=E.originEvents(m,'can:g:0').flatMap(g=>g.events),eth=E.originEvents(m,'ethernet:g:0').flatMap(g=>g.events);
+ assert(can.some(e=>e.target==='can:g:0'&&e.time===100n));assert(!can.some(e=>e.media==='ethernet'));assert(!eth.some(e=>e.media==='can'));
+ // Shift an already validated model to exercise grouping arithmetic without rounding.
+ const base=(1n<<64n)-3n;m.canModel.requests[0].generated=base;m.canModel.requests[0].ready=base+1n;m.canModel.requests[0].txEnqueued=base+1n;
+ const groups=E.originEvents(m,'can:g:0');assert(groups.some(g=>g.time===base));assert(groups.some(g=>g.time===base+1n));
+ assert(E.originEvents(E.parseResults(compositeFixture()),'ethernet:g:0').some(g=>g.time===0n));
+});
+test('origin chronology excludes planned ready, offer, child SOF and completion in stopped prefixes',()=>{
+ const raw=admittedCompositeFixture(),conversion=raw.simulation.model_records.at(-2),branch=raw.simulation.model_records.at(-1);
+ raw.simulation.partial=true;raw.simulation.termination='time_limit';raw.simulation.end_ps='1300000';
+ raw.simulation.model_records=raw.simulation.model_records.filter(r=>r.record_id!=='child-can'&&r!==branch);
+ Object.assign(conversion.data,{ready_ps:null,planned_ready_ps:'1400000',released_ps:null,status:'processing',branch_ids:[]});conversion.time_ps=conversion.data.observed_ps;
+ const m=E.parseResults(raw),events=E.originEvents(m,'ethernet:g:0').flatMap(g=>g.events);
+ assert(events.some(e=>e.kind==='conversion.observed'));assert(!events.some(e=>e.kind==='conversion.ready'||e.kind.startsWith('branch.')||e.id==='child-can'));assert(!events.some(e=>e.time>=1300000n));
+});
+
+test('origin chronology covers current runtime fanout, multiple Gateways, rejection, drop and prefix boundaries', {skip:!process.env.DIR_SIMULATOR_BIN},()=>{
+ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),cp=require('node:child_process'),temp=fs.mkdtempSync(path.join(os.tmpdir(),'dir-origin-regression-'));
+ try{for(const name of ['r01','r02','fanout','native-multicast-lineages','loop-multicast','fanout-unadmittable','ethernet-unadmittable','receive-rx-zero']){
+  const source=path.resolve(__dirname,'../docs/verification/fixtures/acceptance-2026-10-08/bridge',name),run=(suffix,limit)=>{
+   let ini=fs.readFileSync(path.join(source,'run.ini'),'utf8').replace(/^(ned-path|model-config|workload) = "([^"]+)"/gm,(_,key,value)=>`${key} = "${path.resolve(source,value)}"`);
+   if(limit!==undefined)ini=ini.replace(/sim-time-limit = .*/,`sim-time-limit = ${limit}ps`);const config=path.join(temp,suffix+'.ini'),output=path.join(temp,suffix);fs.writeFileSync(config,ini);cp.execFileSync(process.env.DIR_SIMULATOR_BIN,['run','--config',config,'--output',output],{stdio:'pipe'});
+   const bytes=fs.readFileSync(path.join(output,'results.json'),'utf8'),manifest=fs.readFileSync(path.join(output,'manifest.json'),'utf8'),raw=JSON.parse(bytes),m=E.parseResults(raw),all=[...m.origins.keys()].flatMap(origin=>E.originEvents(m,origin).flatMap(g=>g.events));
+   // Independent raw-record oracle: no planned field is consulted, every recorded milestone has a matching kind/time/target.
+   for(const row of raw.simulation.model_records){const d=row.data,media=row.schema_name.startsWith('can.')?'can':'ethernet';let mapping={};
+    if(row.schema_name==='can.request')mapping={generated_ps:'can.generated',ready_ps:'can.ready',sof_ps:'can.sof',eof_ps:'can.eof'};
+    if(row.schema_name==='can.receiver')mapping={observed_ps:d.status==='filtered'?'can.filtered':'can.observed',received_ps:'can.received'};
+    if(row.schema_name==='ethernet.frame')mapping={generated_ps:'ethernet.generated',ready_ps:'ethernet.ready'};
+    if(row.schema_name==='ethernet.transfer')mapping={queued_ps:'ethernet.queued',sof_ps:'ethernet.sof',eof_ps:'ethernet.eof',release_ps:'ethernet.release',arrival_ps:'ethernet.arrival'};
+    if(row.schema_name==='ethernet.reception')mapping={observed_ps:'ethernet.observed',ready_ps:'ethernet.'+d.status};
+    if(row.schema_name==='dir.can_ethernet.conversion')mapping={observed_ps:d.status==='rejected'?'conversion.rejected':'conversion.observed',ready_ps:'conversion.ready',released_ps:'conversion.released'};
+    if(row.schema_name==='dir.can_ethernet.branch')mapping={offer_ps:'branch.offer',admitted_ps:'branch.admitted',sof_ps:'branch.sof'};
+    for(const [key,kind]of Object.entries(mapping)){const found=all.filter(e=>e.id===row.record_id&&e.kind===kind&&(row.schema_name.startsWith('dir.')||e.media===media));assert.equal(found.length,d[key]===null?0:1,`${suffix} ${row.record_id} ${key}`);if(found.length)assert.equal(found[0].time,BigInt(d[key]));}
+    if(row.schema_name==='dir.can_ethernet.branch'&&d.status==='dropped')assert(all.some(e=>e.kind==='branch.dropped'&&e.id===row.record_id&&e.time===BigInt(row.time_ps)&&e.reason===d.reason));
+   }
+   const targets=raw.simulation.model_records.filter(r=>r.schema_name==='dir.can_ethernet.segment').flatMap(r=>r.data.targets).filter(t=>t.completed_ps!==null);
+   assert.equal(all.reduce((n,e)=>n+e.terminals.length,0),targets.length);for(const t of targets)assert(all.some(e=>e.time===BigInt(t.completed_ps)&&e.terminals.some(a=>a.segment===t.segment_id&&a.terminal===t.terminal_id&&JSON.stringify(a.branchLineage)===JSON.stringify(t.branch_lineage))));
+   assert.equal(fs.readFileSync(path.join(output,'results.json'),'utf8'),bytes);assert.equal(fs.readFileSync(path.join(output,'manifest.json'),'utf8'),manifest);return raw;
+  };
+  const raw=run(name);if(['r01','r02','fanout'].includes(name)){const boundaries=new Set(raw.simulation.model_records.filter(r=>r.schema_name.startsWith('dir.can_ethernet.')).flatMap(r=>Object.entries(r.data).filter(([key,value])=>['observed_ps','ready_ps','offer_ps','admitted_ps','sof_ps','released_ps'].includes(key)&&value!==null).map(([,value])=>value)));for(const boundary of boundaries)if(BigInt(boundary)>0n)run(name+'-'+boundary,BigInt(boundary));}
+ }}finally{fs.rmSync(temp,{recursive:true,force:true});}
+});
+test('origin extraction includes copies beyond row and drawing limits',()=>{
+ const m=E.parseResults(compositeFixture()),copy=[...m.transfers.values()][0];for(let i=0;i<1005;i++)m.transfers.set('extra/'+i,{...copy,id:'extra/'+i});const events=E.originEvents(m,'ethernet:g:0').flatMap(g=>g.events);assert(events.some(e=>e.id==='extra/1004'&&e.kind==='ethernet.sof'));assert.equal(events.filter(e=>e.kind==='ethernet.sof').length,1005+2);
+});

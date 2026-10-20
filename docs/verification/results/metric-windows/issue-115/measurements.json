@@ -1,0 +1,1467 @@
+{
+  "generated_by": "scripts/verify_guide_metric_windows.py",
+  "status": "passed",
+  "source_tag": "v1.1.6",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "single_variable": "metrics-window",
+  "cli_operations": 12,
+  "zip_input_count": 6,
+  "input_sha256": {
+    "examples/guide/metric-windows/README.md": "d2eba835eeba29e1dd9e53c30165283980f9d9d276b154342a54eee9ee8065b3",
+    "examples/guide/metric-windows/window-10.ini": "412780250cc821501083bd48d08ae175d96dab25e76284fc2c7317fa9f0255fd",
+    "examples/guide/metric-windows/window-4.ini": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf",
+    "examples/guide/metric-windows/window-7.ini": "0ce63931d87cb0929b69b98447e8487e7b91ab249c6553583df7fc640d893e3b",
+    "examples/guide/metric-windows/reference/control_checkpoint.rs": "99f5fe31ebd25ccd56b4adec8c1a4a921aaae43bc8261bbc779845ede0bd2ff4",
+    "examples/guide/metric-windows/ned/demo/model.ned": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+  },
+  "conditions": {
+    "window-4": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "4",
+            "metric": "demo.depth",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "8",
+            "metric": "demo.depth",
+            "sample_count": "2",
+            "start_ps": "4",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 3.25,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "0",
+            "start_ps": "8",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 1.0,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "4",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "8",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "4",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "0",
+            "start_ps": "8",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": null,
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "d05073f96e6e33e6fed318ba31f0414e17216154b274960b1e54efc9034a01b2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/tmp/dir-simulator-issues-20261020/examples/guide/metric-windows/window-4.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 4ps\n",
+            "logical_path": "config",
+            "sha256": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf"
+          },
+          {
+            "canonical_path": "/tmp/dir-simulator-issues-20261020/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        10,
+        13,
+        2
+      ],
+      "window_average_fractions": [
+        "5/2",
+        "13/4",
+        "1"
+      ],
+      "viewer_html_sha256": "68041cc3b6968e18dde8c1416473a57749c7d090b56c6f0bc6c9e5c4de20fc41"
+    },
+    "window-7": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "7",
+            "metric": "demo.depth",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 3.142857142857143,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "2",
+            "start_ps": "7",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 1.0,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "7",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "7",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "d05073f96e6e33e6fed318ba31f0414e17216154b274960b1e54efc9034a01b2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/tmp/dir-simulator-issues-20261020/examples/guide/metric-windows/window-7.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 7ps\n",
+            "logical_path": "config",
+            "sha256": "0ce63931d87cb0929b69b98447e8487e7b91ab249c6553583df7fc640d893e3b"
+          },
+          {
+            "canonical_path": "/tmp/dir-simulator-issues-20261020/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        22,
+        3
+      ],
+      "window_average_fractions": [
+        "22/7",
+        "1"
+      ],
+      "viewer_html_sha256": "6e4c2f661243cd4710e2d5be8db60a4bf382ca659bceed3a53b3a7e004d7ac70"
+    },
+    "window-10": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "d05073f96e6e33e6fed318ba31f0414e17216154b274960b1e54efc9034a01b2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/tmp/dir-simulator-issues-20261020/examples/guide/metric-windows/window-10.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 10ps\n",
+            "logical_path": "config",
+            "sha256": "412780250cc821501083bd48d08ae175d96dab25e76284fc2c7317fa9f0255fd"
+          },
+          {
+            "canonical_path": "/tmp/dir-simulator-issues-20261020/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        25
+      ],
+      "window_average_fractions": [
+        "5/2"
+      ],
+      "viewer_html_sha256": "3af9a55a7ec00e7b723e21adb1f7c953390d7ac8a8606920f5c4b3aff3181c90"
+    }
+  },
+  "zip_conditions": {
+    "window-4": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "4",
+            "metric": "demo.depth",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "8",
+            "metric": "demo.depth",
+            "sample_count": "2",
+            "start_ps": "4",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 3.25,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "0",
+            "start_ps": "8",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 1.0,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "4",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "8",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "4",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "0",
+            "start_ps": "8",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": null,
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "d05073f96e6e33e6fed318ba31f0414e17216154b274960b1e54efc9034a01b2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/tmp/dir-issues-20261020/evidence-115-run/isolated/examples/guide/metric-windows/window-4.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 4ps\n",
+            "logical_path": "config",
+            "sha256": "2664b923d11f58dfe0963ec6ba08717c2742eaad398e609c4babea652c1f60cf"
+          },
+          {
+            "canonical_path": "/tmp/dir-issues-20261020/evidence-115-run/isolated/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        10,
+        13,
+        2
+      ],
+      "window_average_fractions": [
+        "5/2",
+        "13/4",
+        "1"
+      ],
+      "viewer_html_sha256": "8ebd5aab02e5684624f8f547be1acde225cfc631a3fd8ba7d6a5493da31d66c1"
+    },
+    "window-7": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "7",
+            "metric": "demo.depth",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 3.142857142857143,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "2",
+            "start_ps": "7",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 1.0,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "7",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "1",
+            "start_ps": "7",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "d05073f96e6e33e6fed318ba31f0414e17216154b274960b1e54efc9034a01b2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/tmp/dir-issues-20261020/evidence-115-run/isolated/examples/guide/metric-windows/window-7.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 7ps\n",
+            "logical_path": "config",
+            "sha256": "0ce63931d87cb0929b69b98447e8487e7b91ab249c6553583df7fc640d893e3b"
+          },
+          {
+            "canonical_path": "/tmp/dir-issues-20261020/evidence-115-run/isolated/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        22,
+        3
+      ],
+      "window_average_fractions": [
+        "22/7",
+        "1"
+      ],
+      "viewer_html_sha256": "b1e95b7e50c161797eef64acf29dc52ffd8ebfdc6ac4022affba3b1517a25a1b"
+    },
+    "window-10": {
+      "simulation": {
+        "committed_events": "3",
+        "end_ps": "10",
+        "last_event_time_ps": "7",
+        "model_records": [
+          {
+            "data": {
+              "count": "1",
+              "rng": "15956595436847723006"
+            },
+            "origin_request_id": null,
+            "record_id": "1",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "3"
+          },
+          {
+            "data": {
+              "count": "2",
+              "rng": "5092189021155625895"
+            },
+            "origin_request_id": null,
+            "record_id": "2",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          },
+          {
+            "data": {
+              "count": "3",
+              "rng": "8934171570979267932"
+            },
+            "origin_request_id": null,
+            "record_id": "3",
+            "request_id": null,
+            "schema_name": "demo.Counter",
+            "schema_version": 1,
+            "subject": "Demo.counter",
+            "time_ps": "7"
+          }
+        ],
+        "partial": false,
+        "pending_events": "0",
+        "records": [
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "0",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "4",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "0",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "1",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "3",
+            "unit": "items",
+            "value": "5",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "0",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "9",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "1",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.depth",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "descriptor_version": "1",
+            "effect_seq": "2",
+            "end_ps": null,
+            "event_seq": "1",
+            "metric": "demo.minimum",
+            "reason": null,
+            "receiver": null,
+            "request_id": null,
+            "sample_count": null,
+            "seq": "4",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "time_ps": "7",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "start_ps": "0",
+        "summary": [
+          {
+            "aggregation": "time_mean",
+            "end_ps": null,
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "time_mean",
+            "end_ps": "10",
+            "metric": "demo.depth",
+            "sample_count": "3",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": 2.5,
+            "value_kind": "number"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": null,
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": null,
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          },
+          {
+            "aggregation": "min",
+            "end_ps": "10",
+            "metric": "demo.minimum",
+            "sample_count": "2",
+            "start_ps": "0",
+            "target": "Demo.counter",
+            "unit": "items",
+            "value": "1",
+            "value_kind": "integer"
+          }
+        ],
+        "termination": "events_exhausted"
+      },
+      "metadata": {
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "binary_sha256": "d05073f96e6e33e6fed318ba31f0414e17216154b274960b1e54efc9034a01b2",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "sources": [
+          {
+            "canonical_path": "/tmp/dir-issues-20261020/evidence-115-run/isolated/examples/guide/metric-windows/window-10.ini",
+            "content_utf8": "[General]\nnetwork = demo.Demo\nned-path = \"ned\"\nmodel-profile = \"demo.control.v1\"\nsim-time-limit = 10ps\nmetrics-window = 10ps\n",
+            "logical_path": "config",
+            "sha256": "412780250cc821501083bd48d08ae175d96dab25e76284fc2c7317fa9f0255fd"
+          },
+          {
+            "canonical_path": "/tmp/dir-issues-20261020/evidence-115-run/isolated/examples/guide/metric-windows/ned/demo/model.ned",
+            "content_utf8": "package demo;\nsimple Counter { parameters: @class(\"demo.Counter\"); }\nnetwork Demo { submodules: counter: demo.Counter; }\n",
+            "logical_path": "root0/demo/model.ned",
+            "sha256": "15bef9618b6caf46031c7ee99f4e6d12a39fd801d40e8eae3926d11d81957676"
+          }
+        ]
+      },
+      "independent_areas_item_ps": [
+        25
+      ],
+      "window_average_fractions": [
+        "5/2"
+      ],
+      "viewer_html_sha256": "065e2918580cf2ab0a08e3f461520b68693da82d511832d1db83e179e215e9d7"
+    }
+  }
+}

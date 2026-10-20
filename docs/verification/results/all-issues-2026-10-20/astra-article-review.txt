@@ -1,0 +1,34 @@
+### Goal
+
+4記事の独立レビュー完了。対応が必要な具体的指摘はありません。
+
+### Architecture
+
+要約ラベルではなく、8条件の生JSONから主要時刻・件数・状態を照合しました。
+
+### Files
+
+指定4記事、受入条件、入力、ZIP、生JSON/CSV、撮影報告、成果物台帳を確認。変更パスなし。
+
+### Interfaces
+
+正式commit `39790045…` と記録されたソース253ファイルのhashが一致。4比較とも指定の1フィールド差分のみでした。
+
+### Constraints
+
+読み取り専用。編集・commit・push・設定変更・委譲なし。
+
+### Acceptance criteria
+
+数値矛盾、実測帰属の不整合、再現手順・母数の重大な欠落は見つかりませんでした。特に以下を確認しました。
+
+- BEB：attempt数4/6、衝突検出数2/4、同seed反復一致。
+- AXI：完了20/40ns、待ち平均0/10000ps、標本数1/2。
+- CBS：凍結−422bit、次SOF3688000/2688000ps。
+- Gateway：source:2のRX解放524µsとEOF1348µsの区別、末端受信4/5対4/6、終了時未完了。
+
+### Verification
+
+実行：`rg`、`find`、`cat`、`nl`、`sed`、`git status --short`、`git show`、読み取り専用Python照合。ZIP全member、論理simulation、成果物台帳258項目、JSON/CSVの値・標本数・区間が一致しました。
+
+残る制約：CLI・ブラウザは再実行せず、保存済み証跡を検査しました。

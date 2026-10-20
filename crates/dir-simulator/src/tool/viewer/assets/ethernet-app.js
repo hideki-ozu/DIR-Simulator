@@ -2,7 +2,7 @@
 'use strict';
 (() => {
   const E=window.DIREthernetModel,T=window.DIRViewerModel;
-  let root=null,model=null,current=0n,selected=null,selectedMedia=null,animation=0,playing=false,step=null,flowGroups=new Map(),vlanFilter=null,originFilter=null;
+  let root=null,model=null,current=0n,selected=null,selectedMedia=null,animation=0,playing=false,step=null,flowGroups=new Map(),vlanFilter=null,originFilter=null,originEventSelection=null,originEventGroups=[];
   const labels={deferred:'媒体待ち',jamming:'jam送信中',backoff:'再送待ち',queued:'送信待機',transmitting:'送信中',serialized:'EOF 到達',dropped:'破棄',received:'受信完了',processing:'処理中',filtered:'フィルタ拒否',forwarded:'転送判断済み',not_created:'生成前'};
   const flowLabels={source_processing:'Source TX処理中',generated:'生成frame数',received:'受信件数',copy_dropped:'破棄hop-copy数',filtered:'フィルタ拒否',processing:'受信処理中',unfinished_copies:'未完了copy数',deadline_missed:'Deadline超過',deadline_sample_count:'Deadline標本数',deadline_miss_ratio:'Deadline超過率',delivery_mean_ps:'配送遅延 平均',delivery_max_ps:'配送遅延 最大',delivery_p50_ps:'配送遅延 p50',delivery_p95_ps:'配送遅延 p95',delivery_p99_ps:'配送遅延 p99',delivery_jitter_ps:'配送遅延 max−min',queue_wait_mean_ps:'キュー待機 平均',serialization_mean_ps:'直列化 平均',propagation_mean_ps:'伝搬 平均',processing_mean_ps:'処理 平均'};
   const colors={queued:'#bd8c2d',transmitting:'#2563eb',serialized:'#6b829c',dropped:'#be3850',received:'#00876e',processing:'#8a6bb8',filtered:'#be3850',forwarded:'#00876e'};
@@ -10,9 +10,9 @@
   const element=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(cls)n.className=cls;return n;};
   const svg=(tag,attrs,text)=>{const n=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v]of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
   function pause(){cancelAnimationFrame(animation);animation=0;playing=false;step=null;if($('play'))$('play').textContent='▶ 再生';}
-  function unmount(){pause();if(root)root.hidden=true;model=null;}
+  function unmount(){pause();if(root){root.hidden=true;root.replaceChildren();}model=null;originEventSelection=null;originEventGroups=[];}
   function mount(raw,filename){
-    const parsed=E.parseResults(raw);unmount();model=parsed;current=model.start;selected=null;selectedMedia=null;vlanFilter=null;originFilter=null;
+    unmount();const parsed=E.parseResults(raw);model=parsed;current=model.start;selected=null;selectedMedia=null;vlanFilter=null;originFilter=null;
     if(!root){root=element('section');root.id='ethernet-dashboard';document.querySelector('main').append(root);}
     root.hidden=false;
     // Static markup only. All result data is inserted via textContent.
@@ -25,7 +25,7 @@
       <section class="panel"><div class="panel-heading"><div><h2>元フレーム</h2><p>TX処理中でcopyが未生成のフレームも保持します。</p></div></div><div id="eth-frames" class="node-states"></div><p id="eth-frame-note" class="panel-note"></p></section>
       <section id="eth-flow-panel" class="panel"><div class="panel-heading"><div><h2>フロー別指標</h2><p>実行全体の集計。行を選択して全指標・遅延内訳を確認できます。破棄copy数はhop単位であり、end-to-end lossではありません。</p></div></div><div class="table-scroll"><table><thead><tr><th>Flow / 受信先</th><th>Source Priority</th><th>受信</th><th>期限超過 / 標本</th><th>遅延平均（ps）</th><th>p95（ps）</th><th>p99（ps）</th><th>Jitter（ps）</th><th>破棄copy</th></tr></thead><tbody id="eth-flow-rows"></tbody></table></div></section>
       <section class="panel request-panel"><div class="panel-heading"><div><h2>Hop ごとの転送</h2><p>元フレーム、copy、受信は別々に集計します。予定時刻は実績に含めません。</p></div><input id="eth-search" type="search" placeholder="フレーム / ポートで検索" aria-label="Ethernet転送を検索"></div><div class="table-scroll"><table><thead><tr><th>フレーム</th><th>送信ポート → 受信ポート</th><th>状態</th><th>SOF（ps）</th><th>EOF（ps）</th><th>Arrival（ps）</th></tr></thead><tbody id="eth-rows"></tbody></table></div><p id="eth-table-note" class="panel-note"></p></section>`;
-    if(model.composite){root.querySelector('h1').textContent='CAN ↔ Ethernet Gateway';const panel=element('section',undefined,'panel');panel.id='eth-composite-panel';panel.append(element('h2','CAN媒体とGateway変換'));const select=element('select');select.id='eth-origin-filter';select.setAttribute('aria-label','起点originで経路を絞り込む');const all=element('option','すべてのorigin');all.value='';select.append(all);for(const id of model.origins.keys()){const option=element('option',id);option.value=id;select.append(option);}select.onchange=()=>{pause();originFilter=select.value||null;render();};panel.append(select);for(const id of ['can-state','conversion-state','segment-state']){const area=element('div');area.id='eth-'+id;panel.append(area);}root.append(panel);}
+    if(model.composite){root.querySelector('h1').textContent='CAN ↔ Ethernet Gateway';const panel=element('section',undefined,'panel');panel.id='eth-composite-panel';panel.append(element('h2','CAN媒体とGateway変換'));const select=element('select');select.id='eth-origin-filter';select.setAttribute('aria-label','起点originで経路を絞り込む');const all=element('option','すべてのorigin');all.value='';select.append(all);for(const id of model.origins.keys()){const option=element('option',id);option.value=id;select.append(option);}select.onchange=()=>{pause();originFilter=select.value||null;selected=null;selectedMedia=null;render();};panel.append(select);const events=element('section');events.id='eth-origin-events';events.setAttribute('aria-label','このoriginの記録時刻');panel.append(events);for(const id of ['can-state','conversion-state','segment-state']){const area=element('div');area.id='eth-'+id;panel.append(area);}root.append(panel);}
     if(model.dynamic){const panel=element('section',undefined,'panel');panel.id='eth-policy-panel';panel.append(element('h2','動的制御と転送ポリシー'));const state=element('div');state.id='eth-policy-state';const controls=element('div');controls.id='eth-control-state';panel.append(state,controls);root.append(panel);}
     if(model.tsn){const panel=element('section',undefined,'panel');panel.id='eth-tsn-panel';panel.append(element('h2','TSN gate・credit・meter'));const state=element('div');state.id='eth-tsn-state';panel.append(state);root.append(panel);}
     $('file').textContent=`${filename} · ${raw.metadata.model_profile} · ${raw.run_id||''}`;$('termination').textContent=`${raw.simulation.termination}${raw.simulation.partial?' · 部分結果':''}`;
@@ -34,7 +34,7 @@
     $('slider').oninput=()=>{pause();current=T.timeFromFraction(model.start,model.end,Number($('slider').value));render();};
     $('jump').onclick=()=>{pause();try{const t=T.parseTime($('jump-value').value,'ps');if(t>model.end)throw new Error('観測期間内の時刻を指定してください');current=t;$('error').hidden=true;render();}catch(e){$('error').textContent=e.message;$('error').hidden=false;}};
     $('jump-value').onkeydown=e=>{if(e.key==='Enter')$('jump').click();};
-    $('clear').onclick=()=>{selected=null;selectedMedia=null;render();};$('search').oninput=render;
+    $('clear').onclick=()=>{pause();selected=null;selectedMedia=null;originFilter=null;if($('origin-filter'))$('origin-filter').value='';render();};$('search').oninput=render;
     $('vlan-panel').hidden=!model.vlan;
     if(model.vlan){const ids=[...new Set([...model.policies.values()].flatMap(p=>[...p.members.keys()]))].sort((a,b)=>Number(a)-Number(b));for(const id of ids){const option=element('option',id);option.value=id;$('vlan-filter').append(option);}$('vlan-filter').onchange=()=>{pause();vlanFilter=$('vlan-filter').value||null;render();};}
     root.onkeydown=e=>{if(['INPUT','SELECT','BUTTON'].includes(e.target.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();eventStep(1);}if(e.key==='ArrowLeft'){e.preventDefault();eventStep(-1);}};
@@ -81,7 +81,7 @@
     canvas.append(svg('line',{x1:x(current),x2:x(current),y1:0,y2:height,stroke:'#26394e','stroke-dasharray':'4 3'}));$('timeline-note').textContent=`0–${model.end} ps · 表示 ${visibleCopies.length} / 全体 ${model.transfers.size} copy${visibleCopies.length>1000?'（描画上限 1000 copy）':''}`;
   }
   function details(){const area=$('details');area.replaceChildren();if(!selected){area.append(element('p','ノード、線、タイムライン、転送行を選択してください。'));return;}area.append(element('h3',selected));
-    if(model.composite){const canRequest=selectedMedia==='ethernet'?null:model.canModel.requests.find(r=>r.id===selected),conversion=model.conversions.get(selected),branch=model.branches.get(selected),gateway=model.gateways.get(selected);if(canRequest||conversion||branch||gateway){const data=canRequest?{medium:'CAN',origin_id:originOf(canRequest.id,'can'),status:model.canApi.requestStateAt(canRequest,current),...canRequest.raw,receivers:canRequest.receivers.map(r=>({receiver:r.receiver,status:model.canApi.receiverStateAt(r,current),observed_ps:r.observed,received_ps:r.received}))}:conversion?{...conversion.raw.data,origin_id:conversion.origin_id,state:E.compositeStateAt(model,current).conversions.get(selected)}:branch?{...branch.raw.data,origin_id:model.conversions.get(branch.conversion_id).origin_id,state:E.compositeStateAt(model,current).branches.get(selected)}:gateway;area.append(element('pre',json(data)));return;}}
+    if(model.composite){const canRequest=selectedMedia!==null&&selectedMedia!=='can'?null:model.canModel.requests.find(r=>r.id===selected),conversion=(selectedMedia===null||selectedMedia==='conversion')&&model.conversions.get(selected),branch=(selectedMedia===null||selectedMedia==='branch')&&model.branches.get(selected),gateway=model.gateways.get(selected);if(canRequest||conversion||branch||gateway){const data=canRequest?{medium:'CAN',origin_id:originOf(canRequest.id,'can'),status:model.canApi.requestStateAt(canRequest,current),...canRequest.raw,receivers:canRequest.receivers.map(r=>({receiver:r.receiver,status:model.canApi.receiverStateAt(r,current),observed_ps:r.observed,received_ps:r.received}))}:conversion?{...conversion.raw.data,origin_id:conversion.origin_id,state:E.compositeStateAt(model,current).conversions.get(selected)}:branch?{...branch.raw.data,origin_id:model.conversions.get(branch.conversion_id).origin_id,state:E.compositeStateAt(model,current).branches.get(selected)}:gateway;area.append(element('pre',json(data)));return;}}
     if(flowGroups.has(selected)){const dl=element('dl',undefined,'detail-fields'),contract=flowContract(selected);if(contract){dl.append(element('dt','Source Priority'),element('dd',contract.priority));if(model.vlan)dl.append(element('dt','Source VLAN'),element('dd',contract.source_vlan_id),element('dt','Source tag'),element('dd',contract.tag?`VID ${contract.tag.vid} · PCP ${contract.tag.pcp} · DEI ${contract.tag.dei}`:'untagged'));}for(const row of flowGroups.get(selected)){dl.append(element('dt',flowLabels[row.metric.replace('ethernet.flow.','')]||row.metric),element('dd',`${row.value??'—'} ${row.unit}${row.sample_count===null||row.sample_count===undefined?'':` · n=${row.sample_count}`}`));}area.append(dl);return;}
     const transfer=model.transfers.get(selected),device=model.devices.get(selected),direction=model.directions.get(selected);
     const frame=transfer?model.frames.get(transfer.frame_id):model.frames.get(selected);
@@ -105,7 +105,33 @@
     const visibleFrames=[...model.frames.values()].filter(frameVisible);$('frames').replaceChildren();for(const f of visibleFrames.slice(0,500)){const status=current<f.generated_ps?'生成前':f.ready_ps===null||current<f.ready_ps?'TX処理中':'source offer済み';const b=element('button',`${f.id} · ${f.source} · ${status}${model.vlan?` · source VLAN ${f.source_vlan_id}`:''}`,'button');b.dataset.frame=f.id;b.onclick=()=>choose(f.id,'ethernet');$('frames').append(b);}$('frame-note').textContent=`表示 ${visibleFrames.length} / 全体 ${model.frames.size} frame${visibleFrames.length>500?'（先頭500件）':''}`;
     $('queues').replaceChildren();for(const [port,ids]of state.queues){const card=element('article',undefined,'eth-queue');card.append(element('strong',port),element('p',`${ids.length} / ${model.devices.get(E.owner(port)).queue_capacity} 待機`));for(const id of ids.filter(id=>visible(model.transfers.get(id))).slice(0,25)){const b=element('button',id,'button small');b.onclick=()=>choose(id);card.append(b);}if(ids.length>25)card.append(element('p',`ほか ${ids.length-25} copy`));if(model.qos){for(const q of state.classes.values())if(q.port===port)card.append(element('p',`P${q.priority}: ${q.ids.length}/${q.capacity_frames} frame · ${q.bytes}/${q.capacity_bytes??'∞'} MAC bytes · ${q.scheduler}`));}$('queues').append(card);}
     const query=$('search').value.toLowerCase(),rows=E.visibleTransfers(model,vlanFilter).filter(visible).filter(t=>`${t.id} ${t.to_port}`.toLowerCase().includes(query));$('rows').replaceChildren();for(const t of rows.slice(0,500)){const tr=element('tr');tr.dataset.transfer=t.id;selectable(tr,t.id,'ethernet');if(selected===t.id)tr.className='selected';for(const value of [t.frame_id,`${t.from_port} → ${t.to_port}${model.vlan?` · VLAN ${t.vlan_id} / P${t.priority}`:''}`,labels[E.transferStateAt(t,current)],t.sof_ps??'—',t.eof_ps??'—',t.arrival_ps??'—'])tr.append(element('td',value));$('rows').append(tr);}$('table-note').textContent=`表示 ${rows.length} / 全体 ${model.transfers.size} copy${rows.length>500?'（先頭500件。検索で絞り込み）':''}`;
-    network();timeline();details();renderPolicy(state);renderComposite(state);
+    network();timeline();details();renderPolicy(state);renderComposite(state);renderOriginEvents();
+  }
+  function renderOriginEvents(){
+    if(!model.composite)return;
+    const area=$('origin-events');
+    // Rebuild only when the origin changes: clock ticks preserve buttons and keyboard focus.
+    if(originEventSelection!==originFilter||!area.childNodes.length){
+      originEventSelection=originFilter;originEventGroups=E.originEvents(model,originFilter);area.replaceChildren();
+      area.append(element('h3','このoriginの記録時刻'));
+      if(!originFilter){area.append(element('p','originを選択すると確定記録へ移動できます。'));return;}
+      area.append(element('p',`${originFilter} · origin全体の確定記録 ${originEventGroups.reduce((n,g)=>n+g.events.length,0)}件 / ${originEventGroups.length}時刻。検索・VLAN・描画上限によらずrunの観測終端までを表示。同時刻内の順序はスケジューラの実行順ではありません。terminal完了は受信に併記し重複計数しません。`));
+      const list=element('div',undefined,'origin-event-list');area.append(list);
+      for(const group of originEventGroups){
+        const section=element('section',undefined,'origin-event-group');section.dataset.eventTime=group.time.toString();
+        const jump=element('button',`${group.time} psへ移動`,'button'),position=element('span');position.dataset.eventPosition='';
+        jump.dataset.originTime=group.time.toString();jump.onclick=()=>{pause();current=group.time;$('error').hidden=true;render();};section.append(jump,position);
+        for(const event of group.events){
+          const line=element('div',undefined,'origin-event-row'),button=element('button',`${event.media} · ${event.id} · ${event.kind}`,'button small');button.dataset.originTarget=event.target;button.dataset.originKind=event.kind;
+          button.onclick=()=>choose(event.selection.id,event.selection.media);
+          line.append(button,element('span',`${event.port} · 枝 ${event.branchLineage.join(' → ')||'root'}${event.reason?' · reason '+event.reason:''}`));
+          for(const terminal of event.terminals)line.append(element('p',`terminal完了 (${terminal.origin}, ${terminal.segment}, [${terminal.branchLineage.join(', ')}], ${terminal.terminal})`));
+          section.append(line);
+        }
+        list.append(section);
+      }
+    }
+    for(const section of area.querySelectorAll('[data-event-time]')){const time=BigInt(section.dataset.eventTime),future=time>current;section.dataset.future=String(future);section.querySelector('[data-event-position]').textContent=future?' 現在時刻以後（この再生位置では未発生）':time===current?' 現在時刻':' 現在時刻以前';}
   }
   function canNetwork(canvas,positions,width,progress){
     const C=model.canApi,can=model.canModel,nodes=can.nodes,buses=can.buses;
