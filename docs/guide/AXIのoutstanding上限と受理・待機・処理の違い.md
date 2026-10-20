@@ -1,6 +1,6 @@
 # AXIのoutstanding上限と受理・待機・処理の違い
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 対象GitHubバージョン：`v1.1.6`
 実測ソースcommit：`397900451015c9bca6a33d24feac0a88b9b7b8fe`
 文書ID：`guide-axi-outstanding`
@@ -12,6 +12,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-20` | Issue #121：公開済み画像を保持した撮影再検証、単独実習の選択と新規出力先・再試行手順を整合 |
 | `1.1.0` | `2026-10-20` | outstanding上限だけを変える2条件の実習、実測・実画面と集計母数を追加 |
 
 ## 目的：受け入れられる件数と、同時に処理する件数を分ける
@@ -141,9 +142,20 @@ python3 scripts/verify_guide_capacity_comparisons.py \
   --binary /path/to/dir-simulator --source-root /path/to/formal-source \
   --only axi-outstanding --output /path/to/new-evidence
 python3 scripts/check_guide_capacity_measurements.py /path/to/new-evidence --only axi-outstanding
+NODE_PATH=/path/to/browser-tools/node_modules \
+  node scripts/verify_capacity_comparisons_viewer.cjs /path/to/new-evidence \
+  --only axi-outstanding --output /path/to/new-captures
 ```
 
-独立検査は要求別時刻、active区間の非重複、保存則、標本数、CSVとの一致を確認します。実ViewerはChromiumでdesktop1440×1000・狭幅390×844を確認し、外部通信・ページエラーは0でした。撮影再実行はPlaywright/Chromiumを用意し、保存済みPNGを残した別checkoutで `scripts/verify_capacity_comparisons_viewer.cjs` へ同じ証跡rootを渡します。
+独立検査は要求別時刻、active区間の非重複、保存則、標本数、CSVとの一致を確認します。実ViewerはChromiumでdesktop1440×1000・狭幅390×844を確認し、外部通信・ページエラーは0でした。
+
+撮影コマンドにはPlaywrightとChromiumが必要です。`/path/to/browser-tools/node_modules` はPlaywrightを導入したnode_modulesへ置き換えます。計測・数値照合・撮影はいずれも `--only axi-outstanding` を指定しており、この実習の証跡だけを読みます。
+
+`/path/to/new-captures` は未使用の撮影出力先です。生成される `capture-summary.json` から `axi-outstanding/viewer-browser.json` を辿れ、実PNGは `axi-outstanding/images/` に保存されます。各reportは自身のdirectoryを基準に、実際に読んだ計測JSON・results.json・manifest・Viewer HTMLと撮影PNGのpath/hash、条件・cursor・viewportを記録します。元の計測成果物と記事収録済みのPNG・台帳は変更しません。
+
+同じ撮影出力先を再指定すると、既存出力を変更せず拒否します。同じ計測証跡をもう一度撮影する場合は、`--output /path/to/new-captures-2` のように別の未使用先を指定します。`--output` を省略した既定値は `/path/to/new-evidence/viewer-captures` です。全4実習を一度に検証する場合は、新しい証跡rootを指定し、上の計測・数値照合・撮影の3コマンドすべてから `--only axi-outstanding` を外します。
+
+公開済みPNGを残した状態での全4実習・AXI単独・Gateway単独の再実行、同じ出力先の拒否、別の出力先での再撮影、元成果物の不変性は[撮影再実行の検証記録](https://github.com/hideki-ozu/DIR-Simulator/blob/main/docs/verification/results/issue-121-capture-workflow/acceptance.json)に保存しています。
 
 ## 対象範囲と次に読む資料
 

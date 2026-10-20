@@ -1,0 +1,183 @@
+{
+  "issues": [
+    121,
+    122
+  ],
+  "status": "passed",
+  "implementation_commit": "2fb8d2e3558c2c6dd5f103cc90388e077d9e7bb0",
+  "scope": "Guide capture output/selection workflow and composite CAN detail display; runtime and result schema unchanged.",
+  "checks": [
+    {
+      "command": "NODE_PATH=<playwright node_modules> python3 scripts/verify_issue121_capture_workflow.py --binary <formal binary> --source-root <formal source> --output <fresh external folder>",
+      "status": "passed",
+      "operations": 11,
+      "protected_artifacts": 280,
+      "head": "2fb8d2e3558c2c6dd5f103cc90388e077d9e7bb0",
+      "checkout_clean_before_and_after": true,
+      "log": "clean-checkout-repro.log",
+      "acceptance_report": "../issue-121-capture-workflow/acceptance.json"
+    },
+    {
+      "command": "DIR_SIMULATOR_BIN=/tmp/dir-issues-current-target/debug/dir-simulator node --test tests/viewer_model.test.cjs tests/controlled_viewer_model.test.cjs tests/network_viewer_model.test.cjs",
+      "passed": 126,
+      "failed": 0,
+      "optional_skips": 1,
+      "log": "viewer-models.log"
+    },
+    {
+      "command": "NODE_PATH=<playwright node_modules> node tests/network_viewer_browser.cjs --exported-html <8 result/exported-html pairs>",
+      "passed_cases": 8,
+      "input_case_names": [
+        "r01",
+        "r02",
+        "fanout",
+        "native-multicast-lineages",
+        "fanout-unadmittable",
+        "prefix-103000000",
+        "prefix-106000000",
+        "prefix-106000001"
+      ],
+      "log": "exported-viewer-browser.log",
+      "current_binary_rebuilt_after_viewer_change": true
+    },
+    {
+      "command": "NODE_PATH=<playwright node_modules> node tests/network_viewer_browser.cjs <canDetailStatesFixture>",
+      "passed_cases": 1,
+      "log": "synthetic-viewer-browser.log",
+      "checks": [
+        "Current status cells vs requestStateAt",
+        "Recorded status cells vs raw status",
+        "Receivers vs receiverStateAt",
+        "Cards and origin target/time routes",
+        "Generation/ready/SOF/EOF/drop boundaries plus adjacent times",
+        "Forward traversal and rewind"
+      ]
+    },
+    {
+      "command": "python3 -m unittest discover -s tests",
+      "passed": 67,
+      "failed": 0
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_site_inventory.py' -v",
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_guide_capacity_measurements.py' -v",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "command": "python3 scripts/build_guide_inputs.py --check",
+      "matched_zip_archives": 32
+    },
+    {
+      "command": "python -m mkdocs build --strict",
+      "status": "passed",
+      "log": "mkdocs.log"
+    },
+    {
+      "command": "python3 scripts/check_guide_links.py",
+      "html_files": 48,
+      "local_links_assets_anchors": 4504
+    },
+    {
+      "command": "python3 scripts/generate_traceability.py --check; python3 scripts/check_traceability.py --strict",
+      "requirements": 258,
+      "functions": 71,
+      "trace_nodes": 318,
+      "structural_errors": 0,
+      "incomplete_items": 0
+    },
+    {
+      "command": "python3 scripts/render_diagrams.py --check",
+      "diagrams": 13
+    },
+    {
+      "command": "python3 scripts/check_guide_capacity_measurements.py docs/verification/results --artifacts",
+      "experiments": 4,
+      "status": "passed",
+      "original_artifacts": "Only the capture-helper source bytes/hash entry in each ledger was updated. Original measurement, PNG and other artifact entries remain unchanged."
+    },
+    {
+      "command": "Exact Capture published guide comparison viewers workflow shell step",
+      "status": "passed",
+      "log": "capture-ci-smoke.log",
+      "coverage": "Full4 plus physically isolated AXI/Gateway inputs and three duplicate-output refusals; public tracked artifact diff empty"
+    },
+    {
+      "command": "Independent Astra medium review",
+      "status": "no actionable findings",
+      "reviewed_scope": "Capture implementation, articles, portable proof, CAN display/tests/docs; pending CI wiring and source-ledger updates excluded",
+      "review_log": "independent-review.txt"
+    },
+    {
+      "command": "Parse final workflow YAML; bash -n all10 run steps; match PR paths against all4 consumed evidence trees and helper/test paths",
+      "status": "passed",
+      "review_thread": "PRRT_kwDOUsGXyc6uXNmN",
+      "fix": "Include all4 consumed evidence trees in pull_request.paths so input-only PRs run browser capture validation."
+    }
+  ],
+  "preservation": {
+    "original_workspace": "/home/hideki/DIR-Simulator",
+    "original_head": "c23855ab3f74e71de197f1e457676a6f48a438c0",
+    "head_status_and_four_user_file_hashes_unchanged": true
+  },
+  "source_identities": {
+    "scripts/verify_capacity_comparisons_viewer.cjs": {
+      "bytes": 10439,
+      "sha256": "816036d1de54aabcf96c3c724f96c984b13a05b0669d7060acc28b11d09f9ff8"
+    },
+    "scripts/verify_issue121_capture_workflow.py": {
+      "bytes": 7298,
+      "sha256": "e6c671b6c945f44f86b280e42adadf30bad8798da295c333bcccc7f38062d667"
+    },
+    "crates/dir-simulator/src/tool/viewer/assets/ethernet-app.js": {
+      "bytes": 40507,
+      "sha256": "9708f95be11f18d051d2ac0c383f882d397fff7ac1189c583c6b07f396afb379"
+    },
+    "tests/network_viewer_model.test.cjs": {
+      "bytes": 47177,
+      "sha256": "94b62533d8823db87a6c4354fd677271202d77564f6e80a32d346ad371732bb2"
+    },
+    "tests/network_viewer_browser.cjs": {
+      "bytes": 12532,
+      "sha256": "e6d21b7e5bff29043807e154288ad3f76731828b7c559b998a86e8204c5cd276"
+    },
+    ".github/workflows/release-audit.yml": {
+      "bytes": 13687,
+      "sha256": "cb71f60f249c9bca9556abdf42e6e7b8a21123f41dc9c2835cf02a646376e362"
+    }
+  },
+  "logs": {
+    "capture-ci-smoke.log": {
+      "bytes": 1232,
+      "sha256": "e3d843278ef352c4080b77fa5cf173bf268e269cabf9b22c36d6d590dcbbcb30"
+    },
+    "clean-checkout-repro.log": {
+      "bytes": 140,
+      "sha256": "76684a579c700d8370530e7cde59caf23aa83a3271b1a8582e69ec51c397d4d5"
+    },
+    "exported-viewer-browser.log": {
+      "bytes": 1256,
+      "sha256": "645336e4f484c1a0100e5617562b10c2a70bdd4a603ae44243e8fe4d139ee496"
+    },
+    "independent-review.txt": {
+      "bytes": 1382,
+      "sha256": "dd83f5b505045641d877a2469941a80161bb672c706f40cf4e51df8330a0ceca"
+    },
+    "mkdocs.log": {
+      "bytes": 177,
+      "sha256": "fec4971e93ccd5735298be34f04be05613c1d5fa6974d6a6f5411f82db6df272"
+    },
+    "synthetic-viewer-browser.log": {
+      "bytes": 64,
+      "sha256": "881d7e4ad3cc7a80975c3b077776403d62116d384b003cbaff17956b1144e87d"
+    },
+    "viewer-models.log": {
+      "bytes": 29053,
+      "sha256": "5dbd6d09e50727b0f4cc41548ae6b016d61957e2d85e6c7ee0aed0753218083a"
+    }
+  }
+}

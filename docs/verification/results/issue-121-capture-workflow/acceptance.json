@@ -1,0 +1,1354 @@
+{
+  "status": "passed",
+  "issue": 121,
+  "generated_by": "scripts/verify_issue121_capture_workflow.py",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_guide_capacity_comparisons.py",
+        "--binary",
+        "/tmp/dir-issues-formal-target/release/dir-simulator",
+        "--source-root",
+        "/tmp/dir-simulator-formal-116",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements"
+      ],
+      "exit_code": 0,
+      "stdout": "ethernet-beb-seed: independent expectations, conservation, CSV equality PASS\nethernet-beb-seed: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\naxi-outstanding: independent expectations, conservation, CSV equality PASS\naxi-outstanding: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\nethernet-cbs-gate: independent expectations, conservation, CSV equality PASS\nethernet-cbs-gate: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\ngateway-rx-capacity: independent expectations, conservation, CSV equality PASS\ngateway-rx-capacity: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements"
+      ],
+      "exit_code": 0,
+      "stdout": "ethernet-beb-seed: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\naxi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nethernet-cbs-gate: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\ngateway-rx-capacity: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements/viewer-captures\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements/viewer-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_guide_capacity_comparisons.py",
+        "--binary",
+        "/tmp/dir-issues-formal-target/release/dir-simulator",
+        "--source-root",
+        "/tmp/dir-simulator-formal-116",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
+        "--only",
+        "axi-outstanding"
+      ],
+      "exit_code": 0,
+      "stdout": "axi-outstanding: independent expectations, conservation, CSV equality PASS\naxi-outstanding: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
+        "--only",
+        "axi-outstanding",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures"
+      ],
+      "exit_code": 0,
+      "stdout": "axi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
+        "--only",
+        "axi-outstanding",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
+        "--only",
+        "axi-outstanding",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures-2"
+      ],
+      "exit_code": 0,
+      "stdout": "axi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures-2\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_guide_capacity_comparisons.py",
+        "--binary",
+        "/tmp/dir-issues-formal-target/release/dir-simulator",
+        "--source-root",
+        "/tmp/dir-simulator-formal-116",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-measurements",
+        "--only",
+        "gateway-rx-capacity"
+      ],
+      "exit_code": 0,
+      "stdout": "gateway-rx-capacity: independent expectations, conservation, CSV equality PASS\ngateway-rx-capacity: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-measurements",
+        "--only",
+        "gateway-rx-capacity",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-captures"
+      ],
+      "exit_code": 0,
+      "stdout": "gateway-rx-capacity: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-captures\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-measurements",
+        "--only",
+        "gateway-rx-capacity",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-captures"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
+        "--only",
+        "missing",
+        "--output",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/invalid-selection-output"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "AssertionError [ERR_ASSERTION]: unknown --only experiment: missing\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:17:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+    }
+  ],
+  "checks": [
+    {
+      "selection": [
+        "ethernet-beb-seed",
+        "axi-outstanding",
+        "ethernet-cbs-gate",
+        "gateway-rx-capacity"
+      ],
+      "report_checks": [
+        {
+          "experiment": "ethernet-beb-seed",
+          "report_sha256": "f48ab65da8c6fcb878bea795b97131ed452d78a999e43ec1b869c15bb551fd0c",
+          "captures": 4,
+          "actual_paths_hashes_and_viewports_verified": true
+        },
+        {
+          "experiment": "axi-outstanding",
+          "report_sha256": "5bbde466f4756f30f7261dc3f11871ea3d7fc3c94601cf02969f228d81221cf2",
+          "captures": 4,
+          "actual_paths_hashes_and_viewports_verified": true
+        },
+        {
+          "experiment": "ethernet-cbs-gate",
+          "report_sha256": "a9f88c55bf60bf69407944084b0e6f56b5692226cbd174451a87a5af74000c97",
+          "captures": 8,
+          "actual_paths_hashes_and_viewports_verified": true
+        },
+        {
+          "experiment": "gateway-rx-capacity",
+          "report_sha256": "fffff0162ffc28fcff63f87573d6851889392b70efe732d816b388d4dac5a24e",
+          "captures": 4,
+          "actual_paths_hashes_and_viewports_verified": true
+        }
+      ],
+      "same_output_refused_without_mutation": true,
+      "measurement_inputs_unchanged": true
+    },
+    {
+      "selection": [
+        "axi-outstanding"
+      ],
+      "report_checks": [
+        {
+          "experiment": "axi-outstanding",
+          "report_sha256": "ffdf6aeaa23fb19b0d2a205f03539e4e1993a303493623017cf80e4fff91ca24",
+          "captures": 4,
+          "actual_paths_hashes_and_viewports_verified": true
+        }
+      ],
+      "same_output_refused_without_mutation": true,
+      "measurement_inputs_unchanged": true,
+      "fresh_other_output_succeeded": true
+    },
+    {
+      "selection": [
+        "gateway-rx-capacity"
+      ],
+      "report_checks": [
+        {
+          "experiment": "gateway-rx-capacity",
+          "report_sha256": "7d0c5787a0e5d53d983f05a0fa86fec7fe08217683f7a490727c83b0e7e8a552",
+          "captures": 4,
+          "actual_paths_hashes_and_viewports_verified": true
+        }
+      ],
+      "same_output_refused_without_mutation": true,
+      "measurement_inputs_unchanged": true
+    }
+  ],
+  "invalid_selection_rejected_before_output_creation": true,
+  "protected_artifact_count": 280,
+  "protected_artifacts_unchanged": true,
+  "protected_artifacts": {
+    "docs/guide/assets/guide-axi-outstanding-capacity-1-t10000ps-desktop.png": {
+      "bytes": 17025,
+      "sha256": "075fa23bad6fb96b4abf081920897eebdd15a44f21b516c8f4f6b84183024cbd"
+    },
+    "docs/guide/assets/guide-axi-outstanding-capacity-1-t10000ps-mobile.png": {
+      "bytes": 13887,
+      "sha256": "98143918eab25efc80d00f0ab3ba9d951edef2a70c254f9f4208ce113e8a663b"
+    },
+    "docs/guide/assets/guide-axi-outstanding-capacity-2-t10000ps-desktop.png": {
+      "bytes": 17439,
+      "sha256": "b5fb68d412907db0cf161712ffc7cd318dcb31ab4a72df759cc685078fe29e83"
+    },
+    "docs/guide/assets/guide-axi-outstanding-capacity-2-t10000ps-mobile.png": {
+      "bytes": 13864,
+      "sha256": "ff6f2a40441f44a4259958837a3f799dae5cd27c709c6b2f664797141b5e3a19"
+    },
+    "docs/guide/assets/guide-ethernet-beb-seed-seed-0-t6080000ps-desktop.png": {
+      "bytes": 27650,
+      "sha256": "53568494dcf3ec02305826228cf98171043b5ae5be0b9593bf5bde8b6e0f889c"
+    },
+    "docs/guide/assets/guide-ethernet-beb-seed-seed-0-t6080000ps-mobile.png": {
+      "bytes": 22056,
+      "sha256": "f3b72dc45353318d73f52880a7b8ea72c08f5b3ccef066292d10b10a0e4d4ca9"
+    },
+    "docs/guide/assets/guide-ethernet-beb-seed-seed-1-t6080000ps-desktop.png": {
+      "bytes": 27251,
+      "sha256": "ba93c75d6b6046b69617438c0b35e7e75496f650e45dad27b7aea4489f152ed5"
+    },
+    "docs/guide/assets/guide-ethernet-beb-seed-seed-1-t6080000ps-mobile.png": {
+      "bytes": 22438,
+      "sha256": "17604702c91a5a49af6f864ae4d3ac7cecc08b025ef32fc2d689d46a26048b19"
+    },
+    "docs/guide/assets/guide-ethernet-cbs-gate-closed-t1500000ps-desktop.png": {
+      "bytes": 36478,
+      "sha256": "6cf0a68a4f3f806ba8c031dbdd2612aa92457de3fbaca9b05b3a9caa6c49c316"
+    },
+    "docs/guide/assets/guide-ethernet-cbs-gate-closed-t1500000ps-mobile.png": {
+      "bytes": 34318,
+      "sha256": "4f43919106fde928f1728d9bdb15d8b1b3705d9bb1941902b9b63434cd4cbe61"
+    },
+    "docs/guide/assets/guide-ethernet-cbs-gate-closed-t2688000ps-desktop.png": {
+      "bytes": 36677,
+      "sha256": "2633bd27e3d03918c0db101f216930735db98cd7611b43f4dcdd929fa62f224b"
+    },
+    "docs/guide/assets/guide-ethernet-cbs-gate-closed-t2688000ps-mobile.png": {
+      "bytes": 34534,
+      "sha256": "a668abfa59045c50e7b380f9ea4c9b5858d673603b6cb6833bffd827d1f3b6c2"
+    },
+    "docs/guide/assets/guide-ethernet-cbs-gate-open-t1500000ps-desktop.png": {
+      "bytes": 36674,
+      "sha256": "dd9bcf061010a16d913b215c35c11acf952c032211ee2388d228c1f447506ce1"
+    },
+    "docs/guide/assets/guide-ethernet-cbs-gate-open-t1500000ps-mobile.png": {
+      "bytes": 34666,
+      "sha256": "ac4e1d2682a8a617cc3ae370b3fca97fa78a949ec7d55c7c8a2c9d0ac0b1b7c4"
+    },
+    "docs/guide/assets/guide-ethernet-cbs-gate-open-t2688000ps-desktop.png": {
+      "bytes": 34387,
+      "sha256": "3ec350b0d8f5250c6193a041d69e39fdcdbec32657272869133f7adf490db2e2"
+    },
+    "docs/guide/assets/guide-ethernet-cbs-gate-open-t2688000ps-mobile.png": {
+      "bytes": 32181,
+      "sha256": "db069e02fcd16789bb7df0697bce4d03d646fc80654242a8982267c60cc85057"
+    },
+    "docs/guide/assets/guide-gateway-rx-capacity-rx-1-t500000000ps-desktop.png": {
+      "bytes": 98684,
+      "sha256": "e1be9df2d234391c11906e63ea2329103894fef737ba695e7d78ec9c6e0dd466"
+    },
+    "docs/guide/assets/guide-gateway-rx-capacity-rx-1-t500000000ps-mobile.png": {
+      "bytes": 52665,
+      "sha256": "a334b94913feb911bd2e6eeeb96d3c7057daf1130f3b6bb7602c077389376747"
+    },
+    "docs/guide/assets/guide-gateway-rx-capacity-rx-2-t500000000ps-desktop.png": {
+      "bytes": 123571,
+      "sha256": "653f50c64d1f9ec4626c5c48ad4cfee1b4f879ff54efd504324f97b68f568b13"
+    },
+    "docs/guide/assets/guide-gateway-rx-capacity-rx-2-t500000000ps-mobile.png": {
+      "bytes": 64313,
+      "sha256": "fc9d3b6ee2d0f83829ef55d918ef818be1ddeb7375d5f700e934fbb3d3f97c3d"
+    },
+    "docs/guide/downloads/axi-outstanding-inputs.zip": {
+      "bytes": 3369,
+      "sha256": "b0e491e344699501c719dbe2f02f282bdd69c1ea21ee75f30e3c493756a87b85"
+    },
+    "docs/guide/downloads/ethernet-beb-seed-inputs.zip": {
+      "bytes": 4450,
+      "sha256": "d501970dac0e99ce881a2acb35ec066583e6f044d5ef35f361ce29c937ec16f4"
+    },
+    "docs/guide/downloads/ethernet-cbs-gate-inputs.zip": {
+      "bytes": 4271,
+      "sha256": "3b7392b6153b18e07f65470efeb3238d671938df02766602c69842d60bf1c8c1"
+    },
+    "docs/guide/downloads/gateway-rx-capacity-inputs.zip": {
+      "bytes": 4273,
+      "sha256": "93ce2dcbc6df5e992f6a2bbb1692ed8b1d9cdecef456bfda302e443b6d94e120"
+    },
+    "docs/verification/results/axi-outstanding/artifact-ledger.json": {
+      "bytes": 11217,
+      "sha256": "0fabd85d1559130d7dc86b0789d6d7bc0e2267ab7204df1f612d21c088f77ec2"
+    },
+    "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-1/capacity.ini": {
+      "bytes": 183,
+      "sha256": "4c125e1a26c4b19d187c3beeb4df674e461f8ffdc4123630a0f93df3c06aba85"
+    },
+    "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-1/capacity.model.json": {
+      "bytes": 673,
+      "sha256": "e456272e35b87506966b3417383beecbfa3abcc4978e0c619b2c8b4608349a04"
+    },
+    "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-1/capacity.workload.json": {
+      "bytes": 295,
+      "sha256": "46c0048eb0f258c377ca53db007a056432c82e01b56b887f0c0b696c49f29444"
+    },
+    "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-1/models/demo/Main.ned": {
+      "bytes": 936,
+      "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+    },
+    "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-2/capacity.ini": {
+      "bytes": 183,
+      "sha256": "4c125e1a26c4b19d187c3beeb4df674e461f8ffdc4123630a0f93df3c06aba85"
+    },
+    "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-2/capacity.model.json": {
+      "bytes": 673,
+      "sha256": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92"
+    },
+    "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-2/capacity.workload.json": {
+      "bytes": 295,
+      "sha256": "46c0048eb0f258c377ca53db007a056432c82e01b56b887f0c0b696c49f29444"
+    },
+    "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-2/models/demo/Main.ned": {
+      "bytes": 936,
+      "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+    },
+    "docs/verification/results/axi-outstanding/measurements.json": {
+      "bytes": 49908,
+      "sha256": "c463a622c46d1a291ff2d6f56178799e342b0a577c2bf266dc1bd764752d1b9d"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/result/events.csv": {
+      "bytes": 2273,
+      "sha256": "c134b9ccb95f918a43290e664f7054e102324f321fbe032b29e5e1887325f3ef"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/result/manifest.json": {
+      "bytes": 648,
+      "sha256": "add11d2b1534bbc95d3c45fd8cab736fc0292b9fabf38770f9d708a35aa12543"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/result/results.json": {
+      "bytes": 65916,
+      "sha256": "9f592c72a7c84cd2633ffb4a8a7114e600ea59cf1312471764efb5ed4d93f304"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/result/summary.csv": {
+      "bytes": 5465,
+      "sha256": "c14998e05813773dcea2c252b0822760048a3b62dc200cfbfdb58662106a051b"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/run.log": {
+      "bytes": 742,
+      "sha256": "06a9fae0e2353ef260888daeb23e6f32f06a2b3ab2bbb29cbe3265d40cdefd1c"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/validate.log": {
+      "bytes": 309,
+      "sha256": "f97a69e734ed49251512316b7616b529678a718076fdcf7aebc0ba9fe63c3a6b"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/view.log": {
+      "bytes": 458,
+      "sha256": "83cce4abaed46243d626b551bb22d585982ee674bca7799bef14df5afd5befbc"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-1/viewer.html": {
+      "bytes": 409359,
+      "sha256": "402671e3577d16cfd85de1f29ac4d03aca4e620e7a9466404d23e0dcb403434c"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/result/events.csv": {
+      "bytes": 3103,
+      "sha256": "fec0fc3f256aec1af36ca7ebbac4fe6dd508c61f30f10bec8db940f96d109c2f"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/result/manifest.json": {
+      "bytes": 648,
+      "sha256": "16185f437ba374d6946310ef11c80a0490b5bde3e51e2db7914f867aa9cb34bb"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/result/results.json": {
+      "bytes": 68603,
+      "sha256": "f4189785cd7c62705a31fd2d1493a94fe2f968f7f442341691d625922c60a5cc"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/result/summary.csv": {
+      "bytes": 5465,
+      "sha256": "bd261fa5c46c52ddf98fb6c4f8929d6fcdd240e5c8d089678d34248b4c2695b1"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/run.log": {
+      "bytes": 742,
+      "sha256": "e1b1634f7d068b239a98cd1283ecc0b986f0cd3caaaf3a86fd0bee8a13b7a56b"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/validate.log": {
+      "bytes": 309,
+      "sha256": "91363828c3348d5cd317b14c6b3bbff288d9b71f1927d610a9b268268836851e"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/view.log": {
+      "bytes": 458,
+      "sha256": "52c74e5982241181a01626080a3b528672bcc6836b806ed92e096c1a92267173"
+    },
+    "docs/verification/results/axi-outstanding/repository/capacity-2/viewer.html": {
+      "bytes": 412060,
+      "sha256": "7b552f78e3e802f2455f1b7945382e106836f62bc3e1a3b415063c7206d1eb9c"
+    },
+    "docs/verification/results/axi-outstanding/viewer-browser.json": {
+      "bytes": 8745,
+      "sha256": "a9dcb9ace48f2e477652164fb55f049b3d69ba09a3f874b3772611e3ba26ce36"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/result/events.csv": {
+      "bytes": 2273,
+      "sha256": "1626c772d44acf4b0b09619a35ebd17f34e737fd2646cdfd2d1a77cbfbef9950"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/result/manifest.json": {
+      "bytes": 648,
+      "sha256": "f864dc194a9ecea069e8185fbd835e358ce6d7c492103f97d222b28ffa1ab9e4"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/result/results.json": {
+      "bytes": 66051,
+      "sha256": "470ef6e900bdcd8bf9cc7067cad26fddd879a710b3c89843d95d781d3106af13"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/result/summary.csv": {
+      "bytes": 5465,
+      "sha256": "cbb401f623560bc633042b6f1b496c6f51a9e231b98467d4408b4b857802a713"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/run.log": {
+      "bytes": 748,
+      "sha256": "440220cd83504a084ca01926c8cd86b6cf1aa235ba3b43e4dccb09f73a59b47c"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/validate.log": {
+      "bytes": 336,
+      "sha256": "617ac0add16420db0db661b7ce7d5491ace3612dc6c8510b58a347659b6c4289"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/view.log": {
+      "bytes": 437,
+      "sha256": "6adf5aad689697c34df757063b21e478839e4050d00b244280881c2dbf4a179d"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-1/viewer.html": {
+      "bytes": 409494,
+      "sha256": "3f3ede1b3c5dbea12e55b5f67628cf3df3e94718e5d70cedf618b5d1210f4553"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/result/events.csv": {
+      "bytes": 3103,
+      "sha256": "325c9098a6e6ccd16498436ef3396cb41547cca7347263d0ba25f16fd3b9734b"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/result/manifest.json": {
+      "bytes": 648,
+      "sha256": "bb2dfc7edcd8f328aa23d8e168113fd959b44ff04ffa19ac52cd1897dd4182c7"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/result/results.json": {
+      "bytes": 68738,
+      "sha256": "b83520cdf7bfeba9656f942f76923254a0453b42af26aef550b8b0dad18bb8b7"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/result/summary.csv": {
+      "bytes": 5465,
+      "sha256": "14db89ae8eea5aa372868e92ccf9468d948e4a6c958086033609d10543300cb0"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/run.log": {
+      "bytes": 748,
+      "sha256": "58dac17b51f6251397d112c230b6e0ebd18c89c13c416c7b450352191d0613be"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/validate.log": {
+      "bytes": 336,
+      "sha256": "63c4f514db400074db132aefab4cad703157a9079008a0766834f9df87a2bb61"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/view.log": {
+      "bytes": 437,
+      "sha256": "dc4ffeed74656a5f19753a1ca0f934bdd00ee3b74588d95171aea7bb98dc43e9"
+    },
+    "docs/verification/results/axi-outstanding/zip/capacity-2/viewer.html": {
+      "bytes": 412195,
+      "sha256": "a5fd6a3a9e1fa7fa4d4f7d0175a7d1c0d550237c7970878e5fcbce3954438503"
+    },
+    "docs/verification/results/ethernet-beb-seed/artifact-ledger.json": {
+      "bytes": 16820,
+      "sha256": "b4f1823f844c5231e4904c695e6d0d46532ac34826da8297d071083f18f96e56"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-0/collision.ini": {
+      "bytes": 196,
+      "sha256": "5ff15dd5ad71a384f38849a6fb07c64df9ffac3b4459333b914dae317ebf1a1d"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-0/collision.model.json": {
+      "bytes": 606,
+      "sha256": "a96a9de5d5320bf21deb1314d0df219b3ec60bbc687627f40897cbdfb3cb363d"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-0/collision.workload.json": {
+      "bytes": 538,
+      "sha256": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-0/models/media/Main.ned": {
+      "bytes": 161,
+      "sha256": "9051be3e4df98b8304bc0dd844c7990502ba172be92bbb561171e3b8c309fd92"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-0/models/media/Mix.ned": {
+      "bytes": 343,
+      "sha256": "c849fa8f15cb7c4a17f89a4173e0cb197d1b315da9b13195ccbe327bfb3c0cd0"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-0/models/media/Types.ned": {
+      "bytes": 596,
+      "sha256": "bca7c42e10e09734007d4fdfc94dfa6d41ae358017549df33d3f66f7aa710df0"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-1/collision.ini": {
+      "bytes": 196,
+      "sha256": "5ff15dd5ad71a384f38849a6fb07c64df9ffac3b4459333b914dae317ebf1a1d"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-1/collision.model.json": {
+      "bytes": 606,
+      "sha256": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-1/collision.workload.json": {
+      "bytes": 538,
+      "sha256": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-1/models/media/Main.ned": {
+      "bytes": 161,
+      "sha256": "9051be3e4df98b8304bc0dd844c7990502ba172be92bbb561171e3b8c309fd92"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-1/models/media/Mix.ned": {
+      "bytes": 343,
+      "sha256": "c849fa8f15cb7c4a17f89a4173e0cb197d1b315da9b13195ccbe327bfb3c0cd0"
+    },
+    "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-1/models/media/Types.ned": {
+      "bytes": 596,
+      "sha256": "bca7c42e10e09734007d4fdfc94dfa6d41ae358017549df33d3f66f7aa710df0"
+    },
+    "docs/verification/results/ethernet-beb-seed/measurements.json": {
+      "bytes": 31356,
+      "sha256": "00957ee159d3baae4147a4bbf1091961585f7e21ede52f5f3f10926fc17a5eea"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/repeat/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/repeat/events.csv": {
+      "bytes": 1787,
+      "sha256": "5548df9b53f8d4ad1c8c78731b2287812098d87ee7afd947bd8b67d85a546d5e"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/repeat/manifest.json": {
+      "bytes": 648,
+      "sha256": "265b6c24273ba28cd63c32d36e8e1b67ae8d4f6301be50fa76e8920df40eb646"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/repeat/results.json": {
+      "bytes": 83051,
+      "sha256": "7779dade6e2c0d3baa1d2190a0bd7b434e942b2b300a6da18f85ea8e2d3c7c77"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/repeat/summary.csv": {
+      "bytes": 2235,
+      "sha256": "c1b558dad47a9b63dd8430866324a4bad44ac44c5e3fad4b3b8d625fecd6ee38"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/repeat.log": {
+      "bytes": 743,
+      "sha256": "427e5e96e005af921b85935bfddc1ee00b066ac3b7daa015d1f51a2ef6734667"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/result/events.csv": {
+      "bytes": 1787,
+      "sha256": "f350472d3b4587d0707a3b1824f7d4ef170aaa499d5477412ed09485ae520923"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/result/manifest.json": {
+      "bytes": 648,
+      "sha256": "e2a989f29fdff8eafcfde33ac8f0dc308353e2d751c06ff086d51d71938b66b9"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/result/results.json": {
+      "bytes": 83051,
+      "sha256": "55f3e02eb9eed957dd2c2214bb056a8af40a525951faccf7024d2136b064c60f"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/result/summary.csv": {
+      "bytes": 2235,
+      "sha256": "b176db6865fdb500dfc4f787ad8ab3202e399f4bed5b307899dbd7b39d6c10eb"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/run.log": {
+      "bytes": 743,
+      "sha256": "7e9c44fa63b71db30e591df4cec6e21aa9448d06f5fbba58c49fd5b9038fbf1e"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/validate.log": {
+      "bytes": 309,
+      "sha256": "02d8c2baa31841c9c11a15813232ccbb9e7e5160161284a6e7ea9f65be2decb2"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/view.log": {
+      "bytes": 452,
+      "sha256": "1a619f474950fd6b2dca3a02c2bb7eba766f273c07cacb01e53cda5d6628960b"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-0/viewer.html": {
+      "bytes": 426594,
+      "sha256": "80c3a541807d2e988d30f1dbce373d3820c63bced07ff55822c6ab5d1c0242a7"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/repeat/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/repeat/events.csv": {
+      "bytes": 1549,
+      "sha256": "97b3e2e120add250b1599314ac3eb7b93b557509856de0e372fffbe4a3376514"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/repeat/manifest.json": {
+      "bytes": 648,
+      "sha256": "b7def12e1502ec24baf599e989646a091a179a1c08535d10d25d0124f877c189"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/repeat/results.json": {
+      "bytes": 80961,
+      "sha256": "333f1a39206b6636ddc41ac0f1fc50146302acef83b4fbb5a00d451a5d386d4a"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/repeat/summary.csv": {
+      "bytes": 2235,
+      "sha256": "a9579f416a24613b66ffe192951661bc6c0e4f27fa494161481cc23fe9f560a0"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/repeat.log": {
+      "bytes": 741,
+      "sha256": "091913bb198ef795d02b5d7e36d06a4ad56f7a0fc72e35d25d59eeda3a3894ab"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/result/events.csv": {
+      "bytes": 1549,
+      "sha256": "492e1f82630d902c767d1851f3e3914d2eb7b49df68d713d4f978c7a2cc3fb7b"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/result/manifest.json": {
+      "bytes": 648,
+      "sha256": "37cefaa1c3fa79513880a723217d5bdfb85b63d51a9401383b8aa7ac36362291"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/result/results.json": {
+      "bytes": 80961,
+      "sha256": "a9312dbfab7be69280401d23f56d5b2ddb7820d73847872cb62ac23d9178a03a"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/result/summary.csv": {
+      "bytes": 2235,
+      "sha256": "31eb331eee258acab481585660d90013c681afe1f2039b322cbbf4b68f797a53"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/run.log": {
+      "bytes": 743,
+      "sha256": "0becca017bf0d3e8c6625d4234308ca598b901ae897de96892ba6f93b96789c8"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/validate.log": {
+      "bytes": 309,
+      "sha256": "6cb3916d24b1617514788ad4f8f0d1d81b7c42fd7139dc20a3ef8140e9afad12"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/view.log": {
+      "bytes": 452,
+      "sha256": "ee850c7107ecec14fa195c29f70e017ae3bf98b99279f1498b29724a77bba041"
+    },
+    "docs/verification/results/ethernet-beb-seed/repository/seed-1/viewer.html": {
+      "bytes": 424504,
+      "sha256": "07c1a4d0437cbb5480246928d86fa30212b90cc2a578509aa3dc7d0cc57ebb55"
+    },
+    "docs/verification/results/ethernet-beb-seed/viewer-browser.json": {
+      "bytes": 13629,
+      "sha256": "e29984db5f8f2ce44ec8c5fa5fb281bea6ec344cbdb3ad66930c9f342259ea76"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/repeat/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/repeat/events.csv": {
+      "bytes": 1787,
+      "sha256": "f41cc7d722849b4397d1d649573c27a119fefe24d5b8d7aac0e78fc17e8ccc9d"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/repeat/manifest.json": {
+      "bytes": 648,
+      "sha256": "f80aabe4a9b1dcacc595f465bd813c59833cf92294cbb5785a76d6623164ba4e"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/repeat/results.json": {
+      "bytes": 83254,
+      "sha256": "02284b2be0343eff96006024273996091474bc303da5f7cffe6fd25b3f096f83"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/repeat/summary.csv": {
+      "bytes": 2235,
+      "sha256": "055a4709cf6a157be644715991ee71756bfe08a702691c62b98e6c77b1956235"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/repeat.log": {
+      "bytes": 751,
+      "sha256": "230d525d3e32d2f6c5a43241ebede7eec0a43616df354e61b078d6807edd0428"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/result/events.csv": {
+      "bytes": 1787,
+      "sha256": "d7da6d0715b7677d822eb710c4dab39ab75c6a52b2ebe9b2b170ab418b91f7bc"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/result/manifest.json": {
+      "bytes": 648,
+      "sha256": "cfcd1d2beedd22280dd74a695db82b2a580575789b8f5b2a954bd606d7588d2b"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/result/results.json": {
+      "bytes": 83254,
+      "sha256": "bc81bb0d750765fcf3a843d4141d07f1c79fd26af6d38236fb37640a8ad9ee00"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/result/summary.csv": {
+      "bytes": 2235,
+      "sha256": "54884d17521de9857a338804ad56012332f902ab9991f2097f5fc6252f4b2887"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/run.log": {
+      "bytes": 751,
+      "sha256": "a6e0b40111dfbabdfe7bd60da3f260f2438156dfb599ca14bb77b6c181c26cf6"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/validate.log": {
+      "bytes": 338,
+      "sha256": "4fc7da1e382c6507901772a348e81c0050c4d58267eed7e9a9284e6ac0a13052"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/view.log": {
+      "bytes": 431,
+      "sha256": "6b698bd1ca521d8b07e44408172472b13398836c7d33161c36f5430b6d891ae2"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-0/viewer.html": {
+      "bytes": 426797,
+      "sha256": "cb515759cba27945d7c5f26e1106b349b2541487d86443243cad66d42cdd6313"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/repeat/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/repeat/events.csv": {
+      "bytes": 1549,
+      "sha256": "15f021a48e5747fea340930a08d382ef607c33933264e17f2a481301b49f83b1"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/repeat/manifest.json": {
+      "bytes": 648,
+      "sha256": "7c48a9a2f66fd8469485dd7ac8f027b4b3df1b039b4c3df8e72a38cd233eec05"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/repeat/results.json": {
+      "bytes": 81164,
+      "sha256": "5692ff2a3c9b687cff3d6941cbcc9f2cd2c9230529fb35c4ac40709f871af99f"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/repeat/summary.csv": {
+      "bytes": 2235,
+      "sha256": "64bd1a5cb25874270d22d009a76339cbbad0b86947087ada1f02b5a0b2b271cc"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/repeat.log": {
+      "bytes": 750,
+      "sha256": "1862a07a27c8fadb70d13d149e677cfa62d52e7add539e61c26b3e07851b8581"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/result/events.csv": {
+      "bytes": 1549,
+      "sha256": "b648ce3cf936dab9464a1766d7dd62c0937ab07e93758bbdd2a130049764687a"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/result/manifest.json": {
+      "bytes": 648,
+      "sha256": "bb74e894aebc0e9ee5843620dab5298c4a5a3f1f7f620c7cf993318e27772f3f"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/result/results.json": {
+      "bytes": 81164,
+      "sha256": "93127099e92c791e65f9ac1923202c37644da8bf306f3dc5a2b7ae11d371143b"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/result/summary.csv": {
+      "bytes": 2235,
+      "sha256": "b6a90136183e492f52c55314a018f00ba0164fa3ca3d062cb2e0617c2001f217"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/run.log": {
+      "bytes": 751,
+      "sha256": "436079a56da29159178fad8df7cf7def25040febbcc76c3362da497d9fc237cd"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/validate.log": {
+      "bytes": 338,
+      "sha256": "a31bea314008533dd41c912f503483a5f51762db2f53df4c3d7dadea831eb1a0"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/view.log": {
+      "bytes": 431,
+      "sha256": "0c256601caf2ca0c6734514728d401c8601e93d36ee3d0ef0a6aa3f3a896a961"
+    },
+    "docs/verification/results/ethernet-beb-seed/zip/seed-1/viewer.html": {
+      "bytes": 424707,
+      "sha256": "2b798f981a7e55f6c5d519fcf641327d4d2d65b190c45400eff392ae151d594a"
+    },
+    "docs/verification/results/ethernet-cbs-gate/artifact-ledger.json": {
+      "bytes": 11894,
+      "sha256": "959116c59860e7e5abdc995218161f43146fbbca4282be5c8fb81759b6c8c37d"
+    },
+    "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/closed/cbs-gated-model.json": {
+      "bytes": 4946,
+      "sha256": "cac9820fe24fff0543bb61b05159b5b3d4d0213c37c717376f073beb6f1a23de"
+    },
+    "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/closed/cbs-gated-workload.json": {
+      "bytes": 460,
+      "sha256": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181"
+    },
+    "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/closed/cbs-gated.ini": {
+      "bytes": 189,
+      "sha256": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548"
+    },
+    "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/closed/models/ethtsn/Main.ned": {
+      "bytes": 548,
+      "sha256": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+    },
+    "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/open/cbs-gated-model.json": {
+      "bytes": 4979,
+      "sha256": "3513838b6fa887d576fc77589662fa0e5ef12b425815ebb094b75ec19a565462"
+    },
+    "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/open/cbs-gated-workload.json": {
+      "bytes": 460,
+      "sha256": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181"
+    },
+    "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/open/cbs-gated.ini": {
+      "bytes": 189,
+      "sha256": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548"
+    },
+    "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/open/models/ethtsn/Main.ned": {
+      "bytes": 548,
+      "sha256": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+    },
+    "docs/verification/results/ethernet-cbs-gate/measurements.json": {
+      "bytes": 58064,
+      "sha256": "f78bc5687454381531c85e39fe4c5e1e73bdf2f232af965ad08c79d169958d59"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/result/events.csv": {
+      "bytes": 13984,
+      "sha256": "e8e94aa52134355af3055444ceff6019a65507be390eb419d87295d26ead0b1c"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/result/manifest.json": {
+      "bytes": 651,
+      "sha256": "61f6a87cf6c7d8c21523a3c9287baea83b714ae1e748368bded1487ee3383cc8"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/result/results.json": {
+      "bytes": 265445,
+      "sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/result/summary.csv": {
+      "bytes": 27226,
+      "sha256": "d6a65391293a0cbf19465d940d5f3461e674268a4b6fe2b227e43e227c00cb18"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/run.log": {
+      "bytes": 734,
+      "sha256": "d42c24bc5c96bdee23bf554de7572fb009d587b25b1d006540ba018d698e150c"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/validate.log": {
+      "bytes": 309,
+      "sha256": "760b5ae5c902cc014b7bbada8e9cda0ddd1d97b4630b56cc29dceb57dfd195c1"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/view.log": {
+      "bytes": 452,
+      "sha256": "6f6c28c682a99160592de16d5a6c152d7b222b7421ea44f6b0a6d11a28697902"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/closed/viewer.html": {
+      "bytes": 607652,
+      "sha256": "9dd33609d7aea04bc40a2469383513b3e4dbcefafe0c51108a0abe4e21943953"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/result/events.csv": {
+      "bytes": 13984,
+      "sha256": "7212a04a6caa2840e8e041ef3f7e66aff88d7681d3392a763d3d5a1ee3dd4a80"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/result/manifest.json": {
+      "bytes": 651,
+      "sha256": "d6566725d40224700f9c5ae56e4fe0485d547f7e88fa5b15030c61b8b88c316b"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/result/results.json": {
+      "bytes": 261773,
+      "sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/result/summary.csv": {
+      "bytes": 27005,
+      "sha256": "8041bc82ff4686d4f97ba3da45ec5f746459fdd6db1742b1602c8c2240ac1a06"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/run.log": {
+      "bytes": 726,
+      "sha256": "97d8dbc44d56544bed6d45743375fa3f4451325b6a6917a8d5fabe422f3b78f9"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/validate.log": {
+      "bytes": 307,
+      "sha256": "409656c16bf367a6bd870f5e633d32506229acd2dcf02189ee6d6c550be20ea5"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/view.log": {
+      "bytes": 446,
+      "sha256": "8bbf778cb3b74d0727947d2a364912ca15957b99d0e1845efd374e4568fa440d"
+    },
+    "docs/verification/results/ethernet-cbs-gate/repository/open/viewer.html": {
+      "bytes": 603932,
+      "sha256": "fd37e77d5b7fa7793b6d0bcd593c0594f4e988234459c14fbf9a85cf706bccf1"
+    },
+    "docs/verification/results/ethernet-cbs-gate/viewer-browser.json": {
+      "bytes": 33745,
+      "sha256": "290faad0cc3810b8bb32883c567bc24cd6fea7892cbe2c6f8cf030dbc1a8688f"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/result/events.csv": {
+      "bytes": 13984,
+      "sha256": "b4c5c7cf2da99a625edf50db844e8f132c10b79667924012f85b5530e7625fe9"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/result/manifest.json": {
+      "bytes": 651,
+      "sha256": "0a75bfb96d2f2ff358ca91894c1b5c20897313dbc6842b4b4048e209f78c4551"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/result/results.json": {
+      "bytes": 265590,
+      "sha256": "cd14c1c4497a1f894dc163ad67a835870b88d48ed5f4ac3af829efdf2bb82005"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/result/summary.csv": {
+      "bytes": 27226,
+      "sha256": "e13a26522a6f227fea9e10648707ac60422e3a29878c340d548522fb5edba18a"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/run.log": {
+      "bytes": 742,
+      "sha256": "f63764e9b0670e34aeecdda53241fe9484c863ebf1ba895a15b16dd4448a935f"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/validate.log": {
+      "bytes": 338,
+      "sha256": "1e31ce5facb1bfb5d9b942245570d644cfa614e74268ca9af9af348462c320c7"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/view.log": {
+      "bytes": 431,
+      "sha256": "cfed6c8333c4162a12a6199efd910a7f8c6a214eaff2c4e37202a321c1cff62f"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/closed/viewer.html": {
+      "bytes": 607797,
+      "sha256": "1f5bd0ac06cb6d1e27c8e762573e0be9c4662c3bd5f0af8a4d777db79d6385cd"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/result/events.csv": {
+      "bytes": 13984,
+      "sha256": "6ebbc09229fabb25f2ebfd0d5156418c79f0bb130c6aeb5e8e7459fa2ac318c3"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/result/manifest.json": {
+      "bytes": 651,
+      "sha256": "f33ceeb1a12c0f804ef89ab2200760180238279fb22fc9985ff42d87d9741045"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/result/results.json": {
+      "bytes": 261918,
+      "sha256": "71fb948ccb3820f2933bc7df741e8aff9cc919903a8f913f2c69ea31d478eb15"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/result/summary.csv": {
+      "bytes": 27005,
+      "sha256": "261a044969d2af06441eb241ab060d5b667261296a44b6ea0480dc953557f25d"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/run.log": {
+      "bytes": 734,
+      "sha256": "575b5237cff60963e06c9bc43b4a3ba42a8890e954f525282879a4595f15e494"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/validate.log": {
+      "bytes": 336,
+      "sha256": "72bddc896fb90eb39004f46e1de6f48a473b7dc861cc8d8c69738a0e841deac5"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/view.log": {
+      "bytes": 425,
+      "sha256": "58521416ff6e4b1ab42aa0fd735fbc7e282def0b7ad8ec10b633c1c3d2d216a6"
+    },
+    "docs/verification/results/ethernet-cbs-gate/zip/open/viewer.html": {
+      "bytes": 604077,
+      "sha256": "5db28772ee8da3f851bc3cacd4c0342aa36a0e7456b54f8fe2cba1aa96dc0d44"
+    },
+    "docs/verification/results/gateway-rx-capacity/artifact-ledger.json": {
+      "bytes": 11699,
+      "sha256": "c78a0455fae62b2e725728a6710d0b79a1683794333e123fe165438f1e17f4bd"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-1/buffered-fanout.ini": {
+      "bytes": 324,
+      "sha256": "d5e8a354f9368b68efc7987927c4a444837da02b271cfb4f7e35a9b22dca573d"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-1/buffered-routing.json": {
+      "bytes": 469,
+      "sha256": "3259374a48535d99b79ab9fb9014f7e75be5ecbf61f72a17bd746d53d91d8470"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-1/buffered-workload.json": {
+      "bytes": 267,
+      "sha256": "1e78941cb16ab1bf402c6bfd1ca394e55e891317d680067510c8bd5ffd2f6f66"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-1/models/gateway/Main.ned": {
+      "bytes": 737,
+      "sha256": "4dbe127bb949bf3c42af1142a99391ab3a74b8dcdfeded003db5c4992fd94d2f"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-1/models/gateway/Types.ned": {
+      "bytes": 1151,
+      "sha256": "1f926ca6c631e08ff7bb2529668ea01ee4ec943ee9e356e38e9594dd24a94114"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-2/buffered-fanout.ini": {
+      "bytes": 324,
+      "sha256": "d5e8a354f9368b68efc7987927c4a444837da02b271cfb4f7e35a9b22dca573d"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-2/buffered-routing.json": {
+      "bytes": 469,
+      "sha256": "b5141e71a913f2ffa95a11e10170ca3705977503495bbc8871b28dae35effeca"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-2/buffered-workload.json": {
+      "bytes": 267,
+      "sha256": "1e78941cb16ab1bf402c6bfd1ca394e55e891317d680067510c8bd5ffd2f6f66"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-2/models/gateway/Main.ned": {
+      "bytes": 737,
+      "sha256": "4dbe127bb949bf3c42af1142a99391ab3a74b8dcdfeded003db5c4992fd94d2f"
+    },
+    "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-2/models/gateway/Types.ned": {
+      "bytes": 1151,
+      "sha256": "1f926ca6c631e08ff7bb2529668ea01ee4ec943ee9e356e38e9594dd24a94114"
+    },
+    "docs/verification/results/gateway-rx-capacity/measurements.json": {
+      "bytes": 72270,
+      "sha256": "bdc67a10e2e71e7101e62416323e8a8a9825e502fd8925d3bff95a04732b5b72"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/result/events.csv": {
+      "bytes": 39814,
+      "sha256": "eae88ca9ca8f8ae113e34acdd6df188afd152abebcd90aaf297b189e613747a4"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/result/manifest.json": {
+      "bytes": 645,
+      "sha256": "cbac7ea189cd8d573affd3a4fb583b0340b1ad3c6fdb238e89ad78cc83982536"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/result/results.json": {
+      "bytes": 288398,
+      "sha256": "4a5e896b15c424babdc2df565e025e6ac10953d860c03f6217bc0e82239b4dce"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/result/summary.csv": {
+      "bytes": 27648,
+      "sha256": "cca5586a24539e49a5186ad3d971f199bdb098bce0a4a81af8d0d87b955ae5f8"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/run.log": {
+      "bytes": 746,
+      "sha256": "5418cd1a80fe8cab1eefbf5041f01529c6b86f5660bbc0ef4c4ebe5e503473f5"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/validate.log": {
+      "bytes": 318,
+      "sha256": "0a26e416150aee35c2827dc5be3d6b5ac2814e74f6769261e7ce3e3fe7d8bf3f"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/view.log": {
+      "bytes": 452,
+      "sha256": "db66348f18570e90fab8f846de8cbc84012e0af033c01e147f3427db9e5df827"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-1/viewer.html": {
+      "bytes": 629558,
+      "sha256": "e6b5850de309be9a2b783d6d5ae03980528772fe75794498854ad9b88206edb1"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/result/events.csv": {
+      "bytes": 42139,
+      "sha256": "59c4870b8efc964d4af61f7a63d4402b58f3547390117e1ae203bff63f832bfe"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/result/manifest.json": {
+      "bytes": 645,
+      "sha256": "4ea4cde2f1443c605f372ff9bcfcc7d32055510cb05c636ba30e7ba64be193ec"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/result/results.json": {
+      "bytes": 296553,
+      "sha256": "26468f087662ee56846cff6dc1f1ac8dc92f3575a5dada9fc440825c8402c527"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/result/summary.csv": {
+      "bytes": 27648,
+      "sha256": "dc140da2c373608ee96c7ade553d68824291dfccfa8b66a1028cbdf546f12673"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/run.log": {
+      "bytes": 747,
+      "sha256": "35809d8e7a99aab98923d7ef460d3d7872a3acdf498e0cfa7af41054310e1eec"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/validate.log": {
+      "bytes": 318,
+      "sha256": "ee886b9eebc252826868b3eb50e78baa13fe782d5b5f936f770ec91cebb327f8"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/view.log": {
+      "bytes": 452,
+      "sha256": "7315664c03dcd97ebfe9358b6a81bdd944619e8c72f521aed23e4fa5479e05cd"
+    },
+    "docs/verification/results/gateway-rx-capacity/repository/rx-2/viewer.html": {
+      "bytes": 637663,
+      "sha256": "5595812d088f9b28fa549955cacf583d8cd6d5e2efc72a24ce33a7d7a2e678a5"
+    },
+    "docs/verification/results/gateway-rx-capacity/viewer-browser.json": {
+      "bytes": 68219,
+      "sha256": "ee9edd65d0726c2e58af7922cb310b75f8b2394115d10e632beb31cd350ff6f5"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/result/events.csv": {
+      "bytes": 39814,
+      "sha256": "3e9e8da2fa208b7af71a0501afd9b625411672c7267ea60e8e051eef168d7cd2"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/result/manifest.json": {
+      "bytes": 645,
+      "sha256": "61835c67d6a26e2749c738bf4bd44759055b9bcb483feac0a6da9b32966c8541"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/result/results.json": {
+      "bytes": 288584,
+      "sha256": "5d71c741f5b56c01d9be3f81cb327073e9657744345ac69eff9ea03034532bff"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/result/summary.csv": {
+      "bytes": 27648,
+      "sha256": "fc7f50e34e5f5b2f1e18f55e848c717859fbef94e79c411ebadd1c3c4e68d5c7"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/run.log": {
+      "bytes": 757,
+      "sha256": "98e5a06d70ce62b27dc3442ac4388eb289fc5289411556cd23f17c5fbcc1e642"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/validate.log": {
+      "bytes": 349,
+      "sha256": "1172f4193727028631f9c5da6a06886f54be59fd27ab0a3992c821fdd1bdaf72"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/view.log": {
+      "bytes": 431,
+      "sha256": "4ee73d4919c5def287d58c5aa9ca2d5f6e581a57fc8ba051a263fc28fa24d66b"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-1/viewer.html": {
+      "bytes": 629744,
+      "sha256": "4d2fc26ea350503f224b5e5d2c19698389bc0a648f733dde90d6d7bbafcec350"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/result/diagnostics.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/result/events.csv": {
+      "bytes": 42139,
+      "sha256": "77a11c4cb00625bf66b808c66e49c4c497eb60aa29fad44c75305ec02ed45836"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/result/manifest.json": {
+      "bytes": 645,
+      "sha256": "977c1c44ef6d884f2fbfc6f7a0b19ceb7fb9ac9da7b9fca1185878b4d40ae033"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/result/results.json": {
+      "bytes": 296739,
+      "sha256": "88fd06ee513a766eed368ad7af31e09ada2eede458ab13666c12f87064ee8b1a"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/result/summary.csv": {
+      "bytes": 27648,
+      "sha256": "0e368dcea733d40bd0ecd0c3590d779eb51060d65d7021ed2812669858a6f491"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/run.log": {
+      "bytes": 757,
+      "sha256": "d22d53e6cf936c1ca2b600ef90528fa114a296ef4cbedaf05fa7e0856aed9a3e"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/validate.log": {
+      "bytes": 349,
+      "sha256": "b8f7b8469e9587c989880e7f788fdd934263ef2ca53e8883ea73e40502552d47"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/view.log": {
+      "bytes": 431,
+      "sha256": "11f52b7acf5ce595da3856c3266061d055a669498f96af04bcebf0f0f40a95a1"
+    },
+    "docs/verification/results/gateway-rx-capacity/zip/rx-2/viewer.html": {
+      "bytes": 637849,
+      "sha256": "2d3b15258fa27809d5adb1113cc23fa9a28d17709a02aabfa232be2aa0f2f166"
+    },
+    "examples/guide/axi-outstanding/capacity-1/capacity.ini": {
+      "bytes": 183,
+      "sha256": "4c125e1a26c4b19d187c3beeb4df674e461f8ffdc4123630a0f93df3c06aba85"
+    },
+    "examples/guide/axi-outstanding/capacity-1/capacity.model.json": {
+      "bytes": 673,
+      "sha256": "e456272e35b87506966b3417383beecbfa3abcc4978e0c619b2c8b4608349a04"
+    },
+    "examples/guide/axi-outstanding/capacity-1/capacity.workload.json": {
+      "bytes": 295,
+      "sha256": "46c0048eb0f258c377ca53db007a056432c82e01b56b887f0c0b696c49f29444"
+    },
+    "examples/guide/axi-outstanding/capacity-1/models/demo/Main.ned": {
+      "bytes": 936,
+      "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+    },
+    "examples/guide/axi-outstanding/capacity-2/capacity.ini": {
+      "bytes": 183,
+      "sha256": "4c125e1a26c4b19d187c3beeb4df674e461f8ffdc4123630a0f93df3c06aba85"
+    },
+    "examples/guide/axi-outstanding/capacity-2/capacity.model.json": {
+      "bytes": 673,
+      "sha256": "962f0f51efe368fb068a6452aaa4570be7c7b63be6a358b352ffc0b071886d92"
+    },
+    "examples/guide/axi-outstanding/capacity-2/capacity.workload.json": {
+      "bytes": 295,
+      "sha256": "46c0048eb0f258c377ca53db007a056432c82e01b56b887f0c0b696c49f29444"
+    },
+    "examples/guide/axi-outstanding/capacity-2/models/demo/Main.ned": {
+      "bytes": 936,
+      "sha256": "8307cd0e797acc5147fd891dbe2fb1b30fe0ed1d8acd2d619834c4ec44ff5bcd"
+    },
+    "examples/guide/ethernet-beb-seed/seed-0/collision.ini": {
+      "bytes": 196,
+      "sha256": "5ff15dd5ad71a384f38849a6fb07c64df9ffac3b4459333b914dae317ebf1a1d"
+    },
+    "examples/guide/ethernet-beb-seed/seed-0/collision.model.json": {
+      "bytes": 606,
+      "sha256": "a96a9de5d5320bf21deb1314d0df219b3ec60bbc687627f40897cbdfb3cb363d"
+    },
+    "examples/guide/ethernet-beb-seed/seed-0/collision.workload.json": {
+      "bytes": 538,
+      "sha256": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1"
+    },
+    "examples/guide/ethernet-beb-seed/seed-0/models/media/Main.ned": {
+      "bytes": 161,
+      "sha256": "9051be3e4df98b8304bc0dd844c7990502ba172be92bbb561171e3b8c309fd92"
+    },
+    "examples/guide/ethernet-beb-seed/seed-0/models/media/Mix.ned": {
+      "bytes": 343,
+      "sha256": "c849fa8f15cb7c4a17f89a4173e0cb197d1b315da9b13195ccbe327bfb3c0cd0"
+    },
+    "examples/guide/ethernet-beb-seed/seed-0/models/media/Types.ned": {
+      "bytes": 596,
+      "sha256": "bca7c42e10e09734007d4fdfc94dfa6d41ae358017549df33d3f66f7aa710df0"
+    },
+    "examples/guide/ethernet-beb-seed/seed-1/collision.ini": {
+      "bytes": 196,
+      "sha256": "5ff15dd5ad71a384f38849a6fb07c64df9ffac3b4459333b914dae317ebf1a1d"
+    },
+    "examples/guide/ethernet-beb-seed/seed-1/collision.model.json": {
+      "bytes": 606,
+      "sha256": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c"
+    },
+    "examples/guide/ethernet-beb-seed/seed-1/collision.workload.json": {
+      "bytes": 538,
+      "sha256": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1"
+    },
+    "examples/guide/ethernet-beb-seed/seed-1/models/media/Main.ned": {
+      "bytes": 161,
+      "sha256": "9051be3e4df98b8304bc0dd844c7990502ba172be92bbb561171e3b8c309fd92"
+    },
+    "examples/guide/ethernet-beb-seed/seed-1/models/media/Mix.ned": {
+      "bytes": 343,
+      "sha256": "c849fa8f15cb7c4a17f89a4173e0cb197d1b315da9b13195ccbe327bfb3c0cd0"
+    },
+    "examples/guide/ethernet-beb-seed/seed-1/models/media/Types.ned": {
+      "bytes": 596,
+      "sha256": "bca7c42e10e09734007d4fdfc94dfa6d41ae358017549df33d3f66f7aa710df0"
+    },
+    "examples/guide/ethernet-cbs-gate/closed/cbs-gated-model.json": {
+      "bytes": 4946,
+      "sha256": "cac9820fe24fff0543bb61b05159b5b3d4d0213c37c717376f073beb6f1a23de"
+    },
+    "examples/guide/ethernet-cbs-gate/closed/cbs-gated-workload.json": {
+      "bytes": 460,
+      "sha256": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181"
+    },
+    "examples/guide/ethernet-cbs-gate/closed/cbs-gated.ini": {
+      "bytes": 189,
+      "sha256": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548"
+    },
+    "examples/guide/ethernet-cbs-gate/closed/models/ethtsn/Main.ned": {
+      "bytes": 548,
+      "sha256": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+    },
+    "examples/guide/ethernet-cbs-gate/open/cbs-gated-model.json": {
+      "bytes": 4979,
+      "sha256": "3513838b6fa887d576fc77589662fa0e5ef12b425815ebb094b75ec19a565462"
+    },
+    "examples/guide/ethernet-cbs-gate/open/cbs-gated-workload.json": {
+      "bytes": 460,
+      "sha256": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181"
+    },
+    "examples/guide/ethernet-cbs-gate/open/cbs-gated.ini": {
+      "bytes": 189,
+      "sha256": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548"
+    },
+    "examples/guide/ethernet-cbs-gate/open/models/ethtsn/Main.ned": {
+      "bytes": 548,
+      "sha256": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+    },
+    "examples/guide/gateway-rx-capacity/rx-1/buffered-fanout.ini": {
+      "bytes": 324,
+      "sha256": "d5e8a354f9368b68efc7987927c4a444837da02b271cfb4f7e35a9b22dca573d"
+    },
+    "examples/guide/gateway-rx-capacity/rx-1/buffered-routing.json": {
+      "bytes": 469,
+      "sha256": "3259374a48535d99b79ab9fb9014f7e75be5ecbf61f72a17bd746d53d91d8470"
+    },
+    "examples/guide/gateway-rx-capacity/rx-1/buffered-workload.json": {
+      "bytes": 267,
+      "sha256": "1e78941cb16ab1bf402c6bfd1ca394e55e891317d680067510c8bd5ffd2f6f66"
+    },
+    "examples/guide/gateway-rx-capacity/rx-1/models/gateway/Main.ned": {
+      "bytes": 737,
+      "sha256": "4dbe127bb949bf3c42af1142a99391ab3a74b8dcdfeded003db5c4992fd94d2f"
+    },
+    "examples/guide/gateway-rx-capacity/rx-1/models/gateway/Types.ned": {
+      "bytes": 1151,
+      "sha256": "1f926ca6c631e08ff7bb2529668ea01ee4ec943ee9e356e38e9594dd24a94114"
+    },
+    "examples/guide/gateway-rx-capacity/rx-2/buffered-fanout.ini": {
+      "bytes": 324,
+      "sha256": "d5e8a354f9368b68efc7987927c4a444837da02b271cfb4f7e35a9b22dca573d"
+    },
+    "examples/guide/gateway-rx-capacity/rx-2/buffered-routing.json": {
+      "bytes": 469,
+      "sha256": "b5141e71a913f2ffa95a11e10170ca3705977503495bbc8871b28dae35effeca"
+    },
+    "examples/guide/gateway-rx-capacity/rx-2/buffered-workload.json": {
+      "bytes": 267,
+      "sha256": "1e78941cb16ab1bf402c6bfd1ca394e55e891317d680067510c8bd5ffd2f6f66"
+    },
+    "examples/guide/gateway-rx-capacity/rx-2/models/gateway/Main.ned": {
+      "bytes": 737,
+      "sha256": "4dbe127bb949bf3c42af1142a99391ab3a74b8dcdfeded003db5c4992fd94d2f"
+    },
+    "examples/guide/gateway-rx-capacity/rx-2/models/gateway/Types.ned": {
+      "bytes": 1151,
+      "sha256": "1f926ca6c631e08ff7bb2529668ea01ee4ec943ee9e356e38e9594dd24a94114"
+    }
+  }
+}

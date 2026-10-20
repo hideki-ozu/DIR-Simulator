@@ -34,6 +34,23 @@ function render(raw){let html=fs.readFileSync(path.join(assets,'index.html'),'ut
    }
    await page.locator('#eth-clear').click();assert.equal(await page.locator('[data-origin-time]').count(),0);assert.equal(await page.locator('#eth-origin-filter').inputValue(),'');
   }
+  if(m.composite){
+   for(const request of m.canModel.requests){
+    const origin=m.originByRecord.get('can/'+request.id);await page.locator('#eth-origin-filter').selectOption(origin);
+    const card=page.locator('[data-can-request='+JSON.stringify(request.id)+']'),target=page.locator('[data-origin-target='+JSON.stringify('can:'+request.id)+']').first();
+    const times=[...new Set([0n,m.end,...[request.generated,request.ready,request.sof,request.eof].filter(t=>t!==null).flatMap(t=>[...(t>0n?[t-1n]:[]),t,...(t<m.end?[t+1n]:[])])])].sort((a,b)=>a<b?-1:a>b?1:0);
+    async function checkDetail(time){
+     const expected=m.canApi.requestStateAt(request,time);assert.equal(await page.locator('#eth-details [data-current-state]').innerText(),expected);assert.equal(await page.locator('#eth-details [data-recorded-status]').innerText(),request.status);
+     assert((await card.innerText()).includes(` · ${expected} · SOF `));
+     const detail=JSON.parse(await page.locator('#eth-details pre').innerText());assert.equal(detail.request_id,request.id);assert.equal(detail.status,expected);assert.equal(detail.recorded_status,request.status);assert.equal(detail.origin_id,origin);
+     for(const receiver of request.receivers){const actual=detail.receivers.find(r=>r.receiver===receiver.receiver);assert.equal(actual.status,m.canApi.receiverStateAt(receiver,time));assert.equal(actual.recorded_status,receiver.status);}
+    }
+    // Exercise both existing cards and typed origin targets, including backward traversal.
+    for(const selection of [card,target]){await selection.click();for(const time of [...times,...times.slice().reverse()]){await page.locator('#eth-jump-value').fill(String(time));await page.locator('#eth-jump').click();await checkDetail(time);}}
+    await target.click();for(const group of E.originEvents(m,origin)){await page.locator('[data-origin-time='+JSON.stringify(String(group.time))+']').click();await checkDetail(group.time);}
+   }
+   await page.locator('#eth-clear').click();
+  }
   if(m.dynamic){assert(await page.locator('#eth-policy-panel').isVisible());assert((await page.locator('#eth-policy-state').innerText()).includes('Policy epoch'));assert.equal(await page.locator('#eth-policy-state [data-policy-port]').count(),m.directions.size);}
   if(m.tsn){assert(await page.locator('#eth-tsn-panel').isVisible());assert.equal(await page.locator('#eth-tsn-state [data-tsn-port]').count(),m.directions.size);}
   if(m.transfers.size){await page.locator('#eth-rows tr').first().click();assert((await page.locator('#eth-details').innerText()).includes('FCS'));if(m.dynamic)assert((await page.locator('#eth-details').innerText()).includes('Offer policy epoch'));}
