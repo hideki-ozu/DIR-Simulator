@@ -12,7 +12,7 @@
         "--source-root",
         "/tmp/dir-simulator-formal-116",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/all-measurements"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements"
       ],
       "exit_code": 0,
       "stdout": "ethernet-beb-seed: independent expectations, conservation, CSV equality PASS\nethernet-beb-seed: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\naxi-outstanding: independent expectations, conservation, CSV equality PASS\naxi-outstanding: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\nethernet-cbs-gate: independent expectations, conservation, CSV equality PASS\nethernet-cbs-gate: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\ngateway-rx-capacity: independent expectations, conservation, CSV equality PASS\ngateway-rx-capacity: fresh validate/run/view, manifest, one-field diff, ZIP equality PASS\n",
@@ -22,21 +22,21 @@
       "command": [
         "node",
         "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
-        "/tmp/dir-issue121-workflow-qa/all-measurements"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements"
       ],
       "exit_code": 0,
-      "stdout": "ethernet-beb-seed: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\naxi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nethernet-cbs-gate: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\ngateway-rx-capacity: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issue121-workflow-qa/all-measurements/viewer-captures\n",
+      "stdout": "ethernet-beb-seed: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\naxi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nethernet-cbs-gate: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\ngateway-rx-capacity: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements/viewer-captures\n",
       "stderr": ""
     },
     {
       "command": [
         "node",
         "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
-        "/tmp/dir-issue121-workflow-qa/all-measurements"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements"
       ],
       "exit_code": 1,
       "stdout": "",
-      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issue121-workflow-qa/all-measurements/viewer-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/all-measurements/viewer-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
     },
     {
       "command": [
@@ -47,7 +47,7 @@
         "--source-root",
         "/tmp/dir-simulator-formal-116",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/axi-measurements",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
         "--only",
         "axi-outstanding"
       ],
@@ -59,42 +59,42 @@
       "command": [
         "node",
         "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
-        "/tmp/dir-issue121-workflow-qa/axi-measurements",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
         "--only",
         "axi-outstanding",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/axi-captures"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures"
       ],
       "exit_code": 0,
-      "stdout": "axi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issue121-workflow-qa/axi-captures\n",
+      "stdout": "axi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures\n",
       "stderr": ""
     },
     {
       "command": [
         "node",
         "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
-        "/tmp/dir-issue121-workflow-qa/axi-measurements",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
         "--only",
         "axi-outstanding",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/axi-captures"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures"
       ],
       "exit_code": 1,
       "stdout": "",
-      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issue121-workflow-qa/axi-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
     },
     {
       "command": [
         "node",
         "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
-        "/tmp/dir-issue121-workflow-qa/axi-measurements",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
         "--only",
         "axi-outstanding",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/axi-captures-2"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures-2"
       ],
       "exit_code": 0,
-      "stdout": "axi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issue121-workflow-qa/axi-captures-2\n",
+      "stdout": "axi-outstanding: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/axi-captures-2\n",
       "stderr": ""
     },
     {
@@ -106,7 +106,7 @@
         "--source-root",
         "/tmp/dir-simulator-formal-116",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/gateway-measurements",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-measurements",
         "--only",
         "gateway-rx-capacity"
       ],
@@ -118,39 +118,39 @@
       "command": [
         "node",
         "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
-        "/tmp/dir-issue121-workflow-qa/gateway-measurements",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-measurements",
         "--only",
         "gateway-rx-capacity",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/gateway-captures"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-captures"
       ],
       "exit_code": 0,
-      "stdout": "gateway-rx-capacity: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issue121-workflow-qa/gateway-captures\n",
+      "stdout": "gateway-rx-capacity: exact cursor states, rollback, desktop/mobile actual PNG, offline requests PASS\nFresh capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-captures\n",
       "stderr": ""
     },
     {
       "command": [
         "node",
         "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
-        "/tmp/dir-issue121-workflow-qa/gateway-measurements",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-measurements",
         "--only",
         "gateway-rx-capacity",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/gateway-captures"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-captures"
       ],
       "exit_code": 1,
       "stdout": "",
-      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issue121-workflow-qa/gateway-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
+      "stderr": "AssertionError [ERR_ASSERTION]: refuse existing capture output: /tmp/dir-issues-20261020/issue121-final-clean-repro/gateway-captures\n    at main (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:19:2)\n    at Object.<anonymous> (/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs:80:26)\n    at Module._compile (node:internal/modules/cjs/loader:1706:14)\n    at Object..js (node:internal/modules/cjs/loader:1839:10)\n    at Module.load (node:internal/modules/cjs/loader:1441:32)\n    at Function._load (node:internal/modules/cjs/loader:1263:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n"
     },
     {
       "command": [
         "node",
         "/tmp/dir-simulator-issues-20261020/scripts/verify_capacity_comparisons_viewer.cjs",
-        "/tmp/dir-issue121-workflow-qa/axi-measurements",
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/axi-measurements",
         "--only",
         "missing",
         "--output",
-        "/tmp/dir-issue121-workflow-qa/invalid-selection-output"
+        "/tmp/dir-issues-20261020/issue121-final-clean-repro/invalid-selection-output"
       ],
       "exit_code": 1,
       "stdout": "",
@@ -168,25 +168,25 @@
       "report_checks": [
         {
           "experiment": "ethernet-beb-seed",
-          "report_sha256": "12de4bd04d13e8cf13a64465593bedd0586247b0da3a218366a2484f21b1d227",
+          "report_sha256": "f48ab65da8c6fcb878bea795b97131ed452d78a999e43ec1b869c15bb551fd0c",
           "captures": 4,
           "actual_paths_hashes_and_viewports_verified": true
         },
         {
           "experiment": "axi-outstanding",
-          "report_sha256": "5c489094e2cc0ad90b7ea3deabca94bd0bc6c92d7684541a426c1cee89592a9b",
+          "report_sha256": "5bbde466f4756f30f7261dc3f11871ea3d7fc3c94601cf02969f228d81221cf2",
           "captures": 4,
           "actual_paths_hashes_and_viewports_verified": true
         },
         {
           "experiment": "ethernet-cbs-gate",
-          "report_sha256": "dfe4448480b5790fa2606d98fe73c8909b0a4065ec2fdca4e2e12fc8b88dfeed",
+          "report_sha256": "a9f88c55bf60bf69407944084b0e6f56b5692226cbd174451a87a5af74000c97",
           "captures": 8,
           "actual_paths_hashes_and_viewports_verified": true
         },
         {
           "experiment": "gateway-rx-capacity",
-          "report_sha256": "2f7e820e8409576b7486a200f0687e82896d6d5cb12df0926f3b63f8c9e90d49",
+          "report_sha256": "fffff0162ffc28fcff63f87573d6851889392b70efe732d816b388d4dac5a24e",
           "captures": 4,
           "actual_paths_hashes_and_viewports_verified": true
         }
@@ -201,7 +201,7 @@
       "report_checks": [
         {
           "experiment": "axi-outstanding",
-          "report_sha256": "0bb58117ab465d79a39f3fbeb14db2ba866d0541e14c3ab0ede0b19b8bdbc061",
+          "report_sha256": "ffdf6aeaa23fb19b0d2a205f03539e4e1993a303493623017cf80e4fff91ca24",
           "captures": 4,
           "actual_paths_hashes_and_viewports_verified": true
         }
@@ -217,7 +217,7 @@
       "report_checks": [
         {
           "experiment": "gateway-rx-capacity",
-          "report_sha256": "0fd1b7f7ae62c8b9f934a1f5be0af1f86c8c812aadc45875e44b5d862036ef30",
+          "report_sha256": "7d0c5787a0e5d53d983f05a0fa86fec7fe08217683f7a490727c83b0e7e8a552",
           "captures": 4,
           "actual_paths_hashes_and_viewports_verified": true
         }
@@ -327,8 +327,8 @@
       "sha256": "93ce2dcbc6df5e992f6a2bbb1692ed8b1d9cdecef456bfda302e443b6d94e120"
     },
     "docs/verification/results/axi-outstanding/artifact-ledger.json": {
-      "bytes": 11216,
-      "sha256": "7ca08f2b12a2ab31e80502a480df96ce83253fffe6af7183dbf82adefd581c61"
+      "bytes": 11217,
+      "sha256": "0fabd85d1559130d7dc86b0789d6d7bc0e2267ab7204df1f612d21c088f77ec2"
     },
     "docs/verification/results/axi-outstanding/isolated/examples/guide/axi-outstanding/capacity-1/capacity.ini": {
       "bytes": 183,
@@ -515,8 +515,8 @@
       "sha256": "a5fd6a3a9e1fa7fa4d4f7d0175a7d1c0d550237c7970878e5fcbce3954438503"
     },
     "docs/verification/results/ethernet-beb-seed/artifact-ledger.json": {
-      "bytes": 16819,
-      "sha256": "e95bc029f6234d6f7a8099765472a622f02719332408ebff39aeb89078a479bc"
+      "bytes": 16820,
+      "sha256": "b4f1823f844c5231e4904c695e6d0d46532ac34826da8297d071083f18f96e56"
     },
     "docs/verification/results/ethernet-beb-seed/isolated/examples/guide/ethernet-beb-seed/seed-0/collision.ini": {
       "bytes": 196,
@@ -815,8 +815,8 @@
       "sha256": "2b798f981a7e55f6c5d519fcf641327d4d2d65b190c45400eff392ae151d594a"
     },
     "docs/verification/results/ethernet-cbs-gate/artifact-ledger.json": {
-      "bytes": 11893,
-      "sha256": "59daa892e4830631ae23d2bdba139e66ec082859c5bc4eef674eee549bfb5187"
+      "bytes": 11894,
+      "sha256": "959116c59860e7e5abdc995218161f43146fbbca4282be5c8fb81759b6c8c37d"
     },
     "docs/verification/results/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/closed/cbs-gated-model.json": {
       "bytes": 4946,
@@ -1003,8 +1003,8 @@
       "sha256": "5db28772ee8da3f851bc3cacd4c0342aa36a0e7456b54f8fe2cba1aa96dc0d44"
     },
     "docs/verification/results/gateway-rx-capacity/artifact-ledger.json": {
-      "bytes": 11698,
-      "sha256": "3396ab43f8d543d00be6968fcec1b759650f27d5046ae51d94c5e1984657b52b"
+      "bytes": 11699,
+      "sha256": "c78a0455fae62b2e725728a6710d0b79a1683794333e123fe165438f1e17f4bd"
     },
     "docs/verification/results/gateway-rx-capacity/isolated/examples/guide/gateway-rx-capacity/rx-1/buffered-fanout.ini": {
       "bytes": 324,
@@ -1350,38 +1350,5 @@
       "bytes": 1151,
       "sha256": "1f926ca6c631e08ff7bb2529668ea01ee4ec943ee9e356e38e9594dd24a94114"
     }
-  },
-  "source_helpers_sha256": {
-    "scripts/verify_capacity_comparisons_viewer.cjs": "816036d1de54aabcf96c3c724f96c984b13a05b0669d7060acc28b11d09f9ff8",
-    "scripts/verify_issue121_capture_workflow.py": "e6c671b6c945f44f86b280e42adadf30bad8798da295c333bcccc7f38062d667"
-  },
-  "portable_capture_proof": "portable-captures/capture-summary.json",
-  "execution_record_note": "commands retain original temporary paths; portable-captures reports independently reference committed raw inputs by relative path",
-  "portable_capture_proof_sha256": "76303025aded3674cdc75dd3c60c7662501da3294df226a76d047beb7a34f07f",
-  "portable_capture_checks": [
-    {
-      "experiment": "ethernet-beb-seed",
-      "report_sha256": "56bf43113f5413503f975c896bbed625c2bcbb8a94b523549d4f3c1437338a9a",
-      "captures": 4,
-      "actual_paths_hashes_and_viewports_verified": true
-    },
-    {
-      "experiment": "axi-outstanding",
-      "report_sha256": "9985cd7e032748a3cdc8aad4f1058bbf3fc8ba6e562783d92025052e1a800def",
-      "captures": 4,
-      "actual_paths_hashes_and_viewports_verified": true
-    },
-    {
-      "experiment": "ethernet-cbs-gate",
-      "report_sha256": "9090d5e16fe3a6ed9c544ba2b9ac4c4f23db73b19f2ddee9083176dae10edb40",
-      "captures": 8,
-      "actual_paths_hashes_and_viewports_verified": true
-    },
-    {
-      "experiment": "gateway-rx-capacity",
-      "report_sha256": "240cb4dc4b4a88511ceba0c95da18e6e3c49511be160431d63e2b5d5bde4d7e3",
-      "captures": 4,
-      "actual_paths_hashes_and_viewports_verified": true
-    }
-  ]
+  }
 }

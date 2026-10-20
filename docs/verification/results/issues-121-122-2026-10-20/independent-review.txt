@@ -1,0 +1,9 @@
+No actionable findings within Issues #121–122.
+
+- **Goal:** Completed independent correctness and reproducibility review.
+- **Architecture:** Confirmed branch `fix/remaining-issues-121-122`, base `4bdc099`; runtime/schema unchanged.
+- **Files:** Reviewed capture helpers, four articles, portable evidence, Viewer implementation/docs and tests. Changed paths: **none**.
+- **Interfaces:** Commands align across measurement/check/capture. Fresh output, solo selection, relative references and hashes are consistent. CAN details correctly separate cursor `status` from `recorded_status`; receiver handling and card/origin selection tests match.
+- **Constraints:** Read-only; no delegation, settings changes, commits or push. Pending workflow wiring and helper-source ledger updates excluded.
+- **Acceptance criteria:** Verified 20 PNGs and four reports, including input references, hashes and dimensions. All **280 protected artifacts** match recorded hashes. Existing-output and invalid/missing-argument rejection passed.
+- **Verification:** `git diff --check` passed. `node tests/network_viewer_model.test.cjs`: **54 passed, 2 optional fixture skips**, zero failures. Inspected four successful browser runs in `/tmp/detail-browser-test.log`; browser/full CLI generation was not independently rerun. Boundary, rewind, dropped-state, JSON and exact state-cell assertions are present.
