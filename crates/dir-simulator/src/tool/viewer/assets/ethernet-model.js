@@ -333,6 +333,58 @@
     const events=[...ethernet.events,...can.events];for(const map of [conversions,branches,segments])for(const row of map.values())for(const key of ['observed','ready','released','offer','admitted','sof'])if(row[key]!==undefined&&row[key]!==null)events.push({time:row[key],id:row.raw.record_id,kind:key});
     return {...ethernet,raw,composite:true,canModel:can,canApi:C,conversions,branches,segments,origins,originByRecord,originAliases,gateways,events,eventTimes:[...new Set([ethernet.start,ethernet.end,...events.map(e=>e.time)])].sort(compare)};
   }
+  // All confirmed milestones in the loaded run, independent of cursor and display filters.
+  // Terminal tuples annotate their reception milestone rather than adding another event.
+  function originEvents(m,origin) {
+    if(!m.composite||!m.origins.has(origin))return [];
+    const events=[],byReception=new Map(),childBranches=new Map(),canReceivers=new Map();
+    for(const row of m.raw.simulation.model_records)if(row.schema_name==='can.receiver')canReceivers.set(JSON.stringify([row.data.request_id,row.data.receiver]),row.record_id);
+    for(const b of m.branches.values())if(b.child_id!==null)childBranches.set(b.childMedia+'/'+b.child_id,b);
+    const lineage=key=>{const ids=[];while(childBranches.has(key)){const b=childBranches.get(key);ids.unshift(b.branch_id);key=m.conversions.get(b.conversion_id).sourceKey;}return ids;};
+    const belongs=(media,id)=>m.originByRecord.get(media+'/'+id)===origin;
+    function add(time,kind,media,id,selection,port,branchLineage,reason=null,reception=null){
+      if(time===null||time===undefined)return;
+      const event={time,kind,media,id,target:media+':'+id,selection,port,branchLineage:[...branchLineage],reason,terminals:[]};events.push(event);
+      if(reception)byReception.set(media+'/'+reception,event);
+    }
+    for(const r of m.canModel.requests)if(belongs('can',r.id)){
+      const path=lineage('can/'+r.id),selection={id:r.id,media:'can'};
+      for(const key of ['generated',...(r.status==='dropped'?[]:['ready']),...(r.hasTxEnqueued?['txEnqueued']:[]),'sof','eof'])add(r[key],'can.'+key,'can',r.id,selection,r.source,path);
+      if(r.raw.model_fields.release_ps!==null&&r.raw.model_fields.release_ps!==undefined)add(BigInt(r.raw.model_fields.release_ps),'can.release','can',r.id,selection,r.bus,path);
+      if(r.status==='dropped')add(r.ready,'can.dropped','can',r.id,selection,r.source,path,r.raw.drop_reason);
+      for(const rx of r.receivers){
+        const id=canReceivers.get(JSON.stringify([r.id,rx.receiver]));
+        add(rx.observed,rx.status==='filtered'?'can.filtered':'can.observed','can',id,selection,rx.receiver,path,rx.raw.reason??rx.raw.filter_reason??null);
+        add(rx.received,'can.'+rx.status,'can',id,selection,rx.receiver,path,rx.raw.reason,id);
+      }
+    }
+    for(const f of m.frames.values())if(belongs('ethernet',f.id))for(const key of ['generated','ready'])add(f[key+'_ps'],'ethernet.'+key,'ethernet',f.id,{id:f.id,media:'ethernet'},f.source,lineage('ethernet/'+f.id));
+    for(const t of m.transfers.values())if(belongs('ethernet',t.frame_id)){
+      const path=lineage('ethernet/'+t.frame_id),selection={id:t.id,media:'ethernet'};
+      for(const key of ['queued','sof','eof','release','arrival'])add(t[key+'_ps'],'ethernet.'+key,'ethernet',t.id,selection,t.from_port+' → '+t.to_port,path);
+      if(t.status==='dropped')add(t.updated,'ethernet.dropped','ethernet',t.id,selection,t.from_port,path,t.drop_reason);
+    }
+    for(const r of m.receptions.values())if(belongs('ethernet',r.frame_id)){
+      const path=lineage('ethernet/'+r.frame_id),selection={id:r.transfer_id,media:'ethernet'};
+      add(r.observed_ps,'ethernet.observed','ethernet',r.id,selection,r.ingress,path);
+      add(r.ready_ps,'ethernet.'+r.status,'ethernet',r.id,selection,r.ingress,path,r.reason,r.id);
+    }
+    for(const c of m.conversions.values())if(c.origin_id===origin){
+      const media=c.sourceKey.split('/')[0],path=lineage(c.sourceKey),selection={id:c.conversion_id,media:'conversion'};
+      for(const key of ['observed','ready','released'])add(c[key],'conversion.'+(key==='observed'&&c.status==='rejected'?'rejected':key),media,c.conversion_id,selection,c.gateway,path,key==='observed'?c.reason:null);
+      for(const id of c.branch_ids){const b=m.branches.get(id),branchPath=[...path,id],selection={id,media:'branch'};
+        for(const key of ['offer','admitted','sof'])add(b[key],'branch.'+key,b.childMedia,id,selection,c.gateway+' / '+b.egress,branchPath);
+        if(b.status==='dropped')add(BigInt(b.raw.time_ps),'branch.dropped',b.childMedia,id,selection,c.gateway+' / '+b.egress,branchPath,b.reason);
+      }
+    }
+    for(const s of m.segments.values())if(s.origin_id===origin)for(const t of s.targets)if(t.completed_ps!==null){
+      const event=byReception.get(s.sourceMedia+'/'+t.completion_reception_id);
+      if(!event||event.time!==BigInt(t.completed_ps))fail('terminal完了の実績がありません');
+      event.terminals.push({origin,segment:s.segment_id,branchLineage:[...s.branch_lineage],terminal:t.terminal_id});
+    }
+    events.sort((a,b)=>compare(a.time,b.time)||compare(a.target,b.target)||compare(a.kind,b.kind));
+    const groups=[];for(const event of events){let group=groups.at(-1);if(!group||group.time!==event.time){group={time:event.time,events:[]};groups.push(group);}group.events.push(event);}return groups;
+  }
   function compositeStateAt(m,time) {
     const conversions=new Map(),branches=new Map();let held=0,targetCount=0n,completed=0n;
     for(const c of m.conversions.values()){const state=time<c.observed?'not_created':c.status==='rejected'?'rejected':c.released!==null&&time>=c.released?'released':c.ready!==null&&time>=c.ready?'waiting_tx':'processing';conversions.set(c.conversion_id,state);if(['processing','waiting_tx'].includes(state))held++;}
@@ -622,5 +674,5 @@
   }
   function stepTransfers(m,destination){if(m.media){const i=m.eventTimes.findIndex(t=>t===destination);if(i<1)return [];const from=m.eventTimes[i-1];return [...m.attempts.values()].filter(a=>a.collision_ps===null&&a.sof_ps<=destination&&(a.arrival_ps??m.end)>from).map(a=>({id:a.transfer_id,attempt:a.id,frame:m.transfers.get(a.transfer_id).frame_id,from:a.from_port,to:a.to_port,start:a.sof_ps<from?from:a.sof_ps,end:a.arrival_ps,arrived:a.arrival_ps!==null&&a.arrival_ps<=destination}));}const i=m.eventTimes.findIndex(t=>t===destination);if(i<1)return [];const from=m.eventTimes[i-1];const items=[...m.transfers.values()].filter(t=>t.sof_ps!==null&&t.sof_ps<=destination&&((t.arrival_ps??m.end)>from)).map(t=>({id:t.id,frame:t.frame_id,from:t.from_port,to:t.to_port,start:t.sof_ps<from?from:t.sof_ps,end:t.arrival_ps===null?null:t.arrival_ps,arrived:t.arrival_ps!==null&&t.arrival_ps<=destination}));if(m.composite)items.push(...m.canApi.stepTransfers(m.canModel,from,destination).map(t=>({...t,medium:'can',id:t.requestId,from:t.kind==='tx'?t.source:t.bus,to:t.kind==='tx'?t.bus:t.receiver})));return items;}
   function visibleTransfers(m,vlanId=null){return [...m.transfers.values()].filter(t=>vlanId===null||t.vlan_id===vlanId);}
-  return {parseResults,stateAt,transferStateAt,receptionStateAt,stepTransfers,visibleTransfers,owner,compositeStateAt,decodeCanPayload,prepareSchedule,scheduleStateAt,openElapsed,creditNumeratorAt,potentialTokens,nextGateFit,validateIpMulticast,preparePolicyHistory,policyStateAt,tsnStateAt};
+  return {originEvents,parseResults,stateAt,transferStateAt,receptionStateAt,stepTransfers,visibleTransfers,owner,compositeStateAt,decodeCanPayload,prepareSchedule,scheduleStateAt,openElapsed,creditNumeratorAt,potentialTokens,nextGateFit,validateIpMulticast,preparePolicyHistory,policyStateAt,tsnStateAt};
 });

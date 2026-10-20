@@ -71,3 +71,11 @@
 #controlled-dashboard summary { cursor:pointer; overflow-wrap:anywhere }
 #controlled-dashboard pre { max-width:100%; max-height:340px; overflow:auto; margin:12px 0 0; font-size:11px; line-height:1.6 }
 @media(max-width:600px) { #controlled-dashboard { padding:16px 12px } #controlled-dashboard h1 { font-size:22px } }
+
+/* Origin chronology keeps its own scroll region and persistent focus targets. */
+.origin-event-list { max-height: 32rem; overflow: auto; }
+.origin-event-group { padding: .75rem 0; border-top: 1px solid #cad3df; }
+.origin-event-row { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .4rem 0; }
+.origin-event-row button, .origin-event-row span, .origin-event-row p { overflow-wrap: anywhere; white-space: normal; max-width: 100%; }
+.origin-event-group[data-future="true"] > span { color: #725016; }
+#eth-origin-filter { max-width: 100%; }

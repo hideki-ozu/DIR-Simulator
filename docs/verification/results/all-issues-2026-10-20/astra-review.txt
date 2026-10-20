@@ -1,0 +1,26 @@
+**Goal**
+#109／#115の独立レビュー完了。確認した範囲で、修正が必要な具体的不具合は見つかりませんでした。
+
+**Architecture**
+origin抽出と表示の責務分離、BigInt時刻、terminal完了の受信への併記は要求と整合しています。
+
+**Files**
+指定の実装・テスト・仕様・#115証跡を確認。変更したパスはありません。並行作業のguide変更は対象外です。
+
+**Interfaces**
+媒体修飾ID、枝lineage、確定値と予定値の区別、metric＋targetの一意性とセル完全一致を確認しました。
+
+**Constraints**
+読み取り専用を維持。commit／push、設定・保護の変更は行っていません。
+
+**Acceptance criteria**
+保存済み生結果12 run・425イベントを独立照合。#115の証跡にある全関連成果物のハッシュ、2/3/7psの値2/4/1、7→2→7を確認し、6反例の拒否判定を実行しました。
+
+**Verification**
+
+- `node tests/network_viewer_model.test.cjs`：52 passed／2 optional skipped。
+- `git diff --check`：対象差分に問題なし。
+- ランタイム指定の試験：子プロセス起動が `EPERM`。
+- `network_viewer_browser.cjs`：Chromium起動が `Operation not permitted`。
+
+残る不確実性は実ブラウザの操作・focus・狭幅表示です。既存の成功報告を今回の独立再検証成功とは扱っていません。許可された実行環境でブラウザ試験とランタイム連携試験を再実行してください。

@@ -1,6 +1,6 @@
 # DIR Simulator
 
-文書バージョン：`1.1.36`
+文書バージョン：`1.1.37`
 対象GitHubバージョン：`v1.1.6`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.37` | `2026-10-20` | Issue #109・#115の対応と、正式v1.1.6で実測した半二重再送・AXI容量・TAS/CBS・Gateway RX容量の4実習への入口を追加 |
 | `1.1.36` | `2026-10-19` | 正式v1.1.6を使うpreemption・冗長履歴・PSFP gate・Metric V2の実測4記事と入力ZIPへの入口を追加 |
 | `1.1.35` | `2026-10-17` | 後続10分野の実装・機能リファレンスと最新mainの記事を統合し、v1.1.6収録範囲と過去実測の基準を明記 |
 | `1.1.34` | `2026-10-17` | 抽象STPのcost1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・23 ZIPを維持 |
@@ -58,6 +59,16 @@
 分岐中にPR6とmainで同じ版番号を別々に公開したため、過去の更新履歴は両方保持している。
 
 文書ID：`readme`
+
+[半二重Ethernetの再送とseedによる待ち時間の違い](<docs/guide/半二重Ethernetの再送とseedによる待ち時間の違い.md>)では、seedだけを変え、衝突・backoff期限・carrier待ちと同条件の再現を確認できます。[独立入力ZIP](docs/guide/downloads/ethernet-beb-seed-inputs.zip)から正式v1.1.6で再現できます。
+
+[AXIのoutstanding上限と受理・待機・処理の違い](<docs/guide/AXIのoutstanding上限と受理・待機・処理の違い.md>)では、outstanding上限だけを変え、drop・FIFO待機と一要求ずつの処理を区別できます。[独立入力ZIP](docs/guide/downloads/axi-outstanding-inputs.zip)から正式v1.1.6で再現できます。
+
+[TASのgate閉鎖とCBS creditの凍結](<docs/guide/TASのgate閉鎖とCBS creditの凍結.md>)では、gate閉鎖だけを変え、負creditの凍結と再開後の回復待ちを比較できます。[独立入力ZIP](docs/guide/downloads/ethernet-cbs-gate-inputs.zip)から正式v1.1.6で再現できます。
+
+[GatewayのRX容量と遅い分岐による後続配信の損失](<docs/guide/GatewayのRX容量と遅い分岐による後続配信の損失.md>)では、RX容量だけを変え、親保持・枝別TX受理と後続親の拒否を区別できます。[独立入力ZIP](docs/guide/downloads/gateway-rx-capacity-inputs.zip)から正式v1.1.6で再現できます。
+
+CAN↔Ethernet Viewerの[origin別の確定記録への移動](docs/tools/viewer/viewer取扱説明書.md#canethernetをorigin全体で追う)をこの変更ブランチで追加しました。媒体・枝・terminalを区別して時刻と詳細へ移動します。正式v1.1.6には含まれません。Metric V2実習の現在値は[metric・target・セル単位の検証記録](docs/verification/results/metric-windows/issue-115-viewer-browser.json)を追加しています。
 
 [v1.1.6の収録内容・公開前検証記録](docs/verification/results/release-v1.1.6-2026-10-17.md)：文書版、追加機能、実行証拠と過去の測定基準を確認できます。
 

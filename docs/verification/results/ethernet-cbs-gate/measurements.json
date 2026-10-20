@@ -1,0 +1,1731 @@
+{
+  "status": "passed",
+  "source_tag": "v1.1.6",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "binary_sha256": "4363af17b0a24e580de7359da4c82444de3dcc03ab006cb3ffe0e686a0bfd9aa",
+  "input_sha256": {
+    "closed/cbs-gated-model.json": "cac9820fe24fff0543bb61b05159b5b3d4d0213c37c717376f073beb6f1a23de",
+    "closed/cbs-gated-workload.json": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181",
+    "closed/cbs-gated.ini": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548",
+    "closed/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+    "open/cbs-gated-model.json": "3513838b6fa887d576fc77589662fa0e5ef12b425815ebb094b75ec19a565462",
+    "open/cbs-gated-workload.json": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181",
+    "open/cbs-gated.ini": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548",
+    "open/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+  },
+  "zip_sha256": "3b7392b6153b18e07f65470efeb3238d671938df02766602c69842d60bf1c8c1",
+  "one_variable_verified": true,
+  "zip_logical_equal": true,
+  "conditions": {
+    "closed": {
+      "commands": [
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-simulator-issues-20261020/examples/guide/ethernet-cbs-gate/closed/cbs-gated.ini"
+          ],
+          "exit_code": 0,
+          "log_path": "repository/closed/validate.log"
+        },
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-simulator-issues-20261020/examples/guide/ethernet-cbs-gate/closed/cbs-gated.ini",
+            "--output",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/repository/closed/result"
+          ],
+          "exit_code": 0,
+          "log_path": "repository/closed/run.log"
+        },
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/repository/closed/result/results.json",
+            "--output",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/repository/closed/viewer.html"
+          ],
+          "exit_code": 0,
+          "log_path": "repository/closed/view.log"
+        }
+      ],
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 13984,
+            "sha256": "e8e94aa52134355af3055444ceff6019a65507be390eb419d87295d26ead0b1c"
+          },
+          "results.json": {
+            "bytes": 265445,
+            "sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861"
+          },
+          "summary.csv": {
+            "bytes": 27226,
+            "sha256": "d6a65391293a0cbf19465d940d5f3461e674268a4b6fe2b227e43e227c00cb18"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "results_sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861",
+      "viewer_sha256": "9dd33609d7aea04bc40a2469383513b3e4dbcefafe0c51108a0abe4e21943953",
+      "metadata": {
+        "binary_sha256": "4363af17b0a24e580de7359da4c82444de3dcc03ab006cb3ffe0e686a0bfd9aa",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "config_sha256": "04d14439fa8fdb94983e23854ec826d8a483501987397102a12a0e90ed588a2a",
+        "cpu": "x86_64 / Intel(R) Core(TM) Ultra 7 265K",
+        "finished_at_utc": "2026-10-20T13:03:27Z",
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "input_sha256": "8a03c64f8dddbcf84d9afd8be33f325648abbbee272a90394fe84d05046af949",
+        "os": "linux / Ubuntu 24.04.4 LTS",
+        "runtime_version": "0.1.0",
+        "seed": null,
+        "started_at_utc": "2026-10-20T13:03:27Z",
+        "target_triple": "x86_64-unknown-linux-gnu",
+        "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7"
+      },
+      "results_path": "repository/closed/result/results.json",
+      "viewer_path": "repository/closed/viewer.html"
+    },
+    "open": {
+      "commands": [
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-simulator-issues-20261020/examples/guide/ethernet-cbs-gate/open/cbs-gated.ini"
+          ],
+          "exit_code": 0,
+          "log_path": "repository/open/validate.log"
+        },
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-simulator-issues-20261020/examples/guide/ethernet-cbs-gate/open/cbs-gated.ini",
+            "--output",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/repository/open/result"
+          ],
+          "exit_code": 0,
+          "log_path": "repository/open/run.log"
+        },
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/repository/open/result/results.json",
+            "--output",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/repository/open/viewer.html"
+          ],
+          "exit_code": 0,
+          "log_path": "repository/open/view.log"
+        }
+      ],
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 13984,
+            "sha256": "7212a04a6caa2840e8e041ef3f7e66aff88d7681d3392a763d3d5a1ee3dd4a80"
+          },
+          "results.json": {
+            "bytes": 261773,
+            "sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2"
+          },
+          "summary.csv": {
+            "bytes": 27005,
+            "sha256": "8041bc82ff4686d4f97ba3da45ec5f746459fdd6db1742b1602c8c2240ac1a06"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "results_sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2",
+      "viewer_sha256": "fd37e77d5b7fa7793b6d0bcd593c0594f4e988234459c14fbf9a85cf706bccf1",
+      "metadata": {
+        "binary_sha256": "4363af17b0a24e580de7359da4c82444de3dcc03ab006cb3ffe0e686a0bfd9aa",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "config_sha256": "47f019b7f0b4d840b016e59953f41a3121685cdb4bd650713bdeb6e689b7241b",
+        "cpu": "x86_64 / Intel(R) Core(TM) Ultra 7 265K",
+        "finished_at_utc": "2026-10-20T13:03:27Z",
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "input_sha256": "8145b9268ce6867b407b164e1726b8370383c2085a99cdb7c28f87db2fd27d37",
+        "os": "linux / Ubuntu 24.04.4 LTS",
+        "runtime_version": "0.1.0",
+        "seed": null,
+        "started_at_utc": "2026-10-20T13:03:27Z",
+        "target_triple": "x86_64-unknown-linux-gnu",
+        "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7"
+      },
+      "results_path": "repository/open/result/results.json",
+      "viewer_path": "repository/open/viewer.html"
+    }
+  },
+  "zip_conditions": {
+    "closed": {
+      "commands": [
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/closed/cbs-gated.ini"
+          ],
+          "exit_code": 0,
+          "log_path": "zip/closed/validate.log"
+        },
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/closed/cbs-gated.ini",
+            "--output",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/zip/closed/result"
+          ],
+          "exit_code": 0,
+          "log_path": "zip/closed/run.log"
+        },
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/zip/closed/result/results.json",
+            "--output",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/zip/closed/viewer.html"
+          ],
+          "exit_code": 0,
+          "log_path": "zip/closed/view.log"
+        }
+      ],
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 13984,
+            "sha256": "b4c5c7cf2da99a625edf50db844e8f132c10b79667924012f85b5530e7625fe9"
+          },
+          "results.json": {
+            "bytes": 265590,
+            "sha256": "cd14c1c4497a1f894dc163ad67a835870b88d48ed5f4ac3af829efdf2bb82005"
+          },
+          "summary.csv": {
+            "bytes": 27226,
+            "sha256": "e13a26522a6f227fea9e10648707ac60422e3a29878c340d548522fb5edba18a"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "results_sha256": "cd14c1c4497a1f894dc163ad67a835870b88d48ed5f4ac3af829efdf2bb82005",
+      "viewer_sha256": "1f5bd0ac06cb6d1e27c8e762573e0be9c4662c3bd5f0af8a4d777db79d6385cd",
+      "metadata": {
+        "binary_sha256": "4363af17b0a24e580de7359da4c82444de3dcc03ab006cb3ffe0e686a0bfd9aa",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "config_sha256": "04d14439fa8fdb94983e23854ec826d8a483501987397102a12a0e90ed588a2a",
+        "cpu": "x86_64 / Intel(R) Core(TM) Ultra 7 265K",
+        "finished_at_utc": "2026-10-20T13:03:27Z",
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "input_sha256": "8a03c64f8dddbcf84d9afd8be33f325648abbbee272a90394fe84d05046af949",
+        "os": "linux / Ubuntu 24.04.4 LTS",
+        "runtime_version": "0.1.0",
+        "seed": null,
+        "started_at_utc": "2026-10-20T13:03:27Z",
+        "target_triple": "x86_64-unknown-linux-gnu",
+        "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7"
+      },
+      "results_path": "zip/closed/result/results.json",
+      "viewer_path": "zip/closed/viewer.html"
+    },
+    "open": {
+      "commands": [
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "validate",
+            "--config",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/open/cbs-gated.ini"
+          ],
+          "exit_code": 0,
+          "log_path": "zip/open/validate.log"
+        },
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "run",
+            "--config",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/isolated/examples/guide/ethernet-cbs-gate/open/cbs-gated.ini",
+            "--output",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/zip/open/result"
+          ],
+          "exit_code": 0,
+          "log_path": "zip/open/run.log"
+        },
+        {
+          "command": [
+            "/tmp/dir-issues-formal-target/release/dir-simulator",
+            "view",
+            "--input",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/zip/open/result/results.json",
+            "--output",
+            "/tmp/dir-issues-116-119-measurements/ethernet-cbs-gate/zip/open/viewer.html"
+          ],
+          "exit_code": 0,
+          "log_path": "zip/open/view.log"
+        }
+      ],
+      "manifest": {
+        "status": "complete",
+        "partial": false,
+        "files": {
+          "diagnostics.jsonl": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "events.csv": {
+            "bytes": 13984,
+            "sha256": "6ebbc09229fabb25f2ebfd0d5156418c79f0bb130c6aeb5e8e7459fa2ac318c3"
+          },
+          "results.json": {
+            "bytes": 261918,
+            "sha256": "71fb948ccb3820f2933bc7df741e8aff9cc919903a8f913f2c69ea31d478eb15"
+          },
+          "summary.csv": {
+            "bytes": 27005,
+            "sha256": "261a044969d2af06441eb241ab060d5b667261296a44b6ea0480dc953557f25d"
+          }
+        },
+        "diagnostic_lines": []
+      },
+      "results_sha256": "71fb948ccb3820f2933bc7df741e8aff9cc919903a8f913f2c69ea31d478eb15",
+      "viewer_sha256": "5db28772ee8da3f851bc3cacd4c0342aa36a0e7456b54f8fe2cba1aa96dc0d44",
+      "metadata": {
+        "binary_sha256": "4363af17b0a24e580de7359da4c82444de3dcc03ab006cb3ffe0e686a0bfd9aa",
+        "build_source_sha256": "7dcd84e408bd4d67d361930f488e2166acce0b8a3ed7d85d4c92b7283f5931bd",
+        "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+        "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+        "config_sha256": "47f019b7f0b4d840b016e59953f41a3121685cdb4bd650713bdeb6e689b7241b",
+        "cpu": "x86_64 / Intel(R) Core(TM) Ultra 7 265K",
+        "finished_at_utc": "2026-10-20T13:03:27Z",
+        "git_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+        "git_dirty": "false",
+        "input_sha256": "8145b9268ce6867b407b164e1726b8370383c2085a99cdb7c28f87db2fd27d37",
+        "os": "linux / Ubuntu 24.04.4 LTS",
+        "runtime_version": "0.1.0",
+        "seed": null,
+        "started_at_utc": "2026-10-20T13:03:27Z",
+        "target_triple": "x86_64-unknown-linux-gnu",
+        "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7"
+      },
+      "results_path": "zip/open/result/results.json",
+      "viewer_path": "zip/open/viewer.html"
+    }
+  },
+  "independent_checks": {
+    "closed": {
+      "transfers": {
+        "cbs_gated:0/v0/c0": {
+          "arrival_ps": "576000",
+          "copy_id": "cbs_gated:0/v0/c0",
+          "drop_reason": null,
+          "effect_seq": "21",
+          "eof_ps": "576000",
+          "frame_id": "cbs_gated:0",
+          "from_port": "Net.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "576000",
+          "planned_eof_ps": "576000",
+          "planned_release_ps": "672000",
+          "policy_epoch_offer": "0",
+          "policy_epoch_sof": "0",
+          "priority": "7",
+          "queue_id": "Net.a.tx.queue.7",
+          "queued_ps": "0",
+          "release_ps": "672000",
+          "sof_ps": "0",
+          "status": "serialized",
+          "to_port": "Net.b.rx",
+          "visit_id": "0",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "a9e82eb4",
+            "mac_bytes": "64",
+            "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": null
+          }
+        },
+        "cbs_gated:1/v0/c1": {
+          "arrival_ps": "4264000",
+          "copy_id": "cbs_gated:1/v0/c1",
+          "drop_reason": null,
+          "effect_seq": "43",
+          "eof_ps": "4264000",
+          "frame_id": "cbs_gated:1",
+          "from_port": "Net.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "4264000",
+          "planned_eof_ps": "4264000",
+          "planned_release_ps": "4360000",
+          "policy_epoch_offer": "0",
+          "policy_epoch_sof": "0",
+          "priority": "7",
+          "queue_id": "Net.a.tx.queue.7",
+          "queued_ps": "0",
+          "release_ps": "4360000",
+          "sof_ps": "3688000",
+          "status": "serialized",
+          "to_port": "Net.b.rx",
+          "visit_id": "0",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "a9e82eb4",
+            "mac_bytes": "64",
+            "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": null
+          }
+        }
+      },
+      "credit": [
+        {
+          "data": {
+            "cause": "sof",
+            "effect_seq": "13",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "-750000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:13",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "22",
+            "magnitude": "504000000000000",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "negative",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:22",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "672000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "27",
+            "magnitude": "422000000000000",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "negative",
+            "slope_bps": "0"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:27",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "1000000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "30",
+            "magnitude": "422000000000000",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "negative",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:30",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2000000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "32",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:32",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3688000"
+        },
+        {
+          "data": {
+            "cause": "sof",
+            "effect_seq": "35",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "-750000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:35",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3688000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "44",
+            "magnitude": "504000000000000",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "negative",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:44",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "4360000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "48",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "0"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:48",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "6376000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "5",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:5",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        }
+      ],
+      "gates": [
+        {
+          "data": {
+            "cause": "initial",
+            "effect_seq": "1",
+            "generation": "0",
+            "next_boundary_ps": "1000000",
+            "open_priorities": [
+              "7"
+            ],
+            "port": "Net.a.tx",
+            "schedule_id": "g0"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.gate:1",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.gate",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "26",
+            "generation": "0",
+            "next_boundary_ps": "2000000",
+            "open_priorities": [],
+            "port": "Net.a.tx",
+            "schedule_id": "g0"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.gate:26",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.gate",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "1000000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "29",
+            "generation": "0",
+            "next_boundary_ps": "11000000",
+            "open_priorities": [
+              "7"
+            ],
+            "port": "Net.a.tx",
+            "schedule_id": "g0"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.gate:29",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.gate",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2000000"
+        },
+        {
+          "data": {
+            "cause": "initial",
+            "effect_seq": "3",
+            "generation": "0",
+            "next_boundary_ps": null,
+            "open_priorities": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7"
+            ],
+            "port": "Net.b.tx",
+            "schedule_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.gate:3",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.gate",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        }
+      ],
+      "decisions": [
+        {
+          "data": {
+            "effect_seq": "12",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:12",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "14",
+            "next_wake_ps": "672000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "busy",
+            "schedule_generation": "0",
+            "state": "busy",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:14",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "15",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:15",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "2",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:2",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "23",
+            "next_wake_ps": "1000000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "guard_blocked",
+            "schedule_generation": "0",
+            "state": "guard_blocked",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:23",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "672000"
+        },
+        {
+          "data": {
+            "effect_seq": "24",
+            "next_wake_ps": "1000000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "guard_blocked",
+            "schedule_generation": "0",
+            "state": "guard_blocked",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:24",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "672000"
+        },
+        {
+          "data": {
+            "effect_seq": "25",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:25",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "672000"
+        },
+        {
+          "data": {
+            "effect_seq": "28",
+            "next_wake_ps": "2000000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "gate_closed",
+            "schedule_generation": "0",
+            "state": "gate_closed",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:28",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "1000000"
+        },
+        {
+          "data": {
+            "effect_seq": "31",
+            "next_wake_ps": "3688000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "credit_negative",
+            "schedule_generation": "0",
+            "state": "credit_negative",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:31",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2000000"
+        },
+        {
+          "data": {
+            "effect_seq": "33",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:33",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3688000"
+        },
+        {
+          "data": {
+            "effect_seq": "34",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:34",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3688000"
+        },
+        {
+          "data": {
+            "effect_seq": "36",
+            "next_wake_ps": "4360000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "busy",
+            "schedule_generation": "0",
+            "state": "busy",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:36",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3688000"
+        },
+        {
+          "data": {
+            "effect_seq": "37",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:37",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3688000"
+        },
+        {
+          "data": {
+            "effect_seq": "4",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:4",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "45",
+            "next_wake_ps": "6376000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:45",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "4360000"
+        },
+        {
+          "data": {
+            "effect_seq": "46",
+            "next_wake_ps": "6376000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:46",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "4360000"
+        },
+        {
+          "data": {
+            "effect_seq": "47",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:47",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "4360000"
+        },
+        {
+          "data": {
+            "effect_seq": "49",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:49",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "6376000"
+        },
+        {
+          "data": {
+            "effect_seq": "6",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:6",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "9",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:9",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        }
+      ],
+      "independent_debit_bits": "504",
+      "independent_remaining_ps": "1688000"
+    },
+    "open": {
+      "transfers": {
+        "cbs_gated:0/v0/c0": {
+          "arrival_ps": "576000",
+          "copy_id": "cbs_gated:0/v0/c0",
+          "drop_reason": null,
+          "effect_seq": "21",
+          "eof_ps": "576000",
+          "frame_id": "cbs_gated:0",
+          "from_port": "Net.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "576000",
+          "planned_eof_ps": "576000",
+          "planned_release_ps": "672000",
+          "policy_epoch_offer": "0",
+          "policy_epoch_sof": "0",
+          "priority": "7",
+          "queue_id": "Net.a.tx.queue.7",
+          "queued_ps": "0",
+          "release_ps": "672000",
+          "sof_ps": "0",
+          "status": "serialized",
+          "to_port": "Net.b.rx",
+          "visit_id": "0",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "a9e82eb4",
+            "mac_bytes": "64",
+            "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": null
+          }
+        },
+        "cbs_gated:1/v0/c1": {
+          "arrival_ps": "3264000",
+          "copy_id": "cbs_gated:1/v0/c1",
+          "drop_reason": null,
+          "effect_seq": "37",
+          "eof_ps": "3264000",
+          "frame_id": "cbs_gated:1",
+          "from_port": "Net.a.tx",
+          "parent_transfer_id": null,
+          "planned_arrival_ps": "3264000",
+          "planned_eof_ps": "3264000",
+          "planned_release_ps": "3360000",
+          "policy_epoch_offer": "0",
+          "policy_epoch_sof": "0",
+          "priority": "7",
+          "queue_id": "Net.a.tx.queue.7",
+          "queued_ps": "0",
+          "release_ps": "3360000",
+          "sof_ps": "2688000",
+          "status": "serialized",
+          "to_port": "Net.b.rx",
+          "visit_id": "0",
+          "vlan_id": "10",
+          "wire": {
+            "data_hex": "",
+            "dst_mac": "02:00:00:00:00:02",
+            "ether_type": "2048",
+            "fcs_hex": "a9e82eb4",
+            "mac_bytes": "64",
+            "mac_hex": "020000000002020000000001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a9e82eb4",
+            "pad_bytes": "46",
+            "src_mac": "02:00:00:00:00:01",
+            "tag": null
+          }
+        }
+      },
+      "credit": [
+        {
+          "data": {
+            "cause": "sof",
+            "effect_seq": "13",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "-750000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:13",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "22",
+            "magnitude": "504000000000000",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "negative",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:22",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "672000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "26",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:26",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2688000"
+        },
+        {
+          "data": {
+            "cause": "sof",
+            "effect_seq": "29",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "-750000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:29",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2688000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "38",
+            "magnitude": "504000000000000",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "negative",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:38",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3360000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "42",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "0"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:42",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "5376000"
+        },
+        {
+          "data": {
+            "cause": "boundary",
+            "effect_seq": "5",
+            "magnitude": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "scale": "1000000000000",
+            "sign": "positive",
+            "slope_bps": "250000000"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.credit:5",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.credit",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        }
+      ],
+      "gates": [
+        {
+          "data": {
+            "cause": "initial",
+            "effect_seq": "1",
+            "generation": "0",
+            "next_boundary_ps": null,
+            "open_priorities": [
+              "7"
+            ],
+            "port": "Net.a.tx",
+            "schedule_id": "g0"
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.gate:1",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.gate",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "cause": "initial",
+            "effect_seq": "3",
+            "generation": "0",
+            "next_boundary_ps": null,
+            "open_priorities": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7"
+            ],
+            "port": "Net.b.tx",
+            "schedule_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.gate:3",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.gate",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        }
+      ],
+      "decisions": [
+        {
+          "data": {
+            "effect_seq": "12",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:12",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "14",
+            "next_wake_ps": "672000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "busy",
+            "schedule_generation": "0",
+            "state": "busy",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:14",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "15",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:15",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "2",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:2",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "23",
+            "next_wake_ps": "2688000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "credit_negative",
+            "schedule_generation": "0",
+            "state": "credit_negative",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:23",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "672000"
+        },
+        {
+          "data": {
+            "effect_seq": "24",
+            "next_wake_ps": "2688000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "credit_negative",
+            "schedule_generation": "0",
+            "state": "credit_negative",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:24",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "672000"
+        },
+        {
+          "data": {
+            "effect_seq": "25",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:25",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "672000"
+        },
+        {
+          "data": {
+            "effect_seq": "27",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:27",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2688000"
+        },
+        {
+          "data": {
+            "effect_seq": "28",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:28",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2688000"
+        },
+        {
+          "data": {
+            "effect_seq": "30",
+            "next_wake_ps": "3360000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "busy",
+            "schedule_generation": "0",
+            "state": "busy",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:30",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2688000"
+        },
+        {
+          "data": {
+            "effect_seq": "31",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:31",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "2688000"
+        },
+        {
+          "data": {
+            "effect_seq": "39",
+            "next_wake_ps": "5376000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:39",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3360000"
+        },
+        {
+          "data": {
+            "effect_seq": "4",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:4",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "40",
+            "next_wake_ps": "5376000",
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:40",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3360000"
+        },
+        {
+          "data": {
+            "effect_seq": "41",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.b.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:41",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "3360000"
+        },
+        {
+          "data": {
+            "effect_seq": "43",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": null,
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:43",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "5376000"
+        },
+        {
+          "data": {
+            "effect_seq": "6",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:6",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        },
+        {
+          "data": {
+            "effect_seq": "9",
+            "next_wake_ps": null,
+            "policy_epoch": "0",
+            "port": "Net.a.tx",
+            "priority": "7",
+            "reason": "ready",
+            "schedule_generation": "0",
+            "state": "ready",
+            "transfer_id": null
+          },
+          "origin_request_id": null,
+          "record_id": "ethernet.tsn.decision:9",
+          "request_id": null,
+          "schema_name": "ethernet.tsn.decision",
+          "schema_version": 1,
+          "subject": "@network",
+          "time_ps": "0"
+        }
+      ],
+      "independent_debit_bits": "504",
+      "independent_remaining_ps": "1688000"
+    }
+  },
+  "single_variable": "tsn.outputs[port=Net.a.tx].tas.entries[1].open_priorities",
+  "source_provenance": "../capacity-comparisons-source.json",
+  "portable_raw_artifacts": true,
+  "formal_input_origin": {
+    "source_directory": "examples/ethernet/tsn",
+    "nonvariable_dependencies_byte_equal": true,
+    "model_semantic_equal_except_variable": true,
+    "source_files_sha256": {
+      "cbs-gated-model.json": "cac9820fe24fff0543bb61b05159b5b3d4d0213c37c717376f073beb6f1a23de",
+      "cbs-gated-workload.json": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181",
+      "cbs-gated.ini": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548",
+      "models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+    }
+  }
+}

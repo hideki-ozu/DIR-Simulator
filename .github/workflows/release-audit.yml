@@ -19,6 +19,8 @@ on:
       - 'tests/fixtures/controlled-rewind.json'
       - 'tests/viewer_browser.cjs'
       - 'tests/viewer_fixtures.cjs'
+      - 'tests/network_viewer_model.test.cjs'
+      - 'tests/network_viewer_browser.cjs'
       - 'tests/ned_editor_*.cjs'
 
 permissions:
@@ -101,8 +103,20 @@ jobs:
           npm --version
           npm install --prefix "$RUNNER_TEMP/viewer-tests" --no-package-lock --no-save playwright@1.64.0
           "$RUNNER_TEMP/viewer-tests/node_modules/.bin/playwright" install --with-deps chromium
+          DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/network_viewer_model.test.cjs
           node --test tests/viewer_model.test.cjs tests/controlled_viewer_model.test.cjs
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node tests/viewer_browser.cjs
+          mkdir "$RUNNER_TEMP/network-viewer"
+          network_viewer_args=()
+          for network_viewer_name in r01 r02 fanout native-multicast-lineages fanout-unadmittable; do
+            network_viewer_output="$RUNNER_TEMP/network-viewer/$network_viewer_name"
+            network_viewer_results="$network_viewer_output/results.json"
+            network_viewer_html="$RUNNER_TEMP/network-viewer/$network_viewer_name.html"
+            target/debug/dir-simulator run --config "docs/verification/fixtures/acceptance-2026-10-08/bridge/$network_viewer_name/run.ini" --output "$network_viewer_output"
+            target/debug/dir-simulator view --input "$network_viewer_results" --output "$network_viewer_html"
+            network_viewer_args+=("$network_viewer_results" "$network_viewer_html")
+          done
+          NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node tests/network_viewer_browser.cjs --exported-html "${network_viewer_args[@]}"
           node --test tests/ned_editor_ui.test.cjs tests/ned_editor_recovery.test.cjs tests/ned_editor_extensions_ui.test.cjs
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node --test tests/ned_editor_viewer_expiry_browser.test.cjs
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_extensions_browser.test.cjs

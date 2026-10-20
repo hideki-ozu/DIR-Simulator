@@ -1,6 +1,6 @@
 # Ethernetの機能・動作仕様
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 対象GitHubバージョン：`main @ c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533`
 収録リリース：`v1.1.6`（本文・画像の調査基準は上記commitを維持）
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-20` | Issue #116〜#119の正式v1.1.6実測記事への相互参照を追加し、既存実習との比較範囲を明示 |
 | `1.1.0` | `2026-10-17` | Ethernetの媒体・交換・負荷・QoS・VLAN・動的制御・TSNを採否判断用に整理。v1.1.6へ収録し、本文・画像の調査基準を維持 |
 
 文書ID：`guide-reference-ethernet`
@@ -460,3 +461,8 @@ meterはcolor-blind独立二bucket、初期満杯。token numeratorはbit*10^12�
 検証の正本は[基本L2](https://github.com/hideki-ozu/DIR-Simulator/blob/c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533/docs/verification/cases/Ethernetモデル検証仕様書.md)、[媒体](https://github.com/hideki-ozu/DIR-Simulator/blob/c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533/docs/verification/cases/Ethernet媒体拡張検証仕様書.md)、[負荷・QoS](https://github.com/hideki-ozu/DIR-Simulator/blob/c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533/docs/verification/cases/Ethernet負荷・QoS検証仕様書.md)、[VLAN](https://github.com/hideki-ozu/DIR-Simulator/blob/c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533/docs/verification/cases/EthernetVLAN・マルチキャスト検証仕様書.md)、[dynamic](https://github.com/hideki-ozu/DIR-Simulator/blob/c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533/docs/verification/cases/Ethernet動的制御検証仕様書.md)、[TSN](https://github.com/hideki-ozu/DIR-Simulator/blob/c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533/docs/verification/cases/EthernetTSN検証仕様書.md)。本書の記載範囲と今回実行した確認範囲は別に管理する。既存試験のリンクだけで、現行commitの全入力・全組合せ・全規格への適合を認定しない。
 
 2026-10-17現行実装追補：承認済み後続10分野の[API・設定・scope・出力・Viewer境界](後続10分野の現行実装と利用境界.md)を追加した。固定commitに基づく既存画像・実測は取得時の証跡として保持する。新機能はv1.1.6に収録する。製品受入最終判定は同追補の製品検証記録へ分離する。文書版・履歴は本pushの改訂として確定した。
+
+## 関連する実習
+
+[半二重Ethernetの再送とseedによる待ち時間の違い](<../半二重Ethernetの再送とseedによる待ち時間の違い.md>)では、seedだけを変え、衝突・backoff期限・carrier待ちと同条件の再現を確認します
+[TASのgate閉鎖とCBS creditの凍結](<../TASのgate閉鎖とCBS creditの凍結.md>)では、gate閉鎖だけを変え、負creditの凍結と再開後の回復待ちを比較します

@@ -1,6 +1,6 @@
 # Ethernet CBSのcredit回復と送信待ち
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 対象GitHubバージョン：`v1.1.4`
 文書ID：`guide-ethernet-cbs-credit`
 文書状態：公開用完成稿
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-20` | Issue #116〜#119の正式v1.1.6実測記事への相互参照を追加し、既存実習との比較範囲を明示 |
 | `1.1.0` | `2026-10-15` | 初版：idle slopeだけを変える8入力実習、正式版CLI実測・実Viewer、IFG終了からのcredit回復と送信待ちを追加 |
 
 ## 目的：空いたLinkで次のフレームが待つ理由を調べる
@@ -144,3 +145,7 @@ PY
 本実習は理想共通時計・固定1Gbps・常時open・単一class・同時刻2フレームに限定しています。TAS閉鎖中のcredit凍結、他classとの競合、credit上限/下限の飽和、満杯drop、途中停止を測定していません。hi/loは明示入力で、自動的に適切な値が算出される機能として扱わないでください。
 
 本profileのrelease基準credit規則は再現可能な抽象モデルです。IEEE Qav全状態機械への適合、PTP同期誤差、frame preemptionや実ハードウェアの性能を保証しません。契約は[TSN仕様のCBS規則](https://github.com/hideki-ozu/DIR-Simulator/blob/v1.1.4/docs/specs/models/EthernetTSN詳細機能仕様書.md#scheduling)で確認できます。窓自体による待ちは[TAS送信窓の実習](<Ethernet TASの送信窓とIFG込みの待ち時間.md>)、クラス間の送信順は[優先キューの実習](Ethernetの優先キューと送信順.md)へ進めます。
+
+## 関連する実習
+
+[TASのgate閉鎖とCBS creditの凍結](<TASのgate閉鎖とCBS creditの凍結.md>)では、gate閉鎖だけを変え、負creditの凍結と再開後の回復待ちを比較します

@@ -1,6 +1,6 @@
 # CAN・Ethernet変換詳細機能仕様書
 
-文書バージョン：`1.1.1`
+文書バージョン：`1.1.2`
 設計日：`2026-10-07`
 対象GitHubバージョン：`v1.1.4`
 公開版：`v1.1.4`（公開済み）
@@ -11,6 +11,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.2` | `2026-10-20` | Issue #109：origin内の媒体横断イベント集合、枝lineageとterminal受信の関連付け・部分結果の境界を追加 |
 | `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-08` | 初回pushに向け、CAN↔Ethernet変換の入力・codec・方向別規則・容量・時間・lineage・結果契約と実装範囲を確定 |
 
@@ -172,3 +173,11 @@ ViewerはCAN bus・Ethernet linkとGateway内部conversionを区別して表示�
 準備失敗はINI/JSON pointer/NED path/field/理由を持ち、部分runは開始しない。runtime診断は`profile,time_ps,event_seq,gateway,rule_id,branch_id,reason`を可能な範囲で含める。算術overflow、event ID枯渇、予約失敗、codec内部不整合はcallback全体を未commitとして停止。正常なcodec拒否や満杯待機はrun失敗にしない。
 
 [0,T)を使用し、T丁度のEOF/到着/ready/SOFは未発火。実績列はnullを維持し、予定列とpendingを保存する。max_events/delta上限/キャンセル/公開失敗は共通終了契約を継承し、失敗callback以前の確定journalだけを公開する。入力配列順に依存しないcanonical path/rule sortでID、seqと結果を決定し、旧profileは既存fixturesで回帰確認する。
+
+### Viewerのorigin内確定イベント追跡
+
+本節はIssue #109で追加する操作であり、既存のv1.1.6公開物には含まれない。
+
+schema 2 `can.ethernet.gateway.v1` のViewerは媒体修飾originの全確定記録を時刻順にまとめる。CAN要求・受信、Ethernet frame／copy／受信、conversionのobserved／ready／released／拒否、branchのoffer／admitted／実績SOF／dropを、検証済みの型付き参照で関連付ける。枝はlineageを必須表示し、同じnative IDを媒体間で混同しない。terminal完了の `(origin, segment, branch_lineage, terminal)` は対応受信の同時刻イベントに注記し、完了と受信を別イベントとして重複計数しない。
+
+読み込んだrunの観測終端までに記録された実績は、cursorより後でも移動先となる。一方、planned_ready／planned_offer／planned_EOF、未生成child、未完terminalから未来のイベントを補わない。時刻はBigIntで保持し、同時刻のグループ内順序をFES内部順と見なさない。検索・VLAN・描画上限はorigin追跡の母数に影響しない。操作と初版イベント集合は[Viewer仕様](../../tools/viewer/viewer仕様書.md#canethernetの選択originの記録時刻)を参照する。Runtime、結果schema、元結果とmanifestは変更しない。`can.ethernet.tsn.v1`はこの追跡機能の対象外。

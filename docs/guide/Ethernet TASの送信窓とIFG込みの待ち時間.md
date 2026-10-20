@@ -1,6 +1,6 @@
 # Ethernet TASの送信窓とIFG込みの待ち時間
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 対象GitHubバージョン：`v1.1.4`
 文書ID：`guide-ethernet-tas-window`
 文書状態：公開用完成稿
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-20` | Issue #116〜#119の正式v1.1.6実測記事への相互参照を追加し、既存実習との比較範囲を明示 |
 | `1.1.0` | `2026-10-14` | 初版：1フレーム共通条件から生成時刻だけを1psずつ変え、IFG込み送信窓の実測と500000psの実Viewerを掲載 |
 
 ## 目的：gateが開いているのになぜ待つのか
@@ -145,3 +146,7 @@ transferを選んだJSON詳細は全実行の最終recordです。後者のSOF20
 有限1フレーム、1送信元・1宛先、直接接続、空payload、P7、固定GCL、伝搬・処理0だけを測定しました。複数classの競合、CBS credit、PSFP policing、GCL更新、複数hop、タグ変換、queue満杯、停止途中、連続負荷はこの実習で未検証です。deadlineなしなので期限超過率はnullです。空payloadのpayload throughputも0で、アプリケーションの実効性能を示しません。
 
 DIRのIFG込みguardはこの抽象profileの規則です。IEEE規格全体の適合、PTP同期交換やclock誤差、frame preemption、実機PHY・RTL・実ネットワーク性能の保証はしません。入力・占有時間・状態の正本は[TSN詳細仕様](https://github.com/hideki-ozu/DIR-Simulator/blob/v1.1.4/docs/specs/models/EthernetTSN詳細機能仕様書.md)です。
+
+## 関連する実習
+
+[TASのgate閉鎖とCBS creditの凍結](<TASのgate閉鎖とCBS creditの凍結.md>)では、gate閉鎖だけを変え、負creditの凍結と再開後の回復待ちを比較します

@@ -1,6 +1,6 @@
 # SoC・メモリ・IPCの機能・動作仕様
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 対象GitHubバージョン：`main @ c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533`
 収録リリース：`v1.1.6`（本文・画像の調査基準は上記commitを維持）
 
@@ -8,6 +8,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-20` | Issue #116〜#119の正式v1.1.6実測記事への相互参照を追加し、既存実習との比較範囲を明示 |
 | `1.1.0` | `2026-10-17` | 初版。AXI、共有SoC、AHB相当、NoC、DDR/SRAM、共有メモリ、メールボックス、DMAの入力・動作・結果と変更判断を整理。v1.1.6へ収録し、本文・画像の調査基準を維持 |
 
 文書ID：`guide-reference-soc-memory-ipc`
@@ -476,3 +477,7 @@ H=0では率・標本平均はnull、正Hの空負荷ではqueue/利用率/throu
 [viewer-transaction]: https://github.com/hideki-ozu/DIR-Simulator/blob/c67e153cc3bcf1f6ac0303d23023ce8ae4a4f533/crates/dir-simulator/src/tool/viewer/assets/transaction-model.js
 [arm-axi]: https://community.arm.com/cfs-file/__key/communityserver-discussions-components-files/476/IHI0022H_5F00_amba_5F00_axi_5F00_protocol_5F00_spec.pdf
 [arm-ahb]: https://documentation-service.arm.com/static/5f914801f86e16515cdc2a27
+
+## 関連する実習
+
+[AXIのoutstanding上限と受理・待機・処理の違い](<../AXIのoutstanding上限と受理・待機・処理の違い.md>)では、outstanding上限だけを変え、drop・FIFO待機と一要求ずつの処理を区別します

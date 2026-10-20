@@ -1,6 +1,6 @@
 # DIR Simulator ガイド
 
-文書バージョン：`1.1.30`
+文書バージョン：`1.1.31`
 対象GitHubバージョン：`v1.1.6`
 文書ID：`guide-index`  
 文書状態：公開済み。mainへのpush時に検証後、GitHub Pagesを自動更新
@@ -9,6 +9,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.31` | `2026-10-20` | Issue #109・#115の対応と、正式v1.1.6で実測した半二重再送・AXI容量・TAS/CBS・Gateway RX容量の4実習への入口を追加 |
 | `1.1.30` | `2026-10-19` | preemption・冗長履歴・PSFP gate・Metric V2の正式v1.1.6実測4記事と独立入力ZIPを追加 |
 | `1.1.29` | `2026-10-17` | 機能リファレンス8章と最新mainの5記事を共存させ、v1.1.6の入口・入力ZIP・過去実測の基準を整理 |
 | `1.1.28` | `2026-10-17` | 抽象STPのcost1変数比較・正式版実測・実Viewerと6入力ZIPを追加。既存記事・導線・23 ZIPを維持 |
@@ -88,6 +89,10 @@ DIRを初めて使う人が、サンプルのCAN・Ethernet通信とメモリ読
 | 冗長コピーの除去理由を読む | [抽象冗長配送の履歴容量とduplicate・stale](抽象冗長配送の履歴容量とduplicate・stale.md) | 履歴容量だけを変え、物理受信・一度だけの配送・duplicateとstaleを区別 |
 | 受信gateの境界を比べる | [Ethernet PSFPのstream gateと1ps境界](<Ethernet PSFPのstream gateと1ps境界.md>) | gate開始だけを1ps変え、同じ送信copyと異なる受信判定を読む |
 | 集計窓と時間平均を読む | [Metric V2の集計窓幅と時間平均](<Metric V2の集計窓幅と時間平均.md>) | 窓幅だけを変え、同じイベント列・窓別の時間平均・現在値を区別 |
+| 半二重媒体の再送を比べる | [半二重Ethernetの再送とseedによる待ち時間の違い](<半二重Ethernetの再送とseedによる待ち時間の違い.md>) | seedだけを変え、衝突・backoff期限・carrier待ちと同条件の再現を確認 |
+| AXIの受理容量を比べる | [AXIのoutstanding上限と受理・待機・処理の違い](<AXIのoutstanding上限と受理・待機・処理の違い.md>) | outstanding上限だけを変え、drop・FIFO待機と一要求ずつの処理を区別 |
+| TASとCBSの合成を読む | [TASのgate閉鎖とCBS creditの凍結](<TASのgate閉鎖とCBS creditの凍結.md>) | gate閉鎖だけを変え、負creditの凍結と再開後の回復待ちを比較 |
+| GatewayのRX容量を比べる | [GatewayのRX容量と遅い分岐による後続配信の損失](<GatewayのRX容量と遅い分岐による後続配信の損失.md>) | RX容量だけを変え、親保持・枝別TX受理と後続親の拒否を区別 |
 | 設定・用語・FAQ | [設定・用語・FAQ](設定・用語・FAQ.md) | パス、単位、上書きエラー、学習時の疑問 |
 
 上から3ページを順に読むと、一つの小さな実験がつながります。入門は3要求だけに絞り、実際に保存された結果と画面を掲載しています。
