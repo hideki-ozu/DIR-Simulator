@@ -349,7 +349,7 @@
     }
     for(const r of m.canModel.requests)if(belongs('can',r.id)){
       const path=lineage('can/'+r.id),selection={id:r.id,media:'can'};
-      for(const key of ['generated','ready',...(r.hasTxEnqueued?['txEnqueued']:[]),'sof','eof'])add(r[key],'can.'+key,'can',r.id,selection,r.source,path);
+      for(const key of ['generated',...(r.status==='dropped'?[]:['ready']),...(r.hasTxEnqueued?['txEnqueued']:[]),'sof','eof'])add(r[key],'can.'+key,'can',r.id,selection,r.source,path);
       if(r.raw.model_fields.release_ps!==null&&r.raw.model_fields.release_ps!==undefined)add(BigInt(r.raw.model_fields.release_ps),'can.release','can',r.id,selection,r.bus,path);
       if(r.status==='dropped')add(r.ready,'can.dropped','can',r.id,selection,r.source,path,r.raw.drop_reason);
       for(const rx of r.receivers){

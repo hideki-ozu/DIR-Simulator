@@ -1,10 +1,21 @@
 """Independent numeric/state checks for guide #116--#119 saved raw outputs."""
 import argparse,csv,json,hashlib
 from collections import Counter
+from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
 
 def load(p):return json.loads(p.read_text())
+def check_summary_csv(csv_path,results_path):
+ # Read the original JSON tokens: normal float loading loses precision before
+ # comparison, even if the resulting float is later converted to Decimal.
+ summary=json.loads(results_path.read_text(),parse_float=Decimal)['simulation']['summary']
+ with csv_path.open() as source:csvrows=list(csv.DictReader(source))
+ assert len(csvrows)==len(summary)
+ for saved,r in zip(csvrows,summary):
+  for key in ('metric','target','sample_count','start_ps','end_ps'):assert saved[key]==('' if r[key] is None else str(r[key]))
+  assert (saved['value']=='' if r['value'] is None else saved['value']!='' and Decimal(saved['value'])==Decimal(r['value']))
+
 def check(slug,folder):
  report=load(folder/'measurements.json');summaries={}
  for name,c in report['conditions'].items():
@@ -15,11 +26,7 @@ def check(slug,folder):
   def metric(target,metric):
    values=[r for r in sim['summary'] if r['target']==target and r['metric']==metric];assert len(values)==1,(target,metric);return values[0]
   assert not sim['partial']
-  csvrows=list(csv.DictReader((folder/'repository'/name/'result/summary.csv').open()))
-  assert len(csvrows)==len(sim['summary'])
-  for saved,r in zip(csvrows,sim['summary']):
-   for key in ('metric','target','sample_count','start_ps','end_ps'):assert saved[key]==('' if r[key] is None else str(r[key]))
-   assert (saved['value']=='' if r['value'] is None else float(saved['value'])==float(r['value']))
+  check_summary_csv(folder/'repository'/name/'result/summary.csv',folder/'repository'/name/'result/results.json')
   if slug=='ethernet-beb-seed':
    seed=int(name[-1]);attempts=ds('ethernet.attempt');transfers=ds('ethernet.transfer');receptions=ds('ethernet.reception')
    expect={1:([0,1],[2020000,8840000],[7880000,14700000],2),0:([1,1],[22400000,8100000],[28260000,13960000],3)}[seed]

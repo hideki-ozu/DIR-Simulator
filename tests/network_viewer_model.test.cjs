@@ -294,7 +294,7 @@ test('origin chronology covers current runtime fanout, multiple Gateways, reject
    const bytes=fs.readFileSync(path.join(output,'results.json'),'utf8'),manifest=fs.readFileSync(path.join(output,'manifest.json'),'utf8'),raw=JSON.parse(bytes),m=E.parseResults(raw),all=[...m.origins.keys()].flatMap(origin=>E.originEvents(m,origin).flatMap(g=>g.events));
    // Independent raw-record oracle: no planned field is consulted, every recorded milestone has a matching kind/time/target.
    for(const row of raw.simulation.model_records){const d=row.data,media=row.schema_name.startsWith('can.')?'can':'ethernet';let mapping={};
-    if(row.schema_name==='can.request')mapping={generated_ps:'can.generated',ready_ps:'can.ready',sof_ps:'can.sof',eof_ps:'can.eof'};
+    if(row.schema_name==='can.request')mapping={generated_ps:'can.generated',ready_ps:d.status==='dropped'?'can.dropped':'can.ready',sof_ps:'can.sof',eof_ps:'can.eof'};
     if(row.schema_name==='can.receiver')mapping={observed_ps:d.status==='filtered'?'can.filtered':'can.observed',received_ps:'can.received'};
     if(row.schema_name==='ethernet.frame')mapping={generated_ps:'ethernet.generated',ready_ps:'ethernet.ready'};
     if(row.schema_name==='ethernet.transfer')mapping={queued_ps:'ethernet.queued',sof_ps:'ethernet.sof',eof_ps:'ethernet.eof',release_ps:'ethernet.release',arrival_ps:'ethernet.arrival'};
@@ -313,4 +313,19 @@ test('origin chronology covers current runtime fanout, multiple Gateways, reject
 });
 test('origin extraction includes copies beyond row and drawing limits',()=>{
  const m=E.parseResults(compositeFixture()),copy=[...m.transfers.values()][0];for(let i=0;i<1005;i++)m.transfers.set('extra/'+i,{...copy,id:'extra/'+i});const events=E.originEvents(m,'ethernet:g:0').flatMap(g=>g.events);assert(events.some(e=>e.id==='extra/1004'&&e.kind==='ethernet.sof'));assert.equal(events.filter(e=>e.kind==='ethernet.sof').length,1005+2);
+});
+
+
+test('dropped CAN ready timestamp is only a drop milestone, with generation preserved',()=>{
+ for(const generated of ['0','100']){
+  const raw=compositeFixture(),row=structuredClone(raw.simulation.model_records.find(r=>r.schema_name==='can.request'));
+  Object.assign(row,{record_id:'dropped-can',request_id:'dropped-can',origin_request_id:'dropped-can',time_ps:'100'});
+  Object.assign(row.data,{request_id:'dropped-can',status:'dropped',generated_ps:generated,ready_ps:'100',sof_ps:null,eof_ps:null,attempts:'0',drop_reason:'queue_full'});
+  Object.assign(row.data.model_fields,{origin_request_id:'dropped-can',tx_enqueued_ps:null,planned_eof_ps:null,planned_release_ps:null,release_ps:null});raw.simulation.model_records.push(row);
+  const model=E.parseResults(raw),events=E.originEvents(model,'can:dropped-can').flatMap(g=>g.events);
+  assert.deepEqual(events.map(e=>e.kind).sort(),['can.dropped','can.generated']);
+  const dropped=events.find(e=>e.kind==='can.dropped');assert.equal(dropped.time,100n);assert.equal(dropped.reason,'queue_full');assert.equal(dropped.media,'can');assert.equal(dropped.target,'can:dropped-can');assert.deepEqual(dropped.branchLineage,[]);assert.deepEqual(dropped.selection,{id:'dropped-can',media:'can'});
+  assert.equal(events.find(e=>e.kind==='can.generated').time,BigInt(generated));
+  assert.deepEqual(events.filter(e=>e.time===100n).map(e=>e.kind).sort(),generated==='100'?['can.dropped','can.generated']:['can.dropped']);
+ }
 });

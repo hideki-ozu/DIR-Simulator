@@ -12,10 +12,11 @@
   ],
   "worktree": "isolated branch fix/all-open-issues-20261020; original HEAD/status and4modified-or-untracked file hashes preserved",
   "viewer_models": {
-    "passed": 124,
+    "passed": 125,
     "skipped": 1,
     "failed": 0,
-    "skip": "existing optional product capability test"
+    "skip": "existing optional product capability test",
+    "log": "viewer-models-followup.log"
   },
   "python_tests": {
     "passed": 67,
@@ -88,7 +89,7 @@
   "scope_boundaries": {
     "runtime_and_results_schema": "unchanged",
     "formal_v1_1_6_contains_new_origin_navigation": false,
-    "rust_test_suite": "not rerun; no Rust implementation changed; current build,CLI export,and focused Viewer suites passed",
+    "rust_test_suite": "Not rerun locally at initial implementation gate; full Rust workspace/clippy are checked by the existing GitHub release-audit workflow.",
     "new_release_or_tag": "not created",
     "issues_close_after_pr_merge": true
   },
@@ -140,7 +141,48 @@
     "viewer-models.log": {
       "sha256": "e33e4ed09d4c5f7fa8048eddf28b917eee86863a34fdd54a5f1f48d0fa5af3bb",
       "bytes": 28584
+    },
+    "precision-regressions.log": {
+      "sha256": "9a3f6faad33f515e0ab771f604c2f4cf9e0026169cf9e296ba19fa6f8cdd0be2",
+      "bytes": 871
+    },
+    "current-build-followup.log": {
+      "sha256": "07cf7f40f4d6ffd2e01642908d624f13a88f655eda044362676f7668c92523ec",
+      "bytes": 164
+    },
+    "portable-evidence-followup.log": {
+      "sha256": "03e487eeda00cdd6d834e0b7a7a8bfe2444eceec68833b036edaf26981085fc7",
+      "bytes": 548
+    },
+    "viewer-models-followup.log": {
+      "sha256": "935fd49119a845a025e16f5ee1215b27363c36449f58fc82916b0206d9f756d8",
+      "bytes": 28815
+    },
+    "exported-viewer-browser-followup.log": {
+      "sha256": "49210ad01f83750207cf8f2711c6b09dc0616f564774c17fe5095398d5854843",
+      "bytes": 1256
     }
   },
-  "review_log_normalization": "Trailing whitespace and redundant final blank lines removed in copied review reports; original raw outputs retained externally."
+  "review_log_normalization": "Trailing whitespace and redundant final blank lines removed in copied review reports; original raw outputs retained externally.",
+  "csv_precision_regression_tests": {
+    "passed": 5,
+    "failed": 0,
+    "log": "precision-regressions.log"
+  },
+  "github_review_followups": [
+    {
+      "thread": "PRRT_kwDOUsGXyc6uWFVP",
+      "status": "fixed",
+      "change": "Dropped CAN ready_ps produces can.dropped only; explicit valid composite regression covers distinct and coincident generation/drop."
+    },
+    {
+      "thread": "PRRT_kwDOUsGXyc6uWFVT",
+      "status": "fixed",
+      "change": "Raw JSON decimal tokens and CSV values compared with Decimal; reject adjacent integers above2^53 and beyond-float decimal differences."
+    }
+  ],
+  "ci_regression_wiring": {
+    "release-audit.yml": "Network model/runtime oracle and5 real standalone exported Viewer browser inputs; network tests included in path triggers.",
+    "guide-pages.yml": "Exact CSV numeric comparison counterexamples and positives included with existing site-inventory tests."
+  }
 }
