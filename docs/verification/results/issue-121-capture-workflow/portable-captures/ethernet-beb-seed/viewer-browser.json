@@ -1,0 +1,346 @@
+{
+  "status": "passed",
+  "generated_by": "scripts/verify_capacity_comparisons_viewer.cjs",
+  "path_base": "report directory",
+  "browser_version": "151.0.7922.34",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "binary_sha256": "4363af17b0a24e580de7359da4c82444de3dcc03ab006cb3ffe0e686a0bfd9aa",
+  "input_sha256": {
+    "seed-0/collision.ini": "5ff15dd5ad71a384f38849a6fb07c64df9ffac3b4459333b914dae317ebf1a1d",
+    "seed-0/collision.model.json": "a96a9de5d5320bf21deb1314d0df219b3ec60bbc687627f40897cbdfb3cb363d",
+    "seed-0/collision.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+    "seed-0/models/media/Main.ned": "9051be3e4df98b8304bc0dd844c7990502ba172be92bbb561171e3b8c309fd92",
+    "seed-0/models/media/Mix.ned": "c849fa8f15cb7c4a17f89a4173e0cb197d1b315da9b13195ccbe327bfb3c0cd0",
+    "seed-0/models/media/Types.ned": "bca7c42e10e09734007d4fdfc94dfa6d41ae358017549df33d3f66f7aa710df0",
+    "seed-1/collision.ini": "5ff15dd5ad71a384f38849a6fb07c64df9ffac3b4459333b914dae317ebf1a1d",
+    "seed-1/collision.model.json": "2aada2675cc00a1afdc43103d34665676b342782594d3e41175962bb516a4f3c",
+    "seed-1/collision.workload.json": "a73c99be08a6342c2c74ed69a236c6e08f95ccb7c4dbffa154b617cdf5d0a6d1",
+    "seed-1/models/media/Main.ned": "9051be3e4df98b8304bc0dd844c7990502ba172be92bbb561171e3b8c309fd92",
+    "seed-1/models/media/Mix.ned": "c849fa8f15cb7c4a17f89a4173e0cb197d1b315da9b13195ccbe327bfb3c0cd0",
+    "seed-1/models/media/Types.ned": "bca7c42e10e09734007d4fdfc94dfa6d41ae358017549df33d3f66f7aa710df0"
+  },
+  "measurements": {
+    "path": "../../../ethernet-beb-seed/measurements.json",
+    "sha256": "00957ee159d3baae4147a4bbf1091961585f7e21ede52f5f3f10926fc17a5eea"
+  },
+  "conditions": {
+    "seed-1-desktop": {
+      "viewer_path": "../../../ethernet-beb-seed/repository/seed-1/viewer.html",
+      "viewer_sha256": "07c1a4d0437cbb5480246928d86fa30212b90cc2a578509aa3dc7d0cc57ebb55",
+      "results_path": "../../../ethernet-beb-seed/repository/seed-1/result/results.json",
+      "results_sha256": "a9312dbfab7be69280401d23f56d5b2ddb7820d73847872cb62ac23d9178a03a",
+      "manifest_path": "../../../ethernet-beb-seed/repository/seed-1/result/manifest.json",
+      "manifest_sha256": "37cefaa1c3fa79513880a723217d5bdfb85b63d51a9401383b8aa7ac36362291",
+      "observations": [
+        {
+          "time_ps": "100000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\tjam送信中\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\tjam送信中\t8840000\t14600000\t14700000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n2\ncopy\n再送待ち\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "1200000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\t媒体待ち\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\t再送待ち\t8840000\t14600000\t14700000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n1\ncopy\njam送信中\n0\ncopy\n再送待ち\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "6080000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\t送信中\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\t媒体待ち\t8840000\t14600000\t14700000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n1\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "100000000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\tEOF 到達\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\tEOF 到達\t8840000\t14600000\t14700000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": null
+        }
+      ],
+      "rollback": [
+        "6080000",
+        "100000",
+        "6080000"
+      ],
+      "rollback_equal": true,
+      "errors": [],
+      "external_requests": [],
+      "failed_requests": [],
+      "document_width": {
+        "viewport": 1440,
+        "document": 1440
+      }
+    },
+    "seed-1-mobile": {
+      "viewer_path": "../../../ethernet-beb-seed/repository/seed-1/viewer.html",
+      "viewer_sha256": "07c1a4d0437cbb5480246928d86fa30212b90cc2a578509aa3dc7d0cc57ebb55",
+      "results_path": "../../../ethernet-beb-seed/repository/seed-1/result/results.json",
+      "results_sha256": "a9312dbfab7be69280401d23f56d5b2ddb7820d73847872cb62ac23d9178a03a",
+      "manifest_path": "../../../ethernet-beb-seed/repository/seed-1/result/manifest.json",
+      "manifest_sha256": "37cefaa1c3fa79513880a723217d5bdfb85b63d51a9401383b8aa7ac36362291",
+      "observations": [
+        {
+          "time_ps": "100000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\tjam送信中\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\tjam送信中\t8840000\t14600000\t14700000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n2\ncopy\n再送待ち\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "1200000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\t媒体待ち\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\t再送待ち\t8840000\t14600000\t14700000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n1\ncopy\njam送信中\n0\ncopy\n再送待ち\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "6080000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\t送信中\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\t媒体待ち\t8840000\t14600000\t14700000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n1\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "100000000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\tEOF 到達\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\tEOF 到達\t8840000\t14600000\t14700000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": null
+        }
+      ],
+      "rollback": [
+        "6080000",
+        "100000",
+        "6080000"
+      ],
+      "rollback_equal": true,
+      "errors": [],
+      "external_requests": [],
+      "failed_requests": [],
+      "document_width": {
+        "viewport": 390,
+        "document": 390
+      }
+    },
+    "seed-0-desktop": {
+      "viewer_path": "../../../ethernet-beb-seed/repository/seed-0/viewer.html",
+      "viewer_sha256": "80c3a541807d2e988d30f1dbce373d3820c63bced07ff55822c6ab5d1c0242a7",
+      "results_path": "../../../ethernet-beb-seed/repository/seed-0/result/results.json",
+      "results_sha256": "55f3e02eb9eed957dd2c2214bb056a8af40a525951faccf7024d2136b064c60f",
+      "manifest_path": "../../../ethernet-beb-seed/repository/seed-0/result/manifest.json",
+      "manifest_sha256": "e2a989f29fdff8eafcfde33ac8f0dc308353e2d751c06ff086d51d71938b66b9",
+      "observations": [
+        {
+          "time_ps": "100000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\tjam送信中\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\tjam送信中\t8100000\t13860000\t13960000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n2\ncopy\n再送待ち\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "1200000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\t再送待ち\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\t再送待ち\t8100000\t13860000\t13960000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n2\ncopy\n送信中\n0\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "6080000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\t送信中\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\t送信中\t8100000\t13860000\t13960000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n2\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "100000000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\tEOF 到達\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\tEOF 到達\t8100000\t13860000\t13960000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": null
+        }
+      ],
+      "rollback": [
+        "6080000",
+        "100000",
+        "6080000"
+      ],
+      "rollback_equal": true,
+      "errors": [],
+      "external_requests": [],
+      "failed_requests": [],
+      "document_width": {
+        "viewport": 1440,
+        "document": 1440
+      }
+    },
+    "seed-0-mobile": {
+      "viewer_path": "../../../ethernet-beb-seed/repository/seed-0/viewer.html",
+      "viewer_sha256": "80c3a541807d2e988d30f1dbce373d3820c63bced07ff55822c6ab5d1c0242a7",
+      "results_path": "../../../ethernet-beb-seed/repository/seed-0/result/results.json",
+      "results_sha256": "55f3e02eb9eed957dd2c2214bb056a8af40a525951faccf7024d2136b064c60f",
+      "manifest_path": "../../../ethernet-beb-seed/repository/seed-0/result/manifest.json",
+      "manifest_sha256": "e2a989f29fdff8eafcfde33ac8f0dc308353e2d751c06ff086d51d71938b66b9",
+      "observations": [
+        {
+          "time_ps": "100000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\tjam送信中\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\tjam送信中\t8100000\t13860000\t13960000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n2\ncopy\n再送待ち\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "1200000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\t再送待ち\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\t再送待ち\t8100000\t13860000\t13960000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n2\ncopy\n送信中\n0\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "6080000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\t送信中\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\t送信中\t8100000\t13860000\t13960000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n2\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+          "tsn": null
+        },
+        {
+          "time_ps": "100000000",
+          "rows": "a:0\tMain.a.tx → Main.b.rx\tEOF 到達\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\tEOF 到達\t8100000\t13860000\t13960000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": null
+        }
+      ],
+      "rollback": [
+        "6080000",
+        "100000",
+        "6080000"
+      ],
+      "rollback_equal": true,
+      "errors": [],
+      "external_requests": [],
+      "failed_requests": [],
+      "document_width": {
+        "viewport": 390,
+        "document": 390
+      }
+    }
+  },
+  "captures": [
+    {
+      "condition": "seed-1",
+      "current_time_ps": "6080000",
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "viewer_path": "../../../ethernet-beb-seed/repository/seed-1/viewer.html",
+      "viewer_sha256": "07c1a4d0437cbb5480246928d86fa30212b90cc2a578509aa3dc7d0cc57ebb55",
+      "results_path": "../../../ethernet-beb-seed/repository/seed-1/result/results.json",
+      "results_sha256": "a9312dbfab7be69280401d23f56d5b2ddb7820d73847872cb62ac23d9178a03a",
+      "manifest_path": "../../../ethernet-beb-seed/repository/seed-1/result/manifest.json",
+      "manifest_sha256": "37cefaa1c3fa79513880a723217d5bdfb85b63d51a9401383b8aa7ac36362291",
+      "screenshot": "images/guide-ethernet-beb-seed-seed-1-t6080000ps-desktop.png",
+      "sha256": "ba93c75d6b6046b69617438c0b35e7e75496f650e45dad27b7aea4489f152ed5",
+      "width": 1368,
+      "height": 224,
+      "selector": "#eth-rows",
+      "horizontal_scroll": [
+        {
+          "left": 0,
+          "width": 1366,
+          "content": 1366
+        }
+      ],
+      "state": {
+        "rows": "a:0\tMain.a.tx → Main.b.rx\t送信中\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\t媒体待ち\t8840000\t14600000\t14700000",
+        "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n1\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+        "tsn": null
+      }
+    },
+    {
+      "condition": "seed-1",
+      "current_time_ps": "6080000",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "viewer_path": "../../../ethernet-beb-seed/repository/seed-1/viewer.html",
+      "viewer_sha256": "07c1a4d0437cbb5480246928d86fa30212b90cc2a578509aa3dc7d0cc57ebb55",
+      "results_path": "../../../ethernet-beb-seed/repository/seed-1/result/results.json",
+      "results_sha256": "a9312dbfab7be69280401d23f56d5b2ddb7820d73847872cb62ac23d9178a03a",
+      "manifest_path": "../../../ethernet-beb-seed/repository/seed-1/result/manifest.json",
+      "manifest_sha256": "37cefaa1c3fa79513880a723217d5bdfb85b63d51a9401383b8aa7ac36362291",
+      "screenshot": "images/guide-ethernet-beb-seed-seed-1-t6080000ps-mobile.png",
+      "sha256": "17604702c91a5a49af6f864ae4d3ac7cecc08b025ef32fc2d689d46a26048b19",
+      "width": 362,
+      "height": 283,
+      "selector": "#eth-rows",
+      "horizontal_scroll": [
+        {
+          "left": 0,
+          "width": 360,
+          "content": 548
+        }
+      ],
+      "state": {
+        "rows": "a:0\tMain.a.tx → Main.b.rx\t送信中\t2020000\t7780000\t7880000\nb:0\tMain.b.tx → Main.a.rx\t媒体待ち\t8840000\t14600000\t14700000",
+        "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n1\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+        "tsn": null
+      }
+    },
+    {
+      "condition": "seed-0",
+      "current_time_ps": "6080000",
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "viewer_path": "../../../ethernet-beb-seed/repository/seed-0/viewer.html",
+      "viewer_sha256": "80c3a541807d2e988d30f1dbce373d3820c63bced07ff55822c6ab5d1c0242a7",
+      "results_path": "../../../ethernet-beb-seed/repository/seed-0/result/results.json",
+      "results_sha256": "55f3e02eb9eed957dd2c2214bb056a8af40a525951faccf7024d2136b064c60f",
+      "manifest_path": "../../../ethernet-beb-seed/repository/seed-0/result/manifest.json",
+      "manifest_sha256": "e2a989f29fdff8eafcfde33ac8f0dc308353e2d751c06ff086d51d71938b66b9",
+      "screenshot": "images/guide-ethernet-beb-seed-seed-0-t6080000ps-desktop.png",
+      "sha256": "53568494dcf3ec02305826228cf98171043b5ae5be0b9593bf5bde8b6e0f889c",
+      "width": 1368,
+      "height": 224,
+      "selector": "#eth-rows",
+      "horizontal_scroll": [
+        {
+          "left": 0,
+          "width": 1366,
+          "content": 1366
+        }
+      ],
+      "state": {
+        "rows": "a:0\tMain.a.tx → Main.b.rx\t送信中\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\t送信中\t8100000\t13860000\t13960000",
+        "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n2\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+        "tsn": null
+      }
+    },
+    {
+      "condition": "seed-0",
+      "current_time_ps": "6080000",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "viewer_path": "../../../ethernet-beb-seed/repository/seed-0/viewer.html",
+      "viewer_sha256": "80c3a541807d2e988d30f1dbce373d3820c63bced07ff55822c6ab5d1c0242a7",
+      "results_path": "../../../ethernet-beb-seed/repository/seed-0/result/results.json",
+      "results_sha256": "55f3e02eb9eed957dd2c2214bb056a8af40a525951faccf7024d2136b064c60f",
+      "manifest_path": "../../../ethernet-beb-seed/repository/seed-0/result/manifest.json",
+      "manifest_sha256": "e2a989f29fdff8eafcfde33ac8f0dc308353e2d751c06ff086d51d71938b66b9",
+      "screenshot": "images/guide-ethernet-beb-seed-seed-0-t6080000ps-mobile.png",
+      "sha256": "f3b72dc45353318d73f52880a7b8ea72c08f5b3ccef066292d10b10a0e4d4ca9",
+      "width": 362,
+      "height": 283,
+      "selector": "#eth-rows",
+      "horizontal_scroll": [
+        {
+          "left": 0,
+          "width": 360,
+          "content": 543
+        }
+      ],
+      "state": {
+        "rows": "a:0\tMain.a.tx → Main.b.rx\t送信中\t22400000\t28160000\t28260000\nb:0\tMain.b.tx → Main.a.rx\t送信中\t8100000\t13860000\t13960000",
+        "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n媒体待ち\n0\ncopy\njam送信中\n0\ncopy\n再送待ち\n0\ncopy\n送信中\n2\ncopy\nEOF 到達\n0\ncopy\n破棄\n0\ncopy\n受信完了\n0\nreception",
+        "tsn": null
+      }
+    }
+  ]
+}

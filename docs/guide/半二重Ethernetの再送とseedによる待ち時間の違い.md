@@ -1,6 +1,6 @@
 # 半二重Ethernetの再送とseedによる待ち時間の違い
 
-文書バージョン：`1.1.0`
+文書バージョン：`1.1.1`
 対象GitHubバージョン：`v1.1.6`
 実測ソースcommit：`397900451015c9bca6a33d24feac0a88b9b7b8fe`
 文書ID：`guide-ethernet-beb-seed`
@@ -10,6 +10,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.1.1` | `2026-10-20` | Issue #121：公開済み画像を保持した撮影再検証、単独実習の選択と新規出力先・再試行手順を整合 |
 | `1.1.0` | `2026-10-20` | 正式v1.1.6で1変数比較を新規実測し、独立入力・実Viewer・巻戻し検証を追加 |
 
 ## 目的：再送の期限と、実際に送れる時刻を分ける
@@ -117,11 +118,22 @@ manifestの全成果物hashと空diagnostics、JSON/summary.csvの値・target�
 python3 scripts/build_guide_inputs.py --check
 python3 scripts/verify_guide_capacity_comparisons.py \
   --binary /path/to/dir-simulator --source-root /path/to/formal-source \
-  --output /path/to/new-evidence
-python3 scripts/check_guide_capacity_measurements.py /path/to/new-evidence
+  --only ethernet-beb-seed --output /path/to/new-evidence
+python3 scripts/check_guide_capacity_measurements.py /path/to/new-evidence --only ethernet-beb-seed
+NODE_PATH=/path/to/browser-tools/node_modules \
+  node scripts/verify_capacity_comparisons_viewer.cjs /path/to/new-evidence \
+  --only ethernet-beb-seed --output /path/to/new-captures
 ```
 
-最後の検査は出力の独立期待値・保存則・CSVを照合します。撮影の再実行は `scripts/verify_capacity_comparisons_viewer.cjs` に同じ証跡rootを渡します。既存の撮影PNG・レポートがあると停止するため、保存済み証跡を残した別checkoutを使います。ブラウザ実行にはPlaywrightとChromiumが必要です。
+独立検査は出力の独立期待値・保存則・CSVを照合します。
+
+撮影コマンドにはPlaywrightとChromiumが必要です。`/path/to/browser-tools/node_modules` はPlaywrightを導入したnode_modulesへ置き換えます。計測・数値照合・撮影はいずれも `--only ethernet-beb-seed` を指定しており、この実習の証跡だけを読みます。
+
+`/path/to/new-captures` は未使用の撮影出力先です。生成される `capture-summary.json` から `ethernet-beb-seed/viewer-browser.json` を辿れ、実PNGは `ethernet-beb-seed/images/` に保存されます。各reportは自身のdirectoryを基準に、実際に読んだ計測JSON・results.json・manifest・Viewer HTMLと撮影PNGのpath/hash、条件・cursor・viewportを記録します。元の計測成果物と記事収録済みのPNG・台帳は変更しません。
+
+同じ撮影出力先を再指定すると、既存出力を変更せず拒否します。同じ計測証跡をもう一度撮影する場合は、`--output /path/to/new-captures-2` のように別の未使用先を指定します。`--output` を省略した既定値は `/path/to/new-evidence/viewer-captures` です。全4実習を一度に検証する場合は、新しい証跡rootを指定し、上の計測・数値照合・撮影の3コマンドすべてから `--only ethernet-beb-seed` を外します。
+
+公開済みPNGを残した状態での全4実習・AXI単独・Gateway単独の再実行、同じ出力先の拒否、別の出力先での再撮影、元成果物の不変性は[撮影再実行の検証記録](https://github.com/hideki-ozu/DIR-Simulator/blob/main/docs/verification/results/issue-121-capture-workflow/acceptance.json)に保存しています。
 
 ## 対象範囲と次に読む資料
 

@@ -329,3 +329,18 @@ test('dropped CAN ready timestamp is only a drop milestone, with generation pres
   assert.deepEqual(events.filter(e=>e.time===100n).map(e=>e.kind).sort(),generated==='100'?['can.dropped','can.generated']:['can.dropped']);
  }
 });
+
+
+function canDetailStatesFixture(){
+ const raw=compositeFixture(),request=raw.simulation.model_records.find(r=>r.schema_name==='can.request');
+ Object.assign(request.data,{generated_ps:'10',ready_ps:'20'});
+ const dropped=structuredClone(request);Object.assign(dropped,{record_id:'dropped-detail',request_id:'dropped-detail',origin_request_id:'dropped-detail',time_ps:'50'});
+ Object.assign(dropped.data,{request_id:'dropped-detail',status:'dropped',generated_ps:'30',ready_ps:'50',sof_ps:null,eof_ps:null,attempts:'0',drop_reason:'queue_full'});
+ Object.assign(dropped.data.model_fields,{origin_request_id:'dropped-detail',tx_enqueued_ps:null,planned_eof_ps:null,planned_release_ps:null,release_ps:null});raw.simulation.model_records.push(dropped);return raw;
+}
+module.exports.canDetailStatesFixture=canDetailStatesFixture;
+test('CAN detail fixture distinguishes generation, ready, SOF, EOF and drop boundaries',()=>{
+ const m=E.parseResults(canDetailStatesFixture()),request=m.canModel.requests.find(r=>r.id==='can:0'),dropped=m.canModel.requests.find(r=>r.id==='dropped-detail');
+ assert.deepEqual([0n,10n,20n,100n,200n,201n,0n].map(t=>m.canApi.requestStateAt(request,t)),['not_generated','processing','pending','in_flight','success','success','not_generated']);
+ assert.deepEqual([0n,30n,49n,50n,51n,30n].map(t=>m.canApi.requestStateAt(dropped,t)),['not_generated','processing','processing','dropped','dropped','processing']);
+});

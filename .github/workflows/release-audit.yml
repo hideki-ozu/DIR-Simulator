@@ -12,6 +12,8 @@ on:
       - 'docs/third-party/**'
       - 'docs/guide/assets/licenses/**'
       - 'scripts/check_third_party_notices.py'
+      - 'scripts/verify_capacity_comparisons_viewer.cjs'
+      - 'scripts/verify_issue121_capture_workflow.py'
       - 'docs/verification/results/release-native-distribution-audit-2026-10-08/**'
       - '.github/workflows/release-audit.yml'
       - 'tests/viewer_model.test.cjs'
@@ -107,6 +109,12 @@ jobs:
           node --test tests/viewer_model.test.cjs tests/controlled_viewer_model.test.cjs
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node tests/viewer_browser.cjs
           mkdir "$RUNNER_TEMP/network-viewer"
+          node - "$RUNNER_TEMP/network-viewer/can-detail-states.json" <<'JS'
+          const fs = require('node:fs');
+          const {canDetailStatesFixture} = require('./tests/network_viewer_model.test.cjs');
+          fs.writeFileSync(process.argv[2], JSON.stringify(canDetailStatesFixture()));
+          JS
+          NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node tests/network_viewer_browser.cjs "$RUNNER_TEMP/network-viewer/can-detail-states.json"
           network_viewer_args=()
           for network_viewer_name in r01 r02 fanout native-multicast-lineages fanout-unadmittable; do
             network_viewer_output="$RUNNER_TEMP/network-viewer/$network_viewer_name"
@@ -121,6 +129,49 @@ jobs:
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node --test tests/ned_editor_viewer_expiry_browser.test.cjs
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_extensions_browser.test.cjs
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/viewer-tests/node_modules/playwright" DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/ned_editor_hostile_browser.test.cjs
+      - name: Capture published guide comparison viewers
+        if: ${{ !cancelled() && steps.native-product.conclusion == 'success' }}
+        run: |
+          measurement_root="$PWD/docs/verification/results"
+          capture_script="$PWD/scripts/verify_capacity_comparisons_viewer.cjs"
+          node_modules="${NODE_PATH:-$RUNNER_TEMP/viewer-tests/node_modules}"
+
+          all_output="$RUNNER_TEMP/guide-captures-all"
+          NODE_PATH="$node_modules" node "$capture_script" "$measurement_root" --output "$all_output"
+
+          axi_root="$RUNNER_TEMP/guide-capture-inputs-axi"
+          mkdir -p "$axi_root"
+          cp -a "$measurement_root/axi-outstanding" "$axi_root/"
+          axi_output="$RUNNER_TEMP/guide-captures-axi"
+          NODE_PATH="$node_modules" node "$capture_script" "$axi_root" --only axi-outstanding --output "$axi_output"
+
+          gateway_root="$RUNNER_TEMP/guide-capture-inputs-gateway"
+          mkdir -p "$gateway_root"
+          cp -a "$measurement_root/gateway-rx-capacity" "$gateway_root/"
+          gateway_output="$RUNNER_TEMP/guide-captures-gateway"
+          NODE_PATH="$node_modules" node "$capture_script" "$gateway_root" --only gateway-rx-capacity --output "$gateway_output"
+
+          assert_existing_output_refused() {
+            local input_root="$1"
+            local output_root="$2"
+            local selection="$3"
+            local log="$RUNNER_TEMP/guide-capture-refused-$(basename "$output_root").log"
+            local -a args=("$input_root")
+            if [[ -n "$selection" ]]; then
+              args+=(--only "$selection")
+            fi
+            if NODE_PATH="$node_modules" node "$capture_script" "${args[@]}" --output "$output_root" >"$log" 2>&1; then
+              cat "$log"
+              printf 'ERROR: helper accepted existing output %s\n' "$output_root" >&2
+              exit 1
+            fi
+            grep -F 'refuse existing capture output:' "$log"
+          }
+          assert_existing_output_refused "$measurement_root" "$all_output" ''
+          assert_existing_output_refused "$axi_root" "$axi_output" 'axi-outstanding'
+          assert_existing_output_refused "$gateway_root" "$gateway_output" 'gateway-rx-capacity'
+
+          git diff --exit-code -- docs/guide/assets docs/verification/results
       - name: Extension Viewer exports and process checkpoint example
         if: ${{ !cancelled() && steps.native-product.conclusion == 'success' }}
         run: |

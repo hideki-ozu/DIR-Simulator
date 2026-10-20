@@ -1,0 +1,542 @@
+{
+  "status": "passed",
+  "generated_by": "scripts/verify_capacity_comparisons_viewer.cjs",
+  "path_base": "report directory",
+  "browser_version": "151.0.7922.34",
+  "source_commit": "397900451015c9bca6a33d24feac0a88b9b7b8fe",
+  "binary_sha256": "4363af17b0a24e580de7359da4c82444de3dcc03ab006cb3ffe0e686a0bfd9aa",
+  "input_sha256": {
+    "closed/cbs-gated-model.json": "cac9820fe24fff0543bb61b05159b5b3d4d0213c37c717376f073beb6f1a23de",
+    "closed/cbs-gated-workload.json": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181",
+    "closed/cbs-gated.ini": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548",
+    "closed/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca",
+    "open/cbs-gated-model.json": "3513838b6fa887d576fc77589662fa0e5ef12b425815ebb094b75ec19a565462",
+    "open/cbs-gated-workload.json": "063b03d66b52eb5c639482f83a3592e4458ded59f33f1e41ac1725235e586181",
+    "open/cbs-gated.ini": "971ae56c09b156e65d17ce64e444ccc15616291c12f020e71080a2936f984548",
+    "open/models/ethtsn/Main.ned": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+  },
+  "measurements": {
+    "path": "../../../ethernet-cbs-gate/measurements.json",
+    "sha256": "f78bc5687454381531c85e39fe4c5e1e73bdf2f232af965ad08c79d169958d59"
+  },
+  "conditions": {
+    "closed-desktop": {
+      "viewer_path": "../../../ethernet-cbs-gate/repository/closed/viewer.html",
+      "viewer_sha256": "9dd33609d7aea04bc40a2469383513b3e4dbcefafe0c51108a0abe4e21943953",
+      "results_path": "../../../ethernet-cbs-gate/repository/closed/result/results.json",
+      "results_sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/closed/result/manifest.json",
+      "manifest_sha256": "61f6a87cf6c7d8c21523a3c9287baea83b714ae1e748368bded1487ee3383cc8",
+      "observations": [
+        {
+          "time_ps": "672000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 1000000 ps\n\n状態 guard_blocked · reason guard_blocked · policy epoch 0 · 次wake 1000000 ps\n\nCBS P7: -504000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "1000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open Pなし · 次境界 2000000 ps\n\n状態 gate_closed · reason gate_closed · policy epoch 0 · 次wake 2000000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "1500000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open Pなし · 次境界 2000000 ps\n\n状態 gate_closed · reason gate_closed · policy epoch 0 · 次wake 2000000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2687999",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -250000250000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2688000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -250000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "3687999",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -250000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "3688000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信中\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 busy · reason busy · policy epoch 0 · 次wake 4360000 ps\n\nCBS P7: 0 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "120000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 121000000 ps\n\n状態 ready · reason ready · policy epoch 0 · 次wake なし ps\n\nCBS P7: 0 / 1000000000000 bit"
+        }
+      ],
+      "rollback": [
+        "1500000",
+        "672000",
+        "1500000"
+      ],
+      "rollback_equal": true,
+      "errors": [],
+      "external_requests": [],
+      "failed_requests": [],
+      "document_width": {
+        "viewport": 1440,
+        "document": 1440
+      }
+    },
+    "closed-mobile": {
+      "viewer_path": "../../../ethernet-cbs-gate/repository/closed/viewer.html",
+      "viewer_sha256": "9dd33609d7aea04bc40a2469383513b3e4dbcefafe0c51108a0abe4e21943953",
+      "results_path": "../../../ethernet-cbs-gate/repository/closed/result/results.json",
+      "results_sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/closed/result/manifest.json",
+      "manifest_sha256": "61f6a87cf6c7d8c21523a3c9287baea83b714ae1e748368bded1487ee3383cc8",
+      "observations": [
+        {
+          "time_ps": "672000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 1000000 ps\n\n状態 guard_blocked · reason guard_blocked · policy epoch 0 · 次wake 1000000 ps\n\nCBS P7: -504000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "1000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open Pなし · 次境界 2000000 ps\n\n状態 gate_closed · reason gate_closed · policy epoch 0 · 次wake 2000000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "1500000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open Pなし · 次境界 2000000 ps\n\n状態 gate_closed · reason gate_closed · policy epoch 0 · 次wake 2000000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2687999",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -250000250000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2688000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -250000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "3687999",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -250000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "3688000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信中\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 busy · reason busy · policy epoch 0 · 次wake 4360000 ps\n\nCBS P7: 0 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "120000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t3688000\t4264000\t4264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 121000000 ps\n\n状態 ready · reason ready · policy epoch 0 · 次wake なし ps\n\nCBS P7: 0 / 1000000000000 bit"
+        }
+      ],
+      "rollback": [
+        "1500000",
+        "672000",
+        "1500000"
+      ],
+      "rollback_equal": true,
+      "errors": [],
+      "external_requests": [],
+      "failed_requests": [],
+      "document_width": {
+        "viewport": 390,
+        "document": 390
+      }
+    },
+    "open-desktop": {
+      "viewer_path": "../../../ethernet-cbs-gate/repository/open/viewer.html",
+      "viewer_sha256": "fd37e77d5b7fa7793b6d0bcd593c0594f4e988234459c14fbf9a85cf706bccf1",
+      "results_path": "../../../ethernet-cbs-gate/repository/open/result/results.json",
+      "results_sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/open/result/manifest.json",
+      "manifest_sha256": "d6566725d40224700f9c5ae56e4fe0485d547f7e88fa5b15030c61b8b88c316b",
+      "observations": [
+        {
+          "time_ps": "672000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -504000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "1000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "1500000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -297000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -172000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2687999",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -250000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2688000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信中\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 busy · reason busy · policy epoch 0 · 次wake 3360000 ps\n\nCBS P7: 0 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "3687999",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 ready · reason ready · policy epoch 0 · 次wake 5376000 ps\n\nCBS P7: -422000250000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "3688000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 ready · reason ready · policy epoch 0 · 次wake 5376000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "120000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 ready · reason ready · policy epoch 0 · 次wake なし ps\n\nCBS P7: 0 / 1000000000000 bit"
+        }
+      ],
+      "rollback": [
+        "1500000",
+        "672000",
+        "1500000"
+      ],
+      "rollback_equal": true,
+      "errors": [],
+      "external_requests": [],
+      "failed_requests": [],
+      "document_width": {
+        "viewport": 1440,
+        "document": 1440
+      }
+    },
+    "open-mobile": {
+      "viewer_path": "../../../ethernet-cbs-gate/repository/open/viewer.html",
+      "viewer_sha256": "fd37e77d5b7fa7793b6d0bcd593c0594f4e988234459c14fbf9a85cf706bccf1",
+      "results_path": "../../../ethernet-cbs-gate/repository/open/result/results.json",
+      "results_sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/open/result/manifest.json",
+      "manifest_sha256": "d6566725d40224700f9c5ae56e4fe0485d547f7e88fa5b15030c61b8b88c316b",
+      "observations": [
+        {
+          "time_ps": "672000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -504000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "1000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "1500000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -297000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -172000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2687999",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -250000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "2688000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信中\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 busy · reason busy · policy epoch 0 · 次wake 3360000 ps\n\nCBS P7: 0 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "3687999",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 ready · reason ready · policy epoch 0 · 次wake 5376000 ps\n\nCBS P7: -422000250000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "3688000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 ready · reason ready · policy epoch 0 · 次wake 5376000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+        },
+        {
+          "time_ps": "120000000",
+          "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t2688000\t3264000\t3264000",
+          "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n0\ncopy\nEOF 到達\n2\ncopy\n破棄\n0\ncopy\n受信完了\n2\nreception",
+          "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 ready · reason ready · policy epoch 0 · 次wake なし ps\n\nCBS P7: 0 / 1000000000000 bit"
+        }
+      ],
+      "rollback": [
+        "1500000",
+        "672000",
+        "1500000"
+      ],
+      "rollback_equal": true,
+      "errors": [],
+      "external_requests": [],
+      "failed_requests": [],
+      "document_width": {
+        "viewport": 390,
+        "document": 390
+      }
+    }
+  },
+  "captures": [
+    {
+      "condition": "closed",
+      "current_time_ps": "1500000",
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "viewer_path": "../../../ethernet-cbs-gate/repository/closed/viewer.html",
+      "viewer_sha256": "9dd33609d7aea04bc40a2469383513b3e4dbcefafe0c51108a0abe4e21943953",
+      "results_path": "../../../ethernet-cbs-gate/repository/closed/result/results.json",
+      "results_sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/closed/result/manifest.json",
+      "manifest_sha256": "61f6a87cf6c7d8c21523a3c9287baea83b714ae1e748368bded1487ee3383cc8",
+      "screenshot": "images/guide-ethernet-cbs-gate-closed-t1500000ps-desktop.png",
+      "sha256": "6cf0a68a4f3f806ba8c031dbdd2612aa92457de3fbaca9b05b3a9caa6c49c316",
+      "width": 1368,
+      "height": 215,
+      "selector": "#eth-tsn-panel",
+      "horizontal_scroll": [],
+      "state": {
+        "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+        "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+        "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open Pなし · 次境界 2000000 ps\n\n状態 gate_closed · reason gate_closed · policy epoch 0 · 次wake 2000000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+      }
+    },
+    {
+      "condition": "closed",
+      "current_time_ps": "2688000",
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "viewer_path": "../../../ethernet-cbs-gate/repository/closed/viewer.html",
+      "viewer_sha256": "9dd33609d7aea04bc40a2469383513b3e4dbcefafe0c51108a0abe4e21943953",
+      "results_path": "../../../ethernet-cbs-gate/repository/closed/result/results.json",
+      "results_sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/closed/result/manifest.json",
+      "manifest_sha256": "61f6a87cf6c7d8c21523a3c9287baea83b714ae1e748368bded1487ee3383cc8",
+      "screenshot": "images/guide-ethernet-cbs-gate-closed-t2688000ps-desktop.png",
+      "sha256": "2633bd27e3d03918c0db101f216930735db98cd7611b43f4dcdd929fa62f224b",
+      "width": 1368,
+      "height": 215,
+      "selector": "#eth-tsn-panel",
+      "horizontal_scroll": [],
+      "state": {
+        "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+        "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+        "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -250000000000000 / 1000000000000 bit"
+      }
+    },
+    {
+      "condition": "closed",
+      "current_time_ps": "1500000",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "viewer_path": "../../../ethernet-cbs-gate/repository/closed/viewer.html",
+      "viewer_sha256": "9dd33609d7aea04bc40a2469383513b3e4dbcefafe0c51108a0abe4e21943953",
+      "results_path": "../../../ethernet-cbs-gate/repository/closed/result/results.json",
+      "results_sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/closed/result/manifest.json",
+      "manifest_sha256": "61f6a87cf6c7d8c21523a3c9287baea83b714ae1e748368bded1487ee3383cc8",
+      "screenshot": "images/guide-ethernet-cbs-gate-closed-t1500000ps-mobile.png",
+      "sha256": "4f43919106fde928f1728d9bdb15d8b1b3705d9bb1941902b9b63434cd4cbe61",
+      "width": 362,
+      "height": 307,
+      "selector": "#eth-tsn-panel",
+      "horizontal_scroll": [],
+      "state": {
+        "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+        "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+        "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open Pなし · 次境界 2000000 ps\n\n状態 gate_closed · reason gate_closed · policy epoch 0 · 次wake 2000000 ps\n\nCBS P7: -422000000000000 / 1000000000000 bit"
+      }
+    },
+    {
+      "condition": "closed",
+      "current_time_ps": "2688000",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "viewer_path": "../../../ethernet-cbs-gate/repository/closed/viewer.html",
+      "viewer_sha256": "9dd33609d7aea04bc40a2469383513b3e4dbcefafe0c51108a0abe4e21943953",
+      "results_path": "../../../ethernet-cbs-gate/repository/closed/result/results.json",
+      "results_sha256": "250f1bf7a4b7b5ac5e260aa21c6a6f17b74f982820ea11c5e681edc6c991f861",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/closed/result/manifest.json",
+      "manifest_sha256": "61f6a87cf6c7d8c21523a3c9287baea83b714ae1e748368bded1487ee3383cc8",
+      "screenshot": "images/guide-ethernet-cbs-gate-closed-t2688000ps-mobile.png",
+      "sha256": "a668abfa59045c50e7b380f9ea4c9b5858d673603b6cb6833bffd827d1f3b6c2",
+      "width": 362,
+      "height": 307,
+      "selector": "#eth-tsn-panel",
+      "horizontal_scroll": [],
+      "state": {
+        "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t3688000\t4264000\t4264000",
+        "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+        "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 11000000 ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 3688000 ps\n\nCBS P7: -250000000000000 / 1000000000000 bit"
+      }
+    },
+    {
+      "condition": "open",
+      "current_time_ps": "1500000",
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "viewer_path": "../../../ethernet-cbs-gate/repository/open/viewer.html",
+      "viewer_sha256": "fd37e77d5b7fa7793b6d0bcd593c0594f4e988234459c14fbf9a85cf706bccf1",
+      "results_path": "../../../ethernet-cbs-gate/repository/open/result/results.json",
+      "results_sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/open/result/manifest.json",
+      "manifest_sha256": "d6566725d40224700f9c5ae56e4fe0485d547f7e88fa5b15030c61b8b88c316b",
+      "screenshot": "images/guide-ethernet-cbs-gate-open-t1500000ps-desktop.png",
+      "sha256": "dd9bcf061010a16d913b215c35c11acf952c032211ee2388d228c1f447506ce1",
+      "width": 1368,
+      "height": 215,
+      "selector": "#eth-tsn-panel",
+      "horizontal_scroll": [],
+      "state": {
+        "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+        "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+        "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -297000000000000 / 1000000000000 bit"
+      }
+    },
+    {
+      "condition": "open",
+      "current_time_ps": "2688000",
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "viewer_path": "../../../ethernet-cbs-gate/repository/open/viewer.html",
+      "viewer_sha256": "fd37e77d5b7fa7793b6d0bcd593c0594f4e988234459c14fbf9a85cf706bccf1",
+      "results_path": "../../../ethernet-cbs-gate/repository/open/result/results.json",
+      "results_sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/open/result/manifest.json",
+      "manifest_sha256": "d6566725d40224700f9c5ae56e4fe0485d547f7e88fa5b15030c61b8b88c316b",
+      "screenshot": "images/guide-ethernet-cbs-gate-open-t2688000ps-desktop.png",
+      "sha256": "3ec350b0d8f5250c6193a041d69e39fdcdbec32657272869133f7adf490db2e2",
+      "width": 1368,
+      "height": 215,
+      "selector": "#eth-tsn-panel",
+      "horizontal_scroll": [],
+      "state": {
+        "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信中\t2688000\t3264000\t3264000",
+        "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+        "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 busy · reason busy · policy epoch 0 · 次wake 3360000 ps\n\nCBS P7: 0 / 1000000000000 bit"
+      }
+    },
+    {
+      "condition": "open",
+      "current_time_ps": "1500000",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "viewer_path": "../../../ethernet-cbs-gate/repository/open/viewer.html",
+      "viewer_sha256": "fd37e77d5b7fa7793b6d0bcd593c0594f4e988234459c14fbf9a85cf706bccf1",
+      "results_path": "../../../ethernet-cbs-gate/repository/open/result/results.json",
+      "results_sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/open/result/manifest.json",
+      "manifest_sha256": "d6566725d40224700f9c5ae56e4fe0485d547f7e88fa5b15030c61b8b88c316b",
+      "screenshot": "images/guide-ethernet-cbs-gate-open-t1500000ps-mobile.png",
+      "sha256": "ac4e1d2682a8a617cc3ae370b3fca97fa78a949ec7d55c7c8a2c9d0ac0b1b7c4",
+      "width": 362,
+      "height": 307,
+      "selector": "#eth-tsn-panel",
+      "horizontal_scroll": [],
+      "state": {
+        "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信待機\t2688000\t3264000\t3264000",
+        "counts": "元フレーム\n2\nframe\n待機\n1\ncopy\n送信中\n0\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+        "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 credit_negative · reason credit_negative · policy epoch 0 · 次wake 2688000 ps\n\nCBS P7: -297000000000000 / 1000000000000 bit"
+      }
+    },
+    {
+      "condition": "open",
+      "current_time_ps": "2688000",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "viewer_path": "../../../ethernet-cbs-gate/repository/open/viewer.html",
+      "viewer_sha256": "fd37e77d5b7fa7793b6d0bcd593c0594f4e988234459c14fbf9a85cf706bccf1",
+      "results_path": "../../../ethernet-cbs-gate/repository/open/result/results.json",
+      "results_sha256": "b6e86c06af51cb3b5bfd3a1fcd6b7550076fcf878d4aa5833f4463f5b19e84a2",
+      "manifest_path": "../../../ethernet-cbs-gate/repository/open/result/manifest.json",
+      "manifest_sha256": "d6566725d40224700f9c5ae56e4fe0485d547f7e88fa5b15030c61b8b88c316b",
+      "screenshot": "images/guide-ethernet-cbs-gate-open-t2688000ps-mobile.png",
+      "sha256": "db069e02fcd16789bb7df0697bce4d03d646fc80654242a8982267c60cc85057",
+      "width": 362,
+      "height": 287,
+      "selector": "#eth-tsn-panel",
+      "horizontal_scroll": [],
+      "state": {
+        "rows": "cbs_gated:0\tNet.a.tx → Net.b.rx · VLAN 10 / P7\tEOF 到達\t0\t576000\t576000\ncbs_gated:1\tNet.a.tx → Net.b.rx · VLAN 10 / P7\t送信中\t2688000\t3264000\t3264000",
+        "counts": "元フレーム\n2\nframe\n待機\n0\ncopy\n送信中\n1\ncopy\nEOF 到達\n1\ncopy\n破棄\n0\ncopy\n受信完了\n1\nreception",
+        "tsn": "Net.a.tx\n\nGate g0 · generation 0 · open P7 · 次境界 なし ps\n\n状態 busy · reason busy · policy epoch 0 · 次wake 3360000 ps\n\nCBS P7: 0 / 1000000000000 bit"
+      }
+    }
+  ]
+}
