@@ -21,6 +21,7 @@ on:
       - 'docs/verification/results/release-native-distribution-audit-2026-10-08/**'
       - '.github/workflows/release-audit.yml'
       - 'tests/viewer_model.test.cjs'
+      - 'tests/legacy_control_viewer_model.test.cjs'
       - 'tests/controlled_viewer_*.cjs'
       - 'tests/fixtures/controlled-rewind.json'
       - 'tests/viewer_browser.cjs'
@@ -36,7 +37,12 @@ jobs:
   rust:
     name: Rust ledger identity regression
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 180
+    env:
+      # Keep complete native executable authentication affordable on hosted
+      # runners. Assertions and overflow checks keep their test defaults.
+      CARGO_PROFILE_DEV_DEBUG: "0"
+      CARGO_PROFILE_TEST_DEBUG: "0"
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -47,6 +53,7 @@ jobs:
         run: rustup toolchain install 1.85.0 --profile minimal --component rustfmt --component clippy
       - name: Format and regression
         run: |
+          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
           uname -a
           cat /etc/os-release
           rustc -Vv
@@ -62,6 +69,8 @@ jobs:
           cargo test --locked -p dir-simulator --test ac0008_paths classical_can_cli_validate_accepts_fixture_and_rejects_missing_config -- --exact --nocapture
           cargo test --locked --workspace
           cargo clippy --locked --workspace --all-targets -- -D warnings
+          du -sh target/debug
+          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
       - name: Verify actual product ledger reference
         id: native-product
         run: |
@@ -111,6 +120,7 @@ jobs:
           "$RUNNER_TEMP/viewer-tests/node_modules/.bin/playwright" install --with-deps chromium
           DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/network_viewer_model.test.cjs
           node --test tests/viewer_model.test.cjs tests/controlled_viewer_model.test.cjs
+          DIR_SIMULATOR_BIN="$PWD/target/debug/dir-simulator" node --test tests/legacy_control_viewer_model.test.cjs
           NODE_PATH="$RUNNER_TEMP/viewer-tests/node_modules" node tests/viewer_browser.cjs
           mkdir "$RUNNER_TEMP/network-viewer"
           node - "$RUNNER_TEMP/network-viewer/can-detail-states.json" <<'JS'
@@ -208,3 +218,10 @@ jobs:
           cd docs/verification/results/release-native-distribution-audit-2026-10-08
           python3 verify_release_audit.py
           python3 native_correctness.py selftest
+      - name: Record build storage
+        if: always()
+        run: |
+          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          if [[ -d target/debug ]]; then
+            du -sh target/debug
+          fi

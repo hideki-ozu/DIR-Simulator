@@ -13,7 +13,7 @@ const temp=fs.mkdtempSync(path.join(os.tmpdir(),'dir-legacy-viewer-'));
 const fixtures=process.env.DIR_LEGACY_VIEWER_FIXTURES??path.join(temp,'fixtures');
 const binary=require('./helpers/simulator_binary.cjs').simulatorBinary(root);
 if(!process.env.DIR_LEGACY_VIEWER_FIXTURES){
- execFileSync(process.env.CARGO??'/home/hideki/.cargo/bin/cargo',[
+ execFileSync(process.env.CARGO??'cargo',[
   'test','-p','dir-simulator','--test','legacy_can_ethernet_control','legacy_fixture_exports','--','--exact',
  ],{cwd:root,env:{...process.env,DIR_LEGACY_VIEWER_FIXTURES:fixtures},stdio:'pipe'});
 }
