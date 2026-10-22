@@ -1,9 +1,9 @@
 # gPTP実パケット詳細機能仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`spec-gptp-packets`
-文書状態：未commit・未公開。実装・検証の範囲は検証記録を参照。
+文書状態：v1.2.0収録。実装・検証の範囲は検証記録を参照。
 
 <a id="packets"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-22` | 実packet同期、sampled参照、configured MDI SFDと3種EXPRESS sourceの契約を追加 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 compositeの`gptp.profile="as2020.domain0.two_step_tree.v1"`はIEEE 802.1AS-2020のdomain0、instance-specific P2P、two-stepの選択契約である。全二重point-to-pointのforestで、各nodeにClockIdentity、品質、PortNumberと実physical portを指定する。Pdelayと受信AnnounceからasCapable、GM、Slave/Master/Passiveを選び、実Sync/Follow_Upでapplication clockを補正する。構成されたpeerのdriftや伝搬値から同期結果を直接作らない。
 

@@ -1,9 +1,9 @@
 # gPTP実パケット詳細設計書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`design-gptp-packets`
-文書状態：未commit・未公開。実packetの統合・製品gate中。
+文書状態：v1.2.0収録。実packetの統合・製品gate中。
 
 <a id="packets"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-22` | 同一FESのraw capture、MDI/source binding、EOF合流と因果保存再生を追加 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 `runtime/network/gptp/`はcodec、checked rational math、port/node state、actual capture、receive、checkpointを分担する。NetworkState/Deltaの一つのownerで内部Frame/Transferを通常queueへ投入する。TX/RXのSFD capture tokenは実packet、direction、link epochを持ち、RXは完全受信/FCS検証後にだけprotocolへ解放する。
 

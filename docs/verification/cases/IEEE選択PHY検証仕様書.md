@@ -1,9 +1,9 @@
 # IEEE選択PHY検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`verification-ieee-phy`
-文書状態：未公開。検証範囲と実行結果は検証記録参照。
+文書状態：v1.2.0収録。検証範囲と実行結果は検証記録参照。
 
 <a id="dir-test-0150"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-21` | named PHYの独立vector・実通信・故障・保存gateを追加 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 初期のIEEE core9件は通った。RS parityは独立Python root-equation solverのvectorと照合し、1/21/22symbol errorと選択した23symbol例を検査した。80B/81Bは1024 control-mask、45block/OAM/RS/scrambler/PAM3の変換を確認した。T1Sの4B/5B、scrambler、DMEも単体で照合した。これらはcoreの証拠であり、P01〜P09の実製品結合完了ではない。
 

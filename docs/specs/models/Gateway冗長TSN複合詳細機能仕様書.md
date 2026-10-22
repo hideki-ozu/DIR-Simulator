@@ -1,9 +1,9 @@
 # Gateway冗長TSN複合詳細機能仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`spec-gateway-frer-composition`
-文書状態：未commit・未公開。支持範囲の実装・製品検証・独立レビュー済み。
+文書状態：v1.2.0収録。支持範囲の実装・製品検証・独立レビュー済み。
 
 <a id="pipeline"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-22` | CAN由来の複合冗長配送の採用契約と受入gate |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 実CAN転送から採用ruleのEthernet egressを作り、一つのordinary prefixを経てbridge-pairの複製点へ到達させる。複製枝はR-TAG付き実bytesをそれぞれCBS/TASとClause99に渡し、受理したrecoveryからsuffixを実送信する。source selectorはGenerator又はGatewayEgress(gateway_id,rule_id,egress_index)である。legacy source_generatorはGeneratorへ変換し、Gateway由来を架空のgeneratorへ読み替えない。
 

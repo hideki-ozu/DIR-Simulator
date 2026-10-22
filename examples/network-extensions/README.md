@@ -1,13 +1,14 @@
 # Explicit network extension profiles
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`v1.1.6`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`example-network-extensions`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.2.0` | `2026-10-22` | v1.2.0の対象タグ・文書版を確定。過去の測定基準と公開済み履歴を保持 |
 | `1.1.0` | `2026-10-17` | 合成・抽象冗長配送・抽象preemptionの明示profileと実行手順をv1.1.6へ収録 |
 
 Run from the repository root:

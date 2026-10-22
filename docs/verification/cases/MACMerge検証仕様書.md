@@ -1,9 +1,9 @@
 # MAC Merge検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`verification-mac-merge`
-文書状態：未commit・未公開。選択した静的ideal-clock契約の製品検証・独立レビュー完了。
+文書状態：v1.2.0収録。選択した静的ideal-clock契約の製品検証・独立レビュー完了。
 
 <a id="dir-test-0148"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-21` | 実Merge packet、故障、保存、CBS/TASの受入gateを追加 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 core/原子的遷移18件と製品経路11件が通った。全addFragSize、100Mb/s/1Gb/s、実LLDPとV/R、response喪失による3回試行、同時刻Respond優先、link reset、legacy D5 fallback、実R-TAG branch、別process継続と意味改変を含む。独立CRC計算で実captureの3fragmentすべてを照合した。
 

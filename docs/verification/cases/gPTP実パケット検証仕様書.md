@@ -1,9 +1,9 @@
 # gPTP実パケット検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`verification-gptp-packets`
-文書状態：未commit・未公開。実packetの統合・製品gate中。
+文書状態：v1.2.0収録。実packetの統合・製品gate中。
 
 <a id="dir-test-0149"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-22` | 実同期、configured/sample参照、3種source、故障・保存の受入条件を追加 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 規範本文と設計の照合、実runtime hook、codec/math、parser、checkpoint version14までを結合し、製品gateを実施中である。設計書やcompile成功をT02完了としない。
 

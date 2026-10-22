@@ -1,15 +1,15 @@
 # ClassicalCANプロトコル仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`（基点・未commit追加）
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`spec-can-protocol`
-文書状態：実装ブランチ。未公開。規則別検証済み、統合レビュー対象。
+文書状態：実装ブランチ。v1.2.0収録。規則別検証済み、統合レビュー対象。
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-21` | 初版。Bosch CAN 2.0 Bのbit実行、実仲裁、エラー・overload・confinement・retry・cancel、RTR、乱数生成、有限app RXとcheckpoint検証 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 <a id="protocol"></a>
 

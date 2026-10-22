@@ -1,18 +1,18 @@
 # AHBパイプライン検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
-公開版：未公開。タグ・Releaseは作成していない。
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
+公開版：`v1.2.0`（対応するGitタグ）
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-21` | Full AHB2 pipeline・byte RAM・応答・停止・checkpointを公開prepare/run経路で検証。初版予定値 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 文書ID：`verification-ahb-pipeline`
 
-文書状態：対象commitは基点であり、本追加は未commit。未公開の製品実行検証。下記の実行範囲はデジタルtransaction/pipelineモデルに限定する。
+文書状態：v1.2.0収録。採用範囲の製品実行検証。下記の実行範囲はデジタルtransaction/pipelineモデルに限定する。
 
 <a id="dir-test-0134"></a>
 

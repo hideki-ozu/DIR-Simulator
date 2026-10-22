@@ -1,15 +1,14 @@
 # DIR Simulator
 
-追加実装の対応と検証範囲は[81項目の実装台帳](docs/implementation/README.md)から参照できます。台帳の状態と、既存公開版の説明を併せて確認してください。
-
-文書バージョン：`1.1.37`
-対象GitHubバージョン：`v1.1.6`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.2.0` | `2026-10-22` | 追加実装に伴う更新を集約し、v1.2.0の対象タグ・文書版を確定 |
 | `1.1.37` | `2026-10-20` | Issue #109・#115の対応と、正式v1.1.6で実測した半二重再送・AXI容量・TAS/CBS・Gateway RX容量の4実習への入口を追加 |
 | `1.1.36` | `2026-10-19` | 正式v1.1.6を使うpreemption・冗長履歴・PSFP gate・Metric V2の実測4記事と入力ZIPへの入口を追加 |
 | `1.1.35` | `2026-10-17` | 後続10分野の実装・機能リファレンスと最新mainの記事を統合し、v1.1.6収録範囲と過去実測の基準を明記 |
@@ -62,6 +61,8 @@
 
 文書ID：`readme`
 
+**v1.2.0**には、CAN/CAN FD、選択したEthernet PHY・TSN、RV32I/MESI/DDR4、バス・NoC、制御・保存にわたる81項目の追加実装を収録しています。[実装台帳](docs/implementation/README.md)と[リリース検証記録](docs/verification/results/release-v1.2.0-2026-10-22.md)で設定・検証範囲を確認できます。Cargo package / `runtime_version`は従来どおり`0.1.0`で、GitHubのソース配布版とは別に管理します。
+
 [半二重Ethernetの再送とseedによる待ち時間の違い](<docs/guide/半二重Ethernetの再送とseedによる待ち時間の違い.md>)では、seedだけを変え、衝突・backoff期限・carrier待ちと同条件の再現を確認できます。[独立入力ZIP](docs/guide/downloads/ethernet-beb-seed-inputs.zip)から正式v1.1.6で再現できます。
 
 [AXIのoutstanding上限と受理・待機・処理の違い](<docs/guide/AXIのoutstanding上限と受理・待機・処理の違い.md>)では、outstanding上限だけを変え、drop・FIFO待機と一要求ずつの処理を区別できます。[独立入力ZIP](docs/guide/downloads/axi-outstanding-inputs.zip)から正式v1.1.6で再現できます。
@@ -70,7 +71,7 @@
 
 [GatewayのRX容量と遅い分岐による後続配信の損失](<docs/guide/GatewayのRX容量と遅い分岐による後続配信の損失.md>)では、RX容量だけを変え、親保持・枝別TX受理と後続親の拒否を区別できます。[独立入力ZIP](docs/guide/downloads/gateway-rx-capacity-inputs.zip)から正式v1.1.6で再現できます。
 
-CAN↔Ethernet Viewerの[origin別の確定記録への移動](docs/tools/viewer/viewer取扱説明書.md#canethernetをorigin全体で追う)をこの変更ブランチで追加しました。媒体・枝・terminalを区別して時刻と詳細へ移動します。正式v1.1.6には含まれません。Metric V2実習の現在値は[metric・target・セル単位の検証記録](docs/verification/results/metric-windows/issue-115-viewer-browser.json)を追加しています。
+CAN↔Ethernet Viewerの[origin別の確定記録への移動](docs/tools/viewer/viewer取扱説明書.md#canethernetをorigin全体で追う)をv1.2.0に収録しました。媒体・枝・terminalを区別して時刻と詳細へ移動します。正式v1.1.6には含まれません。Metric V2実習の現在値は[metric・target・セル単位の検証記録](docs/verification/results/metric-windows/issue-115-viewer-browser.json)を追加しています。
 
 [v1.1.6の収録内容・公開前検証記録](docs/verification/results/release-v1.1.6-2026-10-17.md)：文書版、追加機能、実行証拠と過去の測定基準を確認できます。
 
@@ -549,4 +550,4 @@ NEDのdisplay／description属性と元SourceSpanの保持、非対応import／e
 
 [Ethernet TASの送信窓とIFG込みの待ち時間](<docs/guide/Ethernet TASの送信窓とIFG込みの待ち時間.md>)では、共通1フレームの生成時刻だけを1psずつ変え、gate openでもIFG込みguardで待つ条件を正式v1.1.4で読みます。[8入力ZIP](docs/guide/downloads/ethernet-tas-inputs.zip)を配布しています。
 
-後続拡張の設計案は[要件定義からの入口](docs/proposals/後続拡張要件定義書.md)と[分野別の実装準備状況](docs/proposals/後続拡張契約提案設計書.md#readiness)を参照してください。Gateway＋TSN、抽象冗長配送／preemption、受動IGMP／MLD、実行制御、Metric V2、checkpointを具体化しています。能動RSTP／MVRPもIEEE 802.1Q-2022本文に基づく機械・codec・統合設計を作成済みです。全10分野は承認済み限定scopeを現行ソースへ実装し、v1.1.6へ収録します。[現行API・設定・利用例](docs/guide/reference/後続10分野の現行実装と利用境界.md)、[正式採用トレース](docs/specs/後続拡張採用詳細機能仕様書.md)、[製品検証記録](docs/verification/results/extension-product-2026-10-17.md)へ接続しています。製品受入の最終判定は同記録で確認してください。
+後続拡張の設計案は[要件定義からの入口](docs/proposals/後続拡張要件定義書.md)と[分野別の実装準備状況](docs/proposals/後続拡張契約提案設計書.md#readiness)を参照してください。Gateway＋TSN、抽象冗長配送／preemption、受動IGMP／MLD、実行制御、Metric V2、checkpointを具体化しています。能動RSTP／MVRPもIEEE 802.1Q-2022本文に基づく機械・codec・統合設計を作成済みです。全10分野は承認済み限定scopeを実装し、v1.1.6へ収録しました。[現行API・設定・利用例](docs/guide/reference/後続10分野の現行実装と利用境界.md)、[正式採用トレース](docs/specs/後続拡張採用詳細機能仕様書.md)、[製品検証記録](docs/verification/results/extension-product-2026-10-17.md)へ接続しています。製品受入の最終判定は同記録で確認してください。

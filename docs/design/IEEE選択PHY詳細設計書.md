@@ -1,9 +1,9 @@
 # IEEE選択PHY詳細設計書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`design-ieee-phy`
-文書状態：未公開。検証範囲と実行結果は検証記録参照。
+文書状態：v1.2.0収録。検証範囲と実行結果は検証記録参照。
 
 <a id="modes"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-21` | 連続PCS、実sample、shared MACと共通FESの結合を追加 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 既存`runtime/ethernet/phy`のchannel、sample grid、receiverとAttachedMediumのseamを拡張し、NetworkStateの物理ownerを増やさない。mode省略はproject数値PHYの入力・保存動作を保持する。GMII/PCS、MAC、PHY frame、physical attempt、receiver deliveryを区別し、shared媒体の一送信を宛先数だけ再送信しない。
 

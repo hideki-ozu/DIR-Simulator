@@ -1,9 +1,9 @@
 # Gateway冗長TSN複合検証仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`verification-gateway-frer-composition`
-文書状態：未commit・未公開。支持範囲の実装・製品検証・独立レビュー済み。
+文書状態：v1.2.0収録。支持範囲の実装・製品検証・独立レビュー済み。
 
 <a id="dir-test-0151"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-22` | CAN由来の複合冗長配送の採用契約と受入gate |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 必須gateは実CAN bit trace、変換payload/VID/PCP、R-TAG/FCS/mCRC、解析的なshaped SOF/credit、復元payloadと元CANのend-to-end遅延である。一枝喪失、最終fragment喪失、変換拒否、backpressure、途中horizon、timeout後の実追加配送を確認する。
 

@@ -1,9 +1,9 @@
 # Ethernet数値PHY詳細設計書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`design-numerical-phy`
-文書状態：未commit・未公開。project数値契約と別文書のIEEE選択契約を区別する。
+文書状態：v1.2.0収録。project数値契約と別文書のIEEE選択契約を区別する。
 
 <a id="samples"></a>
 
@@ -16,7 +16,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-21` | 数値sampleから実MAC復号までの実行・保存契約を追加 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 `ethernet.phy.v1` は、実際の MAC バイトを電圧サンプルへ変換し、伝搬チャネルと受信器を通して復元する登録モデルである。本書は `execution_contract = "dir.sampled-manchester.v1"`、`standard_edition = "project.numerical.v1"` のproject数値契約を規定する。別のexecution contractで実行するIEEE選択PHYは[専用設計](IEEE選択PHY詳細設計書.md)を参照する。projectのManchester波形からIEEEのPCSや電気的適合を推定しない。従来の Ethernet プロファイルは既存の実行経路を維持する。
 

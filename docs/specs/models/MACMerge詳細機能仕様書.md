@@ -1,9 +1,9 @@
 # MAC Merge詳細機能仕様書
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`feat/complete-remaining-capabilities-20261021 @ 082629e1ecb3c966f60a043819c2362ef50e627f`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`spec-mac-merge`
-文書状態：未commit・未公開。選択した静的ideal-clock契約の製品検証・独立レビュー完了。
+文書状態：v1.2.0収録。選択した静的ideal-clock契約の製品検証・独立レビュー完了。
 
 <a id="merge"></a>
 
@@ -15,7 +15,7 @@
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
-| `1.1.0` | `2026-10-21` | Clause99の実packetとshaper結合の契約を追加 |
+| `1.2.0` | `2026-10-22` | 初版。v1.2.0へ収録し、追加実装の契約・検証範囲を確定 |
 
 `ethernet.network.composite.v1`の`mac_merge`はIEEE 802.3-2022 Clause99のMAC Mergeを明示選択する。既存`ethernet.preemption.abstract.v1`は独立した抽象モデルとして保持する。初期の実packet契約は100Mb/sまたは1Gb/s、全二重の対向2port、固定rate、zero MAC/RS delay、store-and-forward RXとし、4種すべてのaddFragSizeを扱う。PHY電気適合や機器全体の遅延認証はこの契約に含めない。
 
