@@ -1,0 +1,1012 @@
+{
+  "schema_version": 1,
+  "baseline": "082629e1ecb3c966f60a043819c2362ef50e627f",
+  "scope_date": "2026-10-21",
+  "state": "complete",
+  "semantics": "verified means the named scoped contract has production-path evidence; it is not standards certification or whole-task completion",
+  "capabilities": [
+    {
+      "id": "Z01",
+      "capability": "For normal H=0, network observational `records` are empty; no event executes. Initial model-state records are handled according to their own schema",
+      "acceptance": "Run all seven reported profiles at 0ps; each has zero queue observation records, time_limit, partial=false, end_ps=0, committed_events=0",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/zero_horizon_network.rs"
+      ]
+    },
+    {
+      "id": "Z02",
+      "capability": "Retain permitted initial records for H>0 and successful-prefix observations for abnormal termination; retain initial Metric V2 gauge state independently of point-record policy",
+      "acceptance": "Existing positive-H, failed-prefix, before/after-initialize Paused export cases plus Node parser and actual exported Viewer HTML",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/zero_horizon_network.rs"
+      ]
+    },
+    {
+      "id": "C01",
+      "capability": "Communication faults",
+      "acceptance": "Deterministic fault schedule keyed by bus/controller/attempt/bit position for bit corruption, missing ACK, stuff/form/CRC faults; outcome follows actual received bits. Test each error class and unmodified error-free vectors",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C02",
+      "capability": "Error frames",
+      "acceptance": "Implement active/passive error flag, error delimiter, intermission and simultaneous flag overlap; output physical occupation and observations separately from successful data frames. A fault must consume time and block arbitration correctly",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C03",
+      "capability": "Overload frames",
+      "acceptance": "Implement explicit overload trigger conditions and overload flag/delimiter/intermission, with normative limits; demonstrate delayed next arbitration and no invented data delivery",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C04",
+      "capability": "TEC/REC and error state",
+      "acceptance": "Counters and state transitions follow the selected standard including exceptions, successful-transfer changes, error-passive behavior and bus-off. Handwritten boundary vectors must test every rule, not only generic `TEC += 8`",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C05",
+      "capability": "Bus-off recovery",
+      "acceptance": "Controller stops participating; recovery policy explicitly selects manual or permitted automatic recovery and counts the required idle sequences from bus observations. Test busy bus, recovery boundary and request retention",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C06",
+      "capability": "Automatic retry",
+      "acceptance": "Original request retains identity and payload; attempt rows track each failure, cancellation, retry and eventual success. Retry waits for protocol recovery/intermission and re-enters arbitration",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C07",
+      "capability": "RTR",
+      "acceptance": "Distinguish remote/data frame and DLC from payload length; encode/arbitrate RTR, receive remote frames and optionally configure a responder. Test same-ID remote versus data contention and 11/29-bit IDs",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C08",
+      "capability": "Random workloads",
+      "acceptance": "Versioned generator with explicit seed, finite count or horizon and precisely named distributions. Start with exact discrete uniform, Bernoulli per tick and integer geometric interarrival; any continuous distribution needs specified quantization/algorithm. Test golden seeded times, checkpoint continuation and array-order independence",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C09",
+      "capability": "Gateway ID rewrite",
+      "acceptance": "Rule output explicitly sets ID/format or preserves it; reconstruct arbitration and CRC from rewritten frame, keeping origin and parent lineage. Test change in downstream priority and bytes",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C10",
+      "capability": "Dynamic Gateway routes",
+      "acceptance": "Versioned route replacement events commit at defined phase; route selection snapshots rule/version at ingress to make in-flight behavior deterministic. Test simultaneous reception/reconfiguration and existing queued branches",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C11",
+      "capability": "Ordinary-controller finite application RX",
+      "acceptance": "Distinct bus reception and application-admission records, bounded RX FIFO, explicit overflow and CPU service scheduler. Receiver success survives later application drop. Test slow consumer, finite capacity, pause mid-service",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "C12",
+      "capability": "CAN FD conversion/composition",
+      "acceptance": "Conversion rules explicitly select CC/FD output and payload mapping. Payload too large for CC needs configured fragmentation/reassembly or a normal conversion rejection; never silently truncate. Recompute wire encoding and preserve origin/fragment lineage",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_protocol.rs",
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test gate and production mixed/Gateway CLI+Viewer; named ideal digital project/edition contract. All three scoped correctness review findings closed; no full ISO certification claim."
+    },
+    {
+      "id": "F01",
+      "capability": "Payload-derived complete FD encoding",
+      "acceptance": "Derive fields, DLC, ISO CRC-17/CRC-21 selection, dynamic stuffing, stuff-count/parity and fixed stuffing from frame content for base/extended IDs, BRS and ESI. Pin selected ISO edition; distinguish legacy non-ISO encoding explicitly",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/canfd_wire_codec.rs",
+        "crates/dir-simulator/tests/canfd_iso.rs",
+        "tests/canfd_iso_viewer_model.test.cjs",
+        "docs/verification/cases/CANFD-ISO検証仕様書.md"
+      ]
+    },
+    {
+      "id": "F02",
+      "capability": "Correct two-rate timing",
+      "acceptance": "Derive nominal/data phase boundaries from actual encoded bit positions including switching boundaries. Externally supplied phase totals are no longer the execution source for this profile",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/canfd_wire_codec.rs",
+        "crates/dir-simulator/tests/canfd_iso.rs",
+        "tests/canfd_iso_viewer_model.test.cjs",
+        "docs/verification/cases/CANFD-ISO検証仕様書.md"
+      ]
+    },
+    {
+      "id": "F03",
+      "capability": "Decoder and independent verification",
+      "acceptance": "Decode generated bits back to fields, reject corrupted CRC/stuff/count/form conditions, compare against independently obtained published/hardware vectors across all DLCs. Encoder-decoder roundtrip alone is insufficient because both can share a defect",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/canfd_wire_codec.rs",
+        "crates/dir-simulator/tests/canfd_iso.rs",
+        "tests/canfd_iso_viewer_model.test.cjs",
+        "docs/verification/cases/CANFD-ISO検証仕様書.md"
+      ]
+    },
+    {
+      "id": "F04",
+      "capability": "CC/FD mixed bus",
+      "acceptance": "One arbitration and shared bus ownership for CC and FD requests. Controller capabilities state FD-capable, CC-only and any defined tolerant behavior; incompatible nodes are handled according to the selected protocol behavior rather than ignored",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test CAN gate, actual rational-clock mixed/gateway bit execution and production CLI/Viewer; scoped ideal-digital contract, not complete ISO certification."
+    },
+    {
+      "id": "F05",
+      "capability": "Mixed error/retry integration",
+      "acceptance": "F01/F04 use C01–C06 error confinement and retry; test mixed IDs, equal arbitration prefixes, CC RTR and FD traffic, BRS, ESI and termination within each bit phase",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/can_mixed_protocol.rs",
+        "crates/dir-simulator/tests/can_gateway_protocol.rs",
+        "crates/dir-simulator/tests/can_fd_receiver.rs",
+        "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md"
+      ],
+      "verification_scope": "Frozen 74-test CAN gate, actual rational-clock mixed/gateway bit execution and production CLI/Viewer; scoped ideal-digital contract, not complete ISO certification."
+    },
+    {
+      "id": "P01",
+      "capability": "Training/link startup",
+      "acceptance": "Real named PHY state machine with startup/training symbols and timers; data is not delivered before operational state. Test master/slave, incompatible partners, timeout and retry",
+      "status": "verified",
+      "evidence": [
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_recovery_network.rs"
+      ]
+    },
+    {
+      "id": "P02",
+      "capability": "Negotiation",
+      "acceptance": "Ability advertisement and resolution rules appropriate to each selected PHY; do not assume all PHYs use one autonegotiation procedure. Test compatible and incompatible modes, restart and link interruption",
+      "status": "verified",
+      "evidence": [
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_gbt1.rs"
+      ]
+    },
+    {
+      "id": "P03",
+      "capability": "Resynchronization and PHY faults",
+      "acceptance": "Lose lock/link with a defined injected fault, abandon affected in-flight payload, retrain and resume by actual state transitions. Distinguish administrative down, physical failure and decoding failure",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/phy_channel.rs",
+        "crates/dir-simulator/src/runtime/ethernet/phy/",
+        "examples/ethernet/phy/numerical.ini",
+        "docs/design/Ethernet数値PHY詳細設計書.md",
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_recovery_network.rs"
+      ]
+    },
+    {
+      "id": "P04",
+      "capability": "PCS encoding and FEC",
+      "acceptance": "Implement encoder/decoder for selected PHY, including its exact scrambling/coding/FEC rules and wire overhead. Test known codewords and correctable/uncorrectable fault boundaries. A configurable extra latency is not FEC",
+      "status": "verified",
+      "evidence": [
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_gbt1.rs"
+      ]
+    },
+    {
+      "id": "P05",
+      "capability": "Waveform model",
+      "acceptance": "Needs specified physical channel, transmitter/receiver model, sample/symbol resolution, noise and accuracy goals. Digital symbol traces may be implemented immediately but do not close an analog-waveform requirement",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/phy_channel.rs",
+        "crates/dir-simulator/src/runtime/ethernet/phy/",
+        "examples/ethernet/phy/numerical.ini",
+        "docs/design/Ethernet数値PHY詳細設計書.md",
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_gbt1.rs"
+      ]
+    },
+    {
+      "id": "P06",
+      "capability": "Multi-MAC collision domain",
+      "acceptance": "Explicit shared-medium object with all attached ports and propagation paths; per-receiver carrier arrival and collision detection, jam/BEB and common medium occupation. Test at least three transmitters and delayed/late collision boundaries",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/phy_channel.rs",
+        "crates/dir-simulator/src/runtime/ethernet/phy/",
+        "examples/ethernet/phy/numerical.ini",
+        "docs/design/Ethernet数値PHY詳細設計書.md",
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_t1s.rs"
+      ]
+    },
+    {
+      "id": "P07",
+      "capability": "Hubs/repeaters",
+      "acceptance": "Repeat received signals and jam across declared delays, enforce supported topology/propagation constraints, and preserve one collision domain. Switch forwarding cannot stand in for a repeater",
+      "status": "verified",
+      "evidence": [
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_t10.rs"
+      ]
+    },
+    {
+      "id": "P08",
+      "capability": "10BASE-T1S",
+      "acceptance": "Selected standard PHY mode and its multidrop behavior; compatibility validated with medium and MAC settings",
+      "status": "verified",
+      "evidence": [
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_t1s.rs"
+      ]
+    },
+    {
+      "id": "P09",
+      "capability": "PLCA",
+      "acceptance": "Coordinator/node IDs, beacon/cycle, transmit opportunities, yield/burst policy and recovery transitions from selected 802.3 edition. Test no duplicate ID, absent coordinator, sparse active nodes and burst contention",
+      "status": "verified",
+      "evidence": [
+        "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+        "crates/dir-simulator/tests/phy_ieee_recovery_network.rs"
+      ]
+    },
+    {
+      "id": "T01",
+      "capability": "Independent clocks",
+      "acceptance": "Per-node offset and signed rational drift; monotonic simulation clock remains the scheduler source. Define initialization, correction steps/slew and local timer conversion without floating point",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_composite.rs",
+        "crates/dir-simulator/src/runtime/network/clock.rs",
+        "crates/dir-simulator/src/runtime/ethernet/tsn/clock_projection.rs",
+        "crates/dir-simulator/tests/network_psfp_clock.rs",
+        "examples/network-composite/psfp-clock/",
+        "docs/verification/cases/TSNローカル時計検証仕様書.md"
+      ],
+      "verification_scope": "Exact per-node signed rational clock, explicit correction steps/slew, local TAS and receiver PSFP binding. TSN23 tests, four actual PSFP configurations including offset2^64, process checkpoints0/1/5/10 and desktop/mobile Viewer pass; independent wide-time closure review completed. Actual wire synchronization is separate T02."
+    },
+    {
+      "id": "T02",
+      "capability": "gPTP wire execution",
+      "acceptance": "Encode/decode selected edition's message set and timestamp fields; run clock selection, synchronization/follow-up and peer delay state machines on actual simulated links. Include message loss and topology change",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/src/runtime/network/gptp/",
+        "docs/verification/cases/gPTP実パケット検証仕様書.md",
+        "docs/verification/results/remaining-20261021/gptp-wire-final-review.md",
+        "docs/verification/results/remaining-20261021/native-input-final-review.md",
+        "crates/dir-simulator/tests/network_gptp_configured.rs",
+        "crates/dir-simulator/tests/network_gptp_source_reset.rs"
+      ]
+    },
+    {
+      "id": "T03",
+      "capability": "Clock effects on TSN",
+      "acceptance": "TAS/PSFP local-time gates use corrected local clock; scheduling reacts to clock updates, and actual error is observable. Test equal global time with different local gate eligibility and convergence after sync",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_composite.rs",
+        "crates/dir-simulator/src/runtime/network/clock.rs",
+        "crates/dir-simulator/src/runtime/ethernet/tsn/clock_projection.rs",
+        "crates/dir-simulator/tests/network_psfp_clock.rs",
+        "examples/network-composite/psfp-clock/",
+        "docs/verification/cases/TSNローカル時計検証仕様書.md",
+        "docs/verification/results/remaining-20261021/gptp-wire-final-review.md",
+        "docs/verification/results/remaining-20261021/native-input-final-review.md"
+      ]
+    },
+    {
+      "id": "T04",
+      "capability": "Qcc configuration",
+      "acceptance": "Select and implement centralized/distributed architecture, stream requirements, topology/resource accounting, admission, configuration generation and atomic activation/rollback. CUC/CNC protocol/transport must be explicitly named if claiming wire interoperability",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/src/lib/types/network/configuration.rs",
+        "crates/dir-simulator/src/input/network/configuration.rs",
+        "crates/dir-simulator/src/runtime/network/configuration.rs",
+        "docs/verification/results/remaining-20261021/qcc-final-closure-review.md"
+      ],
+      "verification_scope": "Named dir.cuc-cnc.local.v1 same-owner CUC/CNC/TAS contract; service7, production5, prior checkpoint5 boundaries and semantic mutants. Independent final review closes unbound reserved-class ingress reclassification. No external wire UNI/certification."
+    },
+    {
+      "id": "T05",
+      "capability": "Qcc runtime outcomes",
+      "acceptance": "Competing streams produce accept/reject results from capacities and deadlines; schedules actually installed in bridge/endpoint execution, not merely written to records. Test removal, failures, topology update and infeasible admission",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/src/lib/types/network/configuration.rs",
+        "crates/dir-simulator/src/input/network/configuration.rs",
+        "crates/dir-simulator/src/runtime/network/configuration.rs",
+        "docs/verification/results/remaining-20261021/qcc-final-closure-review.md"
+      ],
+      "verification_scope": "Actual source admission/SOF/delivery certificate with real route/queue/schedule. Background class remap drops before SOF and both variants retain four certified deliveries; final scoped independent closure complete."
+    },
+    {
+      "id": "T06",
+      "capability": "TSN plus half duplex/PAUSE",
+      "acceptance": "Define each valid interaction using the component graph: gating, CBS eligibility, carrier/deference, PAUSE, preemption and PHY eligibility. Reject combinations prohibited by selected protocol standards with specific diagnostics. Implement project-experimental policy only under an explicit experimental name",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_pause_media.rs",
+        "crates/dir-simulator/tests/network_wire_serializers.rs",
+        "docs/verification/fixtures/wire-serializers/oracle.py",
+        "docs/verification/cases/型付きネットワーク構成検証仕様書.md",
+        "docs/verification/results/remaining-20261021/gptp-wire-final-review.md",
+        "docs/verification/results/remaining-20261021/native-input-final-review.md"
+      ]
+    },
+    {
+      "id": "N01",
+      "capability": "R-TAG wire format",
+      "acceptance": "Encode/decode real redundancy tag with selected standard's fields and Ethernet placement. Account for resulting size/FCS/timing; reject malformed tags",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/frer_rtag.rs",
+        "crates/dir-simulator/src/runtime/network/frer_wire.rs",
+        "examples/frer-rtag/",
+        "crates/dir-simulator/tests/frer_normative.rs",
+        "examples/frer-rtag/normative/model.ini",
+        "docs/verification/cases/FRER規範回復検証仕様書.md",
+        "docs/verification/results/remaining-20261021/frer-final-closure-review.md"
+      ],
+      "verification_scope": "Selected IEEE802.1CB-2017 R-TAG bytes and nonindividual vector mode: actual FCS/tag/sequence, accepted-only tick timers and physical redelivery. Independent final scoped review closed exact-cut delta0/delta1 recovery resurrection; no full device certification."
+    },
+    {
+      "id": "N02",
+      "capability": "Sequence wrap/recovery",
+      "acceptance": "Use specified finite-width sequence space and recovery algorithm/window/reset rules, handling wrap, duplicates, reordering, gaps and timeout. Existing unbounded u64/no-wrap logic cannot be reused as the contract",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/frer_rtag.rs",
+        "crates/dir-simulator/src/runtime/network/frer_wire.rs",
+        "examples/frer-rtag/",
+        "crates/dir-simulator/tests/frer_normative.rs",
+        "examples/frer-rtag/normative/model.ini",
+        "docs/verification/cases/FRER規範回復検証仕様書.md",
+        "docs/verification/results/remaining-20261021/frer-final-closure-review.md"
+      ],
+      "verification_scope": "Selected IEEE802.1CB-2017 vector recovery: production11/core5/wire5/legacy10/Viewer16 and actual44-event two-delivery sample; endpoint/bridge rounds and isolated checkpoint mutations verified. No arbitrary coordinated whole-history authenticity guarantee."
+    },
+    {
+      "id": "N03",
+      "capability": "Distributed FRER paths",
+      "acceptance": "Replication/elimination nodes live at explicit topology locations; duplicates traverse independently contended/failing paths. Delivery occurs once only when an actual accepted copy reaches recovery",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/src/runtime/network/distributed.rs",
+        "crates/dir-simulator/tests/frer_rtag.rs",
+        "crates/dir-simulator/tests/network_checkpoint.rs",
+        "tests/controlled_viewer_model.test.cjs",
+        "examples/frer-rtag/distributed/",
+        "docs/verification/cases/分散FRER経路検証仕様書.md"
+      ],
+      "verification_scope": "Explicit bridge_pair_v1 physical prefix/branches/suffix under project recovery. Actual6 transmissions and2541000ps terminal delivery;10 runtime,2 checkpoint tests(13 boundaries,9 rehashed mutants),15 Viewer,4 codec and1 two-failure-point atomic test pass. Independent review closed two findings. IEEE recovery semantics remain separateN01/N02; no full standards conformance claim."
+    },
+    {
+      "id": "N04",
+      "capability": "MAC Merge wire",
+      "acceptance": "Encode/decode real fragment delimiters, fragment count and CRC; reassemble in actual receive state. Test fragmented payload corruption, lost fragments and express interruption",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/src/runtime/network/mac_merge.rs",
+        "crates/dir-simulator/tests/mac_merge.rs",
+        "docs/verification/cases/MACMerge検証仕様書.md",
+        "docs/verification/results/remaining-20261021/mac-merge-causal-final-review.md"
+      ],
+      "verification_scope": "Selected IEEE802.3-2022 Clause99 + AB2016 bounded wire/MAC contract. Core19 incl8 allocation-failure points; production24 independently reexecuted24/24; rawfragment/RX and historical zero-credit replay reject semantic mutants; HOLD16 andlink-reset3 checkpoint positions match; actualHOLD desktop/mobile Viewer passed. Static ideal-clock CBS/TAS; local-clock/GCL replacement remains open under composition. No full device certification or coordinated whole-history authentication claim."
+    },
+    {
+      "id": "N05",
+      "capability": "Verify/respond",
+      "acceptance": "Implement peer capability verification, retry/timeout, enable/disable and link-reset behavior with actual control frames. Until verified, use the defined fallback behavior",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/src/runtime/network/mac_merge.rs",
+        "crates/dir-simulator/tests/mac_merge.rs",
+        "docs/verification/cases/MACMerge検証仕様書.md",
+        "docs/verification/results/remaining-20261021/mac-merge-causal-final-review.md"
+      ],
+      "verification_scope": "Selected IEEE802.3-2022 Clause99 + AB2016 bounded wire/MAC contract. Core19 incl8 allocation-failure points; production24 independently reexecuted24/24; rawfragment/RX and historical zero-credit replay reject semantic mutants; HOLD16 andlink-reset3 checkpoint positions match; actualHOLD desktop/mobile Viewer passed. Static ideal-clock CBS/TAS; local-clock/GCL replacement remains open under composition. No full device certification or coordinated whole-history authentication claim."
+    },
+    {
+      "id": "N06",
+      "capability": "CBS on preemptable traffic",
+      "acceptance": "Track credit under actual fragment transmission, interruption and suspended state according to selected shaping contract; verify timestamps, minimum/maximum credit and bandwidth accounting",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/mac_merge.rs",
+        "docs/verification/cases/MACMerge検証仕様書.md",
+        "docs/verification/results/remaining-20261021/mac-merge-causal-final-review.md"
+      ],
+      "verification_scope": "Selected IEEE802.3-2022 Clause99 + AB2016 bounded wire/MAC contract. Core19 incl8 allocation-failure points; production24 independently reexecuted24/24; rawfragment/RX and historical zero-credit replay reject semantic mutants; HOLD16 andlink-reset3 checkpoint positions match; actualHOLD desktop/mobile Viewer passed. Static ideal-clock CBS/TAS; local-clock/GCL replacement remains open under composition. No full device certification or coordinated whole-history authentication claim."
+    },
+    {
+      "id": "N07",
+      "capability": "IGMP host/router/querier",
+      "acceptance": "Active query/report generation, source-filter state, retransmission timers, querier election and older-version interoperability for selected RFC. Frames traverse real network queues and snoopers",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/src/runtime/network/multicast_active.rs",
+        "crates/dir-simulator/src/runtime/network/multicast_integration.rs",
+        "examples/network-composite/active-multicast/",
+        "docs/verification/results/remaining-20261021/multicast-final-closure-review.md"
+      ],
+      "verification_scope": "Selected RFC9776 actor, actual FIFO/packet/source-filter integration: actor25/25, production2/2, checkpoint4/4. Independent final review closes both TO_IN legacy-version distinctions. Query loss followed by pruning is observed, not claimed additional pruning caused by loss."
+    },
+    {
+      "id": "N08",
+      "capability": "MLD listener/router/querier",
+      "acceptance": "IPv6-specific packet/checksum/source validation and active state/timers/election for selected RFC; test source-specific joins/leaves and querier loss",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/src/runtime/network/multicast_active.rs",
+        "crates/dir-simulator/src/runtime/network/multicast_integration.rs",
+        "examples/network-composite/active-multicast/",
+        "docs/verification/results/remaining-20261021/multicast-final-closure-review.md"
+      ],
+      "verification_scope": "Selected RFC9777 actor and actual IPv6 forwarding/querier/compatibility: shared actor25/25, production2/2, checkpoint4/4; final scoped review complete. No full RFC certification or arbitrary coordinated ledger authenticity claim."
+    },
+    {
+      "id": "N09",
+      "capability": "RSTP shared LAN",
+      "acceptance": "Shared-segment role/state transitions and BPDU timing, not point-to-point shortcut behavior. Test at least three bridges on a shared segment and topology changes",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_shared_lan.rs",
+        "examples/network-composite/shared-lan/",
+        "crates/dir-simulator/src/runtime/network/shared_lan.rs",
+        "docs/verification/cases/Ethernetブリッジ構成検証仕様書.md",
+        "crates/dir-simulator/tests/network_shared_tree.rs",
+        "docs/verification/results/remaining-20261021/bridge-expanded-final-review.md"
+      ],
+      "verification_scope": "Selected 3-bridge shared-LAN MAC-service contract: cycle/root loss, Backup, real once-only data delivery, actual port-scoped unexpired FDB flush, process continuation and Viewer. Expanded Astra review closed; the ideal MAC service is separate from sampled collision-domain PHY."
+    },
+    {
+      "id": "N10",
+      "capability": "MSTI",
+      "acceptance": "Region identity/configuration and per-instance spanning state with correct boundary behavior; test differing VLAN-to-instance maps and region boundary",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_mstp.rs",
+        "examples/network-composite/mstp-region/",
+        "crates/dir-simulator/src/runtime/wire/mstp.rs",
+        "crates/dir-simulator/src/runtime/ethernet/dynamic.rs",
+        "docs/verification/cases/Ethernetブリッジ構成検証仕様書.md",
+        "crates/dir-simulator/tests/network_mstp_boundary.rs",
+        "docs/verification/results/remaining-20261021/bridge-expanded-final-review.md"
+      ],
+      "verification_scope": "Selected Q2022 CIST/MSTI bounded adapter: cyclic VID-specific forwarding/learning, independent digest vectors, region name/revision/map and real RSTP peer boundaries. Final coherent basic1/boundary1(4variants) gates passed. Edge-aware proposal repair reviewed. Not full Q certification or arbitrary allSynced state-machine coverage."
+    },
+    {
+      "id": "N11",
+      "capability": "Provider behavior",
+      "acceptance": "Explicit provider/customer bridge and VLAN stack roles, filtering and spanning boundaries from selected 802.1Q edition. Existing single-VID switching is not sufficient",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_provider.rs",
+        "examples/network-composite/provider-l2/",
+        "docs/verification/fixtures/provider-l2/verify_result.py",
+        "crates/dir-simulator/src/runtime/network/provider.rs",
+        "docs/verification/cases/Ethernetブリッジ構成検証仕様書.md",
+        "crates/dir-simulator/tests/network_provider_multi_pep.rs",
+        "examples/network-composite/provider-l2/multi-pep.ini",
+        "crates/dir-simulator/tests/network_provider_topology.rs",
+        "docs/verification/results/remaining-20261021/bridge-expanded-final-review.md"
+      ],
+      "verification_scope": "Selected customer/service component contract: current actual protocol run1422events/13411records/6deliveries; multi-PEP8deliveries/8PNP/26copies with independent CRC/C20/S300 restore; actual unexpired S100/S200 TC flush; six transport semantic mutants; process continuation and both-viewports Viewer. Expanded Astra review closed. No arbitrary coordinated-history authentication claim."
+    },
+    {
+      "id": "N12",
+      "capability": "Combined Gateway/FRER/preemption/TSN",
+      "acceptance": "One compatible pipeline, one resource ownership model and provenance. Test CAN→Ethernet conversion→tagging/replication→TAS/CBS→MAC Merge→elimination/reassembly→destination",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_gateway_frer.rs",
+        "tests/gateway_frer_viewer_model.test.cjs",
+        "docs/verification/cases/Gateway冗長TSN複合検証仕様書.md",
+        "docs/verification/results/remaining-20261021/gateway-frer-final-review.md"
+      ],
+      "verification_scope": "Actual CAN/Gateway->ordinary prefix->typed GatewayEgress bridge-pair vector FRER->static CBS/TAS->actual Clause99 pMAC->recovery->actual suffix. Production13 and atomic1(two real cuts) independently reexecuted;7 process checkpoint cuts,13 rehashed mutants,76 existing regressions. Actual501930000ps CAN end-to-end and500us/503.008us CBS starts; actual Viewer PC/mobile/prefix replay. Converted74B branches are legal single pMAC packets; same-FES native166payloadB reverse-branch traffic separately proves mCRC/suspension/lost-final. No converted-frame fragmentation or broader adapter certification claim."
+    },
+    {
+      "id": "N13",
+      "capability": "General composition",
+      "acceptance": "All shipped compatible components can be assembled through typed adapters instead of a whitelist that permits only one extension. Explicit adapters determine differing payload/schema/clock semantics. Unknown future profiles or incompatible protocols cannot have a meaningful universal composition guarantee",
+      "status": "verified",
+      "evidence": [
+        "docs/verification/cases/型付きネットワーク構成検証仕様書.md",
+        "docs/verification/results/remaining-20261021/gptp-wire-final-review.md",
+        "docs/verification/results/remaining-20261021/native-input-final-review.md"
+      ]
+    },
+    {
+      "id": "A01",
+      "capability": "Multiple IDs/out-of-order",
+      "acceptance": "Track identity by manager+ID and preserve mandated same-ID ordering while allowing independent IDs to complete out of order. Test one slow/one fast target and repeated same-ID requests",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/transaction_fabric.rs",
+        "docs/verification/cases/AXI並列チャネル検証仕様書.md"
+      ],
+      "verification_scope": "Production AXI profile, 10 focused cases including shared W-resource ownership, CLI/Viewer and scoped source review."
+    },
+    {
+      "id": "A02",
+      "capability": "Independent channels",
+      "acceptance": "Distinct AW/W/B/AR/R flow-control/queues and handshake progress. Preserve write-data association and allowed dependencies, with partial beat commits visible on stop",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/transaction_fabric.rs",
+        "docs/verification/cases/AXI並列チャネル検証仕様書.md"
+      ],
+      "verification_scope": "Production AXI profile, 10 focused cases including shared W-resource ownership, CLI/Viewer and scoped source review."
+    },
+    {
+      "id": "A03",
+      "capability": "FIXED/WRAP",
+      "acceptance": "Normative beat-address generation and validation for allowed lengths/alignments; test wrap edges, fixed address repetition and invalid combinations",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/transaction_fabric.rs",
+        "docs/verification/cases/AXI並列チャネル検証仕様書.md"
+      ],
+      "verification_scope": "Production AXI profile, 10 focused cases including shared W-resource ownership, CLI/Viewer and scoped source review."
+    },
+    {
+      "id": "A04",
+      "capability": "Narrow/unaligned",
+      "acceptance": "Explicit bus width versus transfer size, per-beat address/byte lanes/WSTRB and read result packing. Test boundary crossing and preserved bytes",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/transaction_fabric.rs",
+        "docs/verification/cases/AXI並列チャネル検証仕様書.md"
+      ],
+      "verification_scope": "Production AXI profile, 10 focused cases including shared W-resource ownership, CLI/Viewer and scoped source review."
+    },
+    {
+      "id": "A05",
+      "capability": "Exclusive accesses",
+      "acceptance": "Monitor identity/address/size lifetime and invalidation by interfering writers; return success/failure response correctly without an unsupported lock interpretation",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/transaction_fabric.rs",
+        "docs/verification/cases/AXI並列チャネル検証仕様書.md"
+      ],
+      "verification_scope": "Production AXI profile, 10 focused cases including shared W-resource ownership, CLI/Viewer and scoped source review."
+    },
+    {
+      "id": "A06",
+      "capability": "Atomic transactions",
+      "acceptance": "Define protocol edition and supported operation set, atomicity granule and return behavior. Test simultaneous interference through every writer including DMA/CPU",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs",
+        "docs/verification/cases/AXI5アトミック・QoS検証仕様書.md"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "A07",
+      "capability": "Multiple interconnects/RAMs",
+      "acceptance": "A validated nonoverlapping address map and routed graph with per-link/per-target resources; response path retains source and ID. Test two concurrent independent paths, contention and decode errors",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/transaction_fabric.rs",
+        "docs/verification/cases/AXI並列チャネル検証仕様書.md"
+      ],
+      "verification_scope": "Production AXI profile, 10 focused cases including shared W-resource ownership, CLI/Viewer and scoped source review."
+    },
+    {
+      "id": "S01",
+      "capability": "AHB pipeline",
+      "acceptance": "Separate address/control and data phases; HREADY wait holds the appropriate pipeline state, and errors cancel/complete according to selected AHB version. Test overlap, stalls and response boundaries",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/ahb_pipeline.rs",
+        "docs/verification/cases/AHBパイプライン検証仕様書.md"
+      ],
+      "verification_scope": "Selected full AHB protocol scope, 10 focused native tests and actual pipeline CLI/Viewer."
+    },
+    {
+      "id": "S02",
+      "capability": "AHB bursts",
+      "acceptance": "SINGLE/INCR and selected fixed/wrapping burst forms, SEQ/NONSEQ address progression and boundary rules; capture each transferred beat",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/ahb_pipeline.rs",
+        "docs/verification/cases/AHBパイプライン検証仕様書.md"
+      ],
+      "verification_scope": "Selected full AHB protocol scope, 10 focused native tests and actual pipeline CLI/Viewer."
+    },
+    {
+      "id": "S03",
+      "capability": "AHB locks",
+      "acceptance": "Define HMASTLOCK ownership/arbitration across transfer sequence and lock release on errors/reset/termination; test competing manager cannot intervene",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/ahb_pipeline.rs",
+        "docs/verification/cases/AHBパイプライン検証仕様書.md"
+      ],
+      "verification_scope": "Selected full AHB protocol scope, 10 focused native tests and actual pipeline CLI/Viewer."
+    },
+    {
+      "id": "S04",
+      "capability": "NoC flits",
+      "acceptance": "Split actual packet payload into head/body/tail flits with per-cycle link serialization and credit/backpressure; packets occupy actual per-VC buffers, not one whole-packet slot",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/noc_flit.rs",
+        "docs/verification/cases/NoCフリット検証仕様書.md"
+      ],
+      "verification_scope": "Actual flit/credit finite runtime, nine focused cases plus exact FES timer-envelope regression, independent escape dependency graphs and scoped correctness review."
+    },
+    {
+      "id": "S05",
+      "capability": "Virtual channels",
+      "acceptance": "Independent finite VC buffers, allocation and credit-return; head reserves route/VC and tail releases ownership. Test head-of-line relief and credit conservation",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/noc_flit.rs",
+        "docs/verification/cases/NoCフリット検証仕様書.md"
+      ],
+      "verification_scope": "Actual flit/credit finite runtime, nine focused cases plus exact FES timer-envelope regression, independent escape dependency graphs and scoped correctness review."
+    },
+    {
+      "id": "S06",
+      "capability": "Adaptive routing",
+      "acceptance": "Name algorithm and deadlock policy. A sensible project model uses minimal adaptive choices with deterministic tie-break and a dedicated deterministic escape VC; validate acyclic escape dependencies and test saturation",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/noc_flit.rs",
+        "docs/verification/cases/NoCフリット検証仕様書.md"
+      ],
+      "verification_scope": "Actual flit/credit finite runtime, nine focused cases plus exact FES timer-envelope regression, independent escape dependency graphs and scoped correctness review."
+    },
+    {
+      "id": "S07",
+      "capability": "CPU execution",
+      "acceptance": "A sensible default is full RV32I 2.1, little-endian bare-metal execution environment, explicit memory map/reset entry, defined traps and instruction timing. Decode actual program bytes and retire real register/memory effects; do not substitute a transaction script and call it an ISA",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs",
+        "crates/dir-simulator/tests/rv32i_oracle.rs",
+        "crates/dir-simulator/tests/fixtures/rv32i_spike_oracle/README.md"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "S08",
+      "capability": "Cache coherence",
+      "acceptance": "Named protocol and topology, e.g. project-defined directory MESI with write-back private caches, finite MSHRs, invalidation acknowledgments and shared memory. Define line size, eviction/writeback, atomic/fence interaction and DMA coherence policy",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "S09",
+      "capability": "CPU/NoC/memory integration",
+      "acceptance": "Instructions generate actual cache/fabric transactions; stalled loads resume on response and completed stores have specified visibility. Test two-core handoff, conflicting writes, eviction, DMA interaction and stop/checkpoint during a miss",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "M01",
+      "capability": "AXI with memory/IPC",
+      "acceptance": "Real address-mapped adapter uses the same DDR/SRAM/shared/mailbox service state. Define access widths, ordering, errors, byte enables and bridge buffering; test read-after-write across AXI and DMA",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs",
+        "crates/dir-simulator/src/runtime/soc_execution/mailbox.rs",
+        "crates/dir-simulator/src/runtime/soc_execution/ipc_checkpoint.rs",
+        "examples/soc-execution/mailbox.ini",
+        "docs/specs/models/SoC実行詳細機能仕様書.md",
+        "docs/verification/cases/SoC実行検証仕様書.md"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "M02",
+      "capability": "DMA to shared slot",
+      "acceptance": "Explicit lease/reservation capability prevents writing a ready/consuming slot; DMA child writes stage bytes and publish once completed. Partial/cancelled DMA must not expose a ready payload. Test rights, full slots and halt mid-copy",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "M03",
+      "capability": "DDR bank parallelism",
+      "acceptance": "Independent bank state and queued commands, shared command/data buses, arbitration and refresh constraints. Test overlap that beats single-service latency while still honoring shared bus contention",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/ddr4.rs",
+        "docs/implementation/ddr4-rules.json",
+        "docs/verification/cases/DDR4コマンド検証仕様書.md"
+      ],
+      "verification_scope": "Current 27-test DDR4 integration gate passes, including simultaneous independent-bank queued execution beating sequential completion while retaining shared CA/CAS/DQ limits; refresh and conflict cases remain in same suite."
+    },
+    {
+      "id": "M04",
+      "capability": "JEDEC command/timing coverage",
+      "acceptance": "Pin generation, revision, organization, speed bin and operating mode. Implement command eligibility and data timing from a clause ledger, including ACT/RD/WR/PRE/REF and applicable initialization, power, mode and calibration operations. Every applicable timing rule has a positive and one-cycle-early negative trace test",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/ddr4.rs",
+        "docs/implementation/ddr4-rules.json",
+        "docs/verification/cases/DDR4コマンド検証仕様書.md"
+      ],
+      "verification_scope": "Selected ISSI x8 DDR4-2400 fixed-clock project contract: 77-row source/timing ledger, 27 Rust integration tests, two internal guards, two independent Python monitor tests and seven mutants. Coverage33 direct-oracle/40 Rust boundary/4 continuous-clock configuration invariants. RDA/WRA composite and PD/CKE overlapping early/exact boundaries verified; no isolated guard-name or full JEDEC/analog certification claim."
+    },
+    {
+      "id": "M05",
+      "capability": "DDR content/visibility",
+      "acceptance": "Completion of real read/write bursts updates/returns shared byte storage; row-buffer/bank metadata alone is not data transfer. Test refresh, row conflicts, concurrent banks, masks and stopped partial operations",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/ddr4.rs",
+        "docs/implementation/ddr4-rules.json",
+        "docs/verification/cases/DDR4コマンド検証仕様書.md"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "E01",
+      "capability": "All 13 legacy cooperative profiles",
+      "acceptance": "One callback at a time under the same `RunSession` owner; pause/resume/stop/export act at actual safe commit boundaries. Verify all profile names, not one representative per engine",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/legacy_can_ethernet_control.rs",
+        "crates/dir-simulator/tests/legacy_soc_memory_control.rs",
+        "docs/verification/cases/専用モデル協調実行検証仕様書.md"
+      ]
+    },
+    {
+      "id": "E02",
+      "capability": "Cooperative prefix fidelity",
+      "acceptance": "Pause before initialization, after initialization, mid-queue/service/transfer and immediately before terminal boundary. Resume output matches uninterrupted execution, excluding declared control/provenance fields",
+      "status": "verified",
+      "evidence": [
+        "tests/legacy_control_viewer_model.test.cjs",
+        "docs/verification/cases/専用モデル協調実行検証仕様書.md"
+      ]
+    },
+    {
+      "id": "E03",
+      "capability": "Network checkpoint codecs",
+      "acceptance": "Save `NetworkState` AND `NetworkArena`, plus generic counters, snapshots, metrics, journal/spool and control replay. Validate IDs/references, queues, reservations, sequence monotonicity and live timer ownership before restore",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_checkpoint.rs",
+        "docs/verification/cases/ネットワークcheckpoint検証仕様書.md"
+      ]
+    },
+    {
+      "id": "E04",
+      "capability": "Network Metric V2",
+      "acceptance": "Register exact catalogs/targets/initial gauges; stage and commit `MetricV2` effects atomically with network state. Preserve integer area/window arithmetic and show no doubled observations on export/restore",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/network_metric_v2.rs",
+        "tests/network_metric_v2_viewer_model.test.cjs"
+      ]
+    },
+    {
+      "id": "E05",
+      "capability": "Checkpoint migration",
+      "acceptance": "Add an explicit offline `migrate_checkpoint(source,destination,registry/adapter)` path or equivalent API. Migration is keyed by exact source schema/implementation/codec versions with declared target; default restore remains strict",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/checkpoint_migration.rs",
+        "docs/verification/cases/checkpoint版移行検証仕様書.md"
+      ],
+      "verification_scope": "Explicit trusted model-codec migration edge with genuine v1 producer/v2 consumer and source+target validation; unknown edges stay rejected. No arbitrary historic core-schema compatibility claim."
+    },
+    {
+      "id": "E06",
+      "capability": "Migration provenance and validation",
+      "acceptance": "Preserve source manifest hashes and lineage, record each migration step, validate all decoded/transformed references, publish a new bundle without overwriting old one, and compare continuation to a native target-version reference",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/checkpoint_migration.rs",
+        "docs/verification/cases/checkpoint版移行検証仕様書.md"
+      ],
+      "verification_scope": "Explicit trusted model-codec migration edge with genuine v1 producer/v2 consumer and source+target validation; unknown edges stay rejected. No arbitrary historic core-schema compatibility claim."
+    },
+    {
+      "id": "E07",
+      "capability": "Version boundary behavior",
+      "acceptance": "Unsupported migration edge returns a precise diagnostic. Test at least one real old→new fixture produced by the older implementation, unknown versions, malformed references and semantically incompatible changes",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/checkpoint_migration.rs",
+        "docs/verification/cases/checkpoint版移行検証仕様書.md"
+      ],
+      "verification_scope": "Explicit trusted model-codec migration edge with genuine v1 producer/v2 consumer and source+target validation; unknown edges stay rejected. No arbitrary historic core-schema compatibility claim."
+    },
+    {
+      "id": "A08",
+      "capability": "AXI QoS",
+      "acceptance": "Explicit 4-bit AWQOS/ARQOS and documented arbitration policy affect actual contended channel admission, with deterministic ties and starvation policy.",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs",
+        "docs/verification/cases/AXI5アトミック・QoS検証仕様書.md"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "S10",
+      "capability": "AHB SPLIT/RETRY",
+      "acceptance": "Selected full AHB two-cycle responses cancel speculative address; RETRY reissues and SPLIT masks until actual HSPLIT. Test lock/error/retry interplay.",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/ahb_pipeline.rs",
+        "docs/verification/cases/AHBパイプライン検証仕様書.md"
+      ],
+      "verification_scope": "Selected full AHB protocol scope, 10 focused native tests and actual pipeline CLI/Viewer."
+    },
+    {
+      "id": "S11",
+      "capability": "NoC torus",
+      "acceptance": "Wrap links participate in real flit/credit routing with explicit deadlock policy and wrap dateline/escape handling.",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/noc_flit.rs",
+        "docs/verification/cases/NoCフリット検証仕様書.md"
+      ],
+      "verification_scope": "Actual flit/credit finite runtime, nine focused cases plus exact FES timer-envelope regression, independent escape dependency graphs and scoped correctness review."
+    },
+    {
+      "id": "S12",
+      "capability": "NoC fault routing",
+      "acceptance": "Link/router failure events change available routes; in-flight loss, reroute, unreachable diagnostics and recovery preserve credit ownership.",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/noc_flit.rs",
+        "docs/verification/cases/NoCフリット検証仕様書.md"
+      ],
+      "verification_scope": "Actual flit/credit finite runtime, nine focused cases plus exact FES timer-envelope regression, independent escape dependency graphs and scoped correctness review."
+    },
+    {
+      "id": "S13",
+      "capability": "SoC read-after-write byte storage",
+      "acceptance": "Selected concrete SoC/AHB model executes reads and writes against one byte owner, exposing actual values and byte-enable visibility.",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs",
+        "docs/verification/cases/SoC実行検証仕様書.md"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    },
+    {
+      "id": "M06",
+      "capability": "SoC profile composition",
+      "acceptance": "AXI/AHB/NoC/CPU/DMA/IPC compatible adapters share one memory owner and execution timeline; validate buffers/ordering/clock boundaries.",
+      "status": "verified",
+      "evidence": [
+        "crates/dir-simulator/tests/soc_execution.rs"
+      ],
+      "verification_scope": "Current source SoC27/AXI10/AHB10 and three Node Viewer scenarios pass. Fresh mapped-mailbox full/paused desktop/mobile Viewer verifies actual DMA bytes [7,8,9,10], generation1 and released Free state; metadata replay and genuine rehashed checkpoint mutations are covered. Reviewed reset-notification mismatch is fixed. Scope is the documented finite project model, not complete ISA/bus/JEDEC conformance; consumer DMA must finish before caller releases its slot."
+    }
+  ],
+  "audit_sources": [
+    "implementation-audit.md",
+    "protocol-models.md",
+    "parent-core-models.json"
+  ],
+  "scope_note": "The initial 75-row protocol/checkpoint plan was reconciled with the separate core-model audit; six explicit core details were added without narrowing the requested scope.",
+  "verification_date": "2026-10-22",
+  "verification_record": "docs/verification/results/remaining-20261021/validation.json",
+  "build_source_sha256": "549d386cc0a15e99fc0c3e9073d7956d2935aa462289be62d4b067be3a08ac8c"
+}

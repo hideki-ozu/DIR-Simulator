@@ -392,14 +392,14 @@
     for(const s of m.segments.values())if(s.sof<=time){targetCount+=BigInt(s.target_count);for(const target of s.targets)if(target.completed_ps!==null&&BigInt(target.completed_ps)<=time)completed++;}
     return {conversions,branches,held,targetCount,completed,can:m.canApi.stateAt(m.canModel,time)};
   }
-  function parseResults(raw) {
+  function parseResults(raw, prefixMode = false) {
     if(raw?.schema_version===2&&raw.metadata?.model_profile==='can.ethernet.gateway.v1')return parseCompositeResults(raw);
     if (raw?.schema_version !== 2 || !['ethernet.l2.store-forward.v1','ethernet.l2.qos.v1','ethernet.l2.vlan.v1','ethernet.l2.store-forward.v2','ethernet.l2.100base-t1.v1','ethernet.l2.dynamic.v1','ethernet.tsn.v1'].includes(raw.metadata?.model_profile)) fail('未対応のprofileです');
     const media=['ethernet.l2.store-forward.v2','ethernet.l2.100base-t1.v1'].includes(raw.metadata.model_profile);
     const dynamic=['ethernet.l2.dynamic.v1','ethernet.tsn.v1'].includes(raw.metadata.model_profile),tsn=raw.metadata.model_profile==='ethernet.tsn.v1';
     const vlan=dynamic||raw.metadata.model_profile==='ethernet.l2.vlan.v1',qos=vlan||raw.metadata.model_profile==='ethernet.l2.qos.v1';
     const sim=raw.simulation;
-    if (!sim || typeof sim.partial !== 'boolean' || !['events_exhausted','time_limit','execution_failed'].includes(sim.termination)) fail('終了情報が不正です');
+    if (!sim || typeof sim.partial !== 'boolean' || !(['events_exhausted','time_limit','execution_failed'].includes(sim.termination) || prefixMode && ['paused','stopped'].includes(sim.termination))) fail('終了情報が不正です');
     const start=decimal(sim.start_ps),end=decimal(sim.end_ps);
     if(start!==0n || end<start) fail('観測期間が不正です');
     const actual = x => { if(x===null)return null;const n=decimal(x);if(n>end || (!sim.partial && n===end))fail('実績時刻が観測期間外です');return n; };

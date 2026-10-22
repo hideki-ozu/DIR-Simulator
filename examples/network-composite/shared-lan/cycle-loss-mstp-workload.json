@@ -1,0 +1,65 @@
+{
+  "schema_version": 4,
+  "generators": [
+    {
+      "id": "before",
+      "node": "Backup.a",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "4500000000000"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:02",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 0,
+          "dei": 0
+        },
+        "ip_multicast": null
+      },
+      "flow_id": "before",
+      "priority": 0,
+      "deadline_ps": null
+    },
+    {
+      "id": "after",
+      "node": "Backup.b",
+      "kind": "ethernet.explicit.v1",
+      "times_ps": [
+        "30000000000000"
+      ],
+      "frame": {
+        "dst_mac": "02:00:00:00:00:03",
+        "ether_type": 2048,
+        "data": "",
+        "tag": {
+          "vid": 10,
+          "pcp": 0,
+          "dei": 0
+        },
+        "ip_multicast": null
+      },
+      "flow_id": "after",
+      "priority": 0,
+      "deadline_ps": null
+    }
+  ],
+  "controls": [
+    {
+      "id": "root-port-b",
+      "at_ps": "6000000000000",
+      "kind": "link_set",
+      "link": "H1",
+      "up": false
+    },
+    {
+      "id": "root-port-c",
+      "at_ps": "6000000000000",
+      "kind": "link_set",
+      "link": "H4",
+      "up": false
+    }
+  ]
+}

@@ -3,10 +3,14 @@
 pub(crate) mod boundary;
 #[path = "wire/codec.rs"]
 pub(crate) mod codec;
+#[path = "wire/component_envelope.rs"]
+pub(crate) mod component_envelope;
 #[path = "wire/guards.rs"]
 pub(crate) mod guards;
 #[path = "wire/membership.rs"]
 pub(crate) mod membership;
+#[path = "wire/mstp.rs"]
+pub(crate) mod mstp;
 #[path = "wire/mvrp.rs"]
 pub(crate) mod mvrp;
 #[path = "wire/mvrp_state.rs"]
@@ -35,6 +39,9 @@ fn fail(s: impl Into<String>) -> Diagnostic {
 }
 fn protocol(p: WireProtocol) -> String {
     format!("{p:?}").to_lowercase()
+}
+fn c_bridge_mac(id: &u64) -> [u8; 6] {
+    id.to_be_bytes()[2..].try_into().unwrap()
 }
 #[derive(Debug, Clone)]
 pub(crate) enum WireEvent {
@@ -69,6 +76,8 @@ pub(crate) struct WireStaticMulticast {
 pub(crate) struct WireView {
     /// Current physical links, keyed by output port. Missing means link up.
     pub link_up: BTreeMap<String, bool>,
+    /// MAC-service capability from the physical owner. Missing preserves legacy point-to-point behavior.
+    pub oper_point_to_point_mac: BTreeMap<String, bool>,
     /// Current data ingress admission, checked after boundary RX completion.
     pub ingress_eligible: BTreeMap<(String, u16), bool>,
     pub policy_epoch: u64,
@@ -80,7 +89,7 @@ pub(crate) struct WireTimerIntent {
     pub generation: u64,
     pub deadline_ps: Option<u64>,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub(crate) struct WireTxIntent {
     pub adapter_id: String,
     pub packet_id: String,
@@ -120,6 +129,7 @@ pub(crate) struct ProtocolDelta {
     pub forwards: Vec<WireForwardIntent>,
     pub records: Vec<WireRecord>,
     pub policies: BTreeMap<String, WirePortPolicy>,
+    pub tree_policies: BTreeMap<(String, u16, String), WirePortPolicy>,
     pub registered: BTreeSet<(String, u16)>,
     pub registration_generations: BTreeMap<(String, u16), u64>,
     pub memberships: BTreeMap<membership::Key, membership::Filter>,
@@ -132,6 +142,7 @@ pub(crate) struct ProtocolDelta {
 pub(crate) struct WireState {
     prepared: Arc<PreparedWire>,
     rstp: BTreeMap<String, rstp::Bridge>,
+    mstp: BTreeMap<String, mstp::MstBridge>,
     mvrp: BTreeMap<String, mvrp_state::State>,
     snooper: membership::Snooper,
     generation: BTreeMap<String, u64>,
@@ -143,8 +154,12 @@ pub(crate) struct WireState {
     initialized: bool,
 }
 impl WireState {
+    pub(crate) fn is_initialized(&self) -> bool {
+        self.initialized
+    }
     pub(crate) fn new(prepared: Arc<PreparedWire>) -> Self {
         let mut bridges = BTreeMap::new();
+        let mut mst_bridges = BTreeMap::new();
         let mut mrp = BTreeMap::new();
         for a in &prepared.adapters {
             match &a.options {
@@ -170,23 +185,98 @@ impl WireState {
                             )
                         })
                         .collect();
-                    bridges.insert(
-                        a.id.clone(),
-                        rstp::Bridge::new(
-                            c.bridge_id,
-                            rstp::Times {
-                                age: 0,
-                                max_age: c.max_age,
-                                hello: 512,
-                                forward_delay: c.forward_delay,
-                            },
-                            c.tx_hold_count,
-                            ports,
-                        ),
-                    );
+                    let times = rstp::Times {
+                        age: 0,
+                        max_age: c.max_age,
+                        hello: 512,
+                        forward_delay: c.forward_delay,
+                    };
+                    let bridge = if let Some(binding) = &a.component_binding {
+                        if binding.domain == TreeDomain::Customer {
+                            let cep = binding
+                                .ports
+                                .iter()
+                                .find_map(|(name, attachment)| {
+                                    matches!(attachment, PortAttachment::Physical { .. })
+                                        .then(|| name.clone())
+                                })
+                                .expect("prepared C component CEP");
+                            rstp::Bridge::new_cep(
+                                c.bridge_id,
+                                times,
+                                c.tx_hold_count,
+                                ports,
+                                cep,
+                                binding.service_cardinality.clone(),
+                            )
+                            .expect("prepared enhanced CEP RSTP")
+                        } else {
+                            rstp::Bridge::new(c.bridge_id, times, c.tx_hold_count, ports)
+                        }
+                    } else {
+                        rstp::Bridge::new(c.bridge_id, times, c.tx_hold_count, ports)
+                    };
+                    bridges.insert(a.id.clone(), bridge);
                 }
                 WireOptions::Mvrp(_) => {
                     mrp.insert(a.id.clone(), mvrp_state::State::new(a));
+                }
+                WireOptions::Mstp(c) => {
+                    let vlan_map: &[u16; 4096] = c
+                        .vlan_map
+                        .as_slice()
+                        .try_into()
+                        .expect("prepared MSTP VLAN map length");
+                    let region =
+                        mstp::RegionId::from_vlan_map(&c.region_name, c.region_revision, vlan_map)
+                            .expect("prepared MSTP region");
+                    let instances = c
+                        .instances
+                        .iter()
+                        .map(|i| mstp::InstanceConfig {
+                            mstid: mstp::Mstid(i.mstid),
+                            bridge_priority: i.bridge_priority,
+                        })
+                        .collect();
+                    let ports = c
+                        .ports
+                        .iter()
+                        .map(|p| {
+                            (
+                                p.port.clone(),
+                                mstp::MstPortConfig {
+                                    id: p.port_id,
+                                    external_cost: p.external_path_cost,
+                                    internal_cost: p.internal_path_cost,
+                                    enabled: true,
+                                    oper_point_to_point_mac: true,
+                                    admin_edge: p.admin_edge,
+                                },
+                            )
+                        })
+                        .collect();
+                    let mut bridge = mstp::MstBridge::new(
+                        c.bridge_id,
+                        region,
+                        c.vlan_map.clone(),
+                        instances,
+                        ports,
+                        rstp::Times {
+                            age: 0,
+                            max_age: c.max_age,
+                            hello: 512,
+                            forward_delay: c.forward_delay,
+                        },
+                        c.tx_hold_count,
+                    )
+                    .expect("prepared MSTP bridge");
+                    bridge.max_hops = c.max_hops;
+                    for tree in bridge.trees.values_mut() {
+                        for port in tree.ports.values_mut() {
+                            port.remaining_hops = c.max_hops;
+                        }
+                    }
+                    mst_bridges.insert(a.id.clone(), bridge);
                 }
                 _ => {}
             }
@@ -194,6 +284,7 @@ impl WireState {
         Self {
             prepared,
             rstp: bridges,
+            mstp: mst_bridges,
             mvrp: mrp,
             snooper: membership::Snooper::default(),
             generation: BTreeMap::new(),
@@ -213,7 +304,7 @@ impl WireState {
     }
     pub(crate) fn runtime_snapshot(&self) -> Value {
         let mvrp:Vec<_>=self.mvrp.iter().map(|(id,state)|json!({"adapter_id":id,"ports":state.ports.iter().map(|(name,p)|json!({"port":name,"operational":p.operational,"forwarding":p.forwarding,"tc_detected":p.tc_detected.to_string(),"leaveall_active":p.leaveall_active,"periodic_active":p.periodic_active,"random_counter":p.random_counter.to_string(),"last_opportunity":p.last_opportunity.map(|n|n.to_string()),"attribute_domain":[1,4094],"attribute_default":{"applicant":"VO","registrar":"MT","registered":false,"demand":false,"request_tx":false},"attributes":p.attributes.iter().filter(|(_,a)|a.applicant!=mvrp::Applicant::VO||a.registrar!=mvrp::Registrar::MT||a.registered||a.demand||a.request_tx).map(|(vid,a)|json!({"vid":vid,"applicant":a.applicant,"registrar":a.registrar,"registered":a.registered,"demand":a.demand,"request_tx":a.request_tx})).collect::<Vec<_>>(),"timers":p.timers.iter().map(|((slot,vid),t)|json!({"slot":slot,"vid":vid,"generation":t.generation.to_string(),"deadline_ps":t.deadline.map(|n|n.to_string())})).collect::<Vec<_>>() })).collect::<Vec<_>>() })).collect();
-        json!({"initialized":self.initialized,"callback":self.callback.to_string(),"record_sequence":self.record_sequence.to_string(),"rstp":self.rstp,"mvrp":mvrp,"leases":self.snooper.leases.iter().map(|((key,filter),lease)|json!({"key":key,"filter":filter,"deadline_ps":lease.deadline.to_string(),"generation":lease.generation.to_string()})).collect::<Vec<_>>(),"routers":self.snooper.routers.iter().map(|(key,lease)|json!({"key":key,"deadline_ps":lease.deadline.to_string(),"generation":lease.generation.to_string()})).collect::<Vec<_>>(),"lease_generations":self.snooper.generations.iter().map(|((key,filter),generation)|json!({"key":key,"filter":filter,"generation":generation.to_string()})).collect::<Vec<_>>(),"router_generations":self.snooper.router_generations.iter().map(|(key,generation)|json!({"key":key,"generation":generation.to_string()})).collect::<Vec<_>>(),"compatibility_flood":self.snooper.flood,"timer_ledger":self.timers.iter().map(|((adapter,key),(generation,deadline))|json!({"adapter_id":adapter,"key":key,"generation":generation.to_string(),"deadline_ps":deadline.map(|n|n.to_string())})).collect::<Vec<_>>(),"generations":self.generation,"tx_ordinals":self.tx_ordinals,"registration_generations":self.registration_generations.iter().map(|((port,vid),generation)|json!({"port":port,"vid":vid,"generation":generation.to_string()})).collect::<Vec<_>>()})
+        json!({"initialized":self.initialized,"callback":self.callback.to_string(),"record_sequence":self.record_sequence.to_string(),"rstp":self.rstp,"mstp":self.mstp,"mvrp":mvrp,"leases":self.snooper.leases.iter().map(|((key,filter),lease)|json!({"key":key,"filter":filter,"deadline_ps":lease.deadline.to_string(),"generation":lease.generation.to_string()})).collect::<Vec<_>>(),"routers":self.snooper.routers.iter().map(|(key,lease)|json!({"key":key,"deadline_ps":lease.deadline.to_string(),"generation":lease.generation.to_string()})).collect::<Vec<_>>(),"lease_generations":self.snooper.generations.iter().map(|((key,filter),generation)|json!({"key":key,"filter":filter,"generation":generation.to_string()})).collect::<Vec<_>>(),"router_generations":self.snooper.router_generations.iter().map(|(key,generation)|json!({"key":key,"generation":generation.to_string()})).collect::<Vec<_>>(),"compatibility_flood":self.snooper.flood,"timer_ledger":self.timers.iter().map(|((adapter,key),(generation,deadline))|json!({"adapter_id":adapter,"key":key,"generation":generation.to_string(),"deadline_ps":deadline.map(|n|n.to_string())})).collect::<Vec<_>>(),"generations":self.generation,"tx_ordinals":self.tx_ordinals,"registration_generations":self.registration_generations.iter().map(|((port,vid),generation)|json!({"port":port,"vid":vid,"generation":generation.to_string()})).collect::<Vec<_>>()})
     }
     pub(crate) fn policies(&self) -> BTreeMap<String, WirePortPolicy> {
         self.rstp
@@ -231,7 +322,51 @@ impl WireState {
                     )
                 })
             })
+            .chain(self.mstp.values().flat_map(|b| {
+                b.trees[&mstp::Mstid(0)].ports.iter().map(|(n, p)| {
+                    (
+                        n.clone(),
+                        WirePortPolicy {
+                            role: format!("{:?}", p.role),
+                            learning: p.learning,
+                            forwarding: p.forwarding,
+                            link_up: b.ports[n].config.enabled,
+                        },
+                    )
+                })
+            }))
             .collect()
+    }
+    pub(crate) fn tree_policies(&self) -> BTreeMap<(String, u16, String), WirePortPolicy> {
+        self.mstp
+            .iter()
+            .flat_map(|(adapter, b)| {
+                b.trees.iter().flat_map(move |(id, tree)| {
+                    tree.ports.iter().map(move |(name, p)| {
+                        (
+                            (adapter.clone(), id.0, name.clone()),
+                            WirePortPolicy {
+                                role: format!("{:?}", p.role),
+                                learning: p.learning,
+                                forwarding: p.forwarding,
+                                link_up: b.ports[name].config.enabled,
+                            },
+                        )
+                    })
+                })
+            })
+            .collect()
+    }
+    pub(crate) fn tree_policy(&self, port: &str, vid: u16) -> Option<WirePortPolicy> {
+        let (_, b) = self.mstp.iter().find(|(_, b)| b.ports.contains_key(port))?;
+        let mstid = b.mstid_for_vid(vid)?;
+        let state = b.trees.get(&mstid)?.ports.get(port)?;
+        Some(WirePortPolicy {
+            role: format!("{:?}", state.role),
+            learning: state.learning,
+            forwarding: state.forwarding,
+            link_up: b.ports[port].config.enabled,
+        })
     }
     #[cfg(test)]
     pub(crate) fn multicast_candidates(
@@ -315,6 +450,7 @@ impl WireState {
             forwards: vec![],
             records: vec![],
             policies: BTreeMap::new(),
+            tree_policies: BTreeMap::new(),
             registered: BTreeSet::new(),
             registration_generations: BTreeMap::new(),
             memberships: BTreeMap::new(),
@@ -337,8 +473,23 @@ impl WireState {
                     if a.protocol == WireProtocol::Rstp {
                         for (n, p) in &mut d.next.rstp.get_mut(&a.id).unwrap().ports {
                             p.enabled = view.link_up.get(n).copied().unwrap_or(true);
+                            p.oper_point_to_point_mac = a
+                                .component_binding
+                                .as_ref()
+                                .and_then(|binding| binding.service_cardinality.get(n))
+                                .map(|count| *count <= 2)
+                                .unwrap_or_else(|| {
+                                    view.oper_point_to_point_mac.get(n).copied().unwrap_or(true)
+                                });
                         }
                         d.rstp(a, now, rstp::Input::Initialize, "initialize")?;
+                    } else if a.protocol == WireProtocol::Mstp {
+                        for (n, p) in &mut d.next.mstp.get_mut(&a.id).unwrap().ports {
+                            p.config.enabled = view.link_up.get(n).copied().unwrap_or(true);
+                            p.config.oper_point_to_point_mac =
+                                view.oper_point_to_point_mac.get(n).copied().unwrap_or(true);
+                        }
+                        d.mstp(a, now, mstp::MstInput::Initialize, "initialize")?;
                     } else if a.protocol == WireProtocol::Mvrp {
                         let policies = d.next.policies();
                         for (n, p) in &mut d.next.mvrp.get_mut(&a.id).unwrap().ports {
@@ -379,7 +530,12 @@ impl WireState {
                     .ports
                     .iter()
                     .find(|p| {
-                        **p == ingress_port || d.next.prepared.ports[*p].ingress == ingress_port
+                        **p == ingress_port
+                            || d.next
+                                .prepared
+                                .ports
+                                .get(*p)
+                                .is_some_and(|physical| physical.ingress == ingress_port)
                     })
                     .unwrap()
                     .clone();
@@ -389,7 +545,19 @@ impl WireState {
                     match &a.options {
                         WireOptions::Rstp(c) => {
                             let pc = c.ports.iter().find(|p| p.port == port).unwrap();
-                            match rstp::decode(&bytes, pc.port_id, a.max_pdu_bytes) {
+                            let decoded = if let Some(binding) = &a.component_binding {
+                                component_envelope::decode(&bytes, a.max_pdu_bytes).and_then(
+                                    |env| {
+                                        if env.domain != binding.domain || !env.tags.is_empty() {
+                                            return Err(codec::bad("protocol_malformed"));
+                                        }
+                                        rstp::decode_llc(env.llc, pc.port_id)
+                                    },
+                                )
+                            } else {
+                                rstp::decode(&bytes, pc.port_id, a.max_pdu_bytes)
+                            };
+                            match decoded {
                                 Err(e) => Some(match e.0.as_str() {
                                     "frame_bounds" | "fcs" => e.0,
                                     _ => "protocol_malformed".into(),
@@ -399,6 +567,36 @@ impl WireState {
                                         &a,
                                         now,
                                         rstp::Input::Receive(port.clone(), m),
+                                        &packet_id,
+                                    )?;
+                                    None
+                                }
+                            }
+                        }
+                        WireOptions::Mstp(c) => {
+                            let pc = c.ports.iter().find(|p| p.port == port).unwrap();
+                            let decoded = if let Some(binding) = &a.component_binding {
+                                component_envelope::decode(&bytes, a.max_pdu_bytes).and_then(
+                                    |env| {
+                                        if env.domain != binding.domain || !env.tags.is_empty() {
+                                            return Err(codec::bad("protocol_malformed"));
+                                        }
+                                        mstp::decode_llc(env.llc, pc.port_id)
+                                    },
+                                )
+                            } else {
+                                mstp::decode(&bytes, pc.port_id, a.max_pdu_bytes)
+                            };
+                            match decoded {
+                                Err(e) => Some(match e.0.as_str() {
+                                    "frame_bounds" | "fcs" => e.0,
+                                    _ => "protocol_malformed".into(),
+                                }),
+                                Ok(m) => {
+                                    d.mstp(
+                                        &a,
+                                        now,
+                                        mstp::MstInput::Receive(port.clone(), m),
                                         &packet_id,
                                     )?;
                                     None
@@ -593,6 +791,7 @@ impl WireState {
                     d.next.timers.get_mut(&(adapter_id, key.clone())).unwrap().1 = None;
                     match a.protocol {
                         WireProtocol::Rstp => d.rstp(&a, now, rstp::Input::Tick, "tick")?,
+                        WireProtocol::Mstp => d.mstp(&a, now, mstp::MstInput::Tick, "tick")?,
                         WireProtocol::Mvrp => d.mvrp(
                             &a,
                             now,
@@ -631,11 +830,16 @@ impl WireState {
                     .filter(|a| a.ports.contains(&port))
                     .cloned()
                     .collect();
-                let paired_rstp = adapters.iter().any(|a| a.protocol == WireProtocol::Rstp);
+                let paired_rstp = adapters
+                    .iter()
+                    .any(|a| matches!(a.protocol, WireProtocol::Rstp | WireProtocol::Mstp));
                 for a in adapters {
                     match a.protocol {
                         WireProtocol::Rstp => {
                             d.rstp(&a, now, rstp::Input::Link(port.clone(), up), "link")?
+                        }
+                        WireProtocol::Mstp => {
+                            d.mstp(&a, now, mstp::MstInput::Link(port.clone(), up), "link")?
                         }
                         WireProtocol::Mvrp if !paired_rstp => {
                             let policy = d.next.policies();
@@ -670,11 +874,13 @@ impl WireState {
             }
         }
         d.policies = d.next.policies();
+        d.tree_policies = d.next.tree_policies();
         d.registered = d.next.registered();
         d.memberships = d.next.snooper.projection();
         d.router_ports = d.next.snooper.routers.keys().cloned().collect();
         d.compatibility_flood = d.next.snooper.flood.clone();
-        d.topology_changed = d.policies != self.policies();
+        d.topology_changed =
+            d.policies != self.policies() || d.tree_policies != self.tree_policies();
         let old = self.registered();
         for key in old.symmetric_difference(&d.registered) {
             let g = d
@@ -701,6 +907,7 @@ impl WireState {
             let changed =
                 match a.protocol {
                     WireProtocol::Rstp => self.rstp.get(&a.id) != d.next.rstp.get(&a.id),
+                    WireProtocol::Mstp => self.mstp.get(&a.id) != d.next.mstp.get(&a.id),
                     WireProtocol::Mvrp => self.mvrp.get(&a.id) != d.next.mvrp.get(&a.id),
                     _ => {
                         let v6 = a.protocol == WireProtocol::Mld;
@@ -792,7 +999,7 @@ impl WireState {
             };
             let mut effects = vec![];
             for (port, after) in &d.policies {
-                if a.protocol == WireProtocol::Rstp
+                if matches!(a.protocol, WireProtocol::Rstp | WireProtocol::Mstp)
                     && a.ports.contains(port)
                     && self.policies().get(port) != Some(after)
                 {
@@ -887,6 +1094,8 @@ impl ProtocolDelta {
             }
             let protocol = if intent.reason == "mvrp_new" {
                 WireProtocol::Mvrp
+            } else if intent.reason == "mstp_topology_change" {
+                WireProtocol::Mstp
             } else {
                 WireProtocol::Rstp
             };
@@ -910,6 +1119,27 @@ impl ProtocolDelta {
         if self.policy_changed || self.next.callback == 1 {
             let registered:Vec<_>=self.registered.iter().map(|key|json!({"port":key.0,"vid":key.1,"generation":self.registration_generations[key].to_string()})).collect();
             self.records.push(WireRecord{kind:"ethernet.control.wire.policy".into(),data:json!({"schema_version":1,"time_ps":now.to_string(),"policy_epoch":policy_epoch.to_string(),"topology_generation":topology_generation.to_string(),"ports":self.policies,"registered":registered,"mac":mac})});
+            for ((adapter_id, mstid, port), policy) in &self.tree_policies {
+                let bridge = &self.next.mstp[adapter_id];
+                let tree = &bridge.trees[&mstp::Mstid(*mstid)];
+                let region_name = String::from_utf8_lossy(&bridge.region.name)
+                    .trim_end_matches('\0')
+                    .to_string();
+                let mapped_vids: Vec<_> = (1..=4094)
+                    .filter(|vid| bridge.vlan_map[*vid] == *mstid)
+                    .collect();
+                self.records.push(WireRecord {
+                    kind: "ethernet.control.wire.tree_policy".into(),
+                    data: json!({"schema_version":1,"time_ps":now.to_string(),
+                        "policy_epoch":policy_epoch.to_string(),"component_id":adapter_id,
+                        "bridge":self.next.prepared.adapter(adapter_id).unwrap().bridge,
+                        "mstid":mstid,"mapped_vids":mapped_vids,"port":port,
+                        "policy":policy,"boundary":bridge.ports[port].boundary,
+                        "region_name":region_name,"region_revision":bridge.region.revision,
+                        "region_digest_hex":codec::hex(&bridge.region.digest),
+                        "root_port":tree.root_port}),
+                });
+            }
         }
         Ok(())
     }
@@ -1048,10 +1278,33 @@ impl ProtocolDelta {
             });
         }
         for (port, m) in d.tx {
-            let sa = self.next.prepared.ports[&port]
-                .source_mac
-                .ok_or_else(|| fail("RSTP TX identity missing"))?;
-            self.tx(a, port, rstp::encode(sa, &m), cause)?;
+            let bytes = if let Some(binding) = &a.component_binding {
+                let sa = if binding.domain == TreeDomain::Customer {
+                    d.state
+                        .cep_source_mac()
+                        .ok_or_else(|| fail("CEP MAC identity missing"))?
+                } else if matches!(
+                    binding.ports.get(&port),
+                    Some(PortAttachment::Physical { .. })
+                ) {
+                    self.next
+                        .prepared
+                        .ports
+                        .get(&port)
+                        .and_then(|p| p.source_mac)
+                        .ok_or_else(|| fail("provider physical TX identity missing"))?
+                } else {
+                    c_bridge_mac(&d.state.id)
+                };
+                component_envelope::encode_local(binding.domain, sa, &rstp::encode_llc(&m))
+                    .map_err(|e| fail(format!("component RSTP envelope: {}", e.0)))?
+            } else {
+                let sa = self.next.prepared.ports[&port]
+                    .source_mac
+                    .ok_or_else(|| fail("RSTP TX identity missing"))?;
+                rstp::encode(sa, &m)
+            };
+            self.tx(a, port, bytes, cause)?;
         }
         for entry in d.transitions {
             let mut changes = transition::project_rstp_changes(
@@ -1130,6 +1383,143 @@ impl ProtocolDelta {
             .and_then(|s| s.checked_add(1))
             .and_then(|s| s.checked_mul(1_000_000_000_000))
             .ok_or_else(|| fail("RSTP tick overflow"))?;
+        self.timer(a, "", "tick", None, Some(next))
+    }
+    fn mstp(
+        &mut self,
+        a: &PreparedWireAdapter,
+        now: u64,
+        input: mstp::MstInput,
+        cause: &str,
+    ) -> Result<()> {
+        let before = self.next.mstp[&a.id].clone();
+        let d = before.plan(input, a.max_control_steps).map_err(fail)?;
+        #[cfg(test)]
+        self.integration_stages.push("mstp_settled".into());
+        for (mstid, port) in &d.flush {
+            let vids = (1..=4094)
+                .filter(|vid| d.state.vlan_map[*vid] == mstid.0)
+                .map(|vid| vid as u16)
+                .collect();
+            self.flush.push(WireFlushIntent {
+                reason: "mstp_topology_change".into(),
+                port: port.clone(),
+                vids,
+            });
+        }
+        for (port, packet) in d.tx {
+            let sa = self
+                .next
+                .prepared
+                .ports
+                .get(&port)
+                .and_then(|p| p.source_mac)
+                .or_else(|| {
+                    a.component_binding
+                        .as_ref()
+                        .map(|_| c_bridge_mac(&d.state.id))
+                })
+                .ok_or_else(|| fail("MSTP TX identity missing"))?;
+            let bytes = if let Some(binding) = &a.component_binding {
+                let llc = match packet {
+                    mstp::MstTx::Legacy(m) => rstp::encode_llc(&m),
+                    mstp::MstTx::Mst(m) => mstp::encode_llc(&m).map_err(fail)?,
+                };
+                component_envelope::encode_local(binding.domain, sa, &llc)
+                    .map_err(|e| fail(format!("component MSTP envelope: {}", e.0)))?
+            } else {
+                match packet {
+                    mstp::MstTx::Legacy(m) => rstp::encode(sa, &m),
+                    mstp::MstTx::Mst(m) => mstp::encode(sa, &m).map_err(fail)?,
+                }
+            };
+            self.tx(a, port, bytes, cause)?;
+        }
+        let after = d.state;
+        for (id, tree) in &after.trees {
+            for (name, p) in &tree.ports {
+                let old = &before.trees[id].ports[name];
+                if old == p {
+                    continue;
+                }
+                let mut changes = BTreeMap::new();
+                changes.insert("mstid".into(), json!(id.0));
+                changes.insert("boundary".into(), json!(after.ports[name].boundary));
+                changes.insert(
+                    "region_digest".into(),
+                    json!(codec::hex(&after.region.digest)),
+                );
+                changes.insert(
+                    "learning".into(),
+                    json!({"before":old.learning,"after":p.learning}),
+                );
+                changes.insert(
+                    "forwarding".into(),
+                    json!({"before":old.forwarding,"after":p.forwarding}),
+                );
+                changes.insert(
+                    "remaining_hops".into(),
+                    json!({"before":old.remaining_hops,"after":p.remaining_hops}),
+                );
+                let ordinal = self.next_transition_ordinal()?;
+                let record = WireTransitionRecord {
+                    schema_version: 1,
+                    adapter_id: a.id.clone(),
+                    bridge: a.bridge.clone(),
+                    port: Some(name.clone()),
+                    protocol: "mstp".into(),
+                    time_ps: now.to_string(),
+                    callback_ordinal: self.next.callback.to_string(),
+                    transition_ordinal: ordinal.to_string(),
+                    machine: "MSTI_PORT".into(),
+                    from_state: format!("{:?}", old.role),
+                    to_state: format!("{:?}", p.role),
+                    trigger: cause.into(),
+                    changes,
+                };
+                self.records.push(WireRecord {
+                    kind: "ethernet.control.wire.transition".into(),
+                    data: serde_json::to_value(record).map_err(|e| fail(e.to_string()))?,
+                });
+            }
+        }
+        self.next.mstp.insert(a.id.clone(), after.clone());
+        if let Some(m) = self
+            .next
+            .prepared
+            .adapters
+            .iter()
+            .find(|m| m.protocol == WireProtocol::Mvrp && m.bridge == a.bridge)
+            .cloned()
+        {
+            if cause != "initialize" {
+                let changes = after.trees[&mstp::Mstid(0)]
+                    .ports
+                    .iter()
+                    .filter_map(|(name, p)| {
+                        let old = &before.trees[&mstp::Mstid(0)].ports[name];
+                        (old.role != p.role
+                            || old.forwarding != p.forwarding
+                            || before.ports[name].config.enabled
+                                != after.ports[name].config.enabled)
+                            .then(|| mvrp_state::TreeChange {
+                                port: name.clone(),
+                                operational: after.ports[name].config.enabled,
+                                forwarding: p.forwarding,
+                                tc_detected: u32::from(p.topology_change) * 3,
+                                flush: old.forwarding && !p.forwarding,
+                                redeclare: old.role == mstp::Role::Designated && p.role != old.role,
+                            })
+                    })
+                    .collect();
+                self.mvrp(&m, now, mvrp_state::Input::TreeBatch(changes), cause)?;
+            }
+        }
+        let next = now
+            .checked_div(1_000_000_000_000)
+            .and_then(|s| s.checked_add(1))
+            .and_then(|s| s.checked_mul(1_000_000_000_000))
+            .ok_or_else(|| fail("MSTP tick overflow"))?;
         self.timer(a, "", "tick", None, Some(next))
     }
     fn mvrp(
@@ -1300,6 +1690,9 @@ impl ProtocolDelta {
     }
 }
 #[cfg(test)]
+#[path = "wire/mstp_adapter_tests.rs"]
+mod mstp_adapter_tests;
+#[cfg(test)]
 #[path = "wire/tests.rs"]
 pub(crate) mod tests;
 
@@ -1398,5 +1791,135 @@ impl WireState {
                 }
             }
         }
+    }
+}
+
+crate::runtime::network::checkpoint::fields!(WireState, value; rstp, mstp, mvrp, snooper, generation, tx_ordinals, callback, record_sequence, initialized; timers, registration_generations);
+impl WireState {
+    pub(crate) fn checkpoint_prepared(&self) -> &PreparedWire {
+        &self.prepared
+    }
+    pub(crate) fn checkpoint_adapter(&self, id: &str) -> Option<&PreparedWireAdapter> {
+        self.prepared.adapter(id)
+    }
+    pub(crate) fn checkpoint_timer(
+        &self,
+        adapter: &str,
+        key: &WireTimerKey,
+        generation: u64,
+        deadline: u64,
+    ) -> bool {
+        self.timers.get(&(adapter.into(), key.clone())) == Some(&(generation, Some(deadline)))
+    }
+    pub(crate) fn validate_checkpoint(&self, horizon: u64) -> Result<()> {
+        let initial = Self::new(self.prepared.clone());
+        if self.rstp.keys().ne(initial.rstp.keys())
+            || self.mstp.keys().ne(initial.mstp.keys())
+            || self.mvrp.keys().ne(initial.mvrp.keys())
+            || self
+                .generation
+                .keys()
+                .any(|id| self.prepared.adapter(id).is_none())
+        {
+            return Err(fail("wire checkpoint adapter catalog mismatch"));
+        }
+        for (id, bridge) in &self.rstp {
+            if bridge.ports.keys().ne(initial.rstp[id].ports.keys())
+                || bridge.id != initial.rstp[id].id
+                || bridge
+                    .ports
+                    .iter()
+                    .any(|(name, p)| p.config != initial.rstp[id].ports[name].config)
+            {
+                return Err(fail("wire checkpoint RSTP port catalog mismatch"));
+            }
+        }
+        for (id, bridge) in &self.mstp {
+            let original = &initial.mstp[id];
+            if bridge.id != original.id
+                || bridge.region != original.region
+                || bridge.vlan_map != original.vlan_map
+                || bridge.times != original.times
+                || bridge.max_hops != original.max_hops
+                || bridge.tx_hold != original.tx_hold
+                || bridge.root_hops == 0
+                || bridge.root_times.hello != bridge.times.hello
+                || bridge.trees.keys().ne(original.trees.keys())
+                || bridge.ports.keys().ne(original.ports.keys())
+                || bridge.trees.iter().any(|(mstid, tree)| {
+                    tree.bridge_id != original.trees[mstid].bridge_id
+                        || tree.ports.keys().ne(original.ports.keys())
+                        || tree
+                            .root_port
+                            .as_ref()
+                            .is_some_and(|p| !bridge.ports.contains_key(p))
+                })
+                || bridge.ports.iter().any(|(name, p)| {
+                    p.config.id != original.ports[name].config.id
+                        || p.config.external_cost != original.ports[name].config.external_cost
+                        || p.config.internal_cost != original.ports[name].config.internal_cost
+                        || p.config.admin_edge != original.ports[name].config.admin_edge
+                        || p.migration_seconds > 3
+                        || p.migration_phase == mstp::MigrationPhase::SelectingStp && p.send_mstp
+                        || p.neighbors.iter().any(|(key, n)| {
+                            *key != (n.cist.designated_bridge, n.cist.designated_port)
+                                || n.info_seconds == 0
+                                || n.info_seconds
+                                    > 3 * ((bridge.times.hello as u32 + 255) / 256).max(1)
+                                || n.age_seconds
+                                    >= 3 * ((bridge.times.hello as u32 + 255) / 256).max(1)
+                                || if n.region.as_ref() == Some(&bridge.region) {
+                                    n.remaining_hops <= 1
+                                } else {
+                                    ((n.times.age as u32 + 384) / 256) * 256
+                                        > n.times.max_age as u32
+                                }
+                                || n.msti.iter().any(|(mstid, msg)| {
+                                    mstid != &msg.mstid
+                                        || !bridge.trees.contains_key(mstid)
+                                        || msg.remaining_hops <= 1
+                                })
+                        })
+                })
+            {
+                return Err(fail("wire checkpoint MSTP catalog mismatch"));
+            }
+        }
+        for (id, mvrp) in &self.mvrp {
+            if mvrp.ports.keys().ne(initial.mvrp[id].ports.keys())
+                || mvrp.ports.values().any(|p| {
+                    p.attributes.keys().any(|vid| *vid == 0 || *vid > 4094)
+                        || p.last_opportunity.is_some_and(|t| t > horizon)
+                })
+            {
+                return Err(fail("wire checkpoint MVRP port catalog mismatch"));
+            }
+        }
+        for ((adapter, key), (_, deadline)) in &self.timers {
+            let config = self
+                .prepared
+                .adapter(adapter)
+                .ok_or_else(|| fail("wire checkpoint timer adapter"))?;
+            if (key.port.is_empty() && !matches!(key.slot.as_str(), "tick" | "membership"))
+                || (!key.port.is_empty() && !config.ports.contains(&key.port))
+                || key.bridge != config.bridge
+                || key.protocol != protocol(config.protocol)
+                || key.attribute.is_some_and(|v| v == 0 || v > 4094)
+                || deadline.is_some_and(|d| d < horizon)
+            {
+                return Err(fail("wire checkpoint timer reference/deadline"));
+            }
+        }
+        Ok(())
+    }
+}
+impl WireState {
+    pub(crate) fn checkpoint_timers(&self) -> BTreeMap<(String, WireTimerKey), (u64, u64)> {
+        self.timers
+            .iter()
+            .filter_map(|(key, (generation, deadline))| {
+                deadline.map(|d| (key.clone(), (*generation, d)))
+            })
+            .collect()
     }
 }

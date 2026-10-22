@@ -124,8 +124,7 @@ pub fn inspect_references_with_source(
     source: &dyn InputSource,
 ) -> Result<ReferenceInspection> {
     let mut evidence = Evidence::default();
-    let mut prepared = super::prepare_with_source_inner(config, cwd, source, Some(&mut evidence))?;
-    prepared.common.provenance = super::capture_provenance(&prepared)?;
+    let prepared = super::prepare_with_source_inner(config, cwd, source, Some(&mut evidence))?;
     let unsupported = if matches!(
         prepared.common.profile.as_str(),
         "can.cc.ideal.v1" | "can.cc.multibus.v1"
@@ -153,7 +152,7 @@ pub fn inspect_references_with_source(
 }
 
 #[derive(Default)]
-pub(super) struct Evidence {
+pub(crate) struct Evidence {
     declarations: Vec<ReferenceDeclaration>,
     instances: Vec<ReferenceInstance>,
     channels: Vec<ReferenceChannel>,

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "standard_edition": "ISO11898-1:2015-wire/Bosch2.0B-cc",
+  "execution_contract": "ideal-digital-can.v1",
+  "buses": [
+    {
+      "id": "local",
+      "nominal_bps": 500000,
+      "data_bps": 2000000,
+      "nominal_sample": {
+        "num": 3,
+        "den": 4
+      },
+      "data_sample": {
+        "num": 4,
+        "den": 5
+      },
+      "controllers": [
+        {
+          "id": "a",
+          "capability": "fd_capable"
+        },
+        {
+          "id": "b",
+          "capability": "fd_capable"
+        }
+      ]
+    }
+  ],
+  "max_gateway_hops": 4
+}

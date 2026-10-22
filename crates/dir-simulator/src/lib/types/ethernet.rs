@@ -26,11 +26,32 @@ pub struct EthernetDirection {
     pub bitrate_bps: u64,
     pub delay_ps: u64,
 }
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, serde::Deserialize)]
 pub struct EthernetVlanTag {
     pub vid: u16,
     pub pcp: u8,
     pub dei: u8,
+}
+/// One 802.1Q tag in wire order (outermost first).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, serde::Deserialize)]
+pub struct EthernetTag {
+    pub tpid: u16,
+    pub tci: EthernetVlanTag,
+}
+impl EthernetTag {
+    pub const C_TPID: u16 = 0x8100;
+    pub const S_TPID: u16 = 0x88a8;
+
+    pub fn validate(&self) -> Result<(), &'static str> {
+        if !matches!(self.tpid, Self::C_TPID | Self::S_TPID)
+            || self.tci.vid == 4095
+            || self.tci.pcp > 7
+            || self.tci.dei > 1
+        {
+            return Err("invalid Ethernet tag");
+        }
+        Ok(())
+    }
 }
 #[derive(Debug, Clone, Serialize)]
 pub struct EthernetPortPolicy {
@@ -42,17 +63,44 @@ pub struct EthernetPortPolicy {
     pub default_priority: u8,
     pub vlans: BTreeMap<u16, bool>,
 }
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct EthernetWireFrame {
     pub src_mac: String,
     pub dst_mac: String,
     pub ether_type: u16,
     pub data_hex: String,
     pub tag: Option<EthernetVlanTag>,
+    /// Nonlegacy tag forms only. Legacy untagged and one C-tag use `tag`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tags: Vec<EthernetTag>,
     pub pad_bytes: u64,
     pub mac_bytes: u64,
     pub fcs_hex: String,
     pub mac_hex: String,
+}
+impl EthernetWireFrame {
+    pub fn canonical_tags(&self) -> Result<Vec<EthernetTag>, &'static str> {
+        if self.tag.is_some() && !self.tags.is_empty() {
+            return Err("conflicting Ethernet tag encodings");
+        }
+        let tags = if let Some(tci) = self.tag {
+            vec![EthernetTag {
+                tpid: EthernetTag::C_TPID,
+                tci,
+            }]
+        } else {
+            self.tags.clone()
+        };
+        if tags.len() > 2
+            || tags.iter().any(|tag| tag.validate().is_err())
+            || tags.len() == 2
+                && (tags[0].tpid != EthernetTag::S_TPID || tags[1].tpid != EthernetTag::C_TPID)
+            || tags.len() == 1 && tags[0].tpid == EthernetTag::C_TPID && self.tag.is_none()
+        {
+            return Err("invalid Ethernet tag stack");
+        }
+        Ok(tags)
+    }
 }
 #[derive(Debug, Clone)]
 pub struct EthernetGenerator {

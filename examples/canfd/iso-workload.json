@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "generators": [
+    {
+      "id": "base",
+      "kind": "can.fd.iso.explicit.v1",
+      "node": "Main.a",
+      "times_ps": ["0", "1000000000"],
+      "frame": {"format":"standard","id":256,"data":"00112233445566778899aabbccddeeff","brs":true,"esi":false}
+    },
+    {
+      "id": "extended",
+      "kind": "can.fd.iso.explicit.v1",
+      "node": "Main.b",
+      "times_ps": ["0"],
+      "frame": {"format":"extended","id":262144,"data":"00112233445566778899aabbccddeeff00112233","brs":true,"esi":true}
+    },
+    {
+      "id": "nominal",
+      "kind": "can.fd.iso.explicit.v1",
+      "node": "Main.c",
+      "times_ps": ["0"],
+      "frame": {"format":"standard","id":1024,"data":"a5","brs":false,"esi":false}
+    }
+  ]
+}

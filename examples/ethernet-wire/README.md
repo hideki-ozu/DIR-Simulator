@@ -1,13 +1,14 @@
 # Ethernet wire control examples
 
-文書バージョン：`1.1.0`
-対象GitHubバージョン：`v1.1.6`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 文書ID：`example-ethernet-wire`
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.2.0` | `2026-10-22` | v1.2.0の対象タグ・文書版を確定。過去の測定基準と公開済み履歴を保持 |
 | `1.1.0` | `2026-10-17` | 能動RSTP/MVRPと受動IGMPv3/MLDv2の入力例・実行手順・限定scopeをv1.1.6へ収録 |
 
 `active.ini` connects three bridges in a triangle. Each bridge runs ForceProtocolVersion=2 RSTP and an MVRP Full Participant on all connected ports. Bridge s1 declares VID 20 locally. RSTP exchanges actual BPDUs; MVRP declarations propagate over the selected tree. Local declarations alone do not authorize data reception.

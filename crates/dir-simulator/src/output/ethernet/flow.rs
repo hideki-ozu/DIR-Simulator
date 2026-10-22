@@ -36,11 +36,20 @@ pub(super) fn observations(
         .iter()
         .map(|transfer| (transfer.transfer_id.as_str(), transfer))
         .collect();
-    let receptions: BTreeMap<_, _> = state
-        .receptions
-        .iter()
-        .map(|reception| (reception.transfer_id.as_str(), reception))
-        .collect();
+    // A shared MAC transfer can be observed by several bridges. Follow the
+    // reception that actually spawned each child transfer; a map keyed only by
+    // transfer ID would select an unrelated peer's reception.
+    let mut parent_receptions = BTreeMap::new();
+    for reception in &state.receptions {
+        for child in &reception.egress_transfer_ids {
+            if parent_receptions
+                .insert(child.as_str(), reception)
+                .is_some()
+            {
+                return Err(invalid("multiple receptions spawned one transfer"));
+            }
+        }
+    }
     let mut deliveries = Vec::new();
     let mut points = Vec::new();
     let mut delivery_points = Vec::new();
@@ -73,6 +82,7 @@ pub(super) fn observations(
             elapsed(frame.ready_ps, frame.generated_ps)? as u128,
         ];
         let mut current = Some(reception.transfer_id.as_str());
+        let mut processing = reception;
         let mut visited = BTreeSet::new();
         while let Some(id) = current {
             if !visited.insert(id) {
@@ -84,9 +94,9 @@ pub(super) fn observations(
             if transfer.frame_id != frame.frame_id {
                 return Err(invalid("parent belongs to a different original frame"));
             }
-            let processing = receptions
-                .get(id)
-                .ok_or_else(|| invalid("missing actual parent reception"))?;
+            if processing.transfer_id != id {
+                return Err(invalid("parent reception does not match transfer"));
+            }
             components[0] = checked_add(
                 components[0],
                 elapsed(transfer.sof_ps, transfer.queued_ps)?.into(),
@@ -102,7 +112,7 @@ pub(super) fn observations(
             components[2] = checked_add(
                 components[2],
                 elapsed(
-                    transfer.arrival_ps,
+                    Some(processing.observed_ps),
                     transfer.eof_ps.ok_or_else(|| invalid("missing EOF"))?,
                 )?
                 .into(),
@@ -112,6 +122,12 @@ pub(super) fn observations(
                 elapsed(processing.ready_ps, processing.observed_ps)?.into(),
             )?;
             current = transfer.parent_transfer_id.as_deref();
+            if current.is_some() {
+                processing = parent_receptions
+                    .get(id)
+                    .copied()
+                    .ok_or_else(|| invalid("missing actual parent reception"))?;
+            }
         }
         let total = components
             .iter()

@@ -1,0 +1,105 @@
+{
+  "schema": "dir.soc-execution.workload",
+  "version": 1,
+  "requests": [
+    {
+      "id": "consume",
+      "source": "host",
+      "at_ps": 900,
+      "operation": "read",
+      "address": 768,
+      "length": 4,
+      "transport": "ahb",
+      "router": 1,
+      "lease": {
+        "slot": "handoff",
+        "generation": 1,
+        "owner": "copy"
+      }
+    },
+    {
+      "id": "atomic-add",
+      "source": "atomic",
+      "at_ps": 600,
+      "operation": "atomic",
+      "address": 512,
+      "length": 4,
+      "data": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "transport": "axi",
+      "router": 1,
+      "qos": 8,
+      "atomic": {
+        "awatop": 32,
+        "burst": "incr"
+      },
+      "r_stall_cycles": 3,
+      "b_stall_cycles": 7
+    },
+    {
+      "id": "observe",
+      "source": "host",
+      "at_ps": 1200,
+      "operation": "read",
+      "address": 512,
+      "length": 4,
+      "transport": "noc",
+      "router": 0
+    }
+  ],
+  "dma": [
+    {
+      "id": "handoff-copy",
+      "source": "copy",
+      "at_ps": 400,
+      "source_address": 512,
+      "destination": 768,
+      "length": 4,
+      "transport": "noc",
+      "router": 1,
+      "qos": 2,
+      "lease": {
+        "slot": "handoff",
+        "generation": 1,
+        "owner": "copy"
+      },
+      "publish": true
+    }
+  ],
+  "commands": [
+    {
+      "id": "lease",
+      "at_ps": 0,
+      "operation": "lease",
+      "slot": "handoff",
+      "owner": "copy",
+      "length": 4
+    },
+    {
+      "id": "begin",
+      "at_ps": 800,
+      "operation": "begin_read",
+      "lease": {
+        "slot": "handoff",
+        "generation": 1,
+        "owner": "copy"
+      },
+      "consumer": "host"
+    },
+    {
+      "id": "release",
+      "at_ps": 1100,
+      "operation": "release",
+      "lease": {
+        "slot": "handoff",
+        "generation": 1,
+        "owner": "copy"
+      },
+      "consumer": "host"
+    }
+  ]
+}

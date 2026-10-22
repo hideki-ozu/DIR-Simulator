@@ -1,0 +1,166 @@
+{
+  "schema_name": "dir.verification.ieee_phy.sources",
+  "schema_version": 1,
+  "state": "verified_selected_runtime_contracts",
+  "sources": [
+    {
+      "edition": "IEEE Std 802.3-2022",
+      "url": "https://ieeexplore.ieee.org/document/9844436",
+      "local_path": "tmp/standards/IEEE-802.3-2022.pdf",
+      "sha256": "3f78ed025c26ea8483706c4f25e17854ae3812635c18d3815195cf0d34962e75",
+      "redistributed": false
+    },
+    {
+      "edition": "IEEE Std 802.1Q-2022",
+      "url": "https://ieeexplore.ieee.org/document/10004498",
+      "local_path": "tmp/standards/IEEE-802.1Q-2022.pdf",
+      "sha256": "1653580bcae81ed4753ff2840b40d67239036078ed550cff23325d6fdd697114",
+      "redistributed": false
+    }
+  ],
+  "modes": [
+    {
+      "execution_contract": "ieee8023.1000base_t1.2022",
+      "state": "verified_selected_contract",
+      "basis": [
+        "97.3.2.2",
+        "97.4.2.6",
+        "Figures 97-25 through 97-27",
+        "98.5.5"
+      ],
+      "selected_options": [
+        "1000 Mb/s full duplex point to point",
+        "forced MASTER/SLAVE or Clause 98 HSM negotiation",
+        "80B/81B and RS(450,406)",
+        "750 MBd PAM3"
+      ],
+      "excluded_options": [
+        "EEE",
+        "optional OAM services",
+        "unimplemented lower-rate abilities"
+      ],
+      "independent_reference": "crates/dir-simulator/tests/fixtures/generate_t1_rs9_reference.py",
+      "production_codec": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1_gigabit.rs",
+      "remaining": []
+    },
+    {
+      "execution_contract": "ieee8023.10base_t1s.multidrop.2022",
+      "state": "verified_selected_contract",
+      "basis": [
+        "Clause 4",
+        "147.3",
+        "Table 147-1",
+        "147.4",
+        "148.2",
+        "Figures 148-3 through 148-6"
+      ],
+      "selected_options": [
+        "10 Mb/s half duplex mixing segment",
+        "25 Mchip/s DME half-bit clock",
+        "scrambling before 4B/5B",
+        "distributed optional PLCA",
+        "16 or 32 samples per chip"
+      ],
+      "excluded_options": [
+        "Clause 98 AN on multidrop",
+        "MAC Merge on half duplex",
+        "PAUSE operation on half duplex",
+        "invented RS-FEC or PAM3"
+      ],
+      "product_bounds": [
+        "at most 16 electrical endpoints",
+        "normal PLCA IDs unique; explicit duplicate-ID fault mode",
+        "bounded sampled/proof history"
+      ],
+      "independent_reference": "docs/verification/fixtures/t1s-network/verify_result.py",
+      "production_tests": [
+        "crates/dir-simulator/tests/phy_ieee_t1s.rs",
+        "crates/dir-simulator/tests/network_ieee_t1s.rs"
+      ],
+      "network_example": "examples/network-composite/t1s-multidrop/model.ini",
+      "remaining": []
+    },
+    {
+      "execution_contract": "ieee8023.10base_t.half.2022",
+      "input_aliases": [
+        "ieee8023.10base_t.2022"
+      ],
+      "state": "verified_selected_contract",
+      "basis": [
+        "Clause 4",
+        "Clause 7",
+        "14.2",
+        "14.3"
+      ],
+      "selected_options": [
+        "forced 10 Mb/s half duplex",
+        "20 Mchip/s Manchester",
+        "16 or 32 samples per chip",
+        "Clause 14-permitted Link Test Pass at PowerOn",
+        "physical normal link pulses and link-loss monitor",
+        "jabber inhibit and unjab timer"
+      ],
+      "excluded_options": [
+        "Clause 28 negotiation",
+        "full duplex under this contract",
+        "PAUSE operation",
+        "MAC Merge"
+      ],
+      "production_tests": [
+        "crates/dir-simulator/tests/phy_ieee_t10.rs",
+        "crates/dir-simulator/src/runtime/ethernet/phy/ieee/mau.rs"
+      ],
+      "independent_reference": "docs/verification/fixtures/ieee-phy/verify_t10_result.py",
+      "network_example": "examples/network-composite/tenbase-t/model.ini",
+      "remaining": []
+    },
+    {
+      "execution_contract": "ieee8023.repeater10.2022",
+      "state": "verified_selected_contract",
+      "basis": [
+        "9.5",
+        "9.5.6.2",
+        "Figure 9-2",
+        "9.6",
+        "Clause 13",
+        "Clause 14"
+      ],
+      "selected_options": [
+        "one three-port repeater",
+        "six endpoints: three disjoint MAC/MAU pairs",
+        "causal retiming and collision propagation",
+        "62 alternating repeater jam bits",
+        "per-port partition/reconnection"
+      ],
+      "excluded_options": [
+        "repeater chains",
+        "physical loops",
+        "frame-store forwarding as a repeater",
+        "MAU-only endpoint as an application receiver"
+      ],
+      "production_tests": [
+        "crates/dir-simulator/tests/phy_ieee_t10.rs",
+        "crates/dir-simulator/src/runtime/ethernet/phy/ieee/repeater.rs"
+      ],
+      "independent_reference": "docs/verification/fixtures/ieee-phy/verify_t10_result.py --repeater",
+      "network_example": "examples/network-composite/tenbase-t-repeater/model.ini",
+      "remaining": []
+    }
+  ],
+  "numerical_envelope": {
+    "quantity": "signed integer microvolts, Q30 channel coefficients",
+    "reference": "declared noiseless causal FIR channels; exact seeded noise state where configured",
+    "resolution_comparison": "32 and 64 samples per T1S coded-bit UI with equal physical path delay",
+    "rms_limit_fraction_of_tx_peak": "0.01",
+    "scope": "simulation receiver/channel accuracy within tested parameters; no hardware electrical certification"
+  },
+  "composition_basis": [
+    "IEEE 802.1Q-2022 8.6.8.2",
+    "IEEE 802.1Q-2022 8.6.8.4",
+    "IEEE 802.3-2022 Annex 31B",
+    "IEEE 802.3-2022 Clause 99"
+  ],
+  "publication_boundary": "Authored selected-contract implementation and fixture metadata only. Normative PDF/text remain ignored local inputs. Runtime verification does not establish hardware or whole-standard certification.",
+  "final_review": "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+  "final_integration_evidence": "docs/verification/results/remaining-20261021/validation.json"
+}

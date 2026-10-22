@@ -1,0 +1,4483 @@
+{
+  "schema_version": 1,
+  "tag": "v1.2.0",
+  "state": "local_verified",
+  "push_baseline": "082629e1ecb3c966f60a043819c2362ef50e627f",
+  "implementation_commit": "002a486fb7d4c7e0274d960174f5131afff7c060",
+  "runtime_version": "0.1.0",
+  "distribution": "GitHub source archives only",
+  "historical_implementation_validation": {
+    "path": "remaining-20261021/validation.json",
+    "source_manifest": "remaining-20261021/source-manifest.json",
+    "build_source_sha256": "549d386cc0a15e99fc0c3e9073d7956d2935aa462289be62d4b067be3a08ac8c",
+    "publication_state_is_historical_snapshot": true,
+    "rust": {
+      "targets": 95,
+      "passed": 1820,
+      "failed": 0,
+      "ignored": 59
+    }
+  },
+  "document_versions": {
+    "path": "release-v1.2.0-2026-10-22/document-versions.json",
+    "current_documents": 199,
+    "fixed_reference_documents": 11,
+    "sha256": "6cf915f0e2963f326459bb26318e965deaed4a84d19781105b8b72c5cbd4be8c"
+  },
+  "remote_ci": {
+    "authority": "Final PR head checks on GitHub; live results, not a local prediction",
+    "main_ruleset": "main-pr-quality",
+    "required_checks": [
+      "MkDocs strict build and links",
+      "Disabled policy unit tests"
+    ],
+    "release_audit_workflow_must_succeed": true
+  },
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "scripts/generate_traceability.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.912,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/00.log",
+      "log_sha256": "c775007f6aabf5c88eb4e8f746f6f57fdb64c822e8fbb670777711a17fa2c782"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 3.916,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/01.log",
+      "log_sha256": "cee9870e36a409924d19c5cb2d9e0f82fba831c6c5002b395d4282144a6396f8"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_site_inventory.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 0.128,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/02.log",
+      "log_sha256": "f0f24994c8fe35b29edb04e2b3d5ace839f4afc70353fbd27605990db0a3ebfa"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_guide_capacity_measurements.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 0.036,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/03.log",
+      "log_sha256": "9a3f6faad33f515e0ab771f604c2f4cf9e0026169cf9e296ba19fa6f8cdd0be2"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_check_extension_design.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 0.115,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/04.log",
+      "log_sha256": "8ca75f11a5e150d1e98eaccfb1add95196529e3e3301e6dd6d2abd65233f4b63"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_extension_design.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.063,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/05.log",
+      "log_sha256": "a544b63f8d690e9ca419da58fb6a3a283c7a1e9d6a78ca6420584285fc57b05d"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/build_guide_inputs.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.034,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/06.log",
+      "log_sha256": "b7e42c9c4fb887ec55ebed71aaf60d99453299d4d07a002ea58c57b8acf408a0"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "-m",
+        "mkdocs",
+        "build",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "seconds": 0.432,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/07.log",
+      "log_sha256": "b0d10ecdebde135500109699c47028cde2d6322e5e126ea2330835909ab54e88"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_guide_links.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.295,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/08.log",
+      "log_sha256": "919f41de1c2c290f389fa67fb83d9752b27d4fb3770a8580a6ed9647d983d1c0"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_third_party_notices.py",
+        "--guide-dir",
+        "build/guide"
+      ],
+      "exit_code": 0,
+      "seconds": 0.05,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/09.log",
+      "log_sha256": "3bb1cd6243e980a9fddaaa0c5d87a01c528c5e0c4c3057261fb61a355463f77c"
+    },
+    {
+      "command": [
+        "python3",
+        "tests/test_third_party_notices.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.877,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/10.log",
+      "log_sha256": "20e8224f286eb06ca8bb5df9dfa16b22e59ff32702d455163c57161e6f502894"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/render_diagrams.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 5.257,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/11.log",
+      "log_sha256": "c295344843ecd20b18de8a77e836e4011d1709446e421d9c8f4bb5e6638dba07"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_traceability.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "seconds": 0.174,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/12.log",
+      "log_sha256": "d759840c8a9b8644dfc6f189ac07d13baf732ee2cb1cbcf0d312f46870139a7b"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/generate_traceability.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.917,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/13.log",
+      "log_sha256": "8cc7e5789efd5970478c6eb9fe3e83a2e7e0e595465b2f558e597e699fb685f3"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ahb_wait_error_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.138,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/14.log",
+      "log_sha256": "091b37ad114ca9eea8888e73f43454fff3ad3ee2e923eb59b360eed46bddf33a"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_axi_strobes_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.137,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/15.log",
+      "log_sha256": "4b1815588c2a7de693393618dea9f05354eebd2f6f2792cb937e1f23d8d47873"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ddr_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.152,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/16.log",
+      "log_sha256": "d948436bb34f57bd2848443401666fb2604f688ef918ba2a257037f317f35dad"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_cbs_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.146,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/17.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_learning_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.143,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/18.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_link_control_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.134,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/19.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_multicast_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.141,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/20.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_priority_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.147,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/21.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_psfp_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.141,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/22.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_source_filter_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.143,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/23.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_stp_cost_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.137,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/24.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_tas_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.132,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/25.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_vid_registration_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.142,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/26.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_ethernet_vlan_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.141,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/27.log",
+      "log_sha256": "3dbca38c3c5cdde2ff497b604850d499ca8a01db3105c8a4cca99618185ca770"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_noc_input_fifo_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.134,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/28.log",
+      "log_sha256": "a763960abe174048e786dbbb7b4a5c9b401adecf1f67e0abe237d0eb785ce45a"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_shared_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.134,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/29.log",
+      "log_sha256": "55d5454458c6061f16aa95769dd99b0743db82329cb84b1e1b5ef83c62bc6df3"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_soc_arbitration_document_metadata.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.133,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/30.log",
+      "log_sha256": "8aba26906b3498966dfe754214ba675d84eb4b18c24ef8c7372fd21c43c20f7d"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_ahb_wait_error_metadata_regression.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.161,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/31.log",
+      "log_sha256": "5327feb45a1c343ed7377f0fb4cfd919262fd1cac779fed74271ad44a71643cc"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_axi_strobes_metadata_regression.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.161,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/32.log",
+      "log_sha256": "5327feb45a1c343ed7377f0fb4cfd919262fd1cac779fed74271ad44a71643cc"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_ethernet_priority_metadata_regression.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.196,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/33.log",
+      "log_sha256": "5327feb45a1c343ed7377f0fb4cfd919262fd1cac779fed74271ad44a71643cc"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_ethernet_tas_metadata_regression.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.182,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/34.log",
+      "log_sha256": "5327feb45a1c343ed7377f0fb4cfd919262fd1cac779fed74271ad44a71643cc"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_ethernet_vlan_metadata_regression.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.159,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/35.log",
+      "log_sha256": "5327feb45a1c343ed7377f0fb4cfd919262fd1cac779fed74271ad44a71643cc"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_noc_input_fifo_metadata_regression.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.157,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/36.log",
+      "log_sha256": "5327feb45a1c343ed7377f0fb4cfd919262fd1cac779fed74271ad44a71643cc"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_shared_metadata_regression.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.16,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/37.log",
+      "log_sha256": "5327feb45a1c343ed7377f0fb4cfd919262fd1cac779fed74271ad44a71643cc"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_soc_arbitration_metadata_regression.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.161,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/38.log",
+      "log_sha256": "5327feb45a1c343ed7377f0fb4cfd919262fd1cac779fed74271ad44a71643cc"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ahb_wait_error_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.028,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/39.log",
+      "log_sha256": "70826d613e0be727c0ff9463e95267493f1853119c62dd3336bc09e44d554855"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_axi_strobes_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.026,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/40.log",
+      "log_sha256": "ae6395a24876b246b085a53a30d6183efa6699e3da4b998729419f5ec4edc4a5"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_cbs_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/41.log",
+      "log_sha256": "4fe8b8d5002997021a5d033a0dcfecce26c4d9256d6509dad0c9ee36fece1b7e"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_learning_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.028,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/42.log",
+      "log_sha256": "48951034e1647bf8eba42141105b4d8635b97afb6f2a839571ac1f7946937a11"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_link_control_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/43.log",
+      "log_sha256": "ceee1215431340b418c848e6d32c8bb550648b5b9439a2ff2a71a803ff94dea4"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_multicast_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.028,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/44.log",
+      "log_sha256": "727ff896584787a99d099fabf5aea77ca44628749a170ce5829527f40055252e"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_priority_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/45.log",
+      "log_sha256": "d77dcc3dfa22dbf41005d4d177315946ddd7fadc91c13e7d22a566d158cb35de"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_psfp_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/46.log",
+      "log_sha256": "99293046ba73844f286b155a00631e807829e975f3fbdd0c1c29fb3ab3cf0f69"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_source_filter_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.028,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/47.log",
+      "log_sha256": "1f8d864a62258f8ca701e4b9000092ef4635ecb790173a8ec3b359160e17bf5d"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_stp_cost_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/48.log",
+      "log_sha256": "fac8e2f45fee3b89c36c7d17c732d5c19c0f64dac36db18d99e8b650f81ba3c8"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_tas_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/49.log",
+      "log_sha256": "4337f18b1d3cc2cc0627ba86ccccab241f6102734b89f9a139086693f4ac7c80"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_vid_registration_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/50.log",
+      "log_sha256": "270899e61ac4680847dd72d2366b87320e55ca52aebf195dfbd8adc887e6b88f"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_ethernet_vlan_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.029,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/51.log",
+      "log_sha256": "41425f924c762ba823ac41651978991ee5b9f56dbcad76988e635351c2e4baa9"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_noc_input_fifo_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.026,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/52.log",
+      "log_sha256": "e5a47f87748aceccb37625de5f6294c078a9a67edf7ac0dd2e11d33c8e8bd179"
+    },
+    {
+      "command": [
+        "/tmp/dir-issues-guide-venv/bin/python",
+        "scripts/check_soc_arbitration_site_inventory.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/53.log",
+      "log_sha256": "7c909e2cd50364f1d48ae88bc6436cdf265e81465f8146869bcdeebb678feb7c"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047,
+      "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-final-checks-3/54.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "attempt_history": [
+    {
+      "failed_checks": [
+        {
+          "command": [
+            "python3",
+            "scripts/build_guide_inputs.py",
+            "--check"
+          ],
+          "exit_code": 1,
+          "seconds": 0.126,
+          "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-local-checks/06.log",
+          "log_sha256": "aae0c336f1824e316a5e6cca2cbb48f684de022582f9cf6b2071cefc5b30fa6e"
+        },
+        {
+          "command": [
+            "git",
+            "diff",
+            "--check"
+          ],
+          "exit_code": 2,
+          "seconds": 0.094,
+          "log": "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-local-checks/54.log",
+          "log_sha256": "d2d7da582490db446d576b49a99a50a5b8f221e2f788eee54794c9e754d84cc4"
+        }
+      ],
+      "resolution": "Historical measured ZIP READMEs restored; changed metadata header whitespace normalized and old measurement annotations moved to a separate line. Input archive bytes preserved; corrected checks passed."
+    },
+    {
+      "earlier_source_proof": "release-v120-source-delta.json",
+      "earlier_build_source_sha256": "cade255359fd83bc11d6eea59b87347784e05e0f86497239b99ea6c3cff2e45a",
+      "earlier_binary_sha256": "e2284e75fa8d0876c6d67abcc864cc06d335050c53641ed40f29d01b105aa6b3",
+      "earlier_smoke_proof_sha256": "c236afcf1f8859fc2fcfb5666660ae379f4bb0ce008024a6518d096baa90363e",
+      "intermediate_source_proof": "release-v120-source-delta-2.json",
+      "intermediate_build_log_sha256": "db5c0277cde9671c8011d3c00b1f4b67893a14eb423ebe045ace4e6465d7b659",
+      "resolution": "Earlier builds retained as pre-final metadata snapshots; final publication metadata frozen, independently hashed, rebuilt, and all three actual CLI cases rechecked against the final source."
+    }
+  ],
+  "source_delta": {
+    "build_source_sha256": "cad9df90857ea7dee7d20e8db64df577d8d14c9062600521abd4a4dd6b75b952",
+    "hashed_files": 423,
+    "changed_hashed_inputs": [
+      {
+        "path": "docs/specs/NED詳細機能仕様書.md",
+        "before_sha256": "39d730b1310a7e0824fc33f39fa6cd4c55ba38dd26b626ade09b43b47ca2de45",
+        "after_sha256": "d8036bedc8fe14c8d37379e8b7ea41ec1e59dad15520b913f41d9a8e5c8efdd1",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/AHBパイプライン詳細機能仕様書.md",
+        "before_sha256": "445a26dc3a66c7dd91c10c950fb9b8d83bab2a8d199ed511b1ec393da68364ef",
+        "after_sha256": "56eed7b55c08267cff2351c2e29a913dd35bc1f0f4e858c05110ee5a3716cb0b",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/AXI5アトミック・QoS詳細機能仕様書.md",
+        "before_sha256": "5ddf90b0f1f4d666e1fe9a855578be992e9518b1e0ac04289a3d54030c6bfa43",
+        "after_sha256": "bd6661cc4ba78ad5a3c05502c03708432bfecb041534b84f458bebdf57208c7b",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/AXIモデル詳細機能仕様書.md",
+        "before_sha256": "09d01f87e6795df61f4486db2b23444b4386a39f3ddf33d57dab084f4f26cf77",
+        "after_sha256": "eca2d564743aa4c9c87060f7b38fcacebaa257d35e97f68dcaeb21c85abba7dc",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/AXI並列チャネル詳細機能仕様書.md",
+        "before_sha256": "09c46a0a6c8d2437c9c345f4a3d5c8db93192226e9279816974cda195f98f698",
+        "after_sha256": "928ae38a84f97aeeae3ff6860bc5ed29ecc13d0812bc750ab2bb561ce61cf38b",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/CANFD-ISO詳細機能仕様書.md",
+        "before_sha256": "188d877b47ba1c16a4e3021ffa49da6a140c196a1d64279ff9ee08188b5f5bd9",
+        "after_sha256": "d27f2319f7a2342fdb26088c47bf87cf2d02f71722c3d07ff4bfb42b2da6865e",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/CANFD・100BASE-T1詳細機能仕様書.md",
+        "before_sha256": "9ab0879cd1ea04001376432113484c7f4755e503140da52624e3b6c6eab7d96f",
+        "after_sha256": "b0236436b312c23584f1f589fb72a0d520b3f4cf5839a87a378a0702914b4654",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/CANモデル詳細機能仕様書.md",
+        "before_sha256": "635ff90d2cda26628e0971df401f11114fb8dde725c30c2a2421d041c3bfd353",
+        "after_sha256": "3024773e20f6ff8f39153b75ff6ba91a1caea4c6951e93de0a0dfa5e2017b089",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/CAN・Ethernet変換詳細機能仕様書.md",
+        "before_sha256": "cc9392753792ba4353e0ab33bf81828b368db16026d7d9a55d2bf6de7354f015",
+        "after_sha256": "69d920ce3f0ae7ff9c7ab9360b310f2a1a93cc630dea151d124bf2da998726bf",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/ClassicalCANプロトコル仕様書.md",
+        "before_sha256": "d8c97e349e581fa313214b2a61675011f3cd1ead1146978837790e3934ea34b8",
+        "after_sha256": "e96cfe183f847146f583919ac759b23c17528092f5fd32e53790c958bb93a7fa",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/DDR4コマンド詳細機能仕様書.md",
+        "before_sha256": "e488c6e5e6af4c81ffe45f72cada5743f539b1213f2cc393637ab2ed19042cc1",
+        "after_sha256": "8c76411dcea5d85d741d0130c52ff1a7445f3802826c9232300cfb0f9f1cb829",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/EthernetTSN詳細機能仕様書.md",
+        "before_sha256": "dded0de101b741202bb3a13cd4461306949eeb415066d9ac5684c6c2595a6183",
+        "after_sha256": "abaf702c86ea9df78630a48aab433e1526390d1fd54d26764a53da0a6f1468be",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/EthernetVLAN・マルチキャスト詳細機能仕様書.md",
+        "before_sha256": "39083cdb0897c382ef4b7b1c91f87e0e6fb0f709a013817c52986da902a46d1c",
+        "after_sha256": "a83dce35f1a5b033e77f11c42aaf2c54d1c39441d4b7b96fd14af087922951e5",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/Ethernetブリッジ構成詳細機能仕様書.md",
+        "before_sha256": "79a97e7830da135af72604e186748a0dac9b17850669de74c19e9ae5c35d591b",
+        "after_sha256": "03711a567140123937209f9fd9d7befbc598e11a549a2166af7c98a9f60f4530",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/Ethernetモデル詳細機能仕様書.md",
+        "before_sha256": "0d6e6a4a8da7dc68c5d7ff5c22f326b0d5ddc5d96511cd87ce5a8be0577881c4",
+        "after_sha256": "2dc61d19f2e99ace35252268f7a41c1473e96fb13f53a3f962da02c36f21669a",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/Ethernet動的制御詳細機能仕様書.md",
+        "before_sha256": "e1431a128608c27b1f7246bea8ab3541454e654b97b09b64cc82e91a35b64200",
+        "after_sha256": "007c36ec7f657917ddaaa270d659be404daabfc57f46f192f9f190dbb5207a7e",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/Ethernet媒体拡張詳細機能仕様書.md",
+        "before_sha256": "1a324c2406fd0344dc7d3e8157fb291c0e9e86f49e55a72265b8701ceb3f53b3",
+        "after_sha256": "1039ea2afc6b5e06ba9a248db7e0f5caa497fb112cd6278d8f37de77f45b4d90",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/Ethernet数値PHY詳細機能仕様書.md",
+        "before_sha256": "909360decfe78a3694610ef9c94835d45eaac8bf2eb17b08b2a4c5369b416b08",
+        "after_sha256": "c9be6abff653d477eb465ce77efc462f762f348d21d759d8f52cc05cc608f3a8",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/Ethernet能動マルチキャスト詳細機能仕様書.md",
+        "before_sha256": "5a685a18738c059d9c9e030b6cacc12311935cddb232abecaec57ba90f24a70b",
+        "after_sha256": "f66e4186a028398aac61f6975bdd515b4487a9dcfe283d280cc0003bc102576b",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/Ethernet負荷・QoS詳細機能仕様書.md",
+        "before_sha256": "9b1d3de7839728120d4392875dae2185d00f968ab8836733e09f18ec6c0d8f17",
+        "after_sha256": "aae6384bb9aa3798c070e5c000a7821552af8161a8b0b2b241bcf21d9183a5fe",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/FRER規範回復詳細機能仕様書.md",
+        "before_sha256": "580ddab11a3ec3cd6d55577944ff184b193101f7ab9d4371479e44d906ee30d2",
+        "after_sha256": "17acb4f072040a090539228236624aaea5ce8a9f6a4a96dc37baad524196ba33",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/GWモデル詳細機能仕様書.md",
+        "before_sha256": "0cecd0e278589a85ef2c54e3700d1e2b1b5c6fec18a2b4e3d3b53096f1f5958c",
+        "after_sha256": "12e66b81c47ef9867a53fd2bf5c227a86d590cc660a3f3e5b010ed533f0adca8",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/Gateway冗長TSN複合詳細機能仕様書.md",
+        "before_sha256": "3d8b24f98e022b483c28eeb073fd352b3149159ffea10119dc437bcf920db11d",
+        "after_sha256": "e6470586086d2d4486b4de1eaad2580bb5a2dd96715cefee3ecdf45a5729eabe",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/IEEE選択PHY詳細機能仕様書.md",
+        "before_sha256": "ec1e998903ae73a8427e1fd1fe25811048be367906972b267bc65276f30e27a3",
+        "after_sha256": "14971b24cc435fcb4f435d881607c6c77c9e5764b046d65649352bfb89e5c089",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/MACMerge詳細機能仕様書.md",
+        "before_sha256": "fd9134ea11df009976d76d117dca34ce85e6b8fb5602f367cc10236db537ccf1",
+        "after_sha256": "b59e1d99859aa9e634e39aa5363eaa981586e146cbc1ea054482eadd1293beae",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/NoCフリット詳細機能仕様書.md",
+        "before_sha256": "1139d7c58a20b082a28f9ecc13d2d500723aa6d1595cf1004d97393a6ddd2295",
+        "after_sha256": "51d6e380fad0f7ebedc3b3b443faae38dec6634a544a349d32e3222e3049eb4b",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/SoC・AHB・NoC詳細機能仕様書.md",
+        "before_sha256": "d4cbccab9dee01c0d70f55f2802bc8a1c746d153b8a9d35063a4ab2a55807c6a",
+        "after_sha256": "6342e70db766233ba4b5be55252ff29b57cda183d9354ea788ea6cd2ccce49ab",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/SoC実行詳細機能仕様書.md",
+        "before_sha256": "192b0be60f2cb3ea01a061da1fb461733267cd1afad79aaac281d73703f0f05a",
+        "after_sha256": "b5f94a9a202d3990877eb3870cceaa6cdacd449ae8647becda2f06b0443cc98d",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/TSNローカル時計詳細機能仕様書.md",
+        "before_sha256": "5385637cc15a37b103f57e4488a6300e3a76e9c941e3e695a7b559fd841544b4",
+        "after_sha256": "90242420447a6adcab67bca6cbad363685677893c2cd011376b5cc38185de8a7",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/TSN集中設定詳細機能仕様書.md",
+        "before_sha256": "b4c819936b01dd6475a6bfd3595d6217fed3f5fdf78dea13758cb6799873d8fa",
+        "after_sha256": "c448ebf7cbdd613600c706b663c0d665329c48f22a611281853ec306e6f07666",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/checkpoint版移行詳細機能仕様書.md",
+        "before_sha256": "fc3014f664676d3d5b78a712644ecd31bb19eeace9289727e121507c777290a0",
+        "after_sha256": "e586dac36fa4081160493c1a4824f7985754a5459c303209bb244b5245890f37",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/gPTP実パケット詳細機能仕様書.md",
+        "before_sha256": "2dcd1d225f7fafbf8a04df3e2c74a6141bd157689acfe76edf783f3ab30ae071",
+        "after_sha256": "ca296710e9cef524157a4e1d98fa964e56a4889821d0ff94ecdef76b155c7c42",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/ネットワークMetricV2詳細機能仕様書.md",
+        "before_sha256": "3ba7d82cc35b61d06a4a9e077d04f7e986ad1b0a790572a24932ad7a3b45456f",
+        "after_sha256": "1e3605b6928d12d72cbbb2a743e1c07b7a7b16bdfc6c8dc23283319cf24ca4c1",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/ネットワークcheckpoint詳細機能仕様書.md",
+        "before_sha256": "f99448d08cdef496c2757ada1c6b5ceaf5a4c454b33d73e683741655e09dcb86",
+        "after_sha256": "7dc626772699caf06f54b9f375d56d443b07a75490f8c7e16439b2a45d2407d6",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/メモリ・IPC詳細機能仕様書.md",
+        "before_sha256": "0853dac75292cc5304a373e0ccbc74ea9a4a55815d5bdd3b89450f892ca4d9e9",
+        "after_sha256": "f774af5dca71ce17c840191285b63f520f46a8cdca9c96e7ca4f3b477b2f54f8",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/分散FRER経路詳細機能仕様書.md",
+        "before_sha256": "d69cc5db2993025b907a69b30449538991e622e086e0ca1fdc649baf9bb87208",
+        "after_sha256": "a8d1cf842ad13c05366f2367d0f4d44dfefe3f86d3e6b7fed58aac387f5651ff",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/型付きネットワーク構成詳細機能仕様書.md",
+        "before_sha256": "ce285cdf6b3b9e18d4af86f898366ba36f8b7f3c78e875b49ce343b5b4229aee",
+        "after_sha256": "073c1bc1b9ca0e8032f26823674f2380a46fab433caa03f868037096a0b843d2",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/models/専用モデル協調実行詳細機能仕様書.md",
+        "before_sha256": "514372f2d32391b93f29a4edd16efe46c79bef1a70aad0420c77c809b05d5aa8",
+        "after_sha256": "6821d3f03468115994985240e2760e1685c767ff5f9f52dd94e8b9344a6362ec",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/インタフェース詳細機能仕様書.md",
+        "before_sha256": "107ba7ed6747b28cfdb99954711229bb7cdb5a04f972c642d3e8560d41cee74f",
+        "after_sha256": "f2a6f00c6b030d3d61baf5f8527db31798751eed11ad5fe5eb06ceb0255147a5",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/実行詳細機能仕様書.md",
+        "before_sha256": "160cc444ce9d4bf3a83d22c5c12ac41aa41cdb0498a9fe653d61e3755e15c05c",
+        "after_sha256": "3668b6d11a0c621f4202d14788494f8e2dd81a812f4488ce0a010a495522c530",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/後続拡張採用詳細機能仕様書.md",
+        "before_sha256": "48f5ba92abf42c6c31d6e7107db6961a4d4b1192720b7dea1ed9b03e7a7fb63d",
+        "after_sha256": "f4743503173f17133a6aa6d92618f0519c1d44b689aadf98ca291c8d44cada15",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/拡張モデル共通詳細機能仕様書.md",
+        "before_sha256": "71ee38c4bb533ede2f1caf1bb3a8f78a9135cafc89c0db58237690eff9d8fa04",
+        "after_sha256": "f96a909504bf4fc141369466a4f285ce6d62d23bbbd1870f40db3ce8f84de546",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/結果詳細機能仕様書.md",
+        "before_sha256": "f384fe17c444eb3e28055ab4b9a27b71d9452929fda91b29acfb94a8bc0a6ea5",
+        "after_sha256": "719f33a0ee4e86447d937e0a81a09361b92cefb33624397ffb21ad54d3a235e1",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/設定詳細機能仕様書.md",
+        "before_sha256": "6c7d26c0421b66716c5b52f1fdd0cc24c6ceb975108a3a0816ab23bc6c699dbe",
+        "after_sha256": "f2e304950ffe97aa58c9c99dd92d46ea16d43f9104192b30d1bc6559b226b698",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/診断詳細機能仕様書.md",
+        "before_sha256": "e516e218a72d373adaf4618d8caa22be3030d263d3e9ae6b48cd5fdbb75ce15a",
+        "after_sha256": "cb655eeebcf153fb8c51e5369bdc4058d7b84b8472c38a5f062f8c87d2b60a46",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/specs/資源詳細機能仕様書.md",
+        "before_sha256": "a3bd55864730a75c4dd2e3dbb5b763f814067c0221e0a124a31f6d7303d4be7d",
+        "after_sha256": "65e41df45a0e5cefa0435739161bad5f1573c5bd4ed8ad6ad0ca0b1499b2617a",
+        "delta": "publication/document metadata and push-consolidated history only"
+      },
+      {
+        "path": "docs/third-party/採用物台帳.md",
+        "before_sha256": "3151f564f5c4f37671981166553b2a60af845a373074fd75385ce1422b03cec4",
+        "after_sha256": "20132a53293038160be416e6e97ad8b03be4b1a0ffe40b3de838de5cee221c29",
+        "delta": "publication/document metadata and push-consolidated history only"
+      }
+    ],
+    "runtime_source_tests_dependencies_unchanged": true,
+    "historical_evidence_preserved": true,
+    "proof": "Independent 423-input digest and normalized publication/document metadata/history comparison against implementation commit; runtime Rust source/tests/Cargo unchanged."
+  },
+  "release_build": {
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "-p",
+      "dir-simulator",
+      "--bin",
+      "dir-simulator"
+    ],
+    "build_exit_code": 0,
+    "build_log_sha256": "a832322da047fa27e2fbc7db8c1a053bb0a6ddb6f4300025823a4ecf902b9b17",
+    "binary_sha256": "e6e43ce9b19134f8478f24b481e009229551c5e1e0f94ee7268925b3c09e4f91",
+    "binary_bytes": 28819184,
+    "build_source_sha256": "cad9df90857ea7dee7d20e8db64df577d8d14c9062600521abd4a4dd6b75b952",
+    "cases": [
+      {
+        "name": "can",
+        "command": [
+          "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-smoke-3/dir-simulator",
+          "run",
+          "--config",
+          "docs/verification/fixtures/can/competition.ini",
+          "--output",
+          "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-smoke-3/can"
+        ],
+        "exit_code": 0,
+        "seconds": 0.05,
+        "metadata": {
+          "adoption_ledger_sha256": "20132a53293038160be416e6e97ad8b03be4b1a0ffe40b3de838de5cee221c29",
+          "adoption_ledger_version": "1.2.0",
+          "binary_sha256": "e6e43ce9b19134f8478f24b481e009229551c5e1e0f94ee7268925b3c09e4f91",
+          "build_source_sha256": "cad9df90857ea7dee7d20e8db64df577d8d14c9062600521abd4a4dd6b75b952",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "config": [
+            {
+              "key": "@prepared-model",
+              "value": "{\"bitrate\":500000,\"bus_id\":\"Main.bus\",\"buses\":[{\"bitrate\":500000,\"id\":\"Main.bus\"}],\"controller_buses\":[0,0,0],\"controller_gateways\":[null,null,null],\"controllers\":[{\"id\":\"Main.a\",\"queue_capacity\":64,\"rx_channel_ps\":0,\"rx_filter\":\"*\",\"rx_processing_ps\":0,\"tx_channel_ps\":0,\"tx_processing_ps\":0},{\"id\":\"Main.b\",\"queue_capacity\":64,\"rx_channel_ps\":0,\"rx_filter\":\"*\",\"rx_processing_ps\":0,\"tx_channel_ps\":0,\"tx_processing_ps\":0},{\"id\":\"Main.c\",\"queue_capacity\":64,\"rx_channel_ps\":0,\"rx_filter\":\"*\",\"rx_processing_ps\":0,\"tx_channel_ps\":0,\"tx_processing_ps\":0}],\"gateways\":[],\"generators\":[{\"frame\":{\"data\":\"\",\"format\":\"standard\",\"id\":0},\"id\":\"a\",\"schedule\":{\"kind\":\"explicit\",\"times_ps\":[0]},\"source\":0},{\"frame\":{\"data\":\"\",\"format\":\"standard\",\"id\":1},\"id\":\"b\",\"schedule\":{\"kind\":\"explicit\",\"times_ps\":[0]},\"source\":1}]}"
+            },
+            {
+              "key": "Main.a.queueCapacity",
+              "value": "64"
+            },
+            {
+              "key": "Main.a.rxChannelDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.a.rxFilter",
+              "value": "\"*\""
+            },
+            {
+              "key": "Main.a.rxProcessingDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.a.txChannelDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.a.txProcessingDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.b.queueCapacity",
+              "value": "64"
+            },
+            {
+              "key": "Main.b.rxChannelDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.b.rxFilter",
+              "value": "\"*\""
+            },
+            {
+              "key": "Main.b.rxProcessingDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.b.txChannelDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.b.txProcessingDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.bus.bitrate",
+              "value": "500000bit/s"
+            },
+            {
+              "key": "Main.bus.profile",
+              "value": "\"can.cc.ideal.v1\""
+            },
+            {
+              "key": "Main.c.queueCapacity",
+              "value": "64"
+            },
+            {
+              "key": "Main.c.rxChannelDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.c.rxFilter",
+              "value": "\"*\""
+            },
+            {
+              "key": "Main.c.rxProcessingDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.c.txChannelDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main.c.txProcessingDelay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main::a.tx.delay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main::b.tx.delay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main::bus.tx_a.delay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main::bus.tx_b.delay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main::bus.tx_c.delay",
+              "value": "0ps"
+            },
+            {
+              "key": "Main::c.tx.delay",
+              "value": "0ps"
+            },
+            {
+              "key": "max-delta-cycles",
+              "value": "1000000"
+            },
+            {
+              "key": "max-events",
+              "value": "100000000"
+            },
+            {
+              "key": "metrics-window",
+              "value": "1000000000ps"
+            },
+            {
+              "key": "model-profile",
+              "value": "\"can.cc.ideal.v1\""
+            },
+            {
+              "key": "network",
+              "value": "\"demo.Main\""
+            },
+            {
+              "key": "time-limit",
+              "value": "300000000ps"
+            }
+          ],
+          "config_sha256": "80997c76c82b937e2dbe9047de59658fd6acc073362d58f522fba58a1304060e",
+          "cpu": "x86_64 / Intel(R) Core(TM) Ultra 7 265K",
+          "declarations": [
+            {
+              "kind": "simple",
+              "parameters": [
+                {
+                  "declaration_span": {
+                    "column": 3,
+                    "end_byte": 362,
+                    "end_column": 29,
+                    "end_line": 14,
+                    "line": 14,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 336
+                  },
+                  "declared_type": "double",
+                  "default_span": null,
+                  "name": "bitrate",
+                  "normalized_default": null,
+                  "unit": "bps"
+                },
+                {
+                  "declaration_span": {
+                    "column": 3,
+                    "end_byte": 409,
+                    "end_column": 47,
+                    "end_line": 15,
+                    "line": 15,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 365
+                  },
+                  "declared_type": "string",
+                  "default_span": {
+                    "column": 28,
+                    "end_byte": 407,
+                    "end_column": 45,
+                    "end_line": 15,
+                    "line": 15,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 390
+                  },
+                  "name": "profile",
+                  "normalized_default": "\"can.cc.ideal.v1\"",
+                  "unit": null
+                }
+              ],
+              "span": {
+                "column": 1,
+                "end_byte": 500,
+                "end_column": 2,
+                "end_line": 20,
+                "line": 11,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 283
+              },
+              "type": "demo.Bus"
+            },
+            {
+              "kind": "simple",
+              "parameters": [
+                {
+                  "declaration_span": {
+                    "column": 3,
+                    "end_byte": 113,
+                    "end_column": 35,
+                    "end_line": 5,
+                    "line": 5,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 81
+                  },
+                  "declared_type": "int",
+                  "default_span": {
+                    "column": 31,
+                    "end_byte": 111,
+                    "end_column": 33,
+                    "end_line": 5,
+                    "line": 5,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 109
+                  },
+                  "name": "queueCapacity",
+                  "normalized_default": "64",
+                  "unit": null
+                },
+                {
+                  "declaration_span": {
+                    "column": 3,
+                    "end_byte": 251,
+                    "end_column": 34,
+                    "end_line": 8,
+                    "line": 8,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 220
+                  },
+                  "declared_type": "string",
+                  "default_span": {
+                    "column": 29,
+                    "end_byte": 249,
+                    "end_column": 32,
+                    "end_line": 8,
+                    "line": 8,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 246
+                  },
+                  "name": "rxFilter",
+                  "normalized_default": "\"*\"",
+                  "unit": null
+                },
+                {
+                  "declaration_span": {
+                    "column": 3,
+                    "end_byte": 217,
+                    "end_column": 52,
+                    "end_line": 7,
+                    "line": 7,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 168
+                  },
+                  "declared_type": "double",
+                  "default_span": {
+                    "column": 47,
+                    "end_byte": 215,
+                    "end_column": 50,
+                    "end_line": 7,
+                    "line": 7,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 212
+                  },
+                  "name": "rxProcessingDelay",
+                  "normalized_default": "0ps",
+                  "unit": "s"
+                },
+                {
+                  "declaration_span": {
+                    "column": 3,
+                    "end_byte": 165,
+                    "end_column": 52,
+                    "end_line": 6,
+                    "line": 6,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 116
+                  },
+                  "declared_type": "double",
+                  "default_span": {
+                    "column": 47,
+                    "end_byte": 163,
+                    "end_column": 50,
+                    "end_line": 6,
+                    "line": 6,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 160
+                  },
+                  "name": "txProcessingDelay",
+                  "normalized_default": "0ps",
+                  "unit": "s"
+                }
+              ],
+              "span": {
+                "column": 1,
+                "end_byte": 282,
+                "end_column": 2,
+                "end_line": 10,
+                "line": 2,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 14
+              },
+              "type": "demo.Controller"
+            },
+            {
+              "kind": "network",
+              "parameters": [],
+              "span": {
+                "column": 1,
+                "end_byte": 940,
+                "end_column": 2,
+                "end_line": 39,
+                "line": 26,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 604
+              },
+              "type": "demo.Main"
+            },
+            {
+              "kind": "channel",
+              "parameters": [
+                {
+                  "declaration_span": {
+                    "column": 3,
+                    "end_byte": 601,
+                    "end_column": 40,
+                    "end_line": 24,
+                    "line": 24,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 564
+                  },
+                  "declared_type": "double",
+                  "default_span": {
+                    "column": 35,
+                    "end_byte": 599,
+                    "end_column": 38,
+                    "end_line": 24,
+                    "line": 24,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 596
+                  },
+                  "name": "delay",
+                  "normalized_default": "0ps",
+                  "unit": "s"
+                }
+              ],
+              "span": {
+                "column": 1,
+                "end_byte": 603,
+                "end_column": 2,
+                "end_line": 25,
+                "line": 21,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 501
+              },
+              "type": "demo.Wire"
+            }
+          ],
+          "effective_value_provenance": [
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/bitrate",
+              "normalized_value": "500000",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/bus_id",
+              "normalized_value": "\"Main.bus\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/buses/0/bitrate",
+              "normalized_value": "500000",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_key": "Main.bus.bitrate",
+                  "span": {
+                    "column": 20,
+                    "end_byte": 99,
+                    "end_column": 27,
+                    "end_line": 5,
+                    "line": 5,
+                    "source": "config",
+                    "start_byte": 92
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/buses/0/id",
+              "normalized_value": "\"Main.bus\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controller_buses/0",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controller_buses/1",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controller_buses/2",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controller_gateways/0",
+              "normalized_value": "null",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controller_gateways/1",
+              "normalized_value": "null",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controller_gateways/2",
+              "normalized_value": "null",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/0/id",
+              "normalized_value": "\"Main.a\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0/node",
+                  "span": {
+                    "column": 15,
+                    "end_byte": 121,
+                    "end_column": 23,
+                    "end_line": 7,
+                    "line": 7,
+                    "source": "workload",
+                    "start_byte": 113
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/0/queue_capacity",
+              "normalized_value": "64",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                },
+                {
+                  "source_key": "Main.a.queueCapacity",
+                  "span": {
+                    "column": 31,
+                    "end_byte": 111,
+                    "end_column": 33,
+                    "end_line": 5,
+                    "line": 5,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 109
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/0/rx_channel_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/0/rx_filter",
+              "normalized_value": "\"*\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                },
+                {
+                  "source_key": "Main.a.rxFilter",
+                  "span": {
+                    "column": 29,
+                    "end_byte": 249,
+                    "end_column": 32,
+                    "end_line": 8,
+                    "line": 8,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 246
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/0/rx_processing_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                },
+                {
+                  "source_key": "Main.a.rxProcessingDelay",
+                  "span": {
+                    "column": 47,
+                    "end_byte": 215,
+                    "end_column": 50,
+                    "end_line": 7,
+                    "line": 7,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 212
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/0/tx_channel_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/0/tx_processing_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                },
+                {
+                  "source_key": "Main.a.txProcessingDelay",
+                  "span": {
+                    "column": 47,
+                    "end_byte": 163,
+                    "end_column": 50,
+                    "end_line": 6,
+                    "line": 6,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 160
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/1/id",
+              "normalized_value": "\"Main.b\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1/node",
+                  "span": {
+                    "column": 15,
+                    "end_byte": 339,
+                    "end_column": 23,
+                    "end_line": 20,
+                    "line": 20,
+                    "source": "workload",
+                    "start_byte": 331
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/1/queue_capacity",
+              "normalized_value": "64",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                },
+                {
+                  "source_key": "Main.b.queueCapacity",
+                  "span": {
+                    "column": 31,
+                    "end_byte": 111,
+                    "end_column": 33,
+                    "end_line": 5,
+                    "line": 5,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 109
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/1/rx_channel_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/1/rx_filter",
+              "normalized_value": "\"*\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                },
+                {
+                  "source_key": "Main.b.rxFilter",
+                  "span": {
+                    "column": 29,
+                    "end_byte": 249,
+                    "end_column": 32,
+                    "end_line": 8,
+                    "line": 8,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 246
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/1/rx_processing_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                },
+                {
+                  "source_key": "Main.b.rxProcessingDelay",
+                  "span": {
+                    "column": 47,
+                    "end_byte": 215,
+                    "end_column": 50,
+                    "end_line": 7,
+                    "line": 7,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 212
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/1/tx_channel_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/1/tx_processing_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                },
+                {
+                  "source_key": "Main.b.txProcessingDelay",
+                  "span": {
+                    "column": 47,
+                    "end_byte": 163,
+                    "end_column": 50,
+                    "end_line": 6,
+                    "line": 6,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 160
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/2/id",
+              "normalized_value": "\"Main.c\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/2/queue_capacity",
+              "normalized_value": "64",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_key": "Main.c.queueCapacity",
+                  "span": {
+                    "column": 31,
+                    "end_byte": 111,
+                    "end_column": 33,
+                    "end_line": 5,
+                    "line": 5,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 109
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/2/rx_channel_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/2/rx_filter",
+              "normalized_value": "\"*\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_key": "Main.c.rxFilter",
+                  "span": {
+                    "column": 29,
+                    "end_byte": 249,
+                    "end_column": 32,
+                    "end_line": 8,
+                    "line": 8,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 246
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/2/rx_processing_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_key": "Main.c.rxProcessingDelay",
+                  "span": {
+                    "column": 47,
+                    "end_byte": 215,
+                    "end_column": 50,
+                    "end_line": 7,
+                    "line": 7,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 212
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/2/tx_channel_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/controllers/2/tx_processing_ps",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_key": "Main.c.txProcessingDelay",
+                  "span": {
+                    "column": 47,
+                    "end_byte": 163,
+                    "end_column": 50,
+                    "end_line": 6,
+                    "line": 6,
+                    "source": "root0/demo/Main.ned",
+                    "start_byte": 160
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/gateways",
+              "normalized_value": "[]",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 483,
+                    "end_column": 2,
+                    "end_line": 31,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/0/frame/data",
+              "normalized_value": "\"\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/0/frame/format",
+              "normalized_value": "\"standard\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/0/frame/id",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0/node",
+                  "span": {
+                    "column": 15,
+                    "end_byte": 121,
+                    "end_column": 23,
+                    "end_line": 7,
+                    "line": 7,
+                    "source": "workload",
+                    "start_byte": 113
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/0/id",
+              "normalized_value": "\"a\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0/node",
+                  "span": {
+                    "column": 15,
+                    "end_byte": 121,
+                    "end_column": 23,
+                    "end_line": 7,
+                    "line": 7,
+                    "source": "workload",
+                    "start_byte": 113
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/0/schedule/kind",
+              "normalized_value": "\"explicit\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0/kind",
+                  "span": {
+                    "column": 15,
+                    "end_byte": 97,
+                    "end_column": 32,
+                    "end_line": 6,
+                    "line": 6,
+                    "source": "workload",
+                    "start_byte": 80
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/0/schedule/times_ps/0",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/0/source",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/0",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 259,
+                    "end_column": 6,
+                    "end_line": 16,
+                    "line": 4,
+                    "source": "workload",
+                    "start_byte": 47
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/1/frame/data",
+              "normalized_value": "\"\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/1/frame/format",
+              "normalized_value": "\"standard\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/1/frame/id",
+              "normalized_value": "1",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1/node",
+                  "span": {
+                    "column": 15,
+                    "end_byte": 339,
+                    "end_column": 23,
+                    "end_line": 20,
+                    "line": 20,
+                    "source": "workload",
+                    "start_byte": 331
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/1/id",
+              "normalized_value": "\"b\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1/node",
+                  "span": {
+                    "column": 15,
+                    "end_byte": 339,
+                    "end_column": 23,
+                    "end_line": 20,
+                    "line": 20,
+                    "source": "workload",
+                    "start_byte": 331
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-resolved-input",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/1/schedule/kind",
+              "normalized_value": "\"explicit\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1/kind",
+                  "span": {
+                    "column": 15,
+                    "end_byte": 315,
+                    "end_column": 32,
+                    "end_line": 19,
+                    "line": 19,
+                    "source": "workload",
+                    "start_byte": 298
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/1/schedule/times_ps/0",
+              "normalized_value": "0",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/generators/1/source",
+              "normalized_value": "1",
+              "source_dependencies": [
+                {
+                  "source_pointer": "/generators/1",
+                  "span": {
+                    "column": 5,
+                    "end_byte": 477,
+                    "end_column": 6,
+                    "end_line": 29,
+                    "line": 17,
+                    "source": "workload",
+                    "start_byte": 265
+                  }
+                }
+              ]
+            }
+          ],
+          "finished_at_utc": "2026-10-22T11:55:07Z",
+          "git_commit": "002a486fb7d4c7e0274d960174f5131afff7c060",
+          "git_dirty": "true",
+          "implementation_coverage": {
+            "limitations": [],
+            "profile": "can-v0.1",
+            "reproduction_conditions": "identified"
+          },
+          "initial_channel_state": [
+            {
+              "instance": "Main::a.tx",
+              "state": "{\"destination\":\"Main.bus.rx_a\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.a.tx\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::b.tx",
+              "state": "{\"destination\":\"Main.bus.rx_b\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.b.tx\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::bus.tx_a",
+              "state": "{\"destination\":\"Main.a.rx\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.bus.tx_a\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::bus.tx_b",
+              "state": "{\"destination\":\"Main.b.rx\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.bus.tx_b\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::bus.tx_c",
+              "state": "{\"destination\":\"Main.c.rx\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.bus.tx_c\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::c.tx",
+              "state": "{\"destination\":\"Main.bus.rx_c\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.c.tx\",\"type\":\"demo.Wire\"}"
+            }
+          ],
+          "initial_state": [
+            {
+              "instance": "Main.a",
+              "state": "{\"generators\":[{\"id\":\"a\",\"next_ordinal\":\"0\",\"next_time_ps\":\"0\"}],\"processing\":[],\"profile\":\"can.cc.ideal.v1\",\"queue\":[],\"receivers\":[],\"transmitting\":null}"
+            },
+            {
+              "instance": "Main.b",
+              "state": "{\"generators\":[{\"id\":\"b\",\"next_ordinal\":\"0\",\"next_time_ps\":\"0\"}],\"processing\":[],\"profile\":\"can.cc.ideal.v1\",\"queue\":[],\"receivers\":[],\"transmitting\":null}"
+            },
+            {
+              "instance": "Main.bus",
+              "state": "{\"active_request\":null,\"profile\":\"can.cc.ideal.v1\",\"state\":\"idle\"}"
+            },
+            {
+              "instance": "Main.c",
+              "state": "{\"generators\":[],\"processing\":[],\"profile\":\"can.cc.ideal.v1\",\"queue\":[],\"receivers\":[],\"transmitting\":null}"
+            },
+            {
+              "instance": "Main::a.tx",
+              "state": "{\"destination\":\"Main.bus.rx_a\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.a.tx\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::b.tx",
+              "state": "{\"destination\":\"Main.bus.rx_b\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.b.tx\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::bus.tx_a",
+              "state": "{\"destination\":\"Main.a.rx\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.bus.tx_a\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::bus.tx_b",
+              "state": "{\"destination\":\"Main.b.rx\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.bus.tx_b\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::bus.tx_c",
+              "state": "{\"destination\":\"Main.c.rx\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.bus.tx_c\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "Main::c.tx",
+              "state": "{\"destination\":\"Main.bus.rx_c\",\"pending\":[],\"settings\":{\"delay\":\"0ps\"},\"source\":\"Main.c.tx\",\"type\":\"demo.Wire\"}"
+            },
+            {
+              "instance": "demo.Main",
+              "state": "{}"
+            }
+          ],
+          "input_sha256": "ea75552a899ca7daa0eccd2b112a6f1a97a3df50f8ed828b64dcc4781f31fb13",
+          "metrics": [
+            {
+              "aggregation": "sum",
+              "metric_id": "admitted",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sample_mean",
+              "metric_id": "arbitration_wait_mean_ps",
+              "sampling": "summary",
+              "unit": "ps",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "identity",
+              "metric_id": "arbitration_wait_ps",
+              "sampling": "point",
+              "unit": "ps",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "attempts",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "identity",
+              "metric_id": "buffer_utilization",
+              "sampling": "point",
+              "unit": "1",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "time_mean",
+              "metric_id": "buffer_utilization_mean",
+              "sampling": "window_summary",
+              "unit": "1",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "occupancy_ratio",
+              "metric_id": "bus_utilization",
+              "sampling": "window_summary",
+              "unit": "1",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "sample_mean",
+              "metric_id": "delivery_mean_ps",
+              "sampling": "summary",
+              "unit": "ps",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "identity",
+              "metric_id": "delivery_ps",
+              "sampling": "point",
+              "unit": "ps",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "dropped",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "failed",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "filtered",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "occupancy_ratio",
+              "metric_id": "frame_utilization",
+              "sampling": "window_summary",
+              "unit": "1",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "generated",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "in_flight",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "occupied_bits",
+              "sampling": "window_summary",
+              "unit": "bit",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "payload_bits",
+              "sampling": "window_summary",
+              "unit": "bit",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "rate",
+              "metric_id": "payload_throughput_bps",
+              "sampling": "window_summary",
+              "unit": "bit/s",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "pending",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "processing",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "identity",
+              "metric_id": "queue_length",
+              "sampling": "point",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "max",
+              "metric_id": "queue_max",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "time_mean",
+              "metric_id": "queue_mean",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "received",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "received_payload_bits",
+              "sampling": "window_summary",
+              "unit": "bit",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "rate",
+              "metric_id": "received_throughput_bps",
+              "sampling": "window_summary",
+              "unit": "bit/s",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "receiver_opportunities",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "retries",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "rx_pending",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "serialized_bits",
+              "sampling": "window_summary",
+              "unit": "bit",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "rate",
+              "metric_id": "serialized_throughput_bps",
+              "sampling": "window_summary",
+              "unit": "bit/s",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "success",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sample_mean",
+              "metric_id": "transfer_mean_ps",
+              "sampling": "summary",
+              "unit": "ps",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "identity",
+              "metric_id": "transfer_ps",
+              "sampling": "point",
+              "unit": "ps",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sample_mean",
+              "metric_id": "tx_wait_mean_ps",
+              "sampling": "summary",
+              "unit": "ps",
+              "value_kind": "number",
+              "version": "1"
+            },
+            {
+              "aggregation": "identity",
+              "metric_id": "tx_wait_ps",
+              "sampling": "point",
+              "unit": "ps",
+              "value_kind": "integer",
+              "version": "1"
+            },
+            {
+              "aggregation": "sum",
+              "metric_id": "unfinished",
+              "sampling": "summary",
+              "unit": "count",
+              "value_kind": "integer",
+              "version": "1"
+            }
+          ],
+          "model_registry_version": "1",
+          "models": [
+            {
+              "assumptions": [
+                "ideal ACK",
+                "no retransmission",
+                "no error injection",
+                "content-dependent frame duration",
+                "fixed propagation delay",
+                "no source self-delivery",
+                "filter independent of ACK"
+              ],
+              "type": "can.cc.ideal.v1",
+              "version": "1"
+            }
+          ],
+          "os": "linux / Ubuntu 24.04.4 LTS",
+          "runtime_version": "0.1.0",
+          "seed": null,
+          "source_roots": [
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/docs/verification/fixtures/can/models",
+              "logical_root": "root0"
+            }
+          ],
+          "sources": [
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/docs/verification/fixtures/can/competition.ini",
+              "content_utf8": "[General]\nnetwork = demo.Main\nned-path = \"models\"\nsim-time-limit = 300us\nMain.bus.bitrate = 500kbps\nworkload = \"competition.json\"\n",
+              "logical_path": "config",
+              "sha256": "ab85775ff4d54f7c0fcbe54f103e20f4a5752b0fdb897bde528b706b9fa7e108"
+            },
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/docs/verification/fixtures/can/models/demo/Main.ned",
+              "content_utf8": "package demo;\nsimple Controller {\n parameters:\n  @class(\"dir.can.Controller\");\n  int queueCapacity = default(64);\n  double txProcessingDelay @unit(s) = default(0ps);\n  double rxProcessingDelay @unit(s) = default(0ps);\n  string rxFilter = default(\"*\");\n gates: output tx; input rx;\n}\nsimple Bus {\n parameters:\n  @class(\"dir.can.Bus\");\n  double bitrate @unit(bps);\n  string profile = default(\"can.cc.ideal.v1\");\n gates:\n  input rx_a; output tx_a;\n  input rx_b; output tx_b;\n  input rx_c; output tx_c;\n}\nchannel Wire {\n parameters:\n  @class(\"dir.link.FixedDelay\");\n  double delay @unit(s) = default(0ps);\n}\nnetwork Main {\n submodules:\n  a: demo.Controller;\n  b: demo.Controller;\n  c: demo.Controller;\n  bus: demo.Bus;\n connections:\n  a.tx --> demo.Wire --> bus.rx_a;\n  bus.tx_a --> demo.Wire --> a.rx;\n  b.tx --> demo.Wire --> bus.rx_b;\n  bus.tx_b --> demo.Wire --> b.rx;\n  c.tx --> demo.Wire --> bus.rx_c;\n  bus.tx_c --> demo.Wire --> c.rx;\n}\n",
+              "logical_path": "root0/demo/Main.ned",
+              "sha256": "ee97e6a059fe06d854d9764b46d1ce6e3bc761e65be8677a9bc6fdb0fb605251"
+            },
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/docs/verification/fixtures/can/competition.json",
+              "content_utf8": "{\n  \"schema_version\": 1,\n  \"generators\": [\n    {\n      \"id\": \"a\",\n      \"kind\": \"can.explicit.v1\",\n      \"node\": \"Main.a\",\n      \"times\": [\n        \"0ps\"\n      ],\n      \"frame\": {\n        \"format\": \"standard\",\n        \"id\": 0,\n        \"data\": \"\"\n      }\n    },\n    {\n      \"id\": \"b\",\n      \"kind\": \"can.explicit.v1\",\n      \"node\": \"Main.b\",\n      \"times\": [\n        \"0ps\"\n      ],\n      \"frame\": {\n        \"format\": \"standard\",\n        \"id\": 1,\n        \"data\": \"\"\n      }\n    }\n  ]\n}\n",
+              "logical_path": "workload",
+              "sha256": "f78d0c702f6e972b66636bc598de94809b1e629fcfdc81759f17f2838e769f4c"
+            }
+          ],
+          "started_at_utc": "2026-10-22T11:55:07Z",
+          "target_triple": "x86_64-unknown-linux-gnu",
+          "time_resolution_ps": "1",
+          "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7",
+          "topology": {
+            "controllers": [
+              {
+                "bus": "Main.bus",
+                "id": "Main.a",
+                "rx_channel_delay_ps": "0",
+                "tx_channel_delay_ps": "0"
+              },
+              {
+                "bus": "Main.bus",
+                "id": "Main.b",
+                "rx_channel_delay_ps": "0",
+                "tx_channel_delay_ps": "0"
+              },
+              {
+                "bus": "Main.bus",
+                "id": "Main.c",
+                "rx_channel_delay_ps": "0",
+                "tx_channel_delay_ps": "0"
+              }
+            ]
+          },
+          "value_provenance": [
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 31,
+                "end_byte": 111,
+                "end_column": 33,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 109
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 113,
+                "end_column": 35,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 81
+              },
+              "declared_type": "int",
+              "default_span": {
+                "column": 31,
+                "end_byte": 111,
+                "end_column": 33,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 109
+              },
+              "key": "Main.a.queueCapacity",
+              "normalized_value": "64",
+              "physical_quantity": null
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 29,
+                "end_byte": 249,
+                "end_column": 32,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 246
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 251,
+                "end_column": 34,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 220
+              },
+              "declared_type": "string",
+              "default_span": {
+                "column": 29,
+                "end_byte": 249,
+                "end_column": 32,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 246
+              },
+              "key": "Main.a.rxFilter",
+              "normalized_value": "\"*\"",
+              "physical_quantity": null
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 47,
+                "end_byte": 215,
+                "end_column": 50,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 212
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 217,
+                "end_column": 52,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 168
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 47,
+                "end_byte": 215,
+                "end_column": 50,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 212
+              },
+              "key": "Main.a.rxProcessingDelay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 47,
+                "end_byte": 163,
+                "end_column": 50,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 160
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 165,
+                "end_column": 52,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 116
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 47,
+                "end_byte": 163,
+                "end_column": 50,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 160
+              },
+              "key": "Main.a.txProcessingDelay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 31,
+                "end_byte": 111,
+                "end_column": 33,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 109
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 113,
+                "end_column": 35,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 81
+              },
+              "declared_type": "int",
+              "default_span": {
+                "column": 31,
+                "end_byte": 111,
+                "end_column": 33,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 109
+              },
+              "key": "Main.b.queueCapacity",
+              "normalized_value": "64",
+              "physical_quantity": null
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 29,
+                "end_byte": 249,
+                "end_column": 32,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 246
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 251,
+                "end_column": 34,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 220
+              },
+              "declared_type": "string",
+              "default_span": {
+                "column": 29,
+                "end_byte": 249,
+                "end_column": 32,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 246
+              },
+              "key": "Main.b.rxFilter",
+              "normalized_value": "\"*\"",
+              "physical_quantity": null
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 47,
+                "end_byte": 215,
+                "end_column": 50,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 212
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 217,
+                "end_column": 52,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 168
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 47,
+                "end_byte": 215,
+                "end_column": 50,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 212
+              },
+              "key": "Main.b.rxProcessingDelay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 47,
+                "end_byte": 163,
+                "end_column": 50,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 160
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 165,
+                "end_column": 52,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 116
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 47,
+                "end_byte": 163,
+                "end_column": 50,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 160
+              },
+              "key": "Main.b.txProcessingDelay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 20,
+                "end_byte": 99,
+                "end_column": 27,
+                "end_line": 5,
+                "line": 5,
+                "source": "config",
+                "start_byte": 92
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 362,
+                "end_column": 29,
+                "end_line": 14,
+                "line": 14,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 336
+              },
+              "declared_type": "double",
+              "default_span": null,
+              "key": "Main.bus.bitrate",
+              "normalized_value": "500000bit/s",
+              "physical_quantity": "bps"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 28,
+                "end_byte": 407,
+                "end_column": 45,
+                "end_line": 15,
+                "line": 15,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 390
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 409,
+                "end_column": 47,
+                "end_line": 15,
+                "line": 15,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 365
+              },
+              "declared_type": "string",
+              "default_span": {
+                "column": 28,
+                "end_byte": 407,
+                "end_column": 45,
+                "end_line": 15,
+                "line": 15,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 390
+              },
+              "key": "Main.bus.profile",
+              "normalized_value": "\"can.cc.ideal.v1\"",
+              "physical_quantity": null
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 31,
+                "end_byte": 111,
+                "end_column": 33,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 109
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 113,
+                "end_column": 35,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 81
+              },
+              "declared_type": "int",
+              "default_span": {
+                "column": 31,
+                "end_byte": 111,
+                "end_column": 33,
+                "end_line": 5,
+                "line": 5,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 109
+              },
+              "key": "Main.c.queueCapacity",
+              "normalized_value": "64",
+              "physical_quantity": null
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 29,
+                "end_byte": 249,
+                "end_column": 32,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 246
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 251,
+                "end_column": 34,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 220
+              },
+              "declared_type": "string",
+              "default_span": {
+                "column": 29,
+                "end_byte": 249,
+                "end_column": 32,
+                "end_line": 8,
+                "line": 8,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 246
+              },
+              "key": "Main.c.rxFilter",
+              "normalized_value": "\"*\"",
+              "physical_quantity": null
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 47,
+                "end_byte": 215,
+                "end_column": 50,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 212
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 217,
+                "end_column": 52,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 168
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 47,
+                "end_byte": 215,
+                "end_column": 50,
+                "end_line": 7,
+                "line": 7,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 212
+              },
+              "key": "Main.c.rxProcessingDelay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 47,
+                "end_byte": 163,
+                "end_column": 50,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 160
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 165,
+                "end_column": 52,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 116
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 47,
+                "end_byte": 163,
+                "end_column": 50,
+                "end_line": 6,
+                "line": 6,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 160
+              },
+              "key": "Main.c.txProcessingDelay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 601,
+                "end_column": 40,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 564
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "key": "Main::a.tx.delay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 601,
+                "end_column": 40,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 564
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "key": "Main::b.tx.delay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 601,
+                "end_column": 40,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 564
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "key": "Main::bus.tx_a.delay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 601,
+                "end_column": 40,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 564
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "key": "Main::bus.tx_b.delay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 601,
+                "end_column": 40,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 564
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "key": "Main::bus.tx_c.delay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "default",
+              "adopted_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "declaration_span": {
+                "column": 3,
+                "end_byte": 601,
+                "end_column": 40,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 564
+              },
+              "declared_type": "double",
+              "default_span": {
+                "column": 35,
+                "end_byte": 599,
+                "end_column": 38,
+                "end_line": 24,
+                "line": 24,
+                "source": "root0/demo/Main.ned",
+                "start_byte": 596
+              },
+              "key": "Main::c.tx.delay",
+              "normalized_value": "0ps",
+              "physical_quantity": "s"
+            },
+            {
+              "adopted_source": "runtime-default",
+              "adopted_span": null,
+              "declaration_span": null,
+              "default_span": null,
+              "key": "max-delta-cycles",
+              "normalized_value": "1000000"
+            },
+            {
+              "adopted_source": "runtime-default",
+              "adopted_span": null,
+              "declaration_span": null,
+              "default_span": null,
+              "key": "max-events",
+              "normalized_value": "100000000"
+            },
+            {
+              "adopted_source": "runtime-default",
+              "adopted_span": null,
+              "declaration_span": null,
+              "default_span": null,
+              "key": "metrics-window",
+              "normalized_value": "1000000000ps"
+            },
+            {
+              "adopted_source": "runtime-default",
+              "adopted_span": null,
+              "declaration_span": null,
+              "default_span": null,
+              "key": "model-profile",
+              "normalized_value": "\"can.cc.ideal.v1\""
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 11,
+                "end_byte": 29,
+                "end_column": 20,
+                "end_line": 2,
+                "line": 2,
+                "source": "config",
+                "start_byte": 20
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "network",
+              "normalized_value": "\"demo.Main\""
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 18,
+                "end_byte": 72,
+                "end_column": 23,
+                "end_line": 4,
+                "line": 4,
+                "source": "config",
+                "start_byte": 67
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "time-limit",
+              "normalized_value": "300000000ps"
+            }
+          ],
+          "window_ps": "1000000000"
+        },
+        "results_sha256": "c49d52c19018c1d7f61999fcac0779bb36f0fe37b0397a8c5115dc1d02d9291e",
+        "manifest_sha256": "a7b03f51484e2aef8b49cc561377f595122e89a6423ed4b021b7a8186b5ca36e"
+      },
+      {
+        "name": "rv32i-mesi",
+        "command": [
+          "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-smoke-3/dir-simulator",
+          "run",
+          "--config",
+          "examples/soc-execution/soc-execution.ini",
+          "--output",
+          "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-smoke-3/rv32i-mesi"
+        ],
+        "exit_code": 0,
+        "seconds": 0.055,
+        "metadata": {
+          "adoption_ledger_sha256": "20132a53293038160be416e6e97ad8b03be4b1a0ffe40b3de838de5cee221c29",
+          "adoption_ledger_version": "1.2.0",
+          "binary_sha256": "e6e43ce9b19134f8478f24b481e009229551c5e1e0f94ee7268925b3c09e4f91",
+          "build_source_sha256": "cad9df90857ea7dee7d20e8db64df577d8d14c9062600521abd4a4dd6b75b952",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "config": [
+            {
+              "key": "@prepared-model",
+              "value": "{\"channels\":[],\"models\":[{\"connections\":[],\"id\":\"Demo.soc\",\"implementation_key\":\"dir.soc.Execution\",\"output_sources\":{},\"parameters\":{},\"subject\":\"Demo.soc\"}]}"
+            },
+            {
+              "key": "max-delta-cycles",
+              "value": "1000000"
+            },
+            {
+              "key": "max-events",
+              "value": "100000000"
+            },
+            {
+              "key": "metrics-window",
+              "value": "1ps"
+            },
+            {
+              "key": "model-config",
+              "value": "\"model-config\""
+            },
+            {
+              "key": "model-profile",
+              "value": "\"soc.execution.v1\""
+            },
+            {
+              "key": "network",
+              "value": "\"soc.Demo\""
+            },
+            {
+              "key": "time-limit",
+              "value": "2000ps"
+            }
+          ],
+          "config_sha256": "5d5b40f80149dec406ef08b8440a9af673cb634775799fb617f84af534d91bf1",
+          "cpu": "x86_64 / Intel(R) Core(TM) Ultra 7 265K",
+          "declarations": [
+            {
+              "kind": "network",
+              "parameters": [],
+              "span": {
+                "column": 1,
+                "end_byte": 123,
+                "end_column": 49,
+                "end_line": 3,
+                "line": 3,
+                "source": "root0/soc/model.ned",
+                "start_byte": 75
+              },
+              "type": "soc.Demo"
+            },
+            {
+              "kind": "simple",
+              "parameters": [],
+              "span": {
+                "column": 1,
+                "end_byte": 74,
+                "end_column": 62,
+                "end_line": 2,
+                "line": 2,
+                "source": "root0/soc/model.ned",
+                "start_byte": 13
+              },
+              "type": "soc.Execution"
+            }
+          ],
+          "effective_value_provenance": [
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/channels",
+              "normalized_value": "[]",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1600,
+                    "end_column": 2,
+                    "end_line": 96,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1930,
+                    "end_column": 2,
+                    "end_line": 105,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/models/0/connections",
+              "normalized_value": "[]",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1600,
+                    "end_column": 2,
+                    "end_line": 96,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1930,
+                    "end_column": 2,
+                    "end_line": 105,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/models/0/id",
+              "normalized_value": "\"Demo.soc\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1600,
+                    "end_column": 2,
+                    "end_line": 96,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1930,
+                    "end_column": 2,
+                    "end_line": 105,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/models/0/implementation_key",
+              "normalized_value": "\"dir.soc.Execution\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1600,
+                    "end_column": 2,
+                    "end_line": 96,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1930,
+                    "end_column": 2,
+                    "end_line": 105,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/models/0/subject",
+              "normalized_value": "\"Demo.soc\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1600,
+                    "end_column": 2,
+                    "end_line": 96,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1930,
+                    "end_column": 2,
+                    "end_line": 105,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            }
+          ],
+          "finished_at_utc": "2026-10-22T11:55:07Z",
+          "git_commit": "002a486fb7d4c7e0274d960174f5131afff7c060",
+          "git_dirty": "true",
+          "implementation_coverage": {
+            "limitations": [],
+            "profile": "soc.execution.v1",
+            "reproduction_conditions": "identified"
+          },
+          "initial_channel_state": [],
+          "initial_state": [
+            {
+              "instance": "Demo.soc",
+              "state": "{\"parameters\":{}}"
+            }
+          ],
+          "input_sha256": "6f1d384831b175fd9cf47652bc4157f8fe65bea581dfad337ca8c631cb2ac03c",
+          "metrics": [],
+          "model_profile": "soc.execution.v1",
+          "model_registry_version": "1",
+          "model_schemas": [
+            {
+              "schema_name": "ahb.pipeline.Record",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "dir.noc.FlitRecord",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "dir.soc.ExecutionRecord",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "fabric.Record",
+              "schema_version": 1
+            }
+          ],
+          "models": [
+            {
+              "assumptions": [],
+              "type": "dir.soc.Execution",
+              "version": "1"
+            }
+          ],
+          "os": "linux / Ubuntu 24.04.4 LTS",
+          "runtime_version": "0.1.0",
+          "seed": null,
+          "source_roots": [
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/ned",
+              "logical_root": "root0"
+            }
+          ],
+          "sources": [
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/soc-execution.ini",
+              "content_utf8": "[General]\nnetwork = soc.Demo\nned-path = \"ned\"\nmodel-profile = \"soc.execution.v1\"\nmodel-config = \"model.json\"\nworkload = \"workload.json\"\nsim-time-limit = 2000ps\nmetrics-window = 1ps\n",
+              "logical_path": "config",
+              "sha256": "e953db2894613cd0768aa64e90dd7e66c94e281a66124b8811c228f9984d4b3b"
+            },
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/model.json",
+              "content_utf8": "{\n  \"schema\": \"dir.soc-execution.model\",\n  \"version\": 1,\n  \"cycle_ps\": 1,\n  \"memory\": [\n    {\n      \"id\": \"ram\",\n      \"base\": 0,\n      \"size\": 1024,\n      \"readable\": true,\n      \"writable\": true,\n      \"executable\": true,\n      \"initial\": [\n        147,\n        2,\n        0,\n        32,\n        19,\n        3,\n        160,\n        2,\n        35,\n        160,\n        98,\n        0,\n        131,\n        163,\n        2,\n        0,\n        15,\n        0,\n        0,\n        0,\n        115,\n        0,\n        0,\n        0\n      ]\n    }\n  ],\n  \"cores\": [\n    {\n      \"id\": \"cpu\",\n      \"reset_pc\": 0,\n      \"initial_sp\": 1008,\n      \"instruction_budget\": 100,\n      \"cycle_cycles\": 1,\n      \"execute_cycles\": 1,\n      \"transport\": \"axi\",\n      \"router\": 0,\n      \"qos\": 4\n    }\n  ],\n  \"cache\": {\n    \"line_bytes\": 16,\n    \"sets\": 4,\n    \"ways\": 2,\n    \"mshrs\": 2,\n    \"ack_cycles\": 3\n  },\n  \"fabric\": {\n    \"queue_capacity\": 4,\n    \"aging_cycles\": 2,\n    \"data_bytes\": 4,\n    \"axi_address_delay_cycles\": 1,\n    \"ahb_wait_cycles\": 2\n  },\n  \"noc\": {\n    \"schema\": \"dir.noc-flit.model\",\n    \"version\": 1,\n    \"topology\": {\n      \"kind\": \"mesh\",\n      \"width\": 2,\n      \"height\": 2\n    },\n    \"flit_bytes\": 4,\n    \"buffer_flits\": 1,\n    \"adaptive_vcs\": 1,\n    \"cycle_ps\": 1,\n    \"link_latency_cycles\": 2,\n    \"credit_latency_cycles\": 2,\n    \"escape_after_stalls\": 2,\n    \"ejection_capacity_flits\": 1,\n    \"ejection_service_cycles\": 1,\n    \"pending_packets\": 4\n  },\n  \"memory_router\": 3,\n  \"dma_buffer_bytes\": 4,\n  \"slots\": [\n    {\n      \"id\": \"handoff\",\n      \"base\": 768,\n      \"capacity\": 8\n    }\n  ]\n}\n",
+              "logical_path": "model-config",
+              "sha256": "63e2eefa210b1e3d1b80fdd61db1d610d723da3860828c5b5b246392125d191d"
+            },
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/ned/soc/model.ned",
+              "content_utf8": "package soc;\nsimple Execution { parameters: @class(\"dir.soc.Execution\"); }\nnetwork Demo { submodules: soc: soc.Execution; }\n",
+              "logical_path": "root0/soc/model.ned",
+              "sha256": "62f896dc266e0fbfbd1aab642eb94d3a4467cc6609e8f8b028b772301ae4ed77"
+            },
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/workload.json",
+              "content_utf8": "{\n  \"schema\": \"dir.soc-execution.workload\",\n  \"version\": 1,\n  \"requests\": [\n    {\n      \"id\": \"consume\",\n      \"source\": \"host\",\n      \"at_ps\": 900,\n      \"operation\": \"read\",\n      \"address\": 768,\n      \"length\": 4,\n      \"transport\": \"ahb\",\n      \"router\": 1,\n      \"lease\": {\n        \"slot\": \"handoff\",\n        \"generation\": 1,\n        \"owner\": \"copy\"\n      }\n    },\n    {\n      \"id\": \"atomic-add\",\n      \"source\": \"atomic\",\n      \"at_ps\": 600,\n      \"operation\": \"atomic\",\n      \"address\": 512,\n      \"length\": 4,\n      \"data\": [\n        1,\n        0,\n        0,\n        0\n      ],\n      \"transport\": \"axi\",\n      \"router\": 1,\n      \"qos\": 8,\n      \"atomic\": {\n        \"awatop\": 32,\n        \"burst\": \"incr\"\n      },\n      \"r_stall_cycles\": 3,\n      \"b_stall_cycles\": 7\n    },\n    {\n      \"id\": \"observe\",\n      \"source\": \"host\",\n      \"at_ps\": 1200,\n      \"operation\": \"read\",\n      \"address\": 512,\n      \"length\": 4,\n      \"transport\": \"noc\",\n      \"router\": 0\n    }\n  ],\n  \"dma\": [\n    {\n      \"id\": \"handoff-copy\",\n      \"source\": \"copy\",\n      \"at_ps\": 400,\n      \"source_address\": 512,\n      \"destination\": 768,\n      \"length\": 4,\n      \"transport\": \"noc\",\n      \"router\": 1,\n      \"qos\": 2,\n      \"lease\": {\n        \"slot\": \"handoff\",\n        \"generation\": 1,\n        \"owner\": \"copy\"\n      },\n      \"publish\": true\n    }\n  ],\n  \"commands\": [\n    {\n      \"id\": \"lease\",\n      \"at_ps\": 0,\n      \"operation\": \"lease\",\n      \"slot\": \"handoff\",\n      \"owner\": \"copy\",\n      \"length\": 4\n    },\n    {\n      \"id\": \"begin\",\n      \"at_ps\": 800,\n      \"operation\": \"begin_read\",\n      \"lease\": {\n        \"slot\": \"handoff\",\n        \"generation\": 1,\n        \"owner\": \"copy\"\n      },\n      \"consumer\": \"host\"\n    },\n    {\n      \"id\": \"release\",\n      \"at_ps\": 1100,\n      \"operation\": \"release\",\n      \"lease\": {\n        \"slot\": \"handoff\",\n        \"generation\": 1,\n        \"owner\": \"copy\"\n      },\n      \"consumer\": \"host\"\n    }\n  ]\n}\n",
+              "logical_path": "workload",
+              "sha256": "935aa8ade5da0d2188fdf96e7d337f16194a46be2b0eb46d3c3ddb49c1888626"
+            }
+          ],
+          "started_at_utc": "2026-10-22T11:55:07Z",
+          "target_triple": "x86_64-unknown-linux-gnu",
+          "time_resolution_ps": "1",
+          "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7",
+          "value_provenance": [
+            {
+              "adopted_source": "runtime-default",
+              "adopted_span": null,
+              "declaration_span": null,
+              "default_span": null,
+              "key": "max-delta-cycles",
+              "normalized_value": "1000000"
+            },
+            {
+              "adopted_source": "runtime-default",
+              "adopted_span": null,
+              "declaration_span": null,
+              "default_span": null,
+              "key": "max-events",
+              "normalized_value": "100000000"
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 18,
+                "end_byte": 180,
+                "end_column": 21,
+                "end_line": 8,
+                "line": 8,
+                "source": "config",
+                "start_byte": 177
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "metrics-window",
+              "normalized_value": "1ps"
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 17,
+                "end_byte": 80,
+                "end_column": 35,
+                "end_line": 4,
+                "line": 4,
+                "source": "config",
+                "start_byte": 62
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "model-profile",
+              "normalized_value": "\"soc.execution.v1\""
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 11,
+                "end_byte": 28,
+                "end_column": 19,
+                "end_line": 2,
+                "line": 2,
+                "source": "config",
+                "start_byte": 20
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "network",
+              "normalized_value": "\"soc.Demo\""
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 18,
+                "end_byte": 159,
+                "end_column": 24,
+                "end_line": 7,
+                "line": 7,
+                "source": "config",
+                "start_byte": 153
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "time-limit",
+              "normalized_value": "2000ps"
+            }
+          ],
+          "window_ps": "1"
+        },
+        "results_sha256": "42db42124821555c45b4d078863847694d0315d26a5c5f7aa17abe30f0603c54",
+        "manifest_sha256": "79e98988fc0e305f0422a58bea48480baae85c5cb266916a05d648d2d6a7d2f2"
+      },
+      {
+        "name": "soc-ddr4",
+        "command": [
+          "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-smoke-3/dir-simulator",
+          "run",
+          "--config",
+          "examples/soc-execution/ddr.ini",
+          "--output",
+          "/tmp/dir-remaining-implementation-20261021-evidence/release-v120-smoke-3/soc-ddr4"
+        ],
+        "exit_code": 0,
+        "seconds": 0.061,
+        "metadata": {
+          "adoption_ledger_sha256": "20132a53293038160be416e6e97ad8b03be4b1a0ffe40b3de838de5cee221c29",
+          "adoption_ledger_version": "1.2.0",
+          "binary_sha256": "e6e43ce9b19134f8478f24b481e009229551c5e1e0f94ee7268925b3c09e4f91",
+          "build_source_sha256": "cad9df90857ea7dee7d20e8db64df577d8d14c9062600521abd4a4dd6b75b952",
+          "cargo_lock_sha256": "58cbd5717b395b4f04e0d2906bfb04c97acbe7f12f603d88ac43906bbf2feb80",
+          "compiler": "rustc 1.85.0 (4d91de4e4 2025-02-17)",
+          "config": [
+            {
+              "key": "@prepared-model",
+              "value": "{\"channels\":[],\"models\":[{\"connections\":[],\"id\":\"Demo.soc\",\"implementation_key\":\"dir.soc.Execution\",\"output_sources\":{},\"parameters\":{},\"subject\":\"Demo.soc\"}]}"
+            },
+            {
+              "key": "max-delta-cycles",
+              "value": "1000000"
+            },
+            {
+              "key": "max-events",
+              "value": "100000000"
+            },
+            {
+              "key": "metrics-window",
+              "value": "1ps"
+            },
+            {
+              "key": "model-config",
+              "value": "\"model-config\""
+            },
+            {
+              "key": "model-profile",
+              "value": "\"soc.execution.v1\""
+            },
+            {
+              "key": "network",
+              "value": "\"soc.Demo\""
+            },
+            {
+              "key": "time-limit",
+              "value": "730000000ps"
+            }
+          ],
+          "config_sha256": "b41d2142613d80f77f364414663f8f20769a32071a40c3d70e3594acce9a0f20",
+          "cpu": "x86_64 / Intel(R) Core(TM) Ultra 7 265K",
+          "declarations": [
+            {
+              "kind": "network",
+              "parameters": [],
+              "span": {
+                "column": 1,
+                "end_byte": 123,
+                "end_column": 49,
+                "end_line": 3,
+                "line": 3,
+                "source": "root0/soc/model.ned",
+                "start_byte": 75
+              },
+              "type": "soc.Demo"
+            },
+            {
+              "kind": "simple",
+              "parameters": [],
+              "span": {
+                "column": 1,
+                "end_byte": 74,
+                "end_column": 62,
+                "end_line": 2,
+                "line": 2,
+                "source": "root0/soc/model.ned",
+                "start_byte": 13
+              },
+              "type": "soc.Execution"
+            }
+          ],
+          "effective_value_provenance": [
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/channels",
+              "normalized_value": "[]",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1716,
+                    "end_column": 2,
+                    "end_line": 94,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1156,
+                    "end_column": 2,
+                    "end_line": 68,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/models/0/connections",
+              "normalized_value": "[]",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1716,
+                    "end_column": 2,
+                    "end_line": 94,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1156,
+                    "end_column": 2,
+                    "end_line": 68,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/models/0/id",
+              "normalized_value": "\"Demo.soc\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1716,
+                    "end_column": 2,
+                    "end_line": 94,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1156,
+                    "end_column": 2,
+                    "end_line": 68,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/models/0/implementation_key",
+              "normalized_value": "\"dir.soc.Execution\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1716,
+                    "end_column": 2,
+                    "end_line": 94,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1156,
+                    "end_column": 2,
+                    "end_line": 68,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            },
+            {
+              "adopted_source": "adapter-default-or-derived",
+              "default_definition": "build_source_sha256",
+              "key": "@prepared-model/models/0/subject",
+              "normalized_value": "\"Demo.soc\"",
+              "source_dependencies": [
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1716,
+                    "end_column": 2,
+                    "end_line": 94,
+                    "line": 1,
+                    "source": "model-config",
+                    "start_byte": 0
+                  }
+                },
+                {
+                  "source_pointer": "",
+                  "span": {
+                    "column": 1,
+                    "end_byte": 1156,
+                    "end_column": 2,
+                    "end_line": 68,
+                    "line": 1,
+                    "source": "workload",
+                    "start_byte": 0
+                  }
+                }
+              ]
+            }
+          ],
+          "finished_at_utc": "2026-10-22T11:55:07Z",
+          "git_commit": "002a486fb7d4c7e0274d960174f5131afff7c060",
+          "git_dirty": "true",
+          "implementation_coverage": {
+            "limitations": [],
+            "profile": "soc.execution.v1",
+            "reproduction_conditions": "identified"
+          },
+          "initial_channel_state": [],
+          "initial_state": [
+            {
+              "instance": "Demo.soc",
+              "state": "{\"parameters\":{}}"
+            }
+          ],
+          "input_sha256": "bb1cda46deda5d34c542bbca2e04d497a4d78a5c79000a5e93918ede5bbc0751",
+          "metrics": [],
+          "model_profile": "soc.execution.v1",
+          "model_registry_version": "1",
+          "model_schemas": [
+            {
+              "schema_name": "ahb.pipeline.Record",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "dir.noc.FlitRecord",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "dir.soc.ExecutionRecord",
+              "schema_version": 1
+            },
+            {
+              "schema_name": "fabric.Record",
+              "schema_version": 1
+            }
+          ],
+          "models": [
+            {
+              "assumptions": [],
+              "type": "dir.soc.Execution",
+              "version": "1"
+            }
+          ],
+          "os": "linux / Ubuntu 24.04.4 LTS",
+          "runtime_version": "0.1.0",
+          "seed": null,
+          "source_roots": [
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/ned",
+              "logical_root": "root0"
+            }
+          ],
+          "sources": [
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/ddr.ini",
+              "content_utf8": "[General]\nnetwork = soc.Demo\nned-path = \"ned\"\nmodel-profile = \"soc.execution.v1\"\nmodel-config = \"ddr-model.json\"\nworkload = \"ddr-workload.json\"\nsim-time-limit = 730000000ps\nmetrics-window = 1ps\n",
+              "logical_path": "config",
+              "sha256": "ceb06506a9775d360d7fd4ad35415321d66816ccc7cd5c38df34fa674ae54186"
+            },
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/ddr-model.json",
+              "content_utf8": "{\n  \"schema\": \"dir.soc-execution.model\",\n  \"version\": 1,\n  \"cycle_ps\": 1,\n  \"memory\": [\n    {\n      \"id\": \"ram\",\n      \"base\": 0,\n      \"size\": 1024,\n      \"readable\": true,\n      \"writable\": true,\n      \"executable\": true,\n      \"initial\": [\n        147,\n        2,\n        0,\n        32,\n        19,\n        3,\n        160,\n        2,\n        35,\n        160,\n        98,\n        0,\n        131,\n        163,\n        2,\n        0,\n        15,\n        0,\n        0,\n        0,\n        115,\n        0,\n        0,\n        0\n      ]\n    },\n    {\n      \"id\": \"ddr\",\n      \"base\": 4096,\n      \"size\": 1024,\n      \"readable\": true,\n      \"writable\": true,\n      \"executable\": false,\n      \"backend\": \"ddr_strict\"\n    }\n  ],\n  \"cores\": [],\n  \"cache\": {\n    \"line_bytes\": 16,\n    \"sets\": 4,\n    \"ways\": 2,\n    \"mshrs\": 2,\n    \"ack_cycles\": 3\n  },\n  \"fabric\": {\n    \"queue_capacity\": 4,\n    \"aging_cycles\": 2,\n    \"data_bytes\": 4,\n    \"axi_address_delay_cycles\": 1,\n    \"ahb_wait_cycles\": 2\n  },\n  \"noc\": {\n    \"schema\": \"dir.noc-flit.model\",\n    \"version\": 1,\n    \"topology\": {\n      \"kind\": \"mesh\",\n      \"width\": 2,\n      \"height\": 2\n    },\n    \"flit_bytes\": 4,\n    \"buffer_flits\": 1,\n    \"adaptive_vcs\": 1,\n    \"cycle_ps\": 1,\n    \"link_latency_cycles\": 2,\n    \"credit_latency_cycles\": 2,\n    \"escape_after_stalls\": 2,\n    \"ejection_capacity_flits\": 1,\n    \"ejection_service_cycles\": 1,\n    \"pending_packets\": 4\n  },\n  \"memory_router\": 3,\n  \"dma_buffer_bytes\": 4,\n  \"slots\": [],\n  \"ddr\": {\n    \"mode_id\": \"issi.is43qr85120b-083rbl.rev-f.ddr4-2400r.x8.bl8.1n.25c.v1\",\n    \"source_sha256\": \"0606a9501dc13de5934856c9d7fbe0310f6a4edacf26b9cf416f4a5bfc2ca727\",\n    \"base\": 4096,\n    \"size\": 1024,\n    \"queue_capacity\": 4\n  }\n}\n",
+              "logical_path": "model-config",
+              "sha256": "c69d331a4d0802dd813843b728825fb6110cf8f62d500852ff58272d2c65498c"
+            },
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/ned/soc/model.ned",
+              "content_utf8": "package soc;\nsimple Execution { parameters: @class(\"dir.soc.Execution\"); }\nnetwork Demo { submodules: soc: soc.Execution; }\n",
+              "logical_path": "root0/soc/model.ned",
+              "sha256": "62f896dc266e0fbfbd1aab642eb94d3a4467cc6609e8f8b028b772301ae4ed77"
+            },
+            {
+              "canonical_path": "/tmp/dir-remaining-implementation-20261021/examples/soc-execution/ddr-workload.json",
+              "content_utf8": "{\n  \"schema\": \"dir.soc-execution.workload\",\n  \"version\": 1,\n  \"requests\": [\n    {\n      \"id\": \"populate\",\n      \"source\": \"writer\",\n      \"at_ps\": 0,\n      \"operation\": \"write\",\n      \"address\": 4096,\n      \"length\": 8,\n      \"data\": [\n        1,\n        2,\n        3,\n        4,\n        5,\n        6,\n        7,\n        8\n      ],\n      \"transport\": \"axi\",\n      \"router\": 0\n    },\n    {\n      \"id\": \"read-ddr\",\n      \"source\": \"reader\",\n      \"at_ps\": 710000000,\n      \"operation\": \"read\",\n      \"address\": 4096,\n      \"length\": 8,\n      \"transport\": \"ahb\",\n      \"router\": 1\n    },\n    {\n      \"id\": \"atomic-ddr\",\n      \"source\": \"atomic\",\n      \"at_ps\": 715000000,\n      \"operation\": \"atomic\",\n      \"address\": 4096,\n      \"length\": 4,\n      \"data\": [\n        1,\n        0,\n        0,\n        0\n      ],\n      \"transport\": \"axi\",\n      \"router\": 0,\n      \"atomic\": {\n        \"awatop\": 32,\n        \"burst\": \"incr\"\n      }\n    }\n  ],\n  \"dma\": [\n    {\n      \"id\": \"copy-ddr\",\n      \"source\": \"dma\",\n      \"at_ps\": 720000000,\n      \"source_address\": 4096,\n      \"destination\": 512,\n      \"length\": 8,\n      \"transport\": \"noc\",\n      \"router\": 0\n    }\n  ]\n}\n",
+              "logical_path": "workload",
+              "sha256": "2e57a866ad40a7b0bf44c934d42f3bdc54d63656e480c0c07494f89a5854e7d5"
+            }
+          ],
+          "started_at_utc": "2026-10-22T11:55:07Z",
+          "target_triple": "x86_64-unknown-linux-gnu",
+          "time_resolution_ps": "1",
+          "toolchain": "rustc 1.85.0 (4d91de4e4 2025-02-17)\nbinary: rustc\ncommit-hash: 4d91de4e48198da2e33413efdcd9cd2cc0c46688\ncommit-date: 2025-02-17\nhost: x86_64-unknown-linux-gnu\nrelease: 1.85.0\nLLVM version: 19.1.7",
+          "value_provenance": [
+            {
+              "adopted_source": "runtime-default",
+              "adopted_span": null,
+              "declaration_span": null,
+              "default_span": null,
+              "key": "max-delta-cycles",
+              "normalized_value": "1000000"
+            },
+            {
+              "adopted_source": "runtime-default",
+              "adopted_span": null,
+              "declaration_span": null,
+              "default_span": null,
+              "key": "max-events",
+              "normalized_value": "100000000"
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 18,
+                "end_byte": 193,
+                "end_column": 21,
+                "end_line": 8,
+                "line": 8,
+                "source": "config",
+                "start_byte": 190
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "metrics-window",
+              "normalized_value": "1ps"
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 17,
+                "end_byte": 80,
+                "end_column": 35,
+                "end_line": 4,
+                "line": 4,
+                "source": "config",
+                "start_byte": 62
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "model-profile",
+              "normalized_value": "\"soc.execution.v1\""
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 11,
+                "end_byte": 28,
+                "end_column": 19,
+                "end_line": 2,
+                "line": 2,
+                "source": "config",
+                "start_byte": 20
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "network",
+              "normalized_value": "\"soc.Demo\""
+            },
+            {
+              "adopted_source": "INI",
+              "adopted_span": {
+                "column": 18,
+                "end_byte": 172,
+                "end_column": 29,
+                "end_line": 7,
+                "line": 7,
+                "source": "config",
+                "start_byte": 161
+              },
+              "declaration_span": null,
+              "default_span": null,
+              "key": "time-limit",
+              "normalized_value": "730000000ps"
+            }
+          ],
+          "window_ps": "1"
+        },
+        "results_sha256": "18f3c54712f53560f71b271d93ef7dac682f19283d6753076c6149edbd923da7",
+        "manifest_sha256": "b398f6e2a3d5f643a85694d891205811f9968fbb182f3cb7328ad7a86f9fe616"
+      }
+    ]
+  },
+  "remote_publication_state": "pending; authority is the actual PR, tag and GitHub Release",
+  "current_document_link_repair": {
+    "paths": [
+      "docs/アーキテクチャ設計書.md",
+      "docs/機能仕様書.md",
+      "docs/要件定義書.md"
+    ],
+    "occurrences": 11,
+    "old_name_family": "AXI5実行",
+    "actual_name_family": "AXI5アトミック・QoS",
+    "destination_anchors_verified": [
+      "atomic",
+      "dir-test-0139"
+    ],
+    "independent_relative_target_audit": {
+      "targets": 14208,
+      "new_missing_destinations": 0
+    }
+  },
+  "final_source_frozen": true,
+  "independent_release_review": {
+    "result": "accepted; prior source-provenance P2 closed",
+    "verified_build_source_sha256": "cad9df90857ea7dee7d20e8db64df577d8d14c9062600521abd4a4dd6b75b952",
+    "verified_hashed_changed_inputs": 47,
+    "verified_current_documents": 199,
+    "verified_fixed_documents": 11,
+    "verified_actual_cli_cases": 3,
+    "remaining_p1_p2": 0,
+    "remote_ci_not_yet_verified": true
+  }
+}

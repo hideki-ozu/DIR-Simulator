@@ -1021,3 +1021,66 @@ fn vlan_generate_source_ready_offer_and_complete_failures_keep_callback_prefix()
     assert_eq!(e.eth().transfers.len(), 1);
     assert_eq!(e.snapshot.common.points.len(), points);
 }
+
+#[test]
+fn cooperative_steps_keep_ethernet_and_media_prefix_without_running_on_read() {
+    use super::super::legacy::StepOutcome;
+    use std::sync::Arc;
+    for relative in [
+        "examples/ethernet/unicast.ini",
+        "examples/ethernet/qos-priority.ini",
+        "examples/ethernet/vlan-unicast.ini",
+        "docs/verification/fixtures/ethernet-media/collision.ini",
+        "docs/verification/fixtures/ethernet-media/t1-duplex.ini",
+    ] {
+        let prepared = Arc::new(
+            crate::prepare(
+                &std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join("../..")
+                    .join(relative),
+            )
+            .unwrap(),
+        );
+        let expected = simulate(&prepared).unwrap();
+        let mut stepper = Stepper::new(prepared).unwrap();
+        assert!(stepper.snapshot().common.points.is_empty());
+        stepper.refresh_prefix(0).unwrap();
+        stepper.initialize().unwrap();
+        assert_eq!(stepper.snapshot().common.committed_events, 0);
+        loop {
+            let before = stepper.snapshot().common.committed_events;
+            match stepper.step() {
+                StepOutcome::Committed => assert_eq!(
+                    stepper.snapshot().common.committed_events,
+                    before + 1,
+                    "{relative}"
+                ),
+                StepOutcome::Exhausted => break,
+                StepOutcome::Failed => {
+                    panic!("{relative}: {:?}", stepper.snapshot().common.diagnostics)
+                }
+            }
+            let horizon = stepper.snapshot().common.last_event_time_ps.unwrap_or(0);
+            let pending = stepper.state.as_ref().unwrap().heap.len();
+            let result = format!("{:?}", stepper.snapshot().ethernet);
+            for _ in 0..2 {
+                stepper.refresh_prefix(horizon).unwrap();
+            }
+            assert_eq!(stepper.snapshot().common.committed_events, before + 1);
+            assert_eq!(stepper.state.as_ref().unwrap().heap.len(), pending);
+            assert_eq!(format!("{:?}", stepper.snapshot().ethernet), result);
+        }
+        stepper.finish_once();
+        stepper.finish_once();
+        assert_eq!(
+            format!("{:?}", stepper.snapshot().ethernet),
+            format!("{:?}", expected.ethernet),
+            "{relative}"
+        );
+        assert_eq!(
+            format!("{:?}", stepper.snapshot().common),
+            format!("{:?}", expected.common),
+            "{relative}"
+        );
+    }
+}

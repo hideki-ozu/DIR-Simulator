@@ -1,4 +1,6 @@
 //! Side-effect-free wire primitives. No expected fixture is used by this module.
+#[path = "ordered_map.rs"]
+pub(crate) mod ordered_map;
 use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DropReason(pub String);
@@ -38,7 +40,6 @@ pub fn hex(b: &[u8]) -> String {
     }
     out
 }
-#[cfg(test)]
 pub fn unhex(s: &str) -> DecodeResult<Vec<u8>> {
     if s.is_empty() || s.len() % 2 != 0 || !s.bytes().all(|x| x.is_ascii_hexdigit()) {
         return Err(bad("hex"));

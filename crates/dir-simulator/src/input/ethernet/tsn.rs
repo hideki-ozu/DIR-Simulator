@@ -89,11 +89,14 @@ fn schedule(v: &Value, stream: bool, p: &str) -> Result<Schedule> {
     let mut prefix_ps = vec![0u64];
     for (i, v) in raw.iter().enumerate() {
         let path = format!("{p}.entries[{i}]");
-        let fields = if stream {
+        let mut fields = if stream {
             vec!["duration_ps", "open"]
         } else {
             vec!["duration_ps", "open_priorities"]
         };
+        if !stream && v.get("operation").is_some() {
+            fields.push("operation");
+        }
         let e = obj(v, &fields, &path)?;
         let duration_ps = d(e, "duration_ps", &path)?;
         if duration_ps == 0 {
@@ -131,6 +134,11 @@ fn schedule(v: &Value, stream: bool, p: &str) -> Result<Schedule> {
         entries.push(GateEntry {
             duration_ps,
             open_mask: mask,
+            operation: match v.get("operation") {
+                None => GateOperation::SetGateStates,
+                Some(value) => serde_json::from_value(value.clone())
+                    .map_err(|_| err(&path, "unknown gate operation"))?,
+            },
         });
     }
     if *prefix_ps.last().unwrap() != cycle_ps {
@@ -403,7 +411,6 @@ pub(crate) fn prepare(config: &Value, base: &PreparedEthernet) -> Result<Prepare
             || !ids.insert(name.to_owned())
             || !times.insert((effective, port.to_owned()))
             || submitted > effective
-            || schedule.base_ps != effective
         {
             return Err(err(&p, "invalid update reference/ID/effective time"));
         }
@@ -564,9 +571,13 @@ pub(crate) mod tests {
             bad["tsn"]["gcl_updates"][0][field] = value;
             assert!(prepare(&bad, &base()).is_err());
         }
-        let mut bad = v.clone();
-        bad["tsn"]["gcl_updates"][0]["schedule"]["base_time_ps"] = json!("0");
-        assert!(prepare(&bad, &base()).is_err());
+        // Global management activation and the operational schedule's local
+        // base are independent coordinates, including identity-clock input.
+        let mut local_base = v.clone();
+        local_base["tsn"]["gcl_updates"][0]["schedule"]["base_time_ps"] = json!("0");
+        let prepared = prepare(&local_base, &base()).unwrap();
+        assert_eq!(prepared.updates[1].effective_at_ps, 200);
+        assert_eq!(prepared.updates[1].schedule.base_ps, 0);
         let mut bad = v.clone();
         bad["tsn"]["gcl_updates"][1] = update("u2", 100, "g1");
         assert!(prepare(&bad, &base()).is_err());

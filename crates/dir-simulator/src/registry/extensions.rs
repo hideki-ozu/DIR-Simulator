@@ -99,6 +99,7 @@ pub struct CheckpointDecodeContext<'a> {
     pub(crate) next_event_id: u64,
     pub(crate) live_timers: &'a BTreeSet<TimerToken>,
     pub(crate) reservations: &'a BTreeSet<TimerToken>,
+    pub(crate) pending_timers: &'a BTreeMap<TimerToken, Envelope>,
 }
 impl CheckpointEncodeContext<'_> {
     pub fn encode_timer_ref(&self, token: &TimerToken) -> ModelResult<TimerReference> {
@@ -118,6 +119,20 @@ impl CheckpointEncodeContext<'_> {
     }
 }
 impl CheckpointDecodeContext<'_> {
+    /// Inspect this owner's actual pending timer, including its scheduled time,
+    /// schema and payload. A codec can compare its state to the saved FES.
+    pub fn timer_envelope(&self, token: &TimerToken) -> ModelResult<&Envelope> {
+        if token.owner != self.owner
+            || !self.live_timers.contains(token)
+            || !self.reservations.contains(token)
+        {
+            return Err("timer is not a live reservation owned by this codec".into());
+        }
+        self.pending_timers
+            .get(token)
+            .ok_or_else(|| "pending timer envelope missing".into())
+    }
+
     pub fn decode_timer_ref(&self, reference: &TimerReference) -> ModelResult<TimerToken> {
         let id: u64 = reference
             .id

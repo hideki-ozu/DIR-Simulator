@@ -1,16 +1,17 @@
 # EthernetTSN詳細機能仕様書
 
-文書バージョン：`1.1.1`
-対象GitHubバージョン：`v1.1.4`
+文書バージョン：`1.2.0`
+対象GitHubバージョン：`v1.2.0`
 設計日：`2026-10-07`
-公開版：`v1.1.4`（公開済み）
+公開版：`v1.2.0`（対応するGitタグ）
 文書ID：`spec-ethernet-tsn`
-文書状態：v1.1.4で公開済み。抽象モデルを実装し、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
+文書状態：本改訂はv1.2.0収録。抽象モデルを実装し、native CLI・schema2出力・Viewerに対応する。実施した製品試験と未照合の組合せは検証仕様の実施記録に区別して示す。規格全体適合の証明ではない。
 
 ### 更新履歴
 
 | 文書バージョン | 更新日 | 更新内容 |
 | --- | --- | --- |
+| `1.2.0` | `2026-10-22` | 追加実装に伴う更新を集約し、v1.2.0の対象タグ・文書版を確定 |
 | `1.1.1` | `2026-10-11` | 公開文書整合性監査の修正を反映し、文書PATCHを一つ上げ、対象タグをv1.1.4へ統一 |
 | `1.1.0` | `2026-10-08` | 初回pushに向け、TSNのTAS・CBS・PSFPの入力・算術・状態遷移・合成・観測と独立期待値の契約を確定 |
 
@@ -64,7 +65,7 @@ Cbsは `{priority:J,idle_slope_bps:D,hi_credit_bits:D,lo_credit_bits:D}`。prior
 }
 ```
 
-gcl_updatesは静的入力に列挙した予定管理操作。IDは実行内一意、`submitted_at<=effective_at`かつ `schedule.base_time=effective_at` を必須とし、同port/effectiveの重複を拒否する。submitted時刻をcurrentとしeffective<currentを拒否、effective=currentを受理する。初期Scheduleだけはbase=0又は未来を許す。動的APIによる後付けは初版に含めない。操作入力の配列順は意味を持たず、時刻・port・ID辞書順で正規化する。将来・空負荷の設定もprepareで検証する。
+gcl_updatesは静的入力に列挙した予定管理操作。IDは実行内一意、`submitted_at<=effective_at`を必須とし、同port/effectiveの重複を拒否する。submitted/effectiveはsimulation全体時刻、schedule.base_timeは当該portのnode local時刻であり、両者を独立に指定できる。ideal_sharedではlocal時刻は全体時刻と一致する。submitted時刻をcurrentとしeffective<currentを拒否、effective=currentを受理する。初期・更新Scheduleともbase=0又は未来を許し、base以前のgateはclosedとする。これは同梱モデルの予定管理操作であり、IEEE ConfigChangeTime状態機械全体を表すものではない。動的APIによる後付けは初版に含めない。操作入力の配列順は意味を持たず、時刻・port・ID辞書順で正規化する。将来・空負荷の設定もprepareで検証する。
 
 ### 2.2. TAS guardとatomic更新
 
@@ -84,9 +85,11 @@ MAC長Mはegress VLAN tag変換・padding・FCS後のbyte数。`serialization_ps
 | 非送信、TAS gate closed/base前 | Cを凍結 |
 | 非送信、gate open、backlogあり | idle_slopeで増加、hiで飽和 |
 | 非送信、gate open、queue空、C<0 | idle_slopeで0まで回復 |
-| 非送信、queue空、C>=0 | 即0へreset（gate閉鎖でも正creditを保持しない） |
+| 非送信、gate open、queue空、C>=0 | 0へreset。gate closedでは正creditも凍結 |
 
 下限loで負側を飽和、上限hiで正側を飽和する。数値丸めは行わず、負creditの0到達wakeだけ `ceil(abs(C)/idle_slope)`ps。CBS対象はC>=0かつTAS/guard/dynamic eligibilityを満たした先頭だけ開始できる。SOFで最後の待機を取り出しても「自class送信中」が優先されreleaseまで減算する。他class送信中もopen/backlogのclassは回復する。CBS rateは固定link R、runtime bitrate変更は初版準備拒否。
+
+clock付きcompositionでは、gateの位相をnode local時刻で判断し、creditの傾きは物理bit/sと全体時刻の経過psで積分する。clockのstep自体には経過時間を与えず、旧anchorで変更時刻までを会計した後、新anchorでgateとwakeを再評価する。MAC Mergeの実segment会計は追加overheadと元MAC送信を区別する別契約で、上記のordinary MACのcredit上下限をそのまま適用しない。機能間の結合試験は[型付き構成検証](../../verification/cases/型付きネットワーク構成検証仕様書.md)に記録する。
 
 <a id="policing"></a>
 

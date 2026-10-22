@@ -1,0 +1,68 @@
+{
+  "schema": "dir.soc-execution.workload",
+  "version": 1,
+  "requests": [
+    {
+      "id": "populate",
+      "source": "writer",
+      "at_ps": 0,
+      "operation": "write",
+      "address": 4096,
+      "length": 8,
+      "data": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "transport": "axi",
+      "router": 0
+    },
+    {
+      "id": "read-ddr",
+      "source": "reader",
+      "at_ps": 710000000,
+      "operation": "read",
+      "address": 4096,
+      "length": 8,
+      "transport": "ahb",
+      "router": 1
+    },
+    {
+      "id": "atomic-ddr",
+      "source": "atomic",
+      "at_ps": 715000000,
+      "operation": "atomic",
+      "address": 4096,
+      "length": 4,
+      "data": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "transport": "axi",
+      "router": 0,
+      "atomic": {
+        "awatop": 32,
+        "burst": "incr"
+      }
+    }
+  ],
+  "dma": [
+    {
+      "id": "copy-ddr",
+      "source": "dma",
+      "at_ps": 720000000,
+      "source_address": 4096,
+      "destination": 512,
+      "length": 8,
+      "transport": "noc",
+      "router": 0
+    }
+  ]
+}

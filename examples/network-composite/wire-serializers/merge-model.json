@@ -1,0 +1,521 @@
+{
+  "schema_name": "dir.ethernet_network_composite.config",
+  "schema_version": 1,
+  "base": {
+    "profile": "ethernet.tsn.v1",
+    "config": {
+      "schema_version": 1,
+      "base": {
+        "profile": "ethernet.l2.dynamic.v1",
+        "config": {
+          "schema_version": 4,
+          "endpoints": [
+            {
+              "instance": "Net.a",
+              "mac": "02:00:00:00:00:01",
+              "multicast": [
+                {
+                  "vid": 10,
+                  "dst_mac": "01:00:5e:01:01:01"
+                },
+                {
+                  "vid": 10,
+                  "dst_mac": "33:33:00:00:00:01"
+                }
+              ]
+            },
+            {
+              "instance": "Net.b",
+              "mac": "02:00:00:00:00:02",
+              "multicast": [
+                {
+                  "vid": 10,
+                  "dst_mac": "01:00:5e:01:01:01"
+                },
+                {
+                  "vid": 10,
+                  "dst_mac": "33:33:00:00:00:01"
+                }
+              ]
+            }
+          ],
+          "switches": [
+            {
+              "instance": "Net.s1",
+              "forward_delay_ps": "2000",
+              "fdb": [
+                {
+                  "vid": 10,
+                  "dst_mac": "02:00:00:00:00:02",
+                  "egress": "Net.s1.tx_b"
+                }
+              ],
+              "multicast": [],
+              "unknown_multicast": "flood"
+            }
+          ],
+          "ports": [
+            {
+              "port": "Net.a.tx",
+              "pvid": 10,
+              "admit": "all",
+              "default_priority": 0,
+              "vlans": [
+                {
+                  "vid": 10,
+                  "tagged": true
+                }
+              ]
+            },
+            {
+              "port": "Net.s1.tx_a",
+              "pvid": 10,
+              "admit": "all",
+              "default_priority": 0,
+              "vlans": [
+                {
+                  "vid": 10,
+                  "tagged": true
+                }
+              ]
+            },
+            {
+              "port": "Net.b.tx",
+              "pvid": 10,
+              "admit": "all",
+              "default_priority": 0,
+              "vlans": [
+                {
+                  "vid": 10,
+                  "tagged": true
+                }
+              ]
+            },
+            {
+              "port": "Net.s1.tx_b",
+              "pvid": 10,
+              "admit": "all",
+              "default_priority": 7,
+              "vlans": [
+                {
+                  "vid": 10,
+                  "tagged": true
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "port": "Net.a.tx",
+              "scheduler": "strict_priority",
+              "queues": [
+                {
+                  "priority": 0,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 1,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 2,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 3,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 4,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 5,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 6,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 7,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                }
+              ]
+            },
+            {
+              "port": "Net.s1.tx_a",
+              "scheduler": "strict_priority",
+              "queues": [
+                {
+                  "priority": 0,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 1,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 2,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 3,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 4,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 5,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 6,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 7,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                }
+              ]
+            },
+            {
+              "port": "Net.b.tx",
+              "scheduler": "strict_priority",
+              "queues": [
+                {
+                  "priority": 0,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 1,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 2,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 3,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 4,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 5,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 6,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 7,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                }
+              ]
+            },
+            {
+              "port": "Net.s1.tx_b",
+              "scheduler": "strict_priority",
+              "queues": [
+                {
+                  "priority": 0,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 1,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 2,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 3,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 4,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 5,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 6,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 7,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                }
+              ]
+            }
+          ],
+          "dynamic": {
+            "mac_age_ps": "5000000",
+            "convergence_ps": "0",
+            "bridges": [
+              {
+                "instance": "Net.s1",
+                "bridge_id": "1"
+              }
+            ],
+            "links": [
+              {
+                "id": "A",
+                "ports": [
+                  "Net.a.tx",
+                  "Net.s1.tx_a"
+                ],
+                "up": true,
+                "cost": "10"
+              },
+              {
+                "id": "B",
+                "ports": [
+                  "Net.b.tx",
+                  "Net.s1.tx_b"
+                ],
+                "up": true,
+                "cost": "10"
+              }
+            ],
+            "registrable": [
+              {
+                "port": "Net.a.tx",
+                "vid": 20,
+                "tagged": true
+              },
+              {
+                "port": "Net.s1.tx_a",
+                "vid": 20,
+                "tagged": true
+              },
+              {
+                "port": "Net.b.tx",
+                "vid": 20,
+                "tagged": true
+              },
+              {
+                "port": "Net.s1.tx_b",
+                "vid": 20,
+                "tagged": true
+              }
+            ],
+            "limits": {
+              "mac_entries": 64,
+              "membership_entries": 64,
+              "sources_per_entry": 16,
+              "registrations": 64,
+              "control_events": 100,
+              "pending_timers": 128,
+              "visits_per_frame": 32
+            }
+          }
+        }
+      },
+      "tsn": {
+        "clock": "ideal_shared",
+        "outputs": [
+          {
+            "port": "Net.a.tx",
+            "cbs": [],
+            "tas": null
+          },
+          {
+            "port": "Net.s1.tx_a",
+            "cbs": [],
+            "tas": null
+          },
+          {
+            "port": "Net.b.tx",
+            "cbs": [],
+            "tas": null
+          },
+          {
+            "port": "Net.s1.tx_b",
+            "cbs": [],
+            "tas": {
+              "id": "wire_open",
+              "base_time_ps": "0",
+              "cycle_time_ps": "10000000",
+              "entries": [
+                {
+                  "duration_ps": "6000000",
+                  "open_priorities": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                  ]
+                },
+                {
+                  "duration_ps": "4000000",
+                  "open_priorities": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "streams": [],
+        "gcl_updates": []
+      }
+    }
+  },
+  "replication": null,
+  "limits": {
+    "max_pending_branches": 128,
+    "max_control_events": 128
+  },
+  "preemption": null,
+  "clocks": null,
+  "wire_control": {
+    "port_identities": [
+      {
+        "port": "Net.s1.tx_a",
+        "source_mac": "02:00:00:00:01:10"
+      },
+      {
+        "port": "Net.s1.tx_b",
+        "source_mac": "02:00:00:00:01:11"
+      }
+    ],
+    "adapters": [
+      {
+        "id": "rstp-s1",
+        "protocol": "rstp",
+        "protocol_revision": "ieee802.1q-2022.rstp.initial.v1",
+        "ports": [
+          "Net.s1.tx_a",
+          "Net.s1.tx_b"
+        ],
+        "max_pdu_bytes": 1500,
+        "max_state_entries": 12282,
+        "max_pending_timers": 12291,
+        "max_pending_tx": 128,
+        "max_control_steps": 1000000,
+        "rstp": {
+          "bridge_address": "020000000001",
+          "port_parameters": [
+            {
+              "port": "Net.s1.tx_a",
+              "port_number": 1,
+              "external_path_cost": 20000,
+              "admin_edge": true
+            },
+            {
+              "port": "Net.s1.tx_b",
+              "port_number": 2,
+              "external_path_cost": 20000,
+              "admin_edge": true
+            }
+          ]
+        }
+      }
+    ],
+    "packets": []
+  },
+  "mac_merge": {
+    "standard": "ieee8023_2022_clause99",
+    "outputs": [
+      {
+        "port": "Net.s1.tx_b",
+        "source_mac": "02:00:00:00:01:11",
+        "express_classes": [
+          7
+        ],
+        "preemptable_classes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "advertised_add_frag_size": 0,
+        "verify_time_ms": 10,
+        "admin_enabled": true
+      },
+      {
+        "port": "Net.b.tx",
+        "source_mac": "02:00:00:00:00:02",
+        "express_classes": [
+          7
+        ],
+        "preemptable_classes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "advertised_add_frag_size": 0,
+        "verify_time_ms": 10,
+        "admin_enabled": true
+      }
+    ],
+    "capability_adapter": {
+      "name": "dir_lldp_capability_v1",
+      "interval_ms": 1000,
+      "ttl_seconds": 3
+    },
+    "limits": {
+      "max_rx_mac_octets": 2048,
+      "max_pending_packets": 128
+    }
+  }
+}

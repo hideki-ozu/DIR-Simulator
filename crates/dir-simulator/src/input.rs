@@ -22,7 +22,10 @@ pub use references::{
     ReferenceUnsupported, ResolvedReferenceUse, inspect_references_with_source,
 };
 pub(crate) mod ned;
+pub(crate) mod noc_flit;
 mod soc;
+pub(crate) mod soc_execution;
+pub(crate) mod transaction_fabric;
 
 use crate::types::{Diagnostic, InputSnapshot, PreparedSimulation, SourceSpan};
 use serde_json::{Map, Value};
@@ -137,6 +140,8 @@ pub(crate) fn validate_parameter_literal(
             | "ethernet.l2.dynamic.v1"
             | "ethernet.tsn.v1"
             | "ethernet.redundancy.abstract.v1"
+            | "ethernet.frer.rtag.v1"
+            | "ethernet.network.composite.v1"
             | "ethernet.preemption.abstract.v1"
             | "ethernet.control.wire.experimental.v1"
             | "ethernet.l2.store-forward.v2"
@@ -145,7 +150,7 @@ pub(crate) fn validate_parameter_literal(
         ethernet::validate_parameter_literal(declaration, name, value)
     } else if matches!(profile, "can.ethernet.gateway.v1" | "can.ethernet.tsn.v1") {
         network::topology::validate_parameter_literal(declaration, name, value)
-    } else if profile == "can.fd.precomputed.v1" {
+    } else if matches!(profile, "can.fd.precomputed.v1" | "can.fd.iso.v1") {
         canfd::validate_parameter_literal(declaration, name, value)
     } else if profile == "axi4.transaction.v1" {
         axi::validate_parameter_literal(declaration, name, value)
@@ -518,7 +523,7 @@ pub(crate) fn read_file(
 }
 
 #[derive(Default)]
-struct Ini {
+pub(crate) struct Ini {
     general: BTreeMap<String, String>,
     channels: BTreeMap<String, BTreeMap<String, String>>,
     spans: BTreeMap<String, (SourceSpan, SourceSpan)>,
@@ -526,7 +531,7 @@ struct Ini {
     eof: Option<SourceSpan>,
 }
 impl Ini {
-    fn parse(content: &str, path: &Path) -> Result<Self> {
+    pub(crate) fn parse(content: &str, path: &Path) -> Result<Self> {
         let mut ini = Self {
             eof: Some(SourceSpan::new(path, content, content.len(), content.len())),
             ..Self::default()
@@ -646,6 +651,7 @@ impl Ini {
                     | "ned-path"
                     | "sim-time-limit"
                     | "metrics-window"
+                    | "metrics-version"
                     | "max-events"
                     | "max-delta-cycles"
                     | "workload"
@@ -702,7 +708,7 @@ impl Ini {
         }
         Ok(ini)
     }
-    fn annotate(&self, key: &str, diagnostic: Diagnostic) -> Diagnostic {
+    pub(crate) fn annotate(&self, key: &str, diagnostic: Diagnostic) -> Diagnostic {
         let key_span = matches!(
             diagnostic.reason.as_str(),
             "unknown_parameter" | "unknown_instance" | "duplicate_definition"
@@ -732,61 +738,54 @@ impl Ini {
     }
 }
 
-/// Attach a known configuration key using the same validated INI parser as preparation.
-pub(crate) fn annotate_config_key(
-    text: &str,
-    path: &Path,
-    key: &str,
-    diagnostic: Diagnostic,
-) -> Diagnostic {
-    match Ini::parse(text, path) {
-        Ok(ini) => ini.annotate(key, diagnostic),
-        Err(_) => diagnostic.with_source(path),
-    }
-}
-
 /// Inspect only INI structure and reference path literals. No disk is accessed.
 pub fn inspect_config(text: &str, path: &Path, cwd: &Path) -> Result<ProjectHeader> {
     let config = absolute(path, cwd);
-    let base = config
-        .parent()
-        .ok_or_else(|| error("config has no parent"))?;
-    let ini = Ini::parse(text, &config)?;
-    let roots = ini
-        .value("ned-path", quoted_paths(ini.required("ned-path")?))?
-        .into_iter()
-        .map(|path| absolute(Path::new(&path), base))
-        .collect();
-    let reference = |key: &str| -> Result<Option<PathBuf>> {
-        ini.general
-            .get(key)
-            .map(|value| {
-                let value = string_literal(value)?;
-                valid_file_path(&value)?;
-                Ok(absolute(Path::new(&value), base))
-            })
+    Ini::parse(text, &config)?.project_header(&config, cwd)
+}
+
+impl Ini {
+    pub(crate) fn project_header(&self, config: &Path, cwd: &Path) -> Result<ProjectHeader> {
+        let ini = self;
+        let base = config
+            .parent()
+            .ok_or_else(|| error("config has no parent"))?;
+        let roots = ini
+            .value("ned-path", quoted_paths(ini.required("ned-path")?))?
+            .into_iter()
+            .map(|path| absolute(Path::new(&path), base))
+            .collect();
+        let reference = |key: &str| -> Result<Option<PathBuf>> {
+            ini.general
+                .get(key)
+                .map(|value| {
+                    let value = string_literal(value)?;
+                    valid_file_path(&value)?;
+                    Ok(absolute(Path::new(&value), base))
+                })
+                .transpose()
+                .map_err(|diagnostic| ini.annotate(key, diagnostic))
+        };
+        let workload = reference("workload")?;
+        let model_config = reference("model-config")?;
+        let profile = ini
+            .general
+            .get("model-profile")
+            .map(|value| string_literal(value))
             .transpose()
-            .map_err(|diagnostic| ini.annotate(key, diagnostic))
-    };
-    let workload = reference("workload")?;
-    let model_config = reference("model-config")?;
-    let profile = ini
-        .general
-        .get("model-profile")
-        .map(|value| string_literal(value))
-        .transpose()
-        .map_err(|diagnostic| ini.annotate("model-profile", diagnostic))?;
-    Ok(ProjectHeader {
-        config,
-        cwd: normalize(cwd),
-        network: ini.general.get("network").cloned(),
-        profile,
-        roots,
-        workload,
-        model_config,
-        general: ini.general,
-        channels: ini.channels,
-    })
+            .map_err(|diagnostic| ini.annotate("model-profile", diagnostic))?;
+        Ok(ProjectHeader {
+            config: config.to_path_buf(),
+            cwd: normalize(cwd),
+            network: ini.general.get("network").cloned(),
+            profile,
+            roots,
+            workload,
+            model_config,
+            general: ini.general.clone(),
+            channels: ini.channels.clone(),
+        })
+    }
 }
 
 pub(crate) fn collect_ned(
@@ -834,23 +833,63 @@ pub fn prepare_with_source(
     cwd: &Path,
     source: &dyn InputSource,
 ) -> Result<PreparedSimulation> {
-    let mut prepared = prepare_with_source_inner(config_path, cwd, source, None)?;
-    prepared.common.provenance = capture_provenance(&prepared)?;
-    Ok(prepared)
+    prepare_with_source_inner(config_path, cwd, source, None)
+}
+
+pub(crate) fn network_metrics_requested(general: &BTreeMap<String, String>) -> Result<bool> {
+    match general
+        .get("metrics-version")
+        .map(String::as_str)
+        .unwrap_or("1")
+    {
+        "1" => Ok(false),
+        "2" => Ok(true),
+        _ => Err(error("metrics-version must be 1 or 2")
+            .with_reason("invalid_range")
+            .with_target("metrics-version")
+            .with_detail("expected", "1 or 2")),
+    }
 }
 fn prepare_with_source_inner(
     config_path: &Path,
     cwd: &Path,
     source: &dyn InputSource,
-    mut evidence: Option<&mut references::Evidence>,
+    evidence: Option<&mut references::Evidence>,
 ) -> Result<PreparedSimulation> {
     let config = absolute(config_path, cwd);
-    let base = config
-        .parent()
-        .ok_or_else(|| error("config has no parent"))?;
     let mut snapshots = Vec::new();
     let config_text = read_file(&config, &mut snapshots, source)?;
     let ini = Ini::parse(&config_text, &config)?;
+    // Dispatch from the captured INI so every source operation belongs to the
+    // actual preparation, including for default-registered coordinators.
+    let registry = crate::registry::Registry::default();
+    let registered_profile = ini
+        .general
+        .get("model-profile")
+        .and_then(|value| string_literal(value).ok())
+        .is_some_and(|profile| {
+            registry.profiles.contains_key(&profile)
+                && !registry.builtin_profiles.contains(&profile)
+        });
+    if registered_profile {
+        return crate::registry::prepare_with_parsed_config(
+            &config, cwd, source, registry, ini, snapshots,
+        );
+    }
+    prepare_builtin_with_ini(&config, source, ini, snapshots, evidence)
+}
+
+/// Continue builtin preparation from the INI already acquired by the dispatcher.
+pub(crate) fn prepare_builtin_with_ini(
+    config: &Path,
+    source: &dyn InputSource,
+    ini: Ini,
+    mut snapshots: Vec<InputSnapshot>,
+    mut evidence: Option<&mut references::Evidence>,
+) -> Result<PreparedSimulation> {
+    let base = config
+        .parent()
+        .ok_or_else(|| error("config has no parent"))?;
     let result = (|| {
         let network = ini.required("network")?;
         if !network.contains('.') || !path_name(network) {
@@ -984,6 +1023,7 @@ fn prepare_with_source_inner(
                         | "ned-path"
                         | "sim-time-limit"
                         | "metrics-window"
+                        | "metrics-version"
                         | "max-events"
                         | "max-delta-cycles"
                         | "workload"
@@ -1079,7 +1119,7 @@ fn prepare_with_source_inner(
                     max_events,
                     max_delta_cycles,
                     channel_count,
-                    config_path: config.clone(),
+                    config_path: config.to_path_buf(),
                     model_config_path: Some(model_path),
                     workload_path,
                     inputs: snapshots,
@@ -1103,7 +1143,7 @@ fn prepare_with_source_inner(
                 memory_ipc: memory_model,
             });
         }
-        if profile == "can.fd.precomputed.v1" {
+        if matches!(profile.as_str(), "can.fd.precomputed.v1" | "can.fd.iso.v1") {
             let (mut canfd, module_paths, channel_count) =
                 canfd::resolve(&declarations, network, &overrides, &ini.channels)?;
             let model_path = string_literal(ini.required("model-config")?)?;
@@ -1139,7 +1179,7 @@ fn prepare_with_source_inner(
                     max_events,
                     max_delta_cycles,
                     channel_count,
-                    config_path: config.clone(),
+                    config_path: config.to_path_buf(),
                     model_config_path: Some(model_path),
                     workload_path,
                     inputs: snapshots,
@@ -1164,8 +1204,13 @@ fn prepare_with_source_inner(
             });
         }
         if profile == "can.ethernet.tsn.v1" {
-            let (can_base, ethernet, module_paths, channel_count) =
-                network::topology::resolve(&declarations, network, &overrides, &ini.channels)?;
+            let (can_base, ethernet, module_paths, channel_count) = network::topology::resolve(
+                &declarations,
+                network,
+                &overrides,
+                &ini.channels,
+                true,
+            )?;
             let model_name = string_literal(ini.required("model-config")?)?;
             valid_file_path(&model_name)?;
             let model_path = absolute(Path::new(&model_name), base);
@@ -1202,7 +1247,7 @@ fn prepare_with_source_inner(
                     max_events,
                     max_delta_cycles,
                     channel_count,
-                    config_path: config.clone(),
+                    config_path: config.to_path_buf(),
                     model_config_path: Some(model_path),
                     workload_path: Some(workload_path),
                     inputs: snapshots,
@@ -1220,8 +1265,13 @@ fn prepare_with_source_inner(
             });
         }
         if profile == "can.ethernet.gateway.v1" {
-            let (can_base, mut ethernet, module_paths, channel_count) =
-                network::topology::resolve(&declarations, network, &overrides, &ini.channels)?;
+            let (can_base, mut ethernet, module_paths, channel_count) = network::topology::resolve(
+                &declarations,
+                network,
+                &overrides,
+                &ini.channels,
+                false,
+            )?;
             let model_path = string_literal(ini.required("model-config")?)?;
             valid_file_path(&model_path)?;
             let model_path = absolute(Path::new(&model_path), base);
@@ -1250,7 +1300,16 @@ fn prepare_with_source_inner(
                 tsn: None,
                 bridge: Some(bridge),
                 extensions: None,
+                clocks: None,
+                gptp: None,
+                phy_attachments: vec![],
+                shared_lans: vec![],
+                provider_l2: None,
+                multicast_active: None,
+                qcc: None,
                 wire: None,
+                mac_control: None,
+                bindings: None,
                 config: config_value,
                 workload: workload_value,
             };
@@ -1271,7 +1330,7 @@ fn prepare_with_source_inner(
                     max_events,
                     max_delta_cycles,
                     channel_count,
-                    config_path: config.clone(),
+                    config_path: config.to_path_buf(),
                     model_config_path: Some(model_path),
                     workload_path,
                     inputs: snapshots,
@@ -1296,6 +1355,8 @@ fn prepare_with_source_inner(
                 | "ethernet.l2.dynamic.v1"
                 | "ethernet.tsn.v1"
                 | "ethernet.redundancy.abstract.v1"
+                | "ethernet.frer.rtag.v1"
+                | "ethernet.network.composite.v1"
                 | "ethernet.preemption.abstract.v1"
                 | "ethernet.control.wire.experimental.v1"
                 | "ethernet.l2.store-forward.v2"
@@ -1317,6 +1378,8 @@ fn prepare_with_source_inner(
                 "ethernet.l2.dynamic.v1"
                     | "ethernet.tsn.v1"
                     | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.frer.rtag.v1"
+                    | "ethernet.network.composite.v1"
                     | "ethernet.preemption.abstract.v1"
                     | "ethernet.control.wire.experimental.v1"
             );
@@ -1455,7 +1518,7 @@ fn prepare_with_source_inner(
                     max_events,
                     max_delta_cycles,
                     channel_count,
-                    config_path: config.clone(),
+                    config_path: config.to_path_buf(),
                     model_config_path: Some(model_path),
                     workload_path,
                     inputs: snapshots,
@@ -1567,7 +1630,7 @@ fn prepare_with_source_inner(
                 max_events,
                 max_delta_cycles,
                 channel_count: resolved.channel_count,
-                config_path: config.clone(),
+                config_path: config.to_path_buf(),
                 model_config_path,
                 workload_path,
                 inputs: snapshots,
@@ -1586,7 +1649,7 @@ fn prepare_with_source_inner(
             },
         })
     })();
-    result.map_err(|mut diagnostic: Diagnostic| {
+    let mut prepared = result.map_err(|mut diagnostic: Diagnostic| {
         if let Some(target) = diagnostic.target.clone() {
             if ini.spans.contains_key(&target) || ini.section_spans.contains_key(&target) {
                 diagnostic = ini.annotate(&target, diagnostic);
@@ -1594,7 +1657,12 @@ fn prepare_with_source_inner(
         }
         diagnostic.message = format!("{}: {}", config.display(), diagnostic.message);
         diagnostic
-    })
+    })?;
+    if network_metrics_requested(&ini.general).map_err(|e| ini.annotate("metrics-version", e))? {
+        crate::runtime::network_metrics::enable(&mut prepared)?;
+    }
+    prepared.common.provenance = capture_provenance(&prepared)?;
+    Ok(prepared)
 }
 
 fn object<'a>(value: &'a Value, allowed: &[&str], target: &str) -> Result<&'a Map<String, Value>> {

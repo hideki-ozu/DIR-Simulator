@@ -1,0 +1,192 @@
+{
+  "schema": "dir.soc-execution.workload",
+  "version": 1,
+  "requests": [
+    {
+      "id": "length",
+      "source": "producer",
+      "at_ps": 0,
+      "address": 4108,
+      "length": 4,
+      "operation": "write",
+      "transport": "axi",
+      "router": 0,
+      "data": [
+        4,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "lease",
+      "source": "producer",
+      "at_ps": 100,
+      "address": 4120,
+      "length": 4,
+      "operation": "write",
+      "transport": "axi",
+      "router": 0,
+      "data": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "generation",
+      "source": "producer",
+      "at_ps": 200,
+      "address": 4100,
+      "length": 4,
+      "operation": "read",
+      "transport": "axi",
+      "router": 0
+    },
+    {
+      "id": "producer-expects",
+      "source": "producer",
+      "at_ps": 250,
+      "address": 4112,
+      "length": 4,
+      "operation": "write",
+      "transport": "axi",
+      "router": 0,
+      "data": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "payload",
+      "source": "producer",
+      "at_ps": 300,
+      "address": 256,
+      "length": 4,
+      "operation": "write",
+      "transport": "axi",
+      "router": 0,
+      "data": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "lease": {
+        "slot": "slot",
+        "generation": 1,
+        "owner": "producer"
+      }
+    },
+    {
+      "id": "publish",
+      "source": "producer",
+      "at_ps": 600,
+      "address": 4120,
+      "length": 4,
+      "operation": "write",
+      "transport": "axi",
+      "router": 0,
+      "data": [
+        2,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "notification",
+      "source": "consumer",
+      "at_ps": 700,
+      "address": 4128,
+      "length": 4,
+      "operation": "read",
+      "transport": "axi",
+      "router": 0
+    },
+    {
+      "id": "consumer-expects",
+      "source": "consumer",
+      "at_ps": 750,
+      "address": 4112,
+      "length": 4,
+      "operation": "write",
+      "transport": "axi",
+      "router": 0,
+      "data": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "begin-read",
+      "source": "consumer",
+      "at_ps": 850,
+      "address": 4120,
+      "length": 4,
+      "operation": "write",
+      "transport": "axi",
+      "router": 0,
+      "data": [
+        3,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "observe-dma-copy",
+      "source": "observer",
+      "at_ps": 1400,
+      "address": 512,
+      "length": 4,
+      "operation": "read",
+      "transport": "axi",
+      "router": 0
+    },
+    {
+      "id": "release",
+      "source": "consumer",
+      "at_ps": 1600,
+      "address": 4120,
+      "length": 4,
+      "operation": "write",
+      "transport": "axi",
+      "router": 0,
+      "data": [
+        4,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "free-status",
+      "source": "consumer",
+      "at_ps": 1700,
+      "address": 4096,
+      "length": 4,
+      "operation": "read",
+      "transport": "axi",
+      "router": 0
+    }
+  ],
+  "dma": [
+    {
+      "id": "consumer-copy",
+      "source": "consumer",
+      "at_ps": 1000,
+      "source_address": 256,
+      "destination": 512,
+      "length": 4,
+      "transport": "noc",
+      "router": 0
+    }
+  ],
+  "commands": []
+}

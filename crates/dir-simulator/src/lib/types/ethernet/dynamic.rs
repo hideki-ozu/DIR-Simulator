@@ -3,13 +3,13 @@ use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
 use std::net::IpAddr;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, serde::Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum IpFamily {
     Ipv4,
     Ipv6,
 }
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, serde::Deserialize)]
 pub struct IpMulticast {
     pub family: IpFamily,
     pub source: IpAddr,
@@ -32,19 +32,19 @@ pub struct DynamicLimits {
     pub pending_timers: usize,
     pub visits_per_frame: u64,
 }
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, serde::Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum FilterMode {
     Include,
     Exclude,
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, serde::Deserialize)]
 pub struct MacKey {
     pub switch: String,
     pub vid: u16,
     pub mac: String,
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, serde::Deserialize)]
 pub struct MembershipKey {
     pub switch: String,
     pub vid: u16,
@@ -52,14 +52,14 @@ pub struct MembershipKey {
     pub group: IpAddr,
     pub port: String,
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, serde::Deserialize)]
 pub struct RouterKey {
     pub switch: String,
     pub vid: u16,
     pub family: IpFamily,
     pub port: String,
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, serde::Deserialize)]
 pub struct RegistrationKey {
     pub port: String,
     pub vid: u16,
@@ -134,18 +134,18 @@ pub struct PreparedDynamicEthernet {
     pub generator_ip: BTreeMap<String, Option<IpMulticast>>,
     pub mac_keys: BTreeSet<MacKey>,
 }
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, serde::Deserialize)]
 pub struct Lease<T> {
     pub expires_at: u64,
     pub generation: u64,
     pub value: T,
 }
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, serde::Deserialize)]
 pub struct SourceFilter {
     pub mode: FilterMode,
     pub sources: BTreeSet<IpAddr>,
 }
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PortRole {
     Root,
@@ -166,6 +166,9 @@ pub struct PolicySnapshot {
     pub roles: BTreeMap<String, PortRole>,
     pub link_up: BTreeMap<String, bool>,
     pub effective_vlans: BTreeMap<String, BTreeMap<u16, bool>>,
+    /// Effective VID-specific tree roles. Legacy single-tree snapshots omit it.
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
+    pub tree_roles: BTreeMap<String, BTreeMap<u16, PortRole>>,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Ineligible {

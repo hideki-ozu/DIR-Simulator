@@ -1,4 +1,5 @@
 //! Sparse edge scheduling with atomic callback preflight and committed journal.
+use super::legacy::StepOutcome;
 use crate::snapshot::axi::{AxiHandshake, AxiRequest, AxiSnapshot};
 use crate::snapshot::{Point, Snapshot};
 use crate::types::axi::PreparedAxi;
@@ -6,6 +7,7 @@ use crate::types::{Diagnostic, PreparedSimulation};
 use serde_json::{Value, json};
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, VecDeque};
+use std::sync::Arc;
 pub mod protocol;
 type Result<T> = std::result::Result<T, Diagnostic>;
 type Key = (u64, u8, usize, u64, u64);
@@ -49,6 +51,9 @@ fn hex(bytes: &[u8]) -> String {
 struct Engine<'a> {
     prepared: &'a PreparedSimulation,
     model: &'a PreparedAxi,
+    owned: EngineState,
+}
+struct EngineState {
     heap: BinaryHeap<Reverse<(Key, Event, String)>>,
     sequence: u64,
     now: u64,
@@ -82,27 +87,28 @@ impl Engine<'_> {
         }
     }
     fn state(&self) -> &AxiSnapshot {
-        self.snapshot.axi.as_ref().unwrap()
+        self.owned.snapshot.axi.as_ref().unwrap()
     }
     fn state_mut(&mut self) -> &mut AxiSnapshot {
-        self.snapshot.axi.as_mut().unwrap()
+        self.owned.snapshot.axi.as_mut().unwrap()
     }
     fn reserve(
         &self,
         events: Vec<(u64, u8, usize, u64, Event)>,
     ) -> Result<Vec<Reverse<(Key, Event, String)>>> {
-        self.sequence
+        self.owned
+            .sequence
             .checked_add(events.len() as u64)
             .ok_or_else(|| limit("AXI event sequence overflow"))?;
         events
             .into_iter()
             .enumerate()
             .map(|(offset, (time, phase, g, ordinal, event))| {
-                if time < self.now {
+                if time < self.owned.now {
                     return Err(failed("AXI timer before callback"));
                 }
                 Ok(Reverse((
-                    (time, phase, g, ordinal, self.sequence + offset as u64),
+                    (time, phase, g, ordinal, self.owned.sequence + offset as u64),
                     event.clone(),
                     self.internal(&event)
                         .map(|payload| payload.encode())
@@ -113,8 +119,8 @@ impl Engine<'_> {
             .collect()
     }
     fn publish(&mut self, events: Vec<Reverse<(Key, Event, String)>>) {
-        self.sequence += events.len() as u64;
-        self.heap.extend(events);
+        self.owned.sequence += events.len() as u64;
+        self.owned.heap.extend(events);
     }
     fn point(
         &mut self,
@@ -124,10 +130,10 @@ impl Engine<'_> {
         request: Option<String>,
         reason: Option<String>,
     ) {
-        self.snapshot.common.points.push(Point {
-            event_seq: Some(self.event_sequence),
-            effect_seq: Some(self.effect),
-            time_ps: self.now,
+        self.owned.snapshot.common.points.push(Point {
+            event_seq: Some(self.owned.event_sequence),
+            effect_seq: Some(self.owned.effect),
+            time_ps: self.owned.now,
             target: if metric == "axi.channel_stall_cycles" {
                 self.model.interconnect.clone()
             } else {
@@ -139,29 +145,29 @@ impl Engine<'_> {
             receiver: None,
             reason,
         });
-        self.effect += 1;
+        self.owned.effect += 1;
     }
     fn gauges(&mut self, source: usize, request: String) {
         self.point(
             source,
             "axi.queue_length",
-            self.queues[source].len() as u64,
+            self.owned.queues[source].len() as u64,
             Some(request.clone()),
             None,
         );
         self.point(
             source,
             "axi.outstanding",
-            self.outstanding[source],
+            self.owned.outstanding[source],
             Some(request),
             None,
         );
     }
     fn schedule_arbitration(&self) -> Vec<(u64, u8, usize, u64, Event)> {
-        if self.arbitration == Some(self.now) {
+        if self.owned.arbitration == Some(self.owned.now) {
             vec![]
         } else {
-            vec![(self.now, 2, 0, 0, Event::Arbitrate)]
+            vec![(self.owned.now, 2, 0, 0, Event::Arbitrate)]
         }
     }
     fn handshake(
@@ -264,19 +270,19 @@ impl Engine<'_> {
                 return Err(failed("AXI internal event does not match context"));
             }
         }
-        self.effect = 0;
+        self.owned.effect = 0;
         match event {
             Event::Generate(g, ordinal) => {
                 let generator = &self.model.generators[g];
-                if generator.times_ps.get(ordinal as usize) != Some(&self.now) {
+                if generator.times_ps.get(ordinal as usize) != Some(&self.owned.now) {
                     return Err(failed("AXI generator invariant"));
                 }
                 let p = self.model.clock_period_ps;
-                let edge = self.now / p + u64::from(self.now % p != 0);
+                let edge = self.owned.now / p + u64::from(self.owned.now % p != 0);
                 let eligible = multiply(edge, p)?;
                 let source = generator.source;
                 let accepted =
-                    self.outstanding[source] < self.model.managers[source].max_outstanding;
+                    self.owned.outstanding[source] < self.model.managers[source].max_outstanding;
                 let r = self.state().requests.len();
                 let mut events = vec![];
                 if let Some(&time) = generator.times_ps.get(ordinal as usize + 1) {
@@ -285,17 +291,17 @@ impl Engine<'_> {
                     }
                 }
                 let mut new_wake = None;
-                if accepted && self.active.is_none() {
-                    if eligible == self.now {
+                if accepted && self.owned.active.is_none() {
+                    if eligible == self.owned.now {
                         events.extend(self.schedule_arbitration());
-                    } else if self.wake.is_none_or(|old| eligible < old) {
+                    } else if self.owned.wake.is_none_or(|old| eligible < old) {
                         events.push((eligible, 0, 0, 0, Event::Wake));
                         new_wake = Some(eligible);
                     }
                 }
                 let reserved = self.reserve(events)?;
                 let request_id = format!("{}:{ordinal}", generator.id);
-                let now = self.now;
+                let now = self.owned.now;
                 self.state_mut().requests.push(AxiRequest {
                     request_id: request_id.clone(),
                     generator: g,
@@ -311,57 +317,59 @@ impl Engine<'_> {
                     drop_reason: (!accepted).then(|| "outstanding_full".into()),
                 });
                 if accepted {
-                    self.queues[source].push_back(r);
-                    self.outstanding[source] += 1;
-                    if self.active.is_none() && eligible == self.now {
-                        self.arbitration = Some(self.now);
+                    self.owned.queues[source].push_back(r);
+                    self.owned.outstanding[source] += 1;
+                    if self.owned.active.is_none() && eligible == self.owned.now {
+                        self.owned.arbitration = Some(self.owned.now);
                     }
                 }
                 if let Some(time) = new_wake {
-                    if let Some(old) = self.wake {
-                        self.heap
+                    if let Some(old) = self.owned.wake {
+                        self.owned
+                            .heap
                             .retain(|Reverse((key, e, _))| !(key.0 == old && *e == Event::Wake));
                     }
-                    self.wake = Some(time);
+                    self.owned.wake = Some(time);
                 }
                 self.gauges(source, request_id);
                 self.publish(reserved);
             }
             Event::Wake => {
-                if self.wake != Some(self.now) {
+                if self.owned.wake != Some(self.owned.now) {
                     return Err(failed("AXI Wake token invariant"));
                 }
                 let reserved = self.reserve(self.schedule_arbitration())?;
-                self.wake = None;
-                self.arbitration = Some(self.now);
+                self.owned.wake = None;
+                self.owned.arbitration = Some(self.owned.now);
                 self.publish(reserved);
             }
             Event::Arbitrate => {
-                if self.arbitration != Some(self.now) {
+                if self.owned.arbitration != Some(self.owned.now) {
                     return Err(failed("AXI arbitration invariant"));
                 }
-                if self.active.is_some() {
-                    self.arbitration = None;
+                if self.owned.active.is_some() {
+                    self.owned.arbitration = None;
                     return Ok(());
                 }
-                let winner = (0..self.queues.len())
-                    .map(|offset| (self.cursor + offset) % self.queues.len())
+                let winner = (0..self.owned.queues.len())
+                    .map(|offset| (self.owned.cursor + offset) % self.owned.queues.len())
                     .find_map(|source| {
-                        self.queues[source]
+                        self.owned.queues[source]
                             .front()
                             .copied()
-                            .filter(|&r| self.state().requests[r].eligible_ps <= self.now)
+                            .filter(|&r| self.state().requests[r].eligible_ps <= self.owned.now)
                             .map(|r| (source, r))
                     });
                 let Some((source, r)) = winner else {
                     let earliest = self
+                        .owned
                         .queues
                         .iter()
                         .filter_map(|q| q.front())
                         .map(|&r| self.state().requests[r].eligible_ps)
                         .min();
                     let events = if let Some(time) = earliest {
-                        if self.wake != Some(time) {
+                        if self.owned.wake != Some(time) {
                             vec![(time, 0, 0, 0, Event::Wake)]
                         } else {
                             vec![]
@@ -370,9 +378,9 @@ impl Engine<'_> {
                         vec![]
                     };
                     let reserved = self.reserve(events)?;
-                    self.arbitration = None;
+                    self.owned.arbitration = None;
                     if let Some(time) = earliest {
-                        self.wake = Some(time);
+                        self.owned.wake = Some(time);
                     }
                     self.publish(reserved);
                     return Ok(());
@@ -386,7 +394,7 @@ impl Engine<'_> {
                 } else {
                     "AR"
                 };
-                let edge = add(self.now / self.model.clock_period_ps, 1)?;
+                let edge = add(self.owned.now / self.model.clock_period_ps, 1)?;
                 let event = self.handshake(r, channel, 0, edge, edge)?;
                 let stage = (
                     channel.into(),
@@ -395,16 +403,17 @@ impl Engine<'_> {
                     multiply(edge, self.model.clock_period_ps)?,
                 );
                 let reserved = self.reserve(vec![event])?;
-                self.arbitration = None;
-                if let Some(time) = self.wake.take() {
-                    self.heap
+                self.owned.arbitration = None;
+                if let Some(time) = self.owned.wake.take() {
+                    self.owned
+                        .heap
                         .retain(|Reverse((key, e, _))| !(key.0 == time && *e == Event::Wake));
                 }
-                self.queues[source].pop_front();
-                self.cursor = (source + 1) % self.queues.len();
-                self.active = Some(r);
-                self.stage = Some(stage);
-                let now = self.now;
+                self.owned.queues[source].pop_front();
+                self.owned.cursor = (source + 1) % self.owned.queues.len();
+                self.owned.active = Some(r);
+                self.owned.stage = Some(stage);
+                let now = self.owned.now;
                 let row = &mut self.state_mut().requests[r];
                 row.status = "active".into();
                 row.grant_ps = Some(now);
@@ -416,8 +425,8 @@ impl Engine<'_> {
                 self.publish(reserved);
             }
             Event::Handshake(r, channel, beat, valid, body) => {
-                if self.active != Some(r)
-                    || self.stage != Some((channel.clone(), beat, self.now, valid))
+                if self.owned.active != Some(r)
+                    || self.owned.stage != Some((channel.clone(), beat, self.owned.now, valid))
                 {
                     return Err(failed("AXI handshake ownership/stage invariant"));
                 }
@@ -430,7 +439,7 @@ impl Engine<'_> {
                 let generator = &self.model.generators[row.generator];
                 let source = generator.source;
                 let t = &generator.transaction;
-                let edge = self.now / self.model.clock_period_ps;
+                let edge = self.owned.now / self.model.clock_period_ps;
                 let address = t.address + 4 * beat;
                 let response = if matches!(channel.as_str(), "AW" | "AR") {
                     self.response(r)
@@ -443,7 +452,7 @@ impl Engine<'_> {
                     request: r,
                     channel: channel.clone(),
                     beat: None,
-                    time_ps: self.now,
+                    time_ps: self.owned.now,
                     valid_since_ps: valid,
                     address: None,
                     data_hex: None,
@@ -538,7 +547,7 @@ impl Engine<'_> {
                     events.extend(self.schedule_arbitration());
                 }
                 let reserved = self.reserve(events)?;
-                let now = self.now;
+                let now = self.owned.now;
                 let id = self.state().requests[r].request_id.clone();
                 self.point(
                     source,
@@ -565,11 +574,11 @@ impl Engine<'_> {
                     row.completed_ps = Some(now);
                 }
                 self.state_mut().handshakes.push(handshake);
-                self.stage = next_stage;
+                self.owned.stage = next_stage;
                 if done {
-                    self.active = None;
-                    self.outstanding[source] -= 1;
-                    self.arbitration = Some(now);
+                    self.owned.active = None;
+                    self.owned.outstanding[source] -= 1;
+                    self.owned.arbitration = Some(now);
                     self.gauges(source, id.clone());
                     let latency = now - self.state().requests[r].generated_ps;
                     self.point(source, "axi.latency_ps", latency, Some(id), None);
@@ -579,56 +588,106 @@ impl Engine<'_> {
         }
         Ok(())
     }
-    fn run(mut self) -> Snapshot {
-        let event_loop = super::timing::event_loop();
-        while let Some(Reverse((key, event, body))) = self.heap.peek().cloned() {
-            if key.0 >= self.prepared.common.time_limit_ps {
-                break;
-            }
-            self.now = key.0;
-            self.heap.pop();
-            self.event_sequence = key.4;
-            let failed = event.clone();
-            let result = if self.snapshot.common.committed_events >= self.prepared.common.max_events
-            {
-                Err(limit("AXI max-events exceeded"))
-            } else {
-                self.handle(event, &body)
-            };
-            if let Err(d) = result {
-                self.heap.push(Reverse((key, failed, body)));
-                self.snapshot.common.partial = true;
-                self.snapshot.common.termination = "execution_failed".into();
-                self.snapshot.common.end_ps = key.0;
-                self.snapshot.common.diagnostics.push(d.with_runtime(
-                    "run",
-                    Some(key.0),
-                    Some(key.4),
-                    None,
-                ));
-                break;
-            }
-            self.snapshot.common.committed_events += 1;
-            self.snapshot.common.last_event_time_ps = Some(key.0);
-            if !self.snapshot.common.checkpoint() {
-                break;
+    fn initialize(&mut self) -> Result<()> {
+        if self.prepared.common.time_limit_ps > 0 {
+            for manager in &self.model.managers {
+                for metric in ["axi.queue_length", "axi.outstanding"] {
+                    self.owned.snapshot.common.points.push(Point {
+                        event_seq: None,
+                        effect_seq: None,
+                        time_ps: 0,
+                        target: manager.id.clone(),
+                        metric: metric.into(),
+                        value: 0,
+                        request_id: None,
+                        receiver: None,
+                        reason: None,
+                    });
+                }
             }
         }
-        drop(event_loop);
-        self.snapshot.common.pending_events = self.heap.len() as u64;
-        if !self.snapshot.common.partial {
-            self.snapshot.common.termination =
-                if self.prepared.common.time_limit_ps == 0 || !self.heap.is_empty() {
+        let events = self
+            .model
+            .generators
+            .iter()
+            .enumerate()
+            .filter_map(|(g, generator)| {
+                generator
+                    .times_ps
+                    .first()
+                    .copied()
+                    .filter(|time| *time < self.prepared.common.time_limit_ps)
+                    .map(|time| (time, 1, g, 0, Event::Generate(g, 0)))
+            })
+            .collect();
+        let reserved = self.reserve(events)?;
+        self.publish(reserved);
+        Ok(())
+    }
+    fn refresh_prefix(&mut self, horizon: u64) {
+        self.owned.snapshot.common.end_ps = horizon;
+        self.owned.snapshot.common.pending_events = self.owned.heap.len() as u64;
+    }
+    fn terminal(&mut self) {
+        self.owned.snapshot.common.pending_events = self.owned.heap.len() as u64;
+        if !self.owned.snapshot.common.partial {
+            self.owned.snapshot.common.end_ps = self.prepared.common.time_limit_ps;
+            self.owned.snapshot.common.termination =
+                if self.prepared.common.time_limit_ps == 0 || !self.owned.heap.is_empty() {
                     "time_limit"
                 } else {
                     "events_exhausted"
                 }
                 .into();
         }
-        self.snapshot
+    }
+    fn step(&mut self) -> StepOutcome {
+        let _event_loop = super::timing::event_loop();
+        let Some(Reverse((key, event, body))) = self.owned.heap.peek().cloned() else {
+            self.terminal();
+            return StepOutcome::Exhausted;
+        };
+        if key.0 >= self.prepared.common.time_limit_ps {
+            self.terminal();
+            return StepOutcome::Exhausted;
+        }
+        self.owned.now = key.0;
+        self.owned.heap.pop();
+        self.owned.event_sequence = key.4;
+        let failed = event.clone();
+        let result =
+            if self.owned.snapshot.common.committed_events >= self.prepared.common.max_events {
+                Err(limit("AXI max-events exceeded"))
+            } else {
+                self.handle(event, &body)
+            };
+        if let Err(diagnostic) = result {
+            self.owned.heap.push(Reverse((key, failed, body)));
+            let common = &mut self.owned.snapshot.common;
+            common.partial = true;
+            common.termination = "execution_failed".into();
+            common.end_ps = key.0;
+            common.pending_events = self.owned.heap.len() as u64;
+            common
+                .diagnostics
+                .push(diagnostic.with_runtime("run", Some(key.0), Some(key.4), None));
+            return StepOutcome::Failed;
+        }
+        self.owned.snapshot.common.committed_events += 1;
+        self.owned.snapshot.common.last_event_time_ps = Some(key.0);
+        if !self.owned.snapshot.common.checkpoint() {
+            return StepOutcome::Failed;
+        }
+        StepOutcome::Committed
+    }
+    fn run(mut self) -> Snapshot {
+        let _event_loop = super::timing::event_loop();
+        while self.step() == StepOutcome::Committed {}
+        self.terminal();
+        self.owned.snapshot
     }
 }
-fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
+fn create_engine(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
     let model = prepared
         .axi
         .as_ref()
@@ -638,26 +697,7 @@ fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
         memory: model.ram.initial.clone(),
         ..AxiSnapshot::default()
     });
-    if prepared.common.time_limit_ps > 0 {
-        for m in &model.managers {
-            for metric in ["axi.queue_length", "axi.outstanding"] {
-                snapshot.common.points.push(Point {
-                    event_seq: None,
-                    effect_seq: None,
-                    time_ps: 0,
-                    target: m.id.clone(),
-                    metric: metric.into(),
-                    value: 0,
-                    request_id: None,
-                    receiver: None,
-                    reason: None,
-                });
-            }
-        }
-    }
-    let mut engine = Engine {
-        prepared,
-        model,
+    let owned = EngineState {
         heap: BinaryHeap::new(),
         sequence: 0,
         now: 0,
@@ -672,22 +712,73 @@ fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
         event_sequence: 0,
         snapshot,
     };
-    let events = model
-        .generators
-        .iter()
-        .enumerate()
-        .filter_map(|(g, generator)| {
-            generator
-                .times_ps
-                .first()
-                .copied()
-                .filter(|time| *time < prepared.common.time_limit_ps)
-                .map(|time| (time, 1, g, 0, Event::Generate(g, 0)))
-        })
-        .collect();
-    let reserved = engine.reserve(events)?;
-    engine.publish(reserved);
+    Ok(Engine {
+        prepared,
+        model,
+        owned,
+    })
+}
+fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
+    let mut engine = create_engine(prepared)?;
+    engine.initialize()?;
     Ok(engine)
+}
+
+pub(crate) struct Stepper {
+    prepared: Arc<PreparedSimulation>,
+    owned: Option<EngineState>,
+    initialized: bool,
+}
+impl Stepper {
+    pub(crate) fn new(prepared: Arc<PreparedSimulation>) -> Result<Self> {
+        let mut owned = create_engine(&prepared)?.owned;
+        owned.snapshot.common.end_ps = 0;
+        Ok(Self {
+            prepared,
+            owned: Some(owned),
+            initialized: false,
+        })
+    }
+    fn with_engine<T>(&mut self, operation: impl FnOnce(&mut Engine<'_>) -> T) -> T {
+        let prepared = Arc::clone(&self.prepared);
+        let mut engine = Engine {
+            prepared: &prepared,
+            model: prepared.axi.as_ref().expect("validated AXI model"),
+            owned: self.owned.take().expect("owned AXI continuation"),
+        };
+        let result = operation(&mut engine);
+        self.owned = Some(engine.owned);
+        result
+    }
+    pub(crate) fn initialize(&mut self) -> Result<()> {
+        if !self.initialized {
+            self.with_engine(|engine| engine.initialize())?;
+            self.initialized = true;
+        }
+        Ok(())
+    }
+    pub(crate) fn step(&mut self) -> StepOutcome {
+        self.with_engine(|engine| engine.step())
+    }
+    pub(crate) fn snapshot(&self) -> &Snapshot {
+        &self
+            .owned
+            .as_ref()
+            .expect("owned AXI continuation")
+            .snapshot
+    }
+    pub(crate) fn snapshot_mut(&mut self) -> &mut Snapshot {
+        &mut self
+            .owned
+            .as_mut()
+            .expect("owned AXI continuation")
+            .snapshot
+    }
+    pub(crate) fn refresh_prefix(&mut self, horizon: u64) -> Result<()> {
+        self.with_engine(|engine| engine.refresh_prefix(horizon));
+        Ok(())
+    }
+    pub(crate) fn finish_once(&mut self) {}
 }
 
 pub(super) fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot> {
@@ -713,8 +804,8 @@ mod tests {
             ),
         ] {
             let mut engine = initialize(&prepared).unwrap();
-            let Reverse((key, event, _)) = engine.heap.pop().unwrap();
-            engine.heap.push(Reverse((key, event, body.into())));
+            let Reverse((key, event, _)) = engine.owned.heap.pop().unwrap();
+            engine.owned.heap.push(Reverse((key, event, body.into())));
             let snapshot = engine.run();
             assert!(snapshot.common.partial);
             assert_eq!(snapshot.common.committed_events, 0);

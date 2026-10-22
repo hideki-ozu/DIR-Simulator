@@ -7,7 +7,7 @@ pub enum Event {
     Arrival,
     Release,
 }
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct BoundaryState {
     pub actual_start_ps: Option<u64>,
     pub actual_arrival_ps: Option<u64>,

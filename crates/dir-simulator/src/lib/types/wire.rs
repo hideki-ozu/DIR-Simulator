@@ -1,25 +1,62 @@
 //! Prepared wire adapters. Raw data payloads remain owned by Ethernet.
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TreeDomain {
+    Customer,
+    Provider,
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct ComponentPortKey {
+    pub component: String,
+    pub port: String,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum PortAttachment {
+    Physical {
+        output: String,
+        ingress: String,
+        direction: usize,
+    },
+    Internal {
+        iss_id: String,
+        peer: ComponentPortKey,
+    },
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ComponentTreeBinding {
+    pub component: String,
+    pub device: String,
+    pub domain: TreeDomain,
+    pub ports: BTreeMap<String, PortAttachment>,
+    /// Number of distinct customer interfaces attached to each PEP service.
+    pub service_cardinality: BTreeMap<String, usize>,
+}
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum WireProtocol {
+    MacControl,
     Igmp,
     Mld,
     Rstp,
+    Mstp,
     Mvrp,
 }
 impl WireProtocol {
     pub fn revision(self) -> &'static str {
         match self {
+            Self::MacControl => "ieee802.3-2022.annex31b",
             Self::Igmp => "igmp-rfc9776-2025",
             Self::Mld => "mld-rfc9777-2025",
             Self::Rstp => "ieee802.1q-2022.rstp.initial.v1",
+            Self::Mstp => "ieee802.1q-2022.mstp.initial.v1",
             Self::Mvrp => "ieee802.1q-2022.mvrp.initial.v1",
         }
     }
     pub fn active(self) -> bool {
-        matches!(self, Self::Rstp | Self::Mvrp)
+        matches!(self, Self::Rstp | Self::Mstp | Self::Mvrp)
     }
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -62,6 +99,32 @@ pub struct RstpConfig {
     pub tx_hold_count: u32,
     pub ports: Vec<RstpPortConfig>,
 }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MstpInstanceConfig {
+    pub mstid: u16,
+    pub bridge_priority: u16,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MstpPortConfig {
+    pub port: String,
+    pub port_id: u16,
+    pub external_path_cost: u32,
+    pub internal_path_cost: u32,
+    pub admin_edge: bool,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MstpConfig {
+    pub bridge_id: u64,
+    pub max_age: u16,
+    pub forward_delay: u16,
+    pub tx_hold_count: u32,
+    pub max_hops: u8,
+    pub region_name: String,
+    pub region_revision: u16,
+    pub vlan_map: Vec<u16>,
+    pub instances: Vec<MstpInstanceConfig>,
+    pub ports: Vec<MstpPortConfig>,
+}
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum WireRegistrarMode {
@@ -100,6 +163,7 @@ pub struct MvrpConfig {
 pub enum WireOptions {
     Membership(MembershipConfig),
     Rstp(RstpConfig),
+    Mstp(MstpConfig),
     Mvrp(MvrpConfig),
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -107,6 +171,8 @@ pub struct PreparedWireAdapter {
     pub id: String,
     pub protocol: WireProtocol,
     pub bridge: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub component_binding: Option<ComponentTreeBinding>,
     pub ports: Vec<String>,
     pub max_pdu_bytes: usize,
     pub max_state_entries: usize,
@@ -148,9 +214,13 @@ impl PreparedWire {
     pub fn owner(&self, protocol: WireProtocol, port: &str) -> Option<&PreparedWireAdapter> {
         self.adapters.iter().find(|a| {
             a.protocol == protocol
-                && a.ports
-                    .iter()
-                    .any(|p| p == port || self.ports[p].ingress == port)
+                && a.ports.iter().any(|p| {
+                    p == port
+                        || self
+                            .ports
+                            .get(p)
+                            .is_some_and(|physical| physical.ingress == port)
+                })
         })
     }
     pub fn adapter(&self, id: &str) -> Option<&PreparedWireAdapter> {

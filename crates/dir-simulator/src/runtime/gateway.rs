@@ -9,52 +9,54 @@ impl Engine<'_> {
         self.point(
             format!("{}.rxQueue", self.prepared.can.controllers[ingress].id),
             "gw_rx_queue_length",
-            self.rx_used[ingress],
+            self.state.rx_used[ingress],
             parent,
             Some(self.prepared.can.controllers[ingress].id.clone()),
         );
     }
     fn release_rx(&mut self, buffer: usize) {
-        let record = &mut self.rx_buffers[buffer];
+        let record = &mut self.state.rx_buffers[buffer];
         if record.status != "holding" || !record.remaining_egress.is_empty() {
             return;
         }
         record.status = "released".into();
-        record.released_ps = Some(self.now.0);
+        record.released_ps = Some(self.state.now.0);
         let ingress = record.ingress;
         let parent = record.parent_request;
-        self.rx_used[ingress] -= 1;
+        self.state.rx_used[ingress] -= 1;
         self.rx_queue_point(ingress, parent);
-        self.retire_candidates.insert(parent);
+        self.state.retire_candidates.insert(parent);
     }
     fn finish_rx_egress(&mut self, buffer: usize, egress: usize) {
-        let removed = self.rx_buffers[buffer].remaining_egress.remove(&egress);
+        let removed = self.state.rx_buffers[buffer]
+            .remaining_egress
+            .remove(&egress);
         debug_assert!(removed, "Gateway egress completed more than once");
         self.release_rx(buffer);
     }
     pub(super) fn finish_gateway_egress(&mut self, request: usize) {
-        if let Some(forward) = self.request_forwards[request] {
-            let f = &self.forwards[forward];
+        if let Some(forward) = self.state.request_forwards[request] {
+            let f = &self.state.forwards[forward];
             let buffer = f.rx_buffer;
             let source = f.egress.unwrap();
-            if let Some(enqueued) = self.requests[request].tx_enqueued_ps {
+            if let Some(enqueued) = self.state.requests[request].tx_enqueued_ps {
                 self.point(
                     self.prepared.can.controllers[source].id.clone(),
                     "gw_tx_buffer_wait_ps",
-                    enqueued - self.requests[request].ready_ps.unwrap(),
+                    enqueued - self.state.requests[request].ready_ps.unwrap(),
                     request,
                     None,
                 );
             }
             self.finish_rx_egress(buffer, source);
-            self.request_forwards[request] = None;
+            self.state.request_forwards[request] = None;
         }
     }
     /// A queue slot, not bus-idle status, permits a buffered copy to advance.
     pub(super) fn drain_gateway_tx(&mut self, source: usize) {
         let capacity = self.prepared.can.controllers[source].queue_capacity;
-        while (self.queues[source].len() as u64) < capacity {
-            let Some((order, request)) = self.tx_waiting[source].pop_first() else {
+        while (self.state.queues[source].len() as u64) < capacity {
+            let Some((order, request)) = self.state.tx_waiting[source].pop_first() else {
                 break;
             };
             self.enqueue(request, order);
@@ -75,7 +77,7 @@ impl Engine<'_> {
             parent,
             Some(self.prepared.can.controllers[receiver].id.clone()),
         );
-        self.snapshot.common.points.last_mut().unwrap().reason = reason.map(str::to_owned);
+        self.state.snapshot.common.points.last_mut().unwrap().reason = reason.map(str::to_owned);
     }
     pub(super) fn route(
         &mut self,
@@ -86,24 +88,26 @@ impl Engine<'_> {
         let gateway = self.prepared.gateway.controller_gateways[ingress]
             .ok_or_else(|| Diagnostic::execution("routing to a non-Gateway port"))?;
         let received = self
+            .state
             .receivers
             .get(row)
             .ok_or_else(|| Diagnostic::execution("unknown routing receiver"))?;
         let request = self
+            .state
             .requests
             .get(parent)
             .ok_or_else(|| Diagnostic::execution("unknown routing parent"))?;
         if received.request_id != request.request_id
             || received.receiver != self.prepared.can.controllers[ingress].id
-            || received.received_ps != Some(self.now.0)
+            || received.received_ps != Some(self.state.now.0)
             || received.status != "received"
-            || self.routed.contains(&(parent, ingress))
+            || self.state.routed.contains(&(parent, ingress))
         {
             return Err(Diagnostic::execution(
                 "duplicate or inconsistent Gateway routing input",
             ));
         }
-        let frame = &self.prepared.can.generators[self.request_generators[parent]].frame;
+        let frame = &self.prepared.can.generators[self.state.request_generators[parent]].frame;
         let gw = &self.prepared.gateway.gateways[gateway];
         let route = gw.routes.iter().find(|r| {
             r.ingress == ingress
@@ -111,8 +115,8 @@ impl Engine<'_> {
                 && r.id_min <= frame.id
                 && frame.id <= r.id_max
         });
-        let buffer = self.rx_buffers.len();
-        let rejected = self.rx_used[ingress] >= gw.rx_queue_capacity;
+        let buffer = self.state.rx_buffers.len();
+        let rejected = self.state.rx_used[ingress] >= gw.rx_queue_capacity;
         let rx_record = RxBufferRecord {
             buffer_id: format!(
                 "rx:{}/{}/{}",
@@ -122,7 +126,7 @@ impl Engine<'_> {
             gateway,
             ingress,
             capacity: gw.rx_queue_capacity,
-            received_ps: self.now.0,
+            received_ps: self.state.now.0,
             released_ps: None,
             status: if rejected { "dropped" } else { "holding" }.into(),
             reason: rejected.then(|| "rx_queue_full".into()),
@@ -136,8 +140,8 @@ impl Engine<'_> {
             },
         };
         if rejected {
-            self.routed.insert((parent, ingress));
-            self.rx_buffers.push(rx_record);
+            self.state.routed.insert((parent, ingress));
+            self.state.rx_buffers.push(rx_record);
             self.gw_point(
                 gateway,
                 "gw_rx_dropped",
@@ -151,14 +155,14 @@ impl Engine<'_> {
         let mut rows = Vec::new();
         let mut events = Vec::new();
         if let Some(route) = route {
-            let due = add(self.now.0, gw.processing_delay_ps)?;
-            let hops = self.snapshot.gateway.request_lineage[&request.request_id]
+            let due = add(self.state.now.0, gw.processing_delay_ps)?;
+            let hops = self.state.snapshot.gateway.request_lineage[&request.request_id]
                 .gw_hops
                 .checked_add(1)
                 .filter(|&n| n <= 65536)
                 .ok_or_else(|| super::scheduler::limit_error("Gateway hop arithmetic overflow"))?;
             for &egress in &route.egress {
-                let index = self.forwards.len() + rows.len();
+                let index = self.state.forwards.len() + rows.len();
                 rows.push(ForwardRecord {
                     rx_buffer: buffer,
                     forward_id: format!(
@@ -174,7 +178,7 @@ impl Engine<'_> {
                     egress: Some(egress),
                     route_id: Some(route.id.clone()),
                     gw_hops: hops,
-                    received_ps: self.now.0,
+                    received_ps: self.state.now.0,
                     planned_forward_ps: Some(due),
                     forwarded_ps: None,
                     child_request_id: None,
@@ -183,7 +187,7 @@ impl Engine<'_> {
                 });
                 events.push((
                     due,
-                    if due == self.now.0 {
+                    if due == self.state.now.0 {
                         Event::Forward(index)
                     } else {
                         Event::ForwardDue(index)
@@ -202,8 +206,8 @@ impl Engine<'_> {
                 ingress,
                 egress: None,
                 route_id: None,
-                gw_hops: self.snapshot.gateway.request_lineage[&request.request_id].gw_hops,
-                received_ps: self.now.0,
+                gw_hops: self.state.snapshot.gateway.request_lineage[&request.request_id].gw_hops,
+                received_ps: self.state.now.0,
                 planned_forward_ps: None,
                 forwarded_ps: None,
                 child_request_id: None,
@@ -212,9 +216,9 @@ impl Engine<'_> {
             });
         }
         self.preflight(&events)?;
-        self.routed.insert((parent, ingress));
-        self.rx_buffers.push(rx_record);
-        self.rx_used[ingress] += 1;
+        self.state.routed.insert((parent, ingress));
+        self.state.rx_buffers.push(rx_record);
+        self.state.rx_used[ingress] += 1;
         self.rx_queue_point(ingress, parent);
         for row in &rows {
             if let Some(egress) = row.egress {
@@ -229,18 +233,19 @@ impl Engine<'_> {
                 );
             }
         }
-        self.forwards.extend(rows);
+        self.state.forwards.extend(rows);
         self.release_rx(buffer);
         self.publish(events);
         Ok(())
     }
     pub(super) fn validate_forward(&self, f: usize) -> Result<(), Diagnostic> {
         let row = self
+            .state
             .forwards
             .get(f)
             .ok_or_else(|| Diagnostic::execution("unknown Gateway forward id"))?;
         if row.status != "processing"
-            || row.planned_forward_ps != Some(self.now.0)
+            || row.planned_forward_ps != Some(self.state.now.0)
             || row.egress.is_none()
             || row.child_request_id.is_some()
         {
@@ -252,12 +257,12 @@ impl Engine<'_> {
     }
     pub(super) fn forward(&mut self, f: usize) -> Result<(), Diagnostic> {
         self.validate_forward(f)?;
-        let row = self.forwards[f].clone();
+        let row = self.state.forwards[f].clone();
         let source = row.egress.unwrap();
         if row.gw_hops > self.prepared.gateway.gateways[row.gateway].hop_limit {
-            self.forwards[f].status = "dropped".into();
-            self.forwards[f].reason = Some("dropped_hop_limit".into());
-            self.forwards[f].forwarded_ps = Some(self.now.0);
+            self.state.forwards[f].status = "dropped".into();
+            self.state.forwards[f].reason = Some("dropped_hop_limit".into());
+            self.state.forwards[f].forwarded_ps = Some(self.state.now.0);
             self.gw_point(
                 row.gateway,
                 "gw_hop_dropped",
@@ -268,20 +273,20 @@ impl Engine<'_> {
             self.finish_rx_egress(row.rx_buffer, source);
         } else {
             let ready = add(
-                self.now.0,
+                self.state.now.0,
                 self.prepared.can.controllers[source].tx_processing_ps,
             )?;
-            let index = self.requests.len();
+            let index = self.state.requests.len();
             let events = vec![(
                 ready,
-                if ready == self.now.0 {
+                if ready == self.state.now.0 {
                     Event::Ready(index)
                 } else {
                     Event::TxProcessed(index)
                 },
             )];
             self.preflight(&events)?;
-            let parent = &self.requests[row.parent_request];
+            let parent = &self.state.requests[row.parent_request];
             let request = Request {
                 request_id: row.forward_id.clone(),
                 source: self.prepared.can.controllers[source].id.clone(),
@@ -289,7 +294,7 @@ impl Engine<'_> {
                     .id
                     .clone(),
                 status: "processing".into(),
-                generated_ps: self.now.0,
+                generated_ps: self.state.now.0,
                 ready_ps: None,
                 tx_enqueued_ps: None,
                 sof_ps: None,
@@ -304,7 +309,7 @@ impl Engine<'_> {
                 bitrate_bps: self.bitrate(self.prepared.can.controller_buses[source]),
             };
             let lineage = RequestLineage {
-                origin_request_id: self.snapshot.gateway.request_lineage[&parent.request_id]
+                origin_request_id: self.state.snapshot.gateway.request_lineage[&parent.request_id]
                     .origin_request_id
                     .clone(),
                 parent_request_id: Some(parent.request_id.clone()),
@@ -313,13 +318,13 @@ impl Engine<'_> {
             self.append_request(
                 request,
                 lineage,
-                self.request_generators[row.parent_request],
+                self.state.request_generators[row.parent_request],
                 source,
             );
-            self.request_forwards[index] = Some(f);
-            self.forwards[f].status = "submitted".into();
-            self.forwards[f].forwarded_ps = Some(self.now.0);
-            self.forwards[f].child_request_id = Some(row.forward_id);
+            self.state.request_forwards[index] = Some(f);
+            self.state.forwards[f].status = "submitted".into();
+            self.state.forwards[f].forwarded_ps = Some(self.state.now.0);
+            self.state.forwards[f].child_request_id = Some(row.forward_id);
             self.gw_point(
                 row.gateway,
                 "gw_copy_submitted",
@@ -332,7 +337,7 @@ impl Engine<'_> {
         Ok(())
     }
     pub(super) fn forward_due(&mut self, f: usize) -> Result<(), Diagnostic> {
-        let time = self.now.0;
+        let time = self.state.now.0;
         self.validate_forward(f)?;
         let events = vec![(time, Event::Forward(f))];
         self.preflight(&events)?;

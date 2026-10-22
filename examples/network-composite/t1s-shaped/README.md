@@ -1,0 +1,9 @@
+# Sampled T1Sと実験的なTAS/CBS
+
+`physical_mac_policy="dir.experimental.half_duplex_tsn.v1"`を明示して実行する。一つのMAC claimをPHYへ渡した後も、carrier defer、collision、jam、BEBはそのPHYのownerが処理する。新しいattemptだけをgateとcreditで許可し、進行中の波形やIFG完了はpermissionの失効で止めない。
+
+CBSは本fixtureの実験契約として、可視TxStartedから物理releaseまでの時間を10Mb/sのservice occupationとして会計する。PCS tailも含むため、IEEEのMAC-plane CBS全状態機械と同一であるとは主張しない。`SampledPhysicalTail`を元MACのIPGと区別する。数値波形のSOF markerはsample開始位置、networkのservice切替はsample完了callbackの観測位置であり、両者には最大1sampleの差がある。
+
+同じsourceから2frameを生成し、100〜200usの閉gate中はcreditを凍結する。二番目はcredit回復後にもfull physical occupationのguardが不足するため、次の適合窓の500us付近まで待つ。68BのT1S guardは`((18+2*68)*10+4)*40ns+96*100ns=71.36us`。carrier/BEBによる待機はこの占有時間に含めず、attempt開始時点のpermissionで再検査する。
+
+private/outer checkpoint18は、retained workとsampled service viewも保存し、入力から同じcallback prefixを実行して得たownerと照合して復元する。この改訂は未commit・未公開である。

@@ -8,7 +8,8 @@ use std::collections::{BTreeSet, BinaryHeap, VecDeque};
 
 pub(crate) mod dynamic;
 pub(crate) mod l2;
-mod media;
+pub(crate) mod media;
+pub mod phy;
 pub(crate) mod tsn;
 
 type Result<T> = std::result::Result<T, Diagnostic>;
@@ -55,6 +56,19 @@ fn mac(s: &str, broadcast: bool) -> Result<Vec<u8>> {
     }
     Ok(b)
 }
+fn vlan_destination(dst_mac: &str) -> Result<Vec<u8>> {
+    let parts: Vec<_> = dst_mac.split(':').collect();
+    if parts.len() != 6 || parts.iter().any(|p| p.len() != 2) {
+        return Err(Diagnostic::prepare("invalid MAC"));
+    }
+    let b = decode(&parts.concat())?;
+    if b.iter().all(|b| *b == 0) || (b[..5] == [1, 128, 194, 0, 0] && b[5] <= 15) {
+        return Err(Diagnostic::prepare(
+            "reserved or invalid VLAN destination MAC",
+        ));
+    }
+    Ok(b)
+}
 pub fn crc32(bytes: &[u8]) -> u32 {
     let mut crc = 0xffff_ffffu32;
     for &byte in bytes {
@@ -88,6 +102,142 @@ pub fn serialize_vlan_frame(
 ) -> Result<EthernetWireFrame> {
     serialize_wire(src_mac, dst_mac, ether_type, data, tag, true)
 }
+/// Construct a frame with one S-tag or an S+C stack. Legacy forms remain on
+/// `serialize_vlan_frame` to preserve their exact bytes and JSON projection.
+pub fn serialize_tag_stack_frame(
+    src_mac: &str,
+    dst_mac: &str,
+    ether_type: u16,
+    data: &str,
+    tags: &[EthernetTag],
+) -> Result<EthernetWireFrame> {
+    if tags.is_empty()
+        || tags.len() > 2
+        || tags.iter().any(|t| t.validate().is_err())
+        || tags.len() == 2
+            && (tags[0].tpid != EthernetTag::S_TPID || tags[1].tpid != EthernetTag::C_TPID)
+        || ether_type < 1536
+        || [0x8100, 0x88a8].contains(&ether_type)
+    {
+        return Err(Diagnostic::prepare("invalid Ethernet tag stack"));
+    }
+    if tags.len() == 1 && tags[0].tpid == EthernetTag::C_TPID {
+        return serialize_vlan_frame(src_mac, dst_mac, ether_type, data, Some(tags[0].tci));
+    }
+    // Fresh serialization uses the minimum MAC size. Transforming an existing
+    // frame below retains its transmitted padding, which may be longer.
+    if data.len() > 3000 {
+        return Err(Diagnostic::prepare("invalid Ethernet payload range"));
+    }
+    let source = mac(src_mac, false)?;
+    let destination = vlan_destination(dst_mac)?;
+    let payload = decode(data)?;
+    let mut bytes = destination;
+    bytes.extend(source);
+    for tag in tags {
+        bytes.extend(tag.tpid.to_be_bytes());
+        bytes.extend(
+            ((u16::from(tag.tci.pcp) << 13) | (u16::from(tag.tci.dei) << 12) | tag.tci.vid)
+                .to_be_bytes(),
+        );
+    }
+    bytes.extend(ether_type.to_be_bytes());
+    bytes.extend(payload);
+    let pad_bytes = 60usize.saturating_sub(bytes.len());
+    bytes.resize(bytes.len() + pad_bytes, 0);
+    let fcs = crc32(&bytes).to_le_bytes();
+    bytes.extend(fcs);
+    Ok(EthernetWireFrame {
+        src_mac: src_mac.to_ascii_lowercase(),
+        dst_mac: dst_mac.to_ascii_lowercase(),
+        ether_type,
+        data_hex: data.to_ascii_lowercase(),
+        tag: None,
+        tags: tags.to_vec(),
+        pad_bytes: pad_bytes as u64,
+        mac_bytes: bytes.len() as u64,
+        fcs_hex: hex(&fcs),
+        mac_hex: hex(&bytes),
+    })
+}
+
+/// Replace only the tag header. Source, destination, original type/length,
+/// LLC, R-tag, payload and non-padding bytes come from the canonical MAC bytes.
+pub fn retag_wire_frame(
+    wire: &EthernetWireFrame,
+    tags: &[EthernetTag],
+) -> Result<EthernetWireFrame> {
+    if tags.len() > 2
+        || tags.iter().any(|t| t.validate().is_err())
+        || tags.len() == 2
+            && (tags[0].tpid != EthernetTag::S_TPID || tags[1].tpid != EthernetTag::C_TPID)
+    {
+        return Err(Diagnostic::prepare("invalid Ethernet tag stack"));
+    }
+    let old_tags = wire.canonical_tags().map_err(Diagnostic::prepare)?;
+    let original = decode(&wire.mac_hex)?;
+    if original.len() < 18 || original.len() as u64 != wire.mac_bytes {
+        return Err(Diagnostic::prepare("invalid canonical Ethernet bytes"));
+    }
+    let header_end = 12 + 4 * old_tags.len();
+    if header_end + 2 > original.len() - 4 {
+        return Err(Diagnostic::prepare("truncated Ethernet tag stack"));
+    }
+    let mut cursor = 12;
+    for tag in &old_tags {
+        let tpid = u16::from_be_bytes([original[cursor], original[cursor + 1]]);
+        let tci = u16::from_be_bytes([original[cursor + 2], original[cursor + 3]]);
+        if tpid != tag.tpid
+            || tci
+                != ((u16::from(tag.tci.pcp) << 13) | (u16::from(tag.tci.dei) << 12) | tag.tci.vid)
+        {
+            return Err(Diagnostic::prepare("Ethernet tag metadata/bytes mismatch"));
+        }
+        cursor += 4;
+    }
+    let fcs = crc32(&original[..original.len() - 4]).to_le_bytes();
+    if original[original.len() - 4..] != fcs || hex(&fcs) != wire.fcs_hex.to_ascii_lowercase() {
+        return Err(Diagnostic::prepare("Ethernet FCS mismatch"));
+    }
+    let pad = usize::try_from(wire.pad_bytes)
+        .map_err(|_| Diagnostic::prepare("invalid Ethernet padding"))?;
+    let body_end = original.len() - 4;
+    if pad > body_end - header_end - 2 {
+        return Err(Diagnostic::prepare("invalid Ethernet padding"));
+    }
+    let body = &original[header_end..body_end];
+    let mut bytes = original[..12].to_vec();
+    for tag in tags {
+        bytes.extend(tag.tpid.to_be_bytes());
+        bytes.extend(
+            ((u16::from(tag.tci.pcp) << 13) | (u16::from(tag.tci.dei) << 12) | tag.tci.vid)
+                .to_be_bytes(),
+        );
+    }
+    bytes.extend(body);
+    let additional_pad = 60usize.saturating_sub(bytes.len());
+    bytes.resize(bytes.len() + additional_pad, 0);
+    let fcs = crc32(&bytes).to_le_bytes();
+    bytes.extend(fcs);
+    let mut out = wire.clone();
+    out.tag = if tags.len() == 1 && tags[0].tpid == EthernetTag::C_TPID {
+        Some(tags[0].tci)
+    } else {
+        None
+    };
+    out.tags = if out.tag.is_some() {
+        Vec::new()
+    } else {
+        tags.to_vec()
+    };
+    out.pad_bytes = (pad + additional_pad) as u64;
+    out.mac_bytes = bytes.len() as u64;
+    out.fcs_hex = hex(&fcs);
+    out.mac_hex = hex(&bytes);
+    // An R-tag may precede the inner EtherType; keep the caller's logical
+    // metadata. The complete body above is the authoritative byte sequence.
+    Ok(out)
+}
 fn serialize_wire(
     src_mac: &str,
     dst_mac: &str,
@@ -105,17 +255,7 @@ fn serialize_wire(
     }
     let source = mac(src_mac, false)?;
     let destination = if groups {
-        let parts: Vec<_> = dst_mac.split(':').collect();
-        if parts.len() != 6 || parts.iter().any(|p| p.len() != 2) {
-            return Err(Diagnostic::prepare("invalid MAC"));
-        }
-        let b = decode(&parts.concat())?;
-        if b.iter().all(|b| *b == 0) || (b[..5] == [1, 128, 194, 0, 0] && b[5] <= 15) {
-            return Err(Diagnostic::prepare(
-                "reserved or invalid VLAN destination MAC",
-            ));
-        }
-        b
+        vlan_destination(dst_mac)?
     } else {
         mac(dst_mac, true)?
     };
@@ -138,6 +278,7 @@ fn serialize_wire(
         ether_type,
         data_hex: data.to_ascii_lowercase(),
         tag,
+        tags: Vec::new(),
         pad_bytes: pad_bytes as u64,
         mac_bytes: bytes.len() as u64,
         fcs_hex: hex(&fcs),
@@ -188,9 +329,7 @@ struct Forwarding {
     candidates: Vec<Candidate>,
     reason: Option<&'static str>,
 }
-struct Engine<'a> {
-    prepared: &'a PreparedSimulation,
-    model: &'a PreparedEthernet,
+struct EngineState {
     heap: BinaryHeap<Reverse<(Key, Event)>>,
     sequence: u64,
     cursors: Vec<u64>,
@@ -203,20 +342,38 @@ struct Engine<'a> {
     snapshot: Snapshot,
     media: Option<media::MediaRuntime>,
 }
+struct Engine<'a> {
+    prepared: &'a PreparedSimulation,
+    model: &'a PreparedEthernet,
+    state: EngineState,
+}
+impl std::ops::Deref for Engine<'_> {
+    type Target = EngineState;
+    fn deref(&self) -> &EngineState {
+        &self.state
+    }
+}
+impl std::ops::DerefMut for Engine<'_> {
+    fn deref_mut(&mut self) -> &mut EngineState {
+        &mut self.state
+    }
+}
+
 impl Engine<'_> {
     fn eth(&self) -> &EthernetSnapshot {
-        self.snapshot.ethernet.as_ref().unwrap()
+        self.state.snapshot.ethernet.as_ref().unwrap()
     }
     fn eth_mut(&mut self) -> &mut EthernetSnapshot {
-        self.snapshot.ethernet.as_mut().unwrap()
+        self.state.snapshot.ethernet.as_mut().unwrap()
     }
     // Reservation calculation never mutates engine state. Publication happens after all checks.
     fn reserve(&self, events: &[(u64, u8, Event)]) -> Result<Vec<(Key, Event)>> {
-        self.sequence
+        self.state
+            .sequence
             .checked_add(events.len() as u64)
             .and_then(|n| {
                 n.checked_add(
-                    self.dirty.len().saturating_sub(
+                    self.state.dirty.len().saturating_sub(
                         events
                             .iter()
                             .filter(|(_, _, event)| matches!(event, Event::Start(_)))
@@ -225,17 +382,18 @@ impl Engine<'_> {
                 )
             })
             .ok_or_else(|| overflow("Ethernet sequence overflow"))?;
-        let mut seq = self.sequence;
+        let mut seq = self.state.sequence;
         events
             .iter()
             .map(|(t, phase, event)| {
-                if *t < self.now.0 {
+                if *t < self.state.now.0 {
                     return Err(failure("Ethernet reservation precedes current time"));
                 }
-                let delta = if *t == self.now.0 {
-                    self.now
+                let delta = if *t == self.state.now.0 {
+                    self.state
+                        .now
                         .1
-                        .checked_add(u64::from(*phase < self.now.2))
+                        .checked_add(u64::from(*phase < self.state.now.2))
                         .ok_or_else(|| overflow("Ethernet delta overflow"))?
                 } else {
                     0
@@ -250,8 +408,8 @@ impl Engine<'_> {
     }
     fn publish(&mut self, events: Vec<(Key, Event)>) {
         for (key, event) in events {
-            self.sequence = key.3 + 1;
-            self.heap.push(Reverse((key, event)));
+            self.state.sequence = key.3 + 1;
+            self.state.heap.push(Reverse((key, event)));
         }
     }
     fn point(
@@ -264,17 +422,18 @@ impl Engine<'_> {
     ) {
         let request_id = frame.map(|f| self.eth().frames[f].frame_id.clone());
         let effect_seq = self
+            .state
             .snapshot
             .common
             .points
             .iter()
             .rev()
-            .take_while(|p| p.event_seq == Some(self.now.3))
+            .take_while(|p| p.event_seq == Some(self.state.now.3))
             .count() as u64;
-        self.snapshot.common.points.push(Point {
-            event_seq: Some(self.now.3),
+        self.state.snapshot.common.points.push(Point {
+            event_seq: Some(self.state.now.3),
             effect_seq: Some(effect_seq),
-            time_ps: self.now.0,
+            time_ps: self.state.now.0,
             target,
             metric: metric.into(),
             value,
@@ -299,15 +458,19 @@ impl Engine<'_> {
             .find(|o| o.port == self.model.directions[d].from_port)
     }
     fn waiting(&self, d: usize) -> u64 {
-        self.queues[d].waiting.iter().map(|q| q.len() as u64).sum()
+        self.state.queues[d]
+            .waiting
+            .iter()
+            .map(|q| q.len() as u64)
+            .sum()
     }
     fn admit(&self, d: usize, priority: u8, mac_bytes: u64) -> Result<bool> {
         let output = &self.model.directions[d];
         l2::admission(
             self.waiting(d),
             self.model.devices[output.source].queue_capacity,
-            self.queues[d].waiting[priority as usize].len() as u64,
-            self.queues[d].bytes[priority as usize],
+            self.state.queues[d].waiting[priority as usize].len() as u64,
+            self.state.queues[d].bytes[priority as usize],
             self.output_config(d).map(|c| &c.queues[priority as usize]),
             mac_bytes,
         )
@@ -317,7 +480,7 @@ impl Engine<'_> {
         let priority = priority as usize;
         self.point(
             format!("{}.queue", self.model.directions[d].from_port),
-            if self.media.is_some() {
+            if self.state.media.is_some() {
                 "ethernet.media.queue_length"
             } else {
                 "queue_length"
@@ -331,14 +494,14 @@ impl Engine<'_> {
             self.point(
                 queue_id.clone(),
                 "queue_length",
-                self.queues[d].waiting[priority].len() as u64,
+                self.state.queues[d].waiting[priority].len() as u64,
                 Some(f),
                 None,
             );
             self.point(
                 queue_id,
                 "queue_bytes",
-                self.queues[d].bytes[priority],
+                self.state.queues[d].bytes[priority],
                 Some(f),
                 None,
             );
@@ -349,14 +512,14 @@ impl Engine<'_> {
             .output_config(d)
             .is_some_and(|config| config.scheduler == "strict_priority")
         {
-            self.queues[d]
+            self.state.queues[d]
                 .waiting
                 .iter()
                 .enumerate()
                 .rev()
                 .find_map(|(priority, q)| q.front().map(|t| (priority, *t)))
         } else {
-            self.queues[d]
+            self.state.queues[d]
                 .waiting
                 .iter()
                 .enumerate()
@@ -381,7 +544,7 @@ impl Engine<'_> {
                 .expect("offer capacity preflighted");
             let row = EthernetTransferRecord {
                 transfer_id,
-                time_ps: self.now.0,
+                time_ps: self.state.now.0,
                 frame_id: frame_id.clone(),
                 parent_transfer_id: parent_transfer_id.clone(),
                 queue_id: self
@@ -392,7 +555,7 @@ impl Engine<'_> {
                 vlan_id: candidate.vlan_id,
                 from_port: direction.from_port.clone(),
                 to_port: direction.to_port.clone(),
-                queued_ps: self.now.0,
+                queued_ps: self.state.now.0,
                 sof_ps: None,
                 eof_ps: None,
                 release_ps: None,
@@ -419,12 +582,14 @@ impl Engine<'_> {
             };
             let index = self.eth().transfers.len();
             self.eth_mut().transfers.push(row);
-            self.frame_indices.push(f);
-            self.direction_indices.push(d);
+            self.state.frame_indices.push(f);
+            self.state.direction_indices.push(d);
             if !full {
-                self.queues[d].waiting[priority as usize].push_back(index);
-                self.queues[d].bytes[priority as usize] += mac_bytes;
-                self.dirty.insert((self.now.0, self.now.1, d));
+                self.state.queues[d].waiting[priority as usize].push_back(index);
+                self.state.queues[d].bytes[priority as usize] += mac_bytes;
+                self.state
+                    .dirty
+                    .insert((self.state.now.0, self.state.now.1, d));
             }
             self.queue_point(d, f, priority);
         }
@@ -439,7 +604,7 @@ impl Engine<'_> {
             .min()
     }
     fn preflight_offer(&self, frame_id: &str, candidates: &[Candidate]) -> Result<()> {
-        let mut dirty = self.dirty.clone();
+        let mut dirty = self.state.dirty.clone();
         let mut ids = BTreeSet::new();
         for candidate in candidates {
             let d = candidate.direction;
@@ -454,13 +619,14 @@ impl Engine<'_> {
                 return Err(failure("duplicate Ethernet transfer ID"));
             }
             if self.admit(d, candidate.priority, candidate.wire.mac_bytes)? {
-                self.queues[d].bytes[candidate.priority as usize]
+                self.state.queues[d].bytes[candidate.priority as usize]
                     .checked_add(candidate.wire.mac_bytes)
                     .ok_or_else(|| overflow("Ethernet queue byte overflow"))?;
-                dirty.insert((self.now.0, self.now.1, d));
+                dirty.insert((self.state.now.0, self.state.now.1, d));
             }
         }
-        self.sequence
+        self.state
+            .sequence
             .checked_add(dirty.len() as u64)
             .ok_or_else(|| overflow("Ethernet sequence overflow"))?;
         Ok(())
@@ -494,7 +660,7 @@ impl Engine<'_> {
                 if row.generation != generation
                     || row.status != "serialized"
                     || row.arrival_ps.is_some()
-                    || row.planned_arrival_ps != self.now.0
+                    || row.planned_arrival_ps != self.state.now.0
                 {
                     return Err(failure(
                         "Ethernet media immutable arrival generation/state mismatch",
@@ -502,19 +668,19 @@ impl Engine<'_> {
                 }
                 let transfer = row.transfer;
                 self.handle(Event::Arrival(transfer))?;
-                let now = self.now.0;
+                let now = self.state.now.0;
                 self.eth_mut().attempts[attempt].arrival_ps = Some(now);
                 self.eth_mut().attempts[attempt].time_ps = now;
             }
             Event::Dispatch => {
-                let mut cursors = self.cursors.clone();
+                let mut cursors = self.state.cursors.clone();
                 let g = self
                     .model
                     .generators
                     .iter()
                     .enumerate()
                     .filter(|(g, generator)| {
-                        generator.time(cursors[*g]) == Some(self.now.0 as u128)
+                        generator.time(cursors[*g]) == Some(self.state.now.0 as u128)
                     })
                     .min_by(|(_, a), (_, b)| a.id.cmp(&b.id))
                     .map(|(g, _)| g)
@@ -523,31 +689,31 @@ impl Engine<'_> {
                 cursors[g] = ordinal
                     .checked_add(1)
                     .ok_or_else(|| overflow("Ethernet ordinal overflow"))?;
-                let mut events = vec![(self.now.0, 1, Event::Generate(g, ordinal))];
+                let mut events = vec![(self.state.now.0, 1, Event::Generate(g, ordinal))];
                 let next = self.next_generation(&cursors);
                 if let Some(time) = next.filter(|time| *time <= u64::MAX as u128) {
                     events.push((time as u64, 1, Event::Dispatch));
                 }
                 let reserved = self.reserve(&events)?;
-                self.cursors = cursors;
-                self.future_generation = next.is_some_and(|time| time > u64::MAX as u128);
+                self.state.cursors = cursors;
+                self.state.future_generation = next.is_some_and(|time| time > u64::MAX as u128);
                 self.publish(reserved);
             }
             Event::Generate(g, ordinal) => {
                 let generator = &self.model.generators[g];
                 let device = &self.model.devices[generator.source];
                 let f = self.eth().frames.len();
-                let ready = add(self.now.0, device.tx_processing_delay_ps)?;
-                let events = if ready > self.now.0 {
+                let ready = add(self.state.now.0, device.tx_processing_delay_ps)?;
+                let events = if ready > self.state.now.0 {
                     self.reserve(&[(
                         ready,
-                        if self.media.is_some() { 1 } else { 0 },
+                        if self.state.media.is_some() { 1 } else { 0 },
                         Event::SourceReady(f),
                     )])?
                 } else {
                     Vec::new()
                 };
-                if ready == self.now.0 {
+                if ready == self.state.now.0 {
                     let candidates = self.source_candidates(
                         generator.source,
                         &generator.frame,
@@ -556,7 +722,7 @@ impl Engine<'_> {
                     );
                     self.preflight_offer(&format!("{}:{ordinal}", generator.id), &candidates)?;
                 }
-                let now = self.now.0;
+                let now = self.state.now.0;
                 self.eth_mut().frames.push(EthernetFrameRecord {
                     frame_id: format!("{}:{ordinal}", generator.id),
                     time_ps: now,
@@ -570,12 +736,12 @@ impl Engine<'_> {
                     ready_ps: None,
                 });
                 self.publish(events);
-                if ready == self.now.0 {
+                if ready == self.state.now.0 {
                     self.source_offer(f);
                 }
             }
             Event::SourceReady(f) => {
-                let events = self.reserve(&[(self.now.0, 1, Event::Offer(f))])?;
+                let events = self.reserve(&[(self.state.now.0, 1, Event::Offer(f))])?;
                 self.publish(events);
             }
             Event::Offer(f) => {
@@ -596,25 +762,29 @@ impl Engine<'_> {
                 self.source_offer(f);
             }
             Event::Start(d) => {
-                if self.queues[d].active.is_some() || self.next_waiting(d).is_none() {
+                if self.state.queues[d].active.is_some() || self.next_waiting(d).is_none() {
                     return Ok(());
                 }
                 let (priority, t) = self.next_waiting(d).unwrap();
-                let f = self.frame_indices[t];
+                let f = self.state.frame_indices[t];
                 let wire = &self.eth().transfers[t].wire;
                 let link = &self.model.directions[d];
-                let (eof, release, arrival) =
-                    l2::timing(self.now.0, wire.mac_bytes, link.bitrate_bps, link.delay_ps)?;
+                let (eof, release, arrival) = l2::timing(
+                    self.state.now.0,
+                    wire.mac_bytes,
+                    link.bitrate_bps,
+                    link.delay_ps,
+                )?;
                 let events =
                     self.reserve(&[(eof, 0, Event::Eof(t)), (release, 0, Event::Release(t))])?;
-                let remaining_bytes = self.queues[d].bytes[priority]
+                let remaining_bytes = self.state.queues[d].bytes[priority]
                     .checked_sub(wire.mac_bytes)
                     .ok_or_else(|| failure("Ethernet queue byte invariant"))?;
-                self.queues[d].waiting[priority].pop_front();
-                self.queues[d].bytes[priority] = remaining_bytes;
-                self.queues[d].active = Some(t);
+                self.state.queues[d].waiting[priority].pop_front();
+                self.state.queues[d].bytes[priority] = remaining_bytes;
+                self.state.queues[d].active = Some(t);
                 self.queue_point(d, f, priority as u8);
-                let now = self.now.0;
+                let now = self.state.now.0;
                 let row = &mut self.eth_mut().transfers[t];
                 row.time_ps = now;
                 row.status = "transmitting".into();
@@ -629,7 +799,7 @@ impl Engine<'_> {
                     .planned_arrival_ps
                     .ok_or_else(|| failure("Ethernet missing planned arrival"))?;
                 let events = self.reserve(&[(arrival, 1, Event::Arrival(t))])?;
-                let now = self.now.0;
+                let now = self.state.now.0;
                 let row = &mut self.eth_mut().transfers[t];
                 row.eof_ps = Some(now);
                 row.time_ps = now;
@@ -637,17 +807,19 @@ impl Engine<'_> {
                 self.publish(events);
             }
             Event::Release(t) => {
-                let d = self.direction_indices[t];
-                let now = self.now.0;
+                let d = self.state.direction_indices[t];
+                let now = self.state.now.0;
                 let row = &mut self.eth_mut().transfers[t];
                 row.release_ps = Some(now);
                 row.time_ps = now;
-                self.queues[d].active = None;
-                self.dirty.insert((self.now.0, self.now.1, d));
+                self.state.queues[d].active = None;
+                self.state
+                    .dirty
+                    .insert((self.state.now.0, self.state.now.1, d));
             }
             Event::Arrival(t) => {
-                let f = self.frame_indices[t];
-                let direction = &self.model.directions[self.direction_indices[t]];
+                let f = self.state.frame_indices[t];
+                let direction = &self.model.directions[self.state.direction_indices[t]];
                 let device = &self.model.devices[direction.destination];
                 let frame = &self.eth().frames[f];
                 let wire = &self.eth().transfers[t].wire;
@@ -686,7 +858,7 @@ impl Engine<'_> {
                     None
                 } else {
                     Some(add(
-                        self.now.0,
+                        self.state.now.0,
                         if device.kind == "endpoint" {
                             device.rx_processing_delay_ps
                         } else {
@@ -695,22 +867,22 @@ impl Engine<'_> {
                     )?)
                 };
                 let r = self.eth().receptions.len();
-                let events = if ready.is_some_and(|ready| ready > self.now.0) {
+                let events = if ready.is_some_and(|ready| ready > self.state.now.0) {
                     self.reserve(&[(ready.unwrap(), 0, Event::Processed(r))])?
                 } else {
                     Vec::new()
                 };
                 let reception = EthernetReceptionRecord {
                     reception_id: format!("{}@rx", self.eth().transfers[t].transfer_id),
-                    time_ps: self.now.0,
+                    time_ps: self.state.now.0,
                     frame_id: frame.frame_id.clone(),
                     transfer_id: self.eth().transfers[t].transfer_id.clone(),
                     device: device.id.clone(),
                     ingress: direction.to_port.clone(),
                     vlan_id,
                     priority,
-                    observed_ps: self.now.0,
-                    ready_ps: reason.is_some().then_some(self.now.0),
+                    observed_ps: self.state.now.0,
+                    ready_ps: reason.is_some().then_some(self.state.now.0),
                     planned_ready_ps: ready,
                     status: if reason.is_some() {
                         "filtered"
@@ -722,7 +894,7 @@ impl Engine<'_> {
                     egress_transfer_ids: Vec::new(),
                 };
                 // Zero-delay processing is checked before committing the arrival callback.
-                let outputs = if ready == Some(self.now.0) {
+                let outputs = if ready == Some(self.state.now.0) {
                     Some(self.outputs(t)?)
                 } else {
                     None
@@ -730,7 +902,7 @@ impl Engine<'_> {
                 if let Some(outputs) = &outputs {
                     self.preflight_offer(&frame.frame_id, &outputs.candidates)?;
                 }
-                let now = self.now.0;
+                let now = self.state.now.0;
                 let transfer = &mut self.eth_mut().transfers[t];
                 transfer.time_ps = now;
                 transfer.arrival_ps = Some(now);
@@ -741,7 +913,7 @@ impl Engine<'_> {
                 }
             }
             Event::Processed(r) => {
-                let events = self.reserve(&[(self.now.0, 1, Event::Complete(r))])?;
+                let events = self.reserve(&[(self.state.now.0, 1, Event::Complete(r))])?;
                 self.publish(events);
             }
             Event::Complete(r) => {
@@ -768,13 +940,13 @@ impl Engine<'_> {
             .unwrap();
         let candidates =
             self.source_candidates(source, &frame.wire, frame.source_vlan_id, frame.priority);
-        let now = self.now.0;
+        let now = self.state.now.0;
         self.eth_mut().frames[f].ready_ps = Some(now);
         self.eth_mut().frames[f].time_ps = now;
         self.offer(f, None, &candidates);
     }
     fn ingress_policy(&self, t: usize) -> Result<&EthernetPortPolicy> {
-        let ingress = &self.model.directions[self.direction_indices[t]].to_port;
+        let ingress = &self.model.directions[self.state.direction_indices[t]].to_port;
         self.model
             .port_policies
             .iter()
@@ -792,7 +964,7 @@ impl Engine<'_> {
 
     fn validate_wire(&self, t: usize) -> Result<()> {
         let wire = &self.eth().transfers[t].wire;
-        let source = &self.eth().frames[self.frame_indices[t]].wire;
+        let source = &self.eth().frames[self.state.frame_indices[t]].wire;
         let bytes = decode(&wire.mac_hex).map_err(|_| failure("Ethernet corrupted frame bytes"))?;
         if bytes.len() < 4
             || crc32(&bytes[..bytes.len() - 4]).to_le_bytes() != bytes[bytes.len() - 4..]
@@ -823,7 +995,7 @@ impl Engine<'_> {
         Ok(())
     }
     fn outputs(&self, t: usize) -> Result<Forwarding> {
-        let d = &self.model.directions[self.direction_indices[t]];
+        let d = &self.model.directions[self.state.direction_indices[t]];
         let device = &self.model.devices[d.destination];
         if device.kind == "endpoint" {
             return Ok(Forwarding {
@@ -834,7 +1006,7 @@ impl Engine<'_> {
         let wire = &self.eth().transfers[t].wire;
         let (vlan_id, priority, dei) = self.classification(t)?;
         let (selected, reason) =
-            l2::static_egress(self.model, self.direction_indices[t], wire, vlan_id)?;
+            l2::static_egress(self.model, self.state.direction_indices[t], wire, vlan_id)?;
         let mut candidates = Vec::new();
         for direction in selected {
             let outgoing = if self.vlan() {
@@ -868,9 +1040,9 @@ impl Engine<'_> {
         Ok(Forwarding { candidates, reason })
     }
     fn complete(&mut self, r: usize, t: usize, outputs: Forwarding) {
-        let f = self.frame_indices[t];
+        let f = self.state.frame_indices[t];
         let device =
-            &self.model.devices[self.model.directions[self.direction_indices[t]].destination];
+            &self.model.devices[self.model.directions[self.state.direction_indices[t]].destination];
         let status = if device.kind == "endpoint" {
             "received"
         } else if outputs.reason.is_some() {
@@ -879,16 +1051,16 @@ impl Engine<'_> {
             "forwarded"
         };
         let ids = self.offer(f, Some(t), &outputs.candidates);
-        if status == "received" && self.media.is_none() {
+        if status == "received" && self.state.media.is_none() {
             self.point(
                 device.id.clone(),
                 "ethernet.delivery_ps",
-                self.now.0 - self.eth().frames[f].generated_ps,
+                self.state.now.0 - self.eth().frames[f].generated_ps,
                 Some(f),
                 Some(device.id.clone()),
             );
         }
-        let now = self.now.0;
+        let now = self.state.now.0;
         let row = &mut self.eth_mut().receptions[r];
         row.time_ps = now;
         row.ready_ps = Some(now);
@@ -896,114 +1068,117 @@ impl Engine<'_> {
         row.reason = outputs.reason.map(str::to_string);
         row.egress_transfer_ids = ids;
     }
-    fn run(mut self) -> Snapshot {
-        let event_loop = super::timing::event_loop();
-        loop {
-            while self
+    fn step(&mut self) -> super::legacy::StepOutcome {
+        while self
+            .state
+            .heap
+            .peek()
+            .is_some_and(|Reverse((_, event))| self.media_canceled(event))
+        {
+            self.state.heap.pop();
+        }
+        if let Some(&(time, delta, _)) = self.state.dirty.first() {
+            if self
+                .state
                 .heap
                 .peek()
-                .is_some_and(|Reverse((_, event))| self.media_canceled(event))
+                .is_none_or(|Reverse((key, _))| (time, delta, 2) <= (key.0, key.1, key.2))
             {
-                self.heap.pop();
-            }
-            if let Some(&(time, delta, _)) = self.dirty.first() {
-                if self
-                    .heap
-                    .peek()
-                    .is_none_or(|Reverse((key, _))| (time, delta, 2) <= (key.0, key.1, key.2))
-                {
-                    let dirty: Vec<_> = self
-                        .dirty
-                        .range((time, delta, 0)..=(time, delta, usize::MAX))
-                        .copied()
-                        .collect();
-                    let events: Vec<_> = if let Some(media) = &self.media {
-                        dirty
-                            .iter()
-                            .map(|&(_, _, d)| media.direction_pairs[d])
-                            .collect::<BTreeSet<_>>()
-                            .into_iter()
-                            .map(|p| (time, 2, Event::PairStart(p)))
-                            .collect()
-                    } else {
-                        dirty
-                            .iter()
-                            .map(|&(_, _, d)| (time, 2, Event::Start(d)))
-                            .collect()
-                    };
-                    // Dirty batches retain their originating delta even after unrelated callbacks.
-                    let previous = self.now;
-                    self.now = (time, delta, 1, previous.3);
-                    let reserved = self.reserve(&events);
-                    self.now = previous;
-                    match reserved {
-                        Ok(events) => {
-                            self.publish(events);
-                            for key in dirty {
-                                self.dirty.remove(&key);
-                            }
+                let dirty: Vec<_> = self
+                    .state
+                    .dirty
+                    .range((time, delta, 0)..=(time, delta, usize::MAX))
+                    .copied()
+                    .collect();
+                let events: Vec<_> = if let Some(media) = &self.state.media {
+                    dirty
+                        .iter()
+                        .map(|&(_, _, d)| media.direction_pairs[d])
+                        .collect::<BTreeSet<_>>()
+                        .into_iter()
+                        .map(|p| (time, 2, Event::PairStart(p)))
+                        .collect()
+                } else {
+                    dirty
+                        .iter()
+                        .map(|&(_, _, d)| (time, 2, Event::Start(d)))
+                        .collect()
+                };
+                // Dirty batches retain their originating delta even after unrelated callbacks.
+                let previous = self.state.now;
+                self.state.now = (time, delta, 1, previous.3);
+                let reserved = self.reserve(&events);
+                self.state.now = previous;
+                match reserved {
+                    Ok(events) => {
+                        self.publish(events);
+                        for key in dirty {
+                            self.state.dirty.remove(&key);
                         }
-                        Err(error) => {
-                            self.fail(error, time);
-                            break;
-                        }
+                    }
+                    Err(error) => {
+                        self.fail(error, time);
+                        return super::legacy::StepOutcome::Failed;
                     }
                 }
             }
-            let Some(Reverse((key, event))) = self.heap.peek().cloned() else {
-                break;
-            };
-            if key.0 >= self.prepared.common.time_limit_ps {
-                break;
-            }
-            if self.snapshot.common.committed_events >= self.prepared.common.max_events
-                || key.1 >= self.prepared.common.max_delta_cycles
-            {
-                self.fail(
-                    Diagnostic {
-                        schema_version: 1,
-                        code: "E-0004".into(),
-                        stage: "run".into(),
-                        message: "Ethernet execution limit exceeded".into(),
-                        details: None,
-                        ..Diagnostic::execution("")
-                    }
-                    .with_reason(
-                        if self.snapshot.common.committed_events >= self.prepared.common.max_events
-                        {
-                            "event_limit"
-                        } else {
-                            "delta_cycle_limit"
-                        },
-                    ),
-                    key.0,
-                );
-                break;
-            }
-            self.now = key;
-            if let Err(error) = self.handle(event) {
-                self.fail(error, key.0);
-                break;
-            }
-            let popped = self.heap.pop().unwrap();
-            debug_assert_eq!(popped.0.0, key);
-            self.snapshot.common.committed_events += 1;
-            self.snapshot.common.last_event_time_ps = Some(key.0);
-            if !self.snapshot.common.checkpoint() {
-                break;
-            }
         }
-        drop(event_loop);
-        self.snapshot.common.pending_events = self
+        let Some(Reverse((key, event))) = self.state.heap.peek().cloned() else {
+            return super::legacy::StepOutcome::Exhausted;
+        };
+        if key.0 >= self.prepared.common.time_limit_ps {
+            return super::legacy::StepOutcome::Exhausted;
+        }
+        if self.state.snapshot.common.committed_events >= self.prepared.common.max_events
+            || key.1 >= self.prepared.common.max_delta_cycles
+        {
+            self.fail(
+                Diagnostic {
+                    schema_version: 1,
+                    code: "E-0004".into(),
+                    stage: "run".into(),
+                    message: "Ethernet execution limit exceeded".into(),
+                    details: None,
+                    ..Diagnostic::execution("")
+                }
+                .with_reason(
+                    if self.state.snapshot.common.committed_events
+                        >= self.prepared.common.max_events
+                    {
+                        "event_limit"
+                    } else {
+                        "delta_cycle_limit"
+                    },
+                ),
+                key.0,
+            );
+            return super::legacy::StepOutcome::Failed;
+        }
+        self.state.now = key;
+        if let Err(error) = self.handle(event) {
+            self.fail(error, key.0);
+            return super::legacy::StepOutcome::Failed;
+        }
+        let popped = self.state.heap.pop().unwrap();
+        debug_assert_eq!(popped.0.0, key);
+        self.state.snapshot.common.committed_events += 1;
+        self.state.snapshot.common.last_event_time_ps = Some(key.0);
+
+        super::legacy::StepOutcome::Committed
+    }
+    fn finish_once(&mut self) {
+        self.state.snapshot.common.pending_events = self
+            .state
             .heap
             .iter()
             .filter(|Reverse((_, event))| !self.media_canceled(event))
             .count() as u64
-            + self.dirty.len() as u64
-            + u64::from(self.future_generation);
-        if !self.snapshot.common.partial {
-            self.snapshot.common.termination = if self.prepared.common.time_limit_ps == 0
-                || self.snapshot.common.pending_events > 0
+            + self.state.dirty.len() as u64
+            + u64::from(self.state.future_generation);
+        if !self.state.snapshot.common.partial {
+            self.state.snapshot.common.end_ps = self.prepared.common.time_limit_ps;
+            self.state.snapshot.common.termination = if self.prepared.common.time_limit_ps == 0
+                || self.state.snapshot.common.pending_events > 0
             {
                 "time_limit"
             } else {
@@ -1011,132 +1186,157 @@ impl Engine<'_> {
             }
             .into();
         }
-        self.snapshot
+    }
+    fn run(mut self) -> Snapshot {
+        let event_loop = super::timing::event_loop();
+        loop {
+            if !matches!(self.step(), super::legacy::StepOutcome::Committed)
+                || !self.state.snapshot.common.checkpoint()
+            {
+                break;
+            }
+        }
+        drop(event_loop);
+        self.finish_once();
+        self.state.snapshot
     }
     fn fail(&mut self, error: Diagnostic, time: u64) {
-        self.snapshot.common.partial = true;
-        self.snapshot.common.termination = "execution_failed".into();
-        self.snapshot.common.end_ps = time;
+        self.state.snapshot.common.partial = true;
+        self.state.snapshot.common.termination = "execution_failed".into();
+        self.state.snapshot.common.end_ps = time;
         let event_seq = self
+            .state
             .heap
             .peek()
             .filter(|entry| entry.0.0.0 == time)
             .map(|entry| entry.0.0.3);
-        self.snapshot.common.diagnostics.push(error.with_runtime(
-            "run",
-            Some(time),
-            event_seq,
-            None,
-        ));
+        self.state
+            .snapshot
+            .common
+            .diagnostics
+            .push(error.with_runtime("run", Some(time), event_seq, None));
     }
 }
 fn is_group(mac: &str) -> bool {
     u8::from_str_radix(&mac[..2], 16).is_ok_and(|b| b & 1 != 0)
 }
 
-fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
+fn create_engine(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
     let model = prepared
         .ethernet
         .as_ref()
         .ok_or_else(|| failure("missing prepared Ethernet model"))?;
-    let mut engine = Engine {
+    let engine = Engine {
         prepared,
         model,
-        heap: BinaryHeap::new(),
-        sequence: 0,
-        cursors: vec![0; model.generators.len()],
-        future_generation: false,
-        now: (0, 0, 0, 0),
-        dirty: BTreeSet::new(),
-        queues: vec![
-            Queue {
-                waiting: vec![VecDeque::new(); 8],
-                bytes: vec![0; 8],
-                active: None
-            };
-            model.directions.len()
-        ],
-        frame_indices: Vec::new(),
-        direction_indices: Vec::new(),
-        media: model
-            .media
-            .as_ref()
-            .map(|config| media::MediaRuntime::new(config, model.directions.len())),
-        snapshot: Snapshot {
-            registered: None,
-            network: None,
-            common: CommonSnapshot {
-                point_spool: None,
-                spool_error: None,
-                termination: "events_exhausted".into(),
-                partial: false,
-                end_ps: prepared.common.time_limit_ps,
-                last_event_time_ps: None,
-                committed_events: 0,
-                pending_events: 0,
-                points: Vec::new(),
-                diagnostics: Vec::new(),
+        state: EngineState {
+            heap: BinaryHeap::new(),
+            sequence: 0,
+            cursors: vec![0; model.generators.len()],
+            future_generation: false,
+            now: (0, 0, 0, 0),
+            dirty: BTreeSet::new(),
+            queues: vec![
+                Queue {
+                    waiting: vec![VecDeque::new(); 8],
+                    bytes: vec![0; 8],
+                    active: None
+                };
+                model.directions.len()
+            ],
+            frame_indices: Vec::new(),
+            direction_indices: Vec::new(),
+            media: model
+                .media
+                .as_ref()
+                .map(|config| media::MediaRuntime::new(config, model.directions.len())),
+            snapshot: Snapshot {
+                registered: None,
+                network: None,
+                common: CommonSnapshot {
+                    point_spool: None,
+                    spool_error: None,
+                    termination: "events_exhausted".into(),
+                    partial: false,
+                    end_ps: prepared.common.time_limit_ps,
+                    last_event_time_ps: None,
+                    committed_events: 0,
+                    pending_events: 0,
+                    points: Vec::new(),
+                    diagnostics: Vec::new(),
+                },
+                can: CanSnapshot {
+                    archive: None,
+                    bus_state: "idle".into(),
+                    bus_states: Vec::new(),
+                    requests: Vec::new(),
+                    receivers: Vec::new(),
+                },
+                gateway: GatewaySnapshot::default(),
+                canfd: None,
+                axi: None,
+                soc: None,
+                memory_ipc: None,
+                ethernet: Some(EthernetSnapshot::default()),
             },
-            can: CanSnapshot {
-                archive: None,
-                bus_state: "idle".into(),
-                bus_states: Vec::new(),
-                requests: Vec::new(),
-                receivers: Vec::new(),
-            },
-            gateway: GatewaySnapshot::default(),
-            canfd: None,
-            axi: None,
-            soc: None,
-            memory_ipc: None,
-            ethernet: Some(EthernetSnapshot::default()),
         },
     };
-    for direction in &model.directions {
-        engine.snapshot.common.points.push(Point {
-            event_seq: None,
-            effect_seq: None,
-            time_ps: 0,
-            target: format!("{}.queue", direction.from_port),
-            metric: if model.media.is_some() {
-                "ethernet.media.queue_length"
-            } else {
-                "queue_length"
-            }
-            .into(),
-            value: 0,
-            request_id: None,
-            receiver: None,
-            reason: None,
-        });
-    }
-    if engine.qos() {
+    Ok(engine)
+}
+impl Engine<'_> {
+    fn initialize(&mut self) -> Result<()> {
+        let model = self.model;
         for direction in &model.directions {
-            for priority in 0..8 {
-                for metric in ["queue_length", "queue_bytes"] {
-                    engine.snapshot.common.points.push(Point {
-                        event_seq: None,
-                        effect_seq: None,
-                        time_ps: 0,
-                        target: format!("{}.queue.{priority}", direction.from_port),
-                        metric: metric.into(),
-                        value: 0,
-                        request_id: None,
-                        receiver: None,
-                        reason: None,
-                    });
+            self.state.snapshot.common.points.push(Point {
+                event_seq: None,
+                effect_seq: None,
+                time_ps: 0,
+                target: format!("{}.queue", direction.from_port),
+                metric: if model.media.is_some() {
+                    "ethernet.media.queue_length"
+                } else {
+                    "queue_length"
+                }
+                .into(),
+                value: 0,
+                request_id: None,
+                receiver: None,
+                reason: None,
+            });
+        }
+        if self.qos() {
+            for direction in &model.directions {
+                for priority in 0..8 {
+                    for metric in ["queue_length", "queue_bytes"] {
+                        self.state.snapshot.common.points.push(Point {
+                            event_seq: None,
+                            effect_seq: None,
+                            time_ps: 0,
+                            target: format!("{}.queue.{priority}", direction.from_port),
+                            metric: metric.into(),
+                            value: 0,
+                            request_id: None,
+                            receiver: None,
+                            reason: None,
+                        });
+                    }
                 }
             }
         }
-    }
-    if let Some(time) = engine.next_generation(&engine.cursors) {
-        if time <= u64::MAX as u128 {
-            let reserved = engine.reserve(&[(time as u64, 1, Event::Dispatch)])?;
-            engine.publish(reserved);
-        } else {
-            engine.future_generation = true;
+        if let Some(time) = self.next_generation(&self.state.cursors) {
+            if time <= u64::MAX as u128 {
+                let reserved = self.reserve(&[(time as u64, 1, Event::Dispatch)])?;
+                self.publish(reserved);
+            } else {
+                self.state.future_generation = true;
+            }
         }
+        Ok(())
     }
+}
+fn initialize(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
+    let mut engine = create_engine(prepared)?;
+    engine.initialize()?;
     Ok(engine)
 }
 pub(super) fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot> {
@@ -1145,3 +1345,74 @@ pub(super) fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot> {
 
 #[cfg(test)]
 mod tests;
+
+/// Owned continuation; each advance executes one original event callback.
+pub(crate) struct Stepper {
+    prepared: std::sync::Arc<PreparedSimulation>,
+    state: Option<EngineState>,
+    initialized: bool,
+    finished: bool,
+}
+impl Stepper {
+    pub(crate) fn new(prepared: std::sync::Arc<PreparedSimulation>) -> Result<Self> {
+        let state = create_engine(&prepared)?.state;
+        Ok(Self {
+            prepared,
+            state: Some(state),
+            initialized: false,
+            finished: false,
+        })
+    }
+    fn with_engine<T>(&mut self, f: impl FnOnce(&mut Engine<'_>) -> T) -> T {
+        let prepared = &*self.prepared;
+        let model = prepared
+            .ethernet
+            .as_ref()
+            .expect("validated Ethernet model");
+        let mut engine = Engine {
+            prepared,
+            model,
+            state: self.state.take().expect("owned continuation"),
+        };
+        let result = f(&mut engine);
+        self.state = Some(engine.state);
+        result
+    }
+    pub(crate) fn initialize(&mut self) -> Result<()> {
+        if !self.initialized {
+            self.with_engine(|engine| engine.initialize())?;
+            self.initialized = true;
+        }
+        Ok(())
+    }
+    pub(crate) fn step(&mut self) -> super::legacy::StepOutcome {
+        debug_assert!(self.initialized && !self.finished);
+        self.with_engine(|engine| engine.step())
+    }
+    pub(crate) fn snapshot(&self) -> &Snapshot {
+        &self.state.as_ref().expect("owned continuation").snapshot
+    }
+    pub(crate) fn snapshot_mut(&mut self) -> &mut Snapshot {
+        &mut self.state.as_mut().expect("owned continuation").snapshot
+    }
+    pub(crate) fn refresh_prefix(&mut self, horizon: u64) -> Result<()> {
+        self.with_engine(|engine| {
+            engine.state.snapshot.common.end_ps = horizon;
+            engine.state.snapshot.common.pending_events = engine
+                .state
+                .heap
+                .iter()
+                .filter(|Reverse((_, event))| !engine.media_canceled(event))
+                .count() as u64
+                + engine.state.dirty.len() as u64
+                + u64::from(engine.state.future_generation);
+            Ok(())
+        })
+    }
+    pub(crate) fn finish_once(&mut self) {
+        if !self.finished {
+            self.with_engine(|engine| engine.finish_once());
+            self.finished = true;
+        }
+    }
+}

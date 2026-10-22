@@ -1,0 +1,3404 @@
+{
+  "schema_name": "dir.verification.remaining.sources",
+  "schema_version": 1,
+  "baseline": "082629e1ecb3c966f60a043819c2362ef50e627f",
+  "worktree": "/tmp/dir-remaining-implementation-20261021",
+  "publication_state": "uncommitted_unpublished",
+  "build_source_sha256": "549d386cc0a15e99fc0c3e9073d7956d2935aa462289be62d4b067be3a08ac8c",
+  "reference_inputs": [
+    {
+      "path": "tmp/standards/8021AB-2016.pdf",
+      "bytes": 4479334,
+      "sha256": "120e5eb03c2407dd196496f53ec60befa5b458bf8015a52037a40436885f9589",
+      "redistributed": false
+    },
+    {
+      "path": "tmp/standards/IEEE-802.1AS-2020.pdf",
+      "bytes": 6208451,
+      "sha256": "aa57c0cb54091b02ad36817bc510e90def04965e15cd2616e63d562295b75342",
+      "redistributed": false
+    },
+    {
+      "path": "tmp/standards/IEEE-802.1CB-2017.pdf",
+      "bytes": 3689872,
+      "sha256": "1e37b7fa6d6c6520a06b89204e6ef9eb7baa6b4f72802dc5e6f0c82b9657c87f",
+      "redistributed": false
+    },
+    {
+      "path": "tmp/standards/IEEE-802.1Q-2022.pdf",
+      "bytes": 20996920,
+      "sha256": "1653580bcae81ed4753ff2840b40d67239036078ed550cff23325d6fdd697114",
+      "redistributed": false
+    },
+    {
+      "path": "tmp/standards/IEEE-802.3-2022.pdf",
+      "bytes": 95692738,
+      "sha256": "3f78ed025c26ea8483706c4f25e17854ae3812635c18d3815195cf0d34962e75",
+      "redistributed": false
+    }
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/release-audit.yml",
+      "bytes": 13687,
+      "sha256": "f582d3f418e2e09acdb6d1e8311fc893c0269c0712a38b8f6fe9e930883ce28c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 71742,
+      "sha256": "7a0a066efd323de958fed9b8f66caf61d85a70ee47015ed44f1261d1866efd0e"
+    },
+    {
+      "path": "crates/dir-simulator/src/input.rs",
+      "bytes": 66790,
+      "sha256": "208dbf177234ca8afafa11c1fe92aaca167dd2eee85cb66bf966c2f7abdef6aa"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ahb_pipeline.rs",
+      "bytes": 6055,
+      "sha256": "fb3126c4523f27f3f877ea16c79587f0096b0e55e25d9556501ecbdfe470f03a"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/can.rs",
+      "bytes": 26754,
+      "sha256": "ea1dea1022446bb19bb91e1745c4fb638da197c630db785e891290e5c5faa8ab"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/can_protocol.rs",
+      "bytes": 17839,
+      "sha256": "b9fbcd3ab8cb62e13a377f674b0531c0cbd26855b23b6fb5b7a7afc238cae106"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/canfd.rs",
+      "bytes": 21779,
+      "sha256": "66c0f1cc79b7755bf4864573e68e968486c57b36a78b80d9be90457f592e262e"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ethernet.rs",
+      "bytes": 43261,
+      "sha256": "ce2c77add69849688912b16cc98da0ed536e3a17c6a2e1e36a40c4fe54f4b676"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/ethernet/tsn.rs",
+      "bytes": 23394,
+      "sha256": "e93dbc4f2bfad26cbfaee1c62b5b18759f7d448e8d418ba5bd3057952ed51dbe"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network.rs",
+      "bytes": 11141,
+      "sha256": "d4a777bd9f0e32cf31c2ba117f95c682c8f70eb0ed6b0eb6a738187791eabb36"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/bindings.rs",
+      "bytes": 14431,
+      "sha256": "be145c03ca44d2b591af67dbafea2d054496b70962acae6e04a0cff8be5fd9c3"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/bindings_tests.rs",
+      "bytes": 2945,
+      "sha256": "23c2dca322f01d8bb6ca3f431f5a565fec4d857f4d6e32c46eed5e25f25dd5ac"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/clocks.rs",
+      "bytes": 5702,
+      "sha256": "04abeb8243a44d6a3ca8a7eb2d62d088fc02dd0c99a70c61a038dfe0a293a528"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/configuration.rs",
+      "bytes": 49805,
+      "sha256": "2159d4001282099a8b59db02e9b514a4342b09cee1a623816a7b275aa2f34647"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/extensions.rs",
+      "bytes": 67075,
+      "sha256": "b9400bc8ce8d599e6f45b2dc98f167228ff2bf65957c12cf4405bf47a4669882"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/extensions/gptp.rs",
+      "bytes": 15439,
+      "sha256": "a7dda4fe2cb56d934adb67e60ecfe5cb160004ad8bc677fc2822c7583400dbb9"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/extensions/mac_control.rs",
+      "bytes": 5542,
+      "sha256": "8052eed040fc8cebae32700fa84215c810a524b9c14a91855943accdda3b8b19"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/extensions/mac_merge.rs",
+      "bytes": 10317,
+      "sha256": "7d45dd09075de6e8fb43bcd25fa507e15db6c20cac52797764b9f0c776d00ec7"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/extensions/phy.rs",
+      "bytes": 12134,
+      "sha256": "d6cfb58eb21311868815684d7c20dd11280cadedffa5f46029e7b0ec6843e112"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/multicast_active.rs",
+      "bytes": 20255,
+      "sha256": "338ae6b7a2fa0f6f041a3c727ca3d48967049ab383f50464d33e66a9fc5c9649"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/topology.rs",
+      "bytes": 8235,
+      "sha256": "668f50a063db75dda3eaa4529f6397ca330114ab9bdec4a6879a73f00d5bea19"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/network/wire_merge.rs",
+      "bytes": 5881,
+      "sha256": "04ed87348e9973635cd60d9581f5a5cd0eed4acee4aa305a61afddc1015db87b"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/noc_flit.rs",
+      "bytes": 3940,
+      "sha256": "29a9e1ec8730ad457a8b515eedc8741e35fd3bc4e64bf8a87f415545d8fe3206"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/references.rs",
+      "bytes": 16389,
+      "sha256": "8d471ef208d0d75abe118df7cc5ec9ea7a7102eac7d62f7e3cd150773bdc0d16"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/soc_execution.rs",
+      "bytes": 11830,
+      "sha256": "f118e4e06f8b1d4ec3c72ee97fde07bbab0c840af4f66aa340550d5e2333e342"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/transaction_fabric.rs",
+      "bytes": 6648,
+      "sha256": "668acf658b6674a560c812d23a88d0ff70a9b231023e7b850179c90e56d1ef6e"
+    },
+    {
+      "path": "crates/dir-simulator/src/input/wire.rs",
+      "bytes": 63601,
+      "sha256": "d9bc9fcdb9af8600e023f7bde5bcd81fece3167c3a1cb0e1e2f116d6236e9a59"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/can_ethernet.rs",
+      "bytes": 1861,
+      "sha256": "f8bf3aa226f7be1f2f7d5697ba85dc7efe1726477c621cc7aa017be9f1c09adf"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/snapshot/ethernet.rs",
+      "bytes": 3204,
+      "sha256": "6017ec7123f3cc7150acc133b4846154281458cc60bee44817f08234f1f9b258"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types.rs",
+      "bytes": 1078,
+      "sha256": "4533a5a3da4c21f1e0a7c72d121a3bb2e2a5ce3bf403bb2b64df560ab57a9b6e"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/ahb_pipeline.rs",
+      "bytes": 3019,
+      "sha256": "8452a736bad02e0f135e67d1f9b38fcb35ebc0be3ac25017c6257fba69d2383c"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/can_ethernet.rs",
+      "bytes": 3444,
+      "sha256": "e41102e075888c6aab493deaf1b0fbe59484c2d0869c2282334642b583352e9a"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/can_protocol.rs",
+      "bytes": 8239,
+      "sha256": "14ad09a20dd57ad578e6c176d80ae79760ddeca0621d2c744a8e277b5cc38b73"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/canfd.rs",
+      "bytes": 1243,
+      "sha256": "393e53712f8b44d2bf0f0217c310fc4683d1709edf846df16b7c8e68ddcd2b5f"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/ethernet.rs",
+      "bytes": 6777,
+      "sha256": "7e1bba5e543ee6a01c279c5c6b6b834a8b405ac555b5cf206e6102801b76357d"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/ethernet/dynamic.rs",
+      "bytes": 5298,
+      "sha256": "c5531acd1824d72e977909fb3f8b0ef2b849d1735cef7cabb6cadc84062fa3e7"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/ethernet/tsn.rs",
+      "bytes": 5317,
+      "sha256": "a4ae6b2db89173045689cc3fc1d03d41497d48b1c1527eaaa56a1afb921345d6"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/network.rs",
+      "bytes": 6666,
+      "sha256": "eec89e2e32f7476b0029fb2e0200bc14b4828e5cfbc215ca24a156bc7ad74716"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/network/bindings.rs",
+      "bytes": 2449,
+      "sha256": "0967c5dc9cba92ac7d991b95360c338e8a76f518e3a547bd0bf1ddda8f89fcf4"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/network/configuration.rs",
+      "bytes": 11869,
+      "sha256": "f5c890a6f184124c273c433c638782731f3a27523b0359c2bd987f4337cb8624"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/network/gptp.rs",
+      "bytes": 1379,
+      "sha256": "23b9528c5ac240aee19055c5f337e8fee63698aecf929629c1aa1e7319c825c3"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/network/mac_control.rs",
+      "bytes": 765,
+      "sha256": "bf66528f3da1e7f5f0a26457af7570a8dc4367508331347063263515ec3386da"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/network/mac_merge.rs",
+      "bytes": 1357,
+      "sha256": "859a3f5ad6457b4159a3cea84455c73e2290608fca5f844225432f1c3eeab8e0"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/noc_flit.rs",
+      "bytes": 2091,
+      "sha256": "5554f7ae710a00e5646e91ae24de3561b72dc5c171a824d2a9a719a77c48d082"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/soc_execution.rs",
+      "bytes": 6786,
+      "sha256": "88e830da3b0b12d6e85efc63dd5d7d8b2211991231fa68299f4707549bd32003"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/transaction_fabric.rs",
+      "bytes": 3811,
+      "sha256": "eb573ad3416a53a7b43ddf600adf0c482cebe233402944072ed511e5361576bb"
+    },
+    {
+      "path": "crates/dir-simulator/src/lib/types/wire.rs",
+      "bytes": 6915,
+      "sha256": "57e3c8d849565761f42509c284bb0a56671ed1156021a35b2d66b06db9aa759c"
+    },
+    {
+      "path": "crates/dir-simulator/src/output.rs",
+      "bytes": 7137,
+      "sha256": "859eb27af0db96440ed2f2ce3194b6ce00d350ed01495d7a8c09e9813c533aa7"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/can_protocol.rs",
+      "bytes": 6074,
+      "sha256": "60927f37bbb262e867a53b48ae5eb0b4fb314b531dbf5eb00c4d59cfc5dbfebb"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/canfd.rs",
+      "bytes": 12342,
+      "sha256": "cd4de0c4d5e5a81f629b0bd8ded7a3f8b4422c635db65f0ef337585a91df9860"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/controlled_legacy.rs",
+      "bytes": 1234,
+      "sha256": "3f180a11fc79a66ecf774acc47238d63e0cc8f98d45dc152b675ba369ef964bb"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/ethernet.rs",
+      "bytes": 35803,
+      "sha256": "c68742a5bcf5c722ff7c46a53d4a2a5091f7981dd709775bb06f1eeb1743cd7e"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/ethernet/flow.rs",
+      "bytes": 14016,
+      "sha256": "d290ed7adfc9f449c75f6fd9cb96636e164b56f5b4a462af3fe871e5fadf3a52"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/json.rs",
+      "bytes": 11422,
+      "sha256": "11ff673896f86dd5aa97f00a4a8be29b26f62485d5c7104d2909650e3dab2d2c"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/network.rs",
+      "bytes": 25363,
+      "sha256": "1ca6b7bd923e2bb1b9b4434feb65c6cb19898dde072ddc2f3bb4bc084e15ea58"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/network/extensions.rs",
+      "bytes": 26690,
+      "sha256": "963551206a2ed54c8cf29a22c412b2f2e96232975fa4cf1f22122c0d47294320"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/network/validation.rs",
+      "bytes": 32520,
+      "sha256": "a719dd289efc8cfdfad3ee877b97441f065e6d85d4c7a1605d272e4751fe536b"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/network/validation/services.rs",
+      "bytes": 6328,
+      "sha256": "790b6f2e5822c33a2b2a43aff9680547141ef02d33c091cf214c1ea6cc1c416c"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/network/validation/services/gptp.rs",
+      "bytes": 15136,
+      "sha256": "c1e2f6aedb9d8d9a3c80c496866c47dba12a50acb3561be3e011e9de0c7eb660"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/noc_flit.rs",
+      "bytes": 470,
+      "sha256": "74ce710ced9c409eb4d23e6d5248bce21acc60d8ef4734efb5527b7db4da9ac7"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/preparation.rs",
+      "bytes": 21486,
+      "sha256": "aa9e2f8d5f1d0882627d50cd44ba21cdbafa0ee2ffbe07ecda443cef593540db"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/publish.rs",
+      "bytes": 26612,
+      "sha256": "7bd86cf8e9932f118822aa971f2f6b320b3c497f1d4f7db17529d60aba8da930"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/registered.rs",
+      "bytes": 23557,
+      "sha256": "ec3de443a8740f53a6986b82e953bad4c7cb9f5bab45aa676ebadb1e194245d0"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/soc_execution.rs",
+      "bytes": 847,
+      "sha256": "3919723e582dbb88c7ba910c6ae43ba2ef2d23116f53e687a0668fa7947c60ff"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/transaction_fabric.rs",
+      "bytes": 602,
+      "sha256": "5a4b18ac03d00c53d29b17fb9e52e501f2a80bca7d815e02ee60abfc903a1d7c"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/validation.rs",
+      "bytes": 37757,
+      "sha256": "444f59f2f3bf3d44cdbeae4a3ddf140e724a6994ec89a0d000b2a7f7d284a1f1"
+    },
+    {
+      "path": "crates/dir-simulator/src/output/wire.rs",
+      "bytes": 38853,
+      "sha256": "50e90dc123360135f96c899ac4eb49671866c905a517d3633955d7558a09f79b"
+    },
+    {
+      "path": "crates/dir-simulator/src/registry/extensions.rs",
+      "bytes": 12719,
+      "sha256": "1364fd2923cd5fffc23183e84f7a215e50d80703f378afba4d97476847e581d0"
+    },
+    {
+      "path": "crates/dir-simulator/src/registry/mod.rs",
+      "bytes": 46122,
+      "sha256": "c63c09f79a9a2b18805cea80ef0c06dc78b170320284b07dc712133a5ac5384a"
+    },
+    {
+      "path": "crates/dir-simulator/src/registry/prepare.rs",
+      "bytes": 33847,
+      "sha256": "40574b9dc589ce8655547bf8d1f1039ce3161f13dbf3b050fe256450f9794138"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime.rs",
+      "bytes": 3248,
+      "sha256": "ecb27284ecdc473464fa9bcdc0da6a57e5afc4c6a1423290ae1207a63f93324d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ahb_pipeline/mod.rs",
+      "bytes": 27656,
+      "sha256": "2125e6e9daf01d2d7e69c179c98a6651fa92943a73b170b6b597b497211d7ebd"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ahb_pipeline/service.rs",
+      "bytes": 18395,
+      "sha256": "6f33a0b85e665a6513d88be086da3d0adb2a864fc24972fe461c07b4b1a86f7d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/axi.rs",
+      "bytes": 32543,
+      "sha256": "ca71c1310c4cd807fc3a1ff1fe87a20632537fd6be4b294d66130bf596382214"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can.rs",
+      "bytes": 15058,
+      "sha256": "fe451daf9bd147c0dde149ac21123cfabcc7d34ef141b4cf7196fa76f927e18c"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can/protocol.rs",
+      "bytes": 3648,
+      "sha256": "52586b9a71b5b669982f366f6cc51f7a0cc2ac696fffb18046fc9deaee4322a8"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_archive.rs",
+      "bytes": 7928,
+      "sha256": "b9b4381cb46f421aa2ebc5174d092488b5123c80e379aa2bf8168e1321cf3ea2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_ethernet.rs",
+      "bytes": 120708,
+      "sha256": "c318fe9a01c53493293724d154a65812e88d269f4b82cb9e9151b4468735251f"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_protocol.rs",
+      "bytes": 76762,
+      "sha256": "3c81871ceb51be918472a6de88c38c0fc45d0e4bbd6e0db547cd8ed23c7f7486"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_protocol/codec.rs",
+      "bytes": 7149,
+      "sha256": "c7163488418ae1d4188203cae7126308c8a888c68bb28ca7a2b70206860cb7ad"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_protocol/confinement.rs",
+      "bytes": 1674,
+      "sha256": "832d0280939de967104a7b0f6ea9b78c53d82a9dbdbe4909bac2ad2e68f749f4"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_protocol/gateway.rs",
+      "bytes": 9117,
+      "sha256": "0876dc1566035b02e18e605e44ad5e744d0824f74538193a21a71d4d41e392de"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_protocol/mixed.rs",
+      "bytes": 89617,
+      "sha256": "ffdf245e6f8a455b797b6f51dbd9136b0a28b433da3cc02bb18f50290cbcec7e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_protocol/random.rs",
+      "bytes": 3704,
+      "sha256": "0af69621c4261d14ed81ad87f9f57a57db0dfffaab6034534c1a5fbe23f3fe96"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/can_protocol/time.rs",
+      "bytes": 3180,
+      "sha256": "e9ee133eb4f17ac01c0f60e93da8a93190ba32a3992ecc61e968ca101d98fe8d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/canfd.rs",
+      "bytes": 24519,
+      "sha256": "40455d97275edbf4b7dec15647b475a310278f5f075a811c9aae119fff1b8e43"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/canfd/codec.rs",
+      "bytes": 12248,
+      "sha256": "4a7d669a8a6d56cb61c181c4b714b18387f86d368e244a4c5a2ab6b4dcd85a16"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/canfd/receiver.rs",
+      "bytes": 15579,
+      "sha256": "0f8929131792a999b517f38cbe3404428661bad300fb5ebaeac878f84949aa88"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/checkpoint_bundle.rs",
+      "bytes": 39249,
+      "sha256": "2aa3edd6d8f8a9c78e1d07c0f0c8f59d50615da8ed12b6730a15944e01828a46"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ddr4/controller.rs",
+      "bytes": 21588,
+      "sha256": "b1b4b9af65e85ca9a5d792cf4f5a8eb32817306327c6e5f4ba6bfc8c1637421a"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ddr4/device.rs",
+      "bytes": 48907,
+      "sha256": "b5ed71cbddb5852ae634982e46477641f410a1831629a8d509b1418f2427398f"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ddr4/mod.rs",
+      "bytes": 344,
+      "sha256": "1bb3466e060401570334d6c99472027e138404a2bf23700b7523ac054cf7f717"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ddr4/types.rs",
+      "bytes": 7348,
+      "sha256": "c593e7fc2e63e67dd7277c8fd5d5b4766a8e8a4d728f3290f30aa82c86c39186"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/engine.rs",
+      "bytes": 27516,
+      "sha256": "e5e94d5865afd6fc65f4175067c7adc59697182556d13d85b4be1424d733824a"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet.rs",
+      "bytes": 53219,
+      "sha256": "8cb53f3df9f517b25b46587d3c71052919c0f408553dae8c1aa09a66b9441fd3"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/dynamic.rs",
+      "bytes": 98813,
+      "sha256": "8d1b08aad0fc659dad53856059b757705065e3a4a8b64c6825a7a1d40e483cc1"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/dynamic_vector_tests.rs",
+      "bytes": 79995,
+      "sha256": "52441a908a7ee9a2690e54f38b1b2046233c15884ded1404704332e3832ae2b4"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/media.rs",
+      "bytes": 21495,
+      "sha256": "0b8c5aae466bcff535dd4948f82c9926815d39d5d460f4ca7214c8e7be180187"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/media/kernel.rs",
+      "bytes": 7033,
+      "sha256": "e552a9166d8ac19f7490c2d30bb84b9047fb04491f012c28451251078d8721a2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/attachment.rs",
+      "bytes": 52793,
+      "sha256": "97a6a6675b862d2a65810ce860e2c8d98e5e4e21504a37810ad3e5a30557c273"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/channel.rs",
+      "bytes": 17418,
+      "sha256": "0dfb26af8990ef7c80dee9794e7fceb140e33700b8d36e4ee19e0a7547ada76e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/execution.rs",
+      "bytes": 10757,
+      "sha256": "7dfe0f10f8ebe6ee8b5856ee11a2fff433bb7013c8f4ba474dce2a14a640630c"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/an_hsm.rs",
+      "bytes": 10793,
+      "sha256": "623e1de2af4752d89e6ad458206fdfd772dfde6bf291c3d7fab0fe89542ab4b5"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/mau.rs",
+      "bytes": 10356,
+      "sha256": "875021f62fcb0541e88a964fea4daade66bda1f129eb333596fdf9d64729716d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/mod.rs",
+      "bytes": 431,
+      "sha256": "eb46b5f68ca2a7340a154dad72f596e962d06a0a50b2db2f4f1edbb89e6035fd"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/plca.rs",
+      "bytes": 40805,
+      "sha256": "6b62ad0bd1836cfc818f969e7cec996bc0623107920b2b86468684a7cccf99de"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/repeater.rs",
+      "bytes": 21038,
+      "sha256": "035e37c434e255b58219669407bd8634d44197b1f44bd7b99bfa1240305606f2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/rs9.rs",
+      "bytes": 9251,
+      "sha256": "9705e9529a6188d5e018e842f58d30369f6c1aee950bf674385606d6971cac14"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1_an.rs",
+      "bytes": 13381,
+      "sha256": "5404de03212233cc1e7bcf3581722ad93afae474e6635aba5a34a84d6c273a3e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1_gigabit.rs",
+      "bytes": 15020,
+      "sha256": "1ffbae5f3253148845e85c8b720de4cbd6a5ee6319a4dd4a9737d195cdc4b192"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1_info.rs",
+      "bytes": 8796,
+      "sha256": "a97415ba507c1666a41178cee78f5bd905024459737e97664a277313d9346976"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1_link.rs",
+      "bytes": 34185,
+      "sha256": "45f26a27d6f6900a64498cc2670fb84b35cd5d62851ba4eebfd188c5477eed0d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1_raw.rs",
+      "bytes": 28871,
+      "sha256": "2c3236a085962a80b61679355241ae443dfbfd398713303dae2863e6afe367fc"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1_stream.rs",
+      "bytes": 14830,
+      "sha256": "5f23e46c60820d3637848c60aa8fb64f9a0e063cfa60eabbae32244eb1dbda9f"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1_training.rs",
+      "bytes": 9248,
+      "sha256": "76950016e81f7f6834d2ecffd94ce487592850212e1d7f2f119ea34378491737"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/ieee/t1s.rs",
+      "bytes": 24030,
+      "sha256": "184bad4c659e9b9fb725e6f8e3292ade5da1c7142e3e17e60f045262a0a1308b"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/medium.rs",
+      "bytes": 173423,
+      "sha256": "cc6f33a046b74cbea8b7b925044375a13764175b7046562723942bfa8516ae10"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/mod.rs",
+      "bytes": 3645,
+      "sha256": "6debf1f76714ea5261513b69c5fa69b7532da7d70e92c145d208e19793b44624"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/receiver.rs",
+      "bytes": 49163,
+      "sha256": "5f7557c899219d7a7c6610b9f0f173801cb6c8c5434a815288bd3a310c200d04"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/phy/wire.rs",
+      "bytes": 5246,
+      "sha256": "5bd41ced8ab72fbd692bd6e5de14f0912b9244f288791a54941e7b0461a34446"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/tests.rs",
+      "bytes": 37459,
+      "sha256": "f5115dd6d92da52360b01799b7241b11ae6fb66ea025416a33b0b13b7bba90d7"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/tsn.rs",
+      "bytes": 96383,
+      "sha256": "976a8a8bec3f46a8c80e535a3b1b8a203589d7680c6c1f5417cc96defeb46e6b"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/tsn/clock_projection.rs",
+      "bytes": 14104,
+      "sha256": "423b9c710f529f550751de41b6794dafb2da633ca75b327aaef0e3c7434dc76e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/tsn/composition_tests.rs",
+      "bytes": 25209,
+      "sha256": "29dff2e878c4373324ee6935de1cd6ac8f60c2cea99ee26e4e39d93099deeaf4"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/ethernet/tsn/merge.rs",
+      "bytes": 17701,
+      "sha256": "087bdade4673ba20f7695614abf1e128887abd944c40b4403eba5f2a09610f29"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/gateway.rs",
+      "bytes": 13583,
+      "sha256": "c2672acede93b9886449d4c2a1b7bf6ee643171e11971a2c7db16efbb7ed6b5b"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/legacy.rs",
+      "bytes": 265,
+      "sha256": "071385db749c76d687f423493c6f212bf1cc113000641b89c0b43f997cc94101"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/memory_ipc.rs",
+      "bytes": 54566,
+      "sha256": "41e2e1937958d65f8841c50779c54f919418c7fe26f0636f7ee315f1714eea35"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network.rs",
+      "bytes": 151757,
+      "sha256": "1698f5af58c6f6a2cf0648a55b89f98872990fb1c93e7ad9bcebb8d912144fd6"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/checkpoint.rs",
+      "bytes": 88835,
+      "sha256": "b4d574993c6d1b34db688c4e4b8ff67acf23f41fe2397ba3d6adca87e91fbae0"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/clock.rs",
+      "bytes": 12747,
+      "sha256": "07488415ea72745473b1b53005f45c8c110d3a13cdbbad7d57bba433cf81965d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/configuration.rs",
+      "bytes": 80546,
+      "sha256": "ac241d03d6b86d4971f0943cefe5dd96b84a0015e3fe82392ceaca4a3e493c3b"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/configuration/envelope.rs",
+      "bytes": 8416,
+      "sha256": "0ea8d3dab288a65a2d3bfe821af747704c4f6df93b8f03c8806467616ac075a7"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/configuration/projection.rs",
+      "bytes": 8284,
+      "sha256": "28528dbaa8394694c1353bb967240d544df487b5ed3c049f68acd002fe2a0e44"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/configured_media.rs",
+      "bytes": 33891,
+      "sha256": "c6790e960fe1935569d19ee4c343da36e964d3c07aa78b1547a4c40f6f29b19d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/distributed.rs",
+      "bytes": 77864,
+      "sha256": "51796182c736a8e0d1bb38171f3b9953e26eac8bcdb3ef14770f14ec5a046f33"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/forwarding_composition_tests.rs",
+      "bytes": 17396,
+      "sha256": "227f8eb661cd68b1db7904020b1a3c7add59b798b6f79e1c3a80bae9790428c1"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/frer_wire.rs",
+      "bytes": 10717,
+      "sha256": "ba27492d4c25f12f902a309ac39a2a62a2b07b56d2ef252504c9f6aaf27405ff"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/checkpoint.rs",
+      "bytes": 63593,
+      "sha256": "627383c38334a57bc9f442126960cb3d09d18d8fdac2d4a78490cb1a785cd75d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/codec.rs",
+      "bytes": 20164,
+      "sha256": "8b3549d3f795dceab081b752d9909254fdc7b89d16a2dd76967c8a0137d86cda"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/integration.rs",
+      "bytes": 76106,
+      "sha256": "d146e6b62ff29434bd9061afcdb4d32282dca3fc14e1d39ead094d73076c59be"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/math.rs",
+      "bytes": 17978,
+      "sha256": "6ed2997ffba2feab942465ba952ead596c73d69e69dd13883bc0bc60f98d4b03"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/mod.rs",
+      "bytes": 245,
+      "sha256": "0d443d0335ee524e45679a0cde6ab6d9bd5ea20fd1ccd9bc8b65190429e952b8"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/receive.rs",
+      "bytes": 49189,
+      "sha256": "7f2e2f8edc300e24a956417de0e9d973633be96e49491b2564d4c3ad0adfa4a1"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/replay.rs",
+      "bytes": 46704,
+      "sha256": "03663baa4d0d6dc9027f7f9a9787811e766b5333a5339d3e9e4724b753b99ee5"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/selection.rs",
+      "bytes": 11230,
+      "sha256": "8727bcf428de062cd6573ca8f16088f48d65a35ad5a7feba54b651ccd615a654"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/gptp/state.rs",
+      "bytes": 16096,
+      "sha256": "883d2e7c2779caf6677fd8386594e7dbfc598dc4e3a3172d430d1cfb222d1c90"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_control.rs",
+      "bytes": 26295,
+      "sha256": "465057282fb0d0bcb21f9c742427b4a927ffd522f407f7bca532be685de57e74"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge.rs",
+      "bytes": 2263,
+      "sha256": "1bc5773e1a5c247ebdb67dc4a4a0b6cfc68eed008fea652c1c97a187985692c4"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/checkpoint.rs",
+      "bytes": 32596,
+      "sha256": "69583ae6094e60afb67bd2890d3655c6c6a45d3336f5209fc89f70c31fefd4dc"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/codec.rs",
+      "bytes": 4293,
+      "sha256": "a4c5afefbb5e35ea54a04f4bc956b7ef05fb465310810b1986bbabf2170a254a"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/ingress.rs",
+      "bytes": 2319,
+      "sha256": "be5c70ae741bde76a0674256efe79330143356ec08bfdb32aaf453704d8d068e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/integration.rs",
+      "bytes": 62999,
+      "sha256": "65e480d73dddbbc9cc50f0b8d3733682cf5b128959d08c83d8965513e458df56"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/journal.rs",
+      "bytes": 51268,
+      "sha256": "08dfe933c0ea9d3a734d4f97a210e8ed79cc3f6495d976816adc1ff1ba035575"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/lldp.rs",
+      "bytes": 4302,
+      "sha256": "fe93e8953fb9a5c3f8bbcdf47688c98bb520c6e55cefc6dc3ea0941051e476a6"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/phy.rs",
+      "bytes": 36507,
+      "sha256": "505907dd69a67cb2ba392dd484577fd2491673fb1d3d65c302020cf65d07bc9c"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/rx.rs",
+      "bytes": 8595,
+      "sha256": "2c106c887083c1196c0269c0eb90810787382fcdd350017e2c5ddde3ba26c105"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/shaper.rs",
+      "bytes": 6375,
+      "sha256": "8989276d9d5b1dbd89887562f18e0ee8da8bb88610733532c337db516b3810e2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/tas.rs",
+      "bytes": 7725,
+      "sha256": "3e4615093b9962444a6ac5c80e1221168a74f7db623f25b8f74296cd67120887"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/tests.rs",
+      "bytes": 27656,
+      "sha256": "40407e0347a559b34154aa36ba541f7f8884380b57362d8ff1f5dd4333fdc29a"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/tx.rs",
+      "bytes": 9569,
+      "sha256": "966dcf93b2ae6a8f2a1299f84d7f05252230ad8c570fc8e99189007dd450cfd5"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/mac_merge/verify.rs",
+      "bytes": 14805,
+      "sha256": "c3324a26f30df726195c14bdbdf262a2a37e4874e68fd558f1043c13abf822b9"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/multicast_active.rs",
+      "bytes": 129995,
+      "sha256": "d3646d82d4349836bd4e5396274dfe5855f7f75e0e1a213734c5a849fc490aa8"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/multicast_integration.rs",
+      "bytes": 13332,
+      "sha256": "bec16d5679132b423e96c494b4b937dc02e9ee03bf77745f1debebde7f243540"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/network_vector_tests.rs",
+      "bytes": 68527,
+      "sha256": "255a809cf243c83434182787ecef5fa2ac655f1c7d172510176ee219878d44c2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/phy.rs",
+      "bytes": 31271,
+      "sha256": "926ea7e084450626932be13f2d1236bb63ed2abcf5fb91a5a9bea92258bc7c7c"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/phy_boundary.rs",
+      "bytes": 13276,
+      "sha256": "a43ff8f7cddae6ad1e0a0407a6fec248a2864cb965420bf08a9f6c5b95c828a1"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/phy_service.rs",
+      "bytes": 11278,
+      "sha256": "4955d97d4d7fcd8b548fde054c420ed755a99d0c7cf1e453fcc7ff62f0f73b56"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/preemption.rs",
+      "bytes": 65470,
+      "sha256": "a957e1b5f49ac42ca3d14210408a86cb4ae8ec34cf9c76db064c64f41f673c20"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/provider.rs",
+      "bytes": 19658,
+      "sha256": "0e0ff63bad2cd338d6c9f351074da110cbd1c68834e8f31fd700f3b6b8f11102"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/provider_l2.rs",
+      "bytes": 28076,
+      "sha256": "7e345d28e46546de519618422c9a8707b8961590079ca520eee616ccf5db7896"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/qcc.rs",
+      "bytes": 35797,
+      "sha256": "f53342bac1d8dbba2e88f7cde036283bab701c360ab372874118d0b0ac170201"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/qcc/raw.rs",
+      "bytes": 15922,
+      "sha256": "7a6af199b946480b4261b12bc5dbd9154e02a1fd04c62e53724637440288b0da"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/replication.rs",
+      "bytes": 58183,
+      "sha256": "f73fb3253a0cb1656a5fae226d2625f7cee285ea5dcdd43ceac7a49892d82fd7"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/shared_lan.rs",
+      "bytes": 6023,
+      "sha256": "65509c17219d1fb9aa9ea96e4de44682dc0f40347fdc2f90bd52227f5150fbbb"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/wire.rs",
+      "bytes": 91932,
+      "sha256": "c508b5da7f71fb1657a6309a8e60764428092aa85746a24ca9e6efac5245196b"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/wire_merge.rs",
+      "bytes": 23836,
+      "sha256": "24a49e8cc0a466820e3c9e9902d2a4e3c492e40bdf495d7d8f9df72b926e1155"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network/wire_phy.rs",
+      "bytes": 10588,
+      "sha256": "e74842a23ce01ed24911a6647aa4e7107f24eef038d247f918c385aa3e4e70bb"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/network_metrics.rs",
+      "bytes": 6628,
+      "sha256": "b2909795676f2e1499b18a2ffa6b20d09028a1fac8b7a957ca73f2204f57b6fc"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/noc_flit/checkpoint.rs",
+      "bytes": 23221,
+      "sha256": "33830db655fa1aed3d45c4868761fcf21d2b50d71cd6bfe3fef66921248222fe"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/noc_flit/mod.rs",
+      "bytes": 10926,
+      "sha256": "0b79f9257ec3f2d024d292ccf1b4f6bd2d8b2faa1ec5f31d3b766f20cff07ad3"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/noc_flit/router.rs",
+      "bytes": 15007,
+      "sha256": "6ab31a6047f6c701a0674f92b860019871fd42e904701641aaab9f2e69c52de8"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/noc_flit/service.rs",
+      "bytes": 4647,
+      "sha256": "b236e07b69fb5e13ed1b10db79303bf8ea107485c97d590524c18ae257f85710"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/noc_flit/topology.rs",
+      "bytes": 5092,
+      "sha256": "5b9dc15eaa8ff2615290368b5633e949c8b4eea9c84cf690b3dc113f12458a2d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/registered.rs",
+      "bytes": 77774,
+      "sha256": "9077f513f38485223b07e338b0f62cf25a54e1332d4f9619fd46fe080050c62e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/scheduler.rs",
+      "bytes": 5099,
+      "sha256": "6a5d87d82018fba759df1188924a95ebbed27694db0e8164e97b2da6c3fb29ac"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/session.rs",
+      "bytes": 58763,
+      "sha256": "7dbfd0ca404b81440ef2d04c6e7dcefec340f78a3680628ce87023d197925c43"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/session/backend.rs",
+      "bytes": 8464,
+      "sha256": "42f66ed215d65140dfd03ec8db25496cac2eb06b6f676eb5b355f5615e8cdf29"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/session/checkpoint.rs",
+      "bytes": 56338,
+      "sha256": "40414afa803305d42483b3ff99d078602c834ee1909a81085ac91ea9f4e141c2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/session/checkpoint/causal_prefix.rs",
+      "bytes": 5561,
+      "sha256": "7519e529192fa1e2baf066ec4be41c58adca7f72b1ae2f8949e541c514490bf2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/session/checkpoint/migration.rs",
+      "bytes": 14425,
+      "sha256": "535fca9f1d6bdc01f606828f2daed6d928ba667aed4c2b0f8a25ddb3b1a64eaf"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc.rs",
+      "bytes": 39702,
+      "sha256": "30d653619c97259251e06ada0af860eddaaf07cac8a1834b542d3d82c02056f3"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/checkpoint.rs",
+      "bytes": 41022,
+      "sha256": "2ac5e9266bbe52d7ecd14d5371d427a08fcaa3cbdd04c169b16d88c8b98cac14"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/coherence.rs",
+      "bytes": 25658,
+      "sha256": "ba47cfa83c8fb55e42ebea3d323cfdfccd45531a302f885871380b85282a4592"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/cpu.rs",
+      "bytes": 14797,
+      "sha256": "a429740db81a8cdcd4fc1a190cc91dec444c7c64fd07a0e42677c4d779a4bc08"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/ddr.rs",
+      "bytes": 35020,
+      "sha256": "2c8aa2750b5a1d1d961d979827e252cc91365a5b675d38c962cc3f6defe46d6e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/ipc.rs",
+      "bytes": 20360,
+      "sha256": "9f13f94f4b91171a9cb34dedd70baf310a827562689020b4ff143c1d1f357c7e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/ipc_checkpoint.rs",
+      "bytes": 15174,
+      "sha256": "dec07e73f15b31793bf73c43e74919895a8f2582b22c35acaefe785e948699d2"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/mailbox.rs",
+      "bytes": 21356,
+      "sha256": "97e1408966e29b90d0b4302bcc2a5a80e4803f21a57e8613cf5b14a44284bf21"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/memory.rs",
+      "bytes": 3703,
+      "sha256": "24d2887685b93ab78b6e22e693cd43b4c2251ed827ab9933b40916a0544da794"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/mod.rs",
+      "bytes": 33461,
+      "sha256": "07799eca5790e04e43e4578d6cc07e25de629ab7597ed912da2e39577737b097"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/state.rs",
+      "bytes": 5784,
+      "sha256": "420af29b3a24440593094544c1454d8677558e90dd41031a3b1460cccf037c1d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/soc_execution/transport.rs",
+      "bytes": 20887,
+      "sha256": "f90c6e54ecbb04ddf12434fbe4a6e329f4f42d292783a82e745ef9f17ab60c38"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/tests.rs",
+      "bytes": 14211,
+      "sha256": "5c6965d3b69a1cf889d6f8a5605186aea733cf7f47ad1fa41689a00edf23b532"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/transaction_fabric/memory.rs",
+      "bytes": 7458,
+      "sha256": "bba51bc64ea9a2f89f997ed15cbc033bf0ecabf2456de062df0219a9a7cfd9e5"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/transaction_fabric/mod.rs",
+      "bytes": 27280,
+      "sha256": "261da6d1393b26f6e59ffc89af8c36ff9407b76d2e9f1b34674ffc96fbe62170"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/transaction_fabric/service.rs",
+      "bytes": 21531,
+      "sha256": "1aaebc654fefba9b51206341d60f01785d397f48830bf26a3a7a930c9d528989"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire.rs",
+      "bytes": 83370,
+      "sha256": "b6deeca115c99a72a18d2ffd2a5d78fd18285671a2f46971ad6b308df8a69289"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/boundary.rs",
+      "bytes": 4079,
+      "sha256": "0da8d4fd19c79cbc3b28157256b3dc5cc90868c9a966e1d376516df33999a166"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/codec.rs",
+      "bytes": 3412,
+      "sha256": "49c962d12ab4ba5cad0b5ac3a81a1069ea72d022074083b5b32867c8f4556030"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/component_envelope.rs",
+      "bytes": 9294,
+      "sha256": "04ee9f9a78d188fd3a651861845b8c8743422d350b51c16cfaf90d2f1ac4de72"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/membership.rs",
+      "bytes": 18784,
+      "sha256": "2aacbc58fbfc6303382b91fd3f17d9204a6e430c5b86786555a182bd69a063a3"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/mstp.rs",
+      "bytes": 86578,
+      "sha256": "311d4f8940ee770ee5ea17962405068312ca8e8944b89155ca9b2a664873dea0"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/mstp_adapter_tests.rs",
+      "bytes": 8730,
+      "sha256": "30511bd919a59df5cd23bbcc25cec71f3982439dd05c93d3477f4e535d524e74"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/mvrp_state.rs",
+      "bytes": 33860,
+      "sha256": "afff792fe3df24525ab57482417557e76445d83fae1586cfaf3c96276a217097"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/ordered_map.rs",
+      "bytes": 779,
+      "sha256": "cfed030d2c2622a7444e576042cb0f53d2cb6b31b9596a307296c35f73006d1e"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/rstp.rs",
+      "bytes": 72059,
+      "sha256": "e3a44cf0e9834117959ed5a8fd548dbf8c9e90423a8c56ede11e65a2fc1aa1a9"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/rstp_cep_tests.rs",
+      "bytes": 8866,
+      "sha256": "8021c6ef2dc5ed0b82d3818cb4165364f75daa3ac614d2b5f92687824f9dc612"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/tests.rs",
+      "bytes": 26730,
+      "sha256": "361da2d299a1f936ad92cc277cf48c241ec154d132408b9138f71082b062bf9d"
+    },
+    {
+      "path": "crates/dir-simulator/src/runtime/wire/transition.rs",
+      "bytes": 52463,
+      "sha256": "df989427ce1b0ad10e1477df78e454df6f91be6afba65aefe52eaa26cd9c34ce"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer.rs",
+      "bytes": 16020,
+      "sha256": "4e32ed23277e5a22b1df986977f985796becc3bbb4b11812ab671e5dbb127442"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/app.js",
+      "bytes": 74269,
+      "sha256": "4055ec3847f1fcbf82863f651545ed974b3c7b16828d4c68e8df65ac70ffb932"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/controlled-app.js",
+      "bytes": 12846,
+      "sha256": "44798a5f439268754a2abaaea6625cc9d9da0a7b07167519d9eddb226fa2ef0d"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/controlled-model.js",
+      "bytes": 31135,
+      "sha256": "7b5fcfcc73785b3227e77331980df5ade19bf96f4e52b72bd6857336baadadf2"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/ethernet-app.js",
+      "bytes": 40565,
+      "sha256": "7d984e9bbe605118291187876901720d3a16ac5aab7253af13e5313a0dd6c6c5"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/ethernet-model.js",
+      "bytes": 102723,
+      "sha256": "ffa55d864dd9e4215066041d47efc76862b3d81b5c2fd7bd983c7dae16c19d98"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/model.js",
+      "bytes": 55195,
+      "sha256": "243a1ea459f15dcec349113735fd7bf93c0449b5f8b13c2100e313eca24cf452"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/transaction-app.js",
+      "bytes": 12550,
+      "sha256": "a7dc4e5881597cc14dbf5aeb9b0e58064c08e5f50004c808a32544c619f765fe"
+    },
+    {
+      "path": "crates/dir-simulator/src/tool/viewer/assets/transaction-model.js",
+      "bytes": 10654,
+      "sha256": "ed98b3f64f58058d498e231e6f336810c7f2099b7261475149797e3a92966136"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ahb_pipeline.rs",
+      "bytes": 15867,
+      "sha256": "5660bc021b2ac455de92094613710c7b8c16ed61a1cf2cbd0299960d6fc60775"
+    },
+    {
+      "path": "crates/dir-simulator/tests/can_fd_receiver.rs",
+      "bytes": 7409,
+      "sha256": "81bbd18c8f3e124e8803f114f8b6be28bffc3b94df0895a995b1d16592b63ce9"
+    },
+    {
+      "path": "crates/dir-simulator/tests/can_gateway_protocol.rs",
+      "bytes": 10368,
+      "sha256": "7e058d6f26a3c62464e238d8e76c17e8dd6b98fc5c7952daf863fe9b7323f280"
+    },
+    {
+      "path": "crates/dir-simulator/tests/can_mixed_protocol.rs",
+      "bytes": 29884,
+      "sha256": "55677e9535eea780877bedce8a171da68e6faaa4cffd3e19d773c87f8ed0b58e"
+    },
+    {
+      "path": "crates/dir-simulator/tests/can_protocol.rs",
+      "bytes": 53962,
+      "sha256": "be81200ba460bcdf45d972fdfcdcebb9c448ec5659a896636775ed0b3fe68f96"
+    },
+    {
+      "path": "crates/dir-simulator/tests/canfd_iso.rs",
+      "bytes": 6668,
+      "sha256": "26285a9891606d5cdfe784a04d14e79f38ca6c3867f5665d98264dc01ffaf2ea"
+    },
+    {
+      "path": "crates/dir-simulator/tests/canfd_wire_codec.rs",
+      "bytes": 6464,
+      "sha256": "bae0d99d52ae70cb8e7526bcb65f3cedac1e5bbd417f4bf863d197ed047db5d2"
+    },
+    {
+      "path": "crates/dir-simulator/tests/checkpoint_migration.rs",
+      "bytes": 18973,
+      "sha256": "d7d8cad21c9415cf50448ebdde20a1762e37c615380abc28efa7ff847ff199ca"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ddr4.rs",
+      "bytes": 43025,
+      "sha256": "07ec92cc1e12f4eb3b933c78346c196393aea29a48255d30b249c51bab089a4d"
+    },
+    {
+      "path": "crates/dir-simulator/tests/ddr4_oracle.rs",
+      "bytes": 5677,
+      "sha256": "0492a8d8ccaf99db2c0e2c17b5a840bd0c07d421a0582cbaa32a6be7c9a632db"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/can_protocol_state_v1.json",
+      "bytes": 1279,
+      "sha256": "8d2432df50717e0866a670f0d2f652a04818018e68077460ec2776b15b63fc55"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/canfd_iso_wire_vectors.json",
+      "bytes": 50618,
+      "sha256": "cf1b00b9ceb9e429e49d7ba5d680b8be3828de2080e0737898bb23ecdc90673e"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/canfd_iso_wire_vectors.md",
+      "bytes": 4093,
+      "sha256": "f64fa01841bd3ad76d426b60a2d57bc83e162726a9eae49d0ab3579f42696999"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/ddr4_oracle/README.md",
+      "bytes": 5310,
+      "sha256": "266c57bae17593e69347f97f21f86ad45888ef9ed0b4b403d65eb51017e538eb"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/ddr4_oracle/check.py",
+      "bytes": 10085,
+      "sha256": "c07c4082b7004cdc6ce498339805fa6942ca2b6a9f2e28c1b1088422fff8f282"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/ddr4_oracle/coverage.json",
+      "bytes": 86046,
+      "sha256": "38f2a802842d80b772b85f058e386c6cb2e0e993b31abb878adc64b953929164"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/generate_canfd_iso_wire_vectors.py",
+      "bytes": 3217,
+      "sha256": "262de8333250bbfa4f54d58bc39c7eb58bcf6f16677d86d892590cac6a777d6c"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/generate_t1_rs9_reference.py",
+      "bytes": 1823,
+      "sha256": "b9fe998203b3772a27aa61d3f3e59350020dd606112bba4c61301d95b251c8bf"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/rv32i_spike_oracle/README.md",
+      "bytes": 1409,
+      "sha256": "b42f58bbaed94dcd137b4d5639c791e4f6d1f400b748aeeef3422f7e28d4507c"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/rv32i_spike_oracle/generate.py",
+      "bytes": 27594,
+      "sha256": "144d091bb86cf0e7af97c3317821cefdf997a52860bb259d70db27a93f047bee"
+    },
+    {
+      "path": "crates/dir-simulator/tests/fixtures/rv32i_spike_oracle/oracle.json",
+      "bytes": 336051,
+      "sha256": "34ff17923b217f2bb8d77ad1aef18dc3114eee9b7c61b0d52cbefadecdd62e93"
+    },
+    {
+      "path": "crates/dir-simulator/tests/frer_normative.rs",
+      "bytes": 21754,
+      "sha256": "5453566ba7c7b76829e343808df0ecbf2d0de87f45de63be9a9b2cfe07255ec0"
+    },
+    {
+      "path": "crates/dir-simulator/tests/frer_rtag.rs",
+      "bytes": 21903,
+      "sha256": "1e36c3ba4d1d4b7bdf2bab4919f7c59c107f080072e80e9c49bd9c8ab202f35a"
+    },
+    {
+      "path": "crates/dir-simulator/tests/legacy_can_ethernet_control.rs",
+      "bytes": 7311,
+      "sha256": "38ed7452ac0fcc078856a78d8cb297f9fc53caa41e549d0f752a21df7961fb07"
+    },
+    {
+      "path": "crates/dir-simulator/tests/legacy_soc_memory_control.rs",
+      "bytes": 6975,
+      "sha256": "6d632a93bac6f71ad8311503a9e7f3733a7aca925a626189d5108cc81e348385"
+    },
+    {
+      "path": "crates/dir-simulator/tests/mac_merge.rs",
+      "bytes": 84446,
+      "sha256": "0af4ff96f98627bae45aa3d36433ce279bd4d6b619fff2e6b2779afd4b2dadee"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_active_multicast.rs",
+      "bytes": 20168,
+      "sha256": "9cb976a5dbf8a60d5674aa3ccca49ac4233427109d0a0e5654c15384546c3970"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_causal_prefix.rs",
+      "bytes": 14101,
+      "sha256": "b28784f4526a2e22c83fc9791f4497dae18d60e206e47dadd363dbe0cc46440f"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_checkpoint.rs",
+      "bytes": 42586,
+      "sha256": "734b51026373479eb1c25471a16693f53da3550175ef1b4ecb8a823bbacbb2bc"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_clock_composition.rs",
+      "bytes": 4351,
+      "sha256": "1e742e32449eb7381310237cc532a758c27993fa8c10637af8f2e10b66d923fc"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_composite.rs",
+      "bytes": 9630,
+      "sha256": "a19bce419ef78ea96cebc3e0121622127a77b61110b49bf888b773297f682d71"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_gateway_frer.rs",
+      "bytes": 26252,
+      "sha256": "08b3db4d541c56c973137cb567963ca5b316e00c732ff591f5a671d39961040a"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_gptp.rs",
+      "bytes": 114823,
+      "sha256": "a26d308c21cdba25a8d740a2b88a03f0775a00a2751b2f27cd43542c8a5a5d42"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_gptp_configured.rs",
+      "bytes": 54853,
+      "sha256": "58f4fa280910c723b5208dcb6902125b53f8986635716c1c3b61ca6a4cb58765"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_gptp_source_reset.rs",
+      "bytes": 24655,
+      "sha256": "53ff8e240abc8db1e949e1d997078ecb66e8475ee5beb80c985e665963a8fea6"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_ieee_t1s.rs",
+      "bytes": 12847,
+      "sha256": "e8049feb402d452c39d6530d545a5cbfbd0239b9a214ec8f8cb393b6f1560cec"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_metric_v2.rs",
+      "bytes": 10483,
+      "sha256": "c14ccc39600a9fd44190b5f1647ddbafd5e24a69803c448502da6bdfdd90c881"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_mstp.rs",
+      "bytes": 3860,
+      "sha256": "a87853f27bdfb00c10b6ae8f3cdf7511c21b21b13113399c125ee6689460c083"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_mstp_boundary.rs",
+      "bytes": 7733,
+      "sha256": "6a961817a1df4a0a4bc83a20275ceadb9fd19ec838e673eedb8fe0f7c5e110d8"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_pause_media.rs",
+      "bytes": 42318,
+      "sha256": "cfe6598174e02a7e82cbf29962333aba97e60278fa8efdb38896d020b4cddb9e"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_phy_admin.rs",
+      "bytes": 2985,
+      "sha256": "9f053eecad84e865b31e857b09f01f521cbfd8efd848904118dc89a70de37876"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_phy_boundaries.rs",
+      "bytes": 5668,
+      "sha256": "94f594df8f12492f0de603c8f245166d7ac6d79e78450f0dbf99de20527dfae9"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_phy_tsn.rs",
+      "bytes": 5295,
+      "sha256": "0318ab254b52f26d244d362935e8bf1522a857d3acd2008ed2518729bd89d865"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_phy_wire.rs",
+      "bytes": 1342,
+      "sha256": "79560c6052afc2d487384de8f7b6de10ba32105cc1683865be28d8ca8169bae5"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_provider.rs",
+      "bytes": 4390,
+      "sha256": "1fe0b7c665b9d93d382ea9ea4b9339495c7dfddfb34106be911f4c4e37491d99"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_provider_multi_pep.rs",
+      "bytes": 8927,
+      "sha256": "9f920513031b1973a99c183517cb4f59630869a0772562a3c38197eee2df3e9b"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_provider_multihandoff.rs",
+      "bytes": 3266,
+      "sha256": "2e068487aa116a11ec30b1bc4dd995e6fb30077224b763de1ba2bc1f9e89246f"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_provider_topology.rs",
+      "bytes": 4635,
+      "sha256": "65c65c349725d77142800c0ca1484e9533cfb7d4c333dafdf710742ad5aa3fd8"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_psfp_clock.rs",
+      "bytes": 3246,
+      "sha256": "1f7dd0a2c159c4002d9381fb1549d0598d4c97a42c75cb0683ea204968d25bab"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_qcc.rs",
+      "bytes": 56493,
+      "sha256": "7cdba27a9a426efdb7e86ed59432a09f55e8213fc711da732099eafa719c3367"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_shared_lan.rs",
+      "bytes": 6197,
+      "sha256": "c9cceae070b16c62ac98752b12b20c2bc7001b02bc26a31791b9670434784e96"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_shared_tree.rs",
+      "bytes": 14809,
+      "sha256": "6ed7c2251f553f5132a5f9af8128f47df7d9c339133af5c94c411d3650e02556"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_sparse_preemption.rs",
+      "bytes": 1912,
+      "sha256": "3850037c426619389fb4c7e57c249b031159e79db02d27eb051be0412a6092e5"
+    },
+    {
+      "path": "crates/dir-simulator/tests/network_wire_serializers.rs",
+      "bytes": 52989,
+      "sha256": "8a9c36f135ab98eaf0e743b7a2ccd31876bbea75142030d71a3863435d80699c"
+    },
+    {
+      "path": "crates/dir-simulator/tests/noc_flit.rs",
+      "bytes": 17493,
+      "sha256": "a87f80a88b6be6bd41c32109ef3f04e2283067ec730fb4a3fd2d702f4972b3c9"
+    },
+    {
+      "path": "crates/dir-simulator/tests/phy_channel.rs",
+      "bytes": 31535,
+      "sha256": "eb01b5d2df23b3e4d4b331c00f526941ca0ba7d362b66e66020b44ad36ca3b48"
+    },
+    {
+      "path": "crates/dir-simulator/tests/phy_ieee_accuracy.rs",
+      "bytes": 9498,
+      "sha256": "1e8bb3190030dcca2e7264b38865c53a6b8bf4a7dae8747f9ad25e194fb00f31"
+    },
+    {
+      "path": "crates/dir-simulator/tests/phy_ieee_gbt1.rs",
+      "bytes": 53976,
+      "sha256": "73a7cdb6c80a61e87fe4b2848ef1d64b4836d48befa9f9e8fe9d49069b5e26a9"
+    },
+    {
+      "path": "crates/dir-simulator/tests/phy_ieee_recovery_network.rs",
+      "bytes": 27145,
+      "sha256": "3c1cde90b7817b82b3c6b97368239bbc1109e0517a4b6f8a717337533794ccac"
+    },
+    {
+      "path": "crates/dir-simulator/tests/phy_ieee_t10.rs",
+      "bytes": 35979,
+      "sha256": "72bef8c9d59bcd795e4dbfd9efb9f4e31726f8b2b3a3d72c62967fa3c1dd68e3"
+    },
+    {
+      "path": "crates/dir-simulator/tests/phy_ieee_t1s.rs",
+      "bytes": 93602,
+      "sha256": "eed63a119d07b664caffc79699fc50c4f9c3552741804ad319bc6024e3916c82"
+    },
+    {
+      "path": "crates/dir-simulator/tests/phy_medium.rs",
+      "bytes": 30615,
+      "sha256": "d5fe64af2df0eb53fb860c4b34510d990d29909c63a013a6950506b77f48a1ed"
+    },
+    {
+      "path": "crates/dir-simulator/tests/rv32i_oracle.rs",
+      "bytes": 11550,
+      "sha256": "63deb804d4c3bc481563cd28f182a79bbd8ba71c098fe9d73be0843f6198aafa"
+    },
+    {
+      "path": "crates/dir-simulator/tests/soc_execution.rs",
+      "bytes": 67703,
+      "sha256": "7b45f73bb74a512616f434a526163ccb52166d495b5d5ad6f8a64ed63df63a47"
+    },
+    {
+      "path": "crates/dir-simulator/tests/soc_execution_viewer.rs",
+      "bytes": 2264,
+      "sha256": "10078516833bc65bb349bb01146a277e512693eaca118157b95e6fb514a35b05"
+    },
+    {
+      "path": "crates/dir-simulator/tests/support/can_compound.rs",
+      "bytes": 3138,
+      "sha256": "a2d0082da921cec9988b39309fe5e478662df5195fd03e1713fcc2a72c91bc80"
+    },
+    {
+      "path": "crates/dir-simulator/tests/transaction_fabric.rs",
+      "bytes": 17715,
+      "sha256": "60eba60a5f9b28b32810355cbfbd0c7d7f732d863fd511178b417791bcab6576"
+    },
+    {
+      "path": "crates/dir-simulator/tests/zero_horizon_network.rs",
+      "bytes": 4977,
+      "sha256": "4d0f15d34aa1c8af6e777a5a2d061384cbbee32f6827ae202006f995b696eef0"
+    },
+    {
+      "path": "docs/design/AHBパイプライン詳細設計書.md",
+      "bytes": 4270,
+      "sha256": "b42392b1cb0ba8bc2020c2ea689477aa8c7dfed30ad9e4483fea0a4c57b07cb5"
+    },
+    {
+      "path": "docs/design/AXI5アトミック・QoS詳細設計書.md",
+      "bytes": 1807,
+      "sha256": "99f2b2512e3dd72cf3627939b173198823d5c79356ee93b79fb1ab5c71460351"
+    },
+    {
+      "path": "docs/design/AXI並列チャネル詳細設計書.md",
+      "bytes": 3918,
+      "sha256": "a61197ff05bbb9e9901e8f80ae575b0852ab427e7c177368be4b83b581273d13"
+    },
+    {
+      "path": "docs/design/CANFD-ISO詳細設計書.md",
+      "bytes": 2510,
+      "sha256": "9b3ff6e23d8f0a435e17882b8848365c6cc122d54dfd974a0ec6be895fe313d3"
+    },
+    {
+      "path": "docs/design/ClassicalCANプロトコル設計書.md",
+      "bytes": 6807,
+      "sha256": "47bedeeed1fc9c31563cf84d796ae0d5cc429abc1d064f37d5d05c60e4cec3d8"
+    },
+    {
+      "path": "docs/design/DDR4コマンド詳細設計書.md",
+      "bytes": 2676,
+      "sha256": "bf82754d1b61bdff031bc0738bef869d09c7e43e45b1bccf2f9d526b48ea1470"
+    },
+    {
+      "path": "docs/design/Ethernetブリッジ構成詳細設計書.md",
+      "bytes": 4245,
+      "sha256": "6c2216a699a9226e7d21ea18a04e0ea4a279b067100ee029b62fc1d9a5cec8f4"
+    },
+    {
+      "path": "docs/design/Ethernet数値PHY詳細設計書.md",
+      "bytes": 10205,
+      "sha256": "526e5a5561d20a89dc249b0edfe18e42a36e7b897b507472917ec404a805d68f"
+    },
+    {
+      "path": "docs/design/Ethernet能動マルチキャスト詳細設計書.md",
+      "bytes": 3314,
+      "sha256": "7366a05fbd713c231846a1fb258ca99956b13873baa91dfcb87a41ef9250bc1f"
+    },
+    {
+      "path": "docs/design/FRER規範回復詳細設計書.md",
+      "bytes": 2332,
+      "sha256": "0ea79b001d4b1ea7df352942412612ab1f8f343869da066e68b7f416c925473e"
+    },
+    {
+      "path": "docs/design/Gateway冗長TSN複合詳細設計書.md",
+      "bytes": 2268,
+      "sha256": "705cfdbf75dbaea155041bd4192ab1f5e44a0e468dafa35d108243ca9a1287be"
+    },
+    {
+      "path": "docs/design/IEEE選択PHY詳細設計書.md",
+      "bytes": 10817,
+      "sha256": "11b5dbc4ae286c7850a78443516522ff6f247d57512798727d6f4b1117bfb9b7"
+    },
+    {
+      "path": "docs/design/MACMerge詳細設計書.md",
+      "bytes": 4038,
+      "sha256": "cfa58989d450a70022f3355c54f506f280884801c82ec07b54a48bbcb00e997a"
+    },
+    {
+      "path": "docs/design/NoCフリット詳細設計書.md",
+      "bytes": 3908,
+      "sha256": "41d728e1f3dd4f8eec983581866a586e2c4599fb5bcfd791d1b4633d928db48d"
+    },
+    {
+      "path": "docs/design/SoC実行詳細設計書.md",
+      "bytes": 4959,
+      "sha256": "9a81d3ba84930880f57bbee159678e23ff8bdc5ce2789949de03e0a315a5b2ce"
+    },
+    {
+      "path": "docs/design/TSNローカル時計詳細設計書.md",
+      "bytes": 1728,
+      "sha256": "804982172164eef4f4a89fa333f36afec2c719ec162dd4d52d97cad600f5b8fc"
+    },
+    {
+      "path": "docs/design/TSN集中設定詳細設計書.md",
+      "bytes": 4386,
+      "sha256": "d13979135c450e0de5dc620adcbe3c8e1634bc2828efeddd5acb9d1133218fee"
+    },
+    {
+      "path": "docs/design/checkpoint版移行詳細設計書.md",
+      "bytes": 2053,
+      "sha256": "070cd1bc0b051ce0d0992fc326bfec45dab0af88486e39cc920e803f5771fcce"
+    },
+    {
+      "path": "docs/design/gPTP実パケット詳細設計書.md",
+      "bytes": 9337,
+      "sha256": "44101f68c2735c23568acc7c7c966db74da553753b1727083c142b8811cf8451"
+    },
+    {
+      "path": "docs/design/ネットワークMetricV2詳細設計書.md",
+      "bytes": 2270,
+      "sha256": "eafb5e764224a274ba9d0255e6ba0cbe84e0e7508eb67b2b429ab4e7dc90f54a"
+    },
+    {
+      "path": "docs/design/ネットワークcheckpoint詳細設計書.md",
+      "bytes": 1914,
+      "sha256": "1e148d7dfe230e91abcaa7e633791f6a30ef89ae86a85799791e7b60ae54a60e"
+    },
+    {
+      "path": "docs/design/分散FRER経路詳細設計書.md",
+      "bytes": 1966,
+      "sha256": "f95bc18cbf73701baa234a4f16719ac23d32dba2e9a39980ca286df7b9d4c17a"
+    },
+    {
+      "path": "docs/design/型付きネットワーク構成詳細設計書.md",
+      "bytes": 7776,
+      "sha256": "3e5ab19deefe6988109f82410be6c9b79dbeaa54b3e56b8097e8bd1e0ce38384"
+    },
+    {
+      "path": "docs/design/専用モデル協調実行詳細設計書.md",
+      "bytes": 2344,
+      "sha256": "ad610a569d4029a48c0e4828c160538157e6ad433309ae492e907a2c5e1c3bf5"
+    },
+    {
+      "path": "docs/implementation/README.md",
+      "bytes": 2152,
+      "sha256": "f72cf4df46f4dc06143d1efa958ff83dd6614680be32721558112a6c54d51d74"
+    },
+    {
+      "path": "docs/implementation/ddr4-rules.json",
+      "bytes": 44908,
+      "sha256": "acfcb0f42c4e9adecfdbf059def4b0756b345757cad3c263580b655b89fb89d2"
+    },
+    {
+      "path": "docs/implementation/remaining-capabilities.json",
+      "bytes": 65641,
+      "sha256": "bb15498c8ea0e94cb749d988f5875e6baf2d3ea3c83ac304cee0170c744dac71"
+    },
+    {
+      "path": "docs/specs/models/AHBパイプライン詳細機能仕様書.md",
+      "bytes": 11173,
+      "sha256": "445a26dc3a66c7dd91c10c950fb9b8d83bab2a8d199ed511b1ec393da68364ef"
+    },
+    {
+      "path": "docs/specs/models/AXI5アトミック・QoS詳細機能仕様書.md",
+      "bytes": 2470,
+      "sha256": "5ddf90b0f1f4d666e1fe9a855578be992e9518b1e0ac04289a3d54030c6bfa43"
+    },
+    {
+      "path": "docs/specs/models/AXI並列チャネル詳細機能仕様書.md",
+      "bytes": 10443,
+      "sha256": "09c46a0a6c8d2437c9c345f4a3d5c8db93192226e9279816974cda195f98f698"
+    },
+    {
+      "path": "docs/specs/models/CANFD-ISO詳細機能仕様書.md",
+      "bytes": 4482,
+      "sha256": "188d877b47ba1c16a4e3021ffa49da6a140c196a1d64279ff9ee08188b5f5bd9"
+    },
+    {
+      "path": "docs/specs/models/ClassicalCANプロトコル仕様書.md",
+      "bytes": 17152,
+      "sha256": "d8c97e349e581fa313214b2a61675011f3cd1ead1146978837790e3934ea34b8"
+    },
+    {
+      "path": "docs/specs/models/DDR4コマンド詳細機能仕様書.md",
+      "bytes": 4389,
+      "sha256": "e488c6e5e6af4c81ffe45f72cada5743f539b1213f2cc393637ab2ed19042cc1"
+    },
+    {
+      "path": "docs/specs/models/EthernetTSN詳細機能仕様書.md",
+      "bytes": 16806,
+      "sha256": "dded0de101b741202bb3a13cd4461306949eeb415066d9ac5684c6c2595a6183"
+    },
+    {
+      "path": "docs/specs/models/Ethernetブリッジ構成詳細機能仕様書.md",
+      "bytes": 4112,
+      "sha256": "79a97e7830da135af72604e186748a0dac9b17850669de74c19e9ae5c35d591b"
+    },
+    {
+      "path": "docs/specs/models/Ethernet数値PHY詳細機能仕様書.md",
+      "bytes": 1151,
+      "sha256": "909360decfe78a3694610ef9c94835d45eaac8bf2eb17b08b2a4c5369b416b08"
+    },
+    {
+      "path": "docs/specs/models/Ethernet能動マルチキャスト詳細機能仕様書.md",
+      "bytes": 3661,
+      "sha256": "5a685a18738c059d9c9e030b6cacc12311935cddb232abecaec57ba90f24a70b"
+    },
+    {
+      "path": "docs/specs/models/FRER規範回復詳細機能仕様書.md",
+      "bytes": 2571,
+      "sha256": "580ddab11a3ec3cd6d55577944ff184b193101f7ab9d4371479e44d906ee30d2"
+    },
+    {
+      "path": "docs/specs/models/Gateway冗長TSN複合詳細機能仕様書.md",
+      "bytes": 2238,
+      "sha256": "3d8b24f98e022b483c28eeb073fd352b3149159ffea10119dc437bcf920db11d"
+    },
+    {
+      "path": "docs/specs/models/IEEE選択PHY詳細機能仕様書.md",
+      "bytes": 4458,
+      "sha256": "ec1e998903ae73a8427e1fd1fe25811048be367906972b267bc65276f30e27a3"
+    },
+    {
+      "path": "docs/specs/models/MACMerge詳細機能仕様書.md",
+      "bytes": 4134,
+      "sha256": "fd9134ea11df009976d76d117dca34ce85e6b8fb5602f367cc10236db537ccf1"
+    },
+    {
+      "path": "docs/specs/models/NoCフリット詳細機能仕様書.md",
+      "bytes": 6593,
+      "sha256": "1139d7c58a20b082a28f9ecc13d2d500723aa6d1595cf1004d97393a6ddd2295"
+    },
+    {
+      "path": "docs/specs/models/SoC実行詳細機能仕様書.md",
+      "bytes": 7600,
+      "sha256": "192b0be60f2cb3ea01a061da1fb461733267cd1afad79aaac281d73703f0f05a"
+    },
+    {
+      "path": "docs/specs/models/TSNローカル時計詳細機能仕様書.md",
+      "bytes": 1946,
+      "sha256": "5385637cc15a37b103f57e4488a6300e3a76e9c941e3e695a7b559fd841544b4"
+    },
+    {
+      "path": "docs/specs/models/TSN集中設定詳細機能仕様書.md",
+      "bytes": 7303,
+      "sha256": "b4c819936b01dd6475a6bfd3595d6217fed3f5fdf78dea13758cb6799873d8fa"
+    },
+    {
+      "path": "docs/specs/models/checkpoint版移行詳細機能仕様書.md",
+      "bytes": 2240,
+      "sha256": "fc3014f664676d3d5b78a712644ecd31bb19eeace9289727e121507c777290a0"
+    },
+    {
+      "path": "docs/specs/models/gPTP実パケット詳細機能仕様書.md",
+      "bytes": 9769,
+      "sha256": "2dcd1d225f7fafbf8a04df3e2c74a6141bd157689acfe76edf783f3ab30ae071"
+    },
+    {
+      "path": "docs/specs/models/ネットワークMetricV2詳細機能仕様書.md",
+      "bytes": 3335,
+      "sha256": "3ba7d82cc35b61d06a4a9e077d04f7e986ad1b0a790572a24932ad7a3b45456f"
+    },
+    {
+      "path": "docs/specs/models/ネットワークcheckpoint詳細機能仕様書.md",
+      "bytes": 1742,
+      "sha256": "f99448d08cdef496c2757ada1c6b5ceaf5a4c454b33d73e683741655e09dcb86"
+    },
+    {
+      "path": "docs/specs/models/分散FRER経路詳細機能仕様書.md",
+      "bytes": 2132,
+      "sha256": "d69cc5db2993025b907a69b30449538991e622e086e0ca1fdc649baf9bb87208"
+    },
+    {
+      "path": "docs/specs/models/型付きネットワーク構成詳細機能仕様書.md",
+      "bytes": 5724,
+      "sha256": "ce285cdf6b3b9e18d4af86f898366ba36f8b7f3c78e875b49ce343b5b4229aee"
+    },
+    {
+      "path": "docs/specs/models/専用モデル協調実行詳細機能仕様書.md",
+      "bytes": 2397,
+      "sha256": "514372f2d32391b93f29a4edd16efe46c79bef1a70aad0420c77c809b05d5aa8"
+    },
+    {
+      "path": "docs/verification/cases/AHBパイプライン検証仕様書.md",
+      "bytes": 5969,
+      "sha256": "a9c86fdc103294c1ebcd27d9a03bb603de8562425acbbe3de51d0931a2e89a74"
+    },
+    {
+      "path": "docs/verification/cases/AXI5アトミック・QoS検証仕様書.md",
+      "bytes": 1873,
+      "sha256": "c64c2f013be4f42ee0f1b2a0194fbd723ddb69f261dd2ee9187d0502497d1ea4"
+    },
+    {
+      "path": "docs/verification/cases/AXI並列チャネル検証仕様書.md",
+      "bytes": 5334,
+      "sha256": "e0be478ff0ccca206b14188e9d61f1967bec01f331fc53b13f72968818d21618"
+    },
+    {
+      "path": "docs/verification/cases/CANFD-ISO検証仕様書.md",
+      "bytes": 2941,
+      "sha256": "d48b5a5381fc048421b59b0d7a702c85facda5e4a623af6e8c63d44f9eab5e87"
+    },
+    {
+      "path": "docs/verification/cases/ClassicalCANプロトコル検証仕様書.md",
+      "bytes": 7501,
+      "sha256": "75a22a91a2f34a49f1b82111c98e2114d5ff3d4bdb54fb27de0757d752184ec1"
+    },
+    {
+      "path": "docs/verification/cases/DDR4コマンド検証仕様書.md",
+      "bytes": 3799,
+      "sha256": "cb6de32732c6a38b91f8a1fe3e3290c854344f4e1abc9cdf914bce9ad35e3463"
+    },
+    {
+      "path": "docs/verification/cases/Ethernetブリッジ構成検証仕様書.md",
+      "bytes": 8186,
+      "sha256": "f8dc63ce0e6a8aedca1e842c1f094cf57522bd04510faefbc8eba9e277ae50f9"
+    },
+    {
+      "path": "docs/verification/cases/Ethernet数値PHY検証仕様書.md",
+      "bytes": 1182,
+      "sha256": "5ac5b67e7662d8cc3342b8690c51b0b925457685fc6df0f8eb81252fd021a46f"
+    },
+    {
+      "path": "docs/verification/cases/Ethernet能動マルチキャスト検証仕様書.md",
+      "bytes": 2966,
+      "sha256": "57f2d0185189f4d08bc8ad59dce8f14e11ab8ab772fe8a531495052228d98bd0"
+    },
+    {
+      "path": "docs/verification/cases/FRER規範回復検証仕様書.md",
+      "bytes": 2043,
+      "sha256": "22fc16b5235c11f5d9fbf1867f71f8343eb011078a8328a9f46171c59b8d59c6"
+    },
+    {
+      "path": "docs/verification/cases/Gateway冗長TSN複合検証仕様書.md",
+      "bytes": 2510,
+      "sha256": "6d3f444035941a57dd2449492e705a72a6941c9735cc59ebd0f83dbe3887d72b"
+    },
+    {
+      "path": "docs/verification/cases/IEEE選択PHY検証仕様書.md",
+      "bytes": 8548,
+      "sha256": "f2f48ade736401dfc771ce7d6b3875ea54777d4d7543afdadf7d64bc5c70beca"
+    },
+    {
+      "path": "docs/verification/cases/MACMerge検証仕様書.md",
+      "bytes": 3899,
+      "sha256": "fbac4d8e10fa03a7007bdf459625d4914deaa9df6c078cc549c9c348c187dcee"
+    },
+    {
+      "path": "docs/verification/cases/NoCフリット検証仕様書.md",
+      "bytes": 3845,
+      "sha256": "a60498d2ce04881fb40253180e991d21fc6fb5e7ea138b6f1debe0f39dbe1e77"
+    },
+    {
+      "path": "docs/verification/cases/SoC実行検証仕様書.md",
+      "bytes": 3636,
+      "sha256": "71c42e643119613ba2d7dbdf9506794c706f62b00e34e665a0d54de01327f961"
+    },
+    {
+      "path": "docs/verification/cases/TSNローカル時計検証仕様書.md",
+      "bytes": 2423,
+      "sha256": "d5ceb60d365bdad97523993a663d069de842b164d69ce4b38d68773769b33ae4"
+    },
+    {
+      "path": "docs/verification/cases/TSN集中設定検証仕様書.md",
+      "bytes": 3791,
+      "sha256": "a45666b251510a16a797bd799105f1b39402721414909d58588f024790b12e0b"
+    },
+    {
+      "path": "docs/verification/cases/checkpoint版移行検証仕様書.md",
+      "bytes": 1861,
+      "sha256": "05145b5ff985e398af32faeacb060335a8c61d9f46f58ffe285b2abf886580f3"
+    },
+    {
+      "path": "docs/verification/cases/gPTP実パケット検証仕様書.md",
+      "bytes": 8871,
+      "sha256": "fb34744fa7fe8ab99784259cc08f1b7ee0f0defe24f8a7c65c975804209ad615"
+    },
+    {
+      "path": "docs/verification/cases/ネットワークMetricV2検証仕様書.md",
+      "bytes": 2103,
+      "sha256": "6395d15a261ac254cdddde3b20a9f0c6b44c186bdfdc83d169b394f3114a22e3"
+    },
+    {
+      "path": "docs/verification/cases/ネットワークcheckpoint検証仕様書.md",
+      "bytes": 1705,
+      "sha256": "2695a1594e3d5a210c10e16190d67306ee294c1a2c691f3a067a3ab20736ac73"
+    },
+    {
+      "path": "docs/verification/cases/分散FRER経路検証仕様書.md",
+      "bytes": 2102,
+      "sha256": "caf0ddd2516c6fe5b463a1bd5f281fad0953a24692cce67e5d8dfe23272d3050"
+    },
+    {
+      "path": "docs/verification/cases/型付きネットワーク構成検証仕様書.md",
+      "bytes": 5647,
+      "sha256": "d69fa105463f3f8a059c745750c1663e273527997bfe421b6e20e7c3196d3471"
+    },
+    {
+      "path": "docs/verification/cases/専用モデル協調実行検証仕様書.md",
+      "bytes": 1908,
+      "sha256": "d608ce72cbbaac517528e2a5ad785a48db79a6a9723ae921b7dfedf6b591d629"
+    },
+    {
+      "path": "docs/verification/fixtures/acceptance-2026-10-08/dynamic-tsn/strict-negatives.json",
+      "bytes": 23250,
+      "sha256": "e3ac8449236a6e24b2a2567773b91862ab13127be29711c2d898c26861b1c14a"
+    },
+    {
+      "path": "docs/verification/fixtures/ieee-phy/README.md",
+      "bytes": 1386,
+      "sha256": "cdc09efea5759d5e1182a36a007510ef373dd174c5348b3454ff1a03d0cae3a5"
+    },
+    {
+      "path": "docs/verification/fixtures/ieee-phy/source-manifest.json",
+      "bytes": 5965,
+      "sha256": "c27d00350fd243cd7cbbaa64aba85462bd7ddc44ffc368e1e3d97a940101f21c"
+    },
+    {
+      "path": "docs/verification/fixtures/ieee-phy/verify_control_result.py",
+      "bytes": 2854,
+      "sha256": "32fc89a9345aed1c9cc7e49caf326e695d7db649be82296a3e8940f17801d50a"
+    },
+    {
+      "path": "docs/verification/fixtures/ieee-phy/verify_plca_recovery_result.py",
+      "bytes": 3037,
+      "sha256": "ac67094e6ae9fc8c6bc1ef88ad4555d9316a985b6bc79ebb1949acd99680c4b3"
+    },
+    {
+      "path": "docs/verification/fixtures/ieee-phy/verify_t10_result.py",
+      "bytes": 3258,
+      "sha256": "3f3a42d4d2ee618da93d70f949a7ac7b1217d158ee2a2b311b720b72cb856446"
+    },
+    {
+      "path": "docs/verification/fixtures/mac-control/README.md",
+      "bytes": 978,
+      "sha256": "27641435a91d40e1302017af5ab7d2839025cba2254bbd31ea46f93bba0ec9f3"
+    },
+    {
+      "path": "docs/verification/fixtures/mac-control/verify_result.py",
+      "bytes": 3339,
+      "sha256": "5db70c7e8a75b9f9e3dbde3affe7cfea425e96d5d04a7aace5d0fd1679b7bb41"
+    },
+    {
+      "path": "docs/verification/fixtures/provider-l2/verify_result.py",
+      "bytes": 2914,
+      "sha256": "c39689d8ca13ad8d4cf2f66baea022d8b924267b4378fd667d0cbce08670f3ff"
+    },
+    {
+      "path": "docs/verification/fixtures/t1s-network/verify_result.py",
+      "bytes": 2632,
+      "sha256": "3fc4584232a919af512a452488615257afb677a1a8718bbac28ee431ccdc374a"
+    },
+    {
+      "path": "docs/verification/fixtures/wire-serializers/README.md",
+      "bytes": 1175,
+      "sha256": "d765862ef75c4223a5294e6b4b2956b5a6f9f6e9f64fb0c80d1ab5ead5137fca"
+    },
+    {
+      "path": "docs/verification/fixtures/wire-serializers/oracle.py",
+      "bytes": 2743,
+      "sha256": "8dd129c6b654835590d417a627f6473a55b3a03b513305a9dde4ee25fdc05989"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/bridge-expanded-final-review.md",
+      "bytes": 4843,
+      "sha256": "873bfe86d485551b75f37c7d651975c0d352161b455f33fab0448ade2fddeb4b"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/frer-final-closure-review.md",
+      "bytes": 4202,
+      "sha256": "c6ab789a8ef1cc2cf8cb228bdd43fb537758a89f1a359e4ab7bdc36913accc8d"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/gateway-frer-final-review.md",
+      "bytes": 9312,
+      "sha256": "a702d18e8bf04aad307647f963f98fee2c33489e599d7ac6ad85df18b2c51ff0"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/gptp-wire-final-review.md",
+      "bytes": 3248,
+      "sha256": "124c6090f3539e7998c6e160cfc333caf2c7dc33662c3b00feec4ced2c62fa7f"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/implementation-closure.md",
+      "bytes": 4803,
+      "sha256": "dc786250aaa10b15d8f5f93d7ada72fb8b329113032251866e421aa5642a41dd"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/mac-merge-causal-final-review.md",
+      "bytes": 7081,
+      "sha256": "9c8f293937f25892772dafaf4e0ad0d7367c6cb9baae2eb0e43b5fead475b916"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/multicast-final-closure-review.md",
+      "bytes": 2847,
+      "sha256": "14f2eb0b5f20b9bad65a7292130655b228c6f6c0b8391686ec44dca7d7766552"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/native-input-final-review.md",
+      "bytes": 7426,
+      "sha256": "a3ff365b16c19cc8c56cee5d33ee64ffc82cb8aad475ee3b698bea05fae89bca"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/phy-final-review-closure.md",
+      "bytes": 5300,
+      "sha256": "a7b78c3be656f19d5d12aced8a281ea7d2677b35eda079244ca11217f6413bfc"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/phy-final-review-open.md",
+      "bytes": 2621,
+      "sha256": "22ac74425cea8261dba9fb4fe454d7bc76fcf7aa18ebfa46191b344c41fe0b58"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/qcc-bootstrap-final.md",
+      "bytes": 11924,
+      "sha256": "f250a4917c87810eb25a692cd981c71cb8a217265a699c2519c76b749d7a9e04"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/qcc-final-closure-review.md",
+      "bytes": 2394,
+      "sha256": "28fd6e9e1a25a97c501c17c3243040b2fd511f626c3d8489f76d01d513e144af"
+    },
+    {
+      "path": "docs/verification/results/remaining-20261021/validation.json",
+      "bytes": 31653,
+      "sha256": "4622185ddbb1169167ea75b324a0edbe3f680defa75907689bc1998c99f08fd6"
+    },
+    {
+      "path": "docs/アーキテクチャ設計書.md",
+      "bytes": 90012,
+      "sha256": "16010e3b1c33e0b5d88fcf0b8fb00f053ba5323558442524b734eacdb9866d0d"
+    },
+    {
+      "path": "docs/機能仕様書.md",
+      "bytes": 207862,
+      "sha256": "92601b0cc71bdc6160183dfa44a09146e4adf7ce4dcb8e8b2d8e272de77bf54b"
+    },
+    {
+      "path": "docs/要件トレーサビリティ一覧.html",
+      "bytes": 2623023,
+      "sha256": "454d1333fd858817ed9818054e2649cbae02f7a7598544b0c3b66af9e610a0da"
+    },
+    {
+      "path": "docs/要件トレーサビリティ一覧.md",
+      "bytes": 2619867,
+      "sha256": "01429ce7d864f44d85cd8335c24e67b6751315d409f1d22616758de5b8e5e0f5"
+    },
+    {
+      "path": "docs/要件定義書.md",
+      "bytes": 270905,
+      "sha256": "f6765cca358e9097d09900f32103f6f7f28d746e6274ba6feeadccdb857b4de9"
+    },
+    {
+      "path": "docs/要件階層.html",
+      "bytes": 101621,
+      "sha256": "f1640e448e243b14279fa5cac2dba12d78cef7a03de0d4e530167625927f782d"
+    },
+    {
+      "path": "docs/要件階層.json",
+      "bytes": 56657,
+      "sha256": "2bed50da8804f0a0c4d19a40e2313f51981fcd400c2a485e10357e48b00d7b9c"
+    },
+    {
+      "path": "examples/ahb-pipeline/model.json",
+      "bytes": 514,
+      "sha256": "e37036e11f7494cea918a643dc4b91635fbbb2db6e9d3ea5ac278b7ef14e4415"
+    },
+    {
+      "path": "examples/ahb-pipeline/ned/ahb/model.ned",
+      "bytes": 117,
+      "sha256": "477fb7c49fac6355ebe0e1ba7f8d8727133092bb17c6f34e917fac86da5e5e7a"
+    },
+    {
+      "path": "examples/ahb-pipeline/scenario.ini",
+      "bytes": 179,
+      "sha256": "63ace6a382437e14b25d1fefba234eaca7cef2eea47525a56cb7d526546002f8"
+    },
+    {
+      "path": "examples/ahb-pipeline/workload.json",
+      "bytes": 1076,
+      "sha256": "45416f5218ed12f5a7cb938dc2bded7a96de593f3fa874634df9e7f59be4a327"
+    },
+    {
+      "path": "examples/can-gateway-protocol/model.json",
+      "bytes": 2048,
+      "sha256": "cedf3e8cd6478d8cf95714da66f614bb91db913484e86acfb89a111b7f4080ea"
+    },
+    {
+      "path": "examples/can-gateway-protocol/ned/demo/compound.ned",
+      "bytes": 146,
+      "sha256": "d777efbe3df0d9ed69e50a5011bb34a8fa8c9f0d9b17381697fe69c987197bea"
+    },
+    {
+      "path": "examples/can-gateway-protocol/protocol.ini",
+      "bytes": 173,
+      "sha256": "7be5b2e850ecd5af6a4d42f98f76d932108076577842b05b5af1017fb0dad8eb"
+    },
+    {
+      "path": "examples/can-gateway-protocol/workload.json",
+      "bytes": 433,
+      "sha256": "63c94eee1f9d6259f13eea83aa30bb1663ba9d42511bb2356699b2706329f1e6"
+    },
+    {
+      "path": "examples/can-mixed-protocol/model.json",
+      "bytes": 590,
+      "sha256": "abcdde0df17818b258ac35671d206aed5da7d73189acb10bd2a9c52d777f0f99"
+    },
+    {
+      "path": "examples/can-mixed-protocol/ned/demo/compound.ned",
+      "bytes": 146,
+      "sha256": "d777efbe3df0d9ed69e50a5011bb34a8fa8c9f0d9b17381697fe69c987197bea"
+    },
+    {
+      "path": "examples/can-mixed-protocol/protocol.ini",
+      "bytes": 171,
+      "sha256": "885de89e3106e0e0e833b281fed4ac53a6e34b7bebd5aa05e9eeb021c3518625"
+    },
+    {
+      "path": "examples/can-mixed-protocol/workload.json",
+      "bytes": 954,
+      "sha256": "21d204b17c46661f9fe36febdb6bbab8a2b87d8d72c2c762deaad2d0e4bd5e3a"
+    },
+    {
+      "path": "examples/can-protocol/cancellation-config.json",
+      "bytes": 558,
+      "sha256": "1525cef0402a91b0c0c9ae68f5da831cef9f33b43719fa535c57080e91aacf9b"
+    },
+    {
+      "path": "examples/can-protocol/cancellation-workload.json",
+      "bytes": 418,
+      "sha256": "5878f9e9014c16bafa5f712f7b683dacb8c128197e557b42faf355d1e5a81715"
+    },
+    {
+      "path": "examples/can-protocol/cancellation.ini",
+      "bytes": 187,
+      "sha256": "d1af0a23b820d5bf6040d4dba3364a66888aa351e987d6bdfb1f7f3503c563d4"
+    },
+    {
+      "path": "examples/can-protocol/config.json",
+      "bytes": 281,
+      "sha256": "69bfadf6b0c99efe3bce393c1c13aad8a45ba67de30e3c4a893543e064896f56"
+    },
+    {
+      "path": "examples/can-protocol/ned/demo/protocol.ned",
+      "bytes": 125,
+      "sha256": "7b2dfdd0a52a5e402675cef5ce841df857abd3e2cead9a143293882df157b418"
+    },
+    {
+      "path": "examples/can-protocol/protocol.ini",
+      "bytes": 161,
+      "sha256": "35cb2d4ac48a66d200a90ad45bf0a50d5491137765d8d1753594b6fa2818ff8f"
+    },
+    {
+      "path": "examples/can-protocol/workload.json",
+      "bytes": 192,
+      "sha256": "3b0e7fcf4bb96826cbf3d12ab939a7ecec4d8066dbf07e91b807281dceaa8378"
+    },
+    {
+      "path": "examples/canfd/iso-model.json",
+      "bytes": 47,
+      "sha256": "af62dbd6254f03b9cfd44284fcaddc63f63885a2e94a630d643fb665d16b07a7"
+    },
+    {
+      "path": "examples/canfd/iso-workload.json",
+      "bytes": 750,
+      "sha256": "aaddbe54cc53154e0049426601a227baeb262272f03d33456f6da31928056743"
+    },
+    {
+      "path": "examples/canfd/iso.ini",
+      "bytes": 262,
+      "sha256": "d0de89756da5893847a65fc69a093e43b5bbb1db29a781cff5d39733d9d498ee"
+    },
+    {
+      "path": "examples/ethernet/phy/numerical.ini",
+      "bytes": 208,
+      "sha256": "3205726d7721c70292edd3d286a6904757dfdd2536de4b8ff6dae8940dcff09d"
+    },
+    {
+      "path": "examples/ethernet/phy/numerical/model.json",
+      "bytes": 2985,
+      "sha256": "ca0e0ae951d8750196bd765c26af495fd1156f3a12f9e49f2f4172874a1a114c"
+    },
+    {
+      "path": "examples/ethernet/phy/numerical/ned/phy/model.ned",
+      "bytes": 137,
+      "sha256": "78ea58ca2893dea69e929741a5cd4ef3c62babc89b62f734af909947ed16fbda"
+    },
+    {
+      "path": "examples/ethernet/phy/numerical/workload.json",
+      "bytes": 938,
+      "sha256": "14ffd9433d68e6a271fe87f5d727271ada41242b669ffa1e98022b9e720e79e5"
+    },
+    {
+      "path": "examples/ethernet/tsn/tas-metrics.ini",
+      "bytes": 197,
+      "sha256": "449ff539d044e356096c3b1760ccf95b96e06d0fb34e3090600ede5fb7b2d8f7"
+    },
+    {
+      "path": "examples/frer-rtag/README.md",
+      "bytes": 1179,
+      "sha256": "c650fc614e68ab60c87439a9bbea7b7d47127c8c22e626be86b964720a707bac"
+    },
+    {
+      "path": "examples/frer-rtag/distributed/README.md",
+      "bytes": 1182,
+      "sha256": "e3e8bbc0ed51406e4c44e5207341ff048cf749dc108ee493babc72da530e2abb"
+    },
+    {
+      "path": "examples/frer-rtag/distributed/model.ini",
+      "bytes": 182,
+      "sha256": "48ea1df35c053efc33270ea85a56bcac8ea4a8e5ff383af242c34a1fc1973623"
+    },
+    {
+      "path": "examples/frer-rtag/distributed/model.json",
+      "bytes": 26397,
+      "sha256": "9dc6df0604519b8b97497a1dfbc7eaf613e065dbfed08e73828f18e8a8858a3f"
+    },
+    {
+      "path": "examples/frer-rtag/distributed/models/ethdistributed/Main.ned",
+      "bytes": 1743,
+      "sha256": "40da6600f923f5c36cce14b7a287e8031462498e9125f9b9ea3b7c0244502ba9"
+    },
+    {
+      "path": "examples/frer-rtag/distributed/workload.json",
+      "bytes": 602,
+      "sha256": "96dd9d5a674d83a3c0a08d270c83b76ea7679cac85c98dcf083d2c6be2c6bebd"
+    },
+    {
+      "path": "examples/frer-rtag/model.ini",
+      "bytes": 198,
+      "sha256": "c47ff34a19a0275b671ce1bd1a92141659f72d49451ed1cd52efb5668c64069f"
+    },
+    {
+      "path": "examples/frer-rtag/model.json",
+      "bytes": 28883,
+      "sha256": "03717bddb50eab53f1629eda19c39fd655008b99c9f88de8da51ab7aef6a2cd9"
+    },
+    {
+      "path": "examples/frer-rtag/normative/README.md",
+      "bytes": 2511,
+      "sha256": "1ee28cc20333eb0d5c95393947b63342136d9127bbb6167b60de5c83ea243e1f"
+    },
+    {
+      "path": "examples/frer-rtag/normative/model.ini",
+      "bytes": 184,
+      "sha256": "0c0a3a2ca3b8944782cd0b129cc8c058eed1e6bf0e79044e104836fa31b9d140"
+    },
+    {
+      "path": "examples/frer-rtag/normative/model.json",
+      "bytes": 26449,
+      "sha256": "b06fdb4a216738d2af6b95b716b47c737fa3f8c87cb09470b0dd38c0ae50d6d2"
+    },
+    {
+      "path": "examples/frer-rtag/normative/models/ethdistributed/Main.ned",
+      "bytes": 1892,
+      "sha256": "e57b38f3324eec67354c5c7bcae24e28ad123a0749c238c039eb21b1266bcd97"
+    },
+    {
+      "path": "examples/frer-rtag/normative/workload.json",
+      "bytes": 602,
+      "sha256": "96dd9d5a674d83a3c0a08d270c83b76ea7679cac85c98dcf083d2c6be2c6bebd"
+    },
+    {
+      "path": "examples/frer-rtag/workload.json",
+      "bytes": 510,
+      "sha256": "5912c001b3468cb223e5165e72f56e02c05cf76f629f3fa7a6211a464fdcf3d1"
+    },
+    {
+      "path": "examples/gptp/README.md",
+      "bytes": 1941,
+      "sha256": "40029f07add2594ed40171da47e06f836294b457a8690849324d19a41bfdfda7"
+    },
+    {
+      "path": "examples/gptp/models/chain/ethtsn/Main.ned",
+      "bytes": 809,
+      "sha256": "bb4caa8f6fc52add8f5d5c2316c7dfd3ef4e07e014981d9fee2e375f85bcc269"
+    },
+    {
+      "path": "examples/gptp/models/slow/ethtsn/Main.ned",
+      "bytes": 551,
+      "sha256": "34d70f1a84d2d748bc9d058f36ef604d23f2522822dae6f02024fc9d721f81f3"
+    },
+    {
+      "path": "examples/gptp/models/two/ethtsn/Main.ned",
+      "bytes": 550,
+      "sha256": "a4a8641e2fd7ccd2c69996ba351bea87ccacc5538439f524ef40917f6280d392"
+    },
+    {
+      "path": "examples/gptp/three-node-failover-model.json",
+      "bytes": 11740,
+      "sha256": "e8908e34f26498a09e4bed7b65e7d24dd14deb01aab6ed7f264bc671ffd13098"
+    },
+    {
+      "path": "examples/gptp/three-node-failover-workload.json",
+      "bytes": 196,
+      "sha256": "ab1f0afd12909e2a6ad63008d40a4f9c8b04e61dcd685cca57cc1190f9e6aec0"
+    },
+    {
+      "path": "examples/gptp/three-node-failover.ini",
+      "bytes": 230,
+      "sha256": "0e8a74c05cb4a1f85dc2f42df853d2f1a4510d70493cedaee1c633b621966513"
+    },
+    {
+      "path": "examples/gptp/three-node-model.json",
+      "bytes": 11740,
+      "sha256": "f20c79ace5ab752b45a5fadf7ed5c443d0756ffadb1624b5461b3219b4e47ef0"
+    },
+    {
+      "path": "examples/gptp/three-node-psfp-closed-model.json",
+      "bytes": 12452,
+      "sha256": "ce5235f062e35672934efad5fb0b89389600bf9f754fb70e1d92b6d342b7fa14"
+    },
+    {
+      "path": "examples/gptp/three-node-psfp-closed.ini",
+      "bytes": 230,
+      "sha256": "e33c67738766be9acdb50fb91c42eb291a7b2d924df9380536305edd0ed951a4"
+    },
+    {
+      "path": "examples/gptp/three-node-psfp-open-model.json",
+      "bytes": 12451,
+      "sha256": "3b708c42dfc92b4a0a10b25661d569338ec11462f4ffd0af178803a85ddd7d9b"
+    },
+    {
+      "path": "examples/gptp/three-node-psfp-open.ini",
+      "bytes": 228,
+      "sha256": "18e0c856aa5d24dd987d02496b71b53fd93544d5f9812c6f6a518282b7cc4048"
+    },
+    {
+      "path": "examples/gptp/three-node-queue-model.json",
+      "bytes": 11911,
+      "sha256": "9a5e2c61760cfa7006b46c69e6638fb07cf7746b811a61f2d43bff931fdb247d"
+    },
+    {
+      "path": "examples/gptp/three-node-queue-workload.json",
+      "bytes": 2459,
+      "sha256": "e25c2450af565b48b1087560e4802d46f073ca68cf55275ac8966a0a4d46c94c"
+    },
+    {
+      "path": "examples/gptp/three-node-queue.ini",
+      "bytes": 224,
+      "sha256": "8f6493fdca6c637e67b0aad3f95804680a562d71319766f176ed47b2dc8c6ea6"
+    },
+    {
+      "path": "examples/gptp/three-node-recovery-workload.json",
+      "bytes": 323,
+      "sha256": "dc06f782311e00bef0be22c0ff45c27aac7bcbabeeee5e9bdefc5c9252fba4e4"
+    },
+    {
+      "path": "examples/gptp/three-node-recovery.ini",
+      "bytes": 230,
+      "sha256": "0f371c0cf64126f8abbc0c7ff39fcd8d5b404e83ddfa49bae136052573316e32"
+    },
+    {
+      "path": "examples/gptp/three-node-tas-model.json",
+      "bytes": 12197,
+      "sha256": "b232b02a5f4ae7e9ce1b3ce3eeafe64f5ebe0691d2383be14d37eac030633dee"
+    },
+    {
+      "path": "examples/gptp/three-node-tas.ini",
+      "bytes": 216,
+      "sha256": "3d274cb863b32e4d150f1595417843b310d412cb3f1bfb9f980e896b2df58386"
+    },
+    {
+      "path": "examples/gptp/three-node-workload.json",
+      "bytes": 64,
+      "sha256": "eaff7af12b75e1534e540096782f1bb9f9e938cd3d8a2b8bb2ec95d580b13c7d"
+    },
+    {
+      "path": "examples/gptp/three-node.ini",
+      "bytes": 213,
+      "sha256": "65348f6e1959c2533d92117372903bbba77b3e6e1f0f7aa5fce537071437f9e5"
+    },
+    {
+      "path": "examples/gptp/two-node-bad-fcs-followup-model.json",
+      "bytes": 8148,
+      "sha256": "edb9225e73733660b7dba695b21d403f82d2d59fd5f32dc920f364be74bf8520"
+    },
+    {
+      "path": "examples/gptp/two-node-bad-fcs-followup.ini",
+      "bytes": 223,
+      "sha256": "a7525e470c731c61aa04d67600af51094ad7c6ec302a484191d322a96c9158c7"
+    },
+    {
+      "path": "examples/gptp/two-node-delayed-followup-model.json",
+      "bytes": 6897,
+      "sha256": "2d86f35f1051966ef78d5785674034e9839ce68a5c3ab441075f6d8c95a7d79a"
+    },
+    {
+      "path": "examples/gptp/two-node-delayed-followup-workload.json",
+      "bytes": 1151,
+      "sha256": "503ce53ded30c747196c524587d180f25970832b7a3fd0f4264277ae57395ee7"
+    },
+    {
+      "path": "examples/gptp/two-node-delayed-followup.ini",
+      "bytes": 241,
+      "sha256": "a3ad3f5c89bb0da50e632ac073dcda6c441bfb817364d4fab70bbb0cfc64acb5"
+    },
+    {
+      "path": "examples/gptp/two-node-drop-followup-model.json",
+      "bytes": 8102,
+      "sha256": "3b10935f3ee730393146f70ba991f9a676d53734d2e604a3c236264c14e7c00a"
+    },
+    {
+      "path": "examples/gptp/two-node-drop-followup.ini",
+      "bytes": 220,
+      "sha256": "0f48a3d5445edd2a31f4b39facbe2019c11dda2958dc4f346cb8760e28a98ed0"
+    },
+    {
+      "path": "examples/gptp/two-node-drop-sync-model.json",
+      "bytes": 8102,
+      "sha256": "877ba2a40ff928a9723a75c8a4ffe867e4d206ff29d2fe53b5024cae3a8c02b6"
+    },
+    {
+      "path": "examples/gptp/two-node-drop-sync.ini",
+      "bytes": 216,
+      "sha256": "245b7470f7dc32de9cc35f58def56b870075d84a0b7a484ca32b78b2b2350cdc"
+    },
+    {
+      "path": "examples/gptp/two-node-merge-model.json",
+      "bytes": 7943,
+      "sha256": "115376833933bd68cd1c9593c75a633ceeaefe77f22b57f7aa756ccf1692b3e4"
+    },
+    {
+      "path": "examples/gptp/two-node-merge.ini",
+      "bytes": 212,
+      "sha256": "a065ddf6f33611aaa0751836f4b457adb30ae6b28e6d3357791c6adc4c93ccc1"
+    },
+    {
+      "path": "examples/gptp/two-node-model.json",
+      "bytes": 6897,
+      "sha256": "e9ef0778a4ccd1ed4c1c4c3d8edaa875a7d3e9d5427bf97fe244d59f1a0378d6"
+    },
+    {
+      "path": "examples/gptp/two-node-servo-disabled-model.json",
+      "bytes": 6663,
+      "sha256": "b0a87feeffa27cf4fa142c306c146ba1393d0075ca4bc5144170e416e8bc4ca7"
+    },
+    {
+      "path": "examples/gptp/two-node-servo-disabled.ini",
+      "bytes": 227,
+      "sha256": "f72c64b20ec5060e3a6d1157dbd9dccf2d8c4c2c0e13654f491b983cab81b366"
+    },
+    {
+      "path": "examples/gptp/two-node-servo-enabled-model.json",
+      "bytes": 7981,
+      "sha256": "3e34cecc7052cf0a8f623e6fff176ccf7814108bdca8ab882390b88656f0c48e"
+    },
+    {
+      "path": "examples/gptp/two-node-servo-enabled.ini",
+      "bytes": 226,
+      "sha256": "f372f69ab2b2c247f455c508218aa28b0fcbabd664d2f27d09a1da1b7e937139"
+    },
+    {
+      "path": "examples/gptp/two-node-servo-workload.json",
+      "bytes": 848,
+      "sha256": "0cb197caf69898094cc6bb52de546cac87647742a7dd1be15d6fbe9a45674d0b"
+    },
+    {
+      "path": "examples/gptp/two-node-workload.json",
+      "bytes": 64,
+      "sha256": "eaff7af12b75e1534e540096782f1bb9f9e938cd3d8a2b8bb2ec95d580b13c7d"
+    },
+    {
+      "path": "examples/gptp/two-node.ini",
+      "bytes": 207,
+      "sha256": "2786f551763d9a1b55d2c4abef4fca2af4153ab0cefd48579ff96ff22471ebcc"
+    },
+    {
+      "path": "examples/mac-merge/README.md",
+      "bytes": 2106,
+      "sha256": "0d844187277e2ab334e583b07f157e40bca8eeee8b4f278c4b3da3c65bd1d3bb"
+    },
+    {
+      "path": "examples/mac-merge/model.ini",
+      "bytes": 198,
+      "sha256": "afdc1ef01df5cdb8dde4d2f87809d8ef419553b63b9aaa1107ed64c13167d23e"
+    },
+    {
+      "path": "examples/mac-merge/model.json",
+      "bytes": 6330,
+      "sha256": "3cecdb66f4e598133581a13ef532808524a1883867b6d516b1c0be664d81273d"
+    },
+    {
+      "path": "examples/mac-merge/workload.json",
+      "bytes": 1177,
+      "sha256": "ee40bd4a6c68be83eff79fd3ab27b7f3483aa0ef58cdddf6d7b63b83a2f4fc04"
+    },
+    {
+      "path": "examples/network-composite/README.md",
+      "bytes": 1961,
+      "sha256": "e94b4f3e010916726b2585006e0a31eb5161e8d4d95ebca52a22d4e429a23c42"
+    },
+    {
+      "path": "examples/network-composite/active-multicast/README.md",
+      "bytes": 875,
+      "sha256": "e354f99bbed92d7feb9973093e6b9879d4b85325706ed12dd77a8ba19c662520"
+    },
+    {
+      "path": "examples/network-composite/active-multicast/model.ini",
+      "bytes": 215,
+      "sha256": "c0fa95e5712cda04f5d39046e84720b808639318d41e1f795929cb2e84f2fce2"
+    },
+    {
+      "path": "examples/network-composite/active-multicast/model.json",
+      "bytes": 30642,
+      "sha256": "e0d8fa9d2b18a1904ddd0390e3ec716c9cc6cb9cb821d25356d3d286cebb8fa9"
+    },
+    {
+      "path": "examples/network-composite/active-multicast/workload.json",
+      "bytes": 1900,
+      "sha256": "366b5b964a599f919ecc5e910b8e4c5ab0f70c74bdd1d9a5061ed743d3aa0ae9"
+    },
+    {
+      "path": "examples/network-composite/clock-cbs/README.md",
+      "bytes": 939,
+      "sha256": "152a2a859767e692eba9daafa8041dedbc4e6abf13d1d572a5230d4c27493469"
+    },
+    {
+      "path": "examples/network-composite/clock-cbs/model.ini",
+      "bytes": 201,
+      "sha256": "bd44fcf801aa9b33dde8f8efc91096c2b73b40d2c8c39b7212e1636eccbf7907"
+    },
+    {
+      "path": "examples/network-composite/clock-cbs/model.json",
+      "bytes": 7396,
+      "sha256": "3f52ff078b2912a0676759bbbd3fe5d69dcb846629b9c439901f309cc06350e2"
+    },
+    {
+      "path": "examples/network-composite/clock-cbs/workload.json",
+      "bytes": 476,
+      "sha256": "f862910a7cec8c1f2c3648ff9f00b0cbfaeca50b38727f2141bc80f5047ddf9e"
+    },
+    {
+      "path": "examples/network-composite/gateway-frer/README.md",
+      "bytes": 2187,
+      "sha256": "1332981ff85ca6892c3a11f3175111deef722b905b6cc57516e7ea85cc272080"
+    },
+    {
+      "path": "examples/network-composite/gateway-frer/model.ini",
+      "bytes": 249,
+      "sha256": "ac3252ce3f5f19df27a2629448630e175f6ca5ec987df83caba0f8f9dbd7fc05"
+    },
+    {
+      "path": "examples/network-composite/gateway-frer/model.json",
+      "bytes": 25233,
+      "sha256": "59139cc34ecca96e414f6e6d082be4ef5d8026003add868cf25103c4e5e22966"
+    },
+    {
+      "path": "examples/network-composite/gateway-frer/models/gatewayfrer/Main.ned",
+      "bytes": 2524,
+      "sha256": "9613afa9ba27cf5b8fec8a9975921a987bea2a90fd5bfa8f0ad5b026153f0722"
+    },
+    {
+      "path": "examples/network-composite/gateway-frer/workload.json",
+      "bytes": 476,
+      "sha256": "60a86241c1f6f94a8641a1d283d2eec50bef885292aea3cd38e259d67e7549bf"
+    },
+    {
+      "path": "examples/network-composite/gigabit-merge/README.md",
+      "bytes": 1101,
+      "sha256": "f29094438733a7c8c07cfb31c283696da416e2369ccf7362faa3aec717eb9621"
+    },
+    {
+      "path": "examples/network-composite/gigabit-merge/model.ini",
+      "bytes": 184,
+      "sha256": "bdd9b41e493eb2a0e6d0095df79078d702340e538be747badef6cc6ef120682c"
+    },
+    {
+      "path": "examples/network-composite/gigabit-merge/model.json",
+      "bytes": 11016,
+      "sha256": "fa6ede5fc7a7e44dcc8a79f9cd328579a024f2c507c32ba98c24e4dfa30663c6"
+    },
+    {
+      "path": "examples/network-composite/gigabit-merge/models/ethtsn/Main.ned",
+      "bytes": 548,
+      "sha256": "6614329b1d918d50ee1c06bbb03b567a7d5874431abc438d53480b7bd59654ca"
+    },
+    {
+      "path": "examples/network-composite/gigabit-merge/workload.json",
+      "bytes": 1185,
+      "sha256": "63324925528cf392ffb903e812e8012433395ef262ce0ea9c70797791c243bc9"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/README.md",
+      "bytes": 1759,
+      "sha256": "1b7fe83a358de735b010b336fe594dc5a5638ad733e874a5b59b813d8214dd74"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/abstract-ideal-model.json",
+      "bytes": 7598,
+      "sha256": "dbd18421b86e5066a166f2818531bac1d7113e3d1c1e7c7ea27838d2cf35375b"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/abstract-ideal.ini",
+      "bytes": 234,
+      "sha256": "aa600cfa9dfc3d04ab023e239758d43912080fe6ccff049e1fa2b6a56852ff5e"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/abstract-model.json",
+      "bytes": 8075,
+      "sha256": "8f25534a73aebdd99543057a9e869f40bb714bf39fd36863761458357fd9c9b7"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/abstract.ini",
+      "bytes": 228,
+      "sha256": "45edabf731375c857cb4a2c0f5510de8f4c72e40d34a9e534c8dfec664ed526f"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/expected.json",
+      "bytes": 913,
+      "sha256": "4c501cd73c83d4ea44f164320ff8dea5cc683041ee6adcd0a91b77ebd5729436"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/merge-model.json",
+      "bytes": 8420,
+      "sha256": "134c0f08d31af69c46f1e99a9d7e3d350666a0be070cd3c08397eb1b8af29db3"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/merge.ini",
+      "bytes": 225,
+      "sha256": "41148073702495580554a336bbbf9f7ed321e8c9cbf9e6a1245c276794a09b6a"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/model.ini",
+      "bytes": 219,
+      "sha256": "3c69228a8b9f100ef1911729c5b26496b50fdee01692dc3ae4ebfc852bce0610"
+    },
+    {
+      "path": "examples/network-composite/gptp-configured/model.json",
+      "bytes": 7374,
+      "sha256": "a9d8a39d011e9e8810c30561508bca9d19beaa90c475e511e4407a4c295c64a6"
+    },
+    {
+      "path": "examples/network-composite/local-clock-model.json",
+      "bytes": 29956,
+      "sha256": "1e6e23ff25096bbae9138fd73de4d3458451d9c0a91b21630efbc78d8cf632fa"
+    },
+    {
+      "path": "examples/network-composite/local-clock-no-step-model.json",
+      "bytes": 29831,
+      "sha256": "9af8c7aeb5956b43d45dbdbcb2b7a926fc0e5d9ea03d9b1036c141f7ce08ad82"
+    },
+    {
+      "path": "examples/network-composite/local-clock-no-step.ini",
+      "bytes": 226,
+      "sha256": "44c6959b76670abbe2ab6ca5562e8d60f7a3e3e12493aaba44b2a399c98b7cb3"
+    },
+    {
+      "path": "examples/network-composite/local-clock.ini",
+      "bytes": 218,
+      "sha256": "808245fb34847f6083c36ef6c20476fad03e8dd90be41926033ef3bccbba1835"
+    },
+    {
+      "path": "examples/network-composite/model.ini",
+      "bytes": 206,
+      "sha256": "17bba44d7ef369d7497df8701ed7c81910837f7c61091aa75c35078170226bf9"
+    },
+    {
+      "path": "examples/network-composite/model.json",
+      "bytes": 29209,
+      "sha256": "233cc407b6fb5d2162c9727ca33bf45d3c581060c5e48b4ae30b1d22d3470adb"
+    },
+    {
+      "path": "examples/network-composite/mstp-region/README.md",
+      "bytes": 1074,
+      "sha256": "f48a00c9ed50f9dcce7946e4c6132899a572280562e53fce3063f9e0552de79d"
+    },
+    {
+      "path": "examples/network-composite/mstp-region/model.ini",
+      "bytes": 215,
+      "sha256": "c350a7fdeddc29fe9261f8e3fc7f1408049dfe104e851893016a24df037421dc"
+    },
+    {
+      "path": "examples/network-composite/mstp-region/model.json",
+      "bytes": 33025,
+      "sha256": "7a7b1e8603a35afbc64b3343b0392f7adfde8b0294b7f237028d3651a4f45acb"
+    },
+    {
+      "path": "examples/network-composite/mstp-region/workload.json",
+      "bytes": 1156,
+      "sha256": "1310350bb896e9ad0d031be80501829aa2865994fd030171777f30b9fb83606a"
+    },
+    {
+      "path": "examples/network-composite/pause-media/README.md",
+      "bytes": 5578,
+      "sha256": "7903533f5f12a08f3e53872f13f039b308beb7bb3fcc70f884b71d48bf201800"
+    },
+    {
+      "path": "examples/network-composite/pause-media/model.ini",
+      "bytes": 209,
+      "sha256": "3aa18172f3ed12e789d572f56cc24e8909e218946ff3e30a68cbaf42dd6074a8"
+    },
+    {
+      "path": "examples/network-composite/pause-media/model.json",
+      "bytes": 29261,
+      "sha256": "4f325ef46254c89c515a6eb5983d7a0a4fd44daf0f9ef08e522b9846f2eae571"
+    },
+    {
+      "path": "examples/network-composite/pause-media/sampled-model.json",
+      "bytes": 10538,
+      "sha256": "b2d306c357fa3f37316ff53996621f82daeee48fefc74c81e3de9ebf854890e6"
+    },
+    {
+      "path": "examples/network-composite/pause-media/sampled-workload.json",
+      "bytes": 3468,
+      "sha256": "89feb01249a509db38747c584e3c383f8e2e199a63989e700905d838155de414"
+    },
+    {
+      "path": "examples/network-composite/pause-media/sampled.ini",
+      "bytes": 217,
+      "sha256": "c53476d513591b722c15803a5b60dde55fe74954e46abe3cf20db9784e45e87e"
+    },
+    {
+      "path": "examples/network-composite/pause-media/workload.json",
+      "bytes": 533,
+      "sha256": "fbdc53aebb629e5c40fc60e9938e4853616c5d0b9a0055a316f1816b72d49eb7"
+    },
+    {
+      "path": "examples/network-composite/preemption-phy/README.md",
+      "bytes": 1089,
+      "sha256": "d4934d2f052b094f7f27ac905fd83769efc895a1c3fad9451bb9532ce005253c"
+    },
+    {
+      "path": "examples/network-composite/preemption-phy/model.ini",
+      "bytes": 185,
+      "sha256": "47ecd077ad17fec8b8a6ad7a7b31413b3ee673de4fb86d648f85b3ff73634f01"
+    },
+    {
+      "path": "examples/network-composite/preemption-phy/model.json",
+      "bytes": 33947,
+      "sha256": "df739ed23f45e7c2eff0da49f6bc5c85fc488e940430287d27216707b2fef8c0"
+    },
+    {
+      "path": "examples/network-composite/preemption-phy/models/ethshared/Main.ned",
+      "bytes": 2785,
+      "sha256": "6d2099d59894cfed1074a653346932e46425f053f5fe522ed5f52a08ac6a1ffa"
+    },
+    {
+      "path": "examples/network-composite/preemption-phy/workload.json",
+      "bytes": 504,
+      "sha256": "8b61f7852839222ee849ff0b950d73aa9dac6d877f459a17dec343e5e961fc0d"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/README.md",
+      "bytes": 1610,
+      "sha256": "2cf588c9006f6bf2467a6d43c4fa43bea303c882764fa3991601b1ab1bee8852"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/model.ini",
+      "bytes": 187,
+      "sha256": "1bc5405b9eec9fe8fe2ec95acd49cc6441c761c23fcfca883d612457a1779cf4"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/model.json",
+      "bytes": 35113,
+      "sha256": "0aa26f03bbf6a13f62e5e798d4e0c0815a634e83bb4c0587cb70ae0b963a66ec"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/models/ethprovider/Main.ned",
+      "bytes": 1697,
+      "sha256": "2184f6befea655de03b78b89c93b8d8172cf78f40914ef9fe07b3b237f5fc922"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/multi-pep-model.json",
+      "bytes": 51320,
+      "sha256": "5a61c3759fdba32122e468d42787868333e1dcd73d2a18bab1306cb85ec8a256"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/multi-pep-workload.json",
+      "bytes": 4498,
+      "sha256": "a534cadb5ca1911a0980640d72dfd653b9d3ab132b82be195d734a1a9c78b3e5"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/multi-pep.ini",
+      "bytes": 213,
+      "sha256": "dd812f9f073c73dd210b0312d1a807d7037f098da69640334295d1ae17e4a8c3"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/protocol-model.json",
+      "bytes": 47833,
+      "sha256": "d2fba1dc66e40d8bd7f68a5226bfeb0fbc391a00faf1201a67bacd1613adb604"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/protocol-short.ini",
+      "bytes": 206,
+      "sha256": "a9a2377b007b59bdbc6ae27c64720aeacb6661385c0e6a96128cd6355f4fd2c7"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/protocol-workload.json",
+      "bytes": 3362,
+      "sha256": "b12d5acb06a8ae3982a533551d9b1a06dd4fe145d6350086378a29295dc64e5d"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/protocol.ini",
+      "bytes": 211,
+      "sha256": "73a23c7e6b43bd7b294441f3d5a644c5baef1fd3a5127e17c2993beb591ff92c"
+    },
+    {
+      "path": "examples/network-composite/provider-l2/workload.json",
+      "bytes": 3308,
+      "sha256": "cea26841a465e8656fb38525ef9db1c2e5c2b3840eef74821b135892c5521af9"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/README.md",
+      "bytes": 1036,
+      "sha256": "6a1acf50581824742faa6c26480dd4d0558620213ffb4fd26bdeef8f99778b9d"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/identity-model.json",
+      "bytes": 6069,
+      "sha256": "6ede8f3148fadcff5dfde160931c98fcd629e5a9082ea0f4b64b452312d299a0"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/identity.ini",
+      "bytes": 209,
+      "sha256": "282889adc157254c08d125767eb55e9e8c74e51a63e6129a6f275d0b7c458f7c"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/offset-model.json",
+      "bytes": 6074,
+      "sha256": "b4e9606810994231d6eecd246f7e61f6ecb80f96c7caa4f0826ad414824dc23f"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/offset.ini",
+      "bytes": 207,
+      "sha256": "6c753aec0bf06979db3fed5399cf867fa43dd4791a31e48056985ebe1fd28ca4"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/steps-model.json",
+      "bytes": 6326,
+      "sha256": "5a92d359ca94e9856add187394d21bcb5872115a72f73ea6623a5ccfad46dac8"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/steps.ini",
+      "bytes": 206,
+      "sha256": "a61a51e8af95b4bb856425e70a37c4ac93b78e352d920944b646044f3294493d"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/wide-offset-model.json",
+      "bytes": 6088,
+      "sha256": "63875f2ed8999fb6e823c68b17cc57e20001396de6cc33b5fa446dab699ef735"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/wide-offset.ini",
+      "bytes": 212,
+      "sha256": "252617db67c5a03a4dcd674709a0dae0076d5e17c676c2e0b4d021505719d005"
+    },
+    {
+      "path": "examples/network-composite/psfp-clock/workload.json",
+      "bytes": 466,
+      "sha256": "3b400270daa9a550cc4bfe7b27d3b5eafb39dfd849b4e0ccd815ca1e64cda6f7"
+    },
+    {
+      "path": "examples/network-composite/qcc-raw/README.md",
+      "bytes": 1497,
+      "sha256": "76425f8ceda35a691ff8e01f094253cac2d46aa7fc45924626d910d8abe26c41"
+    },
+    {
+      "path": "examples/network-composite/qcc-raw/model.ini",
+      "bytes": 201,
+      "sha256": "6da896110c72203f1b52743cbef8342de9e73df3e8c6cc213e5c3aaa654325fa"
+    },
+    {
+      "path": "examples/network-composite/qcc-raw/model.json",
+      "bytes": 12289,
+      "sha256": "d4c7444546f5db18b05497ece1ad3b705b4c7b306debe2b885d8051fd23b9c6b"
+    },
+    {
+      "path": "examples/network-composite/qcc-raw/workload.json",
+      "bytes": 778,
+      "sha256": "f81d7bbee3591da38f04976e3a5284e522ed397685f1c1d76307617c70120357"
+    },
+    {
+      "path": "examples/network-composite/qcc/README.md",
+      "bytes": 680,
+      "sha256": "14f6015b3f12717343ffafa54f828e0ae2f011349393e0b5192ce9edc785d05b"
+    },
+    {
+      "path": "examples/network-composite/qcc/model.ini",
+      "bytes": 210,
+      "sha256": "e5221c50e9d4c86b0f308d5c569fb002971d63d582b3842755ac19a1848d7043"
+    },
+    {
+      "path": "examples/network-composite/qcc/model.json",
+      "bytes": 29560,
+      "sha256": "b63a39039f13b8998bb5c4d79f5cd75e106e0ffd7f585b75123e8ef3b5d44104"
+    },
+    {
+      "path": "examples/network-composite/qcc/workload.json",
+      "bytes": 998,
+      "sha256": "8135076d9514eb8e74bc41d6a4b11264be219fafb7c1659991041bf0c9b40c4e"
+    },
+    {
+      "path": "examples/network-composite/sampled-phy-model.json",
+      "bytes": 32817,
+      "sha256": "4a1137564f5cdbbe95697676d580ff0d14db77f81069961f3211c29fbef82c6a"
+    },
+    {
+      "path": "examples/network-composite/sampled-phy-short.ini",
+      "bytes": 217,
+      "sha256": "64a32f7316f2062bfc55e23b4f5a972de2752cf52daa2143a635c720c42978e0"
+    },
+    {
+      "path": "examples/network-composite/sampled-phy.ini",
+      "bytes": 218,
+      "sha256": "9c090bbf79784db2939e6b7b5cc28d2c9664de43543f1edbd40b1b74f2b71592"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/README.md",
+      "bytes": 1423,
+      "sha256": "1aa4d9011e278dddd8dc650ae4082c0b19eed4a03abece70eb673dde9251adb8"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/backup-mstp-model.json",
+      "bytes": 36479,
+      "sha256": "6e6dffba1f0bd82074353f37757f85a7bce0a2d8689c694449d2ec3d02c05ef5"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/backup-mstp.ini",
+      "bytes": 207,
+      "sha256": "817b921486e7715a78fa7b9102db810c75d22e15c07d1f2d180c3b5497e8fabc"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/backup-workload.json",
+      "bytes": 526,
+      "sha256": "df69a6b70b91338d8fe59e5395e3a07593f0038e20eb0cb994955f0f69fa3c6e"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/cycle-loss-mstp-model.json",
+      "bytes": 36487,
+      "sha256": "714ae920f342e6d000105a88587c22094d21a30ac660dcea022e9779982dfb8d"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/cycle-loss-mstp-workload.json",
+      "bytes": 1253,
+      "sha256": "a9565276fb7b5ffa44cd0d0bb2b15e16eaf2a4cd13da5a0ed19ffe8b5f752e32"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/cycle-loss-mstp.ini",
+      "bytes": 226,
+      "sha256": "c467f72e36e962f2fc82328b97544a0d1e60aa85ed5ead4034c82cb26f0b5e2d"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/cycle-loss-rstp-model.json",
+      "bytes": 35091,
+      "sha256": "cf26289b04dfffa56d767d49b07508aa3f186ad9b602d7de6ff681864fdeabe3"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/cycle-loss-rstp-workload.json",
+      "bytes": 1724,
+      "sha256": "75c209a1a871d585b97770f401419783baf7bf6a6eb2a02e36d4090e04d9c718"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/cycle-loss-rstp.ini",
+      "bytes": 226,
+      "sha256": "3ab3bbc7b2ccb501a56a3481ec130743de847e1ba48709f1fb33c5a2db29bae6"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/mixed-tree-model.json",
+      "bytes": 36081,
+      "sha256": "7468b3a895fe0ed5c649c5d1f1ec47f6399a607fd20af8caad606107dbb700ec"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/mixed-tree.ini",
+      "bytes": 206,
+      "sha256": "8bccf94e670a9634b26b83f0db8175c483cf994593add02e0781af7b4fac820a"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/model.ini",
+      "bytes": 185,
+      "sha256": "7e09f9349199e77fce5bd81feefbf96c0db8980629f818f33d365d1d53a61870"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/model.json",
+      "bytes": 27667,
+      "sha256": "0f7bc360ae006b0278563ae08d34f804823aa07ffa07ad22ef2c5ce26b8e7232"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/models/ethshared/Main.ned",
+      "bytes": 2551,
+      "sha256": "ecebd18d18aff023081e5824c01632b5f82e6a9fe02d2411beb8c44c939463f2"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/mstp-model.json",
+      "bytes": 32041,
+      "sha256": "a9822d419a60ddc5ed2238804b3096db2b4de5b8a503f8dd73f73762e337aed9"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/mstp.ini",
+      "bytes": 190,
+      "sha256": "aba68c4e450701ae95da5714ad8ba36b51d03243078ff6aa6f11f0e718f74d0c"
+    },
+    {
+      "path": "examples/network-composite/shared-lan/workload.json",
+      "bytes": 523,
+      "sha256": "8df2c14d5cc417a6614e0836612ea1f066b808ef9a44b75d052afac647beea40"
+    },
+    {
+      "path": "examples/network-composite/shared-provider-frer/README.md",
+      "bytes": 1687,
+      "sha256": "85c305c994d0c782959e98288bcd1e093348666a0d323a467b13e32d1be2d8a9"
+    },
+    {
+      "path": "examples/network-composite/shared-provider-frer/model.ini",
+      "bytes": 190,
+      "sha256": "10136c69c9ec2ea9a95ce163bf90bca1ceb877f61800f9a47a0e62189af154cc"
+    },
+    {
+      "path": "examples/network-composite/shared-provider-frer/model.json",
+      "bytes": 38844,
+      "sha256": "3617e2347ce7d418a7f2f8aa407f592c4e903efc9e5f59ff539da011ee7fc87b"
+    },
+    {
+      "path": "examples/network-composite/shared-provider-frer/models/ethdistributed/Main.ned",
+      "bytes": 2134,
+      "sha256": "62e08631a81b079235955f43d4b3e5475595f940edc743a5c1c0d8210e794938"
+    },
+    {
+      "path": "examples/network-composite/shared-provider-frer/workload.json",
+      "bytes": 602,
+      "sha256": "96dd9d5a674d83a3c0a08d270c83b76ea7679cac85c98dcf083d2c6be2c6bebd"
+    },
+    {
+      "path": "examples/network-composite/t10-repeater/README.md",
+      "bytes": 1289,
+      "sha256": "7c52bb30a14fb75d9a79f68c05b7798ca2f38abe8dc88d79c0d1a738dc32d0f7"
+    },
+    {
+      "path": "examples/network-composite/t10-repeater/model.ini",
+      "bytes": 185,
+      "sha256": "47ecd077ad17fec8b8a6ad7a7b31413b3ee673de4fb86d648f85b3ff73634f01"
+    },
+    {
+      "path": "examples/network-composite/t10-repeater/model.json",
+      "bytes": 37727,
+      "sha256": "d496a4f5cd1347a336ce14a2f616eff137c2ccefc5746a3351bef547191b1546"
+    },
+    {
+      "path": "examples/network-composite/t10-repeater/models/ethshared/Main.ned",
+      "bytes": 2785,
+      "sha256": "6d2099d59894cfed1074a653346932e46425f053f5fe522ed5f52a08ac6a1ffa"
+    },
+    {
+      "path": "examples/network-composite/t10-repeater/workload.json",
+      "bytes": 504,
+      "sha256": "8b61f7852839222ee849ff0b950d73aa9dac6d877f459a17dec343e5e961fc0d"
+    },
+    {
+      "path": "examples/network-composite/t1s-control-fifo/README.md",
+      "bytes": 1238,
+      "sha256": "2036832d2876377246f38e32b7f8f40cfc6a232b5cf58620450c0c1b8f1df614"
+    },
+    {
+      "path": "examples/network-composite/t1s-control-fifo/model.ini",
+      "bytes": 186,
+      "sha256": "275a6a6cfcac522805926357ce067ef64214d7d53d95aaa05bb9eb847a65b668"
+    },
+    {
+      "path": "examples/network-composite/t1s-control-fifo/model.json",
+      "bytes": 36766,
+      "sha256": "3f64e06bf850c0d6d916a7ca4225949d4a5f30a6df7b2eb8a7906cf5fb72c45d"
+    },
+    {
+      "path": "examples/network-composite/t1s-control-fifo/models/ethshared/Main.ned",
+      "bytes": 2785,
+      "sha256": "6d2099d59894cfed1074a653346932e46425f053f5fe522ed5f52a08ac6a1ffa"
+    },
+    {
+      "path": "examples/network-composite/t1s-control-fifo/workload.json",
+      "bytes": 504,
+      "sha256": "8b61f7852839222ee849ff0b950d73aa9dac6d877f459a17dec343e5e961fc0d"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/README.md",
+      "bytes": 1737,
+      "sha256": "fd770122a2dc63989f3623fcacfad3ff57bc050b960d13c42c77fa9e785f4790"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/model.ini",
+      "bytes": 185,
+      "sha256": "47ecd077ad17fec8b8a6ad7a7b31413b3ee673de4fb86d648f85b3ff73634f01"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/model.json",
+      "bytes": 33585,
+      "sha256": "7ec0ed1e051d8b7310d73c4137d6493390748102ebc3781add904b7a7d0cbb1f"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/models/ethshared/Main.ned",
+      "bytes": 2785,
+      "sha256": "6d2099d59894cfed1074a653346932e46425f053f5fe522ed5f52a08ac6a1ffa"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/plca-model.json",
+      "bytes": 34038,
+      "sha256": "79ebbd81d9e196ca7e479f1050476bfb447102c95a70448af487322c6d83c507"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/plca-noncoordinator-model.json",
+      "bytes": 34038,
+      "sha256": "9ca841102c4151835f639d206d36b6aa3b86f6cfd4fae5b5ef66344e93135d12"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/plca-noncoordinator-workload.json",
+      "bytes": 541,
+      "sha256": "eeb39a170c7658b8eb5d26167d6e72e85c424cf6a901cbd1544dbb6fb444d320"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/plca-noncoordinator.ini",
+      "bytes": 226,
+      "sha256": "7b13fabaf3e8358c0471eed1bac67ead9bec84374f9ace2c9977ca6ae96491df"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/plca-pending-model.json",
+      "bytes": 34040,
+      "sha256": "c4e78e8ce328baa2e0d559401389fe20d8764b2e1fb15591d98b15c993ca3693"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/plca-pending-workload.json",
+      "bytes": 528,
+      "sha256": "2480f631f38310f3d9d156dda84045d593ba86745ea63b85892cf31e82859755"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/plca-pending.ini",
+      "bytes": 213,
+      "sha256": "90bbe775cd1d6d0ef435289f744b0fa77be8968893e84a0655abb8050be5b48e"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/plca.ini",
+      "bytes": 190,
+      "sha256": "5aa0b40796f236f7da017aa39964fad9b2e818cd47d8c590df974ea44efba7bc"
+    },
+    {
+      "path": "examples/network-composite/t1s-multidrop/workload.json",
+      "bytes": 504,
+      "sha256": "8b61f7852839222ee849ff0b950d73aa9dac6d877f459a17dec343e5e961fc0d"
+    },
+    {
+      "path": "examples/network-composite/t1s-shaped/README.md",
+      "bytes": 1463,
+      "sha256": "eea451e595448e568fba22ed974bc70736d2abb249ab3a8c0887ecba5cd0a2bf"
+    },
+    {
+      "path": "examples/network-composite/t1s-shaped/model.ini",
+      "bytes": 203,
+      "sha256": "8a4700a9af8b87cf42c121043eaf855f4306df27685cefdcbfa122a205d2ed5f"
+    },
+    {
+      "path": "examples/network-composite/t1s-shaped/model.json",
+      "bytes": 34473,
+      "sha256": "680e04cfaa6494770d3332167411d2c71f43034ff5c8f402387ae6664ad96ce9"
+    },
+    {
+      "path": "examples/network-composite/t1s-shaped/workload.json",
+      "bytes": 517,
+      "sha256": "75788a8656a0a26f0cd445d2820a62c49c6900b8ca2d7ee1f81dd367745f8374"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t-repeater/README.md",
+      "bytes": 822,
+      "sha256": "fb825be4ddd2319fb145f6151be10f94270f103461947603fa102fa62cf21a12"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t-repeater/model.ini",
+      "bytes": 185,
+      "sha256": "47ecd077ad17fec8b8a6ad7a7b31413b3ee673de4fb86d648f85b3ff73634f01"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t-repeater/model.json",
+      "bytes": 37727,
+      "sha256": "d496a4f5cd1347a336ce14a2f616eff137c2ccefc5746a3351bef547191b1546"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t-repeater/models/ethshared/Main.ned",
+      "bytes": 1558,
+      "sha256": "b09bf105d93cafe041d7262387bf4d3ef00059bf712aa450c18b12ff435dcda7"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t-repeater/workload.json",
+      "bytes": 504,
+      "sha256": "8b61f7852839222ee849ff0b950d73aa9dac6d877f459a17dec343e5e961fc0d"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t/README.md",
+      "bytes": 575,
+      "sha256": "ccb164873ece7dbd4dccb2142f13d1da6ab5fe4ec372869d8d12cce9d2cc9bbc"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t/model.ini",
+      "bytes": 182,
+      "sha256": "22d3d5b57918be1eef3b9f27ecfc2942aa22c754d7dea8ffe3d1a4529d7192b1"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t/model.json",
+      "bytes": 18832,
+      "sha256": "55354c35d8f43b38bfce5deb72b2f439c5087aa300708ca7707917da6d3369be"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t/models/etht10/Main.ned",
+      "bytes": 1024,
+      "sha256": "8a7768fbd2a5496ec31bb4c761d47665183de1fc623ee310fb24ea7949df1c05"
+    },
+    {
+      "path": "examples/network-composite/tenbase-t/workload.json",
+      "bytes": 504,
+      "sha256": "8b61f7852839222ee849ff0b950d73aa9dac6d877f459a17dec343e5e961fc0d"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/README.md",
+      "bytes": 4986,
+      "sha256": "f1b09db79669309371460dac74558060f983454143e559ec2462c7175109aa8f"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/abstract-model.json",
+      "bytes": 13224,
+      "sha256": "c7e3d1be631a7906ab0edf269328a7e7738eaa6594ff0fea2ac484a692f35601"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/abstract.ini",
+      "bytes": 195,
+      "sha256": "7e3e207295f1b7ecf333f0b3c1fec2b1489a9e886b8bae43f1946bdf659acf7a"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/merge-model.json",
+      "bytes": 13569,
+      "sha256": "49ec4c4625b75e8f43f4157de6559f65992f21f20c8afe3e935f85f4268c84c2"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/merge.ini",
+      "bytes": 192,
+      "sha256": "59e7664a6f0722f1c4a826d8a6f775d0a4d5aa2bae28ad291676bbacd62f4534"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/models/ethdynamic/Main.ned",
+      "bytes": 834,
+      "sha256": "4bbe12b8ac19ef1c6557d5bdcac054c47b56e2507cb6a045f6bc4b179be9ca3a"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/sampled-model.json",
+      "bytes": 18275,
+      "sha256": "9d1934f361f932b1d09117be9d8ed10e88ea917c3639667d3abcda19fd7a6898"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/sampled-workload.json",
+      "bytes": 851,
+      "sha256": "4967e9d40fe419381e02ad16b27411499348f2f6e1444d51d7acbf532d7a495c"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/sampled.ini",
+      "bytes": 204,
+      "sha256": "5bd086127b465ccfa0604a331bf5018ac0e1674a8701ad4512737a20a28f560a"
+    },
+    {
+      "path": "examples/network-composite/wire-serializers/workload.json",
+      "bytes": 848,
+      "sha256": "efef661326fd6dfb9b6bb92eb5ba031163e5df850d3ea308c31f2a895db92d45"
+    },
+    {
+      "path": "examples/network-composite/workload.json",
+      "bytes": 510,
+      "sha256": "5912c001b3468cb223e5165e72f56e02c05cf76f629f3fa7a6211a464fdcf3d1"
+    },
+    {
+      "path": "examples/noc-flit/model.json",
+      "bytes": 365,
+      "sha256": "e908154b93ae87c3571ed3a3a8ac7ffe1a016a1284b171db6b24dfa4980fd5c3"
+    },
+    {
+      "path": "examples/noc-flit/ned/noc/model.ned",
+      "bytes": 133,
+      "sha256": "7a4e4bb04328165cf1eac2201ef4959bb9a3975deda5291b0f843a99e1b5ac89"
+    },
+    {
+      "path": "examples/noc-flit/noc-flit.ini",
+      "bytes": 176,
+      "sha256": "45332cc84b8723f3cd3ea547dca9dda7f05e1bb84e9d41fce5191835ed31879b"
+    },
+    {
+      "path": "examples/noc-flit/workload.json",
+      "bytes": 585,
+      "sha256": "990dabf6573e9c21e2dde2d3035a18c4128b5d6c4c97bae097f8072da38a5d0c"
+    },
+    {
+      "path": "examples/soc-execution/README.md",
+      "bytes": 1471,
+      "sha256": "f92d6d631a159e22488f27f291453a34e3573cdd15663564ed7d7f6e276b5532"
+    },
+    {
+      "path": "examples/soc-execution/ddr-model.json",
+      "bytes": 1717,
+      "sha256": "c69d331a4d0802dd813843b728825fb6110cf8f62d500852ff58272d2c65498c"
+    },
+    {
+      "path": "examples/soc-execution/ddr-workload.json",
+      "bytes": 1157,
+      "sha256": "2e57a866ad40a7b0bf44c934d42f3bdc54d63656e480c0c07494f89a5854e7d5"
+    },
+    {
+      "path": "examples/soc-execution/ddr.ini",
+      "bytes": 194,
+      "sha256": "ceb06506a9775d360d7fd4ad35415321d66816ccc7cd5c38df34fa674ae54186"
+    },
+    {
+      "path": "examples/soc-execution/mailbox-model.json",
+      "bytes": 1554,
+      "sha256": "8bf3b51ef79e5d4341e79f646f53be2c6743104026806d77e1eff8fae3527b45"
+    },
+    {
+      "path": "examples/soc-execution/mailbox-workload.json",
+      "bytes": 3381,
+      "sha256": "16898fbc578c996a217e22e7281178e9602102a2d69de70d087f3c9869255203"
+    },
+    {
+      "path": "examples/soc-execution/mailbox.ini",
+      "bytes": 197,
+      "sha256": "e54c3ba5fca44edf8279979ff3403c6538d18172cc76746bde2f3c731403c9f3"
+    },
+    {
+      "path": "examples/soc-execution/model.json",
+      "bytes": 1601,
+      "sha256": "63e2eefa210b1e3d1b80fdd61db1d610d723da3860828c5b5b246392125d191d"
+    },
+    {
+      "path": "examples/soc-execution/ned/soc/model.ned",
+      "bytes": 124,
+      "sha256": "62f896dc266e0fbfbd1aab642eb94d3a4467cc6609e8f8b028b772301ae4ed77"
+    },
+    {
+      "path": "examples/soc-execution/soc-execution.ini",
+      "bytes": 181,
+      "sha256": "e953db2894613cd0768aa64e90dd7e66c94e281a66124b8811c228f9984d4b3b"
+    },
+    {
+      "path": "examples/soc-execution/workload.json",
+      "bytes": 1931,
+      "sha256": "935aa8ade5da0d2188fdf96e7d337f16194a46be2b0eb46d3c3ddb49c1888626"
+    },
+    {
+      "path": "examples/transaction-fabric/model.json",
+      "bytes": 573,
+      "sha256": "a8ce165e086e93b9b1193b19335b66e0a4e67b8e4f6f706d5859ac65cc3fe69a"
+    },
+    {
+      "path": "examples/transaction-fabric/ned/fabric/model.ned",
+      "bytes": 127,
+      "sha256": "3b5a3a8248ee6003ee6c4e0b3e5b84f076cc26b3439303da3d66b2f197056ca6"
+    },
+    {
+      "path": "examples/transaction-fabric/scenario.ini",
+      "bytes": 186,
+      "sha256": "800cfa1ac55a20d303d586a2c8911ac050639b91c077f5958ccd5ccce677ee70"
+    },
+    {
+      "path": "examples/transaction-fabric/workload.json",
+      "bytes": 997,
+      "sha256": "e28cacd9d214841a2d9a282ace2f683f045f224127dab124dcc228448042c033"
+    },
+    {
+      "path": "tests/canfd_iso_viewer_model.test.cjs",
+      "bytes": 4086,
+      "sha256": "c71e7f17286914cde56c31ff7f5e1e8905a7908327ceb1555055b43e43fa9082"
+    },
+    {
+      "path": "tests/controlled_viewer_model.test.cjs",
+      "bytes": 23117,
+      "sha256": "860a121aa721daf9e86f5005f6f0d594036a13a060c247646ff244c2b32c6f6f"
+    },
+    {
+      "path": "tests/gateway_frer_viewer_model.test.cjs",
+      "bytes": 1347,
+      "sha256": "5eafdfc310f42de3ba5348b45a2d7764b744d7d582bdef38b3e7bf467febe988"
+    },
+    {
+      "path": "tests/gptp_viewer_model.test.cjs",
+      "bytes": 1123,
+      "sha256": "8c7d154ab8fbd37a0e28af4029b9c1076f7335f25a5e37553a91b58749932015"
+    },
+    {
+      "path": "tests/legacy_control_viewer_model.test.cjs",
+      "bytes": 3564,
+      "sha256": "fe34c854527c73aa06fc020d953c5cd6e1d576836983df0c70d557d46d710435"
+    },
+    {
+      "path": "tests/mac_merge_viewer_model.test.cjs",
+      "bytes": 2012,
+      "sha256": "e0c559a2af4ac49fee5cc753aa7fd03e6551f313721ced86e790ae8868a6980e"
+    },
+    {
+      "path": "tests/network_metric_v2_viewer_model.test.cjs",
+      "bytes": 2467,
+      "sha256": "40fee9ba88ffdc154f0ce62031ddbfd5ad0cfde2694f189ac5129e22dbb9c247"
+    },
+    {
+      "path": "tests/soc_execution_viewer_model.test.cjs",
+      "bytes": 3366,
+      "sha256": "37b4ec627e762d8aaab8df6d2ac225b6b0bda92d675c806e3f9c5eca6a6d3449"
+    }
+  ],
+  "verification": "validation.json",
+  "scope": "Changed and added authored source, fixtures, tests and documents. Standards PDF/text and local test outputs/executables stay outside distribution; source-manifest excludes itself."
+}

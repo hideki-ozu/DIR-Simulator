@@ -16,13 +16,20 @@ type Result<T> = std::result::Result<T, Diagnostic>;
 fn error(message: impl Into<String>) -> Diagnostic {
     Diagnostic::execution(message).with_reason("dynamic_policy")
 }
-#[derive(Debug, Clone)]
-struct Partition<K, T> {
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(bound(
+    serialize = "K: serde::Serialize, T: serde::Serialize",
+    deserialize = "K: serde::Deserialize<'de> + Ord, T: serde::Deserialize<'de>"
+))]
+#[serde(deny_unknown_fields)]
+struct Partition<K: Ord, T> {
+    #[serde(with = "crate::runtime::network::checkpoint::map")]
     entries: BTreeMap<K, Lease<T>>,
+    #[serde(with = "crate::runtime::network::checkpoint::map")]
     generations: BTreeMap<K, u64>,
     deadlines: BTreeMap<u64, BTreeSet<K>>,
 }
-impl<K, T> Default for Partition<K, T> {
+impl<K: Ord, T> Default for Partition<K, T> {
     fn default() -> Self {
         Self {
             entries: BTreeMap::new(),
@@ -87,28 +94,41 @@ impl<K: Ord + Clone + Serialize, T: Clone + Serialize> Partition<K, T> {
         before
     }
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct Topology {
     link_up: BTreeMap<String, bool>,
     roles: BTreeMap<String, PortRole>,
     generation: u64,
     converge_at: Option<u64>,
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 enum WireProjectionKey {
     Membership(crate::runtime::wire::membership::Key),
     Router(crate::runtime::wire::membership::Key),
     Compatibility(String, u16, bool),
 }
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct WireProjection {
     policies: BTreeMap<String, crate::snapshot::wire::WirePortPolicy>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    tree_policies: BTreeMap<String, BTreeMap<u16, crate::snapshot::wire::WirePortPolicy>>,
     registered: BTreeSet<(String, u16)>,
+    #[serde(with = "crate::runtime::network::checkpoint::map")]
     memberships:
         BTreeMap<crate::runtime::wire::membership::Key, crate::runtime::wire::membership::Filter>,
     routers: BTreeSet<crate::runtime::wire::membership::Key>,
     flood: BTreeSet<(String, u16, bool)>,
+    #[serde(with = "crate::runtime::network::checkpoint::map")]
     generations: BTreeMap<WireProjectionKey, u64>,
+}
+#[derive(Debug)]
+struct MstpPortBinding {
+    adapter: String,
+    vlan_map: Arc<Vec<u16>>,
+    instances: BTreeSet<u16>,
 }
 #[derive(Debug)]
 pub(crate) struct DynamicState {
@@ -125,6 +145,8 @@ pub(crate) struct DynamicState {
     wire_enabled: bool,
     wire_tree_bridges: BTreeSet<String>,
     wire_registration_ports: BTreeSet<String>,
+    // Rebound from immutable prepared inputs, never restored from a checkpoint.
+    wire_mstp_ports: BTreeMap<String, MstpPortBinding>,
     wire: WireProjection,
 }
 /// Changed partitions are fully built before commit and swapped without allocation.
@@ -153,11 +175,11 @@ impl DynamicState {
         base: &PreparedEthernet,
         wire: Option<&crate::types::wire::PreparedWire>,
     ) -> Result<Self> {
-        use crate::types::wire::WireProtocol;
+        use crate::types::wire::{WireOptions, WireProtocol};
         let wire_tree_bridges: BTreeSet<_> = wire
             .into_iter()
             .flat_map(|w| &w.adapters)
-            .filter(|a| a.protocol == WireProtocol::Rstp)
+            .filter(|a| matches!(a.protocol, WireProtocol::Rstp | WireProtocol::Mstp))
             .map(|a| a.bridge.clone())
             .collect();
         let wire_registration_ports = wire
@@ -167,11 +189,28 @@ impl DynamicState {
             .flat_map(|a| a.ports.clone())
             .collect();
         let mut projection = WireProjection::default();
+        let mut wire_mstp_ports = BTreeMap::new();
         for adapter in wire
             .into_iter()
             .flat_map(|w| &w.adapters)
-            .filter(|a| a.protocol == WireProtocol::Rstp)
+            .filter(|a| matches!(a.protocol, WireProtocol::Rstp | WireProtocol::Mstp))
         {
+            if let WireOptions::Mstp(config) = &adapter.options {
+                let vlan_map = Arc::new(config.vlan_map.clone());
+                let instances = std::iter::once(0)
+                    .chain(config.instances.iter().map(|i| i.mstid))
+                    .collect::<BTreeSet<_>>();
+                for port in &adapter.ports {
+                    wire_mstp_ports.insert(
+                        port.clone(),
+                        MstpPortBinding {
+                            adapter: adapter.id.clone(),
+                            vlan_map: vlan_map.clone(),
+                            instances: instances.clone(),
+                        },
+                    );
+                }
+            }
             for port in &adapter.ports {
                 projection.policies.insert(
                     port.clone(),
@@ -213,6 +252,7 @@ impl DynamicState {
             wire_enabled: wire.is_some(),
             wire_tree_bridges,
             wire_registration_ports,
+            wire_mstp_ports,
             wire: projection,
         })
     }
@@ -335,6 +375,39 @@ impl DynamicState {
             topology_generation: topology.generation,
             roles,
             link_up,
+            tree_roles: self
+                .wire_mstp_ports
+                .iter()
+                .map(|(port, binding)| {
+                    let roles = effective_vlans
+                        .get(port)
+                        .into_iter()
+                        .flat_map(|v| v.keys())
+                        .map(|vid| {
+                            let policy = wire
+                                .tree_policies
+                                .get(port)
+                                .and_then(|p| {
+                                    binding.vlan_map.get(*vid as usize).and_then(|id| p.get(id))
+                                })
+                                .or_else(|| wire.policies.get(port));
+                            let role = match policy {
+                                Some(p) if p.link_up && p.forwarding => {
+                                    if p.role.eq_ignore_ascii_case("root") {
+                                        PortRole::Root
+                                    } else {
+                                        PortRole::Designated
+                                    }
+                                }
+                                Some(p) if p.link_up => PortRole::Alternate,
+                                _ => PortRole::Disabled,
+                            };
+                            (*vid, role)
+                        })
+                        .collect();
+                    (port.clone(), roles)
+                })
+                .collect(),
             effective_vlans,
         }
     }
@@ -721,10 +794,8 @@ impl DynamicState {
             .ok_or_else(|| error("unknown learning ingress"))?;
         let device = &self.base.devices[p.device];
         if self
-            .wire
-            .policies
-            .get(&p.port)
-            .is_some_and(|policy| !policy.learning)
+            .wire_policy_for_vid(&self.wire, &p.port, vid)
+            .is_some_and(|policy| !policy.learning || !policy.link_up)
         {
             return self.finish(d, now, changes);
         }
@@ -848,6 +919,128 @@ impl DynamicState {
         wire.policies
             .get(&port.port)
             .map(|p| (p.learning && p.link_up, p.forwarding && p.link_up))
+    }
+    fn wire_policy_for_vid<'a>(
+        &self,
+        wire: &'a WireProjection,
+        port: &str,
+        vid: u16,
+    ) -> Option<&'a crate::snapshot::wire::WirePortPolicy> {
+        self.wire_mstp_ports
+            .get(port)
+            .and_then(|binding| binding.vlan_map.get(vid as usize))
+            .and_then(|id| {
+                wire.tree_policies
+                    .get(port)
+                    .and_then(|policies| policies.get(id))
+            })
+            .or_else(|| wire.policies.get(port))
+    }
+    pub(crate) fn wire_ingress_state_for_vid(
+        &self,
+        ingress: &str,
+        vid: u16,
+        delta: Option<&DynamicDelta>,
+    ) -> Option<(bool, bool)> {
+        let port = self
+            .base
+            .port_policies
+            .iter()
+            .find(|p| p.port == ingress || p.ingress == ingress)?;
+        let wire = delta.and_then(|d| d.wire.as_ref()).unwrap_or(&self.wire);
+        self.wire_policy_for_vid(wire, &port.port, vid)
+            .map(|p| (p.learning && p.link_up, p.forwarding && p.link_up))
+    }
+    fn project_wire_trees(
+        &self,
+        policies: &BTreeMap<(String, u16, String), crate::snapshot::wire::WirePortPolicy>,
+    ) -> Result<BTreeMap<String, BTreeMap<u16, crate::snapshot::wire::WirePortPolicy>>> {
+        if policies.len()
+            != self
+                .wire_mstp_ports
+                .values()
+                .map(|p| p.instances.len())
+                .sum::<usize>()
+        {
+            return Err(error("MSTP tree projection catalog mismatch"));
+        }
+        self.wire_mstp_ports
+            .iter()
+            .map(|(port, binding)| {
+                let trees = binding
+                    .instances
+                    .iter()
+                    .map(|id| {
+                        let key = (binding.adapter.clone(), *id, port.clone());
+                        let policy = policies
+                            .get(&key)
+                            .ok_or_else(|| error("MSTP tree projection owner/instance mismatch"))?;
+                        if policy.forwarding && !policy.learning {
+                            return Err(error("MSTP forwarding without learning"));
+                        }
+                        Ok((*id, policy.clone()))
+                    })
+                    .collect::<Result<_>>()?;
+                Ok((port.clone(), trees))
+            })
+            .collect()
+    }
+    /// Preserve one policy per configured instance, selecting it by the immutable VID map.
+    pub(crate) fn plan_wire_trees_in(
+        &self,
+        mut d: DynamicDelta,
+        now: u64,
+        policies: &BTreeMap<(String, u16, String), crate::snapshot::wire::WirePortPolicy>,
+    ) -> Result<DynamicDelta> {
+        let trees = self.project_wire_trees(policies)?;
+        let projection = d.wire.get_or_insert_with(|| self.wire.clone());
+        if projection.tree_policies != trees {
+            let before = std::mem::replace(&mut projection.tree_policies, trees);
+            d.dirty_ports.extend(
+                before
+                    .keys()
+                    .chain(projection.tree_policies.keys())
+                    .cloned(),
+            );
+            // plan_wire_in already advances the shared epoch when the wire reducer changed.
+            // A direct staged projection still advances once, never once per MSTI.
+            if d.epoch == self.epoch {
+                d.epoch = self
+                    .epoch
+                    .checked_add(1)
+                    .ok_or_else(|| error("policy epoch overflow"))?;
+            }
+            let record = d.policy_record.get_or_insert_with(|| DynamicPolicyRecord {
+                time_ps: now,
+                policy_epoch: d.epoch,
+                topology_generation: d.topology.as_ref().unwrap_or(&self.topology).generation,
+                initial: false,
+                changes: Vec::new(),
+            });
+            record.policy_epoch = d.epoch;
+            record
+                .changes
+                .push(json!({"table":"wire_tree_projection","key":null,
+                "before":before,"after":projection.tree_policies}));
+            for record in &mut d.control_records {
+                record.epoch_after = d.epoch;
+            }
+        }
+        Ok(d)
+    }
+    pub(crate) fn validate_wire_tree_projection(
+        &self,
+        policies: &BTreeMap<(String, u16, String), crate::snapshot::wire::WirePortPolicy>,
+        initialized: bool,
+    ) -> Result<()> {
+        if !initialized {
+            if !self.wire.tree_policies.is_empty() {
+                return Err(error("MSTP tree projection before initialization"));
+            }
+        } else if self.wire.tree_policies != self.project_wire_trees(policies)? {
+            return Err(error("MSTP tree projection differs from protocol state"));
+        }
+        Ok(())
     }
     /// Merge protocol projections and scoped removals into the same host callback.
     /// FDB generation ledgers survive removals; matching stale expiry cannot remove relearned entries.
@@ -1263,7 +1456,14 @@ pub(crate) fn eligible_egress(
 ) -> std::result::Result<(), Ineligible> {
     if !s.link_up.get(port).copied().unwrap_or(false) {
         Err(Ineligible::LinkDown)
-    } else if !s.roles.get(port).copied().is_some_and(PortRole::forwarding) {
+    } else if !s
+        .tree_roles
+        .get(port)
+        .and_then(|v| v.get(&vid))
+        .or_else(|| s.roles.get(port))
+        .copied()
+        .is_some_and(PortRole::forwarding)
+    {
         Err(Ineligible::StpDiscarding)
     } else if !s
         .effective_vlans
@@ -1630,6 +1830,7 @@ pub(crate) mod tests {
             ether_type: 2048,
             data_hex: String::new(),
             tag: None,
+            tags: vec![],
             pad_bytes: 0,
             mac_bytes: 68,
             fcs_hex: String::new(),
@@ -2072,6 +2273,7 @@ pub(crate) mod tests {
                 id: format!("rstp-{}", device.id),
                 protocol: WireProtocol::Rstp,
                 bridge: device.id.clone(),
+                component_binding: None,
                 ports: base
                     .port_policies
                     .iter()
@@ -2107,6 +2309,126 @@ pub(crate) mod tests {
             forwarding,
             link_up: true,
         }
+    }
+    #[test]
+    fn mstp_vid_policy_controls_learning_flooding_and_checkpoint_projection() {
+        use crate::types::wire::{MstpConfig, MstpInstanceConfig, WireOptions, WireProtocol};
+        let (mut base, prepared) = fixture();
+        for port in &mut base.port_policies {
+            port.vlans.insert(20, true);
+        }
+        let mut prepared_wire = wire_config(&base);
+        prepared_wire.adapters.truncate(1);
+        let adapter = &mut prepared_wire.adapters[0];
+        adapter.protocol = WireProtocol::Mstp;
+        let mut vlan_map = vec![0; 4096];
+        vlan_map[10] = 1;
+        adapter.options = WireOptions::Mstp(MstpConfig {
+            bridge_id: 1,
+            max_age: 5120,
+            forward_delay: 3840,
+            tx_hold_count: 6,
+            max_hops: 20,
+            region_name: "region".into(),
+            region_revision: 0,
+            vlan_map,
+            instances: vec![MstpInstanceConfig {
+                mstid: 1,
+                bridge_priority: 32768,
+            }],
+            ports: vec![],
+        });
+        let adapter = prepared_wire.adapters[0].clone();
+        let mut state =
+            DynamicState::new_with_wire(&prepared, &base, Some(&prepared_wire)).unwrap();
+        let cist: BTreeMap<_, _> = adapter
+            .ports
+            .iter()
+            .map(|port| {
+                (
+                    port.clone(),
+                    wire_policy(port.ends_with("tx_a"), port.ends_with("tx_a")),
+                )
+            })
+            .collect();
+        let trees: BTreeMap<_, _> = adapter
+            .ports
+            .iter()
+            .flat_map(|port| {
+                let cist = cist[port].clone();
+                [
+                    ((adapter.id.clone(), 0, port.clone()), cist),
+                    (
+                        (adapter.id.clone(), 1, port.clone()),
+                        wire_policy(true, true),
+                    ),
+                ]
+            })
+            .collect();
+        let (delta, _, _) = state
+            .plan_wire_in(None, 0, &cist, &BTreeSet::new(), &[], true, true)
+            .unwrap();
+        let delta = state.plan_wire_trees_in(delta, 0, &trees).unwrap();
+        // The staged MSTI permits VLAN10 where the same physical port's CIST blocks VLAN20.
+        assert_eq!(
+            state.wire_ingress_state_for_vid("Net.s1.rx_b", 10, Some(&delta)),
+            Some((true, true))
+        );
+        assert_eq!(
+            state.wire_ingress_state_for_vid("Net.s1.rx_b", 20, Some(&delta)),
+            Some((false, false))
+        );
+        let staged = state.snapshot_policy_after(&delta);
+        assert_eq!(state.eligible_egress("Net.s1.tx_b", 10, &staged), Ok(()));
+        assert_eq!(
+            state.eligible_egress("Net.s1.tx_b", 20, &staged),
+            Err(Ineligible::StpDiscarding)
+        );
+        state.apply(delta);
+        state.apply(
+            state
+                .plan_learning("Net.s1.rx_b", 10, "02:00:00:00:00:01", 1)
+                .unwrap(),
+        );
+        state.apply(
+            state
+                .plan_learning("Net.s1.rx_b", 20, "02:00:00:00:00:01", 1)
+                .unwrap(),
+        );
+        assert_eq!(state.mac.entries.len(), 1);
+        assert_eq!(state.mac.entries.keys().next().unwrap().vid, 10);
+        for vid in [10, 20] {
+            let selected = state.select_egress(
+                "Net.s1",
+                "Net.s1.rx_a",
+                vid,
+                &wire("ff:ff:ff:ff:ff:ff"),
+                None,
+            );
+            assert_eq!(selected.ports.contains(&"Net.s1.tx_b".into()), vid == 10);
+        }
+        state.validate_wire_tree_projection(&trees, true).unwrap();
+        let saved = state.checkpoint_fields();
+        let restored = DynamicState::restore_fields(
+            &saved,
+            DynamicState::new_with_wire(&prepared, &base, Some(&prepared_wire)).unwrap(),
+        )
+        .unwrap();
+        restored
+            .validate_wire_tree_projection(&trees, true)
+            .unwrap();
+        let mut mutant = saved;
+        mutant["wire"]["tree_policies"]["Net.s1.tx_b"]["1"]["forwarding"] = json!(false);
+        let restored = DynamicState::restore_fields(
+            &mutant,
+            DynamicState::new_with_wire(&prepared, &base, Some(&prepared_wire)).unwrap(),
+        )
+        .unwrap();
+        assert!(
+            restored
+                .validate_wire_tree_projection(&trees, true)
+                .is_err()
+        );
     }
     #[test]
     fn wire_learning_scoped_flush_is_staged_and_preserves_relearn_generation() {
@@ -2294,4 +2616,63 @@ pub(crate) mod tests {
         assert_eq!(delta.control_records[0].epoch_after, 3);
     }
     include!("dynamic_vector_tests.rs");
+}
+
+crate::runtime::network::checkpoint::fields!(DynamicState, value; mac, membership, routers, registrations, topology, epoch, control_cursor, audit_cursor, wire_enabled, wire_tree_bridges, wire_registration_ports, wire; );
+impl<K: Ord + Clone, T> Partition<K, T> {
+    fn validate_checkpoint(&self, horizon: u64) -> Result<()> {
+        let mut deadlines = BTreeMap::<u64, BTreeSet<K>>::new();
+        for (key, lease) in &self.entries {
+            if lease.expires_at < horizon
+                || self.generations.get(key) != Some(&lease.generation)
+                || lease.generation == 0
+            {
+                return Err(error("invalid dynamic lease checkpoint"));
+            }
+            deadlines
+                .entry(lease.expires_at)
+                .or_default()
+                .insert(key.clone());
+        }
+        if deadlines != self.deadlines {
+            return Err(error("dynamic deadline checkpoint mismatch"));
+        }
+        Ok(())
+    }
+}
+impl DynamicState {
+    pub(crate) fn validate_checkpoint(&self, horizon: u64) -> Result<()> {
+        if self.control_cursor > self.prepared.controls.len() {
+            return Err(error("dynamic control checkpoint cursor"));
+        }
+        if self.prepared.controls[..self.control_cursor]
+            .iter()
+            .any(|c| c.at_ps > horizon)
+            || self.prepared.controls[self.control_cursor..]
+                .iter()
+                .any(|c| c.at_ps < horizon)
+        {
+            return Err(error("dynamic control checkpoint time"));
+        }
+        self.mac.validate_checkpoint(horizon)?;
+        self.membership.validate_checkpoint(horizon)?;
+        self.routers.validate_checkpoint(horizon)?;
+        self.registrations.validate_checkpoint(horizon)?;
+        let initial = Self::new_with_wire(&self.prepared, &self.base, None)?;
+        if self
+            .topology
+            .link_up
+            .keys()
+            .ne(initial.topology.link_up.keys())
+            || self.topology.roles.keys().ne(initial.topology.roles.keys())
+        {
+            return Err(error("dynamic topology checkpoint catalog mismatch"));
+        }
+        if self.mac.entries.len() > self.prepared.limits.mac_entries
+            || self.membership.entries.len() > self.prepared.limits.membership_entries
+        {
+            return Err(error("dynamic checkpoint table limit"));
+        }
+        Ok(())
+    }
 }

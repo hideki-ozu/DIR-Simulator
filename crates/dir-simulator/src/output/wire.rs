@@ -45,6 +45,22 @@ pub(crate) fn validate_record(kind: &str, value: &Value) -> Result<(), Diagnosti
             "registered",
             "mac",
         ],
+        "ethernet.control.wire.tree_policy" => &[
+            "schema_version",
+            "time_ps",
+            "policy_epoch",
+            "component_id",
+            "bridge",
+            "mstid",
+            "mapped_vids",
+            "port",
+            "policy",
+            "boundary",
+            "region_name",
+            "region_revision",
+            "region_digest_hex",
+            "root_port",
+        ],
         "ethernet.control.wire.transition" => {
             return transition::validate_transition(value).map_err(error);
         }
@@ -106,6 +122,7 @@ pub(crate) fn validate_record(kind: &str, value: &Value) -> Result<(), Diagnosti
                 || ![
                     "initialize",
                     "receive",
+                    "rx_failed",
                     "timer",
                     "link",
                     "local",
@@ -145,8 +162,15 @@ pub(crate) fn validate_record(kind: &str, value: &Value) -> Result<(), Diagnosti
                     .any(|s| !canonical(s))
                 || r.ports.values().any(|p| {
                     p.forwarding && !p.learning
-                        || !["Root", "Designated", "Alternate", "Backup", "Disabled"]
-                            .contains(&p.role.as_str())
+                        || ![
+                            "Root",
+                            "Designated",
+                            "Alternate",
+                            "Backup",
+                            "Disabled",
+                            "Master",
+                        ]
+                        .contains(&p.role.as_str())
                 })
             {
                 return Err(error("invalid wire policy"));
@@ -201,6 +225,7 @@ pub(crate) fn validate_record(kind: &str, value: &Value) -> Result<(), Diagnosti
                 return Err(error("wire MAC policy order"));
             }
         }
+        "ethernet.control.wire.tree_policy" => validate_tree_policy(value)?,
         "ethernet.wire.boundary" => {
             let r: WireBoundaryRecord =
                 serde_json::from_value(value.clone()).map_err(|e| error(e.to_string()))?;
@@ -334,7 +359,7 @@ fn validate_effect(v: &Value) -> Result<(), Diagnostic> {
                 || v["completed"] != true
                 || !matches!(
                     v["reason"].as_str(),
-                    Some("rstp_topology_change" | "mvrp_new")
+                    Some("rstp_topology_change" | "mstp_topology_change" | "mvrp_new")
                 )
             {
                 return Err(error("invalid flush completion"));
@@ -388,7 +413,14 @@ fn validate_policy(v: &Value) -> Result<(), Diagnostic> {
     exact(v, &["role", "learning", "forwarding", "link_up"])?;
     if !member(
         &v["role"],
-        &["Disabled", "Root", "Designated", "Alternate", "Backup"],
+        &[
+            "Disabled",
+            "Root",
+            "Designated",
+            "Alternate",
+            "Backup",
+            "Master",
+        ],
     ) || ["learning", "forwarding", "link_up"]
         .iter()
         .any(|k| !v[*k].is_boolean())
@@ -398,13 +430,46 @@ fn validate_policy(v: &Value) -> Result<(), Diagnostic> {
     }
     Ok(())
 }
+fn validate_tree_policy(v: &Value) -> Result<(), Diagnostic> {
+    if v["schema_version"] != 1
+        || !dec(&v["time_ps"])
+        || !dec(&v["policy_epoch"])
+        || !["component_id", "bridge", "port"]
+            .iter()
+            .all(|k| text(&v[*k]))
+        || v["mstid"].as_u64().is_none_or(|n| n > 4094)
+        || !v["boundary"].is_boolean()
+        || v["region_name"].as_str().is_none_or(|s| s.len() > 32)
+        || v["region_revision"]
+            .as_u64()
+            .is_none_or(|n| n > u16::MAX as u64)
+        || !v["region_digest_hex"].as_str().is_some_and(|s| {
+            s.len() == 32
+                && s.bytes()
+                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+        })
+        || !optional_text(&v["root_port"])
+    {
+        return Err(error("invalid MSTP tree policy scalar"));
+    }
+    let vids = v["mapped_vids"]
+        .as_array()
+        .ok_or_else(|| error("MSTP mapped VID array required"))?;
+    if !vids.iter().all(vid)
+        || vids.windows(2).any(|w| w[0].as_u64() >= w[1].as_u64())
+        || v["mstid"] == 0 && v["policy"]["role"] == "Master"
+    {
+        return Err(error("invalid MSTP mapped VID scope/order"));
+    }
+    validate_policy(&v["policy"])
+}
 fn validate_timer_key(v: &Value) -> Result<(), Diagnostic> {
     exact(v, &["protocol", "bridge", "port", "slot", "attribute"])?;
     if !text(&v["bridge"]) {
         return Err(error("wire timer bridge required"));
     }
     let good = match (v["protocol"].as_str(), v["slot"].as_str()) {
-        (Some("rstp"), Some("tick")) | (Some("igmp" | "mld"), Some("membership")) => {
+        (Some("rstp" | "mstp"), Some("tick")) | (Some("igmp" | "mld"), Some("membership")) => {
             v["port"] == "" && v["attribute"].is_null()
         }
         (Some("mvrp"), Some("leave")) => text(&v["port"]) && vid(&v["attribute"]),
@@ -467,6 +532,7 @@ fn validate_event(v: &Value) -> Result<(), Diagnostic> {
     }
     let revision = match v["protocol"].as_str() {
         Some("rstp") => "ieee802.1q-2022.rstp.initial.v1",
+        Some("mstp") => "ieee802.1q-2022.mstp.initial.v1",
         Some("mvrp") => "ieee802.1q-2022.mvrp.initial.v1",
         Some("igmp") => "igmp-rfc9776-2025",
         Some("mld") => "mld-rfc9777-2025",
@@ -489,6 +555,11 @@ fn validate_event(v: &Value) -> Result<(), Diagnostic> {
                     "protocol_malformed",
                     "unsupported_revision",
                     "unsupported_kind",
+                    "link_epoch_reset",
+                    "mac_merge_packet_lost",
+                    "mac_merge_receive_error",
+                    "mac_merge_transport_failure",
+                    "service_tree_changed",
                 ],
             ) || member(&v["protocol"], &["igmp", "mld"])
                 && member(reason, MEMBERSHIP_REASONS) => {}
@@ -773,6 +844,66 @@ mod tests {
                 "missing {field}"
             );
         }
+    }
+    #[test]
+    fn mstp_events_and_per_instance_scope_are_typed() {
+        let mut good = event();
+        good["protocol"] = json!("mstp");
+        good["protocol_revision"] = json!("ieee802.1q-2022.mstp.initial.v1");
+        good["port"] = json!("");
+        good["timer"]["key"] = json!({
+            "protocol":"mstp","bridge":"b","port":"","slot":"tick","attribute":null
+        });
+        good["effects"] = json!([
+            {"kind":"mac_flush","reason":"mstp_topology_change","port":"p", "vids":[10,20], "keys":[{"switch":"b","vid":20,"mac":"02:00:00:00:00:01"}],"completed":true}
+        ]);
+        validate_record("ethernet.control.wire.event/1", &good).unwrap();
+        let tree = json!({
+            "schema_version":1,"time_ps":"9007199254740993","policy_epoch":"2",
+            "component_id":"mstp-b","bridge":"b","mstid":1,"mapped_vids":[10,20],
+            "port":"p","policy":{"role":"Master","learning":true,"forwarding":true,"link_up":true},
+            "boundary":true,"region_name":"region","region_revision":65535,
+            "region_digest_hex":"00112233445566778899aabbccddeeff","root_port":"p"
+        });
+        validate_record("ethernet.control.wire.tree_policy/1", &tree).unwrap();
+        for (pointer, value) in [
+            ("/mstid", json!(0)),
+            ("/mstid", json!(4095)),
+            ("/mstid", json!("1")),
+            ("/mapped_vids", json!([20, 10])),
+            ("/mapped_vids", json!([10, 10])),
+            ("/mapped_vids", json!([0])),
+            ("/mapped_vids", json!(["10"])),
+            ("/policy/learning", json!(false)),
+            ("/policy_epoch", json!(2)),
+            ("/time_ps", json!("01")),
+            ("/boundary", json!("true")),
+            ("/region_name", json!("あ".repeat(11))),
+            ("/region_revision", json!(65536)),
+            (
+                "/region_digest_hex",
+                json!("00112233445566778899AABBCCDDEEFF"),
+            ),
+            ("/root_port", json!("")),
+        ] {
+            let mut bad = tree.clone();
+            *bad.pointer_mut(pointer).unwrap() = value;
+            assert!(
+                validate_record("ethernet.control.wire.tree_policy", &bad).is_err(),
+                "{pointer}"
+            );
+        }
+        for field in tree.as_object().unwrap().keys() {
+            let mut bad = tree.clone();
+            bad.as_object_mut().unwrap().remove(field);
+            assert!(
+                validate_record("ethernet.control.wire.tree_policy", &bad).is_err(),
+                "missing {field}"
+            );
+        }
+        let mut bad = tree;
+        bad["extra"] = json!(true);
+        assert!(validate_record("ethernet.control.wire.tree_policy", &bad).is_err());
     }
     #[test]
     fn policy_nested_rows_and_required_nullable_keys_are_closed() {

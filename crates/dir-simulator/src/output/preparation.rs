@@ -17,6 +17,8 @@ pub(crate) fn profile_catalog(profile: &str) -> Option<Value> {
         profile,
         "can.ethernet.tsn.v1"
             | "ethernet.redundancy.abstract.v1"
+            | "ethernet.frer.rtag.v1"
+            | "ethernet.network.composite.v1"
             | "ethernet.preemption.abstract.v1"
             | "ethernet.control.wire.experimental.v1"
     ) {
@@ -41,15 +43,63 @@ pub(crate) fn profile_catalog(profile: &str) -> Option<Value> {
                         .map(|m| m["metric_id"].as_str().unwrap().to_owned()),
                 );
                 schemas.extend(bridge["model_schemas"].as_array()?.iter().cloned());
-                (&["dir.composite.ingress"], "")
+                (
+                    &[
+                        "dir.composite.ingress",
+                        "dir.can_ethernet.terminal_indication",
+                        "dir.redundancy.branch",
+                        "dir.redundancy.recovery",
+                        "dir.redundancy.timeout",
+                        "dir.redundancy.origin",
+                        "dir.mac_merge.packet",
+                        "dir.mac_merge.assembly",
+                        "dir.mac_merge.verification",
+                        "dir.mac_merge.capability",
+                    ],
+                    "redundancy.origin.target_count redundancy.origin.completed redundancy.branch.created redundancy.branch.dropped redundancy.recovery.accepted redundancy.recovery.duplicate redundancy.recovery.stale redundancy.branch.mac_bytes redundancy.branch.busy_ps redundancy.origin.completion_ratio",
+                )
             }
-            "ethernet.redundancy.abstract.v1" => (
+            "ethernet.redundancy.abstract.v1" | "ethernet.frer.rtag.v1" => (
+                &[
+                    "dir.redundancy.branch",
+                    "dir.redundancy.recovery",
+                    "dir.redundancy.timeout",
+                    "dir.redundancy.origin",
+                ],
+                "redundancy.origin.target_count redundancy.origin.completed redundancy.branch.created redundancy.branch.dropped redundancy.recovery.accepted redundancy.recovery.duplicate redundancy.recovery.stale redundancy.branch.mac_bytes redundancy.branch.busy_ps redundancy.origin.completion_ratio",
+            ),
+            "ethernet.network.composite.v1" => (
                 &[
                     "dir.redundancy.branch",
                     "dir.redundancy.recovery",
                     "dir.redundancy.origin",
+                    "dir.redundancy.timeout",
+                    "dir.preemption.transfer",
+                    "dir.preemption.fragment",
+                    "dir.preemption.gap",
+                    "dir.preemption.delivery",
+                    "dir.preemption.decision",
+                    "dir.mac_merge.packet",
+                    "dir.mac_merge.assembly",
+                    "dir.mac_merge.verification",
+                    "dir.mac_merge.capability",
+                    "dir.network.clock",
+                    "dir.network.gptp",
+                    "dir.network.phy",
+                    "dir.network.configured_media",
+                    "dir.network.mac_control",
+                    "dir.network.qcc",
+                    "dir.network.segment",
+                    "dir.network.provider",
+                    "ethernet.wire.boundary",
+                    "ethernet.wire.membership",
+                    "ethernet.wire.membership_timer",
+                    "ethernet.control.wire.event",
+                    "ethernet.control.wire.policy",
+                    "ethernet.control.wire.transition",
+                    "ethernet.control.wire.tree_policy",
                 ],
-                "redundancy.origin.target_count redundancy.origin.completed redundancy.branch.created redundancy.branch.dropped redundancy.recovery.accepted redundancy.recovery.duplicate redundancy.recovery.stale redundancy.branch.mac_bytes redundancy.branch.busy_ps redundancy.origin.completion_ratio",
+                "redundancy.origin.target_count redundancy.origin.completed redundancy.branch.created redundancy.branch.dropped redundancy.recovery.accepted redundancy.recovery.duplicate redundancy.recovery.stale redundancy.branch.mac_bytes redundancy.branch.busy_ps redundancy.origin.completion_ratio preemption.fragments.started preemption.fragments.completed preemption.frames.completed preemption.mac_bytes.completed preemption.fragment_overhead_bytes preemption.port.busy_ps preemption.port.resume_gap_ps preemption.delivery.target_count preemption.delivery.completed ethernet.wire.accepted ethernet.wire.dropped ethernet.wire.transmitted ethernet.wire.tx_busy_ps ethernet.wire.tx_started ethernet.wire.tx_completed ethernet.wire.tx_mac_bytes ethernet.wire.rx_wire_ps ethernet.wire.rx_ifg_ps ethernet.wire.rx_completed ethernet.wire.rx_mac_bytes ethernet.wire.rx_bits ethernet.dynamic.filtered.stp_learning ethernet.filtered.provider_no_egress ethernet.filtered.provider_control_consumed ethernet.filtered.provider_control_filtered ethernet.filtered.provider_ingress",
             ),
             "ethernet.preemption.abstract.v1" => (
                 &[
@@ -69,6 +119,7 @@ pub(crate) fn profile_catalog(profile: &str) -> Option<Value> {
                     "ethernet.control.wire.event",
                     "ethernet.control.wire.policy",
                     "ethernet.control.wire.transition",
+                    "ethernet.control.wire.tree_policy",
                 ],
                 "ethernet.wire.accepted ethernet.wire.dropped ethernet.wire.transmitted ethernet.wire.tx_busy_ps ethernet.wire.tx_started ethernet.wire.tx_completed ethernet.wire.tx_mac_bytes ethernet.wire.rx_wire_ps ethernet.wire.rx_ifg_ps ethernet.wire.rx_completed ethernet.wire.rx_mac_bytes ethernet.wire.rx_bits ethernet.dynamic.filtered.stp_learning",
             ),
@@ -157,9 +208,12 @@ pub(crate) fn profile_catalog(profile: &str) -> Option<Value> {
             );
             super::memory_ipc::METRICS
         }
-        "can.fd.precomputed.v1" => {
+        "can.fd.precomputed.v1" | "can.fd.iso.v1" => {
             schemas.extend([
-                ("dir.canfd.frame", 1),
+                (
+                    "dir.canfd.frame",
+                    if profile == "can.fd.iso.v1" { 2 } else { 1 },
+                ),
                 ("dir.canfd.reception", 1),
                 ("dir.canfd.request", 1),
             ]);

@@ -1,35 +1,10 @@
 //! Pair-local media timelines. A physical reservation covers all logical changes at its time.
 use super::*;
-use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 
-#[derive(Clone, Debug)]
-enum Change {
-    SignalOn(usize, usize),
-    SignalOff(usize, usize),
-    Eof(usize, usize),
-    Release(usize, usize),
-    JamEnd(usize, usize),
-    Ifg(usize, u64),
-    Backoff(usize, usize),
-}
-#[derive(Clone, Default)]
-struct Mac {
-    emitting: Option<usize>,
-    carrier: Option<usize>,
-    busy: bool,
-    ifg_ready: bool,
-    idle_generation: u64,
-    backoff_until: Option<u64>,
-    generation: u64,
-}
-#[derive(Clone)]
-struct Pair {
-    macs: [Mac; 2],
-    timeline: BTreeMap<u64, Vec<Change>>,
-    reservation: Option<(u64, u64)>,
-    generation: u64,
-}
+pub(crate) mod kernel;
+pub use kernel::backoff_slots;
+use kernel::{Change, Mac, Pair};
 pub(super) struct MediaRuntime {
     pairs: Vec<Pair>,
     pub(super) direction_pairs: Vec<usize>,
@@ -72,41 +47,12 @@ impl MediaRuntime {
         }
     }
 }
-pub fn backoff_slots(seed: u64, transfer_id: &str, number: u64) -> u64 {
-    let mut hash = Sha256::new();
-    hash.update(b"dir.ethernet.beb.v1\0");
-    hash.update(seed.to_string().as_bytes());
-    hash.update([0]);
-    hash.update(transfer_id.as_bytes());
-    hash.update([0]);
-    hash.update(number.to_string().as_bytes());
-    let bytes = hash.finalize();
-    let value = u64::from_be_bytes(bytes[..8].try_into().unwrap());
-    value & ((1u64 << number.min(10)) - 1)
-}
-impl Pair {
-    fn change(&mut self, time: u64, change: Change) {
-        self.timeline.entry(time).or_default().push(change);
-    }
-    fn cancel_attempt(&mut self, attempt: usize) {
-        self.timeline.retain(|_, changes| {
-            changes.retain(|change| !matches!(change, Change::Eof(_, a) | Change::Release(_, a) | Change::SignalOff(_, a) if *a == attempt));
-            !changes.is_empty()
-        });
-    }
-    fn cancel_ifg(&mut self, side: usize) {
-        self.timeline.retain(|_, changes| {
-            changes.retain(|change| !matches!(change, Change::Ifg(s, _) if *s == side));
-            !changes.is_empty()
-        });
-    }
-}
 impl Engine<'_> {
     pub(super) fn media_canceled(&self, event: &Event) -> bool {
         if let Event::PairBoundary(pair, generation) = event {
-            return self.media.as_ref().unwrap().pairs[*pair].reservation
+            return self.state.media.as_ref().unwrap().pairs[*pair].reservation
                 != Some((
-                    self.media.as_ref().unwrap().pairs[*pair]
+                    self.state.media.as_ref().unwrap().pairs[*pair]
                         .timeline
                         .first_key_value()
                         .map_or(0, |(t, _)| *t),
@@ -140,11 +86,11 @@ impl Engine<'_> {
         let config = self.model.media.as_ref().unwrap();
         let link = &config.physical_links[index];
         let half = link.duplex == "half";
-        let mut pair = self.media.as_ref().unwrap().pairs[index].clone();
+        let mut pair = self.state.media.as_ref().unwrap().pairs[index].clone();
         let mut starts = Vec::new();
         // Both sides inspect the same state; no carrier produced by this batch is visible yet.
         for (side, &d) in link.directions.iter().enumerate() {
-            let active = self.queues[d].active;
+            let active = self.state.queues[d].active;
             let candidate = active.or_else(|| self.next_waiting(d).map(|(_, t)| t));
             let Some(t) = candidate else {
                 continue;
@@ -154,17 +100,17 @@ impl Engine<'_> {
                 continue;
             }
             let m = &pair.macs[side];
-            if half && (m.busy || !m.ifg_ready || m.backoff_until.is_some_and(|t| t > self.now.0)) {
+            if !pair.ready(side, self.state.now.0, half) {
                 continue;
             }
             let transfer = &self.eth().transfers[t];
             let rate = self.model.directions[d].bitrate_bps;
             let eof = add(
-                self.now.0,
+                self.state.now.0,
                 duration((transfer.wire.mac_bytes + 8) * 8, rate)?,
             )?;
             let release = add(
-                self.now.0,
+                self.state.now.0,
                 duration((transfer.wire.mac_bytes + 20) * 8, rate)?,
             )?;
             let (tx, rx) = if side == 0 {
@@ -172,7 +118,7 @@ impl Engine<'_> {
             } else {
                 (link.b_phy.tx_latency_ps, link.a_phy.rx_latency_ps)
             };
-            let mdi_sof = add(self.now.0, tx)?;
+            let mdi_sof = add(self.state.now.0, tx)?;
             let peer_sof = add(mdi_sof, self.model.directions[d].delay_ps)?;
             let mdi_eof = add(eof, tx)?;
             let peer_eof = add(mdi_eof, self.model.directions[d].delay_ps)?;
@@ -193,9 +139,9 @@ impl Engine<'_> {
                 attempt_id: format!("{}#{number}", transfer.transfer_id),
                 transfer: t,
                 generation,
-                time_ps: self.now.0,
+                time_ps: self.state.now.0,
                 number,
-                sof_ps: self.now.0,
+                sof_ps: self.state.now.0,
                 planned_eof_ps: eof,
                 planned_release_ps: release,
                 planned_arrival_ps: arrival,
@@ -222,7 +168,7 @@ impl Engine<'_> {
             if half {
                 let propagation = self.model.directions[d].delay_ps;
                 pair.change(
-                    add(self.now.0, propagation)?,
+                    add(self.state.now.0, propagation)?,
                     Change::SignalOn(1 - side, attempt),
                 );
                 pair.change(add(eof, propagation)?, Change::SignalOff(1 - side, attempt));
@@ -237,12 +183,12 @@ impl Engine<'_> {
         for (_, d, t, retry, attempt) in starts {
             if !retry {
                 let priority = self.eth().transfers[t].priority as usize;
-                self.queues[d].waiting[priority].pop_front();
-                self.queues[d].bytes[priority] -= self.eth().transfers[t].wire.mac_bytes;
-                self.queues[d].active = Some(t);
-                self.queue_point(d, self.frame_indices[t], priority as u8);
+                self.state.queues[d].waiting[priority].pop_front();
+                self.state.queues[d].bytes[priority] -= self.eth().transfers[t].wire.mac_bytes;
+                self.state.queues[d].active = Some(t);
+                self.queue_point(d, self.state.frame_indices[t], priority as u8);
             }
-            let now = self.now.0;
+            let now = self.state.now.0;
             let transfer = &mut self.eth_mut().transfers[t];
             transfer.time_ps = now;
             transfer.sof_ps = Some(now);
@@ -256,7 +202,7 @@ impl Engine<'_> {
             media.backoff_until_ps = None;
             self.eth_mut().attempts.push(attempt);
         }
-        self.media.as_mut().unwrap().pairs[index] = pair;
+        self.state.media.as_mut().unwrap().pairs[index] = pair;
         self.publish(events);
         self.media_deferred(index);
         Ok(())
@@ -265,7 +211,7 @@ impl Engine<'_> {
         let link = &self.model.media.as_ref().unwrap().physical_links[index];
         let mut changes = Vec::new();
         for (side, &d) in link.directions.iter().enumerate() {
-            let Some(t) = self.queues[d]
+            let Some(t) = self.state.queues[d]
                 .active
                 .or_else(|| self.next_waiting(d).map(|(_, t)| t))
             else {
@@ -275,15 +221,15 @@ impl Engine<'_> {
             if !matches!(status, "queued" | "backoff" | "deferred") {
                 continue;
             }
-            let m = &self.media.as_ref().unwrap().pairs[index].macs[side];
-            let status = if m.backoff_until.is_some_and(|t| t > self.now.0) {
+            let m = &self.state.media.as_ref().unwrap().pairs[index].macs[side];
+            let status = if m.backoff_until.is_some_and(|t| t > self.state.now.0) {
                 "backoff"
             } else {
                 "deferred"
             };
             changes.push((t, status));
         }
-        let now = self.now.0;
+        let now = self.state.now.0;
         for (t, status) in changes {
             if self.eth().transfers[t].status != status {
                 let row = &mut self.eth_mut().transfers[t];
@@ -298,68 +244,48 @@ impl Engine<'_> {
         let rate = self.model.directions[link.directions[0]].bitrate_bps;
         let propagation = self.model.directions[link.directions[0]].delay_ps;
         let bit = 1_000_000_000_000 / rate;
-        let mut pair = self.media.as_ref().unwrap().pairs[index].clone();
-        if pair.reservation != Some((self.now.0, generation)) {
+        let mut pair = self.state.media.as_ref().unwrap().pairs[index].clone();
+        if pair.reservation != Some((self.state.now.0, generation)) {
             return Err(failure("Ethernet pair reservation generation mismatch"));
         }
         pair.reservation = None;
         let changes = pair
             .timeline
-            .remove(&self.now.0)
+            .remove(&self.state.now.0)
             .ok_or_else(|| failure("Ethernet missing pair timeline"))?;
         let mut attempts = BTreeMap::<usize, EthernetAttemptRecord>::new();
         let mut transfers = BTreeMap::<usize, EthernetTransferRecord>::new();
         let mut clear = Vec::new();
         let mut extra = Vec::new();
         let mut draws = Vec::new();
-        // Half-open signal endpoints are applied before collision detection or completion.
-        for change in &changes {
-            match *change {
-                Change::SignalOff(side, a) if pair.macs[side].carrier == Some(a) => {
-                    pair.macs[side].carrier = None
-                }
-                Change::Eof(side, a) | Change::JamEnd(side, a)
-                    if pair.macs[side].emitting == Some(a) =>
-                {
-                    pair.macs[side].emitting = None
-                }
-                _ => {}
-            }
-        }
-        for change in &changes {
-            if let Change::SignalOn(side, a) = *change {
-                pair.macs[side].carrier = Some(a);
-            }
-        }
+        pair.settle_signals(&changes);
         if half {
-            for side in 0..2 {
-                let m = &pair.macs[side];
-                if let (Some(a), Some(_)) = (m.emitting, m.carrier) {
-                    let original = &self.eth().attempts[a];
-                    if original.status != "transmitting" {
-                        continue;
-                    }
-                    let start = self.now.0.max(add(original.sof_ps, 64 * bit)?);
-                    let end = add(start, 32 * bit)?;
-                    let mut row = original.clone();
-                    row.time_ps = self.now.0;
-                    row.collision_ps = Some(self.now.0);
-                    row.planned_jam_start_ps = Some(start);
-                    row.planned_jam_end_ps = Some(end);
-                    row.status = "jamming".into();
-                    let mut transfer = self.eth().transfers[row.transfer].clone();
-                    transfer.time_ps = self.now.0;
-                    transfer.status = "jamming".into();
-                    transfer.planned_eof_ps = None;
-                    transfer.planned_release_ps = None;
-                    transfer.planned_arrival_ps = None;
-                    transfer.media.as_mut().unwrap().collision_count += 1;
-                    pair.cancel_attempt(a);
-                    pair.change(end, Change::JamEnd(side, a));
-                    pair.change(add(end, propagation)?, Change::SignalOff(1 - side, a));
-                    transfers.insert(row.transfer, transfer);
-                    attempts.insert(a, row);
-                }
+            for (side, a, start, end) in pair
+                .collisions(self.state.now.0, bit, |a| {
+                    let attempt = &self.eth().attempts[a];
+                    (attempt.status == "transmitting").then_some(attempt.sof_ps)
+                })
+                .map_err(overflow)?
+            {
+                let original = &self.eth().attempts[a];
+                let mut row = original.clone();
+                row.time_ps = self.state.now.0;
+                row.collision_ps = Some(self.state.now.0);
+                row.planned_jam_start_ps = Some(start);
+                row.planned_jam_end_ps = Some(end);
+                row.status = "jamming".into();
+                let mut transfer = self.eth().transfers[row.transfer].clone();
+                transfer.time_ps = self.state.now.0;
+                transfer.status = "jamming".into();
+                transfer.planned_eof_ps = None;
+                transfer.planned_release_ps = None;
+                transfer.planned_arrival_ps = None;
+                transfer.media.as_mut().unwrap().collision_count += 1;
+                pair.cancel_attempt(a);
+                pair.change(end, Change::JamEnd(side, a));
+                pair.change(add(end, propagation)?, Change::SignalOff(1 - side, a));
+                transfers.insert(row.transfer, transfer);
+                attempts.insert(a, row);
             }
         }
         for change in changes {
@@ -369,24 +295,25 @@ impl Engine<'_> {
                         && !attempts.contains_key(&a) =>
                 {
                     let mut row = self.eth().attempts[a].clone();
-                    row.time_ps = self.now.0;
-                    row.eof_ps = Some(self.now.0);
+                    row.time_ps = self.state.now.0;
+                    row.eof_ps = Some(self.state.now.0);
                     row.status = "serialized".into();
                     let tx = if side == 0 {
                         link.a_phy.tx_latency_ps
                     } else {
                         link.b_phy.tx_latency_ps
                     };
-                    row.planned_mdi_eof_ps = Some(add(self.now.0, tx)?);
-                    row.planned_peer_mdi_eof_ps = Some(add(add(self.now.0, tx)?, propagation)?);
+                    row.planned_mdi_eof_ps = Some(add(self.state.now.0, tx)?);
+                    row.planned_peer_mdi_eof_ps =
+                        Some(add(add(self.state.now.0, tx)?, propagation)?);
                     extra.push((
                         row.planned_arrival_ps,
                         1,
                         Event::MediaArrival(a, row.generation),
                     ));
                     let mut t = self.eth().transfers[row.transfer].clone();
-                    t.time_ps = self.now.0;
-                    t.eof_ps = Some(self.now.0);
+                    t.time_ps = self.state.now.0;
+                    t.eof_ps = Some(self.state.now.0);
                     t.status = "serialized".into();
                     transfers.insert(row.transfer, t);
                     attempts.insert(a, row);
@@ -396,25 +323,25 @@ impl Engine<'_> {
                     if row.status != "serialized" {
                         continue;
                     }
-                    row.time_ps = self.now.0;
-                    row.release_ps = Some(self.now.0);
+                    row.time_ps = self.state.now.0;
+                    row.release_ps = Some(self.state.now.0);
                     let mut t = transfers
                         .get(&row.transfer)
                         .unwrap_or(&self.eth().transfers[row.transfer])
                         .clone();
-                    t.time_ps = self.now.0;
-                    t.release_ps = Some(self.now.0);
+                    t.time_ps = self.state.now.0;
+                    t.release_ps = Some(self.state.now.0);
                     clear.push(link.directions[side]);
                     transfers.insert(row.transfer, t);
                     attempts.insert(a, row);
                 }
                 Change::JamEnd(side, a) => {
                     let mut row = self.eth().attempts[a].clone();
-                    row.time_ps = self.now.0;
-                    row.jam_end_ps = Some(self.now.0);
+                    row.time_ps = self.state.now.0;
+                    row.jam_end_ps = Some(self.state.now.0);
                     row.status = "collided".into();
                     let mut t = self.eth().transfers[row.transfer].clone();
-                    t.time_ps = self.now.0;
+                    t.time_ps = self.state.now.0;
                     if row.number == 16 {
                         t.status = "dropped".into();
                         t.drop_reason = Some("attempt_limit".into());
@@ -427,19 +354,25 @@ impl Engine<'_> {
                             row.number,
                         );
                         #[cfg(test)]
-                        let slots = self.media.as_ref().unwrap().injected_slots.unwrap_or(slots);
-                        let until = add(self.now.0, slots * 512 * bit)?;
+                        let slots = self
+                            .state
+                            .media
+                            .as_ref()
+                            .unwrap()
+                            .injected_slots
+                            .unwrap_or(slots);
+                        let until = add(self.state.now.0, slots * 512 * bit)?;
                         row.backoff_slots = Some(slots);
                         row.backoff_until_ps = Some(until);
                         t.media.as_mut().unwrap().backoff_until_ps = Some(until);
-                        t.status = if until > self.now.0 {
+                        t.status = if until > self.state.now.0 {
                             "backoff"
                         } else {
                             "deferred"
                         }
                         .into();
                         pair.macs[side].backoff_until = Some(until);
-                        if until > self.now.0 {
+                        if until > self.state.now.0 {
                             pair.change(until, Change::Backoff(side, a));
                         }
                         draws.push((link.directions[side], row.transfer, slots));
@@ -456,34 +389,16 @@ impl Engine<'_> {
                         .get(&t)
                         .unwrap_or(&self.eth().transfers[t])
                         .clone();
-                    row.time_ps = self.now.0;
+                    row.time_ps = self.state.now.0;
                     row.status = "deferred".into();
                     transfers.insert(t, row);
-                    pair.macs[side].backoff_until = Some(self.now.0);
+                    pair.macs[side].backoff_until = Some(self.state.now.0);
                 }
                 _ => {}
             }
         }
         if half {
-            for side in 0..2 {
-                let busy = pair.macs[side].emitting.is_some() || pair.macs[side].carrier.is_some();
-                let before = pair.macs[side].busy;
-                pair.macs[side].busy = busy;
-                if busy {
-                    pair.macs[side].ifg_ready = false;
-                    pair.cancel_ifg(side);
-                } else if before {
-                    pair.macs[side].ifg_ready = false;
-                    pair.macs[side].idle_generation = pair.macs[side]
-                        .idle_generation
-                        .checked_add(1)
-                        .ok_or_else(|| overflow("Ethernet IFG generation overflow"))?;
-                    pair.change(
-                        add(self.now.0, 96 * bit)?,
-                        Change::Ifg(side, pair.macs[side].idle_generation),
-                    );
-                }
-            }
+            pair.settle_idle(self.state.now.0, bit).map_err(overflow)?;
         }
         let events = self.media_reserve(index, &mut pair, &extra)?;
         for (i, row) in attempts {
@@ -493,20 +408,22 @@ impl Engine<'_> {
             self.eth_mut().transfers[i] = row;
         }
         for d in clear {
-            self.queues[d].active = None;
+            self.state.queues[d].active = None;
         }
         for (d, t, slots) in draws {
             self.point(
                 self.model.directions[d].from_port.clone(),
                 "ethernet.media.backoff_slots",
                 slots,
-                Some(self.frame_indices[t]),
+                Some(self.state.frame_indices[t]),
                 None,
             );
         }
-        self.media.as_mut().unwrap().pairs[index] = pair;
+        self.state.media.as_mut().unwrap().pairs[index] = pair;
         for d in link.directions {
-            self.dirty.insert((self.now.0, self.now.1, d));
+            self.state
+                .dirty
+                .insert((self.state.now.0, self.state.now.1, d));
         }
         self.publish(events);
         Ok(())

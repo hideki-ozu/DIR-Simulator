@@ -22,7 +22,7 @@
   const decimal=(value,label)=>{if(typeof value!=='string'||!/^(0|[1-9][0-9]*)$/.test(value))fail(`${label}: decimal string required`);const n=BigInt(value);if(n>((1n<<64n)-1n))fail(`${label}: overflow`);return n;};
   const keys=(value,set,label)=>{object(value,label);const names=set.split(' ');if(Object.keys(value).length!==names.length||names.some(k=>!Object.hasOwn(value,k)))fail(`${label}: invalid fields`);};
   const compare=(a,b)=>a<b?-1:a>b?1:0;
-  function parseResults(raw){
+  function parseResults(raw, prefixMode = false){
     object(raw,'result');if(raw.schema_version!==2||!profiles.has(raw.metadata?.model_profile))fail('unsupported profile');
     const profile=raw.metadata.model_profile,sim=object(raw.simulation,'simulation'),start=decimal(sim.start_ps,'start'),end=decimal(sim.end_ps,'end');
     if(start!==0n||end<start||typeof sim.partial!=='boolean')fail('invalid observation interval');

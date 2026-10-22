@@ -23,10 +23,21 @@ pub fn prepare_with_registry_and_source(
     let config = input::absolute(config, cwd);
     let mut inputs = Vec::new();
     let text = input::read_file(&config, &mut inputs, source)?;
-    let header = input::inspect_config(&text, &config, cwd)?;
-    let annotate = |key: &str, diagnostic: Diagnostic| {
-        input::annotate_config_key(&text, &config, key, diagnostic)
-    };
+    let ini = input::Ini::parse(&text, &config)?;
+    prepare_with_parsed_config(&config, cwd, source, registry, ini, inputs)
+}
+
+/// Continue registry preparation using the dispatcher-owned INI acquisition.
+pub(crate) fn prepare_with_parsed_config(
+    config: &Path,
+    cwd: &Path,
+    source: &dyn InputSource,
+    registry: Registry,
+    ini: input::Ini,
+    mut inputs: Vec<crate::types::InputSnapshot>,
+) -> Result<PreparedSimulation> {
+    let header = ini.project_header(config, cwd)?;
+    let annotate = |key: &str, diagnostic: Diagnostic| ini.annotate(key, diagnostic);
     let annotate_target = |diagnostic: Diagnostic| {
         if let Some(target) = diagnostic.target.clone() {
             if header.general.contains_key(&target)
@@ -42,6 +53,8 @@ pub fn prepare_with_registry_and_source(
         diagnostic
     };
     let profile = header.profile.as_deref().unwrap_or("can.cc.ideal.v1");
+    let metrics_v2 = input::network_metrics_requested(&header.general)
+        .map_err(|diagnostic| annotate("metrics-version", diagnostic))?;
     registry.validate(profile).map_err(|diagnostic| {
         if registry.profiles.contains_key(profile) {
             diagnostic
@@ -63,21 +76,26 @@ pub fn prepare_with_registry_and_source(
                 | "can.ethernet.gateway.v1"
                 | "can.ethernet.tsn.v1"
                 | "ethernet.redundancy.abstract.v1"
+                | "ethernet.frer.rtag.v1"
+                | "ethernet.network.composite.v1"
                 | "ethernet.preemption.abstract.v1"
                 | "ethernet.control.wire.experimental.v1"
         )
     {
-        let mut prepared = input::prepare_with_source(&config, cwd, source)?;
+        let mut prepared = input::prepare_builtin_with_ini(config, source, ini, inputs, None)?;
         prepared
             .registered
             .as_mut()
             .ok_or_else(|| error("missing composed network preparation"))?
             .registry = Arc::new(registry);
+        if metrics_v2 {
+            crate::runtime::network_metrics::enable(&mut prepared)?;
+        }
         prepared.common.provenance = input::capture_provenance(&prepared)?;
         return Ok(prepared);
     }
     if registry.builtin_profiles.contains(profile) {
-        let mut prepared = input::prepare_with_source(&config, cwd, source)?;
+        let mut prepared = input::prepare_builtin_with_ini(config, source, ini, inputs, None)?;
         let builtin_node_count = prepared.node_count();
         prepared.registered = Some(PreparedRegistered {
             registry: Arc::new(registry),
@@ -90,6 +108,14 @@ pub fn prepare_with_registry_and_source(
         return Ok(prepared);
     }
     let descriptor = &registry.profiles[profile];
+    if metrics_v2 {
+        return Err(annotate(
+            "metrics-version",
+            error(
+                "metrics-version=2 selects composed network metrics; registered models declare their own catalog",
+            ),
+        ));
+    }
     if !matches!(descriptor.output_schema_version, 2 | 3) {
         return Err(error(
             "registered extension profiles require output schema version 2 or 3",
@@ -168,6 +194,7 @@ pub fn prepare_with_registry_and_source(
         "ned-path",
         "sim-time-limit",
         "metrics-window",
+        "metrics-version",
         "max-events",
         "max-delta-cycles",
         "model-profile",
@@ -482,7 +509,7 @@ pub fn prepare_with_registry_and_source(
         max_events: limit("max-events", 100_000_000)?,
         max_delta_cycles: limit("max-delta-cycles", 1_000_000)?,
         channel_count: channels.len(),
-        config_path: config.clone(),
+        config_path: config.to_path_buf(),
         model_config_path: header.model_config,
         workload_path: header.workload,
         inputs,

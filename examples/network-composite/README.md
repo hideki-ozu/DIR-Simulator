@@ -1,0 +1,9 @@
+# Network composite example
+
+`model.ini` runs `ethernet.network.composite.v1` with explicit FRER R-TAG replication and identity node clocks. `local-clock.ini` uses the same traffic and TAS gate with an offset on `Net.a`, a backward step at global 500,000 ps, and an independent drift/slew on `Net.s1`. `local-clock-no-step.ini` keeps the same initial offsets and drift but removes the `Net.a` step.
+
+The source gate is open for local time 0–1,000,000 ps in each 2,000,000 ps cycle. The first source SOF is 0 ps with identity clocks, 900,000 ps with the initial +1,100,000 ps source offset, and 1,900,000 ps when the backward step occurs. The gate fit includes the full 752,000 ps physical occupied interval. See `crates/dir-simulator/tests/network_composite.rs` for the production run assertions and `network_checkpoint.rs` for restored-run equivalence.
+
+This profile currently provides independent exact-rational node clocks and local TAS timing. Clock adjustments are configured actions, not synchronization messages; no 802.1AS protocol or synchronization-conformance claim is made. The R-TAG path is a narrow 802.1CB-2017 wire-format implementation; the other network components retain their documented profile scopes.
+
+`sampled-phy-model.json` attaches the `Net.a.tx` → `Net.s1.rx_a` direction to a continuously sampled physical medium. `sampled-phy-short.ini` bounds the demonstration to one frame; `sampled-phy-model.ini` runs the longer two-frame case. The network schedules reception only after the receiver decodes and attributes the MAC bytes from physical samples, while the source port stays reserved through the measured interframe gap. The integration test also attenuates the receive path and checks that an undecodable frame produces no network reception. This initial attachment shape permits one directed full-duplex binding between two endpoints per medium. The attached output port cannot currently have TAS, CBS, or MAC Merge enabled.

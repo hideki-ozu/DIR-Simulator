@@ -1,14 +1,15 @@
 //! Caller-driven cooperative sessions. Only the owner executes callbacks or I/O.
 pub use super::checkpoint_bundle::{CheckpointDurability, CheckpointLimits, CheckpointReceipt};
-use super::registered::Engine;
 use crate::registry::*;
 use crate::{Diagnostic, PreparedSimulation};
+use backend::SessionBackend;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, VecDeque};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
+mod backend;
 mod checkpoint;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -311,7 +312,7 @@ pub struct CloseReport {
     pub diagnostics: Vec<Diagnostic>,
 }
 pub struct RunSession {
-    engine: Engine,
+    engine: SessionBackend,
     controller: Controller,
     state: RunState,
     options: RunOptions,
@@ -327,6 +328,7 @@ pub struct RunSession {
     replay: Vec<ReplayEntry>,
     output_root: PathBuf,
     lineage: String,
+    migration_history: Vec<checkpoint::migration::MigrationStep>,
     replay_artifact_root: Option<PathBuf>,
     replay_destinations: BTreeMap<PathBuf, PathBuf>,
 }
@@ -342,70 +344,74 @@ impl RunSession {
                 "max_exports must be positive",
             ));
         }
-        let registered = prepared.registered.as_ref().ok_or_else(|| {
-            ControlError::new("UnsupportedCapability", "backend has no cooperative engine")
-        })?;
-        let capabilities = registered
-            .registry
-            .execution_capabilities(&prepared.common.profile);
-        if !capabilities.cooperative_control || registered.adapter.is_some() {
-            return Err(ControlError::new(
-                "UnsupportedCapability",
-                "profile does not declare cooperative control",
-            ));
-        }
-        if options.checkpoint_enabled && registered.network.is_some() {
-            return Err(ControlError::new(
-                "UnsupportedCapability",
-                "network checkpoint codecs unavailable",
-            ));
-        }
-        if options.checkpoint_enabled {
-            if !capabilities.checkpoint {
+        if let Some(registered) = prepared.registered.as_ref().filter(|r| r.is_generic()) {
+            let capabilities = registered
+                .registry
+                .execution_capabilities(&prepared.common.profile);
+            if !capabilities.cooperative_control {
+                return Err(ControlError::new(
+                    "UnsupportedCapability",
+                    "profile does not declare cooperative control",
+                ));
+            }
+            if options.checkpoint_enabled && !capabilities.checkpoint {
                 return Err(ControlError::new(
                     "UnsupportedCapability",
                     "profile does not declare checkpoint capability",
                 ));
             }
-            let profile = &registered.registry.profiles[&prepared.common.profile];
-            if profile
-                .modules
-                .iter()
-                .any(|key| !registered.registry.model_codecs.contains_key(key))
-                || profile
-                    .channels
+            if options.checkpoint_enabled && registered.network.is_none() {
+                if !capabilities.checkpoint {
+                    return Err(ControlError::new(
+                        "UnsupportedCapability",
+                        "profile does not declare checkpoint capability",
+                    ));
+                }
+                let profile = &registered.registry.profiles[&prepared.common.profile];
+                if profile
+                    .modules
                     .iter()
-                    .any(|key| !registered.registry.channel_codecs.contains_key(key))
-            {
-                return Err(ControlError::new(
-                    "UnsupportedCapability",
-                    "selected implementation lacks an explicit codec",
-                ));
-            }
-            for model in &registered.models {
-                if !registered
-                    .registry
-                    .model_codecs
-                    .contains_key(&model.implementation_key)
+                    .any(|key| !registered.registry.model_codecs.contains_key(key))
+                    || profile
+                        .channels
+                        .iter()
+                        .any(|key| !registered.registry.channel_codecs.contains_key(key))
                 {
                     return Err(ControlError::new(
                         "UnsupportedCapability",
-                        format!("missing model codec: {}", model.implementation_key),
+                        "selected implementation lacks an explicit codec",
                     ));
                 }
-            }
-            for channel in &registered.channels {
-                if !registered
-                    .registry
-                    .channel_codecs
-                    .contains_key(&channel.implementation_key)
-                {
-                    return Err(ControlError::new(
-                        "UnsupportedCapability",
-                        format!("missing channel codec: {}", channel.implementation_key),
-                    ));
+                for model in &registered.models {
+                    if !registered
+                        .registry
+                        .model_codecs
+                        .contains_key(&model.implementation_key)
+                    {
+                        return Err(ControlError::new(
+                            "UnsupportedCapability",
+                            format!("missing model codec: {}", model.implementation_key),
+                        ));
+                    }
+                }
+                for channel in &registered.channels {
+                    if !registered
+                        .registry
+                        .channel_codecs
+                        .contains_key(&channel.implementation_key)
+                    {
+                        return Err(ControlError::new(
+                            "UnsupportedCapability",
+                            format!("missing channel codec: {}", channel.implementation_key),
+                        ));
+                    }
                 }
             }
+        } else if options.checkpoint_enabled {
+            return Err(ControlError::new(
+                "UnsupportedCapability",
+                "legacy checkpoint codec is unavailable",
+            ));
         }
         let identity = crate::output::new_run_identity()?;
         let fingerprint = checkpoint::prepared_fingerprint(&prepared)?;
@@ -419,10 +425,10 @@ impl RunSession {
             })),
             session_id: identity.run_id.clone(),
         };
-        let mut engine = Engine::new(prepared)?;
+        let mut engine = SessionBackend::new(prepared)?;
         // A controlled result exposes only the successful prefix until normal
         // completion. Keep the synchronous engine's initial observation T intact.
-        engine.snapshot.common.end_ps = 0;
+        engine.snapshot_mut().common.end_ps = 0;
         let session = Self {
             engine,
             controller: controller.clone(),
@@ -441,6 +447,7 @@ impl RunSession {
             output_root: std::env::current_dir()
                 .map_err(|e| ControlError::new("InvalidOptions", e.to_string()))?,
             lineage: identity.run_id,
+            migration_history: Vec::new(),
             replay_artifact_root: None,
             replay_destinations: BTreeMap::new(),
         };
@@ -486,11 +493,22 @@ impl RunSession {
         }
         Ok(())
     }
+    /// A controller for this session, including a newly restored session.
+    pub fn controller(&self) -> Controller {
+        self.controller.clone()
+    }
     pub fn state(&self) -> RunState {
         self.state
     }
+    /// Current committed metadata and the most recently materialized row view.
+    /// Use `observe` to refresh archive-backed rows at a caller observation boundary.
     pub fn snapshot(&self) -> &crate::snapshot::Snapshot {
-        &self.engine.snapshot
+        self.engine.snapshot()
+    }
+    /// Materialize a non-consuming prefix without advancing callbacks.
+    pub fn observe(&mut self) -> Result<&crate::snapshot::Snapshot, ControlError> {
+        self.engine.refresh_view(self.horizon())?;
+        Ok(self.engine.snapshot())
     }
     pub fn prepared(&self) -> &PreparedSimulation {
         &self.engine.prepared
@@ -504,8 +522,13 @@ impl RunSession {
     fn horizon(&self) -> u64 {
         match self.state {
             RunState::Completed => self.engine.prepared.common.time_limit_ps,
-            RunState::Closed => self.engine.snapshot.common.end_ps,
-            _ => self.engine.snapshot.common.last_event_time_ps.unwrap_or(0),
+            RunState::Closed => self.engine.snapshot().common.end_ps,
+            _ => self
+                .engine
+                .snapshot()
+                .common
+                .last_event_time_ps
+                .unwrap_or(0),
         }
     }
     fn pause(&mut self) -> Result<(), ControlError> {
@@ -525,17 +548,26 @@ impl RunSession {
     }
     fn cleanup(&mut self) {
         if self.state == RunState::Failed {
-            self.engine.snapshot.common.end_ps =
-                self.engine.snapshot.common.last_event_time_ps.unwrap_or(0);
+            self.engine.snapshot_mut().common.end_ps = self
+                .engine
+                .snapshot()
+                .common
+                .last_event_time_ps
+                .unwrap_or(0);
         }
         if !self.cleaned {
             self.cleaned = true;
             if self.state == RunState::Failed {
-                if let Err(mut diagnostic) =
-                    self.engine.refresh_view(self.engine.snapshot.common.end_ps)
+                if let Err(mut diagnostic) = self
+                    .engine
+                    .refresh_view(self.engine.snapshot().common.end_ps)
                 {
                     diagnostic.primary = false;
-                    self.engine.snapshot.common.diagnostics.push(diagnostic);
+                    self.engine
+                        .snapshot_mut()
+                        .common
+                        .diagnostics
+                        .push(diagnostic);
                 }
             }
             self.engine.finish();
@@ -562,11 +594,11 @@ impl RunSession {
         kind: BoundaryKind,
         failed: bool,
     ) -> Result<(), ControlError> {
-        if self.state != RunState::Closed {
+        if self.state != RunState::Closed && (!pending.is_empty() || !self.engine.is_legacy()) {
             // Also reached by replay's direct engine steps. Refresh at the
             // committed boundary before publishing acknowledgements or exports.
             let horizon = self.horizon();
-            self.engine.snapshot.common.end_ps = horizon;
+            self.engine.snapshot_mut().common.end_ps = horizon;
             self.engine.refresh_view(horizon)?;
         }
         if pending.is_empty() {
@@ -680,7 +712,7 @@ impl RunSession {
                 control_seq: seq,
                 boundary_seq: boundary,
                 boundary_kind: kind,
-                commit_ordinal: self.engine.snapshot.common.committed_events,
+                commit_ordinal: self.engine.snapshot().common.committed_events,
                 virtual_time_ps: self.horizon(),
                 state: self.state,
                 status,
@@ -737,21 +769,17 @@ impl RunSession {
                 Ok(()) => {
                     self.initialized = true;
                     self.engine.refresh_view(
-                        self.engine.snapshot.common.last_event_time_ps.unwrap_or(0),
+                        self.engine
+                            .snapshot()
+                            .common
+                            .last_event_time_ps
+                            .unwrap_or(0),
                     )?;
-                    if self.engine.registered.network.is_none() {
-                        self.engine.snapshot.common.pending_events =
-                            (self.engine.queue.len() + self.engine.dirty.len()) as u64;
-                    }
                     self.state = RunState::Running;
                     self.boundary(BoundaryKind::AfterInitialize, false)?;
                 }
                 Err(e) => {
-                    let target = self.engine.preparation_target.clone();
-                    if !self.engine.snapshot.common.partial {
-                        self.engine
-                            .fail(e, None, target.as_deref(), true, "model_failed");
-                    }
+                    self.engine.fail_initialization(e);
                     self.state = RunState::Failed;
                     self.boundary(BoundaryKind::AfterInitialize, true)?;
                     self.cleanup();
@@ -761,8 +789,8 @@ impl RunSession {
         }
         while self.state == RunState::Running {
             let committed = self.engine.step();
-            if self.engine.snapshot.common.partial
-                || self.engine.snapshot.common.spool_error.is_some()
+            if self.engine.snapshot().common.partial
+                || self.engine.snapshot().common.spool_error.is_some()
             {
                 self.state = RunState::Failed;
                 self.boundary(BoundaryKind::AfterCommit, true)?;
@@ -775,13 +803,13 @@ impl RunSession {
             }
             if !committed {
                 self.state = RunState::Completed;
-                self.engine.snapshot.common.end_ps = self.horizon();
+                self.engine.snapshot_mut().common.end_ps = self.horizon();
                 self.engine
-                    .refresh_view(self.engine.snapshot.common.end_ps)?;
+                    .refresh_view(self.engine.snapshot().common.end_ps)?;
                 self.cleanup();
-                if self.engine.snapshot.common.partial {
+                if self.engine.snapshot().common.partial {
                     self.state = RunState::Failed;
-                    self.engine.snapshot.common.end_ps = self.horizon();
+                    self.engine.snapshot_mut().common.end_ps = self.horizon();
                     self.engine.refresh_view(self.horizon())?;
                 }
                 break;
@@ -809,19 +837,11 @@ impl RunSession {
                 Ok(()) => {
                     self.initialized = true;
                     self.engine.refresh_view(0)?;
-                    if self.engine.registered.network.is_none() {
-                        self.engine.snapshot.common.pending_events =
-                            (self.engine.queue.len() + self.engine.dirty.len()) as u64;
-                    }
                     self.state = RunState::Running;
                     self.boundary(BoundaryKind::AfterInitialize, false)?;
                 }
                 Err(e) => {
-                    let target = self.engine.preparation_target.clone();
-                    if !self.engine.snapshot.common.partial {
-                        self.engine
-                            .fail(e, None, target.as_deref(), true, "model_failed");
-                    }
+                    self.engine.fail_initialization(e);
                     self.state = RunState::Failed;
                     self.boundary(BoundaryKind::AfterInitialize, true)?;
                     self.cleanup();
@@ -830,7 +850,8 @@ impl RunSession {
             return Ok(self.state);
         }
         let committed = self.engine.step();
-        if self.engine.snapshot.common.partial || self.engine.snapshot.common.spool_error.is_some()
+        if self.engine.snapshot().common.partial
+            || self.engine.snapshot().common.spool_error.is_some()
         {
             self.state = RunState::Failed;
             self.boundary(BoundaryKind::AfterCommit, true)?;
@@ -840,13 +861,13 @@ impl RunSession {
         self.boundary(BoundaryKind::AfterCommit, false)?;
         if self.state == RunState::Running && !committed {
             self.state = RunState::Completed;
-            self.engine.snapshot.common.end_ps = self.horizon();
+            self.engine.snapshot_mut().common.end_ps = self.horizon();
             self.engine
-                .refresh_view(self.engine.snapshot.common.end_ps)?;
+                .refresh_view(self.engine.snapshot().common.end_ps)?;
             self.cleanup();
-            if self.engine.snapshot.common.partial {
+            if self.engine.snapshot().common.partial {
                 self.state = RunState::Failed;
-                self.engine.snapshot.common.end_ps = self.horizon();
+                self.engine.snapshot_mut().common.end_ps = self.horizon();
                 self.engine.refresh_view(self.horizon())?;
             }
         }
@@ -915,7 +936,7 @@ impl RunSession {
         let previous = self.state;
         let horizon = self.horizon();
         self.engine.refresh_view(horizon)?;
-        let common = &mut self.engine.snapshot.common;
+        let common = &mut self.engine.snapshot_mut().common;
         let old_end = common.end_ps;
         let old_termination = common.termination.clone();
         let old_partial = common.partial;
@@ -929,9 +950,10 @@ impl RunSession {
             .into();
             common.partial = true;
         }
-        self.engine.snapshot.registered.as_mut().unwrap().control = Some(
-            json!({"version":"1","session_id":self.controller.session_id,"export_ordinal":ordinal.to_string(),"state":previous,"commit_ordinal":self.engine.snapshot.common.committed_events.to_string(),"horizon_ps":horizon.to_string(),"pending_events":self.engine.snapshot.common.pending_events.to_string(),"resume_supported":previous==RunState::Paused,"replay_sha256":sha(&serde_json::to_vec(&self.replay).unwrap())}),
-        );
+        let control = json!({"version":"1","session_id":self.controller.session_id,"export_ordinal":ordinal.to_string(),"state":previous,"commit_ordinal":self.engine.snapshot().common.committed_events.to_string(),"horizon_ps":horizon.to_string(),"pending_events":self.engine.snapshot().common.pending_events.to_string(),"resume_supported":previous==RunState::Paused,"replay_sha256":sha(&serde_json::to_vec(&self.replay).unwrap())});
+        if let Some(registered) = self.engine.snapshot_mut().registered.as_mut() {
+            registered.control = Some(control.clone());
+        }
         self.state = RunState::Exporting;
         let previous_gate = {
             let mut mailbox = self.controller.lock()?;
@@ -951,8 +973,17 @@ impl RunSession {
             .map_err(|e| ControlError::new("ExportFailed", e.to_string()))
             .and_then(|()| {
                 staging_owned = true;
-                crate::output::export(&self.engine.prepared, &self.engine.snapshot, &staging)
-                    .map_err(ControlError::from)?;
+                if self.engine.is_legacy() {
+                    crate::output::export_controlled_legacy(
+                        &self.engine.prepared,
+                        self.engine.snapshot(),
+                        &staging,
+                        &control,
+                    )
+                } else {
+                    crate::output::export(&self.engine.prepared, self.engine.snapshot(), &staging)
+                }
+                .map_err(ControlError::from)?;
                 rustix::fs::renameat_with(
                     rustix::fs::CWD,
                     &staging,
@@ -974,10 +1005,12 @@ impl RunSession {
             });
         self.state = previous;
         self.controller.lock()?.checkpoint_gate = previous_gate;
-        self.engine.snapshot.registered.as_mut().unwrap().control = None;
-        self.engine.snapshot.common.end_ps = old_end;
-        self.engine.snapshot.common.termination = old_termination;
-        self.engine.snapshot.common.partial = old_partial;
+        if let Some(registered) = self.engine.snapshot_mut().registered.as_mut() {
+            registered.control = None;
+        }
+        self.engine.snapshot_mut().common.end_ps = old_end;
+        self.engine.snapshot_mut().common.termination = old_termination;
+        self.engine.snapshot_mut().common.partial = old_partial;
         if result.is_err() && staging_owned {
             for name in [
                 "results.json",
@@ -1071,7 +1104,7 @@ impl RunSession {
         if self.state == RunState::Closed {
             return CloseReport::default();
         }
-        let before = self.engine.snapshot.common.diagnostics.len();
+        let before = self.engine.snapshot().common.diagnostics.len();
         self.token = None;
         self.cleanup();
         self.state = RunState::Closed;
@@ -1080,7 +1113,7 @@ impl RunSession {
             mailbox.closed = true;
         }
         CloseReport {
-            diagnostics: self.engine.snapshot.common.diagnostics[before..].to_vec(),
+            diagnostics: self.engine.snapshot().common.diagnostics[before..].to_vec(),
         }
     }
 }
@@ -1099,6 +1132,10 @@ pub fn run_with_control(
 pub(crate) fn sha(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
+pub use checkpoint::migration::{
+    CheckpointIdentity, CheckpointMigration, MigrationPayload, MigrationStep, checkpoint_identity,
+    current_checkpoint_identity, migrate_checkpoint,
+};
 pub use checkpoint::restore_checkpoint;
 
 /// Re-run control snapshots at their recorded logical boundaries. Export and
@@ -1146,7 +1183,7 @@ fn replay_entries(session: &mut RunSession, log: &[ReplayEntry]) -> Result<(), C
         {
             return Err(mismatch("invalid replay snapshot grouping"));
         }
-        if head.commit_ordinal < session.engine.snapshot.common.committed_events {
+        if head.commit_ordinal < session.engine.snapshot().common.committed_events {
             return Err(mismatch("replay commit ordinal regressed"));
         }
         let recorded_terminal = if matches!(
@@ -1174,34 +1211,29 @@ fn replay_entries(session: &mut RunSession, log: &[ReplayEntry]) -> Result<(), C
             }
             session.state = RunState::Initializing;
             if let Err(error) = session.engine.initialize() {
-                let target = session.engine.preparation_target.clone();
-                if !session.engine.snapshot.common.partial {
-                    session
-                        .engine
-                        .fail(error, None, target.as_deref(), true, "model_failed");
-                }
+                session.engine.fail_initialization(error);
                 session.state = RunState::Failed;
             } else {
                 session.initialized = true;
                 session.state = RunState::Running;
             }
         }
-        while session.engine.snapshot.common.committed_events < head.commit_ordinal {
+        while session.engine.snapshot().common.committed_events < head.commit_ordinal {
             if session.state != RunState::Running {
                 return Err(mismatch(
                     "requested commit ordinal is unreachable from current state",
                 ));
             }
-            if !session.engine.step() || session.engine.snapshot.common.partial {
+            if !session.engine.step() || session.engine.snapshot().common.partial {
                 return Err(mismatch("requested commit ordinal was not reached"));
             }
         }
         if let Some(expected_terminal) = recorded_terminal {
             if session.state == RunState::Running {
-                let ordinal = session.engine.snapshot.common.committed_events;
+                let ordinal = session.engine.snapshot().common.committed_events;
                 let actual = session.advance_one()?;
                 if actual != expected_terminal
-                    || session.engine.snapshot.common.committed_events != ordinal
+                    || session.engine.snapshot().common.committed_events != ordinal
                 {
                     return Err(mismatch(
                         "recorded terminal state is not the next execution boundary",
@@ -1217,7 +1249,7 @@ fn replay_entries(session: &mut RunSession, log: &[ReplayEntry]) -> Result<(), C
         if failed && session.state != RunState::Failed {
             if session.state != RunState::Running
                 || session.engine.step()
-                || !session.engine.snapshot.common.partial
+                || !session.engine.snapshot().common.partial
             {
                 return Err(mismatch("expected callback failure did not occur"));
             }
@@ -1493,11 +1525,11 @@ mod spool_checkpoint_tests {
         .unwrap();
         session.advance_one().unwrap();
         super::super::spool::with_spooling(&root, || {
-            session.engine.snapshot.common.spool_checkpoint(true)
+            session.engine.snapshot_mut().common.spool_checkpoint(true)
         })
         .unwrap();
-        assert!(session.engine.snapshot.common.point_spool.is_some());
-        assert!(session.engine.snapshot.common.points.is_empty());
+        assert!(session.engine.snapshot().common.point_spool.is_some());
+        assert!(session.engine.snapshot().common.points.is_empty());
         c.submit(ControlCommand::Pause).unwrap();
         session.poll_control().unwrap();
         let bundle = root.join("checkpoint");

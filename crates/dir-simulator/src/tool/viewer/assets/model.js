@@ -59,27 +59,51 @@
     const n = BigInt(Math.max(0, Math.min(denominator, Math.round(numerator))));
     return start + (end - start) * n / BigInt(denominator);
   }
+  // Independently reconstruct the selected ISO frame before accepting a wire
+  // record. The replay still uses only recorded request/reception milestones.
+  function isoCanFdWire(f) {
+    const raw=[0],append=(out,value,width)=>{for(let bit=width-1;bit>=0;bit--)out.push((value>>>bit)&1);};
+    if(f.format==='extended'){append(raw,f.id>>>18,11);raw.push(1,1);append(raw,f.id&0x3ffff,18);raw.push(0);}
+    else{append(raw,f.id,11);raw.push(0,0);}
+    raw.push(1,0);const rawBrs=raw.length;raw.push(Number(f.brs),Number(f.esi));append(raw,f.dlc,4);
+    for(let index=0;index<f.data.length;index+=2)append(raw,parseInt(f.data.slice(index,index+2),16),8);
+    const bits=[],dynamic=[];let last=2,run=0,brs=0;
+    raw.forEach((bit,index)=>{if(index===rawBrs)brs=bits.length;bits.push(bit);run=bit===last?run+1:1;last=bit;if(run===5&&index+1<raw.length){dynamic.push(bits.length);last^=1;bits.push(last);run=1;}});
+    const count=dynamic.length%8,gray=count^(count>>>1),parity=((gray>>>2)^(gray>>>1)^gray)&1,code=(gray<<1)|parity;
+    const width=f.data.length/2<=16?17:21,polynomial=width===17?0x1685b:0x102899,crcInput=bits.slice();append(crcInput,code,4);
+    let crc=1<<(width-1);for(const bit of crcInput){const feedback=(crc>>>(width-1))^bit;crc=(crc<<1)&((1<<width)-1);if(feedback)crc^=polynomial;}
+    const field=[],fixed=[];append(field,code,4);append(field,crc,width);
+    field.forEach((bit,index)=>{if(index%4===0){fixed.push(bits.length);bits.push(bits.at(-1)^1);}bits.push(bit);});
+    const delimiter=bits.length;bits.push(1,0,1,...Array(7).fill(1));
+    const data=f.brs?delimiter-brs:0;
+    return {wire_bits:bits.join(''),crc_width:width,crc,stuff_count:count,stuff_count_code:code,dynamic_stuff_positions:dynamic,fixed_stuff_positions:fixed,brs_index:brs,crc_delimiter_index:delimiter,nominal_bits:String(bits.length-data),data_bits:String(data)};
+  }
   // Validate FD records, then reuse the common recorded-milestone replay.
   // This projection supplies only replay timing; no Classical CAN wire codec is used.
-  function parseCanFd(raw) {
+  function parseCanFd(raw, prefixMode = false) {
     const sim=object(raw.simulation,'simulation'),frames=new Map(),requests=new Map(),receivers=[];
+    const iso=raw.metadata.model_profile==='can.fd.iso.v1';
     const keys=(x,k,label)=>{object(x,label);if(Object.keys(x).length!==k.length||k.some(n=>!Object.hasOwn(x,n)))fail(`${label}: キー集合が不正です。`);};
     const end=decimal(sim.end_ps,'end_ps');
     const actual=x=>{if(x===null)return null;const n=decimal(x,'FD time');if(n>end||(!sim.partial&&n===end))fail('FD実績時刻が観測期間外です。');return n;};
     const opt=x=>x===null?null:decimal(x,'FD planned time');
     const unique=new Set(),requestRows=[],receiverRows=[];
-    const frameKeys=['format','id','data','dlc','brs','nominal_bits','data_bits','evidence','binding_sha256','nominal_rate','data_rate','fidelity','wire_validation'];
+    const frameKeys=['format','id','data','dlc','brs','nominal_bits','data_bits','nominal_rate','data_rate','fidelity','wire_validation',...(iso?['esi','standard','wire_bits','crc_width','crc','stuff_count','stuff_count_code','dynamic_stuff_positions','fixed_stuff_positions','brs_index','crc_delimiter_index']:['evidence','binding_sha256'])];
     const requestKeys=['frame_id','source','bus','generated_ps','ready_ps','sof_ps','eof_ps','release_ps','planned_ready_ps','planned_eof_ps','planned_release_ps','state','drop_reason'];
     const receptionKeys=['frame_id','receiver','planned_arrival_ps','planned_completed_ps','arrival_ps','completed_ps','state'];
     for(const row of array(sim.model_records,'FD model_records')) {
       keys(row,['schema_name','schema_version','record_id','subject','request_id','origin_request_id','time_ps','data'],'FD record');
-      const key=JSON.stringify([row.schema_name,name(row.record_id,'record_id')]);if(unique.has(key)||row.schema_version!==1||row.origin_request_id!==null)fail('FDレコードの版・一意性が不正です。');unique.add(key);
+      const key=JSON.stringify([row.schema_name,name(row.record_id,'record_id')]);if(unique.has(key)||row.schema_version!==(iso&&row.schema_name==='dir.canfd.frame'?2:1)||row.origin_request_id!==null)fail('FDレコードの版・一意性が不正です。');unique.add(key);
       name(row.subject,'subject');const updated=decimal(row.time_ps,'FD updated');const d=row.data;
       if(row.schema_name==='dir.canfd.frame') {
         keys(d,frameKeys,'FD frame');
         if(row.request_id!==null||updated!==0n||!['standard','extended'].includes(d.format)||!Number.isInteger(d.id)||d.id<0||d.id>(d.format==='standard'?2047:536870911)||typeof d.data!=='string'||!/^(?:[0-9a-f]{2})*$/.test(d.data)||typeof d.brs!=='boolean')fail('FD frameの型が不正です。');
         const lengths=[0,1,2,3,4,5,6,7,8,12,16,20,24,32,48,64],bytes=d.data.length/2;
-        if(lengths.indexOf(bytes)!==d.dlc||!name(d.evidence,'evidence')||Array.from(d.evidence).length>512||! /^[0-9a-f]{64}$/.test(d.binding_sha256)||d.fidelity!=='externally-precomputed-phase-bits'||d.wire_validation!=='structural-only')fail('FD DLC・証跡が不正です。');
+        if(lengths.indexOf(bytes)!==d.dlc)fail('FD DLCが不正です。');
+        if(iso){
+          if(typeof d.esi!=='boolean'||d.fidelity!=='content-derived-iso-can-fd-2015'||d.wire_validation!=='crc-and-stuffing'||d.standard!=='ISO 11898-1:2015 edition 2')fail('ISO FD契約が不正です。');
+          const expected=isoCanFdWire(d);for(const [field,value] of Object.entries(expected))if(JSON.stringify(d[field])!==JSON.stringify(value))fail(`ISO FD ${field}が内容からの計算と一致しません。`);
+        }else if(!name(d.evidence,'evidence')||Array.from(d.evidence).length>512||! /^[0-9a-f]{64}$/.test(d.binding_sha256)||d.fidelity!=='externally-precomputed-phase-bits'||d.wire_validation!=='structural-only')fail('FD証跡が不正です。');
         const n=decimal(d.nominal_bits,'N',1000000n),b=decimal(d.data_bits,'D',1000000n),rn=decimal(d.nominal_rate,'Rn',1000000n),rd=decimal(d.data_rate,'Rd',8000000n);
         if(n<1n||rn<1n||rd<rn||(d.brs?(b<1n||b<BigInt(bytes*8)):(b!==0n||n<BigInt(bytes*8))))fail('FD bit数・速度が不正です。');
         frames.set(row.record_id,{...d,source:row.subject,n,b,rn,rd});
@@ -106,18 +130,18 @@
       receivers.push(row);
     }
     const projected={...raw,schema_version:1,metadata:{...raw.metadata,models:[{type:'can.cc.ideal.v1'}],initial_state:[]},simulation:{...sim,requests:legacyRequests,receivers:receivers.map(row=>({request_id:row.request_id,receiver:row.data.receiver,status:row.data.state==='completed'?'received':row.data.state==='filtered'?'filtered':'pending',observed_ps:row.data.arrival_ps,received_ps:row.data.completed_ps}))}};
-    const replay=parseResults(projected);replay.raw=raw;replay.canfd=true;replay.fdFrames=frames;
+    const replay=parseResults(projected, prefixMode);replay.raw=raw;replay.canfd=true;replay.fdFrames=frames;
     for(const r of replay.requests){r.raw=requests.get(r.id).d;r.fdFrame=requests.get(r.id).f;}
     return replay;
   }
-  function parseResults(raw) {
+  function parseResults(raw, prefixMode = false) {
     object(raw, 'results');
-    if(raw.schema_version===2&&raw.metadata?.model_profile==='can.fd.precomputed.v1')return parseCanFd(raw);
+    if(raw.schema_version===2&&['can.fd.precomputed.v1','can.fd.iso.v1'].includes(raw.metadata?.model_profile))return parseCanFd(raw, prefixMode);
     if (![1, 2].includes(raw.schema_version)) fail('対応しているresults.jsonはschema_version = 1 / 2です。');
     const profile = raw.schema_version === 2 ? 'can.cc.multibus.v1' : 'can.cc.ideal.v1';
     if (raw.schema_version === 2 && raw.metadata?.model_profile !== profile) fail('schema 2はCAN複数バスの結果に対応しています。');
     const sim = object(raw.simulation, 'simulation');
-    if (!['events_exhausted', 'time_limit', 'execution_failed', 'prep_failed'].includes(sim.termination)) fail('不明な終了理由です。');
+    if (!['events_exhausted', 'time_limit', 'execution_failed', 'prep_failed'].includes(sim.termination) && !(prefixMode && ['paused', 'stopped'].includes(sim.termination))) fail('不明な終了理由です。');
     if (typeof sim.partial !== 'boolean') fail('simulation.partial: booleanが必要です。');
     const start = decimal(sim.start_ps, 'start_ps');
     const end = decimal(sim.end_ps, 'end_ps');

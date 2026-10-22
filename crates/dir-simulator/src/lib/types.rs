@@ -26,7 +26,13 @@ pub use canfd::PreparedCanFd;
 pub mod axi;
 #[path = "types/memory_ipc.rs"]
 pub mod memory_ipc;
+#[path = "types/noc_flit.rs"]
+pub mod noc_flit;
 #[path = "types/soc.rs"]
 pub mod soc;
+#[path = "types/soc_execution.rs"]
+pub mod soc_execution;
+#[path = "types/transaction_fabric.rs"]
+pub mod transaction_fabric;
 #[path = "types/wire.rs"]
 pub mod wire;

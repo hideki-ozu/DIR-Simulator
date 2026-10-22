@@ -1,7 +1,7 @@
 //! Composite conversion, branch and frozen terminal opportunity records.
 use crate::types::can_ethernet::CanFormat;
 use serde::Serialize;
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, serde::Deserialize)]
 pub struct ConversionRecord {
     pub conversion_id: String,
     pub origin_id: String,
@@ -18,7 +18,7 @@ pub struct ConversionRecord {
     pub reason: Option<String>,
     pub branch_ids: Vec<String>,
 }
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, serde::Deserialize)]
 pub struct BranchRecord {
     pub branch_id: String,
     pub conversion_id: String,
@@ -38,7 +38,7 @@ pub struct BranchRecord {
     pub status: String,
     pub reason: Option<String>,
 }
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct SegmentTarget {
     pub origin_id: String,
     pub segment_id: String,
@@ -47,7 +47,7 @@ pub struct SegmentTarget {
     pub completed_ps: Option<u64>,
     pub completion_reception_id: Option<String>,
 }
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct SegmentRecord {
     pub segment_id: String,
     pub origin_id: String,

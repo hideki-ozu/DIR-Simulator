@@ -512,159 +512,285 @@ fn progress(uncompleted: usize, active: usize, future: bool) -> Result<()> {
         Ok(())
     }
 }
-pub(super) fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot> {
-    let m = prepared
+struct EngineState {
+    snapshot: Snapshot,
+    s: State,
+    generations: BTreeSet<(u64, usize, usize)>,
+    /// 0 completion cohort, 1 one generation, 2 arbitration, 3 drained timestamp.
+    current: Option<(u64, u8)>,
+}
+struct Engine<'a> {
+    prepared: &'a PreparedSimulation,
+    model: &'a PreparedSoc,
+    state: EngineState,
+}
+fn create_engine(prepared: &PreparedSimulation) -> Result<Engine<'_>> {
+    let model = prepared
         .soc
         .as_ref()
         .ok_or_else(|| Diagnostic::execution("missing SoC prepared model"))?;
-    let mut snapshot = Snapshot::empty(prepared);
-    let mut s = State::new(m.sources.len());
-    for i in 0..m.sources.len() {
-        s.journal.queues.entry(source_queue(m, i)).or_default();
-    }
-    if m.prefix() == "noc" {
-        for (start, end) in &m.edges {
-            let (owner, gate) = start.rsplit_once('.').unwrap();
-            if m.routers.iter().any(|r| r.node == owner) {
-                s.journal.busy.entry(format!("{owner}:{gate}")).or_default();
-            }
-            let (owner, gate) = end.rsplit_once('.').unwrap();
-            if m.routers.iter().any(|r| r.node == owner) {
-                let id = format!("{owner}:{gate}");
-                s.inputs.entry(id.clone()).or_default();
-                s.reserved.insert(id.clone(), 0);
-                s.journal.queues.entry(id).or_default();
-            }
+    Ok(Engine {
+        prepared,
+        model,
+        state: EngineState {
+            snapshot: Snapshot::empty(prepared),
+            s: State::new(model.sources.len()),
+            generations: BTreeSet::new(),
+            current: None,
+        },
+    })
+}
+impl Engine<'_> {
+    fn initialize(&mut self) -> Result<()> {
+        let m = self.model;
+        for i in 0..m.sources.len() {
+            self.state
+                .s
+                .journal
+                .queues
+                .entry(source_queue(m, i))
+                .or_default();
         }
-    } else {
-        s.journal.busy.insert(m.bus.clone(), Vec::new());
-    }
-    // One cursor per generator and one logical dispatcher reservation at the
-    // smallest next time; future workload ordinals stay in immutable input.
-    let mut generations: BTreeSet<(u64, usize, usize)> = m
-        .generators
-        .iter()
-        .enumerate()
-        .filter_map(|(g, generator)| generator.times.first().map(|&time| (time, g, 0)))
-        .collect();
-    let event_loop = super::timing::event_loop();
-    loop {
-        let next = [
-            generations.first().map(|g| g.0),
-            s.completions.keys().next().copied(),
-            s.wakes.first().copied(),
-        ]
-        .into_iter()
-        .flatten()
-        .min();
-        let Some(now) = next else {
-            break;
-        };
-        if now >= prepared.common.time_limit_ps {
-            break;
-        }
-        // Completion cohorts commit together before each generation; the
-        // dispatcher cursor advances only after that generation commits.
-        let mut phase = if s.completions.contains_key(&now) {
-            0
+        if m.prefix() == "noc" {
+            for (start, end) in &m.edges {
+                let (owner, gate) = start.rsplit_once('.').unwrap();
+                if m.routers.iter().any(|r| r.node == owner) {
+                    self.state
+                        .s
+                        .journal
+                        .busy
+                        .entry(format!("{owner}:{gate}"))
+                        .or_default();
+                }
+                let (owner, gate) = end.rsplit_once('.').unwrap();
+                if m.routers.iter().any(|r| r.node == owner) {
+                    let id = format!("{owner}:{gate}");
+                    self.state.s.inputs.entry(id.clone()).or_default();
+                    self.state.s.reserved.insert(id.clone(), 0);
+                    self.state.s.journal.queues.entry(id).or_default();
+                }
+            }
         } else {
-            1
-        };
-        let mut failed = false;
+            self.state.s.journal.busy.insert(m.bus.clone(), Vec::new());
+        }
+        // One cursor per generator and one logical dispatcher reservation at the
+        // smallest next time; future workload ordinals stay in immutable input.
+        self.state.generations = m
+            .generators
+            .iter()
+            .enumerate()
+            .filter_map(|(g, generator)| generator.times.first().map(|&time| (time, g, 0)))
+            .collect();
+        Ok(())
+    }
+    fn fail(&mut self, diagnostic: Diagnostic, now: u64) {
+        self.state.snapshot.common.partial = true;
+        self.state.snapshot.common.termination = "execution_failed".into();
+        self.state.snapshot.common.end_ps = now;
+        self.state
+            .snapshot
+            .common
+            .diagnostics
+            .push(diagnostic.with_runtime("run", Some(now), None, None));
+    }
+    fn step(&mut self) -> super::legacy::StepOutcome {
         loop {
-            let generation = generations.first().copied().filter(|g| g.0 == now);
+            if self.state.current.is_none() {
+                let next = [
+                    self.state.generations.first().map(|g| g.0),
+                    self.state.s.completions.keys().next().copied(),
+                    self.state.s.wakes.first().copied(),
+                ]
+                .into_iter()
+                .flatten()
+                .min();
+                let Some(now) = next else {
+                    return super::legacy::StepOutcome::Exhausted;
+                };
+                if now >= self.prepared.common.time_limit_ps {
+                    return super::legacy::StepOutcome::Exhausted;
+                }
+                self.state.current = Some((
+                    now,
+                    if self.state.s.completions.contains_key(&now) {
+                        0
+                    } else {
+                        1
+                    },
+                ));
+            }
+            let (now, mut phase) = self.state.current.unwrap();
+            let generation = self
+                .state
+                .generations
+                .first()
+                .copied()
+                .filter(|g| g.0 == now);
             if phase == 1 && generation.is_none() {
                 phase = 2;
             }
-            if phase == 2 && !s.wakes.contains(&now) {
-                break;
+            if phase == 2 && !self.state.s.wakes.contains(&now) {
+                phase = 3;
             }
-            let before = s.checkpoint();
-            let result = if snapshot.common.committed_events >= prepared.common.max_events {
-                Err(overflow().with_reason("event_limit"))
-            } else {
-                match phase {
-                    0 => complete(m, &mut s, now),
-                    1 => {
-                        let (_, g, ordinal) = generation.unwrap();
-                        generate(m, &mut s, now, g, ordinal)
+            if phase == 3 {
+                // This is deliberately deferred until the caller has observed/checkpointed
+                // the preceding commit. Never classify deadlock between inner phases.
+                if self.model.prefix() == "noc" {
+                    if let Err(d) = progress(
+                        self.state.s.unfinished,
+                        self.state.s.active.len(),
+                        !self.state.generations.is_empty() || !self.state.s.wakes.is_empty(),
+                    ) {
+                        self.fail(d, now);
+                        return super::legacy::StepOutcome::Failed;
                     }
-                    _ => {
-                        s.wakes.remove(&now);
-                        if m.prefix() == "noc" {
-                            noc_arbitrate(m, &mut s, now)
-                        } else {
-                            bus_arbitrate(m, &mut s, now)
+                }
+                self.state.current = None;
+                continue;
+            }
+            let before = self.state.s.checkpoint();
+            let result =
+                if self.state.snapshot.common.committed_events >= self.prepared.common.max_events {
+                    Err(overflow().with_reason("event_limit"))
+                } else {
+                    match phase {
+                        0 => complete(self.model, &mut self.state.s, now),
+                        1 => {
+                            let (_, g, ordinal) = generation.unwrap();
+                            generate(self.model, &mut self.state.s, now, g, ordinal)
+                        }
+                        _ => {
+                            self.state.s.wakes.remove(&now);
+                            if self.model.prefix() == "noc" {
+                                noc_arbitrate(self.model, &mut self.state.s, now)
+                            } else {
+                                bus_arbitrate(self.model, &mut self.state.s, now)
+                            }
                         }
                     }
-                }
-            };
+                };
             if let Err(d) = result {
-                s.rollback(before);
-                snapshot.common.partial = true;
-                snapshot.common.termination = "execution_failed".into();
-                snapshot.common.end_ps = now;
-                snapshot
-                    .common
-                    .diagnostics
-                    .push(d.with_runtime("run", Some(now), None, None));
-                failed = true;
-                break;
+                self.state.s.rollback(before);
+                self.fail(d, now);
+                return super::legacy::StepOutcome::Failed;
             }
-            s.commit();
+            self.state.s.commit();
             if phase == 1 {
                 let entry = generation.unwrap();
-                generations.remove(&entry);
+                self.state.generations.remove(&entry);
                 let ordinal = entry.2 + 1;
-                if let Some(&time) = m.generators[entry.1].times.get(ordinal) {
-                    generations.insert((time, entry.1, ordinal));
+                if let Some(&time) = self.model.generators[entry.1].times.get(ordinal) {
+                    self.state.generations.insert((time, entry.1, ordinal));
                 }
             }
-            snapshot.common.committed_events += 1;
-            snapshot.common.last_event_time_ps = Some(now);
-            if !snapshot.common.checkpoint() {
-                failed = true;
-                break;
-            }
-            if phase == 2 {
-                break;
-            }
-            phase = 1;
-        }
-        if failed {
-            break;
-        }
-        if m.prefix() == "noc" {
-            if let Err(d) = progress(
-                s.unfinished,
-                s.active.len(),
-                !generations.is_empty() || !s.wakes.is_empty(),
-            ) {
-                snapshot.common.partial = true;
-                snapshot.common.termination = "execution_failed".into();
-                snapshot.common.end_ps = now;
-                snapshot
-                    .common
-                    .diagnostics
-                    .push(d.with_runtime("run", Some(now), None, None));
-                break;
-            }
+            self.state.snapshot.common.committed_events += 1;
+            self.state.snapshot.common.last_event_time_ps = Some(now);
+            self.state.current = Some((now, if phase == 2 { 3 } else { 1 }));
+            return super::legacy::StepOutcome::Committed;
         }
     }
-    drop(event_loop);
-    snapshot.common.pending_events =
-        (usize::from(!generations.is_empty()) + s.completions.len() + s.wakes.len()) as u64;
-    if !snapshot.common.partial {
-        snapshot.common.termination =
-            if snapshot.common.pending_events > 0 || prepared.common.time_limit_ps == 0 {
-                "time_limit"
-            } else {
-                "events_exhausted"
-            }
-            .into();
+    fn pending(&self) -> u64 {
+        (usize::from(!self.state.generations.is_empty())
+            + self.state.s.completions.len()
+            + self.state.s.wakes.len()) as u64
     }
-    snapshot.soc = Some(s.journal);
-    Ok(snapshot)
+    fn finish_once(&mut self) {
+        self.state.snapshot.common.pending_events = self.pending();
+        if !self.state.snapshot.common.partial {
+            self.state.snapshot.common.end_ps = self.prepared.common.time_limit_ps;
+            self.state.snapshot.common.termination =
+                if self.pending() > 0 || self.prepared.common.time_limit_ps == 0 {
+                    "time_limit"
+                } else {
+                    "events_exhausted"
+                }
+                .into();
+        }
+        self.state.snapshot.soc = Some(std::mem::take(&mut self.state.s.journal));
+    }
+    fn run(mut self) -> Snapshot {
+        let event_loop = super::timing::event_loop();
+        loop {
+            if !matches!(self.step(), super::legacy::StepOutcome::Committed)
+                || !self.state.snapshot.common.checkpoint()
+            {
+                break;
+            }
+        }
+        drop(event_loop);
+        self.finish_once();
+        self.state.snapshot
+    }
+}
+pub(super) fn simulate(prepared: &PreparedSimulation) -> Result<Snapshot> {
+    let mut engine = create_engine(prepared)?;
+    engine.initialize()?;
+    Ok(engine.run())
+}
+/// Owned continuation preserving the inner completion/generation/arbitration boundary.
+pub(crate) struct Stepper {
+    prepared: std::sync::Arc<PreparedSimulation>,
+    state: Option<EngineState>,
+    initialized: bool,
+    finished: bool,
+}
+impl Stepper {
+    pub(crate) fn new(prepared: std::sync::Arc<PreparedSimulation>) -> Result<Self> {
+        let state = create_engine(&prepared)?.state;
+        Ok(Self {
+            prepared,
+            state: Some(state),
+            initialized: false,
+            finished: false,
+        })
+    }
+    fn with_engine<T>(&mut self, f: impl FnOnce(&mut Engine<'_>) -> T) -> T {
+        let prepared = &*self.prepared;
+        let model = prepared.soc.as_ref().expect("validated SoC model");
+        let mut engine = Engine {
+            prepared,
+            model,
+            state: self.state.take().expect("owned continuation"),
+        };
+        let result = f(&mut engine);
+        self.state = Some(engine.state);
+        result
+    }
+    pub(crate) fn initialize(&mut self) -> Result<()> {
+        if !self.initialized {
+            self.with_engine(|engine| engine.initialize())?;
+            self.initialized = true;
+        }
+        Ok(())
+    }
+    pub(crate) fn step(&mut self) -> super::legacy::StepOutcome {
+        debug_assert!(self.initialized && !self.finished);
+        self.with_engine(|engine| engine.step())
+    }
+    pub(crate) fn snapshot(&self) -> &Snapshot {
+        &self.state.as_ref().expect("owned continuation").snapshot
+    }
+    pub(crate) fn snapshot_mut(&mut self) -> &mut Snapshot {
+        &mut self.state.as_mut().expect("owned continuation").snapshot
+    }
+    pub(crate) fn refresh_prefix(&mut self, horizon: u64) -> Result<()> {
+        if self.finished {
+            self.snapshot_mut().common.end_ps = horizon;
+            return Ok(());
+        }
+        self.with_engine(|engine| {
+            engine.state.snapshot.common.end_ps = horizon;
+            engine.state.snapshot.common.pending_events = engine.pending();
+            engine.state.snapshot.soc = Some(engine.state.s.journal.clone());
+        });
+        Ok(())
+    }
+    pub(crate) fn finish_once(&mut self) {
+        if !self.finished {
+            self.with_engine(|engine| engine.finish_once());
+            self.finished = true;
+        }
+    }
 }
 #[cfg(test)]
 mod tests {
@@ -789,5 +915,134 @@ mod tests {
         assert_eq!(d.details.unwrap()["operation"], "deadlock");
         assert!(super::progress(1, 1, false).is_ok());
         assert!(super::progress(1, 0, true).is_ok());
+    }
+}
+
+#[cfg(test)]
+mod cooperative_tests {
+    use super::super::legacy::StepOutcome;
+    use super::*;
+    use std::sync::Arc;
+    fn fixture(case: &str) -> PreparedSimulation {
+        crate::prepare(
+            &std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../docs/verification/fixtures/soc")
+                .join(format!("{case}.ini")),
+        )
+        .unwrap()
+    }
+    fn differential(prepared: PreparedSimulation) {
+        let prepared = Arc::new(prepared);
+        let expected = simulate(&prepared).unwrap();
+        let mut stepper = Stepper::new(prepared).unwrap();
+        stepper.refresh_prefix(0).unwrap();
+        assert!(
+            stepper
+                .snapshot()
+                .soc
+                .as_ref()
+                .unwrap()
+                .transactions
+                .is_empty()
+        );
+        stepper.initialize().unwrap();
+        assert_eq!(stepper.snapshot().common.committed_events, 0);
+        loop {
+            let before = stepper.snapshot().common.committed_events;
+            let outcome = stepper.step();
+            if matches!(outcome, StepOutcome::Committed) {
+                assert_eq!(stepper.snapshot().common.committed_events, before + 1);
+            } else {
+                break;
+            }
+            let horizon = stepper.snapshot().common.last_event_time_ps.unwrap_or(0);
+            let state = stepper.state.as_ref().unwrap();
+            let current = state.current;
+            let generations = state.generations.clone();
+            let journal = format!("{:?}", state.s.journal);
+            for _ in 0..2 {
+                stepper.refresh_prefix(horizon).unwrap();
+            }
+            let state = stepper.state.as_ref().unwrap();
+            assert_eq!(state.current, current);
+            assert_eq!(state.generations, generations);
+            assert_eq!(format!("{:?}", state.s.journal), journal);
+            assert_eq!(
+                format!("{:?}", stepper.snapshot().soc.as_ref().unwrap()),
+                journal
+            );
+            assert_eq!(stepper.snapshot().common.committed_events, before + 1);
+        }
+        stepper.finish_once();
+        let actual = format!("{:?}", stepper.snapshot().soc);
+        stepper.finish_once();
+        stepper.refresh_prefix(expected.common.end_ps).unwrap();
+        assert_eq!(format!("{:?}", stepper.snapshot().soc), actual);
+        assert_eq!(actual, format!("{:?}", expected.soc));
+        assert_eq!(
+            format!("{:?}", stepper.snapshot().common),
+            format!("{:?}", expected.common)
+        );
+    }
+    #[test]
+    fn cooperative_soc_profiles_resume_exactly_with_zero_and_failed_prefixes() {
+        for case in [
+            "soc-round-robin",
+            "soc-capacity-stop",
+            "ahb-wait-error",
+            "ahb-boundary",
+            "noc-xy",
+            "noc-backpressure",
+        ] {
+            differential(fixture(case));
+            let mut zero = fixture(case);
+            zero.common.time_limit_ps = 0;
+            differential(zero);
+            let mut failed = fixture(case);
+            failed.common.max_events = 2;
+            differential(failed);
+        }
+    }
+    #[test]
+    fn cooperative_soc_exposes_equal_time_generation_and_arbitration_separately() {
+        for case in ["soc-round-robin", "ahb-wait-error", "noc-xy"] {
+            let mut prepared = fixture(case);
+            let model = prepared.soc.as_mut().unwrap();
+            for generator in &mut model.generators {
+                generator.times.clear();
+            }
+            model.generators[0].times = vec![0];
+            let completed = simulate(&prepared).unwrap().soc.unwrap().transactions[0]
+                .completed_ps
+                .unwrap();
+            prepared.soc.as_mut().unwrap().generators[0]
+                .times
+                .push(completed);
+            let mut stepper = Stepper::new(Arc::new(prepared)).unwrap();
+            stepper.initialize().unwrap();
+            let mut states = Vec::new();
+            while matches!(stepper.step(), StepOutcome::Committed) {
+                stepper
+                    .refresh_prefix(stepper.snapshot().common.last_event_time_ps.unwrap())
+                    .unwrap();
+                let snapshot = stepper.snapshot();
+                if snapshot.common.last_event_time_ps == Some(completed) {
+                    let rows = &snapshot.soc.as_ref().unwrap().transactions;
+                    states.push((
+                        rows.len(),
+                        rows[0].completed_ps,
+                        rows.get(1).and_then(|r| r.start_ps),
+                    ));
+                }
+            }
+            assert_eq!(
+                states.len(),
+                3,
+                "completion, generation, and arbitration must be individually observable"
+            );
+            assert_eq!(states[0], (1, Some(completed), None));
+            assert_eq!(states[1], (2, Some(completed), None));
+            assert_eq!(states[2], (2, Some(completed), Some(completed)));
+        }
     }
 }

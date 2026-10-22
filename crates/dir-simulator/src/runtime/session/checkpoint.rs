@@ -1,9 +1,11 @@
 //! Complete generic-engine checkpoints. Decode builds a private arena without callbacks.
 use super::*;
 use crate::input::{InputDirEntry, InputKind, InputMetadata, InputSource};
-use crate::runtime::registered::Work;
+use crate::runtime::registered::{Engine, Work};
 use std::collections::BTreeSet;
 use std::io;
+mod causal_prefix;
+pub(super) mod migration;
 
 fn invalid(message: impl Into<String>) -> ControlError {
     ControlError::new("CheckpointInvalid", message)
@@ -38,8 +40,114 @@ fn registry_catalog(registry: &Registry, profile: &str) -> Value {
     let p = &registry.profiles[profile];
     json!({"profile":{"name":p.name,"implementation_version":p.implementation_version,"modules":p.modules,"channels":p.channels,"events":p.events,"metrics":p.metrics,"model_records":p.model_records,"output_schema_version":p.output_schema_version},"modules":p.modules.iter().map(|k|(&registry.modules[k].descriptor.implementation_key,format!("{:?}",registry.modules[k].descriptor))).collect::<BTreeMap<_,_>>(),"channels":p.channels.iter().map(|k|(&registry.channels[k].descriptor.implementation_key,format!("{:?}",registry.channels[k].descriptor))).collect::<BTreeMap<_,_>>(),"events":p.events.iter().map(|s|json!({"schema":s,"phase":registry.events[s].phase})).collect::<Vec<_>>(),"metrics_v1":p.metrics.iter().filter_map(|k|registry.metrics.get(k)).map(|m|json!({"name":m.name,"unit":m.unit})).collect::<Vec<_>>(),"metrics_v2":p.metrics.iter().filter_map(|k|registry.metrics_v2.get(k)).collect::<Vec<_>>(),"metric_v2_limits":registry.metric_v2_limits,"capabilities":registry.execution_capabilities(profile),"model_codecs":p.modules.iter().filter_map(|k|registry.model_codecs.get(k).map(|c|&c.descriptor)).collect::<Vec<_>>(),"channel_codecs":p.channels.iter().filter_map(|k|registry.channel_codecs.get(k).map(|c|&c.descriptor)).collect::<Vec<_>>()})
 }
-fn codec_catalog(registry: &Registry, profile: &str) -> Value {
+fn merge_codec(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .and_then(|n| n.extensions.as_ref())
+        .is_some_and(|e| e.mac_merge.is_some())
+}
+fn distributed_codec(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .and_then(|n| n.extensions.as_ref())
+        .and_then(|e| e.replication.as_ref())
+        .is_some_and(|r| {
+            r.streams.iter().any(|s| {
+                matches!(
+                    s.placement,
+                    crate::types::network::ReplicationPlacement::BridgePair(_)
+                )
+            })
+        })
+}
+fn vector_codec(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .and_then(|n| n.extensions.as_ref())
+        .and_then(|e| e.replication.as_ref())
+        .is_some_and(|r| {
+            r.streams.iter().any(|s| {
+                s.recovery_algorithm
+                    == crate::types::network::ReplicationRecoveryAlgorithm::Vector8021cb2017
+            })
+        })
+}
+fn gptp_codec(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .is_some_and(|network| network.gptp.is_some())
+}
+fn named_phy_codec(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .is_some_and(|n| {
+            n.phy_attachments
+                .iter()
+                .any(|p| !p.config.physical_ports.is_empty())
+        })
+}
+fn phy_service_codec(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .is_some_and(|n| n.has_phy_mac_service())
+}
+fn media_pause_codec(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .is_some_and(|n| n.mac_control.is_some() || n.ethernet.media.is_some())
+}
+fn gateway_replication_codec(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .is_some_and(|network| network.has_gateway_replication())
+}
+#[allow(clippy::too_many_arguments)] // Preserve the established owner transaction interface.
+fn codec_catalog(
+    registry: &Registry,
+    profile: &str,
+    distributed: bool,
+    mac_merge: bool,
+    vector: bool,
+    gptp: bool,
+    named_phy: bool,
+    phy_service: bool,
+    gateway_replication: bool,
+    media_pause: bool,
+) -> Value {
     let selected = &registry.profiles[profile];
+    if registry.builtin_profiles.contains(profile)
+        && registry.execution_capabilities(profile).checkpoint
+        && matches!(
+            profile,
+            "ethernet.l2.dynamic.v1"
+                | "ethernet.tsn.v1"
+                | "can.ethernet.gateway.v1"
+                | "can.ethernet.tsn.v1"
+                | "ethernet.redundancy.abstract.v1"
+                | "ethernet.frer.rtag.v1"
+                | "ethernet.network.composite.v1"
+                | "ethernet.preemption.abstract.v1"
+                | "ethernet.control.wire.experimental.v1"
+        )
+    {
+        return json!([{"implementation_key":"dir.network.Coordinator","implementation_version":"1","codec_name":"dir.network.owned-state","codec_version":if media_pause {19} else if phy_service {18} else if named_phy {17} else if gateway_replication {16} else if gptp {14} else if vector && mac_merge {13} else if vector {12} else if mac_merge {11} else if distributed {10} else {1},"external_state":"none"}]);
+    }
     json!(selected.modules.iter().filter_map(|k|registry.model_codecs.get(k).map(|c|&c.descriptor)).chain(selected.channels.iter().filter_map(|k|registry.channel_codecs.get(k).map(|c|&c.descriptor))).map(|d|json!({"implementation_key":d.implementation_key,"implementation_version":d.implementation_version,"codec_name":d.codec_name,"codec_version":d.codec_version,"external_state":d.external_state})).collect::<Vec<_>>())
 }
 fn input_catalog(prepared: &PreparedSimulation) -> Value {
@@ -48,11 +156,17 @@ fn input_catalog(prepared: &PreparedSimulation) -> Value {
     json!(inputs)
 }
 pub(super) fn prepared_fingerprint(prepared: &PreparedSimulation) -> Result<String, ControlError> {
-    let r = prepared
+    let registry = prepared
         .registered
         .as_ref()
-        .ok_or_else(|| invalid("missing registry"))?;
-    Ok(sha(&serde_json::to_vec(&json!({"input":input_catalog(prepared),"registry":registry_catalog(&r.registry,&prepared.common.profile)})).unwrap()))
+        .map(|r| registry_catalog(&r.registry, &prepared.common.profile));
+    if let Some(registry) = registry {
+        return Ok(sha(&serde_json::to_vec(
+            &json!({"input":input_catalog(prepared),"registry":registry}),
+        )
+        .unwrap()));
+    }
+    Ok(sha(&serde_json::to_vec(&json!({"input":input_catalog(prepared),"profile":prepared.common.profile,"time_limit_ps":prepared.common.time_limit_ps.to_string(),"max_events":prepared.common.max_events.to_string(),"max_delta_cycles":prepared.common.max_delta_cycles.to_string(),"metrics_window_ps":prepared.common.metrics_window_ps.to_string()})).unwrap()))
 }
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -98,6 +212,8 @@ struct State {
     journal: Value,
     metric_accumulators: crate::runtime::metric_v2::MetricStateV2,
     source_dispatchers: Vec<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    network_backend: Option<Value>,
     codec_refs: Vec<CodecReference>,
     replay_log: Vec<ReplayEntry>,
     replay_cursor: String,
@@ -179,7 +295,7 @@ impl RunSession {
         ordinal: u64,
         next: u64,
     ) -> Result<CheckpointReceipt, ControlError> {
-        let engine = &self.engine;
+        let engine = self.engine.registered()?;
         let registered = &engine.registered;
         let registry = &registered.registry;
         let mut files = BTreeMap::new();
@@ -194,9 +310,10 @@ impl RunSession {
                 bundle_path: path,
             });
         }
-        let reservations = engine
-            .queue
-            .values()
+        let checkpoint_work = engine.checkpoint_work();
+        let reservations = checkpoint_work
+            .iter()
+            .map(|(_, work)| work)
             .filter_map(|w| match w {
                 Work::Delivery { token: Some(t), .. } if engine.live.contains(t) => Some(t.clone()),
                 _ => None,
@@ -206,7 +323,7 @@ impl RunSession {
             return Err(invalid("live timer reservation mismatch"));
         }
         let mut codecs = Vec::new();
-        if self.initialized {
+        if self.initialized && registered.network.is_none() {
             for config in &registered.channels {
                 let codec = &registry.channel_codecs[&config.implementation_key];
                 let context = CheckpointEncodeContext {
@@ -254,7 +371,7 @@ impl RunSession {
                 )?;
             }
         }
-        let fes=engine.queue.iter().filter_map(|(key,work)|{
+        let fes=checkpoint_work.iter().filter_map(|(key,work)|{
             if matches!(work,Work::Delivery{token:Some(t),..} if !engine.live.contains(t)){return None;}
             let work=match work{Work::Delivery{envelope,token}=>json!({"tag":"Delivery","envelope":envelope_value(envelope),"token":token.as_ref().map(token_value)}),Work::Arbitration{owner,resource}=>json!({"tag":"Arbitration","owner":owner,"resource":resource})};
             Some(json!({"time_ps":key.0.to_string(),"delta":key.1.to_string(),"phase":key.2,"sequence":key.3.to_string(),"work":work}))
@@ -292,7 +409,7 @@ impl RunSession {
             "end_ps": engine.snapshot.common.end_ps.to_string(),
             "partial": engine.snapshot.common.partial
         });
-        let dirty = engine.dirty.iter().map(|(time,delta,owner,resource)|json!({
+        let dirty = engine.checkpoint_dirty().iter().map(|(time,delta,owner,resource)|json!({
             "time_ps":time.to_string(),"delta":delta.to_string(),"owner":owner,"resource":resource
         })).collect();
         let state = State {
@@ -334,6 +451,7 @@ impl RunSession {
                 .metrics_v2
                 .clone(),
             source_dispatchers: Vec::new(),
+            network_backend: engine.checkpoint_network(),
             codec_refs: codecs.clone(),
             replay_log: checkpoint_replay.clone(),
             replay_cursor: checkpoint_replay.len().to_string(),
@@ -366,14 +484,33 @@ impl RunSession {
             next_export_ordinal: self.export_ordinal.to_string(),
             next_checkpoint_ordinal: next.to_string(),
         };
+        if state.network_backend.as_ref().is_some_and(|backend| {
+            serde_json::to_vec(backend).map_or(true, |v| v.len() as u64 > limits.max_blob_bytes)
+        }) {
+            return Err(invalid("network backend blob limit exceeded"));
+        }
         files.insert(
             "state.json".into(),
             serde_json::to_vec(&state).map_err(|e| invalid(e.to_string()))?,
         );
         let build = build();
         let selected = &registry.profiles[&engine.prepared.common.profile];
-        let codec_catalog = codec_catalog(registry, &engine.prepared.common.profile);
-        let manifest = json!({"schema_name":"dir.checkpoint.bundle","schema_version":1,"binary_sha256":binary()?,"build_source_sha256":build.get("source_sha256").or_else(||build.get("build_source_sha256")).ok_or_else(||invalid("missing build source hash"))?,"cargo_lock_sha256":build.get("cargo_lock_sha256").ok_or_else(||invalid("missing lock hash"))?,"registry_fingerprint":sha(&serde_json::to_vec(&registry_catalog(registry,&engine.prepared.common.profile)).unwrap()),"input_fingerprint":sha(&serde_json::to_vec(&input_catalog(&engine.prepared)).unwrap()),"profile":engine.prepared.common.profile,"result_schema_version":selected.output_schema_version,"run_lineage":self.lineage,"checkpoint_ordinal":ordinal.to_string(),"commit_ordinal":state.commit_ordinal,"horizon_ps":state.virtual_time_ps,"state_path":"state.json","codec_catalog":codec_catalog,"codecs":codecs,"replay_sha256":sha(&serde_json::to_vec(&checkpoint_replay).unwrap())});
+        let codec_catalog = codec_catalog(
+            registry,
+            &engine.prepared.common.profile,
+            distributed_codec(&engine.prepared),
+            merge_codec(&engine.prepared),
+            vector_codec(&engine.prepared),
+            gptp_codec(&engine.prepared),
+            named_phy_codec(&engine.prepared),
+            phy_service_codec(&engine.prepared),
+            gateway_replication_codec(&engine.prepared),
+            media_pause_codec(&engine.prepared),
+        );
+        let mut manifest = json!({"schema_name":"dir.checkpoint.bundle","schema_version":1,"binary_sha256":binary()?,"build_source_sha256":build.get("source_sha256").or_else(||build.get("build_source_sha256")).ok_or_else(||invalid("missing build source hash"))?,"cargo_lock_sha256":build.get("cargo_lock_sha256").ok_or_else(||invalid("missing lock hash"))?,"registry_fingerprint":sha(&serde_json::to_vec(&registry_catalog(registry,&engine.prepared.common.profile)).unwrap()),"input_fingerprint":sha(&serde_json::to_vec(&input_catalog(&engine.prepared)).unwrap()),"profile":engine.prepared.common.profile,"result_schema_version":selected.output_schema_version,"run_lineage":self.lineage,"checkpoint_ordinal":ordinal.to_string(),"commit_ordinal":state.commit_ordinal,"horizon_ps":state.virtual_time_ps,"state_path":"state.json","codec_catalog":codec_catalog,"codecs":codecs,"replay_sha256":sha(&serde_json::to_vec(&checkpoint_replay).unwrap())});
+        if !self.migration_history.is_empty() {
+            manifest["migration_history"] = json!(self.migration_history);
+        }
         super::super::checkpoint_bundle::write_bundle(destination, manifest, files, limits, ordinal)
             .map_err(|e| ControlError::new("CheckpointFailed", e.0))
     }
@@ -502,68 +639,11 @@ impl InputSource for FrozenInputSource {
             .collect())
     }
 }
-pub fn restore_checkpoint(
-    path: &Path,
-    registry: Registry,
-    limits: CheckpointLimits,
-) -> Result<(RunSession, ResumeToken), ControlError> {
-    limits.validate().map_err(|e| invalid(e.0))?;
-    let (manifest, files) =
-        super::super::checkpoint_bundle::read_bundle(path, &limits).map_err(|e| invalid(e.0))?;
-    if manifest["binary_sha256"] != json!(binary()?) {
-        return Err(ControlError::new(
-            "FingerprintMismatch",
-            "binary bytes differ",
-        ));
-    }
-    let build = build();
-    for (field, key) in [
-        ("build_source_sha256", "source_sha256"),
-        ("cargo_lock_sha256", "cargo_lock_sha256"),
-    ] {
-        let actual = build
-            .get(key)
-            .or_else(|| build.get(field))
-            .ok_or_else(|| invalid("build hash missing"))?;
-        if manifest[field] != json!(actual) {
-            return Err(ControlError::new(
-                "FingerprintMismatch",
-                format!("{field} differs"),
-            ));
-        }
-    }
-    let profile = manifest["profile"]
-        .as_str()
-        .ok_or_else(|| invalid("profile missing"))?;
-    if !registry.profiles.contains_key(profile) {
-        return Err(ControlError::new(
-            "FingerprintMismatch",
-            "profile unavailable",
-        ));
-    }
-    if manifest["registry_fingerprint"]
-        != json!(sha(&serde_json::to_vec(&registry_catalog(
-            &registry, profile
-        ))
-        .unwrap()))
-    {
-        return Err(ControlError::new(
-            "FingerprintMismatch",
-            "registry catalog differs",
-        ));
-    }
-    if manifest["codec_catalog"] != codec_catalog(&registry, profile) {
-        return Err(ControlError::new(
-            "UnsupportedCodec",
-            "manifest codec catalog differs",
-        ));
-    }
-    let state: State = serde_json::from_slice(
-        files
-            .get("state.json")
-            .ok_or_else(|| invalid("state missing"))?,
-    )
-    .map_err(|e| invalid(e.to_string()))?;
+fn captured_checkpoint_source(
+    state: &State,
+    manifest: &Value,
+    files: &BTreeMap<String, Vec<u8>>,
+) -> Result<FrozenInputSource, ControlError> {
     if !state.cwd.is_absolute() || manifest["codecs"] != json!(state.codec_refs) {
         return Err(invalid("manifest/state codec references differ"));
     }
@@ -593,17 +673,146 @@ pub fn restore_checkpoint(
     {
         return Err(invalid("unreferenced or duplicate input/blob mapping"));
     }
-    let source = FrozenInputSource::new(&state.input_mapping, &state.input_directories, &files)?;
-    let prepared = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+    FrozenInputSource::new(&state.input_mapping, &state.input_directories, files)
+}
+fn prepare_checkpoint_input(
+    state: &State,
+    source: &FrozenInputSource,
+    registry: Registry,
+) -> Result<PreparedSimulation, ControlError> {
+    std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         crate::registry::prepare_with_registry_and_source(
             &state.config_path,
             &state.cwd,
-            &source,
+            source,
             registry,
         )
     }))
     .map_err(|_| ControlError::new("RestoreFailed", "input validator panicked"))?
-    .map_err(|e| ControlError::new("FingerprintMismatch", e.to_string()))?;
+    .map_err(|e| ControlError::new("FingerprintMismatch", e.to_string()))
+}
+pub fn restore_checkpoint(
+    path: &Path,
+    registry: Registry,
+    limits: CheckpointLimits,
+) -> Result<(RunSession, ResumeToken), ControlError> {
+    limits.validate().map_err(|e| invalid(e.0))?;
+    let (manifest, files) =
+        super::super::checkpoint_bundle::read_bundle(path, &limits).map_err(|e| invalid(e.0))?;
+    restore_bundle(
+        &manifest,
+        &files,
+        registry,
+        limits,
+        &migration::ExecutionIdentity::current()?,
+    )
+}
+
+fn restore_bundle(
+    manifest: &Value,
+    files: &BTreeMap<String, Vec<u8>>,
+    registry: Registry,
+    limits: CheckpointLimits,
+    execution: &migration::ExecutionIdentity,
+) -> Result<(RunSession, ResumeToken), ControlError> {
+    execution.verify(manifest)?;
+    let migration_history = migration::decode_history(manifest)?;
+    let profile = manifest["profile"]
+        .as_str()
+        .ok_or_else(|| invalid("profile missing"))?;
+    if !registry.profiles.contains_key(profile) {
+        return Err(ControlError::new(
+            "FingerprintMismatch",
+            "profile unavailable",
+        ));
+    }
+    let mut registry = registry;
+    let mut state_early = None;
+    let mut prepared_early = None;
+    let current_fingerprint = json!(sha(&serde_json::to_vec(&registry_catalog(
+        &registry, profile
+    ))
+    .unwrap()));
+    if manifest["registry_fingerprint"] != current_fingerprint
+        && manifest["result_schema_version"] == 3
+        && registry.builtin_profiles.contains(profile)
+        && matches!(
+            profile,
+            "ethernet.l2.dynamic.v1"
+                | "ethernet.tsn.v1"
+                | "can.ethernet.gateway.v1"
+                | "can.ethernet.tsn.v1"
+                | "ethernet.redundancy.abstract.v1"
+                | "ethernet.frer.rtag.v1"
+                | "ethernet.network.composite.v1"
+                | "ethernet.preemption.abstract.v1"
+                | "ethernet.control.wire.experimental.v1"
+        )
+    {
+        let state: State = serde_json::from_slice(
+            files
+                .get("state.json")
+                .ok_or_else(|| invalid("state missing"))?,
+        )
+        .map_err(|e| invalid(e.to_string()))?;
+        let source = captured_checkpoint_source(&state, manifest, files)?;
+        let prepared = prepare_checkpoint_input(&state, &source, registry.clone())?;
+        registry = prepared
+            .registered
+            .as_ref()
+            .ok_or_else(|| invalid("captured network registry missing"))?
+            .registry
+            .as_ref()
+            .clone();
+        state_early = Some(state);
+        prepared_early = Some(prepared);
+    }
+    if manifest["registry_fingerprint"]
+        != json!(sha(&serde_json::to_vec(&registry_catalog(
+            &registry, profile
+        ))
+        .unwrap()))
+    {
+        return Err(ControlError::new(
+            "FingerprintMismatch",
+            "registry catalog differs",
+        ));
+    }
+    let state: State = if let Some(state) = state_early {
+        state
+    } else {
+        serde_json::from_slice(
+            files
+                .get("state.json")
+                .ok_or_else(|| invalid("state missing"))?,
+        )
+        .map_err(|e| invalid(e.to_string()))?
+    };
+    let prepared = if let Some(prepared) = prepared_early {
+        prepared
+    } else {
+        let source = captured_checkpoint_source(&state, manifest, files)?;
+        prepare_checkpoint_input(&state, &source, registry.clone())?
+    };
+    if manifest["codec_catalog"]
+        != codec_catalog(
+            &registry,
+            profile,
+            distributed_codec(&prepared),
+            merge_codec(&prepared),
+            vector_codec(&prepared),
+            gptp_codec(&prepared),
+            named_phy_codec(&prepared),
+            phy_service_codec(&prepared),
+            gateway_replication_codec(&prepared),
+            media_pause_codec(&prepared),
+        )
+    {
+        return Err(ControlError::new(
+            "UnsupportedCodec",
+            "manifest codec catalog differs",
+        ));
+    }
     let prepared_directories = prepared
         .common
         .provenance
@@ -633,8 +842,9 @@ pub fn restore_checkpoint(
     }
     let (mut session, _) = RunSession::new(prepared, state.options.clone())?;
     // No restore factory runs until all core references have been validated.
-    restore_core(&mut session, &state, &manifest, &limits)?;
-    let engine = &mut session.engine;
+    restore_core(&mut session, &state, manifest, &limits)?;
+    let verified_network = causal_prefix::validate(session.engine.registered()?, &state, &limits)?;
+    let engine = session.engine.registered_mut()?;
     let registry = &engine.registered.registry;
     for reference in &state.codec_refs {
         let descriptor = if reference.kind == "model" {
@@ -660,7 +870,7 @@ pub fn restore_checkpoint(
             }
             &registry.channel_codecs[&config.implementation_key].descriptor
         };
-        validate_codec_ref(reference, descriptor, &files)?;
+        validate_codec_ref(reference, descriptor, files)?;
     }
     let reservations = engine
         .queue
@@ -670,7 +880,18 @@ pub fn restore_checkpoint(
             _ => None,
         })
         .collect::<BTreeSet<_>>();
-    if state.engine_phase == "initialized" {
+    let pending_timers = engine
+        .queue
+        .values()
+        .filter_map(|work| match work {
+            Work::Delivery {
+                token: Some(token),
+                envelope,
+            } if engine.live.contains(token) => Some((token.clone(), envelope.clone())),
+            _ => None,
+        })
+        .collect::<BTreeMap<_, _>>();
+    if state.engine_phase == "initialized" && engine.registered.network.is_none() {
         let configs = &engine.registered.channels;
         for config in configs {
             let c = state
@@ -679,12 +900,13 @@ pub fn restore_checkpoint(
                 .find(|c| c.kind == "channel" && c.id == config.id)
                 .ok_or_else(|| invalid("channel codec missing"))?;
             let codec = &registry.channel_codecs[&config.implementation_key];
-            validate_codec_ref(c, &codec.descriptor, &files)?;
+            validate_codec_ref(c, &codec.descriptor, files)?;
             let context = CheckpointDecodeContext {
                 owner: &config.id,
                 next_event_id: engine.event_id,
                 live_timers: &engine.live,
                 reservations: &reservations,
+                pending_timers: &pending_timers,
             };
             let instance = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                 (codec.restore)(config, c.codec_version, &files[&c.blob_path], &context)
@@ -700,12 +922,13 @@ pub fn restore_checkpoint(
                 .find(|c| c.kind == "model" && c.id == config.id)
                 .ok_or_else(|| invalid("model codec missing"))?;
             let codec = &registry.model_codecs[&config.implementation_key];
-            validate_codec_ref(c, &codec.descriptor, &files)?;
+            validate_codec_ref(c, &codec.descriptor, files)?;
             let context = CheckpointDecodeContext {
                 owner: &config.id,
                 next_event_id: engine.event_id,
                 live_timers: &engine.live,
                 reservations: &reservations,
+                pending_timers: &pending_timers,
             };
             let instance = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                 (codec.restore)(config, c.codec_version, &files[&c.blob_path], &context)
@@ -717,6 +940,26 @@ pub fn restore_checkpoint(
         engine.initialized = state.initialized_model_ids.iter().cloned().collect();
         session.initialized = true;
     }
+    if engine.registered.network.is_some() && state.engine_phase == "initialized" {
+        let horizon = u64value(&json!(state.virtual_time_ps))?;
+        if let Some(replayed) = verified_network {
+            engine
+                .adopt_verified_network_from(replayed, horizon)
+                .map_err(|e| invalid(e.message))?;
+        } else {
+            engine
+                .restore_checkpoint_network(
+                    state
+                        .network_backend
+                        .as_ref()
+                        .ok_or_else(|| invalid("network backend checkpoint missing"))?,
+                    horizon,
+                )
+                .map_err(|e| invalid(e.message))?;
+        }
+        session.initialized = true;
+    }
+    session.migration_history = migration_history;
     session.state = RunState::Running;
     session.pause()?;
     // The private-arena guard remains active through every fallible publication check.
@@ -753,6 +996,15 @@ fn restore_core(
     manifest: &Value,
     limits: &CheckpointLimits,
 ) -> Result<(), ControlError> {
+    if session.engine.registered()?.registered.network.is_none() && state.network_backend.is_some()
+    {
+        return Err(invalid("unexpected network backend"));
+    }
+    if state.network_backend.as_ref().is_some_and(|backend| {
+        serde_json::to_vec(backend).map_or(true, |v| v.len() as u64 > limits.max_blob_bytes)
+    }) {
+        return Err(invalid("network backend blob limit exceeded"));
+    }
     if state.version != 1
         || !matches!(state.engine_phase.as_str(), "uninitialized" | "initialized")
         || !state.source_dispatchers.is_empty()
@@ -767,7 +1019,7 @@ fn restore_core(
     {
         return Err(invalid("manifest/state ordinal mismatch"));
     }
-    let engine = &mut session.engine;
+    let engine = session.engine.registered_mut()?;
     engine.event_id = number(&state.next_event_id)?;
     engine.sequence = number(&state.next_sequence)?;
     engine.snapshot.common.committed_events = commit;
@@ -980,12 +1232,21 @@ fn restore_core(
             || !engine.dirty.is_empty()
             || !engine.live.is_empty()
             || !state.codec_refs.is_empty()
+            || state.network_backend.is_some()
             || commit != 0
             || engine.event_id != 0
             || engine.sequence != 0
             || horizon != 0
         {
             return Err(invalid("uninitialized checkpoint has runtime state"));
+        }
+    } else if engine.registered.network.is_some() {
+        if !initialized.is_empty()
+            || !channels.is_empty()
+            || !state.codec_refs.is_empty()
+            || state.network_backend.is_none()
+        {
+            return Err(invalid("invalid network backend completeness"));
         }
     } else if initialized != model_ids
         || channels != channel_ids

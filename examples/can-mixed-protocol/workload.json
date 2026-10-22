@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "generators": [
+    {
+      "id": "sensor",
+      "bus": "local",
+      "controller": "a",
+      "frame": {
+        "protocol": "iso_fd",
+        "id": 291,
+        "extended": false,
+        "brs": true,
+        "data": [
+          90,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90
+        ]
+      },
+      "schedule": {
+        "kind": "explicit.v1",
+        "times_ps": [
+          0,
+          500000000
+        ]
+      }
+    },
+    {
+      "id": "control",
+      "bus": "local",
+      "controller": "b",
+      "frame": {
+        "protocol": "cc",
+        "id": 256,
+        "extended": false,
+        "remote": false,
+        "dlc": 2,
+        "data": [
+          18,
+          52
+        ]
+      },
+      "schedule": {
+        "kind": "explicit.v1",
+        "times_ps": [
+          0
+        ]
+      }
+    }
+  ]
+}

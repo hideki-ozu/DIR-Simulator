@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::sync::Arc;
 
-type Key = (u64, u64, u8, u64);
+pub(crate) type Key = (u64, u64, u8, u64);
 #[derive(Clone)]
 pub(crate) enum Work {
     Delivery {
@@ -1040,6 +1040,8 @@ impl Engine {
                 self.prepared.common.profile.as_str(),
                 "can.ethernet.tsn.v1"
                     | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.frer.rtag.v1"
+                    | "ethernet.network.composite.v1"
                     | "ethernet.preemption.abstract.v1"
                     | "ethernet.control.wire.experimental.v1"
             )
@@ -1159,6 +1161,13 @@ impl Engine {
                 }
             };
             let prepared = planned.and_then(|delta| {
+                super::network_metrics::stage(
+                    &self.prepared.common.profile,
+                    &delta.points,
+                    &mut batch,
+                    &self.registered.registry,
+                )
+                .map_err(|e| Diagnostic::execution(e.0))?;
                 state.reserve(&delta)?;
                 reserve_vec(
                     &mut self.snapshot.common.points,
@@ -1798,4 +1807,151 @@ pub(crate) fn vector_wire_successful_callback(
         "records": execution.arena.records,
     });
     (execution.state, publication)
+}
+
+impl Engine {
+    pub(crate) fn checkpoint_work(&self) -> Vec<(Key, Work)> {
+        match &self.network_execution {
+            Some(execution) => execution.arena.queue.clone(),
+            None => self
+                .queue
+                .iter()
+                .map(|(key, work)| (*key, work.clone()))
+                .collect(),
+        }
+    }
+    pub(crate) fn checkpoint_dirty(&self) -> Vec<(u64, u64, String, String)> {
+        match &self.network_execution {
+            Some(execution) => execution
+                .arena
+                .dirty
+                .iter()
+                .map(|(time, delta)| (*time, *delta, "@network".into(), "network".into()))
+                .collect(),
+            None => self.dirty.iter().cloned().collect(),
+        }
+    }
+    pub(crate) fn checkpoint_network(&self) -> Option<serde_json::Value> {
+        self.network_execution.as_ref().map(|execution|serde_json::json!({"version":1,"state":execution.state.checkpoint(),"records":execution.arena.records}))
+    }
+    #[cfg(test)]
+    pub(crate) fn with_network_state_for_test<T>(
+        &self,
+        operation: impl FnOnce(&crate::runtime::network::NetworkState) -> T,
+    ) -> Option<T> {
+        self.network_execution
+            .as_ref()
+            .map(|execution| operation(&execution.state))
+    }
+    /// Adopt only after the session validator has compared the full canonical
+    /// backend and scheduler against this independently executed source prefix.
+    /// The restored session retains its validated core journal and counters.
+    pub(crate) fn adopt_verified_network_from(
+        &mut self,
+        mut replay: Self,
+        horizon: u64,
+    ) -> Result<(), Diagnostic> {
+        self.network_execution = replay.network_execution.take();
+        self.refresh_view(horizon)
+    }
+    pub(crate) fn restore_checkpoint_network(
+        &mut self,
+        value: &serde_json::Value,
+        horizon: u64,
+    ) -> Result<(), Diagnostic> {
+        if value["version"] != 1 || value.as_object().is_none_or(|o| o.len() != 3) {
+            return Err(Diagnostic::execution(
+                "unsupported network backend checkpoint",
+            ));
+        }
+        let prepared = self
+            .registered
+            .network
+            .as_ref()
+            .ok_or_else(|| Diagnostic::execution("unexpected network checkpoint"))?
+            .clone();
+        let state = super::network::NetworkState::restore_checkpoint(
+            prepared,
+            value.get("state").unwrap_or(&serde_json::Value::Null),
+            horizon,
+        )?;
+        let records: Vec<(String, ModelRecord)> =
+            super::network::checkpoint::decode(value["records"].clone())?;
+        if records.windows(2).any(|p| p[0].0 >= p[1].0)
+            || records.iter().any(|(key, r)| {
+                key != &format!("{}:{}", r.schema.name, r.id)
+                    || r.subject != "@network"
+                    || !self.registered.registry.records.contains_key(&r.schema)
+                    || !self.registered.registry.profiles[&self.prepared.common.profile]
+                        .model_records
+                        .contains(&r.schema)
+                    || r.time_ps > horizon
+                    || !r.data.is_object()
+            })
+        {
+            return Err(Diagnostic::execution(
+                "invalid network arena checkpoint journal",
+            ));
+        }
+        for (_, record) in &records {
+            let descriptor = &self.registered.registry.records[&record.schema];
+            if invoke(|| (descriptor.validate)(&record.data)).is_err() {
+                return Err(Diagnostic::execution(
+                    "network arena checkpoint record descriptor rejected data",
+                ));
+            }
+        }
+        let queue = self
+            .queue
+            .iter()
+            .map(|(key, work)| (*key, work.clone()))
+            .collect::<Vec<_>>();
+        state.validate_checkpoint_reservations(
+            &queue,
+            &self.live,
+            self.prepared.common.time_limit_ps,
+        )?;
+        state.validate_recovery_checkpoint_cut(self.last_committed_key)?;
+        let dirty = self
+            .dirty
+            .iter()
+            .map(|(time, delta, _, _)| (*time, *delta))
+            .collect();
+        self.network_execution = Some(NetworkExecution {
+            state,
+            arena: NetworkArena {
+                queue,
+                dirty,
+                records,
+            },
+        });
+        self.queue.clear();
+        self.dirty.clear();
+        self.refresh_view(horizon)?;
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod checkpoint_journal_tests {
+    use super::*;
+    #[test]
+    fn restored_network_arena_invokes_selected_record_descriptor_before_install() {
+        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../examples/ethernet/dynamic/unicast.ini");
+        let mut engine = Engine::new(Arc::new(crate::prepare(&path).unwrap())).unwrap();
+        engine.initialize().unwrap();
+        let payload = engine.checkpoint_network().unwrap();
+        let schema: Schema =
+            serde_json::from_value(payload["records"][0][1]["schema"].clone()).unwrap();
+        Arc::make_mut(&mut engine.registered.registry)
+            .records
+            .get_mut(&schema)
+            .unwrap()
+            .validate = |_| Err("injected descriptor rejection".into());
+        let before = engine.checkpoint_network().unwrap();
+        let error = engine.restore_checkpoint_network(&payload, 0).unwrap_err();
+        assert!(error.message.contains("descriptor rejected"), "{error:?}");
+        assert_eq!(engine.checkpoint_network().unwrap(), before);
+    }
 }

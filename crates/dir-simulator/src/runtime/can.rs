@@ -21,7 +21,7 @@ impl Engine<'_> {
     pub(super) fn initialize_can_points(&mut self) {
         if self.prepared.common.time_limit_ps > 0 {
             for controller in &self.prepared.can.controllers {
-                self.snapshot.common.points.push(Point {
+                self.state.snapshot.common.points.push(Point {
                     event_seq: None,
                     effect_seq: None,
                     time_ps: 0,
@@ -35,7 +35,7 @@ impl Engine<'_> {
             }
             for gateway in &self.prepared.gateway.gateways {
                 for &port in &gateway.ports {
-                    self.snapshot.common.points.push(Point {
+                    self.state.snapshot.common.points.push(Point {
                         event_seq: None,
                         effect_seq: None,
                         time_ps: 0,
@@ -58,16 +58,16 @@ impl Engine<'_> {
         }
     }
     pub(super) fn bus_state(&mut self, bus: usize, state: &str) {
-        self.snapshot.can.bus_states[bus] = state.into();
+        self.state.snapshot.can.bus_states[bus] = state.into();
         if bus == 0 {
-            self.snapshot.can.bus_state = state.into();
+            self.state.snapshot.can.bus_state = state.into();
         }
     }
     pub(super) fn queue_point(&mut self, source: usize, request: usize) {
         self.point(
             format!("{}.txQueue", self.prepared.can.controllers[source].id),
             "queue_length",
-            self.queues[source].len() as u64,
+            self.state.queues[source].len() as u64,
             request,
             None,
         );
@@ -82,11 +82,11 @@ impl Engine<'_> {
             .min()
     }
     pub(super) fn dispatch(&mut self) -> Result<(), Diagnostic> {
-        let mut cursors = self.cursors.clone();
+        let mut cursors = self.state.cursors.clone();
         let mut events = Vec::new();
         for (g, generator) in self.prepared.can.generators.iter().enumerate() {
-            while generator.schedule.time(cursors[g]) == Some(self.now.0 as u128) {
-                events.push((self.now.0, Event::Generate(g, cursors[g])));
+            while generator.schedule.time(cursors[g]) == Some(self.state.now.0 as u128) {
+                events.push((self.state.now.0, Event::Generate(g, cursors[g])));
                 cursors[g] = cursors[g]
                     .checked_add(1)
                     .ok_or_else(|| limit_error("generator ordinal overflow"))?;
@@ -97,17 +97,17 @@ impl Engine<'_> {
             events.push((time as u64, Event::Dispatch));
         }
         self.preflight(&events)?;
-        self.cursors = cursors;
-        self.future_generation = future.is_some_and(|t| t > u64::MAX as u128);
+        self.state.cursors = cursors;
+        self.state.future_generation = future.is_some_and(|t| t > u64::MAX as u128);
         self.publish(events);
         Ok(())
     }
     pub(super) fn generate(&mut self, g: usize, ordinal: u64) -> Result<(), Diagnostic> {
-        let time = self.now.0;
+        let time = self.state.now.0;
         let generator = &self.prepared.can.generators[g];
         let controller = &self.prepared.can.controllers[generator.source];
         let ready = add(time, controller.tx_processing_ps)?;
-        let index = self.requests.len();
+        let index = self.state.requests.len();
         let events = vec![(
             ready,
             if ready == time {
@@ -117,7 +117,7 @@ impl Engine<'_> {
             },
         )];
         self.preflight(&events)?;
-        let wire = &self.wires[g];
+        let wire = &self.state.wires[g];
         let request = Request {
             request_id: format!("{}:{ordinal}", generator.id),
             source: controller.id.clone(),
@@ -149,37 +149,37 @@ impl Engine<'_> {
         Ok(())
     }
     pub(super) fn tx_processed(&mut self, r: usize) -> Result<(), Diagnostic> {
-        let time = self.now.0;
+        let time = self.state.now.0;
         let events = vec![(time, Event::Ready(r))];
         self.preflight(&events)?;
         self.publish(events);
         Ok(())
     }
     pub(super) fn ready(&mut self, r: usize) -> Result<(), Diagnostic> {
-        let source = self.request_sources[r];
+        let source = self.state.request_sources[r];
         let capacity = self.prepared.can.controllers[source].queue_capacity;
-        self.requests[r].ready_ps = Some(self.now.0);
-        if self.request_forwards[r].is_some() && capacity > 0 {
-            self.requests[r].status = "waiting_tx".into();
-            self.tx_waiting[source].insert((self.now.3, r));
+        self.state.requests[r].ready_ps = Some(self.state.now.0);
+        if self.state.request_forwards[r].is_some() && capacity > 0 {
+            self.state.requests[r].status = "waiting_tx".into();
+            self.state.tx_waiting[source].insert((self.state.now.3, r));
             self.drain_gateway_tx(source);
-        } else if self.queues[source].len() as u64 >= capacity {
-            self.requests[r].status = "dropped".into();
+        } else if self.state.queues[source].len() as u64 >= capacity {
+            self.state.requests[r].status = "dropped".into();
             self.queue_point(source, r);
             self.finish_gateway_egress(r);
         } else {
-            self.enqueue(r, self.now.3);
+            self.enqueue(r, self.state.now.3);
         }
         Ok(())
     }
     /// Commit TX queue admission separately from processing completion.
     pub(super) fn enqueue(&mut self, r: usize, order: u64) {
-        let source = self.request_sources[r];
-        let g = self.request_generators[r];
-        let request = &mut self.requests[r];
+        let source = self.state.request_sources[r];
+        let g = self.state.request_generators[r];
+        let request = &mut self.state.requests[r];
         request.status = "pending".into();
-        request.tx_enqueued_ps = Some(self.now.0);
-        let (generated, generator_id, ordinal) = if self.snapshot.gateway.request_lineage
+        request.tx_enqueued_ps = Some(self.state.now.0);
+        let (generated, generator_id, ordinal) = if self.state.snapshot.gateway.request_lineage
             [&request.request_id]
             .parent_request_id
             .is_some()
@@ -198,8 +198,8 @@ impl Engine<'_> {
                     .unwrap(),
             )
         };
-        self.queues[source].insert((
-            self.wires[g].arbitration.clone(),
+        self.state.queues[source].insert((
+            self.state.wires[g].arbitration.clone(),
             generated,
             generator_id,
             ordinal,
@@ -210,9 +210,10 @@ impl Engine<'_> {
         self.finish_gateway_egress(r);
     }
     pub(super) fn arbitrate(&mut self, bus: usize) -> Result<(), Diagnostic> {
-        let time = self.now.0;
-        if self.active[bus].is_none() {
+        let time = self.state.now.0;
+        if self.state.active[bus].is_none() {
             let candidate = self
+                .state
                 .queues
                 .iter()
                 .enumerate()
@@ -222,18 +223,22 @@ impl Engine<'_> {
                 .map(|(s, e)| (s, e.clone()));
             if let Some((source, entry)) = candidate {
                 let r = entry.4;
-                let eof = protocol::end_time(time, self.requests[r].frame_bits, self.bitrate(bus))?;
-                let release =
-                    protocol::end_time(time, self.requests[r].frame_bits + 3, self.bitrate(bus))?;
+                let eof =
+                    protocol::end_time(time, self.state.requests[r].frame_bits, self.bitrate(bus))?;
+                let release = protocol::end_time(
+                    time,
+                    self.state.requests[r].frame_bits + 3,
+                    self.bitrate(bus),
+                )?;
                 let mut events = vec![(eof, Event::Eof(r)), (release, Event::Release(r))];
-                if !self.tx_waiting[source].is_empty() {
+                if !self.state.tx_waiting[source].is_empty() {
                     events.push((time, Event::GwTxSpace(source)));
                 }
                 self.preflight(&events)?;
-                self.queues[source].remove(&entry);
-                self.active[bus] = Some(r);
+                self.state.queues[source].remove(&entry);
+                self.state.active[bus] = Some(r);
                 self.bus_state(bus, "transmitting");
-                let request = &mut self.requests[r];
+                let request = &mut self.state.requests[r];
                 request.status = "in_flight".into();
                 request.sof_ps = Some(time);
                 request.planned_eof_ps = Some(eof);
@@ -250,8 +255,8 @@ impl Engine<'_> {
         Ok(())
     }
     pub(super) fn eof(&mut self, r: usize) -> Result<(), Diagnostic> {
-        let time = self.now.0;
-        let source = self.request_sources[r];
+        let time = self.state.now.0;
+        let source = self.state.request_sources[r];
         let bus = self.prepared.can.controller_buses[source];
         let mut events = Vec::new();
         let mut rows = Vec::new();
@@ -265,7 +270,7 @@ impl Engine<'_> {
             self.prepared.can.controllers.len(),
             "receiver_rows",
         )?;
-        let first_row = self.receivers.len();
+        let first_row = self.state.receivers.len();
         for (c, controller) in self.prepared.can.controllers.iter().enumerate() {
             if c == source || self.prepared.can.controller_buses[c] != bus {
                 continue;
@@ -274,10 +279,10 @@ impl Engine<'_> {
                 add(time, self.prepared.can.controllers[source].tx_channel_ps)?,
                 controller.rx_channel_ps,
             )?;
-            let row = self.receivers.len() + rows.len();
+            let row = self.state.receivers.len() + rows.len();
             events.push((observed, Event::Observe(r, c, row)));
             rows.push(Receiver {
-                request_id: self.requests[r].request_id.clone(),
+                request_id: self.state.requests[r].request_id.clone(),
                 receiver: controller.id.clone(),
                 status: "pending".into(),
                 observed_ps: None,
@@ -286,19 +291,20 @@ impl Engine<'_> {
         }
         self.preflight(&events)?;
         let receiver_ids = self
+            .state
             .request_receivers
             .get_mut(&r)
             .expect("request receiver ownership");
         crate::allocation::reserve_vec(receiver_ids, rows.len(), "receiver_handles")?;
         receiver_ids.extend(first_row..first_row + rows.len());
-        self.requests[r].status = "success".into();
-        self.requests[r].eof_ps = Some(time);
+        self.state.requests[r].status = "success".into();
+        self.state.requests[r].eof_ps = Some(time);
         self.bus_state(bus, "intermission");
-        self.receivers.extend(rows);
+        self.state.receivers.extend(rows);
         self.point(
             self.prepared.can.buses[bus].id.clone(),
             "transfer_ps",
-            time - self.requests[r].sof_ps.unwrap(),
+            time - self.state.requests[r].sof_ps.unwrap(),
             r,
             None,
         );
@@ -306,18 +312,18 @@ impl Engine<'_> {
         Ok(())
     }
     pub(super) fn release(&mut self, r: usize) -> Result<(), Diagnostic> {
-        let time = self.now.0;
-        self.requests[r].release_ps = Some(time);
-        let bus = self.prepared.can.controller_buses[self.request_sources[r]];
-        self.active[bus] = None;
+        let time = self.state.now.0;
+        self.state.requests[r].release_ps = Some(time);
+        let bus = self.prepared.can.controller_buses[self.state.request_sources[r]];
+        self.state.active[bus] = None;
         self.bus_state(bus, "idle");
         self.dirty(bus);
         Ok(())
     }
     pub(super) fn observe(&mut self, r: usize, c: usize, row: usize) -> Result<(), Diagnostic> {
-        let time = self.now.0;
+        let time = self.state.now.0;
         let controller = &self.prepared.can.controllers[c];
-        let g = self.request_generators[r];
+        let g = self.state.request_generators[r];
         let accepted = protocol::accepts(
             &controller.rx_filter,
             &self.prepared.can.generators[g].frame,
@@ -336,9 +342,9 @@ impl Engine<'_> {
             Vec::new()
         };
         self.preflight(&events)?;
-        self.receivers[row].observed_ps = Some(time);
+        self.state.receivers[row].observed_ps = Some(time);
         if !accepted {
-            self.receivers[row].status = "filtered".into();
+            self.state.receivers[row].status = "filtered".into();
         }
         self.publish(events);
         Ok(())
@@ -349,27 +355,27 @@ impl Engine<'_> {
         c: usize,
         row: usize,
     ) -> Result<(), Diagnostic> {
-        let time = self.now.0;
+        let time = self.state.now.0;
         let events = vec![(time, Event::Received(r, c, row))];
         self.preflight(&events)?;
         self.publish(events);
         Ok(())
     }
     pub(super) fn received(&mut self, r: usize, c: usize, row: usize) -> Result<(), Diagnostic> {
-        let time = self.now.0;
+        let time = self.state.now.0;
         let events = if self.prepared.gateway.controller_gateways[c].is_some() {
             vec![(time, Event::RoutingInput(r, c, row))]
         } else {
             Vec::new()
         };
         self.preflight(&events)?;
-        self.receivers[row].status = "received".into();
-        self.receivers[row].received_ps = Some(time);
+        self.state.receivers[row].status = "received".into();
+        self.state.receivers[row].received_ps = Some(time);
         let receiver = self.prepared.can.controllers[c].id.clone();
         self.point(
             receiver.clone(),
             "delivery_ps",
-            time - self.requests[r].generated_ps,
+            time - self.state.requests[r].generated_ps,
             r,
             Some(receiver),
         );

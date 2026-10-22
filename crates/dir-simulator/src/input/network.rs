@@ -3,8 +3,13 @@ use super::{Result, error};
 use crate::types::{ethernet::PreparedEthernet, network::PreparedNetwork};
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, path::Path};
+mod bindings;
+mod clocks;
+pub(crate) mod configuration;
 mod extensions;
+mod multicast_active;
 pub(crate) mod topology;
+mod wire_merge;
 pub(crate) use extensions::prepare_composite;
 
 fn exact(value: &Value, fields: &[&str], label: &str) -> Result<()> {
@@ -31,16 +36,41 @@ fn exact(value: &Value, fields: &[&str], label: &str) -> Result<()> {
     Ok(())
 }
 pub(crate) fn prepare(
-    mut ethernet: PreparedEthernet,
+    ethernet: PreparedEthernet,
     config: Value,
     workload: Value,
     profile: &str,
     config_source: (&str, &Path),
     workload_source: Option<(&str, &Path)>,
 ) -> Result<PreparedNetwork> {
+    prepare_with_mac_scope(
+        ethernet,
+        config,
+        workload,
+        profile,
+        config_source,
+        workload_source,
+        false,
+        false,
+    )
+}
+#[allow(clippy::too_many_arguments)] // Preserve the established owner transaction interface.
+fn prepare_with_mac_scope(
+    mut ethernet: PreparedEthernet,
+    config: Value,
+    workload: Value,
+    profile: &str,
+    config_source: (&str, &Path),
+    workload_source: Option<(&str, &Path)>,
+    component_scoped_mac: bool,
+    allow_merge_operations: bool,
+) -> Result<PreparedNetwork> {
     if matches!(
         profile,
-        "ethernet.redundancy.abstract.v1" | "ethernet.preemption.abstract.v1"
+        "ethernet.redundancy.abstract.v1"
+            | "ethernet.frer.rtag.v1"
+            | "ethernet.network.composite.v1"
+            | "ethernet.preemption.abstract.v1"
     ) {
         return extensions::prepare(
             ethernet,
@@ -131,10 +161,11 @@ pub(crate) fn prepare(
     // Registration controls alone determine effective runtime membership.
     let original_vlans =
         add_registrable_capabilities(&mut static_config, &base["dynamic"]).map_err(base_error)?;
-    super::ethernet::configure(
+    super::ethernet::configure_with_mac_scope(
         &static_config.to_string(),
         &mut ethernet,
         "ethernet.l2.vlan.v1",
+        component_scoped_mac,
     )
     .map_err(base_error)?;
     let mut static_workload = workload.clone();
@@ -188,13 +219,39 @@ pub(crate) fn prepare(
     } else {
         None
     };
+    if !allow_merge_operations
+        && tsn.as_ref().is_some_and(|tsn| {
+            tsn.outputs
+                .iter()
+                .filter_map(|o| o.tas.as_ref())
+                .chain(tsn.updates.iter().map(|u| &u.schedule))
+                .any(|s| {
+                    s.entries.iter().any(|e| {
+                        e.operation != crate::types::ethernet::tsn::GateOperation::SetGateStates
+                    })
+                })
+        })
+    {
+        return Err(
+            error("HOLD/RELEASE operations require actual Clause99 MAC Merge").with_target("/tsn"),
+        );
+    }
     Ok(PreparedNetwork {
         ethernet,
         dynamic: Some(dynamic),
         tsn,
         bridge: None,
         extensions: None,
+        clocks: None,
+        gptp: None,
+        phy_attachments: vec![],
+        shared_lans: vec![],
+        provider_l2: None,
+        multicast_active: None,
+        qcc: None,
         wire: None,
+        mac_control: None,
+        bindings: None,
         config,
         workload,
     })

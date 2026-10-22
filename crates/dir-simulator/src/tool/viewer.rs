@@ -171,9 +171,13 @@ pub(crate) fn render_input_with_policy(input: &Path) -> Result<RenderedViewer, D
     let result: Value = serde_json::from_slice(&bytes).map_err(|e| {
         Diagnostic::prepare(format!("Invalid result JSON {}: {e}", input.display()))
     })?;
+    if result["schema_version"] == 4 {
+        crate::output::validate_controlled_legacy(&result)?;
+        return render(&result);
+    }
     if !matches!(result["schema_version"].as_u64(), Some(1..=3)) {
         return Err(Diagnostic::prepare(
-            "Viewer requires result schema_version 1, 2 or 3",
+            "Viewer requires result schema_version 1, 2, 3 or 4",
         ));
     }
     if !result["simulation"].is_object() {
@@ -202,11 +206,14 @@ pub(crate) fn render_input_with_policy(input: &Path) -> Result<RenderedViewer, D
                     | "ethernet.tsn.v1"
                     | "can.ethernet.tsn.v1"
                     | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.frer.rtag.v1"
+                    | "ethernet.network.composite.v1"
                     | "ethernet.preemption.abstract.v1"
                     | "ethernet.control.wire.experimental.v1"
                     | "ethernet.l2.store-forward.v2"
                     | "ethernet.l2.100base-t1.v1"
                     | "can.fd.precomputed.v1"
+                    | "can.fd.iso.v1"
                     | "axi4.transaction.v1"
                     | "soc.shared.v1"
                     | "ahb.transaction.v1"

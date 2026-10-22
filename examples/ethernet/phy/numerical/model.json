@@ -1,0 +1,125 @@
+{
+  "schema": "dir.ethernet-phy.model",
+  "version": 1,
+  "medium": {
+    "execution_contract": "dir.sampled-manchester.v1",
+    "standard_edition": "project.numerical.v1",
+    "channel": {
+      "grid": {
+        "symbol_rate_hz": 20000000,
+        "samples_per_ui": 32
+      },
+      "endpoints": [
+        "sender.out[0]",
+        "receiver.in[0]"
+      ],
+      "paths": [
+        [
+          null,
+          null
+        ],
+        [
+          {
+            "delay_samples": 40,
+            "taps_q30": [
+              1073741824
+            ]
+          },
+          null
+        ]
+      ],
+      "noise_rms_uv": [
+        0,
+        0
+      ],
+      "noise_seed": 17,
+      "clip_uv": 10000000
+    },
+    "endpoints": [
+      {
+        "id": "sender.out[0]",
+        "transmitter": {
+          "grid": {
+            "symbol_rate_hz": 20000000,
+            "samples_per_ui": 32
+          },
+          "peak_uv": 1000000,
+          "transition_ui_ppm": 250000,
+          "clock_ppm": 0,
+          "filter_taps_q30": [
+            1073741824
+          ]
+        },
+        "receiver": {
+          "grid": {
+            "symbol_rate_hz": 20000000,
+            "samples_per_ui": 32
+          },
+          "peak_uv": 1000000,
+          "frontend_taps_q30": [
+            1073741824
+          ],
+          "adc_bits": 16,
+          "adc_full_scale_uv": 4000000,
+          "ffe_taps": 3,
+          "echo_taps": 0,
+          "adaptation_q30": 268435456,
+          "minimum_training_symbols": 128,
+          "lock_error_ppm": 80000,
+          "clock_ppm": 0,
+          "max_tracking_ppm": 3000,
+          "max_no_transition_symbols": 128,
+          "loss_error_ppm": 500000
+        }
+      },
+      {
+        "id": "receiver.in[0]",
+        "transmitter": {
+          "grid": {
+            "symbol_rate_hz": 20000000,
+            "samples_per_ui": 32
+          },
+          "peak_uv": 1000000,
+          "transition_ui_ppm": 250000,
+          "clock_ppm": 0,
+          "filter_taps_q30": [
+            1073741824
+          ]
+        },
+        "receiver": {
+          "grid": {
+            "symbol_rate_hz": 20000000,
+            "samples_per_ui": 32
+          },
+          "peak_uv": 1000000,
+          "frontend_taps_q30": [
+            1073741824
+          ],
+          "adc_bits": 16,
+          "adc_full_scale_uv": 4000000,
+          "ffe_taps": 3,
+          "echo_taps": 0,
+          "adaptation_q30": 268435456,
+          "minimum_training_symbols": 128,
+          "lock_error_ppm": 80000,
+          "clock_ppm": 0,
+          "max_tracking_ppm": 3000,
+          "max_no_transition_symbols": 128,
+          "loss_error_ppm": 500000
+        }
+      }
+    ],
+    "half_duplex": true,
+    "carrier_threshold_uv": 100000,
+    "carrier_hold_samples": 96,
+    "collision_threshold_uv": 200000,
+    "ifg_bits": 96,
+    "jam_bits": 32,
+    "slot_bits": 512,
+    "retry_limit": 4,
+    "seed": 17,
+    "maximum_mac_bytes": 1536,
+    "maximum_samples": 100000,
+    "trace_samples": false
+  }
+}

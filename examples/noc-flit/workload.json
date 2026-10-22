@@ -1,0 +1,14 @@
+{
+  "schema": "dir.noc-flit.workload",
+  "version": 1,
+  "packets": [
+    { "id": "faulted", "at_ps": 0, "source": 0, "destination": 4, "payload": [1,2,3,4,5,6,7,8] },
+    { "id": "control", "at_ps": 0, "source": 8, "destination": 2, "payload": [] },
+    { "id": "around", "at_ps": 10, "source": 0, "destination": 1, "payload": [9,10,11] },
+    { "id": "recovered", "at_ps": 30, "source": 0, "destination": 1, "payload": [12,13] }
+  ],
+  "faults": [
+    { "id": "east-down", "at_ps": 5, "link_id": 0, "up": false },
+    { "id": "east-up", "at_ps": 25, "link_id": 0, "up": true }
+  ]
+}

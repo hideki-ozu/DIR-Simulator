@@ -1,0 +1,1576 @@
+{
+  "schema": "dir.ddr4-command-ledger",
+  "version": 1,
+  "status": "architecture_contract_not_implementation_evidence",
+  "source": {
+    "author": "Integrated Silicon Solution, Inc.",
+    "title": "IS43/46QR85120B IS43/46QR16256B 512Mbx8, 256Mbx16 4Gb DDR4 SDRAM",
+    "revision": "F",
+    "date_cover": "2024-05-20",
+    "date_even_page_footers": "2024-05-24",
+    "pages": 274,
+    "sha256": "0606a9501dc13de5934856c9d7fbe0310f6a4edacf26b9cf416f4a5bfc2ca727",
+    "mirror_url": "https://www.uttc.com.tw/wp-content/uploads/2026/01/43-46QR85120B-16256B.pdf",
+    "vendor_url": "https://www.issi.com/WW/pdf/43-46QR85120B-16256B.pdf"
+  },
+  "operating_mode": {
+    "id": "issi.is43qr85120b-083rbl.rev-f.ddr4-2400r.x8.bl8.1n.25c.v1",
+    "part": "IS43QR85120B-083RBL",
+    "speed_bin": "DDR4-2400R 16-16-16",
+    "tck_ps": 834,
+    "half_cycle_ps": 417,
+    "temperature_c": 25,
+    "device_count": 1,
+    "ranks": 1,
+    "device_width_bits": 8,
+    "capacity_bytes": 536870912,
+    "bank_groups": 4,
+    "banks_per_group": 4,
+    "row_bits": 15,
+    "column_bits": 10,
+    "page_bytes": 1024,
+    "burst_length": 8,
+    "burst_type": "sequential",
+    "cl": 16,
+    "cwl": 12,
+    "al": 0,
+    "pl": 0,
+    "wr_programmed_cycles": 18,
+    "rtp_programmed_cycles": 9,
+    "tccd_l_programmed_cycles": 6,
+    "refresh_mode": "fixed_1x_normal_temperature",
+    "refresh_interval_ps": 7800000,
+    "vref_range": 1,
+    "vref_code": 16,
+    "vref_percent_vddq": 70.4,
+    "dll": "on",
+    "clock": "continuous_ideal_no_jitter",
+    "odt": "all_disabled_ODT_pin_low",
+    "data_mask": true,
+    "electrical_scope": "ideal synchronous digital pins; no DDR analog signal integrity or voltage training accuracy claim"
+  },
+  "mode_registers": {
+    "source_pages": [
+      16,
+      19,
+      22,
+      24,
+      26,
+      29,
+      31
+    ],
+    "steady": {
+      "MR0": "0x0834",
+      "MR1": "0x0001",
+      "MR2": "0x0018",
+      "MR3": "0x0200",
+      "MR4": "0x0000",
+      "MR5": "0x0400",
+      "MR6": "0x0810"
+    },
+    "initial_mr0_with_dll_reset": "0x0934",
+    "write_leveling_mr1": "0x0081",
+    "vref_training_mr6": "0x0890",
+    "initial_sequence": [
+      "MR3",
+      "MR6",
+      "MR5",
+      "MR4",
+      "MR2",
+      "MR1",
+      "MR0_DLL_RESET",
+      "ZQCL"
+    ],
+    "note": "MR3 write-command latency field set to 5 cycles even though CRC disabled. MR6 range/code modifications only in training per source. MR0 DLL reset is action, not persistent state."
+  },
+  "disabled_optional_modes": [
+    "BC4_fixed",
+    "BC4_on_the_fly",
+    "BL8_on_the_fly",
+    "interleaved_burst",
+    "read_DBI",
+    "write_DBI",
+    "write_CRC",
+    "CA_parity",
+    "CAL",
+    "additive_latency",
+    "DLL_off",
+    "geardown_2N",
+    "fine_granularity_2x_4x",
+    "refresh_on_the_fly",
+    "temperature_controlled_refresh",
+    "temperature_sensor_MPR_readout",
+    "MPR_read_write",
+    "PDA",
+    "maximum_power_saving",
+    "self_refresh_abort",
+    "Vref_monitor",
+    "read_preamble_training",
+    "2CK_read_preamble",
+    "2CK_write_preamble",
+    "TDQS",
+    "dynamic_ODT",
+    "RTT_NOM",
+    "RTT_WR",
+    "RTT_PARK",
+    "connectivity_test_not_supported_by_x8",
+    "clock_frequency_change"
+  ],
+  "rules": [
+    {
+      "id": "ACT_to_RD_WR",
+      "source_pages": [
+        227
+      ],
+      "scope": "bank",
+      "trigger": "ACT",
+      "action": "RD/WR/RDA/WRA",
+      "kind": "minimum",
+      "min_ps": 13320,
+      "effective_cycles_at_834ps": 16,
+      "tests": {
+        "positive": "ACT_to_RD_WR.boundary",
+        "negative": "ACT_to_RD_WR.one_cycle_early"
+      }
+    },
+    {
+      "id": "PRE_to_ACT_REF",
+      "source_pages": [
+        95,
+        96,
+        227
+      ],
+      "scope": "bank/all_banks",
+      "trigger": "last PRE/PREA or internal auto PRE",
+      "action": "ACT or rank REF",
+      "kind": "minimum",
+      "min_ps": 13320,
+      "effective_cycles_at_834ps": 16,
+      "note": "PRE to idle/precharging bank is legal and restarts tRP; do not reject merely because already idle.",
+      "tests": {
+        "positive": "PRE_to_ACT_REF.boundary",
+        "negative": "PRE_to_ACT_REF.one_cycle_early"
+      }
+    },
+    {
+      "id": "ACT_to_PRE",
+      "source_pages": [
+        227
+      ],
+      "scope": "bank",
+      "trigger": "ACT",
+      "action": "PRE/PREA/internal auto PRE",
+      "kind": "minimum",
+      "min_ps": 32000,
+      "effective_cycles_at_834ps": 39,
+      "tests": {
+        "positive": "ACT_to_PRE.boundary",
+        "negative": "ACT_to_PRE.one_cycle_early"
+      }
+    },
+    {
+      "id": "ACT_to_ACT",
+      "source_pages": [
+        227
+      ],
+      "scope": "bank",
+      "trigger": "ACT",
+      "action": "next ACT",
+      "kind": "minimum",
+      "min_ps": 45320,
+      "effective_cycles_at_834ps": 55,
+      "tests": {
+        "positive": "ACT_to_ACT.boundary",
+        "negative": "ACT_to_ACT.one_cycle_early"
+      }
+    },
+    {
+      "id": "ACT_open_max",
+      "source_pages": [
+        227
+      ],
+      "scope": "bank",
+      "trigger": "ACT",
+      "action": "PRE/internal auto PRE",
+      "kind": "maximum",
+      "formula": "9*tREFI = 70200000 ps",
+      "note": "Must precharge by this bound; test one cycle LATE, not early.",
+      "tests": {
+        "positive": "ACT_open_max.boundary",
+        "negative": "ACT_open_max.one_cycle_late"
+      }
+    },
+    {
+      "id": "ACT_diff_BG",
+      "source_pages": [
+        260
+      ],
+      "scope": "rank",
+      "trigger": "ACT",
+      "action": "ACT different bank group",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 3300,
+      "effective_cycles_at_834ps": 4,
+      "tests": {
+        "positive": "ACT_diff_BG.boundary",
+        "negative": "ACT_diff_BG.one_cycle_early"
+      }
+    },
+    {
+      "id": "ACT_same_BG",
+      "source_pages": [
+        260
+      ],
+      "scope": "bank_group",
+      "trigger": "ACT",
+      "action": "ACT different bank same group",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 4900,
+      "effective_cycles_at_834ps": 6,
+      "tests": {
+        "positive": "ACT_same_BG.boundary",
+        "negative": "ACT_same_BG.one_cycle_early"
+      }
+    },
+    {
+      "id": "ACT_fifth_window",
+      "source_pages": [
+        94,
+        260
+      ],
+      "scope": "rank",
+      "trigger": "oldest of previous four ACT commands",
+      "action": "fifth ACT",
+      "kind": "minimum",
+      "min_cycles": 20,
+      "min_ps": 21000,
+      "effective_cycles_at_834ps": 26,
+      "tests": {
+        "positive": "ACT_fifth_window.boundary",
+        "negative": "ACT_fifth_window.one_cycle_early"
+      }
+    },
+    {
+      "id": "CAS_diff_BG",
+      "source_pages": [
+        259
+      ],
+      "scope": "rank",
+      "trigger": "RD or WR",
+      "action": "same-direction CAS different bank group",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "effective_cycles_at_834ps": 4,
+      "tests": {
+        "positive": "CAS_diff_BG.boundary",
+        "negative": "CAS_diff_BG.one_cycle_early"
+      }
+    },
+    {
+      "id": "CAS_same_BG",
+      "source_pages": [
+        31,
+        259
+      ],
+      "scope": "bank_group",
+      "trigger": "RD or WR",
+      "action": "same-direction CAS same bank group",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 5000,
+      "effective_cycles_at_834ps": 6,
+      "note": "MR6 also enforces programmed tCCD_L=6 cycles.",
+      "tests": {
+        "positive": "CAS_same_BG.boundary",
+        "negative": "CAS_same_BG.one_cycle_early"
+      }
+    },
+    {
+      "id": "RD_to_WR",
+      "source_pages": [
+        152
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "RD/RDA",
+      "action": "WR/WRA",
+      "kind": "minimum",
+      "min_cycles": 10,
+      "effective_cycles_at_834ps": 10,
+      "formula": "RL + BL/2 - WL + 2 = 16+4-12+2 = 10 cycles",
+      "tests": {
+        "positive": "RD_to_WR.boundary",
+        "negative": "RD_to_WR.one_cycle_early"
+      }
+    },
+    {
+      "id": "WR_to_RD_diff_BG",
+      "source_pages": [
+        260,
+        263
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "WR/WRA command",
+      "action": "RD/RDA different bank group",
+      "kind": "minimum",
+      "min_cycles": 19,
+      "effective_cycles_at_834ps": 19,
+      "formula": "WL + BL/2 + max(2,ceil(2500/tCK)) = 12+4+3 = 19",
+      "note": "tWTR starts at rising clock edge WL+4 after WR, NOT WR issue and NOT first data beat.",
+      "tests": {
+        "positive": "WR_to_RD_diff_BG.boundary",
+        "negative": "WR_to_RD_diff_BG.one_cycle_early"
+      }
+    },
+    {
+      "id": "WR_to_RD_same_BG",
+      "source_pages": [
+        260,
+        263
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "WR/WRA command",
+      "action": "RD/RDA same bank group",
+      "kind": "minimum",
+      "min_cycles": 25,
+      "effective_cycles_at_834ps": 25,
+      "formula": "WL + BL/2 + max(4,ceil(7500/tCK)) = 12+4+9 = 25",
+      "tests": {
+        "positive": "WR_to_RD_same_BG.boundary",
+        "negative": "WR_to_RD_same_BG.one_cycle_early"
+      }
+    },
+    {
+      "id": "RD_to_PRE",
+      "source_pages": [
+        260
+      ],
+      "scope": "bank",
+      "trigger": "RD/RDA",
+      "action": "PRE/internal auto PRE",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 7500,
+      "effective_cycles_at_834ps": 9,
+      "note": "AL=0; must also meet ACT_to_PRE.",
+      "tests": {
+        "positive": "RD_to_PRE.boundary",
+        "negative": "RD_to_PRE.one_cycle_early"
+      }
+    },
+    {
+      "id": "WR_to_PRE",
+      "source_pages": [
+        16,
+        260,
+        263
+      ],
+      "scope": "bank",
+      "trigger": "WR/WRA command",
+      "action": "PRE/internal auto PRE",
+      "kind": "minimum",
+      "min_cycles": 34,
+      "effective_cycles_at_834ps": 34,
+      "formula": "WL + BL/2 + ceil(tWR/tCK) = 12+4+18 = 34",
+      "note": "WRA uses programmed WR=18; explicit PRE uses tWR min 15000ps after WL+4, same cycle result.",
+      "tests": {
+        "positive": "WR_to_PRE.boundary",
+        "negative": "WR_to_PRE.one_cycle_early"
+      }
+    },
+    {
+      "id": "RDA_to_ACT",
+      "source_pages": [
+        95,
+        260
+      ],
+      "scope": "bank",
+      "trigger": "RDA",
+      "action": "next ACT",
+      "kind": "minimum",
+      "formula": "max(last_ACT+ceil(32000/tCK),RDA+9)+ceil(13320/tCK)",
+      "note": "Internal auto PRE then full tRP; other banks may proceed if shared bus rules hold.",
+      "tests": {
+        "positive": "RDA_to_ACT.boundary",
+        "negative": "RDA_to_ACT.one_cycle_early"
+      }
+    },
+    {
+      "id": "WRA_to_ACT",
+      "source_pages": [
+        16,
+        95,
+        260
+      ],
+      "scope": "bank",
+      "trigger": "WRA",
+      "action": "next ACT",
+      "kind": "minimum",
+      "formula": "max(last_ACT+ceil(32000/tCK),WRA+WL+4+WR_programmed)+ceil(13320/tCK)",
+      "tests": {
+        "positive": "WRA_to_ACT.boundary",
+        "negative": "WRA_to_ACT.one_cycle_early"
+      }
+    },
+    {
+      "id": "read_data_window",
+      "source_pages": [
+        227,
+        152
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "RD/RDA command",
+      "action": "first read beat",
+      "kind": "minimum",
+      "min_cycles": 16,
+      "effective_cycles_at_834ps": 16,
+      "note": "Eight x8 beats at +16*tCK+i*417ps i=0..7; finish at +20*tCK. Return actual MemoryService byte at each beat; no early completion.",
+      "tests": {
+        "positive": "read_data_window.boundary",
+        "negative": "read_data_window.one_cycle_early"
+      }
+    },
+    {
+      "id": "write_data_window",
+      "source_pages": [
+        22,
+        263
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "WR/WRA command",
+      "action": "first write beat",
+      "kind": "minimum",
+      "min_cycles": 12,
+      "effective_cycles_at_834ps": 12,
+      "note": "Eight x8 beats at +12*tCK+i*417ps i=0..7; finish at +16*tCK. Commit unmasked bytes at sampled beat. DDR4 active-low DM: DM LOW masks; logical byte_enable=true maps to DM HIGH.",
+      "tests": {
+        "positive": "write_data_window.boundary",
+        "negative": "write_data_window.one_cycle_early"
+      }
+    },
+    {
+      "id": "burst_no_interruption",
+      "source_pages": [
+        34
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "RD/WR burst started",
+      "action": "another burst/termination",
+      "kind": "state",
+      "note": "No read/write burst may be terminated/interrupted; reserve disjoint half-open DQ windows and selected turnaround constraints. Simulator pause suspends, RESET aborts and invalidates contents.",
+      "tests": {
+        "positive": "burst_no_interruption.boundary",
+        "negative": "burst_no_interruption.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "burst_address",
+      "source_pages": [
+        1,
+        17
+      ],
+      "scope": "device",
+      "trigger": "RD/WR column",
+      "action": "eight sequential beats",
+      "kind": "state",
+      "note": "Service emits aligned column multiples of8; all8 bytes remain in same bank,row. Adapter splits unaligned requests into aligned bursts with DM or read extraction. Partial writes use DM, not read-modify-write shadow storage.",
+      "tests": {
+        "positive": "burst_address.boundary",
+        "negative": "burst_address.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "command_bus",
+      "source_pages": [
+        34
+      ],
+      "scope": "rank",
+      "trigger": "issued command",
+      "action": "next command",
+      "kind": "minimum",
+      "min_cycles": 1,
+      "effective_cycles_at_834ps": 1,
+      "note": "At most one decoded command on each rising edge; DES implicit on empty cycles. ACT muxes A14 as row bit.",
+      "tests": {
+        "positive": "command_bus.boundary",
+        "negative": "command_bus.one_cycle_early"
+      }
+    },
+    {
+      "id": "MRS_idle",
+      "source_pages": [
+        13,
+        35
+      ],
+      "scope": "rank",
+      "trigger": "any active/busy state",
+      "action": "MRS except legal training subcommands",
+      "kind": "state",
+      "note": "All banks precharged, tRP complete, no data burst, CKE high; special Vref rules override generic tMRD/tMOD.",
+      "tests": {
+        "positive": "MRS_idle.boundary",
+        "negative": "MRS_idle.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "MRS_to_MRS",
+      "source_pages": [
+        13,
+        14,
+        260
+      ],
+      "scope": "rank",
+      "trigger": "ordinary MRS",
+      "action": "next ordinary MRS",
+      "kind": "minimum",
+      "min_cycles": 8,
+      "effective_cycles_at_834ps": 8,
+      "tests": {
+        "positive": "MRS_to_MRS.boundary",
+        "negative": "MRS_to_MRS.one_cycle_early"
+      }
+    },
+    {
+      "id": "MRS_to_nonMRS",
+      "source_pages": [
+        13,
+        14,
+        260
+      ],
+      "scope": "rank",
+      "trigger": "ordinary MRS",
+      "action": "nonMRS except DES",
+      "kind": "minimum",
+      "min_cycles": 24,
+      "min_ps": 15000,
+      "effective_cycles_at_834ps": 24,
+      "tests": {
+        "positive": "MRS_to_nonMRS.boundary",
+        "negative": "MRS_to_nonMRS.one_cycle_early"
+      }
+    },
+    {
+      "id": "DLL_lock",
+      "source_pages": [
+        20,
+        260
+      ],
+      "scope": "rank",
+      "trigger": "MR0 DLL reset after MR1 enable",
+      "action": "READ or synchronous ODT",
+      "kind": "minimum",
+      "min_cycles": 768,
+      "effective_cycles_at_834ps": 768,
+      "note": "CKE held high throughout. Writes do not require DLL if writeODT disabled; startup waits for bothDLL andZQ anyway.",
+      "tests": {
+        "positive": "DLL_lock.boundary",
+        "negative": "DLL_lock.one_cycle_early"
+      }
+    },
+    {
+      "id": "mode_encoding",
+      "source_pages": [
+        16,
+        19,
+        22,
+        24,
+        26,
+        29,
+        31,
+        33
+      ],
+      "scope": "rank",
+      "trigger": "MRS",
+      "action": "changed mode",
+      "kind": "state",
+      "note": "Reject reserved bits and unsupported optional mode changes before mutation. MR7 is architecturally ignored per p33 (trace ignored), not an unsupported-mode enable. Allow exact selected settings and documented DLL/Vref/write-leveling changes only.",
+      "tests": {
+        "positive": "mode_encoding.boundary",
+        "negative": "mode_encoding.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "RESET_powerup_low",
+      "source_pages": [
+        9,
+        205
+      ],
+      "scope": "rank",
+      "trigger": "valid supply and RESET asserted",
+      "action": "RESET deassertion",
+      "kind": "minimum",
+      "min_ps": 200000000,
+      "effective_cycles_at_834ps": 239809,
+      "note": "Supply ramp is an ideal precondition; electrical ramp/slew not simulated. RESET is destructive to array contents.",
+      "tests": {
+        "positive": "RESET_powerup_low.boundary",
+        "negative": "RESET_powerup_low.one_cycle_early"
+      }
+    },
+    {
+      "id": "RESET_stable_low",
+      "source_pages": [
+        12,
+        205
+      ],
+      "scope": "rank",
+      "trigger": "RESET asserted with stable power",
+      "action": "RESET deassertion",
+      "kind": "minimum",
+      "min_ps": 1000000,
+      "effective_cycles_at_834ps": 1200,
+      "tests": {
+        "positive": "RESET_stable_low.boundary",
+        "negative": "RESET_stable_low.one_cycle_early"
+      }
+    },
+    {
+      "id": "RESET_CKE_setup",
+      "source_pages": [
+        9,
+        12
+      ],
+      "scope": "rank",
+      "trigger": "CKE low",
+      "action": "RESET deassertion",
+      "kind": "minimum",
+      "min_ps": 10000,
+      "effective_cycles_at_834ps": 12,
+      "tests": {
+        "positive": "RESET_CKE_setup.boundary",
+        "negative": "RESET_CKE_setup.one_cycle_early"
+      }
+    },
+    {
+      "id": "RESET_to_CKE",
+      "source_pages": [
+        9,
+        12
+      ],
+      "scope": "rank",
+      "trigger": "RESET deassertion",
+      "action": "CKE high",
+      "kind": "minimum",
+      "min_ps": 500000000,
+      "effective_cycles_at_834ps": 599521,
+      "tests": {
+        "positive": "RESET_to_CKE.boundary",
+        "negative": "RESET_to_CKE.one_cycle_early"
+      }
+    },
+    {
+      "id": "clock_before_CKE",
+      "source_pages": [
+        9,
+        257
+      ],
+      "scope": "rank",
+      "trigger": "clock stable",
+      "action": "CKE high reset/SRX",
+      "kind": "minimum",
+      "min_cycles": 5,
+      "min_ps": 10000,
+      "effective_cycles_at_834ps": 12,
+      "tests": {
+        "positive": "clock_before_CKE.boundary",
+        "negative": "clock_before_CKE.one_cycle_early"
+      }
+    },
+    {
+      "id": "RESET_CKE_to_MRS",
+      "source_pages": [
+        10,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "CKE high after reset",
+      "action": "first MRS",
+      "kind": "minimum",
+      "min_cycles": 5,
+      "min_ps": 270000,
+      "effective_cycles_at_834ps": 324,
+      "formula": "max(5*tCK,tRFC1+10000ps)",
+      "tests": {
+        "positive": "RESET_CKE_to_MRS.boundary",
+        "negative": "RESET_CKE_to_MRS.one_cycle_early"
+      }
+    },
+    {
+      "id": "initialization_sequence",
+      "source_pages": [
+        8,
+        9,
+        10
+      ],
+      "scope": "rank",
+      "trigger": "RESET release",
+      "action": "normal access",
+      "kind": "state",
+      "note": "AllMR0..6 initialized; MR1 DLL enabled before MR0DLLreset; DES gaps; CKEhigh andODTlow through DLL/ZQ; firstZQCL mandatory; calibration stages complete before ready.",
+      "tests": {
+        "positive": "initialization_sequence.boundary",
+        "negative": "initialization_sequence.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "ZQ_idle",
+      "source_pages": [
+        188,
+        189
+      ],
+      "scope": "rank",
+      "trigger": "banks precharged and tRP complete",
+      "action": "ZQCL/ZQCS",
+      "kind": "state",
+      "note": "NoDQ activity; ODTlow, CKEhigh, onlyDES whilecalibrating.",
+      "tests": {
+        "positive": "ZQ_idle.boundary",
+        "negative": "ZQ_idle.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "ZQ_first",
+      "source_pages": [
+        188,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "first ZQCL since RESET",
+      "action": "any activity except DES",
+      "kind": "minimum",
+      "min_cycles": 1024,
+      "effective_cycles_at_834ps": 1024,
+      "tests": {
+        "positive": "ZQ_first.boundary",
+        "negative": "ZQ_first.one_cycle_early"
+      }
+    },
+    {
+      "id": "ZQ_long",
+      "source_pages": [
+        188,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "later ZQCL",
+      "action": "any activity except DES",
+      "kind": "minimum",
+      "min_cycles": 512,
+      "effective_cycles_at_834ps": 512,
+      "tests": {
+        "positive": "ZQ_long.boundary",
+        "negative": "ZQ_long.one_cycle_early"
+      }
+    },
+    {
+      "id": "ZQ_short",
+      "source_pages": [
+        188,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "ZQCS",
+      "action": "any activity except DES",
+      "kind": "minimum",
+      "min_cycles": 128,
+      "effective_cycles_at_834ps": 128,
+      "note": "Use explicit AC table128cycles; p188 prose mentions correction within64cycles, not permission to shorten specified tZQCS.",
+      "tests": {
+        "positive": "ZQ_short.boundary",
+        "negative": "ZQ_short.one_cycle_early"
+      }
+    },
+    {
+      "id": "REF_idle",
+      "source_pages": [
+        35,
+        96
+      ],
+      "scope": "rank",
+      "trigger": "all banks PRE plus tRP complete",
+      "action": "REF",
+      "kind": "state",
+      "note": "No ongoing burst or rank blocking operation.",
+      "tests": {
+        "positive": "REF_idle.boundary",
+        "negative": "REF_idle.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "REF_busy",
+      "source_pages": [
+        96,
+        263
+      ],
+      "scope": "rank",
+      "trigger": "REF",
+      "action": "any command except DES",
+      "kind": "minimum",
+      "min_ps": 260000,
+      "effective_cycles_at_834ps": 312,
+      "tests": {
+        "positive": "REF_busy.boundary",
+        "negative": "REF_busy.one_cycle_early"
+      }
+    },
+    {
+      "id": "refresh_average",
+      "source_pages": [
+        96,
+        102
+      ],
+      "scope": "rank",
+      "trigger": "normal-mode refresh reference epoch",
+      "action": "average REF issue",
+      "kind": "maximum",
+      "formula": "average interval <=7800000ps at25C fixed1x",
+      "note": "Controller policy no postponement: drain early and issue by each deadline. Check overdue even when no user requests; never stop scheduling refresh during active device idle.",
+      "tests": {
+        "positive": "refresh_average.boundary",
+        "negative": "refresh_average.one_cycle_late"
+      }
+    },
+    {
+      "id": "refresh_postpone_bound",
+      "source_pages": [
+        96,
+        97
+      ],
+      "scope": "rank",
+      "trigger": "last REF",
+      "action": "next REF",
+      "kind": "maximum",
+      "formula": "postponed debt<=8 and inter-REF gap<=9*tREFI; pulled-in credit<=8; <=16REF in any2*tREFI",
+      "note": "No-postponement controller is stronger than device allowance. Raw checker enforces debt/credit and sliding-window constraints, not only max gap. Overdue operation fails explicitly; do not claim retained bytes after violation.",
+      "tests": {
+        "positive": "refresh_postpone_bound.boundary",
+        "negative": "refresh_postpone_bound.one_cycle_late"
+      }
+    },
+    {
+      "id": "CKE_pulse",
+      "source_pages": [
+        262,
+        264
+      ],
+      "scope": "rank",
+      "trigger": "CKE change",
+      "action": "opposite CKE change",
+      "kind": "minimum",
+      "min_cycles": 3,
+      "min_ps": 5000,
+      "effective_cycles_at_834ps": 6,
+      "tests": {
+        "positive": "CKE_pulse.boundary",
+        "negative": "CKE_pulse.one_cycle_early"
+      }
+    },
+    {
+      "id": "PDE_command",
+      "source_pages": [
+        35,
+        109
+      ],
+      "scope": "rank",
+      "trigger": "CKE high",
+      "action": "CKElow+DES",
+      "kind": "state",
+      "note": "Enter activePD if open banks, otherwise prechargePD. No MRS,MPR,ZQ,DLLlock or ongoingread/write burst. ACT/PRE/REF may finish internally subject to their entry delays.",
+      "tests": {
+        "positive": "PDE_command.boundary",
+        "negative": "PDE_command.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "ACT_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "ACT",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 2,
+      "effective_cycles_at_834ps": 2,
+      "tests": {
+        "positive": "ACT_to_PDE.boundary",
+        "negative": "ACT_to_PDE.one_cycle_early"
+      }
+    },
+    {
+      "id": "PRE_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "PRE/PREA",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 2,
+      "effective_cycles_at_834ps": 2,
+      "tests": {
+        "positive": "PRE_to_PDE.boundary",
+        "negative": "PRE_to_PDE.one_cycle_early"
+      }
+    },
+    {
+      "id": "REF_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "REF",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 2,
+      "effective_cycles_at_834ps": 2,
+      "note": "REF continues internally; no refresh generated by PD itself.",
+      "tests": {
+        "positive": "REF_to_PDE.boundary",
+        "negative": "REF_to_PDE.one_cycle_early"
+      }
+    },
+    {
+      "id": "RD_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "RD/RDA",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 21,
+      "effective_cycles_at_834ps": 21,
+      "formula": "RL+4+1=21",
+      "tests": {
+        "positive": "RD_to_PDE.boundary",
+        "negative": "RD_to_PDE.one_cycle_early"
+      }
+    },
+    {
+      "id": "WR_to_PDE",
+      "source_pages": [
+        262,
+        263
+      ],
+      "scope": "rank",
+      "trigger": "WR",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 34,
+      "effective_cycles_at_834ps": 34,
+      "formula": "WL+4+ceil(tWR/tCK)=34",
+      "tests": {
+        "positive": "WR_to_PDE.boundary",
+        "negative": "WR_to_PDE.one_cycle_early"
+      }
+    },
+    {
+      "id": "WRA_to_PDE",
+      "source_pages": [
+        262,
+        263
+      ],
+      "scope": "rank",
+      "trigger": "WRA",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 35,
+      "effective_cycles_at_834ps": 35,
+      "formula": "WL+4+WR_programmed+1=35",
+      "tests": {
+        "positive": "WRA_to_PDE.boundary",
+        "negative": "WRA_to_PDE.one_cycle_early"
+      }
+    },
+    {
+      "id": "MRS_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "ordinary MRS",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 24,
+      "effective_cycles_at_834ps": 24,
+      "formula": "tMOD",
+      "tests": {
+        "positive": "MRS_to_PDE.boundary",
+        "negative": "MRS_to_PDE.one_cycle_early"
+      }
+    },
+    {
+      "id": "PD_duration_min",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "PDE",
+      "action": "PDX",
+      "kind": "minimum",
+      "min_cycles": 3,
+      "min_ps": 5000,
+      "effective_cycles_at_834ps": 6,
+      "tests": {
+        "positive": "PD_duration_min.boundary",
+        "negative": "PD_duration_min.one_cycle_early"
+      }
+    },
+    {
+      "id": "PD_duration_max",
+      "source_pages": [
+        109,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "PDE",
+      "action": "PDX",
+      "kind": "maximum",
+      "formula": "<=9*tREFI=70200000ps; refresh debt remains active",
+      "tests": {
+        "positive": "PD_duration_max.boundary",
+        "negative": "PD_duration_max.one_cycle_late"
+      }
+    },
+    {
+      "id": "PD_exit",
+      "source_pages": [
+        109,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "CKEhigh+DES PDX",
+      "action": "valid command",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 6000,
+      "effective_cycles_at_834ps": 8,
+      "note": "DLLon selected. Keep CK running duringPD; CKEhigh pulse also enforced.",
+      "tests": {
+        "positive": "PD_exit.boundary",
+        "negative": "PD_exit.one_cycle_early"
+      }
+    },
+    {
+      "id": "command_disable",
+      "source_pages": [
+        109,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "PDE",
+      "action": "command receiver disabled",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "effective_cycles_at_834ps": 4,
+      "note": "DES during entry guard; model does not consume apparent commands on ignored lowCKE inputs.",
+      "tests": {
+        "positive": "command_disable.boundary",
+        "negative": "command_disable.one_cycle_early"
+      }
+    },
+    {
+      "id": "SRE_idle",
+      "source_pages": [
+        35,
+        105
+      ],
+      "scope": "rank",
+      "trigger": "allbanksidle and all previous timing satisfied",
+      "action": "CKElow+REF SRE",
+      "kind": "state",
+      "note": "Rejectduringburst; DLLautooff, internalrefresh starts; preservebytecontents. No pending refresh debt allowed by selectedcontroller beforeentry.",
+      "tests": {
+        "positive": "SRE_idle.boundary",
+        "negative": "SRE_idle.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "SRE_low",
+      "source_pages": [
+        261
+      ],
+      "scope": "rank",
+      "trigger": "SRE",
+      "action": "SRX",
+      "kind": "minimum",
+      "min_cycles": 7,
+      "effective_cycles_at_834ps": 7,
+      "formula": "tCKE_cycles+1=6+1",
+      "tests": {
+        "positive": "SRE_low.boundary",
+        "negative": "SRE_low.one_cycle_early"
+      }
+    },
+    {
+      "id": "SRE_clock_hold",
+      "source_pages": [
+        105,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "SRE",
+      "action": "clock may stop",
+      "kind": "minimum",
+      "min_cycles": 5,
+      "min_ps": 10000,
+      "effective_cycles_at_834ps": 12,
+      "note": "Selectedmode clock remainsrunning; verify guard anyway.",
+      "tests": {
+        "positive": "SRE_clock_hold.boundary",
+        "negative": "SRE_clock_hold.one_cycle_early"
+      }
+    },
+    {
+      "id": "SRX_clock_setup",
+      "source_pages": [
+        105,
+        257
+      ],
+      "scope": "rank",
+      "trigger": "clock stable",
+      "action": "SRX",
+      "kind": "minimum",
+      "min_cycles": 5,
+      "min_ps": 10000,
+      "effective_cycles_at_834ps": 12,
+      "tests": {
+        "positive": "SRX_clock_setup.boundary",
+        "negative": "SRX_clock_setup.one_cycle_early"
+      }
+    },
+    {
+      "id": "SRX_nonDLL",
+      "source_pages": [
+        105,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "CKEhigh+DES SRX",
+      "action": "ACT/PRE/PREA/REF/WR/WRA/ordinaryMRS",
+      "kind": "minimum",
+      "min_ps": 270000,
+      "effective_cycles_at_834ps": 324,
+      "formula": "tRFC1+10000ps",
+      "note": "tXS applies to ordinary commands and general MRS. ZQCL/ZQCS and MRS changing only CL/WR/RTP/CWL have tXS_FAST exception. Controller may conservatively delay requests but must distinguish scheduling from device eligibility. Selected digital model keeps Vref generator on in SR; electrical state is an explicit assumption.",
+      "tests": {
+        "positive": "SRX_nonDLL.boundary",
+        "negative": "SRX_nonDLL.one_cycle_early"
+      }
+    },
+    {
+      "id": "SRX_DLL",
+      "source_pages": [
+        106,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "SRX",
+      "action": "RD/RDA",
+      "kind": "minimum",
+      "min_cycles": 768,
+      "effective_cycles_at_834ps": 768,
+      "note": "CKE high throughout tXSDLL except allowed reentry. DES only before tXS except explicitly allowed tXS_FAST commands per p105.",
+      "tests": {
+        "positive": "SRX_DLL.boundary",
+        "negative": "SRX_DLL.one_cycle_early"
+      }
+    },
+    {
+      "id": "SRX_reentry",
+      "source_pages": [
+        106
+      ],
+      "scope": "rank",
+      "trigger": "SRX",
+      "action": "SRE/PDE reentry",
+      "kind": "minimum",
+      "formula": "after tXS then one REF then tRFC; CKE constraints also hold",
+      "note": "Refresh accountingrestartsfrom actualinternal/externalrefresh milestones, notarbitrarywallclockforgetting.",
+      "tests": {
+        "positive": "SRX_reentry.boundary",
+        "negative": "SRX_reentry.one_cycle_early"
+      }
+    },
+    {
+      "id": "VREF_enter",
+      "source_pages": [
+        86
+      ],
+      "scope": "rank",
+      "trigger": "MR6trainingenable",
+      "action": "firsttrainingcommand",
+      "kind": "minimum",
+      "min_ps": 150000,
+      "effective_cycles_at_834ps": 180,
+      "note": "Only ACT WR WRA RD RDA PRE DES MR6set/exit legal in training. Range selectedatentry thenfixed.",
+      "tests": {
+        "positive": "VREF_enter.boundary",
+        "negative": "VREF_enter.one_cycle_early"
+      }
+    },
+    {
+      "id": "VREF_single_step",
+      "source_pages": [
+        85,
+        89
+      ],
+      "scope": "rank",
+      "trigger": "MR6code change by1",
+      "action": "Vrefstable/nextdependentoperation",
+      "kind": "minimum",
+      "min_ps": 60000,
+      "effective_cycles_at_834ps": 72,
+      "note": "Datasheet gives maximum settling duration; controller waits worstcase60ns. Do notmislabelthisas siliconminimumsettling. Monitoroff.",
+      "tests": {
+        "positive": "VREF_single_step.boundary",
+        "negative": "VREF_single_step.one_cycle_early"
+      }
+    },
+    {
+      "id": "VREF_multi_step",
+      "source_pages": [
+        85,
+        89
+      ],
+      "scope": "rank",
+      "trigger": "MR6code change by>1 or initialunknown",
+      "action": "Vrefstable/nextdependentoperation",
+      "kind": "minimum",
+      "min_ps": 150000,
+      "effective_cycles_at_834ps": 180,
+      "note": "Worstcase settling. Range/code0..50 only perMR6table; reject51..63. Rangechangesonlyonentry.",
+      "tests": {
+        "positive": "VREF_multi_step.boundary",
+        "negative": "VREF_multi_step.one_cycle_early"
+      }
+    },
+    {
+      "id": "VREF_exit",
+      "source_pages": [
+        86
+      ],
+      "scope": "rank",
+      "trigger": "MR6trainingdisable",
+      "action": "anycommandexceptDES",
+      "kind": "minimum",
+      "min_ps": 150000,
+      "effective_cycles_at_834ps": 180,
+      "note": "Allbanksidle, latestVrefsettled; exitmustnotchangeexistingrange/code. MR6low7bitsnotwrittenonexit.",
+      "tests": {
+        "positive": "VREF_exit.boundary",
+        "negative": "VREF_exit.one_cycle_early"
+      }
+    },
+    {
+      "id": "WLEV_allowed",
+      "source_pages": [
+        44,
+        45
+      ],
+      "scope": "rank",
+      "trigger": "MR1A7=1",
+      "action": "command",
+      "kind": "state",
+      "note": "OnlyDES,MR1Qoffchange,MR1exit; noactualmemoryread/write. ODTalloffselected; idealCKsamplefeedbackonly, notanalogmarginclaim.",
+      "tests": {
+        "positive": "WLEV_allowed.boundary",
+        "negative": "WLEV_allowed.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "WLEV_drive",
+      "source_pages": [
+        45,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "MR1writelevelenable",
+      "action": "startDQSlow",
+      "kind": "minimum",
+      "min_cycles": 25,
+      "effective_cycles_at_834ps": 25,
+      "note": "NoODT additionaldelay applies sinceallRTTdisabled.",
+      "tests": {
+        "positive": "WLEV_drive.boundary",
+        "negative": "WLEV_drive.one_cycle_early"
+      }
+    },
+    {
+      "id": "WLEV_first_edge",
+      "source_pages": [
+        45,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "MR1writelevelenable",
+      "action": "firstDQS risingedge",
+      "kind": "minimum",
+      "min_cycles": 40,
+      "effective_cycles_at_834ps": 40,
+      "tests": {
+        "positive": "WLEV_first_edge.boundary",
+        "negative": "WLEV_first_edge.one_cycle_early"
+      }
+    },
+    {
+      "id": "WLEV_pulse",
+      "source_pages": [
+        45,
+        261
+      ],
+      "scope": "DQS",
+      "trigger": "rising/fallingedge",
+      "action": "oppositeedge",
+      "kind": "minimum",
+      "min_ps": 384,
+      "effective_cycles_at_834ps": 1,
+      "note": "tDQSH/tDQSL min0.46*tCK; modelhalfcycle417ps. Pulse maxcontrollerdependent inleveling.",
+      "tests": {
+        "positive": "WLEV_pulse.boundary",
+        "negative": "WLEV_pulse.one_cycle_early"
+      }
+    },
+    {
+      "id": "WLEV_setup_hold",
+      "source_pages": [
+        262
+      ],
+      "scope": "CK/DQS",
+      "trigger": "CKedge/DQSedge",
+      "action": "sampleoutsideaperture",
+      "kind": "state",
+      "note": "tWLS=tWLH=0.13*tCK =108.42ps; representconservatively109ps. Nearaperture returnsundefined, neverassertcalibrationpass.",
+      "tests": {
+        "positive": "WLEV_setup_hold.boundary",
+        "negative": "WLEV_setup_hold.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "WLEV_feedback",
+      "source_pages": [
+        45,
+        262
+      ],
+      "scope": "DQ",
+      "trigger": "DQSsamplesCK",
+      "action": "allDQfeedback",
+      "kind": "maximum",
+      "formula": "tWLO<=9500ps; inter-bit skew<=2000ps",
+      "note": "Idealmodelcanchoosefixed9500psfeedbackandzeroskew; output beforevalidtimeunavailable. Boundarytestfuturedeadline+1ps; negativeinputearlyreadtestsdataavailability.",
+      "tests": {
+        "positive": "WLEV_feedback.boundary",
+        "negative": "WLEV_feedback.one_cycle_late"
+      }
+    },
+    {
+      "id": "WLEV_exit",
+      "source_pages": [
+        46
+      ],
+      "scope": "rank",
+      "trigger": "strobe stopped,ODTlow andRTToff",
+      "action": "MR1A7=0 thennormalcommand",
+      "kind": "minimum",
+      "min_cycles": 24,
+      "effective_cycles_at_834ps": 24,
+      "note": "tMOD afterexit; nextMRSaftertMRD=8. MR1otherselectedbitsmayberestated.",
+      "tests": {
+        "positive": "WLEV_exit.boundary",
+        "negative": "WLEV_exit.one_cycle_early"
+      }
+    },
+    {
+      "id": "reset_data_loss",
+      "source_pages": [
+        205
+      ],
+      "scope": "array",
+      "trigger": "RESETassert",
+      "action": "pendingbursts andstoredvalidity",
+      "kind": "state",
+      "note": "InvalidateallDDRdataandpendingcommits; deterministiczero-fillonlyifdeclaredsimulatorinitializationpolicy, nothardwareguarantee. Postresetreadsunknownfailuntilsoftwarewrite/reinitimage.",
+      "tests": {
+        "positive": "reset_data_loss.boundary",
+        "negative": "reset_data_loss.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "SRX_fast_exceptions",
+      "source_pages": [
+        105,
+        261,
+        263
+      ],
+      "scope": "rank",
+      "trigger": "SRX",
+      "action": "ZQCL/ZQCS or MRS changing only CL/WR/RTP/CWL fields",
+      "kind": "minimum",
+      "min_ps": 120000,
+      "effective_cycles_at_834ps": 144,
+      "formula": "tRFC4+10000ps=110000+10000ps; tRFC4 is used here even though normalrefreshmodefixed1x",
+      "note": "Any unrelated MR change requires tXS; selected profile may only restate fixed values or valid supported actions. Geardown change remains unsupported.",
+      "tests": {
+        "positive": "SRX_fast_exceptions.boundary",
+        "negative": "SRX_fast_exceptions.one_cycle_early"
+      }
+    },
+    {
+      "id": "bank_command_state",
+      "source_pages": [
+        34,
+        35,
+        93,
+        95
+      ],
+      "scope": "bank",
+      "trigger": "bank state transition",
+      "action": "ACT/RD/WR/RDA/WRA/PRE",
+      "kind": "state",
+      "note": "ACT requires bank idle and tRP/tRC satisfied; RD/WR require an active row and tRCD. RDA/WRA reserve the bank through internal precharge/tRP, so no later RD/WR to that bank before a new ACT. PRE may target idle/precharging bank and restarts tRP as p95 states. Reject illegal commands without data or timing-state mutation.",
+      "tests": {
+        "positive": "bank_command_state.legal_sequence",
+        "negative": "bank_command_state.invalid_state_or_encoding"
+      }
+    },
+    {
+      "id": "selected_clock_latency_limits",
+      "source_pages": [
+        227,
+        259,
+        261
+      ],
+      "scope": "configuration/ideal clock",
+      "trigger": "profile validation",
+      "action": "normal command operation",
+      "kind": "state",
+      "note": "Fixed tCK834ps lies in selected CL16/CWL12 operating bin 833<=tCK<937ps. CL*tCK=13344ps satisfies13320<=tAA<=19000ps. Equal417ps high/low and zerojitter satisfy selected idealclock assumptions. Unsupported frequency,temperature,preamble,electrical options reject rather than silently reusing this ledger.",
+      "tests": {
+        "positive": "selected_clock_latency_limits.fixed_profile",
+        "negative": "selected_clock_latency_limits.invalid_state_or_encoding"
+      }
+    }
+  ],
+  "invariants": [
+    "alltransporttargetbytesresideinsharedMemoryService",
+    "onlycompletedunmaskedwritebeatmutatesstorage",
+    "onecommandperrisingedge",
+    "nonoverlappingDQreservationplusdirectionturnaround",
+    "perbankrowstateindependentofrankandbankgroupguards",
+    "commanderrorpreflightdoesnotmutatebytes",
+    "alltimeoutsrefreshandpendingbeatscheckpointed",
+    "configurationidentityincludesexactmodeanddatasheethash",
+    "allmaximumconstraintsuseonecyclelateor1pslateinverseboundarytestbecauseearlyislegal",
+    "timingdiagramtestoracleindependentfromruntimeeligibilityhelper"
+  ],
+  "uncertainties": [
+    "Source contains mixedfooter dates and several editorial inconsistencies; selected values use dedicated2400tables and mode-register tables.",
+    "No DDR analogsignal-integrity/voltage/noise accuracy claimed; idealpintiming is scopeprecondition.",
+    "Vref and writeleveling model validates protocol/timing and idealfeedback only; electricaltrainingmarginnotclaimed.",
+    "Manifest is designcontract. Implementation/tests plus independent row-by-row coverage review required beforeM04completed."
+  ],
+  "command_truth": {
+    "source_pages": [
+      34,
+      35
+    ],
+    "ordering": [
+      "CS_n",
+      "ACT_n",
+      "RAS_n",
+      "CAS_n",
+      "WE_n"
+    ],
+    "normal_cke_high": {
+      "ACT": [
+        "0",
+        "0",
+        "rowA16_unused",
+        "rowA15_unused",
+        "rowA14"
+      ],
+      "MRS": [
+        "0",
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "REF": [
+        "0",
+        "1",
+        "0",
+        "0",
+        "1"
+      ],
+      "PRE_PREA": [
+        "0",
+        "1",
+        "0",
+        "1",
+        "0"
+      ],
+      "RFU_reject": [
+        "0",
+        "1",
+        "0",
+        "1",
+        "1"
+      ],
+      "WR_WRA": [
+        "0",
+        "1",
+        "1",
+        "0",
+        "0"
+      ],
+      "RD_RDA": [
+        "0",
+        "1",
+        "1",
+        "0",
+        "1"
+      ],
+      "ZQCL_ZQCS": [
+        "0",
+        "1",
+        "1",
+        "1",
+        "0"
+      ],
+      "NOP_not_used_selected_mode": [
+        "0",
+        "1",
+        "1",
+        "1",
+        "1"
+      ],
+      "DES": [
+        "1",
+        "X",
+        "X",
+        "X",
+        "X"
+      ]
+    },
+    "A10": "PREA if1/PRE if0; RDA/WRA if1 versusRD/WR if0; ZQCL if1/ZQCS if0",
+    "CKE_transitions": {
+      "PDE": "high->low withDES; previousstateactiveoridle; timingguards",
+      "PDX": "low->high withDES wheninPD",
+      "SRE": "high->low withREF andallbanksidle",
+      "SRX": "low->high withDES wheninSR"
+    },
+    "async_RESET": "RESET_n=0 overridesallcommands,invalidatesarrayandpendingwork",
+    "pin_scope": "Commands are decoded enums, with truth-table fixture proving pinmapping; RFU/reservedfeatureenable returnsunsupported beforemutation."
+  },
+  "interfaces": {
+    "config": "DdrConfig{mode_id,source_sha256,base,size<=536870912,cycle_ps=834,queue_capacity,initialization:full,temperature_c:25}",
+    "command": "DdrCommand{sequence,at_cycle,kind,bank_group?,bank?,row?,column?,mr_index?,mr_value?,payload8?,byte_enables8?}; RESET/CKE/clock/trainingedges are typed control events in ps",
+    "effects": "IssuedCommand|Deferred{reasons,earliest_cycle}|Illegal{rule}|ReadBeat{request,offset,byte,time_ps}|WriteBeatCommit{request,offset,byte,time_ps}|BurstComplete|StateTransition|RefreshDeadline",
+    "storage": "Ddr engine emits byte effects into same MemoryService; no RAM clone, no route around targetservice",
+    "controller_policy": "Agebounded ready-command arbitration; refreshdeadlinepriority; roundrobin bankties; finitequeue; noearlyatomicmemorymutation",
+    "address_map": "singlex8device offset: column=offset&1023; bank=(offset>>10)&3; bank_group=(offset>>12)&3; row=(offset>>14)&32767. AlignedBL8commandcolumn divisibleby8; burst8bytes. Other swizzles require new explicit mapidentity."
+  }
+}

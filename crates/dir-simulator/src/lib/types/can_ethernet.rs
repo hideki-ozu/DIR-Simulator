@@ -40,7 +40,7 @@ impl DirCanPacket {
         }
     }
 }
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub enum BridgeEgress {
     Ethernet {
         source: usize,

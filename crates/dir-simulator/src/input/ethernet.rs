@@ -90,7 +90,7 @@ fn number(values: &Values, name: &str) -> u64 {
         _ => unreachable!(),
     }
 }
-fn paired(port: &str) -> String {
+pub(super) fn paired(port: &str) -> String {
     let (owner, gate) = port.rsplit_once('.').unwrap();
     format!(
         "{owner}.{}",
@@ -228,6 +228,8 @@ pub(super) fn resolve_prepared(
                 "ethernet.l2.dynamic.v1"
                     | "ethernet.tsn.v1"
                     | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.frer.rtag.v1"
+                    | "ethernet.network.composite.v1"
                     | "ethernet.preemption.abstract.v1"
                     | "ethernet.control.wire.experimental.v1"
             )
@@ -253,6 +255,8 @@ pub(super) fn resolve_prepared(
         "ethernet.l2.dynamic.v1"
             | "ethernet.tsn.v1"
             | "ethernet.redundancy.abstract.v1"
+            | "ethernet.frer.rtag.v1"
+            | "ethernet.network.composite.v1"
             | "ethernet.preemption.abstract.v1"
             | "ethernet.control.wire.experimental.v1"
     ) && (seen.len() != devices.len() || edges.len() + 1 != devices.len())
@@ -312,7 +316,15 @@ fn array<'a>(o: &'a serde_json::Map<String, Value>, key: &str) -> Result<&'a Vec
     })
 }
 pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) -> Result<()> {
-    configure_inner(content, p, profile).map_err(|mut d| {
+    configure_with_mac_scope(content, p, profile, false)
+}
+pub(super) fn configure_with_mac_scope(
+    content: &str,
+    p: &mut PreparedEthernet,
+    profile: &str,
+    component_scoped_mac: bool,
+) -> Result<()> {
+    configure_inner(content, p, profile, component_scoped_mac).map_err(|mut d| {
         if is_media(profile) && d.details.is_none() {
             d.details =
                 Some(serde_json::json!({"rule":"media_config_schema","target":"model-config"}));
@@ -320,7 +332,12 @@ pub(super) fn configure(content: &str, p: &mut PreparedEthernet, profile: &str) 
         d
     })
 }
-fn configure_inner(content: &str, p: &mut PreparedEthernet, profile: &str) -> Result<()> {
+fn configure_inner(
+    content: &str,
+    p: &mut PreparedEthernet,
+    profile: &str,
+    component_scoped_mac: bool,
+) -> Result<()> {
     let media = is_media(profile);
     let vlan = profile == "ethernet.l2.vlan.v1";
     let qos = vlan || profile == "ethernet.l2.qos.v1";
@@ -409,7 +426,7 @@ fn configure_inner(content: &str, p: &mut PreparedEthernet, profile: &str) -> Re
                     "mac",
                     mac(required_string(o, "mac")?, false),
                 )?;
-                if !macs.insert(m.clone()) {
+                if !macs.insert(m.clone()) && !component_scoped_mac {
                     return Err(error("duplicate endpoint MAC"));
                 }
                 p.devices[index].mac = Some(m);
@@ -658,7 +675,12 @@ fn configure_ports(root: &serde_json::Map<String, Value>, p: &mut PreparedEthern
         let reverse = p
             .directions
             .iter()
-            .find(|d| d.source == direction.destination && d.destination == direction.source)
+            .find(|d| {
+                d.source == direction.destination
+                    && d.destination == direction.source
+                    && d.from_port == paired(&direction.to_port)
+                    && d.to_port == paired(&direction.from_port)
+            })
             .ok_or_else(|| error("missing resolved reverse VLAN connection"))?;
         let pvid = vid(o, "pvid")?;
         let admit = required_string(o, "admit")?;
@@ -987,6 +1009,18 @@ fn configure_media(
     p: &mut PreparedEthernet,
     profile: &str,
 ) -> Result<()> {
+    configure_media_inner(root, p, profile, true)
+}
+pub(crate) fn configure_sparse_media(value: &Value, p: &mut PreparedEthernet) -> Result<()> {
+    let root = object(value, &["seed", "physical_links"], "configured media")?;
+    configure_media_inner(root, p, "ethernet.network.composite.v1", false)
+}
+fn configure_media_inner(
+    root: &serde_json::Map<String, Value>,
+    p: &mut PreparedEthernet,
+    profile: &str,
+    complete: bool,
+) -> Result<()> {
     let seed = super::json_diagnostics::field_result(
         root,
         "seed",
@@ -1041,6 +1075,7 @@ fn configure_media(
             match mode {
                 "10base-t" => 10_000_000,
                 "100base-tx" => 100_000_000,
+                "100base-t1" if !complete => 100_000_000,
                 "1000base-t1" => 1_000_000_000,
                 _ => return Err(media_error("phy_mode", id)),
             }
@@ -1086,7 +1121,7 @@ fn configure_media(
             directions: [ia, ib],
         });
     }
-    if ports.len() != p.directions.len() {
+    if complete && ports.len() != p.directions.len() {
         return Err(media_error("physical_link_coverage", "physical_links"));
     }
     physical_links.sort_by(|a, b| a.id.cmp(&b.id));

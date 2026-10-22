@@ -35,7 +35,60 @@ pub(super) fn metadata(
     base.common.profile = "ethernet.l2.vlan.v1".into();
     let mut metadata = super::ethernet::metadata(&base, timestamp, sources, hashes, config)?;
     metadata["model_profile"] = json!(prepared.common.profile);
-    metadata["models"] = json!([{"type":prepared.common.profile,"version":"1","assumptions":["abstract transaction network","single integer-picosecond FES","full duplex store and forward","single VLAN tag","eight priority FIFO classes","ideal shared clock"]}]);
+    let mut assumptions = match prepared.common.profile.as_str() {
+        "ethernet.network.composite.v1" => vec![
+            "single integer-picosecond FES",
+            "typed physical domains with per-port duplex",
+            "bridge store and forward",
+            "per-component VLAN tag stacks",
+            "eight priority FIFO classes",
+        ],
+        "ethernet.frer.rtag.v1" => vec![
+            "single integer-picosecond FES",
+            "full duplex store and forward",
+            "single VLAN tag",
+            "802.1CB-2017 R-TAG wire encoding",
+            "configured static redundancy paths",
+            "ideal shared clock",
+        ],
+        _ => vec![
+            "abstract transaction network",
+            "single integer-picosecond FES",
+            "full duplex store and forward",
+            "single VLAN tag",
+            "eight priority FIFO classes",
+            "ideal shared clock",
+        ],
+    };
+    if prepared.common.profile == "ethernet.network.composite.v1" {
+        if network.clocks.is_some() {
+            assumptions.push("independent exact-rational node clocks");
+            assumptions.push(if network.gptp.is_some() {
+                "packet-derived IEEE 802.1AS-2020 clock discipline within the selected profile"
+            } else {
+                "configured clock steps and slews; synchronization protocol not modeled"
+            });
+        }
+        if network
+            .extensions
+            .as_ref()
+            .and_then(|e| e.replication.as_ref())
+            .is_some()
+        {
+            assumptions.push("configured static redundancy paths");
+        }
+        if network.multicast_active.is_some() {
+            assumptions.push("configured IGMPv3/MLDv2 host, router and snooper actors");
+        }
+        if !network.phy_attachments.is_empty() {
+            assumptions.push("sampled physical medium on selected directions");
+        }
+        if network.qcc.is_some() {
+            assumptions.push("fully centralized bounded local CUC/CNC cyclic configuration");
+        }
+    }
+    metadata["models"] =
+        json!([{"type":prepared.common.profile,"version":"1","assumptions":assumptions}]);
     metadata["model_schemas"] = json!(
         registered
             .registry
@@ -78,7 +131,10 @@ pub(super) fn metadata(
             "can.ethernet.tsn.v1" | "ethernet.control.wire.experimental.v1" => {
                 &network.config["ethernet"]["dynamic"]
             }
-            "ethernet.redundancy.abstract.v1" | "ethernet.preemption.abstract.v1" => {
+            "ethernet.redundancy.abstract.v1"
+            | "ethernet.frer.rtag.v1"
+            | "ethernet.network.composite.v1"
+            | "ethernet.preemption.abstract.v1" => {
                 &network.config["base"]["config"]["base"]["config"]["dynamic"]
             }
             _ => &network.config["dynamic"],
@@ -96,6 +152,16 @@ pub(super) fn metadata(
                 flow["ip_multicast"] = json!(ip);
             }
         }
+    }
+    if let Some(merge) = network
+        .extensions
+        .as_ref()
+        .and_then(|e| e.mac_merge.as_ref())
+    {
+        metadata["ethernet_mac_merge"] = decimals(
+            serde_json::to_value(merge).map_err(|e| Diagnostic::execution(e.to_string()))?,
+        );
+        metadata["ethernet_mac_merge"]["capability_adapter"] = json!({"name":"dir_lldp_capability_v1","source_verification":"IEEE802.1AB-2016_8.5.4_9.1.2_9.1.3_bounded_subset","scope":"mandatory base TLVs plus Clause79 capability and explicit receive lifetime"});
     }
     if let Some(tsn) = &network.tsn {
         let mut body = if prepared.common.profile == "ethernet.tsn.v1" {
@@ -131,6 +197,10 @@ pub(super) fn metadata(
         metadata["ethernet_wire"] = json!({"config":network.config,"packets":packets});
     }
     extensions::metadata(network, &mut metadata);
+    let metrics_v2 = super::registered::metric_catalog_v2(prepared);
+    if !metrics_v2.is_empty() {
+        metadata["metrics_v2"] = json!(metrics_v2);
+    }
     Ok(metadata)
 }
 
