@@ -196,7 +196,7 @@ pub(super) fn stream(
             |(name, file)| json!({"name":name,"sha256":file.sha256,"bytes":file.bytes.to_string()}),
         )
         .collect();
-    let manifest = json!({"schema_version":version,"run_id":run_id,"status":"complete","termination":snapshot.common.termination,"partial":snapshot.common.partial,"metadata_ref":"results.json#/metadata","files":files});
+    let manifest = json!({"schema_version":version,"run_id":run_id,"status":"complete","termination":snapshot.common.termination,"partial":snapshot.common.partial,"metadata_ref":if version == 4 {"results.json#/result/metadata"} else {"results.json#/metadata"},"files":files});
     staging.publish(output, run_id, &manifest)
 }
 
@@ -289,7 +289,7 @@ pub(super) fn publish_files(
     files: BTreeMap<&str, Vec<u8>>,
 ) -> Result<(), Diagnostic> {
     let manifest_files: Vec<_> = files.iter().map(|(name,bytes)| json!({"name":name,"sha256":digest(bytes),"bytes":bytes.len().to_string()})).collect();
-    let manifest = json!({"schema_version":version,"run_id":run_id,"status":"complete","termination":termination,"partial":partial,"metadata_ref":"results.json#/metadata","files":manifest_files});
+    let manifest = json!({"schema_version":version,"run_id":run_id,"status":"complete","termination":termination,"partial":partial,"metadata_ref":if version == 4 {"results.json#/result/metadata"} else {"results.json#/metadata"},"files":manifest_files});
     let temporary = output.join(format!(".tmp-{run_id}"));
     fs::create_dir(&temporary)
         .map_err(|e| Diagnostic::output(format!("Cannot create output staging directory: {e}")))?;

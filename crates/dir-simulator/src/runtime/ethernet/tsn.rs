@@ -4,6 +4,9 @@ use crate::{
     types::{Diagnostic, ethernet::tsn::*},
 };
 use std::{collections::BTreeMap, sync::Arc};
+mod clock_projection;
+pub(crate) mod merge;
+use crate::runtime::network::clock::NodeClock;
 type Result<T> = std::result::Result<T, Diagnostic>;
 fn error(target: &str, message: impl Into<String>) -> Diagnostic {
     let mut d = Diagnostic::execution(message)
@@ -173,8 +176,10 @@ fn subtract_credit(c: Credit, amount: u128, cap: u128) -> Credit {
         Credit::new(true, (amount - c.magnitude).min(cap))
     }
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct CbsState {
+    #[serde(with = "crate::runtime::network::checkpoint::credit")]
     pub credit: Credit,
     pub last_ps: u64,
     pub mode: CreditMode,
@@ -188,6 +193,7 @@ impl CbsState {
         schedule: Option<&Schedule>,
         now: u64,
         target: &str,
+        clock: Option<&NodeClock>,
     ) -> Result<()> {
         let dt = now
             .checked_sub(self.last_ps)
@@ -198,13 +204,20 @@ impl CbsState {
                 (cfg.link_bps - cfg.idle_bps) as u128 * dt as u128,
                 cfg.lo,
             );
-        } else if !self.backlog && !self.credit.negative {
-            self.credit = Credit::default();
         } else {
             let open = match schedule {
-                Some(s) => s.open_elapsed(cfg.priority, self.last_ps, now)?,
+                Some(s) => {
+                    clock_projection::open_elapsed(s, cfg.priority, self.last_ps, now, clock)?
+                }
                 None => dt,
             };
+            if !self.backlog && !self.credit.negative {
+                if open > 0 {
+                    self.credit = Credit::default();
+                }
+                self.last_ps = now;
+                return Ok(());
+            }
             self.credit = add_credit(
                 self.credit,
                 cfg.idle_bps as u128 * open as u128,
@@ -215,15 +228,15 @@ impl CbsState {
         Ok(())
     }
     fn derive(&mut self, open: bool) {
-        if !self.sending && !self.backlog && !self.credit.negative {
+        if !self.sending && !self.backlog && !self.credit.negative && open {
             self.credit = Credit::default();
         }
         self.mode = if self.sending {
             CreditMode::Sending
-        } else if !self.backlog && !self.credit.negative {
-            CreditMode::Zero
         } else if !open {
             CreditMode::Frozen
+        } else if !self.backlog && !self.credit.negative {
+            CreditMode::Zero
         } else if self.backlog {
             CreditMode::Accumulating
         } else {
@@ -244,7 +257,8 @@ impl CbsState {
 pub(crate) struct Head {
     pub occupancy_ps: u64,
 }
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct Sending {
     pub priority: u8,
     pub release_ps: u64,
@@ -256,25 +270,63 @@ pub(crate) struct PortInput {
     pub backlog: [bool; 8],
     pub sending: Option<Sending>,
     pub policy_epoch: u64,
+    pub merge: Option<merge::MergeShaperView>,
+    pub service: Option<merge::MacServiceView>,
 }
-#[derive(Debug, Clone)]
+impl PortInput {
+    fn busy(&self) -> bool {
+        self.sending.is_some() || self.service.as_ref().is_some_and(|v| v.busy)
+    }
+    fn backlog(&self, class: usize) -> bool {
+        self.backlog[class]
+            || self
+                .service
+                .as_ref()
+                .is_some_and(|v| v.retained_backlog[class])
+    }
+    fn transmitting(&self, class: usize) -> bool {
+        if let Some(v) = &self.service {
+            v.transmit_class == Some(class as u8)
+        } else if let Some(v) = self.merge {
+            v.transmit_class == Some(class as u8)
+        } else {
+            self.sending.is_some_and(|v| v.priority as usize == class)
+        }
+    }
+}
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct PortState {
+    #[serde(skip)]
     oper: Option<Arc<Schedule>>,
     schedule_generation: u64,
     wake_generation: u64,
+    #[serde(with = "crate::runtime::network::checkpoint::optional128")]
     next_wake: Option<u128>,
     cbs: [Option<CbsState>; 8],
     last_ps: u64,
     gate_mask: Option<u8>,
     sending: Option<Sending>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    merge: Option<merge::MergeShaperView>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    clock: Option<NodeClock>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    local_wake: Option<crate::runtime::network::clock::ClockWake>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    service: Option<merge::MacServiceView>,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct MeterState {
+    #[serde(with = "crate::runtime::network::checkpoint::decimal128")]
     committed: u128,
+    #[serde(with = "crate::runtime::network::checkpoint::decimal128")]
     peak: u128,
     last_evaluated_ps: u64,
 }
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct WakeToken {
     pub port: String,
     pub time_ps: u64,
@@ -316,6 +368,10 @@ impl TsnState {
                 last_ps: 0,
                 gate_mask: None,
                 sending: None,
+                merge: None,
+                clock: None,
+                local_wake: None,
+                service: None,
                 cbs: std::array::from_fn(|i| {
                     o.cbs[i].as_ref().map(|_| CbsState {
                         credit: Credit::default(),
@@ -380,29 +436,78 @@ impl TsnState {
             .find(|u| u.port == port)
             .map(|u| u.effective_at_ps)
     }
-    fn advance_port(&self, i: usize, p: &mut PortState, now: u64) -> Result<()> {
+    fn advance_port(
+        &self,
+        i: usize,
+        p: &mut PortState,
+        now: u64,
+        clock: Option<&NodeClock>,
+    ) -> Result<()> {
         let o = &self.prepared.outputs[i];
         if now < p.last_ps {
             return Err(error(&o.port, "port time reversal"));
         }
+        if now > p.last_ps && p.clock.as_ref().is_some_and(|old| Some(old) != clock) {
+            return Err(error(&o.port, "clock changed before old-anchor settlement"));
+        }
         for (c, state) in p.cbs.iter_mut().enumerate() {
             if let Some(state) = state {
-                state.advance(o.cbs[c].as_ref().unwrap(), p.oper.as_deref(), now, &o.port)?;
+                if p.merge.is_some()
+                    || p.service
+                        .as_ref()
+                        .is_some_and(|v| v.accounting != merge::ServiceAccounting::LegacyCapped)
+                {
+                    state.advance_merge(
+                        o.cbs[c].as_ref().unwrap(),
+                        p.oper.as_deref(),
+                        now,
+                        &o.port,
+                        clock,
+                    )?;
+                } else {
+                    state.advance(
+                        o.cbs[c].as_ref().unwrap(),
+                        p.oper.as_deref(),
+                        now,
+                        &o.port,
+                        clock,
+                    )?;
+                }
             }
         }
         p.last_ps = now;
+        p.clock = clock.cloned();
         Ok(())
     }
     /// Apply due GCL controls and evaluate supplied post-change queue states atomically.
     /// Caller must include a PortInput for every port with a due update.
+    #[cfg(test)]
     pub(crate) fn plan_control(
         &self,
         now: u64,
         inputs: &BTreeMap<String, PortInput>,
     ) -> Result<TsnDelta> {
-        let mut d = TsnDelta::default();
+        self.plan_control_in(TsnDelta::default(), now, inputs)
+    }
+    #[cfg(test)]
+    pub(crate) fn plan_control_in(
+        &self,
+        d: TsnDelta,
+        now: u64,
+        inputs: &BTreeMap<String, PortInput>,
+    ) -> Result<TsnDelta> {
+        self.plan_control_clock_in(d, now, inputs, &BTreeMap::new())
+    }
+    /// Scripted effective_at_ps is GLOBAL; schedule base/cycle remain LOCAL.
+    pub(crate) fn plan_control_clock_in(
+        &self,
+        mut d: TsnDelta,
+        now: u64,
+        inputs: &BTreeMap<String, PortInput>,
+        clocks: &BTreeMap<String, NodeClock>,
+    ) -> Result<TsnDelta> {
         let mut staged = BTreeMap::new();
-        let mut cursor = self.update_cursor;
+        let mut cursor = d.update_cursor.unwrap_or(self.update_cursor);
         while let Some(u) = self
             .prepared
             .updates
@@ -416,8 +521,11 @@ impl TsnState {
                 return Err(error(&u.port, "missing post-control port input"));
             }
             let i = self.index(&u.port)?;
-            let p = staged.entry(i).or_insert_with(|| self.ports[i].clone());
-            self.advance_port(i, p, now)?;
+            staged
+                .entry(i)
+                .or_insert_with(|| self.staged_port(&mut d, i));
+            let p = staged.get_mut(&i).unwrap();
+            self.advance_port(i, p, now, clocks.get(&u.port))?;
             p.oper = Some(u.schedule.clone());
             p.schedule_generation = increment(p.schedule_generation, &u.port)?;
             p.gate_mask = None;
@@ -426,8 +534,10 @@ impl TsnState {
         }
         for (port, input) in inputs {
             let i = self.index(port)?;
-            let mut p = staged.remove(&i).unwrap_or_else(|| self.ports[i].clone());
-            self.advance_port(i, &mut p, now)?;
+            let mut p = staged
+                .remove(&i)
+                .unwrap_or_else(|| self.staged_port(&mut d, i));
+            self.advance_port(i, &mut p, now, clocks.get(port))?;
             let changed = p.schedule_generation != self.ports[i].schedule_generation;
             self.finish_port(
                 i,
@@ -436,11 +546,137 @@ impl TsnState {
                 input,
                 cursor,
                 if changed { "update" } else { "boundary" },
+                clocks.get(port),
                 &mut d,
             )?;
         }
         if cursor != self.update_cursor {
             d.update_cursor = Some(cursor);
+        }
+        Ok(d)
+    }
+    /// Install a CNC-generated complete set through the same staged port
+    /// transition path as ordinary GCL changes. The owner has already checked
+    /// network-wide drain; this service also rejects an on-wire port locally.
+    #[cfg(test)]
+    pub(crate) fn plan_install_in(
+        &self,
+        d: TsnDelta,
+        now: u64,
+        schedules: &BTreeMap<String, Arc<Schedule>>,
+        inputs: &BTreeMap<String, PortInput>,
+    ) -> Result<TsnDelta> {
+        self.plan_install_clock_in(d, now, schedules, inputs, &BTreeMap::new())
+    }
+    pub(crate) fn plan_install_clock_in(
+        &self,
+        d: TsnDelta,
+        now: u64,
+        schedules: &BTreeMap<String, Arc<Schedule>>,
+        inputs: &BTreeMap<String, PortInput>,
+        clocks: &BTreeMap<String, NodeClock>,
+    ) -> Result<TsnDelta> {
+        self.plan_managed_in(d, now, schedules, inputs, true, "cnc_install", clocks)
+    }
+    /// Close future managed eligibility on topology invalidation while an
+    /// already-started physical transmission retains its real completion.
+    #[cfg(test)]
+    pub(crate) fn plan_suspend_in(
+        &self,
+        d: TsnDelta,
+        now: u64,
+        schedules: &BTreeMap<String, Arc<Schedule>>,
+        inputs: &BTreeMap<String, PortInput>,
+        closed_priorities: u8,
+    ) -> Result<TsnDelta> {
+        self.plan_suspend_clock_in(
+            d,
+            now,
+            schedules,
+            inputs,
+            closed_priorities,
+            &BTreeMap::new(),
+        )
+    }
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn plan_suspend_clock_in(
+        &self,
+        d: TsnDelta,
+        now: u64,
+        schedules: &BTreeMap<String, Arc<Schedule>>,
+        inputs: &BTreeMap<String, PortInput>,
+        closed_priorities: u8,
+        clocks: &BTreeMap<String, NodeClock>,
+    ) -> Result<TsnDelta> {
+        if schedules.values().any(|schedule| {
+            schedule
+                .entries
+                .iter()
+                .any(|entry| entry.open_mask & closed_priorities != 0)
+        }) {
+            return Err(error(
+                "@cnc",
+                "suspension schedule opens a managed priority",
+            ));
+        }
+        self.plan_managed_in(d, now, schedules, inputs, false, "cnc_suspend", clocks)
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn plan_managed_in(
+        &self,
+        mut d: TsnDelta,
+        now: u64,
+        schedules: &BTreeMap<String, Arc<Schedule>>,
+        inputs: &BTreeMap<String, PortInput>,
+        require_idle: bool,
+        cause: &str,
+        clocks: &BTreeMap<String, NodeClock>,
+    ) -> Result<TsnDelta> {
+        let cursor = d.update_cursor.unwrap_or(self.update_cursor);
+        if self
+            .prepared
+            .updates
+            .get(cursor)
+            .is_some_and(|u| u.effective_at_ps <= now)
+        {
+            return Err(error("@cnc", "GCL control must precede CNC installation"));
+        }
+        for (port, schedule) in schedules {
+            let i = self.index(port)?;
+            let input = inputs
+                .get(port)
+                .ok_or_else(|| error(port, "missing CNC port input"))?;
+            if require_idle
+                && (input.busy()
+                    || input.merge.is_some_and(|v| v.medium_busy_until.is_some())
+                    || clocks.get(port).map_or(schedule.base_ps != now, |clock| {
+                        clock
+                            .local_at(now)
+                            .and_then(|t| t.floor_ps())
+                            .map_or(true, |local| local < i128::from(schedule.base_ps))
+                    }))
+            {
+                return Err(error(
+                    port,
+                    "CNC installation requires drained port and current base time",
+                ));
+            }
+            let mut state = self.staged_port(&mut d, i);
+            self.advance_port(i, &mut state, now, clocks.get(port))?;
+            state.oper = Some(schedule.clone());
+            state.schedule_generation = increment(state.schedule_generation, port)?;
+            state.gate_mask = None;
+            d.gcl_updates = increment(d.gcl_updates, port)?;
+            self.finish_port(
+                i,
+                state,
+                now,
+                input,
+                cursor,
+                cause,
+                clocks.get(port),
+                &mut d,
+            )?;
         }
         Ok(d)
     }
@@ -458,12 +694,23 @@ impl TsnState {
         }
     }
     /// Compose a queue change/selection into an owned delta, with no early state commit.
+    #[cfg(test)]
     pub(crate) fn plan_port_in(
+        &self,
+        d: TsnDelta,
+        port: &str,
+        now: u64,
+        input: &PortInput,
+    ) -> Result<TsnDelta> {
+        self.plan_port_clock_in(d, port, now, input, None)
+    }
+    pub(crate) fn plan_port_clock_in(
         &self,
         mut d: TsnDelta,
         port: &str,
         now: u64,
         input: &PortInput,
+        clock: Option<&NodeClock>,
     ) -> Result<TsnDelta> {
         let cursor = d.update_cursor.unwrap_or(self.update_cursor);
         if self
@@ -479,9 +726,116 @@ impl TsnState {
         }
         let i = self.index(port)?;
         let mut p = self.staged_port(&mut d, i);
-        self.advance_port(i, &mut p, now)?;
-        self.finish_port(i, p, now, input, cursor, "boundary", &mut d)?;
+        self.advance_port(i, &mut p, now, clock)?;
+        self.finish_port(i, p, now, input, cursor, "boundary", clock, &mut d)?;
         Ok(d)
+    }
+    /// Zero-time evaluation after old-anchor settlement. A GLOBAL GCL control
+    /// later in the same FES cut remains pending and is not reordered here.
+    pub(crate) fn plan_reanchor_clock_in(
+        &self,
+        mut d: TsnDelta,
+        port: &str,
+        now: u64,
+        input: &PortInput,
+        clock: Option<&NodeClock>,
+    ) -> Result<TsnDelta> {
+        let cursor = d.update_cursor.unwrap_or(self.update_cursor);
+        if self
+            .prepared
+            .updates
+            .get(cursor)
+            .is_some_and(|u| u.effective_at_ps < now)
+        {
+            return Err(error(port, "missed GCL effective time before reanchor"));
+        }
+        let i = self.index(port)?;
+        let mut p = self.staged_port(&mut d, i);
+        if p.last_ps != now {
+            return Err(error(
+                port,
+                "reanchor requires old-anchor settlement at this cut",
+            ));
+        }
+        self.advance_port(i, &mut p, now, clock)?;
+        self.finish_port(i, p, now, input, cursor, "clock", clock, &mut d)?;
+        Ok(d)
+    }
+    /// Observe the staged operational gate using the caller's authoritative clock.
+    pub(crate) fn gate_open_clock_in(
+        &self,
+        d: &TsnDelta,
+        port: &str,
+        priority: u8,
+        now: u64,
+        clock: Option<&NodeClock>,
+    ) -> Result<bool> {
+        if priority >= 8 {
+            return Err(error(port, "priority out of range"));
+        }
+        let i = self.index(port)?;
+        let p = d
+            .ports
+            .iter()
+            .find(|(j, _)| *j == i)
+            .map_or(&self.ports[i], |(_, p)| p);
+        p.oper.as_ref().map_or(Ok(true), |s| {
+            clock_projection::open(s, priority, now, clock)
+        })
+    }
+    /// Settle the old state only. No queue/MAC transition or reservation is produced.
+    pub(crate) fn plan_settle_clock_in(
+        &self,
+        mut d: TsnDelta,
+        port: &str,
+        now: u64,
+        clock: Option<&NodeClock>,
+    ) -> Result<TsnDelta> {
+        let i = self.index(port)?;
+        let mut p = d
+            .ports
+            .iter()
+            .find(|(j, _)| *j == i)
+            .map_or_else(|| self.ports[i].clone(), |(_, p)| p.clone());
+        self.advance_port(i, &mut p, now, clock)?;
+        if let Some((_, staged)) = d.ports.iter_mut().find(|(j, _)| *j == i) {
+            *staged = p;
+        } else {
+            d.ports.push((i, p));
+        }
+        Ok(d)
+    }
+    pub(crate) fn wake_valid_clock_in(
+        &self,
+        d: &TsnDelta,
+        token: &WakeToken,
+        clock: Option<&NodeClock>,
+    ) -> bool {
+        self.wake_valid_in(d, token)
+            && self.index(&token.port).ok().is_some_and(|i| {
+                d.ports
+                    .iter()
+                    .find(|(j, _)| *j == i)
+                    .map_or(&self.ports[i], |(_, p)| p)
+                    .clock
+                    .as_ref()
+                    == clock
+            })
+    }
+    /// Called by outer checkpoint owner AFTER replaying authoritative clock history.
+    pub(crate) fn validate_clock_dependency(
+        &self,
+        port: &str,
+        clock: Option<&NodeClock>,
+    ) -> Result<()> {
+        let i = self.index(port)?;
+        if self.ports[i].clock.as_ref() != clock {
+            return Err(error(
+                port,
+                "TSN clock dependency differs from authoritative clock",
+            ));
+        }
+        Ok(())
     }
     #[allow(clippy::too_many_arguments)]
     fn finish_port(
@@ -492,6 +846,7 @@ impl TsnState {
         input: &PortInput,
         cursor: usize,
         cause: &str,
+        clock: Option<&NodeClock>,
         d: &mut TsnDelta,
     ) -> Result<()> {
         let o = &self.prepared.outputs[i];
@@ -507,19 +862,34 @@ impl TsnState {
                 "invalid sending state; release must be processed first",
             ));
         }
-        let mask = (0..8).fold(0, |m, c| {
-            m | if p.oper.as_ref().is_none_or(|s| s.open(c, now)) {
-                1 << c
-            } else {
-                0
+        if let Some(view) = &input.service {
+            if input.merge.is_some()
+                || input.sending.is_some()
+                || view.transmit_class.is_some_and(|c| c >= 8)
+                || view.release_ps.is_some_and(|t| t <= now)
+                || view.next_transition_ps.is_some_and(|t| t <= now)
+                || !view.busy && (view.transmit_class.is_some() || view.release_ps.is_some())
+                || view.transmit_class.is_some() && view.active_work.is_none()
+            {
+                return Err(error(&o.port, "invalid common MAC service view"));
             }
-        });
-        let boundary = min_some(
-            clip.map(|t| t as u128),
-            (0..8).fold(None, |best, c| {
-                min_some(best, p.oper.as_ref().and_then(|s| s.next_boundary(c, now)))
-            }),
-        );
+        }
+        let mut mask = 0u8;
+        let mut boundary = clip.map(|t| t as u128);
+        for class in 0..8 {
+            if p.oper
+                .as_ref()
+                .map_or(Ok(true), |s| clock_projection::open(s, class, now, clock))?
+            {
+                mask |= 1 << class;
+            }
+            if let Some(schedule) = &p.oper {
+                boundary = min_some(
+                    boundary,
+                    clock_projection::boundary(schedule, class, now, clock)?,
+                );
+            }
+        }
         if p.gate_mask != Some(mask) || cause == "update" {
             d.records.push(TsnRecord::Gate(GateRecord {
                 time_ps: now,
@@ -540,19 +910,28 @@ impl TsnState {
         }
         p.gate_mask = Some(mask);
         p.sending = input.sending;
+        p.merge = input.merge;
+        p.service = input.service.clone();
         let mut wake = clip.map(|t| t as u128);
         let mut decisions = Vec::new();
         if input.heads.iter().any(Option::is_some) {
-            wake = min_some(
-                wake,
-                p.oper
-                    .as_ref()
-                    .filter(|g| now < g.base_ps)
-                    .map(|g| g.base_ps as u128),
-            );
+            if let Some(schedule) = &p.oper {
+                wake = min_some(wake, clock_projection::base_wake(schedule, now, clock)?);
+            }
         }
         if let Some(s) = input.sending {
             wake = min_some(wake, Some(s.release_ps as u128));
+        }
+        if (input.merge.is_some() || input.service.is_some()) && (0..8).any(|c| input.backlog(c)) {
+            wake = min_some(wake, boundary);
+        }
+        if let Some(view) = input.merge {
+            wake = min_some(wake, view.medium_busy_until.map(u128::from));
+            wake = min_some(wake, view.next_boundary.map(u128::from));
+        }
+        if let Some(view) = &input.service {
+            wake = min_some(wake, view.release_ps.map(u128::from));
+            wake = min_some(wake, view.next_transition_ps.map(u128::from));
         }
         for c in 0..8 {
             let open = mask & (1 << c) != 0;
@@ -568,11 +947,18 @@ impl TsnState {
                         _ => None,
                     })
                     .or_else(|| self.ports[i].cbs[c].as_ref().map(|s| (s.credit, s.mode)));
-                s.backlog = input.backlog[c];
-                s.sending = input
-                    .sending
-                    .is_some_and(|send| send.priority as usize == c);
-                s.derive(open);
+                s.backlog = input.backlog(c);
+                s.sending = input.transmitting(c);
+                if input.merge.is_some()
+                    || input
+                        .service
+                        .as_ref()
+                        .is_some_and(|v| v.accounting != merge::ServiceAccounting::LegacyCapped)
+                {
+                    s.derive_merge(open);
+                } else {
+                    s.derive(open);
+                }
                 let cfg = o.cbs[c].as_ref().unwrap();
                 if observed != Some((s.credit, s.mode)) || cause == "update" {
                     d.records.push(TsnRecord::Credit(CreditRecord {
@@ -582,17 +968,37 @@ impl TsnState {
                         credit: s.credit,
                         slope: s.slope(cfg),
                         mode: s.mode,
-                        cause: cause.into(),
+                        cause: if input.merge.is_some()
+                            && s.credit.magnitude > if s.credit.negative { cfg.lo } else { cfg.hi }
+                        {
+                            "merge_configured_bound_exceeded".into()
+                        } else {
+                            cause.into()
+                        },
                     }));
                 }
                 // Sending ports wake at release; waiting negative credit wakes are recomputed there.
-                if input.sending.is_none() && s.credit.negative {
-                    let b = p.oper.as_ref().and_then(|g| g.next_boundary(c as u8, now));
+                if !s.sending && input.sending.is_none() && s.credit.negative {
+                    let b = p
+                        .oper
+                        .as_ref()
+                        .map(|g| clock_projection::boundary(g, c as u8, now, clock))
+                        .transpose()?
+                        .flatten();
                     if open {
                         wake = min_some(
                             wake,
                             min_some(
-                                Some(now as u128 + ceil(s.credit.magnitude, cfg.idle_bps as u128)),
+                                Some(
+                                    u128::from(now)
+                                        .checked_add(ceil(
+                                            s.credit.magnitude,
+                                            u128::from(cfg.idle_bps),
+                                        ))
+                                        .ok_or_else(|| {
+                                            error(&o.port, "credit recovery deadline overflow")
+                                        })?,
+                                ),
                                 b,
                             ),
                         );
@@ -605,27 +1011,37 @@ impl TsnState {
             let Some(head) = input.heads[c] else {
                 continue;
             };
-            if head.occupancy_ps == 0 || !input.backlog[c] {
+            if head.occupancy_ps == 0 || !input.backlog(c) {
                 return Err(error(
                     &o.port,
                     "invalid zero-duration or non-backlogged head",
                 ));
             }
             let fit = match p.oper.as_ref() {
-                Some(s) => s.next_fit(c as u8, now, head.occupancy_ps, clip),
+                Some(s) => clock_projection::fit(s, c as u8, now, head.occupancy_ps, clip, clock)?,
                 None => clip
                     .is_none_or(|t| now as u128 + head.occupancy_ps as u128 <= t as u128)
                     .then_some(now as u128),
             };
             let negative = p.cbs[c].as_ref().is_some_and(|s| s.credit.negative);
-            let state = if input.sending.is_some() {
+            let state = if input.busy() {
                 "busy"
-            } else if p.oper.as_ref().is_some_and(|s| now < s.base_ps) {
+            } else if p
+                .oper
+                .as_ref()
+                .map(|s| clock_projection::before_base(s, now, clock))
+                .transpose()?
+                .unwrap_or(false)
+            {
                 "no_active_schedule"
             } else if p
                 .oper
                 .as_ref()
-                .is_some_and(|s| s.next_fit(c as u8, now, head.occupancy_ps, None).is_none())
+                .map(|s| clock_projection::fit(s, c as u8, now, head.occupancy_ps, None, clock))
+                .transpose()?
+                .flatten()
+                .is_none()
+                && p.oper.is_some()
             {
                 "never_eligible"
             } else if !open {
@@ -640,7 +1056,7 @@ impl TsnState {
             if state == "guard_blocked" && !d.guard_blocked.contains(&(o.port.clone(), c as u8)) {
                 d.guard_blocked.push((o.port.clone(), c as u8));
             }
-            if input.sending.is_none() {
+            if !input.busy() {
                 if let Some(f) = fit.filter(|f| *f > now as u128) {
                     wake = min_some(wake, Some(f));
                 }
@@ -655,6 +1071,15 @@ impl TsnState {
         wake = wake.filter(|t| *t > now as u128);
         p.wake_generation = increment(p.wake_generation, &o.port)?;
         p.next_wake = wake;
+        p.local_wake = if let (Some(clock), Some(schedule), Some(wake)) = (
+            clock,
+            p.oper.as_ref(),
+            wake.and_then(|w| u64::try_from(w).ok()),
+        ) {
+            clock_projection::gate_wake(schedule, now, wake, clock)?
+        } else {
+            None
+        };
         if let Some(time_ps) = wake.and_then(|n| u64::try_from(n).ok()) {
             d.wakes.push(WakeToken {
                 port: o.port.clone(),
@@ -664,14 +1089,7 @@ impl TsnState {
             });
         }
         if decisions.is_empty() {
-            decisions.push((
-                0,
-                if input.sending.is_some() {
-                    "busy"
-                } else {
-                    "ready"
-                },
-            ));
+            decisions.push((0, if input.busy() { "busy" } else { "ready" }));
         }
         for (c, state) in decisions {
             d.records.push(TsnRecord::Decision(DecisionRecord {
@@ -702,6 +1120,7 @@ impl TsnState {
         self.plan_start_in(TsnDelta::default(), port, priority, now, mac_bytes, post)
     }
     /// Compose a SOF with prior control/selection changes, keeping only the final wake.
+    #[cfg(test)]
     #[allow(clippy::too_many_arguments)]
     pub(crate) fn plan_start_in(
         &self,
@@ -712,13 +1131,34 @@ impl TsnState {
         mac_bytes: u64,
         post: &PortInput,
     ) -> Result<(TsnDelta, u64, u64)> {
+        self.plan_start_clock_in(d, port, priority, now, mac_bytes, post, None)
+    }
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn plan_start_clock_in(
+        &self,
+        d: TsnDelta,
+        port: &str,
+        priority: u8,
+        now: u64,
+        mac_bytes: u64,
+        post: &PortInput,
+        clock: Option<&NodeClock>,
+    ) -> Result<(TsnDelta, u64, u64)> {
         let (serialization, occupancy) =
             wire_times(mac_bytes, self.prepared.outputs[self.index(port)?].link_bps)?;
-        self.plan_start_duration_in(d, port, priority, now, serialization, occupancy, post)
+        self.plan_start_duration_clock_in(
+            d,
+            port,
+            priority,
+            now,
+            serialization,
+            occupancy,
+            post,
+            clock,
+        )
     }
-    /// Same TAS/CBS preflight with a profile-owned occupied interval.
     #[allow(clippy::too_many_arguments)]
-    pub(crate) fn plan_start_duration_in(
+    pub(crate) fn plan_start_duration_clock_in(
         &self,
         mut d: TsnDelta,
         port: &str,
@@ -727,6 +1167,7 @@ impl TsnState {
         serialization: u64,
         occupancy: u64,
         post: &PortInput,
+        clock: Option<&NodeClock>,
     ) -> Result<(TsnDelta, u64, u64)> {
         let cursor = d.update_cursor.unwrap_or(self.update_cursor);
         if priority >= 8 {
@@ -742,7 +1183,7 @@ impl TsnState {
         }
         let i = self.index(port)?;
         let mut p = self.staged_port(&mut d, i);
-        self.advance_port(i, &mut p, now)?;
+        self.advance_port(i, &mut p, now, clock)?;
         let eof = now
             .checked_add(serialization)
             .ok_or_else(|| error(port, "SOF+serialization overflow"))?;
@@ -750,13 +1191,20 @@ impl TsnState {
             .checked_add(occupancy)
             .ok_or_else(|| error(port, "SOF+occupancy overflow"))?;
         let clip = self.next_update(port, cursor);
+        let gate_fits = p
+            .oper
+            .as_ref()
+            .map(|s| clock_projection::fit(s, priority, now, occupancy, clip, clock))
+            .transpose()?
+            .flatten()
+            == Some(now as u128);
         if p.sending.is_some()
+            || p.merge.is_some_and(|v| v.medium_busy_until.is_some())
+            || p.service.as_ref().is_some_and(|v| v.busy)
             || p.cbs[priority as usize]
                 .as_ref()
                 .is_some_and(|s| s.credit.negative)
-            || p.oper
-                .as_ref()
-                .is_some_and(|s| s.next_fit(priority, now, occupancy, clip) != Some(now as u128))
+            || p.oper.is_some() && !gate_fits
             || clip.is_some_and(|t| release > t)
         {
             return Err(error(port, "SOF is ineligible"));
@@ -766,9 +1214,10 @@ impl TsnState {
             priority,
             release_ps: release,
         });
-        self.finish_port(i, p, now, &input, cursor, "sof", &mut d)?;
+        self.finish_port(i, p, now, &input, cursor, "sof", clock, &mut d)?;
         Ok((d, eof, release))
     }
+    #[cfg(test)]
     pub(crate) fn wake_valid(&self, token: &WakeToken) -> bool {
         self.wake_valid_in(&TsnDelta::default(), token)
     }
@@ -824,7 +1273,34 @@ impl TsnState {
         )
     }
     #[allow(clippy::too_many_arguments)]
+    #[cfg(test)]
     pub(crate) fn plan_arrival_in(
+        &self,
+        d: TsnDelta,
+        ingress: &str,
+        dst_mac: &str,
+        vid: u16,
+        priority: u8,
+        mac_bytes: u64,
+        reception_id: &str,
+        now: u64,
+    ) -> Result<TsnDelta> {
+        self.plan_arrival_clock_in(
+            d,
+            ingress,
+            dst_mac,
+            vid,
+            priority,
+            mac_bytes,
+            reception_id,
+            now,
+            None,
+        )
+    }
+    /// Stream gates use the receiving node's local clock. Meter replenishment
+    /// retains physical elapsed time, so clock corrections do not mint tokens.
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn plan_arrival_clock_in(
         &self,
         mut d: TsnDelta,
         ingress: &str,
@@ -834,6 +1310,7 @@ impl TsnState {
         mac_bytes: u64,
         reception_id: &str,
         now: u64,
+        clock: Option<&NodeClock>,
     ) -> Result<TsnDelta> {
         let key = StreamKey {
             ingress: ingress.into(),
@@ -862,7 +1339,13 @@ impl TsnState {
             if mac_bytes > cfg.max_sdu_bytes {
                 r.verdict = "drop".into();
                 r.reason = "psfp_max_sdu".into();
-            } else if cfg.gate.as_ref().is_some_and(|g| !g.open(priority, now)) {
+            } else if cfg
+                .gate
+                .as_ref()
+                .map(|g| clock_projection::open(g, priority, now, clock))
+                .transpose()?
+                .is_some_and(|open| !open)
+            {
                 r.verdict = "drop".into();
                 r.reason = "psfp_gate_closed".into();
             } else if let Some(m) = &cfg.meter {
@@ -926,14 +1409,27 @@ impl TsnState {
         let mut ports = Vec::new();
         for (i, current) in self.ports.iter().enumerate() {
             let mut p = current.clone();
-            self.advance_port(i, &mut p, h)?;
+            let clock = p.clock.clone();
+            self.advance_port(i, &mut p, h, clock.as_ref())?;
             for (c, s) in p.cbs.iter_mut().enumerate() {
                 if let Some(s) = s {
-                    s.derive(
-                        p.oper
+                    let open = p.oper.as_ref().map_or(Ok(true), |g| {
+                        clock_projection::open(
+                            g,
+                            c as u8,
+                            h.saturating_sub(1).max(current.last_ps),
+                            clock.as_ref(),
+                        )
+                    })?;
+                    if p.merge.is_some()
+                        || p.service
                             .as_ref()
-                            .is_none_or(|g| g.open(c as u8, h.saturating_sub(1))),
-                    );
+                            .is_some_and(|v| v.accounting != merge::ServiceAccounting::LegacyCapped)
+                    {
+                        s.derive_merge(open);
+                    } else {
+                        s.derive(open);
+                    }
                 }
             }
             let credits = p
@@ -1230,13 +1726,16 @@ mod tests {
             backlog: true,
             sending: false,
         };
-        s.advance(&cfg, None, 1_000_000, PORT).unwrap();
+        s.advance(&cfg, None, 1_000_000, PORT, None).unwrap();
         assert_eq!(s.credit, Credit::new(false, 100 * Q));
         s.backlog = false;
         s.derive(false);
+        assert_eq!(s.credit, Credit::new(false, 100 * Q));
+        assert_eq!(s.mode, CreditMode::Frozen);
+        s.derive(true);
         assert_eq!(s.credit, Credit::default());
         s.sending = true;
-        s.advance(&cfg, None, 1_672_000, PORT).unwrap();
+        s.advance(&cfg, None, 1_672_000, PORT, None).unwrap();
         assert_eq!(s.credit, Credit::new(true, 100 * Q));
         assert_eq!(
             1_672_000 + ceil(s.credit.magnitude, cfg.idle_bps as u128),
@@ -1249,12 +1748,12 @@ mod tests {
         s.credit = Credit::new(true, 1);
         s.last_ps = 0;
         assert_eq!(ceil(1, 3), 1);
-        s.advance(&cfg, None, 1, PORT).unwrap();
+        s.advance(&cfg, None, 1, PORT, None).unwrap();
         assert_eq!(s.credit, Credit::new(false, 2));
         s.credit = Credit::new(true, 1);
         s.last_ps = 0;
         s.backlog = false;
-        s.advance(&cfg, None, 1, PORT).unwrap();
+        s.advance(&cfg, None, 1, PORT, None).unwrap();
         assert_eq!(s.credit, Credit::default());
         assert_eq!(
             add_credit(Credit::new(false, u128::MAX - 1), u128::MAX, u128::MAX),
@@ -1268,7 +1767,7 @@ mod tests {
         cfg.lo = 0;
         s.credit = Credit::default();
         s.backlog = true;
-        s.advance(&cfg, None, u64::MAX, PORT).unwrap();
+        s.advance(&cfg, None, u64::MAX, PORT, None).unwrap();
         assert_eq!(s.credit, Credit::default());
     }
     #[test]
@@ -1373,6 +1872,72 @@ mod tests {
         assert_eq!(r.verdict, "drop");
         assert_eq!(r.peak_after, Some(0));
         assert_eq!(r.consumed_bits, 512);
+    }
+    #[test]
+    fn psfp_local_gate_tracks_offset_drift_and_steps_without_refilling_tokens() {
+        let mut value = config();
+        let mut cfg = stream();
+        cfg["gate"] = json!({"base_time_ps":"0","cycle_time_ps":"1000",
+            "entries":[{"duration_ps":"500","open":true},
+                {"duration_ps":"500","open":false}]});
+        value["tsn"]["streams"] = json!([cfg]);
+        let mut state = TsnState::new(&prep(value));
+        let evaluate = |state: &TsnState, time: u64, clock: Option<&NodeClock>| {
+            state
+                .plan_arrival_clock_in(
+                    TsnDelta::default(),
+                    "N.b.rx",
+                    "01:00:5e:00:00:01",
+                    1,
+                    7,
+                    64,
+                    "rx",
+                    time,
+                    clock,
+                )
+                .unwrap()
+        };
+        assert_eq!(evaluate(&state, 100, None).psfp.unwrap().verdict, "pass");
+        let mut shifted = NodeClock::new(0, 600, 1, 1).unwrap();
+        let closed = evaluate(&state, 100, Some(&shifted));
+        assert_eq!(closed.psfp.as_ref().unwrap().reason, "psfp_gate_closed");
+        assert!(closed.meters.is_empty());
+        let faster = NodeClock::new(0, 0, 3, 2).unwrap();
+        assert_eq!(evaluate(&state, 400, None).psfp.unwrap().verdict, "pass");
+        assert_eq!(
+            evaluate(&state, 400, Some(&faster)).psfp.unwrap().reason,
+            "psfp_gate_closed"
+        );
+        let negative = NodeClock::new(0, -200, 1, 1).unwrap();
+        assert_eq!(
+            evaluate(&state, 100, Some(&negative)).psfp.unwrap().reason,
+            "psfp_gate_closed"
+        );
+        shifted.step_by(100, -600).unwrap();
+        let admitted = evaluate(&state, 100, Some(&shifted));
+        assert_eq!(
+            admitted.psfp.as_ref().unwrap().color.as_deref(),
+            Some("green")
+        );
+        state.apply(admitted);
+        // Whole-cycle corrections change local time but consume no physical time.
+        shifted.step_by(100, 1_000_000_000_000).unwrap();
+        let admitted = evaluate(&state, 100, Some(&shifted));
+        assert_eq!(
+            admitted.psfp.as_ref().unwrap().color.as_deref(),
+            Some("yellow")
+        );
+        assert_eq!(admitted.psfp.as_ref().unwrap().committed_before, Some(0));
+        state.apply(admitted);
+        shifted.step_by(100, -1_000_000_000_000).unwrap();
+        assert_eq!(
+            evaluate(&state, 100, Some(&shifted))
+                .psfp
+                .unwrap()
+                .color
+                .as_deref(),
+            Some("red")
+        );
     }
     #[test]
     fn psfp_sdu_and_gate_drops_preserve_meter_last_time_and_bypass_tuple() {
@@ -1780,5 +2345,176 @@ mod tests {
         assert_eq!(data["ports"][0]["schedule_generation"], json!("0"));
         assert_eq!(data["update_cursor"], json!("0"));
         assert_eq!(SCHEMAS.len(), 4);
+    }
+}
+
+#[cfg(test)]
+#[path = "tsn/composition_tests.rs"]
+mod composition_tests;
+
+crate::runtime::network::checkpoint::fields!(TsnState, value; ports, meters, update_cursor; );
+impl TsnState {
+    pub(crate) fn validate_checkpoint(&mut self, horizon: u64) -> Result<()> {
+        self.validate_checkpoint_with_managed(horizon, &BTreeMap::new())
+    }
+    /// CNC schedules are regenerated from its validated transition ledger;
+    /// serialized PortState never supplies its own operating schedule truth.
+    pub(crate) fn validate_checkpoint_with_managed(
+        &mut self,
+        horizon: u64,
+        managed: &BTreeMap<String, (Arc<Schedule>, u64)>,
+    ) -> Result<()> {
+        if self.ports.len() != self.prepared.outputs.len()
+            || self.meters.len() != self.prepared.streams.len()
+            || self.update_cursor > self.prepared.updates.len()
+        {
+            return Err(error(
+                "@network",
+                "invalid TSN checkpoint dimensions/cursor",
+            ));
+        }
+        if self.prepared.updates[..self.update_cursor]
+            .iter()
+            .any(|u| u.effective_at_ps > horizon)
+            || self.prepared.updates[self.update_cursor..]
+                .iter()
+                .any(|u| u.effective_at_ps < horizon)
+        {
+            return Err(error("@network", "invalid TSN GCL checkpoint cursor"));
+        }
+        for (i, port) in self.ports.iter_mut().enumerate() {
+            let config = &self.prepared.outputs[i];
+            port.oper = config.tas.clone();
+            let mut generation = 0u64;
+            for update in &self.prepared.updates[..self.update_cursor] {
+                if update.port == config.port {
+                    port.oper = Some(update.schedule.clone());
+                    generation += 1;
+                }
+            }
+            if let Some((schedule, cnc_generation)) = managed.get(&config.port) {
+                port.oper = Some(schedule.clone());
+                generation = generation
+                    .checked_add(*cnc_generation)
+                    .ok_or_else(|| error(&config.port, "CNC schedule generation overflow"))?;
+            }
+            if port.schedule_generation != generation
+                || port.last_ps > horizon
+                || port
+                    .sending
+                    .is_some_and(|s| s.priority > 7 || s.release_ps < horizon)
+            {
+                return Err(error(&config.port, "invalid TSN port checkpoint"));
+            }
+            if let Some(clock) = &port.clock {
+                clock
+                    .validate()
+                    .map_err(|e| error(&config.port, e.to_string()))?;
+                clock
+                    .local_at(port.last_ps)
+                    .map_err(|e| error(&config.port, e.to_string()))?;
+            }
+            if let Some(wake) = &port.local_wake {
+                let clock = port
+                    .clock
+                    .as_ref()
+                    .ok_or_else(|| error(&config.port, "local wake without clock"))?;
+                let projected = clock
+                    .deadline(port.last_ps, wake.local_deadline.clone())
+                    .map_err(|e| error(&config.port, e.to_string()))?;
+                if projected != *wake || port.next_wake != Some(u128::from(wake.global_ps)) {
+                    return Err(error(
+                        &config.port,
+                        "local target/global wake dependency mismatch",
+                    ));
+                }
+            }
+            let expected_local_wake = if let (Some(clock), Some(schedule), Some(wake)) = (
+                port.clock.as_ref(),
+                port.oper.as_ref(),
+                port.next_wake.and_then(|w| u64::try_from(w).ok()),
+            ) {
+                clock_projection::gate_wake(schedule, port.last_ps, wake, clock)?
+            } else {
+                None
+            };
+            if port.local_wake != expected_local_wake {
+                return Err(error(
+                    &config.port,
+                    "noncanonical projected gate wake dependency",
+                ));
+            }
+            for (c, state) in port.cbs.iter().enumerate() {
+                if state.is_some() != config.cbs[c].is_some() {
+                    return Err(error(&config.port, "CBS checkpoint catalog mismatch"));
+                }
+                if let (Some(state), Some(cfg)) = (state, &config.cbs[c]) {
+                    if state.last_ps > horizon
+                        || state.last_ps != port.last_ps
+                        || port.merge.is_none()
+                            && !port.service.as_ref().is_some_and(|v| {
+                                v.accounting != merge::ServiceAccounting::LegacyCapped
+                            })
+                            && state.credit.magnitude
+                                > if state.credit.negative {
+                                    cfg.lo
+                                } else {
+                                    cfg.hi
+                                }
+                    {
+                        return Err(error(&config.port, "invalid CBS checkpoint credit/time"));
+                    }
+                }
+            }
+        }
+        for (i, meter) in self.meters.iter().enumerate() {
+            let cfg = &self.prepared.streams[i].meter;
+            if meter.is_some() != cfg.is_some() {
+                return Err(error("@network", "meter checkpoint catalog mismatch"));
+            }
+            if let (Some(m), Some(c)) = (meter, cfg) {
+                if m.committed > c.committed_cap
+                    || m.peak > c.peak_cap
+                    || m.last_evaluated_ps > horizon
+                {
+                    return Err(error("@network", "invalid meter checkpoint"));
+                }
+            }
+        }
+        Ok(())
+    }
+}
+impl TsnState {
+    pub(crate) fn validate_checkpoint_wakes(
+        &self,
+        wakes: &[Option<WakeToken>],
+        horizon: u64,
+    ) -> Result<()> {
+        if wakes.len() != self.ports.len() {
+            return Err(error("@network", "TSN wake checkpoint size"));
+        }
+        for (i, wake) in wakes.iter().enumerate() {
+            let finite = self.ports[i]
+                .next_wake
+                .and_then(|time| u64::try_from(time).ok());
+            if finite != wake.as_ref().map(|w| w.time_ps) {
+                return Err(error("@network", "TSN checkpoint wake reservation missing"));
+            }
+            if let Some(wake) = wake {
+                let port = &self.ports[i];
+                if wake.port != self.prepared.outputs[i].port
+                    || wake.time_ps < horizon
+                    || wake.wake_generation != port.wake_generation
+                    || wake.schedule_generation != port.schedule_generation
+                    || port.next_wake != Some(u128::from(wake.time_ps))
+                {
+                    return Err(error(
+                        &wake.port,
+                        "TSN wake checkpoint generation/reference",
+                    ));
+                }
+            }
+        }
+        Ok(())
     }
 }

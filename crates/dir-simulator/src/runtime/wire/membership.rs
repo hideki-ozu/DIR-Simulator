@@ -356,9 +356,13 @@ pub struct Lease {
 }
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Snooper {
+    #[serde(with = "super::codec::ordered_map")]
     pub leases: BTreeMap<(Key, Filter), Lease>,
+    #[serde(with = "super::codec::ordered_map")]
     pub generations: BTreeMap<(Key, Filter), u64>,
+    #[serde(with = "super::codec::ordered_map")]
     pub routers: BTreeMap<Key, Lease>,
+    #[serde(with = "super::codec::ordered_map")]
     pub router_generations: BTreeMap<Key, u64>,
     pub flood: BTreeSet<(String, u16, bool)>,
 }

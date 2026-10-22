@@ -7,6 +7,7 @@ pub(crate) mod aggregate;
 mod axi;
 mod canfd;
 mod contribution_sort;
+mod controlled_legacy;
 mod csv;
 mod disk_sort;
 mod ethernet;
@@ -15,20 +16,24 @@ mod memory_ipc;
 mod metadata;
 mod model_records;
 mod network;
+pub mod noc_flit;
 mod preparation;
 mod publish;
 mod registered;
 pub(crate) mod reservation;
 mod scratch;
 mod soc;
+pub mod soc_execution;
 mod stream;
+pub mod transaction_fabric;
 mod validation;
 pub(crate) mod wire;
 pub(crate) use preparation::export_preparation_failure;
 pub(crate) use preparation::profile_catalog;
 pub(crate) use validation::{
     ArtifactIdentity, ResultBundleExpectation, ResultInputEvidence, ResultReportEvidence,
-    ValidatedArtifact, ValidatedResultBundle, result_input_evidence, validate_result_bundle,
+    ValidatedArtifact, ValidatedResultBundle, result_input_evidence, validate_controlled_legacy,
+    validate_result_bundle,
 };
 
 const PROFILE: &str = "can.cc.ideal.v1";
@@ -51,6 +56,24 @@ pub fn export(
     prepared: &PreparedSimulation,
     snapshot: &Snapshot,
     output: &Path,
+) -> Result<(), Diagnostic> {
+    export_with_control(prepared, snapshot, output, None)
+}
+
+pub(crate) fn export_controlled_legacy(
+    prepared: &PreparedSimulation,
+    snapshot: &Snapshot,
+    output: &Path,
+    control: &serde_json::Value,
+) -> Result<(), Diagnostic> {
+    export_with_control(prepared, snapshot, output, Some(control))
+}
+
+fn export_with_control(
+    prepared: &PreparedSimulation,
+    snapshot: &Snapshot,
+    output: &Path,
+    control: Option<&serde_json::Value>,
 ) -> Result<(), Diagnostic> {
     let identity = prepared
         .common
@@ -120,7 +143,9 @@ pub fn export(
         && prepared.soc.is_none()
         && prepared.memory_ipc.is_none()
     {
-        let version = if prepared.common.profile == PROFILE {
+        let version = if control.is_some() {
+            4
+        } else if prepared.common.profile == PROFILE {
             1
         } else {
             2
@@ -130,9 +155,17 @@ pub fn export(
             // all are dropped before stream commits the manifest.
             let streamed = stream::prepare(prepared, snapshot, output)?;
             stage.write_pair("results.json", "events.csv", |writer, csv_writer| {
-                json::write_stream_result(
-                    writer, csv_writer, prepared, snapshot, &run_id, &timestamp, &streamed,
-                )
+                controlled_legacy::write(writer, prepared, control, |writer| {
+                    json::write_stream_result_csv_version(
+                        writer,
+                        (csv_writer, version),
+                        prepared,
+                        snapshot,
+                        &run_id,
+                        &timestamp,
+                        &streamed,
+                    )
+                })
             })?;
             stage.write("summary.csv", |writer| {
                 csv::write(writer, &streamed.summary, &run_id, version)
@@ -146,16 +179,20 @@ pub fn export(
         });
     }
     let (records, summary) = aggregate::records(prepared, snapshot)?;
-    let version = if prepared.common.profile == PROFILE {
+    let version = if control.is_some() {
+        4
+    } else if prepared.common.profile == PROFILE {
         1
     } else {
         2
     };
     publish::stream(output, &run_id, version, snapshot, |stage| {
         stage.write("results.json", |writer| {
-            json::write_result(
-                writer, prepared, snapshot, &run_id, &timestamp, &records, &summary,
-            )
+            controlled_legacy::write(writer, prepared, control, |writer| {
+                json::write_result(
+                    writer, prepared, snapshot, &run_id, &timestamp, &records, &summary,
+                )
+            })
         })?;
         stage.write("events.csv", |writer| {
             csv::write(writer, &records, &run_id, version)

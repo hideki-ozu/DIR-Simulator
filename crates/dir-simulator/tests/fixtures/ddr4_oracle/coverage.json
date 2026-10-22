@@ -1,0 +1,2427 @@
+{
+  "schema": "dir.ddr4-independent-oracle-coverage",
+  "version": 1,
+  "scope": "Evidence map for the selected ISSI Rev F profile; not a complete JEDEC conformance claim.",
+  "source": {
+    "source_pdf_sha256": "0606a9501dc13de5934856c9d7fbe0310f6a4edacf26b9cf416f4a5bfc2ca727",
+    "ledger_path": "docs/implementation/ddr4-rules.json",
+    "ledger_sha256": "acfcb0f42c4e9adecfdbf059def4b0756b345757cad3c263580b655b89fb89d2",
+    "trace_path": "/tmp/dir-remaining-implementation-20261021-evidence/ddr4-oracle/actual-trace.json",
+    "trace_sha256": "b3c95e93f7fdcf79bf9ab5ada41ca0f66965164959ba041d9f063c86be96af45",
+    "trace_end_ps": 750000000,
+    "trace_effects": 720,
+    "trace_commands": 92,
+    "trace_refresh_commands": 6,
+    "checker_sha256": "c07c4082b7004cdc6ce498339805fa6942ca2b6a9f2e28c1b1088422fff8f282",
+    "rust_controller_test_sha256": "07ec92cc1e12f4eb3b933c78346c196393aea29a48255d30b249c51bab089a4d",
+    "oracle_integration_test_sha256": "efb34a5fab4a7bb16c8c0766844792940020d3357e713bb07fd768aa976a3716",
+    "rust_controller_test_path": "crates/dir-simulator/tests/ddr4.rs",
+    "oracle_integration_test_path": "crates/dir-simulator/tests/ddr4_oracle.rs",
+    "runtime_ddr4_unit_test_path": "crates/dir-simulator/src/runtime/ddr4/device.rs",
+    "runtime_ddr4_unit_test_sha256": "b5ed71cbddb5852ae634982e46477641f410a1831629a8d509b1418f2427398f",
+    "controller_integration_test_count": 27,
+    "oracle_integration_test_count": 2,
+    "runtime_ddr4_unit_test_count": 2
+  },
+  "integration_tests": [
+    "full_initialization_has_real_commands_and_no_cycle_busy_loop",
+    "independent_bank_and_bank_group_minima",
+    "cas_direction_and_group_turnarounds",
+    "precharge_read_write_and_automatic_precharge",
+    "physical_read_write_windows_dm_and_checkpoint_continuation",
+    "refresh_priority_blocks_transport_until_real_rfc",
+    "strict_configuration_queue_bounds_and_refused_commands",
+    "intervening_bank_groups_do_not_erase_write_to_read_guards",
+    "reset_and_mode_initialization_boundaries_are_atomic",
+    "refresh_zq_and_power_state_boundaries",
+    "self_refresh_has_distinct_exit_guards",
+    "vref_entry_bits_are_ignored_and_later_steps_settle",
+    "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+    "checkpoint_rejects_removed_dq_history_and_changed_mode",
+    "startup_checkpoint_deadlines_are_bijective",
+    "delayed_level_feedback_cannot_survive_qoff_or_exit",
+    "maintenance_self_refresh_and_destructive_reset_use_same_live_target",
+    "long_idle_and_queued_bank_conflicts_refresh_without_starvation",
+    "explicit_precharge_refresh_and_mrs_each_have_power_entry_boundary",
+    "reset_cke_setup_and_selected_continuous_clock_contract",
+    "manual_dll_reset_zq_idle_and_power_down_burst_guards",
+    "auto_precharge_with_tras_dominant_read_and_other_bank_progress",
+    "srx_reentry_requires_real_ref_and_full_rfc_for_pd_and_sr",
+    "selected_mode_reserved_bits_and_training_encoding_matrix",
+    "later_vref_single_and_multi_code_steps_have_independent_boundaries",
+    "leveling_command_legality_pulse_and_setup_hold_aperture",
+    "queued_independent_banks_overlap_but_share_ca_and_dq_buses"
+  ],
+  "classification_counts": {
+    "direct_oracle": 33,
+    "other_rust_boundary": 40,
+    "configuration_invariant": 4,
+    "partial": 0,
+    "untested": 0
+  },
+  "classification_legend": {
+    "direct_oracle": "Independent Python predicate is exercised by a relevant event class in the generated Rust-controller trace. This means a selected trace path was checked, not that the threshold or all combinations were tested.",
+    "other_rust_boundary": "A named Rust test asserts the rule boundary or a specific invalid state; the independent Python monitor does not cover it.",
+    "partial": "A named Rust test or monitor guard covers only a related path/assumption, without isolating the ledger rule boundary or full state space.",
+    "untested": "No named Rust boundary assertion or independent monitor guard was identified.",
+    "configuration_invariant": "The selected profile/API fixes this condition as a configuration assumption and rejects unsupported configuration or command inputs. It is not an executed transition boundary; continuous ideal CK cannot represent an external clock stop or restart."
+  },
+  "mutation_review": {
+    "test_function": "independent_monitor_rejects_early_commands_and_missing_changed_physical_bytes",
+    "probes": [
+      {
+        "mutation": "early_cas",
+        "expected_monitor_reason": "ACT_to_RD_WR"
+      },
+      {
+        "mutation": "early_byte",
+        "expected_monitor_reason": "physical_byte_bijection"
+      },
+      {
+        "mutation": "missing_byte",
+        "expected_monitor_reason": "physical_byte_bijection"
+      },
+      {
+        "mutation": "changed_DM",
+        "expected_monitor_reason": "physical_byte_bijection"
+      },
+      {
+        "mutation": "early_complete",
+        "expected_monitor_reason": "early_logical_completion"
+      },
+      {
+        "mutation": "history_cas",
+        "expected_monitor_reason": "write_to_read_all_history"
+      },
+      {
+        "mutation": "missing_last_refresh",
+        "expected_monitor_reason": "controller_idle_refresh_deadline"
+      }
+    ],
+    "scope_note": "Seven targeted rejection probes; these do not exhaustively mutate every one of the 77 ledger rows."
+  },
+  "policy_notes": [
+    "The idle refresh deadline check is the selected controller policy for this trace, whose request traffic finishes before its first refresh. It is intentionally stronger than the device postponement allowance and must not be described as JEDEC zero-debt.",
+    "The checker covers initialization, open-page commands, data windows and byte mapping, completion, and refresh. Power, training, raw auto-precharge, analog/electrical behavior, and many state interactions remain outside its independent scope.",
+    "The selected 834 ps profile supplies a continuous ideal CK from time zero. Clock-before-CKE, SRE clock hold, SRX clock setup, and selected clock-latency rows are configuration/API invariants; the suite rejects unsupported clock settings/commands but does not execute a clock-stop negative case.",
+    "The Vref one-code and multi-code waits are checked at 72 CK and 180 CK by named Rust assertions. The next-ACT early failure is reported through the generic VREF_enter readiness rule; training remains outside the independent Python monitor.",
+    "RDA/WRA-to-ACT and PD minimum behavior have positive and one-cycle-early Rust boundaries through composed/shared constraints. Their coverage classification does not require a unique surfaced guard name; they remain outside the independent Python monitor, and no checker/guard ordering was changed."
+  ],
+  "rows": [
+    {
+      "id": "ACT_to_RD_WR",
+      "source_pages": [
+        227
+      ],
+      "scope": "bank",
+      "trigger": "ACT",
+      "action": "RD/WR/RDA/WRA",
+      "kind": "minimum",
+      "min_ps": 13320,
+      "effective_cycles_at_834ps": 16,
+      "ledger_test_intent": {
+        "positive": "ACT_to_RD_WR.boundary",
+        "negative": "ACT_to_RD_WR.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "ACT_to_RD_WR"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independent_bank_and_bank_group_minima",
+        "cas_direction_and_group_turnarounds"
+      ],
+      "mutation_probes": [
+        "early_cas"
+      ],
+      "coverage_gaps": []
+    },
+    {
+      "id": "PRE_to_ACT_REF",
+      "source_pages": [
+        95,
+        96,
+        227
+      ],
+      "scope": "bank/all_banks",
+      "trigger": "last PRE/PREA or internal auto PRE",
+      "action": "ACT or rank REF",
+      "kind": "minimum",
+      "min_ps": 13320,
+      "effective_cycles_at_834ps": 16,
+      "note": "PRE to idle/precharging bank is legal and restarts tRP; do not reject merely because already idle.",
+      "ledger_test_intent": {
+        "positive": "PRE_to_ACT_REF.boundary",
+        "negative": "PRE_to_ACT_REF.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "PRE_to_ACT_REF"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independent_bank_and_bank_group_minima",
+        "precharge_read_write_and_automatic_precharge",
+        "auto_precharge_with_tras_dominant_read_and_other_bank_progress"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "ACT_to_PRE",
+      "source_pages": [
+        227
+      ],
+      "scope": "bank",
+      "trigger": "ACT",
+      "action": "PRE/PREA/internal auto PRE",
+      "kind": "minimum",
+      "min_ps": 32000,
+      "effective_cycles_at_834ps": 39,
+      "ledger_test_intent": {
+        "positive": "ACT_to_PRE.boundary",
+        "negative": "ACT_to_PRE.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "act_to_PRE"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independent_bank_and_bank_group_minima",
+        "precharge_read_write_and_automatic_precharge"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "ACT_to_ACT",
+      "source_pages": [
+        227
+      ],
+      "scope": "bank",
+      "trigger": "ACT",
+      "action": "next ACT",
+      "kind": "minimum",
+      "min_ps": 45320,
+      "effective_cycles_at_834ps": 55,
+      "ledger_test_intent": {
+        "positive": "ACT_to_ACT.boundary",
+        "negative": "ACT_to_ACT.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "ACT_to_ACT"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independent_bank_and_bank_group_minima"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "ACT_open_max",
+      "source_pages": [
+        227
+      ],
+      "scope": "bank",
+      "trigger": "ACT",
+      "action": "PRE/internal auto PRE",
+      "kind": "maximum",
+      "formula": "9*tREFI = 70200000 ps",
+      "note": "Must precharge by this bound; test one cycle LATE, not early.",
+      "ledger_test_intent": {
+        "positive": "ACT_open_max.boundary",
+        "negative": "ACT_open_max.one_cycle_late"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "ACT_open_max"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independently_isolated_maximum_guards_use_late_inverse_boundaries",
+        "long_idle_and_queued_bank_conflicts_refresh_without_starvation"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The selected trace does not approach the 9*tREFI boundary; a Rust unit test isolates the exact limit and +1 ps late rejection.",
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "ACT_diff_BG",
+      "source_pages": [
+        260
+      ],
+      "scope": "rank",
+      "trigger": "ACT",
+      "action": "ACT different bank group",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 3300,
+      "effective_cycles_at_834ps": 4,
+      "ledger_test_intent": {
+        "positive": "ACT_diff_BG.boundary",
+        "negative": "ACT_diff_BG.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "ACT_bank_group"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independent_bank_and_bank_group_minima"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "ACT_same_BG",
+      "source_pages": [
+        260
+      ],
+      "scope": "bank_group",
+      "trigger": "ACT",
+      "action": "ACT different bank same group",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 4900,
+      "effective_cycles_at_834ps": 6,
+      "ledger_test_intent": {
+        "positive": "ACT_same_BG.boundary",
+        "negative": "ACT_same_BG.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "ACT_bank_group"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independent_bank_and_bank_group_minima"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "ACT_fifth_window",
+      "source_pages": [
+        94,
+        260
+      ],
+      "scope": "rank",
+      "trigger": "oldest of previous four ACT commands",
+      "action": "fifth ACT",
+      "kind": "minimum",
+      "min_cycles": 20,
+      "min_ps": 21000,
+      "effective_cycles_at_834ps": 26,
+      "ledger_test_intent": {
+        "positive": "ACT_fifth_window.boundary",
+        "negative": "ACT_fifth_window.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "ACT_fifth_window"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independent_bank_and_bank_group_minima"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "CAS_diff_BG",
+      "source_pages": [
+        259
+      ],
+      "scope": "rank",
+      "trigger": "RD or WR",
+      "action": "same-direction CAS different bank group",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "effective_cycles_at_834ps": 4,
+      "ledger_test_intent": {
+        "positive": "CAS_diff_BG.boundary",
+        "negative": "CAS_diff_BG.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "read_to_read_all_history",
+        "write_to_write_all_history"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "cas_direction_and_group_turnarounds"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "CAS_same_BG",
+      "source_pages": [
+        31,
+        259
+      ],
+      "scope": "bank_group",
+      "trigger": "RD or WR",
+      "action": "same-direction CAS same bank group",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 5000,
+      "effective_cycles_at_834ps": 6,
+      "note": "MR6 also enforces programmed tCCD_L=6 cycles.",
+      "ledger_test_intent": {
+        "positive": "CAS_same_BG.boundary",
+        "negative": "CAS_same_BG.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "read_to_read_all_history",
+        "write_to_write_all_history"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "cas_direction_and_group_turnarounds"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "RD_to_WR",
+      "source_pages": [
+        152
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "RD/RDA",
+      "action": "WR/WRA",
+      "kind": "minimum",
+      "min_cycles": 10,
+      "effective_cycles_at_834ps": 10,
+      "formula": "RL + BL/2 - WL + 2 = 16+4-12+2 = 10 cycles",
+      "ledger_test_intent": {
+        "positive": "RD_to_WR.boundary",
+        "negative": "RD_to_WR.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "read_to_write_all_history"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "cas_direction_and_group_turnarounds"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "WR_to_RD_diff_BG",
+      "source_pages": [
+        260,
+        263
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "WR/WRA command",
+      "action": "RD/RDA different bank group",
+      "kind": "minimum",
+      "min_cycles": 19,
+      "effective_cycles_at_834ps": 19,
+      "formula": "WL + BL/2 + max(2,ceil(2500/tCK)) = 12+4+3 = 19",
+      "note": "tWTR starts at rising clock edge WL+4 after WR, NOT WR issue and NOT first data beat.",
+      "ledger_test_intent": {
+        "positive": "WR_to_RD_diff_BG.boundary",
+        "negative": "WR_to_RD_diff_BG.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "write_to_read_all_history"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "cas_direction_and_group_turnarounds",
+        "intervening_bank_groups_do_not_erase_write_to_read_guards"
+      ],
+      "mutation_probes": [
+        "history_cas"
+      ],
+      "coverage_gaps": []
+    },
+    {
+      "id": "WR_to_RD_same_BG",
+      "source_pages": [
+        260,
+        263
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "WR/WRA command",
+      "action": "RD/RDA same bank group",
+      "kind": "minimum",
+      "min_cycles": 25,
+      "effective_cycles_at_834ps": 25,
+      "formula": "WL + BL/2 + max(4,ceil(7500/tCK)) = 12+4+9 = 25",
+      "ledger_test_intent": {
+        "positive": "WR_to_RD_same_BG.boundary",
+        "negative": "WR_to_RD_same_BG.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "write_to_read_all_history"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "cas_direction_and_group_turnarounds",
+        "intervening_bank_groups_do_not_erase_write_to_read_guards"
+      ],
+      "mutation_probes": [
+        "history_cas"
+      ],
+      "coverage_gaps": []
+    },
+    {
+      "id": "RD_to_PRE",
+      "source_pages": [
+        260
+      ],
+      "scope": "bank",
+      "trigger": "RD/RDA",
+      "action": "PRE/internal auto PRE",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 7500,
+      "effective_cycles_at_834ps": 9,
+      "note": "AL=0; must also meet ACT_to_PRE.",
+      "ledger_test_intent": {
+        "positive": "RD_to_PRE.boundary",
+        "negative": "RD_to_PRE.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "read_to_PRE"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "precharge_read_write_and_automatic_precharge"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "WR_to_PRE",
+      "source_pages": [
+        16,
+        260,
+        263
+      ],
+      "scope": "bank",
+      "trigger": "WR/WRA command",
+      "action": "PRE/internal auto PRE",
+      "kind": "minimum",
+      "min_cycles": 34,
+      "effective_cycles_at_834ps": 34,
+      "formula": "WL + BL/2 + ceil(tWR/tCK) = 12+4+18 = 34",
+      "note": "WRA uses programmed WR=18; explicit PRE uses tWR min 15000ps after WL+4, same cycle result.",
+      "ledger_test_intent": {
+        "positive": "WR_to_PRE.boundary",
+        "negative": "WR_to_PRE.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "write_to_PRE"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "precharge_read_write_and_automatic_precharge"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "RDA_to_ACT",
+      "source_pages": [
+        95,
+        260
+      ],
+      "scope": "bank",
+      "trigger": "RDA",
+      "action": "next ACT",
+      "kind": "minimum",
+      "formula": "max(last_ACT+ceil(32000/tCK),RDA+9)+ceil(13320/tCK)",
+      "note": "Internal auto PRE then full tRP; other banks may proceed if shared bus rules hold.",
+      "ledger_test_intent": {
+        "positive": "RDA_to_ACT.boundary",
+        "negative": "RDA_to_ACT.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "precharge_read_write_and_automatic_precharge",
+        "auto_precharge_with_tras_dominant_read_and_other_bank_progress"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Independent Python monitor excludes raw auto-precharge; this is a Rust composed-formula boundary, not an independently named RDA guard or exhaustive state-space claim."
+      ],
+      "assertion_notes": [
+        "precharge_read_write_and_automatic_precharge checks RDA+9CK internal PRE then next ACT at +25CK accepted and +24CK rejected by PRE_to_ACT_REF; auto_precharge_with_tras_dominant_read_and_other_bank_progress checks the tRAS-dominant max() branch."
+      ]
+    },
+    {
+      "id": "WRA_to_ACT",
+      "source_pages": [
+        16,
+        95,
+        260
+      ],
+      "scope": "bank",
+      "trigger": "WRA",
+      "action": "next ACT",
+      "kind": "minimum",
+      "formula": "max(last_ACT+ceil(32000/tCK),WRA+WL+4+WR_programmed)+ceil(13320/tCK)",
+      "ledger_test_intent": {
+        "positive": "WRA_to_ACT.boundary",
+        "negative": "WRA_to_ACT.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "precharge_read_write_and_automatic_precharge"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Independent Python monitor excludes raw auto-precharge; this is a Rust composed-formula boundary, not a separate oracle check."
+      ],
+      "assertion_notes": [
+        "precharge_read_write_and_automatic_precharge checks WRA+34CK internal PRE then next ACT at +50CK accepted and +49CK rejected by PRE_to_ACT_REF. The selected minimum legal write makes write recovery dominate tRAS."
+      ]
+    },
+    {
+      "id": "read_data_window",
+      "source_pages": [
+        227,
+        152
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "RD/RDA command",
+      "action": "first read beat",
+      "kind": "minimum",
+      "min_cycles": 16,
+      "effective_cycles_at_834ps": 16,
+      "note": "Eight x8 beats at +16*tCK+i*417ps i=0..7; finish at +20*tCK. Return actual MemoryService byte at each beat; no early completion.",
+      "ledger_test_intent": {
+        "positive": "read_data_window.boundary",
+        "negative": "read_data_window.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "physical_byte_bijection",
+        "burst_completion_bijection"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "physical_read_write_windows_dm_and_checkpoint_continuation"
+      ],
+      "mutation_probes": [
+        "early_byte",
+        "missing_byte"
+      ],
+      "coverage_gaps": []
+    },
+    {
+      "id": "write_data_window",
+      "source_pages": [
+        22,
+        263
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "WR/WRA command",
+      "action": "first write beat",
+      "kind": "minimum",
+      "min_cycles": 12,
+      "effective_cycles_at_834ps": 12,
+      "note": "Eight x8 beats at +12*tCK+i*417ps i=0..7; finish at +16*tCK. Commit unmasked bytes at sampled beat. DDR4 active-low DM: DM LOW masks; logical byte_enable=true maps to DM HIGH.",
+      "ledger_test_intent": {
+        "positive": "write_data_window.boundary",
+        "negative": "write_data_window.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "physical_byte_bijection",
+        "write_data_DM"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "physical_read_write_windows_dm_and_checkpoint_continuation"
+      ],
+      "mutation_probes": [
+        "early_byte",
+        "missing_byte",
+        "changed_DM"
+      ],
+      "coverage_gaps": []
+    },
+    {
+      "id": "burst_no_interruption",
+      "source_pages": [
+        34
+      ],
+      "scope": "rank_data_bus",
+      "trigger": "RD/WR burst started",
+      "action": "another burst/termination",
+      "kind": "state",
+      "note": "No read/write burst may be terminated/interrupted; reserve disjoint half-open DQ windows and selected turnaround constraints. Simulator pause suspends, RESET aborts and invalidates contents.",
+      "ledger_test_intent": {
+        "positive": "burst_no_interruption.boundary",
+        "negative": "burst_no_interruption.invalid_state_or_encoding"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "burst_no_interruption"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "physical_read_write_windows_dm_and_checkpoint_continuation"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "burst_address",
+      "source_pages": [
+        1,
+        17
+      ],
+      "scope": "device",
+      "trigger": "RD/WR column",
+      "action": "eight sequential beats",
+      "kind": "state",
+      "note": "Service emits aligned column multiples of8; all8 bytes remain in same bank,row. Adapter splits unaligned requests into aligned bursts with DM or read extraction. Partial writes use DM, not read-modify-write shadow storage.",
+      "ledger_test_intent": {
+        "positive": "burst_address.boundary",
+        "negative": "burst_address.invalid_state_or_encoding"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "burst_address"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "physical_read_write_windows_dm_and_checkpoint_continuation",
+        "strict_configuration_queue_bounds_and_refused_commands"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "command_bus",
+      "source_pages": [
+        34
+      ],
+      "scope": "rank",
+      "trigger": "issued command",
+      "action": "next command",
+      "kind": "minimum",
+      "min_cycles": 1,
+      "effective_cycles_at_834ps": 1,
+      "note": "At most one decoded command on each rising edge; DES implicit on empty cycles. ACT muxes A14 as row bit.",
+      "ledger_test_intent": {
+        "positive": "command_bus.boundary",
+        "negative": "command_bus.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "command_edge",
+        "command_bus"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "strict_configuration_queue_bounds_and_refused_commands",
+        "physical_read_write_windows_dm_and_checkpoint_continuation"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "MRS_idle",
+      "source_pages": [
+        13,
+        35
+      ],
+      "scope": "rank",
+      "trigger": "any active/busy state",
+      "action": "MRS except legal training subcommands",
+      "kind": "state",
+      "note": "All banks precharged, tRP complete, no data burst, CKE high; special Vref rules override generic tMRD/tMOD.",
+      "ledger_test_intent": {
+        "positive": "MRS_idle.boundary",
+        "negative": "MRS_idle.invalid_state_or_encoding"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "strict_configuration_queue_bounds_and_refused_commands"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The oracle checks the selected initialization MRS sequence only; it does not independently test generic MRS rejection while banks or rank operations are active.",
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "MRS_to_MRS",
+      "source_pages": [
+        13,
+        14,
+        260
+      ],
+      "scope": "rank",
+      "trigger": "ordinary MRS",
+      "action": "next ordinary MRS",
+      "kind": "minimum",
+      "min_cycles": 8,
+      "effective_cycles_at_834ps": 8,
+      "ledger_test_intent": {
+        "positive": "MRS_to_MRS.boundary",
+        "negative": "MRS_to_MRS.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "MRS_to_MRS"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "reset_and_mode_initialization_boundaries_are_atomic",
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "MRS_to_nonMRS",
+      "source_pages": [
+        13,
+        14,
+        260
+      ],
+      "scope": "rank",
+      "trigger": "ordinary MRS",
+      "action": "nonMRS except DES",
+      "kind": "minimum",
+      "min_cycles": 24,
+      "min_ps": 15000,
+      "effective_cycles_at_834ps": 24,
+      "ledger_test_intent": {
+        "positive": "MRS_to_nonMRS.boundary",
+        "negative": "MRS_to_nonMRS.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "MRS_to_nonMRS"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "reset_and_mode_initialization_boundaries_are_atomic",
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "DLL_lock",
+      "source_pages": [
+        20,
+        260
+      ],
+      "scope": "rank",
+      "trigger": "MR0 DLL reset after MR1 enable",
+      "action": "READ or synchronous ODT",
+      "kind": "minimum",
+      "min_cycles": 768,
+      "effective_cycles_at_834ps": 768,
+      "note": "CKE held high throughout. Writes do not require DLL if writeODT disabled; startup waits for bothDLL andZQ anyway.",
+      "ledger_test_intent": {
+        "positive": "DLL_lock.boundary",
+        "negative": "DLL_lock.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "ZQ_first_DLL_lock"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "full_initialization_has_real_commands_and_no_cycle_busy_loop",
+        "startup_checkpoint_deadlines_are_bijective",
+        "manual_dll_reset_zq_idle_and_power_down_burst_guards"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "mode_encoding",
+      "source_pages": [
+        16,
+        19,
+        22,
+        24,
+        26,
+        29,
+        31,
+        33
+      ],
+      "scope": "rank",
+      "trigger": "MRS",
+      "action": "changed mode",
+      "kind": "state",
+      "note": "Reject reserved bits and unsupported optional mode changes before mutation. MR7 is architecturally ignored per p33 (trace ignored), not an unsupported-mode enable. Allow exact selected settings and documented DLL/Vref/write-leveling changes only.",
+      "ledger_test_intent": {
+        "positive": "mode_encoding.boundary",
+        "negative": "mode_encoding.invalid_state_or_encoding"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "reset_and_mode_initialization_boundaries_are_atomic",
+        "strict_configuration_queue_bounds_and_refused_commands",
+        "vref_entry_bits_are_ignored_and_later_steps_settle",
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+        "checkpoint_rejects_removed_dq_history_and_changed_mode",
+        "selected_mode_reserved_bits_and_training_encoding_matrix"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The new matrix flips one MR bit at a time and checks MR6 code values individually; it does not cover every multi-bit interaction or full mode-transition cross-product."
+      ],
+      "assertion_notes": [
+        "The selected_mode_reserved_bits_and_training_encoding_matrix test asserts mode_encoding for disallowed one-bit MR changes and MR6 codes above 50, checks documented exceptions, and verifies rejected changes are atomic."
+      ]
+    },
+    {
+      "id": "RESET_powerup_low",
+      "source_pages": [
+        9,
+        205
+      ],
+      "scope": "rank",
+      "trigger": "valid supply and RESET asserted",
+      "action": "RESET deassertion",
+      "kind": "minimum",
+      "min_ps": 200000000,
+      "effective_cycles_at_834ps": 239809,
+      "note": "Supply ramp is an ideal precondition; electrical ramp/slew not simulated. RESET is destructive to array contents.",
+      "ledger_test_intent": {
+        "positive": "RESET_powerup_low.boundary",
+        "negative": "RESET_powerup_low.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "RESET_powerup_low"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "reset_and_mode_initialization_boundaries_are_atomic"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "RESET_stable_low",
+      "source_pages": [
+        12,
+        205
+      ],
+      "scope": "rank",
+      "trigger": "RESET asserted with stable power",
+      "action": "RESET deassertion",
+      "kind": "minimum",
+      "min_ps": 1000000,
+      "effective_cycles_at_834ps": 1200,
+      "ledger_test_intent": {
+        "positive": "RESET_stable_low.boundary",
+        "negative": "RESET_stable_low.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "reset_and_mode_initialization_boundaries_are_atomic"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The oracle trace contains only the startup RESET release, not an asserted warm-reset interval.",
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "RESET_CKE_setup",
+      "source_pages": [
+        9,
+        12
+      ],
+      "scope": "rank",
+      "trigger": "CKE low",
+      "action": "RESET deassertion",
+      "kind": "minimum",
+      "min_ps": 10000,
+      "effective_cycles_at_834ps": 12,
+      "ledger_test_intent": {
+        "positive": "RESET_CKE_setup.boundary",
+        "negative": "RESET_CKE_setup.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "full_initialization_has_real_commands_and_no_cycle_busy_loop",
+        "reset_and_mode_initialization_boundaries_are_atomic",
+        "reset_cke_setup_and_selected_continuous_clock_contract"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [],
+      "assertion_notes": [
+        "In reset_cke_setup_and_selected_continuous_clock_contract, CKE goes low 12 CK before RESET release; release at 11 CK is rejected with RESET_CKE_setup and release at 12 CK succeeds."
+      ]
+    },
+    {
+      "id": "RESET_to_CKE",
+      "source_pages": [
+        9,
+        12
+      ],
+      "scope": "rank",
+      "trigger": "RESET deassertion",
+      "action": "CKE high",
+      "kind": "minimum",
+      "min_ps": 500000000,
+      "effective_cycles_at_834ps": 599521,
+      "ledger_test_intent": {
+        "positive": "RESET_to_CKE.boundary",
+        "negative": "RESET_to_CKE.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "RESET_to_CKE"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "reset_and_mode_initialization_boundaries_are_atomic"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "clock_before_CKE",
+      "source_pages": [
+        9,
+        257
+      ],
+      "scope": "rank",
+      "trigger": "clock stable",
+      "action": "CKE high reset/SRX",
+      "kind": "minimum",
+      "min_cycles": 5,
+      "min_ps": 10000,
+      "effective_cycles_at_834ps": 12,
+      "ledger_test_intent": {
+        "positive": "clock_before_CKE.boundary",
+        "negative": "clock_before_CKE.one_cycle_early"
+      },
+      "classification": "configuration_invariant",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "clock_hold_setup_are_fixed_continuous_clock_invariants",
+        "full_initialization_has_real_commands_and_no_cycle_busy_loop",
+        "reset_cke_setup_and_selected_continuous_clock_contract"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The selected clock is continuous and ideal from time zero; no clock-stop or restart transition can be executed through this API."
+      ],
+      "assertion_notes": [
+        "reset_cke_setup_and_selected_continuous_clock_contract rejects cycle_ps=833 and rejects clock_stop, clock_restart, and clock_rate command inputs; this establishes the fixed profile/API contract, not an executed clock-stop case."
+      ]
+    },
+    {
+      "id": "RESET_CKE_to_MRS",
+      "source_pages": [
+        10,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "CKE high after reset",
+      "action": "first MRS",
+      "kind": "minimum",
+      "min_cycles": 5,
+      "min_ps": 270000,
+      "effective_cycles_at_834ps": 324,
+      "formula": "max(5*tCK,tRFC1+10000ps)",
+      "ledger_test_intent": {
+        "positive": "RESET_CKE_to_MRS.boundary",
+        "negative": "RESET_CKE_to_MRS.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "RESET_CKE_to_MRS"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "reset_and_mode_initialization_boundaries_are_atomic",
+        "full_initialization_has_real_commands_and_no_cycle_busy_loop"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "initialization_sequence",
+      "source_pages": [
+        8,
+        9,
+        10
+      ],
+      "scope": "rank",
+      "trigger": "RESET release",
+      "action": "normal access",
+      "kind": "state",
+      "note": "AllMR0..6 initialized; MR1 DLL enabled before MR0DLLreset; DES gaps; CKEhigh andODTlow through DLL/ZQ; firstZQCL mandatory; calibration stages complete before ready.",
+      "ledger_test_intent": {
+        "positive": "initialization_sequence.boundary",
+        "negative": "initialization_sequence.invalid_state_or_encoding"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "initialization_sequence"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "full_initialization_has_real_commands_and_no_cycle_busy_loop",
+        "reset_and_mode_initialization_boundaries_are_atomic",
+        "startup_checkpoint_deadlines_are_bijective"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "ZQ_idle",
+      "source_pages": [
+        188,
+        189
+      ],
+      "scope": "rank",
+      "trigger": "banks precharged and tRP complete",
+      "action": "ZQCL/ZQCS",
+      "kind": "state",
+      "note": "NoDQ activity; ODTlow, CKEhigh, onlyDES whilecalibrating.",
+      "ledger_test_intent": {
+        "positive": "ZQ_idle.boundary",
+        "negative": "ZQ_idle.invalid_state_or_encoding"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries",
+        "manual_dll_reset_zq_idle_and_power_down_burst_guards"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The test rejects ZQCL while a bank is active; other ZQ timing/state combinations are not enumerated."
+      ],
+      "assertion_notes": [
+        "manual_dll_reset_zq_idle_and_power_down_burst_guards issues ZQCL with an active bank and asserts the exact ZQ_idle rejection."
+      ]
+    },
+    {
+      "id": "ZQ_first",
+      "source_pages": [
+        188,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "first ZQCL since RESET",
+      "action": "any activity except DES",
+      "kind": "minimum",
+      "min_cycles": 1024,
+      "effective_cycles_at_834ps": 1024,
+      "ledger_test_intent": {
+        "positive": "ZQ_first.boundary",
+        "negative": "ZQ_first.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "ZQ_first"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "full_initialization_has_real_commands_and_no_cycle_busy_loop",
+        "refresh_zq_and_power_state_boundaries",
+        "startup_checkpoint_deadlines_are_bijective"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "ZQ_long",
+      "source_pages": [
+        188,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "later ZQCL",
+      "action": "any activity except DES",
+      "kind": "minimum",
+      "min_cycles": 512,
+      "effective_cycles_at_834ps": 512,
+      "ledger_test_intent": {
+        "positive": "ZQ_long.boundary",
+        "negative": "ZQ_long.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "ZQ_short",
+      "source_pages": [
+        188,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "ZQCS",
+      "action": "any activity except DES",
+      "kind": "minimum",
+      "min_cycles": 128,
+      "effective_cycles_at_834ps": 128,
+      "note": "Use explicit AC table128cycles; p188 prose mentions correction within64cycles, not permission to shorten specified tZQCS.",
+      "ledger_test_intent": {
+        "positive": "ZQ_short.boundary",
+        "negative": "ZQ_short.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "REF_idle",
+      "source_pages": [
+        35,
+        96
+      ],
+      "scope": "rank",
+      "trigger": "all banks PRE plus tRP complete",
+      "action": "REF",
+      "kind": "state",
+      "note": "No ongoing burst or rank blocking operation.",
+      "ledger_test_intent": {
+        "positive": "REF_idle.boundary",
+        "negative": "REF_idle.invalid_state_or_encoding"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "REF_idle"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries",
+        "refresh_priority_blocks_transport_until_real_rfc",
+        "long_idle_and_queued_bank_conflicts_refresh_without_starvation"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "REF_busy",
+      "source_pages": [
+        96,
+        263
+      ],
+      "scope": "rank",
+      "trigger": "REF",
+      "action": "any command except DES",
+      "kind": "minimum",
+      "min_ps": 260000,
+      "effective_cycles_at_834ps": 312,
+      "ledger_test_intent": {
+        "positive": "REF_busy.boundary",
+        "negative": "REF_busy.one_cycle_early"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "REF_busy"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "refresh_priority_blocks_transport_until_real_rfc",
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "refresh_average",
+      "source_pages": [
+        96,
+        102
+      ],
+      "scope": "rank",
+      "trigger": "normal-mode refresh reference epoch",
+      "action": "average REF issue",
+      "kind": "maximum",
+      "formula": "average interval <=7800000ps at25C fixed1x",
+      "note": "Controller policy no postponement: drain early and issue by each deadline. Check overdue even when no user requests; never stop scheduling refresh during active device idle.",
+      "ledger_test_intent": {
+        "positive": "refresh_average.boundary",
+        "negative": "refresh_average.one_cycle_late"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "fixture_is_idle_before_refresh",
+        "controller_idle_refresh_deadline"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "refresh_priority_blocks_transport_until_real_rfc",
+        "long_idle_and_queued_bank_conflicts_refresh_without_starvation",
+        "independently_isolated_maximum_guards_use_late_inverse_boundaries"
+      ],
+      "mutation_probes": [
+        "missing_last_refresh"
+      ],
+      "coverage_gaps": [
+        "The checker only sees this finite trace horizon; this is not a long-duration or temperature-mode sweep."
+      ]
+    },
+    {
+      "id": "refresh_postpone_bound",
+      "source_pages": [
+        96,
+        97
+      ],
+      "scope": "rank",
+      "trigger": "last REF",
+      "action": "next REF",
+      "kind": "maximum",
+      "formula": "postponed debt<=8 and inter-REF gap<=9*tREFI; pulled-in credit<=8; <=16REF in any2*tREFI",
+      "note": "No-postponement controller is stronger than device allowance. Raw checker enforces debt/credit and sliding-window constraints, not only max gap. Overdue operation fails explicitly; do not claim retained bytes after violation.",
+      "ledger_test_intent": {
+        "positive": "refresh_postpone_bound.boundary",
+        "negative": "refresh_postpone_bound.one_cycle_late"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "refresh_postpone_bound",
+        "refresh_gap",
+        "refresh_rolling_bound",
+        "refresh_debt_at_trace_end",
+        "refresh_gap_at_trace_end"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "independently_isolated_maximum_guards_use_late_inverse_boundaries",
+        "refresh_priority_blocks_transport_until_real_rfc",
+        "long_idle_and_queued_bank_conflicts_refresh_without_starvation"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "This accepted trace is a controller fixture, not a sweep of every legal pull-in/postponement sequence.",
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "CKE_pulse",
+      "source_pages": [
+        262,
+        264
+      ],
+      "scope": "rank",
+      "trigger": "CKE change",
+      "action": "opposite CKE change",
+      "kind": "minimum",
+      "min_cycles": 3,
+      "min_ps": 5000,
+      "effective_cycles_at_834ps": 6,
+      "ledger_test_intent": {
+        "positive": "CKE_pulse.boundary",
+        "negative": "CKE_pulse.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries",
+        "self_refresh_has_distinct_exit_guards"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The boundary uses the selected 834 ps clock, so 6 CK is the effective boundary for the 5 ns minimum; it is not a separate analog pulse-width model."
+      ],
+      "assertion_notes": [
+        "refresh_zq_and_power_state_boundaries asserts CKE_pulse rejection at 5 CK and acceptance at 6 CK."
+      ]
+    },
+    {
+      "id": "PDE_command",
+      "source_pages": [
+        35,
+        109
+      ],
+      "scope": "rank",
+      "trigger": "CKE high",
+      "action": "CKElow+DES",
+      "kind": "state",
+      "note": "Enter activePD if open banks, otherwise prechargePD. No MRS,MPR,ZQ,DLLlock or ongoingread/write burst. ACT/PRE/REF may finish internally subject to their entry delays.",
+      "ledger_test_intent": {
+        "positive": "PDE_command.boundary",
+        "negative": "PDE_command.invalid_state_or_encoding"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries",
+        "manual_dll_reset_zq_idle_and_power_down_burst_guards",
+        "srx_reentry_requires_real_ref_and_full_rfc_for_pd_and_sr"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The explicit invalid-state case rejects CKE-low during an active write burst atomically; the other prohibited entry states are not exhaustively enumerated."
+      ],
+      "assertion_notes": [
+        "manual_dll_reset_zq_idle_and_power_down_burst_guards attempts CKE-low during the active write data window and asserts PDE_command plus unchanged device state."
+      ]
+    },
+    {
+      "id": "ACT_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "ACT",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 2,
+      "effective_cycles_at_834ps": 2,
+      "ledger_test_intent": {
+        "positive": "ACT_to_PDE.boundary",
+        "negative": "ACT_to_PDE.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "PRE_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "PRE/PREA",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 2,
+      "effective_cycles_at_834ps": 2,
+      "ledger_test_intent": {
+        "positive": "PRE_to_PDE.boundary",
+        "negative": "PRE_to_PDE.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "explicit_precharge_refresh_and_mrs_each_have_power_entry_boundary"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [],
+      "assertion_notes": [
+        "The explicit power-entry test uses the shared boundary helper at 2 CK after PRE; it asserts PRE_to_PDE at 1 CK is rejected atomically and 2 CK is accepted."
+      ]
+    },
+    {
+      "id": "REF_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "REF",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 2,
+      "effective_cycles_at_834ps": 2,
+      "note": "REF continues internally; no refresh generated by PD itself.",
+      "ledger_test_intent": {
+        "positive": "REF_to_PDE.boundary",
+        "negative": "REF_to_PDE.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "explicit_precharge_refresh_and_mrs_each_have_power_entry_boundary"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [],
+      "assertion_notes": [
+        "The explicit power-entry test uses the shared boundary helper at 2 CK after REF; it asserts REF_to_PDE at 1 CK is rejected atomically and 2 CK is accepted."
+      ]
+    },
+    {
+      "id": "RD_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "RD/RDA",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 21,
+      "effective_cycles_at_834ps": 21,
+      "formula": "RL+4+1=21",
+      "ledger_test_intent": {
+        "positive": "RD_to_PDE.boundary",
+        "negative": "RD_to_PDE.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "WR_to_PDE",
+      "source_pages": [
+        262,
+        263
+      ],
+      "scope": "rank",
+      "trigger": "WR",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 34,
+      "effective_cycles_at_834ps": 34,
+      "formula": "WL+4+ceil(tWR/tCK)=34",
+      "ledger_test_intent": {
+        "positive": "WR_to_PDE.boundary",
+        "negative": "WR_to_PDE.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "WRA_to_PDE",
+      "source_pages": [
+        262,
+        263
+      ],
+      "scope": "rank",
+      "trigger": "WRA",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 35,
+      "effective_cycles_at_834ps": 35,
+      "formula": "WL+4+WR_programmed+1=35",
+      "ledger_test_intent": {
+        "positive": "WRA_to_PDE.boundary",
+        "negative": "WRA_to_PDE.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "MRS_to_PDE",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "ordinary MRS",
+      "action": "PDE",
+      "kind": "minimum",
+      "min_cycles": 24,
+      "effective_cycles_at_834ps": 24,
+      "formula": "tMOD",
+      "ledger_test_intent": {
+        "positive": "MRS_to_PDE.boundary",
+        "negative": "MRS_to_PDE.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "explicit_precharge_refresh_and_mrs_each_have_power_entry_boundary"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [],
+      "assertion_notes": [
+        "The explicit power-entry test uses the shared boundary helper at 24 CK after ordinary MRS; it asserts MRS_to_PDE at 23 CK is rejected atomically and 24 CK is accepted."
+      ]
+    },
+    {
+      "id": "PD_duration_min",
+      "source_pages": [
+        262
+      ],
+      "scope": "rank",
+      "trigger": "PDE",
+      "action": "PDX",
+      "kind": "minimum",
+      "min_cycles": 3,
+      "min_ps": 5000,
+      "effective_cycles_at_834ps": 6,
+      "ledger_test_intent": {
+        "positive": "PD_duration_min.boundary",
+        "negative": "PD_duration_min.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "This checks the shared timing intersection. It does not independently isolate or instrument the PD_duration_min guard; runtime/checker guard ordering is preserved."
+      ],
+      "assertion_notes": [
+        "refresh_zq_and_power_state_boundaries checks 5CK rejected and 6CK accepted. ceil(5000ps/834ps)=6CK equals CKE_pulse, so the first rejecting guard is correctly CKE_pulse."
+      ]
+    },
+    {
+      "id": "PD_duration_max",
+      "source_pages": [
+        109,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "PDE",
+      "action": "PDX",
+      "kind": "maximum",
+      "formula": "<=9*tREFI=70200000ps; refresh debt remains active",
+      "ledger_test_intent": {
+        "positive": "PD_duration_max.boundary",
+        "negative": "PD_duration_max.one_cycle_late"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "independently_isolated_maximum_guards_use_late_inverse_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "PD_exit",
+      "source_pages": [
+        109,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "CKEhigh+DES PDX",
+      "action": "valid command",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "min_ps": 6000,
+      "effective_cycles_at_834ps": 8,
+      "note": "DLLon selected. Keep CK running duringPD; CKEhigh pulse also enforced.",
+      "ledger_test_intent": {
+        "positive": "PD_exit.boundary",
+        "negative": "PD_exit.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "command_disable",
+      "source_pages": [
+        109,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "PDE",
+      "action": "command receiver disabled",
+      "kind": "minimum",
+      "min_cycles": 4,
+      "effective_cycles_at_834ps": 4,
+      "note": "DES during entry guard; model does not consume apparent commands on ignored lowCKE inputs.",
+      "ledger_test_intent": {
+        "positive": "command_disable.boundary",
+        "negative": "command_disable.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "refresh_zq_and_power_state_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "SRE_idle",
+      "source_pages": [
+        35,
+        105
+      ],
+      "scope": "rank",
+      "trigger": "allbanksidle and all previous timing satisfied",
+      "action": "CKElow+REF SRE",
+      "kind": "state",
+      "note": "Rejectduringburst; DLLautooff, internalrefresh starts; preservebytecontents. No pending refresh debt allowed by selectedcontroller beforeentry.",
+      "ledger_test_intent": {
+        "positive": "SRE_idle.boundary",
+        "negative": "SRE_idle.invalid_state_or_encoding"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "self_refresh_has_distinct_exit_guards",
+        "maintenance_self_refresh_and_destructive_reset_use_same_live_target"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "SRE_low",
+      "source_pages": [
+        261
+      ],
+      "scope": "rank",
+      "trigger": "SRE",
+      "action": "SRX",
+      "kind": "minimum",
+      "min_cycles": 7,
+      "effective_cycles_at_834ps": 7,
+      "formula": "tCKE_cycles+1=6+1",
+      "ledger_test_intent": {
+        "positive": "SRE_low.boundary",
+        "negative": "SRE_low.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "self_refresh_has_distinct_exit_guards"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "SRE_clock_hold",
+      "source_pages": [
+        105,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "SRE",
+      "action": "clock may stop",
+      "kind": "minimum",
+      "min_cycles": 5,
+      "min_ps": 10000,
+      "effective_cycles_at_834ps": 12,
+      "note": "Selectedmode clock remainsrunning; verify guard anyway.",
+      "ledger_test_intent": {
+        "positive": "SRE_clock_hold.boundary",
+        "negative": "SRE_clock_hold.one_cycle_early"
+      },
+      "classification": "configuration_invariant",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "clock_hold_setup_are_fixed_continuous_clock_invariants",
+        "self_refresh_has_distinct_exit_guards",
+        "reset_cke_setup_and_selected_continuous_clock_contract"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The selected clock is continuous and ideal from time zero; no clock-stop or restart transition can be executed through this API."
+      ],
+      "assertion_notes": [
+        "clock_hold_setup_are_fixed_continuous_clock_invariants asserts TCK=834, HALF=417, valid fixed configuration, and the selected continuous-clock contract; no external clock-stop state exists."
+      ]
+    },
+    {
+      "id": "SRX_clock_setup",
+      "source_pages": [
+        105,
+        257
+      ],
+      "scope": "rank",
+      "trigger": "clock stable",
+      "action": "SRX",
+      "kind": "minimum",
+      "min_cycles": 5,
+      "min_ps": 10000,
+      "effective_cycles_at_834ps": 12,
+      "ledger_test_intent": {
+        "positive": "SRX_clock_setup.boundary",
+        "negative": "SRX_clock_setup.one_cycle_early"
+      },
+      "classification": "configuration_invariant",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "clock_hold_setup_are_fixed_continuous_clock_invariants",
+        "self_refresh_has_distinct_exit_guards",
+        "reset_cke_setup_and_selected_continuous_clock_contract"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The selected clock is continuous and ideal from time zero; no clock-stop or restart transition can be executed through this API."
+      ],
+      "assertion_notes": [
+        "clock_hold_setup_are_fixed_continuous_clock_invariants asserts TCK=834, HALF=417, valid fixed configuration, and the selected continuous-clock contract; no external clock-restart aperture exists."
+      ]
+    },
+    {
+      "id": "SRX_nonDLL",
+      "source_pages": [
+        105,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "CKEhigh+DES SRX",
+      "action": "ACT/PRE/PREA/REF/WR/WRA/ordinaryMRS",
+      "kind": "minimum",
+      "min_ps": 270000,
+      "effective_cycles_at_834ps": 324,
+      "formula": "tRFC1+10000ps",
+      "note": "tXS applies to ordinary commands and general MRS. ZQCL/ZQCS and MRS changing only CL/WR/RTP/CWL have tXS_FAST exception. Controller may conservatively delay requests but must distinguish scheduling from device eligibility. Selected digital model keeps Vref generator on in SR; electrical state is an explicit assumption.",
+      "ledger_test_intent": {
+        "positive": "SRX_nonDLL.boundary",
+        "negative": "SRX_nonDLL.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "self_refresh_has_distinct_exit_guards"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "SRX_DLL",
+      "source_pages": [
+        106,
+        261
+      ],
+      "scope": "rank",
+      "trigger": "SRX",
+      "action": "RD/RDA",
+      "kind": "minimum",
+      "min_cycles": 768,
+      "effective_cycles_at_834ps": 768,
+      "note": "CKE high throughout tXSDLL except allowed reentry. DES only before tXS except explicitly allowed tXS_FAST commands per p105.",
+      "ledger_test_intent": {
+        "positive": "SRX_DLL.boundary",
+        "negative": "SRX_DLL.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "self_refresh_has_distinct_exit_guards"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "SRX_reentry",
+      "source_pages": [
+        106
+      ],
+      "scope": "rank",
+      "trigger": "SRX",
+      "action": "SRE/PDE reentry",
+      "kind": "minimum",
+      "formula": "after tXS then one REF then tRFC; CKE constraints also hold",
+      "note": "Refresh accountingrestartsfrom actualinternal/externalrefresh milestones, notarbitrarywallclockforgetting.",
+      "ledger_test_intent": {
+        "positive": "SRX_reentry.boundary",
+        "negative": "SRX_reentry.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "self_refresh_has_distinct_exit_guards",
+        "maintenance_self_refresh_and_destructive_reset_use_same_live_target",
+        "srx_reentry_requires_real_ref_and_full_rfc_for_pd_and_sr"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The test isolates SRE exit, one real REF, and the full tRFC reentry boundary for CKE-low and SelfRefresh; it does not sweep every power-down reentry combination."
+      ],
+      "assertion_notes": [
+        "srx_reentry_requires_real_ref_and_full_rfc_for_pd_and_sr rejects CKE-low at 311 CK after REF with SRX_reentry, accepts at 312 CK, and also checks SelfRefresh against rank_busy."
+      ]
+    },
+    {
+      "id": "VREF_enter",
+      "source_pages": [
+        86
+      ],
+      "scope": "rank",
+      "trigger": "MR6trainingenable",
+      "action": "firsttrainingcommand",
+      "kind": "minimum",
+      "min_ps": 150000,
+      "effective_cycles_at_834ps": 180,
+      "note": "Only ACT WR WRA RD RDA PRE DES MR6set/exit legal in training. Range selectedatentry thenfixed.",
+      "ledger_test_intent": {
+        "positive": "VREF_enter.boundary",
+        "negative": "VREF_enter.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "vref_entry_bits_are_ignored_and_later_steps_settle"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "VREF_single_step",
+      "source_pages": [
+        85,
+        89
+      ],
+      "scope": "rank",
+      "trigger": "MR6code change by1",
+      "action": "Vrefstable/nextdependentoperation",
+      "kind": "minimum",
+      "min_ps": 60000,
+      "effective_cycles_at_834ps": 72,
+      "note": "Datasheet gives maximum settling duration; controller waits worstcase60ns. Do notmislabelthisas siliconminimumsettling. Monitoroff.",
+      "ledger_test_intent": {
+        "positive": "VREF_single_step.boundary",
+        "negative": "VREF_single_step.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "vref_entry_bits_are_ignored_and_later_steps_settle",
+        "later_vref_single_and_multi_code_steps_have_independent_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The one-code 72-CK boundary is asserted by attempting ACT; the runtime reports the generic VREF_enter readiness rule rather than VREF_single_step. The direct next-MR6 rejection path is not separately isolated, and training has no independent oracle coverage."
+      ],
+      "assertion_notes": [
+        "later_vref_single_and_multi_code_steps_have_independent_boundaries changes MR6 by one code, rejects ACT at 71 CK with VREF_enter, and accepts at 72 CK."
+      ]
+    },
+    {
+      "id": "VREF_multi_step",
+      "source_pages": [
+        85,
+        89
+      ],
+      "scope": "rank",
+      "trigger": "MR6code change by>1 or initialunknown",
+      "action": "Vrefstable/nextdependentoperation",
+      "kind": "minimum",
+      "min_ps": 150000,
+      "effective_cycles_at_834ps": 180,
+      "note": "Worstcase settling. Range/code0..50 only perMR6table; reject51..63. Rangechangesonlyonentry.",
+      "ledger_test_intent": {
+        "positive": "VREF_multi_step.boundary",
+        "negative": "VREF_multi_step.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "vref_entry_bits_are_ignored_and_later_steps_settle",
+        "later_vref_single_and_multi_code_steps_have_independent_boundaries"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The multi-code 180-CK boundary is asserted by attempting ACT; the runtime reports the generic VREF_enter readiness rule rather than VREF_multi_step. The direct next-MR6 rejection path is not separately isolated, and training has no independent oracle coverage."
+      ],
+      "assertion_notes": [
+        "later_vref_single_and_multi_code_steps_have_independent_boundaries changes MR6 by seven codes, rejects ACT at 179 CK with VREF_enter, and accepts at 180 CK."
+      ]
+    },
+    {
+      "id": "VREF_exit",
+      "source_pages": [
+        86
+      ],
+      "scope": "rank",
+      "trigger": "MR6trainingdisable",
+      "action": "anycommandexceptDES",
+      "kind": "minimum",
+      "min_ps": 150000,
+      "effective_cycles_at_834ps": 180,
+      "note": "Allbanksidle, latestVrefsettled; exitmustnotchangeexistingrange/code. MR6low7bitsnotwrittenonexit.",
+      "ledger_test_intent": {
+        "positive": "VREF_exit.boundary",
+        "negative": "VREF_exit.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "vref_entry_bits_are_ignored_and_later_steps_settle"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "WLEV_allowed",
+      "source_pages": [
+        44,
+        45
+      ],
+      "scope": "rank",
+      "trigger": "MR1A7=1",
+      "action": "command",
+      "kind": "state",
+      "note": "OnlyDES,MR1Qoffchange,MR1exit; noactualmemoryread/write. ODTalloffselected; idealCKsamplefeedbackonly, notanalogmarginclaim.",
+      "ledger_test_intent": {
+        "positive": "WLEV_allowed.boundary",
+        "negative": "WLEV_allowed.invalid_state_or_encoding"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+        "delayed_level_feedback_cannot_survive_qoff_or_exit",
+        "leveling_command_legality_pulse_and_setup_hold_aperture"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The test checks ACT and MR2 as forbidden commands while write leveling is active; it does not enumerate every command and mode encoding."
+      ],
+      "assertion_notes": [
+        "leveling_command_legality_pulse_and_setup_hold_aperture asserts WLEV_allowed for ACT and MR2 while write leveling is active."
+      ]
+    },
+    {
+      "id": "WLEV_drive",
+      "source_pages": [
+        45,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "MR1writelevelenable",
+      "action": "startDQSlow",
+      "kind": "minimum",
+      "min_cycles": 25,
+      "effective_cycles_at_834ps": 25,
+      "note": "NoODT additionaldelay applies sinceallRTTdisabled.",
+      "ledger_test_intent": {
+        "positive": "WLEV_drive.boundary",
+        "negative": "WLEV_drive.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+        "delayed_level_feedback_cannot_survive_qoff_or_exit"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "WLEV_first_edge",
+      "source_pages": [
+        45,
+        262
+      ],
+      "scope": "rank",
+      "trigger": "MR1writelevelenable",
+      "action": "firstDQS risingedge",
+      "kind": "minimum",
+      "min_cycles": 40,
+      "effective_cycles_at_834ps": 40,
+      "ledger_test_intent": {
+        "positive": "WLEV_first_edge.boundary",
+        "negative": "WLEV_first_edge.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+        "delayed_level_feedback_cannot_survive_qoff_or_exit"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "WLEV_pulse",
+      "source_pages": [
+        45,
+        261
+      ],
+      "scope": "DQS",
+      "trigger": "rising/fallingedge",
+      "action": "oppositeedge",
+      "kind": "minimum",
+      "min_ps": 384,
+      "effective_cycles_at_834ps": 1,
+      "note": "tDQSH/tDQSL min0.46*tCK; modelhalfcycle417ps. Pulse maxcontrollerdependent inleveling.",
+      "ledger_test_intent": {
+        "positive": "WLEV_pulse.boundary",
+        "negative": "WLEV_pulse.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+        "leveling_command_legality_pulse_and_setup_hold_aperture"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "One DQS pulse is checked at 383 ps rejected and 384 ps accepted; analog margin and jitter are outside this ideal-clock model."
+      ],
+      "assertion_notes": [
+        "leveling_command_legality_pulse_and_setup_hold_aperture asserts WLEV_pulse and atomic refusal at 383 ps, then accepts the opposite DQS edge at 384 ps."
+      ]
+    },
+    {
+      "id": "WLEV_setup_hold",
+      "source_pages": [
+        262
+      ],
+      "scope": "CK/DQS",
+      "trigger": "CKedge/DQSedge",
+      "action": "sampleoutsideaperture",
+      "kind": "state",
+      "note": "tWLS=tWLH=0.13*tCK =108.42ps; representconservatively109ps. Nearaperture returnsundefined, neverassertcalibrationpass.",
+      "ledger_test_intent": {
+        "positive": "WLEV_setup_hold.boundary",
+        "negative": "WLEV_setup_hold.invalid_state_or_encoding"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+        "leveling_command_legality_pulse_and_setup_hold_aperture"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The asserted Option feedback boundary uses fixed ideal CK and does not model analog setup/hold margin, noise, or jitter."
+      ],
+      "assertion_notes": [
+        "leveling_command_legality_pulse_and_setup_hold_aperture checks undefined feedback at 0/108/309 ps and defined feedback at 109/308/526 ps around CK edges."
+      ]
+    },
+    {
+      "id": "WLEV_feedback",
+      "source_pages": [
+        45,
+        262
+      ],
+      "scope": "DQ",
+      "trigger": "DQSsamplesCK",
+      "action": "allDQfeedback",
+      "kind": "maximum",
+      "formula": "tWLO<=9500ps; inter-bit skew<=2000ps",
+      "note": "Idealmodelcanchoosefixed9500psfeedbackandzeroskew; output beforevalidtimeunavailable. Boundarytestfuturedeadline+1ps; negativeinputearlyreadtestsdataavailability.",
+      "ledger_test_intent": {
+        "positive": "WLEV_feedback.boundary",
+        "negative": "WLEV_feedback.one_cycle_late"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+        "delayed_level_feedback_cannot_survive_qoff_or_exit",
+        "leveling_command_legality_pulse_and_setup_hold_aperture"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "WLEV_exit",
+      "source_pages": [
+        46
+      ],
+      "scope": "rank",
+      "trigger": "strobe stopped,ODTlow andRTToff",
+      "action": "MR1A7=0 thennormalcommand",
+      "kind": "minimum",
+      "min_cycles": 24,
+      "effective_cycles_at_834ps": 24,
+      "note": "tMOD afterexit; nextMRSaftertMRD=8. MR1otherselectedbitsmayberestated.",
+      "ledger_test_intent": {
+        "positive": "WLEV_exit.boundary",
+        "negative": "WLEV_exit.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "write_leveling_qoff_feedback_and_exit_mrd_are_distinct",
+        "delayed_level_feedback_cannot_survive_qoff_or_exit"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "reset_data_loss",
+      "source_pages": [
+        205
+      ],
+      "scope": "array",
+      "trigger": "RESETassert",
+      "action": "pendingbursts andstoredvalidity",
+      "kind": "state",
+      "note": "InvalidateallDDRdataandpendingcommits; deterministiczero-fillonlyifdeclaredsimulatorinitializationpolicy, nothardwareguarantee. Postresetreadsunknownfailuntilsoftwarewrite/reinitimage.",
+      "ledger_test_intent": {
+        "positive": "reset_data_loss.boundary",
+        "negative": "reset_data_loss.invalid_state_or_encoding"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "reset_and_mode_initialization_boundaries_are_atomic",
+        "maintenance_self_refresh_and_destructive_reset_use_same_live_target"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "SRX_fast_exceptions",
+      "source_pages": [
+        105,
+        261,
+        263
+      ],
+      "scope": "rank",
+      "trigger": "SRX",
+      "action": "ZQCL/ZQCS or MRS changing only CL/WR/RTP/CWL fields",
+      "kind": "minimum",
+      "min_ps": 120000,
+      "effective_cycles_at_834ps": 144,
+      "formula": "tRFC4+10000ps=110000+10000ps; tRFC4 is used here even though normalrefreshmodefixed1x",
+      "note": "Any unrelated MR change requires tXS; selected profile may only restate fixed values or valid supported actions. Geardown change remains unsupported.",
+      "ledger_test_intent": {
+        "positive": "SRX_fast_exceptions.boundary",
+        "negative": "SRX_fast_exceptions.one_cycle_early"
+      },
+      "classification": "other_rust_boundary",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "self_refresh_has_distinct_exit_guards"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "Rust boundary/state evidence only; this rule is outside the independent Python trace oracle."
+      ]
+    },
+    {
+      "id": "bank_command_state",
+      "source_pages": [
+        34,
+        35,
+        93,
+        95
+      ],
+      "scope": "bank",
+      "trigger": "bank state transition",
+      "action": "ACT/RD/WR/RDA/WRA/PRE",
+      "kind": "state",
+      "note": "ACT requires bank idle and tRP/tRC satisfied; RD/WR require an active row and tRCD. RDA/WRA reserve the bank through internal precharge/tRP, so no later RD/WR to that bank before a new ACT. PRE may target idle/precharging bank and restarts tRP as p95 states. Reject illegal commands without data or timing-state mutation.",
+      "ledger_test_intent": {
+        "positive": "bank_command_state.legal_sequence",
+        "negative": "bank_command_state.invalid_state_or_encoding"
+      },
+      "classification": "direct_oracle",
+      "oracle_checks": [
+        "bank_command_state"
+      ],
+      "oracle_trace_exercised": true,
+      "rust_tests": [
+        "strict_configuration_queue_bounds_and_refused_commands",
+        "precharge_read_write_and_automatic_precharge"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The monitor guard runs on the real generated trace, but there is no dedicated mutation proving this guard rejects a violating trace."
+      ]
+    },
+    {
+      "id": "selected_clock_latency_limits",
+      "source_pages": [
+        227,
+        259,
+        261
+      ],
+      "scope": "configuration/ideal clock",
+      "trigger": "profile validation",
+      "action": "normal command operation",
+      "kind": "state",
+      "note": "Fixed tCK834ps lies in selected CL16/CWL12 operating bin 833<=tCK<937ps. CL*tCK=13344ps satisfies13320<=tAA<=19000ps. Equal417ps high/low and zerojitter satisfy selected idealclock assumptions. Unsupported frequency,temperature,preamble,electrical options reject rather than silently reusing this ledger.",
+      "ledger_test_intent": {
+        "positive": "selected_clock_latency_limits.fixed_profile",
+        "negative": "selected_clock_latency_limits.invalid_state_or_encoding"
+      },
+      "classification": "configuration_invariant",
+      "oracle_checks": [],
+      "oracle_trace_exercised": false,
+      "rust_tests": [
+        "clock_hold_setup_are_fixed_continuous_clock_invariants",
+        "strict_configuration_queue_bounds_and_refused_commands",
+        "reset_cke_setup_and_selected_continuous_clock_contract"
+      ],
+      "mutation_probes": [],
+      "coverage_gaps": [
+        "The fixed profile and unsupported cycle_ps rejection are asserted; temperature, preamble, electrical, and alternate-frequency combinations are not modeled or swept."
+      ],
+      "assertion_notes": [
+        "clock_hold_setup_are_fixed_continuous_clock_invariants asserts the 834/417 ps clock constants and valid selected config; reset_cke_setup_and_selected_continuous_clock_contract rejects cycle_ps=833."
+      ]
+    }
+  ],
+  "oracle_integration_tests": [
+    "independent_all_history_monitor_accepts_actual_ddr_controller_trace",
+    "independent_monitor_rejects_early_commands_and_missing_changed_physical_bytes"
+  ],
+  "runtime_ddr4_unit_tests": [
+    "independently_isolated_maximum_guards_use_late_inverse_boundaries",
+    "clock_hold_setup_are_fixed_continuous_clock_invariants"
+  ],
+  "reviewed_on": "2026-10-21"
+}

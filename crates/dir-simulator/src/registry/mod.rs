@@ -3,6 +3,7 @@ mod extensions;
 mod prepare;
 use crate::types::Diagnostic;
 pub use extensions::*;
+pub(crate) use prepare::prepare_with_parsed_config;
 pub use prepare::{prepare_with_registry, prepare_with_registry_and_source};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -704,7 +705,7 @@ pub struct PreparedRegistered {
 }
 #[derive(Clone, Debug)]
 pub(crate) struct BuiltinAdapter;
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct TimerToken {
     pub(crate) owner: String,
     pub(crate) id: u64,
@@ -1111,6 +1112,7 @@ impl Default for Registry {
             "can.cc.ideal.v1",
             "can.cc.multibus.v1",
             "can.fd.precomputed.v1",
+            "can.fd.iso.v1",
             "axi4.transaction.v1",
             "soc.shared.v1",
             "ahb.transaction.v1",
@@ -1126,6 +1128,8 @@ impl Default for Registry {
             "can.ethernet.gateway.v1",
             "can.ethernet.tsn.v1",
             "ethernet.redundancy.abstract.v1",
+            "ethernet.frer.rtag.v1",
+            "ethernet.network.composite.v1",
             "ethernet.preemption.abstract.v1",
             "ethernet.control.wire.experimental.v1",
         ] {
@@ -1177,16 +1181,18 @@ impl Default for Registry {
                     | "can.ethernet.gateway.v1"
                     | "can.ethernet.tsn.v1"
                     | "ethernet.redundancy.abstract.v1"
+                    | "ethernet.frer.rtag.v1"
+                    | "ethernet.network.composite.v1"
                     | "ethernet.preemption.abstract.v1"
                     | "ethernet.control.wire.experimental.v1"
             );
-            if composed {
+            {
                 registry.execution_capabilities.insert(
                     name.into(),
                     ExecutionCapabilities {
                         cooperative_control: true,
                         metrics_v2: false,
-                        checkpoint: false,
+                        checkpoint: composed,
                     },
                 );
             }
@@ -1219,6 +1225,18 @@ impl Default for Registry {
                 },
             );
         }
+        crate::runtime::transaction_fabric::register_transaction_fabric(&mut registry)
+            .expect("valid transaction fabric registry");
+        crate::runtime::noc_flit::register_noc_flit(&mut registry)
+            .expect("valid NoC flit registry");
+        crate::runtime::soc_execution::register_soc_execution(&mut registry)
+            .expect("valid executable SoC registry");
+        crate::runtime::ethernet::phy::execution::register(&mut registry)
+            .expect("built-in sampled PHY registration");
+        crate::runtime::can_protocol::register_can_protocol(&mut registry)
+            .expect("valid CAN protocol registry");
+        crate::runtime::ahb_pipeline::register_ahb_pipeline(&mut registry)
+            .expect("valid AHB pipeline registry");
         registry
     }
 }

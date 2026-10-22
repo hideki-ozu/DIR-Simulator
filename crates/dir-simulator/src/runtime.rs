@@ -7,17 +7,26 @@ mod gateway;
 pub(crate) mod network;
 pub(crate) mod registered;
 mod scheduler;
+pub use network::clock::{ClockError, ClockWake, LocalTime, NodeClock};
 pub mod spool;
 pub(crate) mod timing;
 
+pub mod ahb_pipeline;
 pub mod axi;
+pub mod can_protocol;
 pub mod canfd;
 pub mod checkpoint_bundle;
+pub mod ddr4;
 pub mod ethernet;
+pub(crate) mod legacy;
 pub mod memory_ipc;
 pub mod metric_v2;
+pub mod network_metrics;
+pub mod noc_flit;
 pub mod session;
 pub mod soc;
+pub mod soc_execution;
+pub mod transaction_fabric;
 pub(crate) mod wire;
 pub fn simulate(
     prepared: &crate::types::PreparedSimulation,
@@ -48,7 +57,7 @@ pub(crate) fn simulate_builtin(
         | "ethernet.l2.vlan.v1"
         | "ethernet.l2.store-forward.v2"
         | "ethernet.l2.100base-t1.v1" => ethernet::simulate(prepared),
-        "can.fd.precomputed.v1" => canfd::simulate(prepared),
+        "can.fd.precomputed.v1" | "can.fd.iso.v1" => canfd::simulate(prepared),
         "axi4.transaction.v1" => axi::simulate(prepared),
         "soc.shared.v1" | "ahb.transaction.v1" | "noc.xy.v1" => soc::simulate(prepared),
         "memory.ipc.transaction.v1" => memory_ipc::simulate(prepared),

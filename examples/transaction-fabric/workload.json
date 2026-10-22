@@ -1,0 +1,11 @@
+{
+  "schema":"dir.transaction-fabric.workload", "version":1,
+  "requests":[
+    {"request_id":"slow-read", "source":"cpu0", "id":0, "at_ps":0, "operation":"read", "address":0, "size_bytes":4, "beats":2, "burst":"INCR"},
+    {"request_id":"fast-read", "source":"cpu0", "id":1, "at_ps":0, "operation":"read", "address":4096, "size_bytes":4, "beats":1, "burst":"INCR"},
+    {"request_id":"same-id-read", "source":"cpu0", "id":0, "at_ps":0, "operation":"read", "address":4100, "size_bytes":4, "beats":1, "burst":"INCR"},
+    {"request_id":"buffered-write", "source":"dma0", "id":7, "at_ps":0, "operation":"write", "address":4100, "size_bytes":4, "beats":2, "burst":"INCR", "address_delay_cycles":3,
+      "write_data":[{"data":[20,21,22,23],"strobe":[true,true,true,true]},{"data":[24,25,26,27],"strobe":[true,true,true,true]}]},
+    {"request_id":"dma-read", "source":"dma0", "transport":"dma", "id":8, "at_ps":10, "operation":"read", "address":4100, "size_bytes":4, "beats":2, "burst":"INCR"}
+  ]
+}

@@ -69,6 +69,7 @@ pub(super) fn prepared(protocols: &[WireProtocol]) -> PreparedWire {
                 id: format!("{n}-{protocol:?}"),
                 protocol: *protocol,
                 bridge: n.into(),
+                component_binding: None,
                 ports: vec![port.clone()],
                 max_pdu_bytes: 1500,
                 max_state_entries: 4094,

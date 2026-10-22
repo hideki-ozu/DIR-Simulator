@@ -1,5 +1,7 @@
 # DIR Simulator
 
+追加実装の対応と検証範囲は[81項目の実装台帳](docs/implementation/README.md)から参照できます。台帳の状態と、既存公開版の説明を併せて確認してください。
+
 文書バージョン：`1.1.37`
 対象GitHubバージョン：`v1.1.6`
 公開形式：GitHubのSource codeアーカイブ。タグ作成時に対象commitを固定する

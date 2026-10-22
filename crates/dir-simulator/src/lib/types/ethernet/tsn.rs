@@ -3,10 +3,19 @@ use serde::Serialize;
 use std::{collections::BTreeMap, sync::Arc};
 
 pub const Q: u128 = 1_000_000_000_000;
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GateOperation {
+    #[default]
+    SetGateStates,
+    SetAndHoldMac,
+    SetAndReleaseMac,
+}
 #[derive(Debug, Clone, Serialize)]
 pub struct GateEntry {
     pub duration_ps: u64,
     pub open_mask: u8,
+    pub operation: GateOperation,
 }
 #[derive(Debug, Clone, Serialize)]
 pub struct OpenRun {
@@ -92,7 +101,7 @@ impl Credit {
         }
     }
 }
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreditMode {
     Sending,
@@ -109,7 +118,7 @@ impl PreparedTsn {
         let schedule = |s: &Schedule, stream: bool| {
             let mut v = json!({"base_time_ps":s.base_ps.to_string(),"cycle_time_ps":s.cycle_ps.to_string(),
                 "entries":s.entries.iter().map(|e|if stream {json!({"duration_ps":e.duration_ps.to_string(),"open":e.open_mask!=0})}
-                else {json!({"duration_ps":e.duration_ps.to_string(),"open_priorities":(0..8).filter(|c|e.open_mask&(1<<c)!=0).collect::<Vec<_>>()})}).collect::<Vec<_>>()});
+                else {let mut entry=json!({"duration_ps":e.duration_ps.to_string(),"open_priorities":(0..8).filter(|c|e.open_mask&(1<<c)!=0).collect::<Vec<_>>()}); if e.operation!=GateOperation::SetGateStates {entry["operation"]=json!(e.operation);} entry}).collect::<Vec<_>>()});
             if !stream {
                 v["id"] = json!(s.id);
             }

@@ -1,0 +1,94 @@
+{
+  "schema": "dir.soc-execution.model",
+  "version": 1,
+  "cycle_ps": 1,
+  "memory": [
+    {
+      "id": "ram",
+      "base": 0,
+      "size": 1024,
+      "readable": true,
+      "writable": true,
+      "executable": true,
+      "initial": [
+        147,
+        2,
+        0,
+        32,
+        19,
+        3,
+        160,
+        2,
+        35,
+        160,
+        98,
+        0,
+        131,
+        163,
+        2,
+        0,
+        15,
+        0,
+        0,
+        0,
+        115,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "cores": [],
+  "cache": {
+    "line_bytes": 16,
+    "sets": 4,
+    "ways": 2,
+    "mshrs": 2,
+    "ack_cycles": 3
+  },
+  "fabric": {
+    "queue_capacity": 4,
+    "aging_cycles": 2,
+    "data_bytes": 4,
+    "axi_address_delay_cycles": 1,
+    "ahb_wait_cycles": 2
+  },
+  "noc": {
+    "schema": "dir.noc-flit.model",
+    "version": 1,
+    "topology": {
+      "kind": "mesh",
+      "width": 2,
+      "height": 2
+    },
+    "flit_bytes": 4,
+    "buffer_flits": 1,
+    "adaptive_vcs": 1,
+    "cycle_ps": 1,
+    "link_latency_cycles": 2,
+    "credit_latency_cycles": 2,
+    "escape_after_stalls": 2,
+    "ejection_capacity_flits": 1,
+    "ejection_service_cycles": 1,
+    "pending_packets": 4
+  },
+  "memory_router": 3,
+  "dma_buffer_bytes": 4,
+  "slots": [
+    {
+      "id": "slot",
+      "base": 256,
+      "capacity": 16
+    }
+  ],
+  "mailboxes": [
+    {
+      "id": "ipc",
+      "base": 4096,
+      "slot": "slot",
+      "producer": "producer",
+      "consumer": "consumer",
+      "service_cycles": 7
+    }
+  ]
+}

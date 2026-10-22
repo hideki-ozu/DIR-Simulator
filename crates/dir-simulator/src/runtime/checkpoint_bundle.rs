@@ -327,12 +327,22 @@ fn declared_files(
 /// Write a new bundle; only the returned receipt confirms its publication.
 pub fn write_bundle(
     destination: &Path,
-    mut manifest: Value,
+    manifest: Value,
     files: BTreeMap<String, Vec<u8>>,
     limits: &CheckpointLimits,
     ordinal: u64,
 ) -> ModelResult<CheckpointReceipt> {
-    let total = validate_files(&files, limits)?;
+    let bytes = encode_manifest(manifest, &files, limits, ordinal)?;
+    platform::write(destination, &bytes, &files, ordinal)
+}
+
+pub(crate) fn encode_manifest(
+    mut manifest: Value,
+    files: &BTreeMap<String, Vec<u8>>,
+    limits: &CheckpointLimits,
+    ordinal: u64,
+) -> ModelResult<Vec<u8>> {
+    let total = validate_files(files, limits)?;
     if ordinal == u64::MAX {
         return Err(ModelError("ResourceExhausted: checkpoint ordinal".into()));
     }
@@ -358,13 +368,20 @@ pub fn write_bundle(
     {
         return Err(invalid("total byte limit including manifest"));
     }
-    platform::write(destination, &bytes, &files, ordinal)
+    Ok(bytes)
 }
 
 pub fn read_bundle(
     path: &Path,
     limits: &CheckpointLimits,
 ) -> ModelResult<(Value, BTreeMap<String, Vec<u8>>)> {
+    read_bundle_with_manifest_hash(path, limits).map(|(_, manifest, files)| (manifest, files))
+}
+
+pub(crate) fn read_bundle_with_manifest_hash(
+    path: &Path,
+    limits: &CheckpointLimits,
+) -> ModelResult<(String, Value, BTreeMap<String, Vec<u8>>)> {
     limits.validate()?;
     let (manifest_bytes, files) = platform::read(path, limits)?;
     let manifest = strict_json(&manifest_bytes)?;
@@ -414,7 +431,7 @@ pub fn read_bundle(
     {
         return Err(invalid("total byte limit including manifest"));
     }
-    Ok((manifest, files))
+    Ok((sha(&manifest_bytes), manifest, files))
 }
 
 #[cfg(unix)]

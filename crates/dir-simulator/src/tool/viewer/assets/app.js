@@ -167,14 +167,25 @@
       if (version === loadVersion) failLoad(error instanceof Error ? error.message : String(error));
     }
   }
-  function loadObject(raw, filename) {
+  function loadObject(raw, filename, prefixMode = false, parsedModel = null) {
+    document.getElementById('legacy-control-banner')?.remove();
+    if (raw?.schema_version === 4) {
+      const legacy = window.DIRControlledModel.parseLegacy(raw);
+      loadObject(legacy.payload, filename, true, legacy.model);
+      const banner = document.createElement('p');
+      banner.id = 'legacy-control-banner'; banner.className = 'panel';
+      banner.style.margin = '24px'; banner.style.padding = '16px';
+      banner.textContent = `保存時の状態: ${legacy.control.state} · 成功イベント: ${legacy.control.commit_ordinal} · 観測終端: ${legacy.control.horizon_ps} ps · 再開: ${legacy.control.resume_supported ? '可能（元sessionが必要）' : '対象外'}`;
+      document.querySelector('main').prepend(banner);
+      return;
+    }
     if(raw?.schema_version===3||window.DIRControlledModel?.extensionProfiles.has(raw?.metadata?.model_profile)){
       clearResult();window.DIRControlledApp.mount(raw,filename);
       $("empty-state").hidden=true;$("loading").hidden=true;$("error-banner").hidden=true;return;
     }
     if (window.DIRTransactionModel?.profiles.has(raw?.metadata?.model_profile)) {
       clearResult();
-      window.DIRTransactionApp.mount(raw, filename);
+      window.DIRTransactionApp.mount(raw, filename, prefixMode, parsedModel);
       $("empty-state").hidden = true;
       $("loading").hidden = true;
       $("error-banner").hidden = true;
@@ -182,7 +193,7 @@
     }
     if (["ethernet.l2.store-forward.v1", "ethernet.l2.qos.v1", "ethernet.l2.vlan.v1", "ethernet.l2.dynamic.v1", "can.ethernet.gateway.v1", "ethernet.tsn.v1", "ethernet.l2.store-forward.v2", "ethernet.l2.100base-t1.v1"].includes(raw?.metadata?.model_profile)) {
       clearResult();
-      window.DIREthernetApp.mount(raw, filename);
+      window.DIREthernetApp.mount(raw, filename, prefixMode, parsedModel);
       $("empty-state").hidden = true;
       $("loading").hidden = true;
       $("error-banner").hidden = true;
@@ -190,7 +201,7 @@
     }
     window.DIREthernetApp?.unmount();
     if (!API) throw new Error("model.js を読み込めません。ビューアーのファイル一式を同じフォルダーに置いてください。");
-    model = API.parseResults(raw);
+    model = parsedModel ?? API.parseResults(raw, prefixMode);
     chronologicalRequests = [...model.requests].sort((a, b) => {
       if (a.generated !== b.generated) return a.generated < b.generated ? -1 : 1;
       return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
@@ -868,7 +879,7 @@
         for (const delivery of origin.deliveries) identity.push([`経路遅延 ${delivery.receiver}`,time(delivery.pathDelay,true)]);
       }
     }
-    if(model.canfd){const f=request.fdFrame;identity.push(['形式',`CAN FD ${f.format} / ID ${f.id}`],['Payload',`${f.data.length/2} byte / DLC ${f.dlc}`],['BRS',String(f.brs)],['速度',`${f.nominal_rate} / ${f.data_rate} bps`],['位相bit数',`${f.nominal_bits} / ${f.data_bits}`],['Fidelity',f.fidelity],['Wire validation',f.wire_validation],['証跡',f.evidence],['Binding SHA-256',f.binding_sha256]);}
+    if(model.canfd){const f=request.fdFrame;identity.push(['形式',`CAN FD ${f.format} / ID ${f.id}`],['Payload',`${f.data.length/2} byte / DLC ${f.dlc}`],['BRS',String(f.brs)],['速度',`${f.nominal_rate} / ${f.data_rate} bps`],['位相bit数',`${f.nominal_bits} / ${f.data_bits}`],['Fidelity',f.fidelity],['Wire validation',f.wire_validation]);if(f.wire_bits!==undefined)identity.push(['ESI',String(f.esi)],['規格版',f.standard],['CRC',`${f.crc_width} bit / 0x${f.crc.toString(16)}`],['Stuff bits',`dynamic ${f.dynamic_stuff_positions.length} / fixed ${f.fixed_stuff_positions.length}`],['SOF–EOF bit列',f.wire_bits]);else identity.push(['証跡',f.evidence],['Binding SHA-256',f.binding_sha256]);}
     fields($("detail-fields"),identity);
     const times = [["生成", request.generated], ["TX 処理完了", request.ready], ["TX キュー投入", request.txEnqueued], ["SOF", request.sof], ["EOF", request.eof], ["バス解放", request.release]].map(([label, value]) => [label, exact(value)]);
     if (request.plannedEof !== null) times.push(["予定 EOF", exact(request.plannedEof)]);

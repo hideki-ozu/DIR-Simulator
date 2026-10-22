@@ -27,6 +27,7 @@ pub struct Port {
     pub random_counter: u64,
     pub last_opportunity: Option<u64>,
     pub attributes: BTreeMap<u16, Attribute>,
+    #[serde(with = "crate::runtime::network::checkpoint::map")]
     pub timers: BTreeMap<(String, Option<u16>), Timer>,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

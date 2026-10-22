@@ -133,6 +133,7 @@ fn write_array_fallible(
     write_bytes(writer, b"]")
 }
 
+#[cfg(test)]
 pub(super) fn write_stream_result(
     writer: &mut dyn std::io::Write,
     csv_writer: &mut dyn std::io::Write,
@@ -142,6 +143,32 @@ pub(super) fn write_stream_result(
     timestamp: &str,
     stream: &super::stream::Prepared,
 ) -> Result<(), Diagnostic> {
+    let version = if prepared.common.profile == PROFILE {
+        1
+    } else {
+        2
+    };
+    write_stream_result_csv_version(
+        writer,
+        (csv_writer, version),
+        prepared,
+        snapshot,
+        run_id,
+        timestamp,
+        stream,
+    )
+}
+
+pub(super) fn write_stream_result_csv_version(
+    writer: &mut dyn std::io::Write,
+    csv: (&mut dyn std::io::Write, u32),
+    prepared: &PreparedSimulation,
+    snapshot: &Snapshot,
+    run_id: &str,
+    timestamp: &str,
+    stream: &super::stream::Prepared,
+) -> Result<(), Diagnostic> {
+    let (csv_writer, csv_version) = csv;
     let version = if prepared.common.profile == PROFILE {
         1
     } else {
@@ -196,7 +223,7 @@ pub(super) fn write_stream_result(
         stream.records.iter()?.enumerate().map(|(i, row)| {
             let mut value = row?.value;
             value["seq"] = json!(i.to_string());
-            super::csv::write_stream_row(csv_writer, &value, run_id, version)?;
+            super::csv::write_stream_row(csv_writer, &value, run_id, csv_version)?;
             Ok(value)
         }),
     )?;

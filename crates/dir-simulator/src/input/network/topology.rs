@@ -156,12 +156,18 @@ pub(crate) fn resolve(
     network: &str,
     overrides: &BTreeMap<String, String>,
     channels: &BTreeMap<String, BTreeMap<String, String>>,
+    dynamic_ethernet: bool,
 ) -> Result<(PreparedCan, PreparedEthernet, Vec<String>, usize)> {
     let resolved = ned::resolve(types, network, overrides, &Rules)?;
     let channels = resolved.resolve_channels(channels, &Rules)?;
     let can = super::super::can::resolve_prepared(&resolved, &channels, "can.cc.multibus.v1")?;
+    let ethernet_profile = if dynamic_ethernet {
+        "ethernet.l2.dynamic.v1"
+    } else {
+        "can.ethernet.gateway.v1"
+    };
     let (ethernet, _, _) =
-        super::super::ethernet::resolve_prepared(&resolved, &channels, "can.ethernet.gateway.v1")?;
+        super::super::ethernet::resolve_prepared(&resolved, &channels, ethernet_profile)?;
     if can.controllers.is_empty() {
         return Err(error("composite requires CAN controllers"));
     }

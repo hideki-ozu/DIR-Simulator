@@ -94,11 +94,20 @@ pub(super) fn metadata(
         .collect();
     let models:BTreeMap<_,_>=registered.models.iter().map(|m|(m.implementation_key.clone(),json!({"type":m.implementation_key,"version":registered.registry.modules[&m.implementation_key].descriptor.implementation_version,"assumptions":[]}))).collect();
     let mut result = json!({"started_at_utc":timestamp,"finished_at_utc":super::metadata::utc_now(),"sources":sources,"input_sha256":digest(canonical(&json!(hashes)).as_bytes()),"config_sha256":digest(canonical(&json!(config)).as_bytes()),"config":config,"runtime_version":env!("CARGO_PKG_VERSION"),"model_registry_version":"1","model_profile":profile.name,"models":models.into_values().collect::<Vec<_>>(),"initial_state":registered.models.iter().map(|m|json!({"instance":m.id,"state":canonical(&json!({"parameters":m.parameters}))})).collect::<Vec<_>>(),"metrics":metrics,"model_schemas":schemas,"time_resolution_ps":"1","window_ps":prepared.common.metrics_window_ps.to_string(),"seed":null,"implementation_coverage":{"profile":profile.name,"reproduction_conditions":"identified","limitations":[]}});
-    let metrics_v2=profile.metrics.iter().filter_map(|name|registered.registry.metrics_v2.get(name)).map(|m|json!({"name":m.descriptor.name,"unit":m.descriptor.unit,"version":m.descriptor.version.to_string(),"value_kind":m.descriptor.value_kind,"sampling":m.descriptor.sampling,"aggregation":m.descriptor.aggregation,"targets":m.targets,"initial_gauges":m.initial_gauges.iter().map(|(k,v)|(k,v.to_string())).collect::<BTreeMap<_,_>>(),"max_metric_targets":registered.registry.metric_v2_limits.max_metric_targets.to_string(),"max_observations_per_batch":registered.registry.metric_v2_limits.max_observations_per_batch.to_string()})).collect::<Vec<_>>();
+    let metrics_v2 = metric_catalog_v2(prepared);
     if !metrics_v2.is_empty() {
         result["metrics_v2"] = json!(metrics_v2);
     }
     Ok(result)
+}
+
+pub(super) fn metric_catalog_v2(prepared: &PreparedSimulation) -> Vec<Value> {
+    let registered = prepared
+        .registered
+        .as_ref()
+        .expect("registered metric catalog");
+    let profile = &registered.registry.profiles[&prepared.common.profile];
+    profile.metrics.iter().filter_map(|name|registered.registry.metrics_v2.get(name)).map(|m|json!({"name":m.descriptor.name,"unit":m.descriptor.unit,"version":m.descriptor.version.to_string(),"value_kind":m.descriptor.value_kind,"sampling":m.descriptor.sampling,"aggregation":m.descriptor.aggregation,"targets":m.targets,"initial_gauges":m.initial_gauges.iter().map(|(k,v)|(k,v.to_string())).collect::<BTreeMap<_,_>>(),"max_metric_targets":registered.registry.metric_v2_limits.max_metric_targets.to_string(),"max_observations_per_batch":registered.registry.metric_v2_limits.max_observations_per_batch.to_string()})).collect()
 }
 
 fn row(prepared: &PreparedSimulation, seq: usize, p: &crate::snapshot::Point) -> Value {
@@ -133,6 +142,26 @@ fn model_record_value(
 ) -> Value {
     let network = prepared.registered.as_ref().unwrap().network.is_some();
     let mut data = record.data.clone();
+    // Project-owned protocol profiles use the same exact decimal sequence
+    // representation as network records. JSON numbers lose u64 precision in JS.
+    if matches!(
+        prepared.common.profile.as_str(),
+        "axi4.concurrent.v1"
+            | "ahb.pipeline.v1"
+            | "noc.flit.v1"
+            | "soc.execution.v1"
+            | "ethernet.phy.v1"
+            | "can.cc.protocol.v1"
+            | "can.mixed.protocol.v1"
+            | "can.gateway.protocol.v1"
+    ) {
+        if let Some(value) = data.get_mut("effect_seq") {
+            if let Some(sequence) = value.as_u64() {
+                *value = json!(sequence.to_string());
+            }
+        }
+    }
+
     let mut subject = record.subject.clone();
     let mut request = Value::Null;
     let mut origin = Value::Null;

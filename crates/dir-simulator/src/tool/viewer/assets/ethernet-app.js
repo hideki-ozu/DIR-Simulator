@@ -11,8 +11,8 @@
   const svg=(tag,attrs,text)=>{const n=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v]of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
   function pause(){cancelAnimationFrame(animation);animation=0;playing=false;step=null;if($('play'))$('play').textContent='▶ 再生';}
   function unmount(){pause();if(root){root.hidden=true;root.replaceChildren();}model=null;originEventSelection=null;originEventGroups=[];}
-  function mount(raw,filename){
-    unmount();const parsed=E.parseResults(raw);model=parsed;current=model.start;selected=null;selectedMedia=null;vlanFilter=null;originFilter=null;
+  function mount(raw,filename,prefixMode=false,parsedModel=null){
+    unmount();const parsed=parsedModel??E.parseResults(raw,prefixMode);model=parsed;current=model.start;selected=null;selectedMedia=null;vlanFilter=null;originFilter=null;
     if(!root){root=element('section');root.id='ethernet-dashboard';document.querySelector('main').append(root);}
     root.hidden=false;
     // Static markup only. All result data is inserted via textContent.

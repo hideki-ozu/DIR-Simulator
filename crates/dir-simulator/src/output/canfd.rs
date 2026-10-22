@@ -70,7 +70,32 @@ pub(super) fn model_records(prepared: &PreparedSimulation, state: &CanFdSnapshot
     let mut rows = Vec::new();
     for g in &model.generators {
         let f = &g.frame;
-        rows.push(envelope("dir.canfd.frame",&g.id,&model.controllers[g.source].id,None,0,json!({"format":f.format,"id":f.id,"data":f.data,"dlc":f.dlc,"brs":f.brs,"nominal_bits":f.nominal_bits.to_string(),"data_bits":f.data_bits.to_string(),"evidence":f.evidence,"binding_sha256":f.binding_sha256,"nominal_rate":f.nominal_rate.to_string(),"data_rate":f.data_rate.to_string(),"fidelity":"externally-precomputed-phase-bits","wire_validation":"structural-only"})));
+        let data = if let Some(wire) = &f.iso {
+            json!({"format":f.format,"id":f.id,"data":f.data,"dlc":f.dlc,"brs":f.brs,"esi":wire.esi,
+                "nominal_bits":f.nominal_bits.to_string(),"data_bits":f.data_bits.to_string(),
+                "nominal_rate":f.nominal_rate.to_string(),"data_rate":f.data_rate.to_string(),
+                "fidelity":"content-derived-iso-can-fd-2015","wire_validation":"crc-and-stuffing",
+                "standard":"ISO 11898-1:2015 edition 2",
+                "wire_bits":wire.bits.iter().map(|b| char::from(b'0'+b)).collect::<String>(),
+                "crc_width":wire.crc_width,"crc":wire.crc,"stuff_count":wire.stuff_count,
+                "stuff_count_code":wire.stuff_count_code,
+                "dynamic_stuff_positions":wire.dynamic_stuff_positions,"fixed_stuff_positions":wire.fixed_stuff_positions,
+                "brs_index":wire.brs_index,"crc_delimiter_index":wire.crc_delimiter_index})
+        } else {
+            json!({"format":f.format,"id":f.id,"data":f.data,"dlc":f.dlc,"brs":f.brs,"nominal_bits":f.nominal_bits.to_string(),"data_bits":f.data_bits.to_string(),"evidence":f.evidence,"binding_sha256":f.binding_sha256,"nominal_rate":f.nominal_rate.to_string(),"data_rate":f.data_rate.to_string(),"fidelity":"externally-precomputed-phase-bits","wire_validation":"structural-only"})
+        };
+        let mut row = envelope(
+            "dir.canfd.frame",
+            &g.id,
+            &model.controllers[g.source].id,
+            None,
+            0,
+            data,
+        );
+        if f.iso.is_some() {
+            row["schema_version"] = json!(2);
+        }
+        rows.push(row);
     }
     for r in &state.requests {
         let g = &model.generators[r.generator];
@@ -155,6 +180,29 @@ pub(super) fn metadata(
         "model_schemas":[{"schema_name":"dir.canfd.frame","schema_version":1},{"schema_name":"dir.canfd.reception","schema_version":1},{"schema_name":"dir.canfd.request","schema_version":1}],
         "models":[{"type":prepared.common.profile,"version":"1","protocol":"dir.canfd","capability":"canfd-bus","assumptions":["externally supplied phase bit counts","structural-only wire validation","single active Bus","ideal ACK","error-active ESI","nonpreemptive arbitration","drop-newest ready queues","fixed independent processing and propagation delays"]}],"fidelity":"externally-precomputed-phase-bits","wire_validation":"structural-only","initial_state":initial_state,"metrics":metrics,"time_resolution_ps":"1","window_ps":prepared.common.metrics_window_ps.to_string(),"seed":null,"topology":topology,"canfd_topology":topology,
         "implementation_coverage":{"profile":prepared.common.profile,"reproduction_conditions":"partially_identified","limitations":["external bit counts and evidence are not independently verified","public Registry/Envelope event codec API unavailable","start timestamp and run_id collected at export rather than execution start","build provenance compiler/toolchain/commit/lock unavailable"]}});
+    if prepared.common.profile == "can.fd.iso.v1" {
+        result["model_schemas"][0]["schema_version"] = json!(2);
+        result["fidelity"] = json!("content-derived-iso-can-fd-2015");
+        result["wire_validation"] = json!("crc-and-stuffing");
+        result["standard"] = json!("ISO 11898-1:2015 edition 2");
+        result["models"][0]["assumptions"] = json!([
+            "content-derived ISO 11898-1:2015 edition 2 data frame",
+            "CRC-17/21, dynamic stuffing, Gray stuff count/parity and fixed CRC stuffing",
+            "BRS and CRC delimiter split-bit timing combined exactly",
+            "single active Bus",
+            "ideal ACK",
+            "explicit ESI bit without error confinement",
+            "nonpreemptive arbitration",
+            "drop-newest ready queues",
+            "fixed independent processing and propagation delays"
+        ]);
+        result["implementation_coverage"]["limitations"] = json!([
+            "ideal acknowledged wire encoding; not controller conformance certification",
+            "no retransmission, error confinement, overload or mixed Classical CAN bus",
+            "ESI is supplied explicitly rather than derived from TEC/REC",
+            "digital wire bits; no PHY sample-point or analog waveform simulation"
+        ]);
+    }
     for key in [
         "git_commit",
         "binary_sha256",

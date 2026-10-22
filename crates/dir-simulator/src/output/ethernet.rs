@@ -26,7 +26,14 @@ pub(super) const FILTER_REASONS: [&str; 8] = [
     "multicast_no_egress",
     "unknown_multicast",
 ];
-pub(super) const NETWORK_FILTER_REASONS: [&str; 11] = [
+pub(super) const PROVIDER_FILTER_REASONS: [&str; 4] = [
+    "provider_no_egress",
+    "provider_control_consumed",
+    "provider_control_filtered",
+    "provider_ingress",
+];
+pub(super) const NETWORK_FILTER_REASONS: [&str; 12] = [
+    "replication_unintended_receiver",
     "link_down",
     "stp_discarding",
     "stp_learning",
@@ -40,6 +47,13 @@ pub(super) const NETWORK_FILTER_REASONS: [&str; 11] = [
     "psfp_meter_yellow",
 ];
 
+fn provider_enabled(prepared: &PreparedSimulation) -> bool {
+    prepared
+        .registered
+        .as_ref()
+        .and_then(|r| r.network.as_ref())
+        .is_some_and(|n| n.provider_l2.is_some())
+}
 fn is_qos(prepared: &PreparedSimulation) -> bool {
     matches!(
         prepared.common.profile.as_str(),
@@ -49,10 +63,22 @@ fn is_qos(prepared: &PreparedSimulation) -> bool {
 fn tag_json(tag: Option<&EthernetVlanTag>) -> Value {
     tag.map_or(Value::Null, |tag| json!({"vid":tag.vid.to_string(),"pcp":tag.pcp.to_string(),"dei":tag.dei.to_string()}))
 }
+fn tags_json(wire: &EthernetWireFrame) -> Value {
+    json!(
+        wire.tags
+            .iter()
+            .map(|tag| json!({"tpid":tag.tpid.to_string(),"tci":tag_json(Some(&tag.tci))}))
+            .collect::<Vec<_>>()
+    )
+}
 fn wire_json(wire: &EthernetWireFrame) -> Value {
-    json!({"src_mac":wire.src_mac,"dst_mac":wire.dst_mac,"ether_type":wire.ether_type.to_string(),
+    let mut value = json!({"src_mac":wire.src_mac,"dst_mac":wire.dst_mac,"ether_type":wire.ether_type.to_string(),
         "data_hex":wire.data_hex,"pad_bytes":wire.pad_bytes.to_string(),"mac_bytes":wire.mac_bytes.to_string(),
-        "tag":tag_json(wire.tag.as_ref()),"fcs_hex":wire.fcs_hex,"mac_hex":wire.mac_hex})
+        "tag":tag_json(wire.tag.as_ref()),"fcs_hex":wire.fcs_hex,"mac_hex":wire.mac_hex});
+    if !wire.tags.is_empty() {
+        value["tags"] = tags_json(wire);
+    }
+    value
 }
 fn port_json(port: &EthernetPortPolicy) -> Value {
     json!({"port":port.port,"ingress":port.ingress,"pvid":port.pvid.to_string(),
@@ -191,21 +217,26 @@ pub(super) fn records(
                             .as_ref()
                             .is_some_and(|registered| registered.network.is_some())
                             && NETWORK_FILTER_REASONS.contains(&reason)
+                        || provider_enabled(prepared) && PROVIDER_FILTER_REASONS.contains(&reason)
                 })
             }) {
                 return Err(Diagnostic::output(
                     "Unknown VLAN reception filtering reason",
                 ));
             }
-            let reasons =
-                FILTER_REASONS
-                    .into_iter()
-                    .chain(NETWORK_FILTER_REASONS.into_iter().filter(|_| {
-                        prepared
-                            .registered
-                            .as_ref()
-                            .is_some_and(|registered| registered.network.is_some())
-                    }));
+            let reasons = FILTER_REASONS
+                .into_iter()
+                .chain(NETWORK_FILTER_REASONS.into_iter().filter(|_| {
+                    prepared
+                        .registered
+                        .as_ref()
+                        .is_some_and(|registered| registered.network.is_some())
+                }))
+                .chain(
+                    PROVIDER_FILTER_REASONS
+                        .into_iter()
+                        .filter(|_| provider_enabled(prepared)),
+                );
             for reason in reasons {
                 let count = filtered
                     .iter()
@@ -497,6 +528,9 @@ pub(super) fn model_records(prepared: &PreparedSimulation, state: &EthernetSnaps
         for (row, frame) in rows.iter_mut().take(state.frames.len()).zip(&state.frames) {
             row["schema_version"] = json!(3);
             row["data"]["tag"] = tag_json(frame.wire.tag.as_ref());
+            if !frame.wire.tags.is_empty() {
+                row["data"]["tags"] = tags_json(&frame.wire);
+            }
             row["data"]["source_vlan_id"] = json!(
                 frame
                     .source_vlan_id

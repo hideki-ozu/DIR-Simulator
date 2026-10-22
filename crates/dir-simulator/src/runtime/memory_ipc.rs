@@ -40,9 +40,7 @@ fn add(a: u64, b: u64) -> Result<u64> {
 fn sum(a: u64, b: u64) -> Result<u64> {
     add(a, b)
 }
-struct Engine<'a> {
-    p: &'a PreparedSimulation,
-    m: &'a PreparedMemoryIpc,
+struct EngineState {
     s: Snapshot,
     current_event_sequence: u64,
     effect: u64,
@@ -54,26 +52,44 @@ struct Engine<'a> {
     phase: u8,
     intents: Vec<usize>,
 }
+struct Engine<'a> {
+    p: &'a PreparedSimulation,
+    m: &'a PreparedMemoryIpc,
+    state: EngineState,
+}
+impl std::ops::Deref for Engine<'_> {
+    type Target = EngineState;
+    fn deref(&self) -> &EngineState {
+        &self.state
+    }
+}
+impl std::ops::DerefMut for Engine<'_> {
+    fn deref_mut(&mut self) -> &mut EngineState {
+        &mut self.state
+    }
+}
+
 impl Engine<'_> {
     fn st(&self) -> &MemoryIpcSnapshot {
-        self.s.memory_ipc.as_ref().unwrap()
+        self.state.s.memory_ipc.as_ref().unwrap()
     }
     fn st_mut(&mut self) -> &mut MemoryIpcSnapshot {
-        self.s.memory_ipc.as_mut().unwrap()
+        self.state.s.memory_ipc.as_mut().unwrap()
     }
     fn plan(&self, time: u64, phase: u8) -> Result<u64> {
-        if time < self.now {
+        if time < self.state.now {
             return Err(Diagnostic::execution(
                 "memory/IPC event before current time",
             ));
         }
-        let delta = if time == self.now {
-            if self.phase == 2 && phase == 1 {
-                self.delta
+        let delta = if time == self.state.now {
+            if self.state.phase == 2 && phase == 1 {
+                self.state
+                    .delta
                     .checked_add(1)
                     .ok_or_else(|| limit("memory/IPC delta overflow"))?
             } else {
-                self.delta
+                self.state.delta
             }
         } else {
             0
@@ -81,7 +97,8 @@ impl Engine<'_> {
         if delta >= self.p.common.max_delta_cycles {
             return Err(limit("memory/IPC max-delta-cycles exceeded"));
         }
-        self.sequence
+        self.state
+            .sequence
             .checked_add(1)
             .ok_or_else(|| limit("memory/IPC sequence overflow"))?;
         Ok(delta)
@@ -218,12 +235,12 @@ impl Engine<'_> {
         event: Event,
     ) -> Result<()> {
         let delta = self.plan(time, phase)?;
-        let generation = self.sequence + 1;
+        let generation = self.state.sequence + 1;
         let body = self
             .codec(&event, generation, time)
             .map(|b| b.encode())
             .transpose()?;
-        self.sequence = generation;
+        self.state.sequence = generation;
         let (order_node, ordinal, source_rank, chunk, operation) = match event {
             Event::Offer(g, ordinal) => (g, ordinal, 0, 0, 0),
             Event::Child(i, write) => {
@@ -238,7 +255,7 @@ impl Engine<'_> {
             }
             _ => (node, 0, 0, 0, 0),
         };
-        self.events.insert(
+        self.state.events.insert(
             (
                 time,
                 delta,
@@ -249,7 +266,7 @@ impl Engine<'_> {
                 source_rank,
                 chunk,
                 operation,
-                self.sequence,
+                self.state.sequence,
             ),
             Queued { event, body },
         );
@@ -257,13 +274,17 @@ impl Engine<'_> {
     }
     fn unique(&mut self, time: u64, phase: u8, rank: u8, node: usize, event: Event) -> Result<()> {
         let delta = self.plan(time, phase)?;
-        if self.scheduled.insert((time, delta, phase, rank, node)) {
+        if self
+            .state
+            .scheduled
+            .insert((time, delta, phase, rank, node))
+        {
             self.schedule(time, phase, rank, node, event)?;
         }
         Ok(())
     }
     fn dirty(&mut self, node: usize) -> Result<()> {
-        self.unique(self.now, 2, 1, node, Event::Dispatch(node))
+        self.unique(self.state.now, 2, 1, node, Event::Dispatch(node))
     }
     fn point(
         &mut self,
@@ -273,15 +294,15 @@ impl Engine<'_> {
         request: Option<String>,
         initial: bool,
     ) {
-        let event_seq = (!initial).then_some(self.current_event_sequence);
-        let effect_seq = (!initial).then_some(self.effect);
+        let event_seq = (!initial).then_some(self.state.current_event_sequence);
+        let effect_seq = (!initial).then_some(self.state.effect);
         if !initial {
-            self.effect += 1;
+            self.state.effect += 1;
         }
-        self.s.common.points.push(crate::snapshot::Point {
+        self.state.s.common.points.push(crate::snapshot::Point {
             event_seq,
             effect_seq,
-            time_ps: self.now,
+            time_ps: self.state.now,
             target: self.m.resources[node].node.clone(),
             metric: metric.into(),
             value,
@@ -291,9 +312,9 @@ impl Engine<'_> {
         });
     }
     fn queue_point(&mut self, node: usize, request: Option<String>) {
-        let time = self.now;
+        let time = self.state.now;
         let value = self.st().resources[node].queue.len();
-        let event = self.current_event_sequence;
+        let event = self.state.current_event_sequence;
         self.point(
             node,
             "memory_ipc.queue_length",
@@ -328,8 +349,8 @@ impl Engine<'_> {
             origin,
             chunk,
             spec,
-            time: self.now,
-            generated: self.now,
+            time: self.state.now,
+            generated: self.state.now,
             started: None,
             planned: None,
             completed: None,
@@ -351,13 +372,13 @@ impl Engine<'_> {
         }
     }
     fn offer(&mut self, row: RequestRow) -> Result<()> {
-        self.plan(self.now, 2)?;
+        self.plan(self.state.now, 2)?;
         let i = self.st().requests.len();
         let n = row.node;
         self.st_mut().requests.push(row);
-        self.intents.push(i);
-        self.st_mut().resources[n].time = self.now;
-        self.unique(self.now, 2, 0, 0, Event::Admit)
+        self.state.intents.push(i);
+        self.st_mut().resources[n].time = self.state.now;
+        self.unique(self.state.now, 2, 0, 0, Event::Admit)
     }
     fn in_range(&self, n: usize, a: u64, l: u64, row: bool) -> bool {
         let r = &self.m.resources[n];
@@ -408,7 +429,7 @@ impl Engine<'_> {
         }
     }
     fn finish(&mut self, i: usize, status: &str, reason: &str) {
-        let now = self.now;
+        let now = self.state.now;
         let q = &mut self.st_mut().requests[i];
         q.time = now;
         q.status = status.into();
@@ -421,12 +442,12 @@ impl Engine<'_> {
     }
     fn respond(&mut self, i: usize) -> Result<()> {
         if self.st().requests[i].origin.is_some() {
-            self.schedule(self.now, 1, 0, 0, Event::Response(i))?;
+            self.schedule(self.state.now, 1, 0, 0, Event::Response(i))?;
         }
         Ok(())
     }
     fn admit(&mut self) -> Result<()> {
-        let mut intents = self.intents.clone();
+        let mut intents = self.state.intents.clone();
         intents.sort_by_key(|&i| {
             let q = &self.st().requests[i];
             (
@@ -450,13 +471,13 @@ impl Engine<'_> {
                 self.rejection(i).is_some() || lengths[n] >= self.m.resources[n].queue_capacity;
             if rejected {
                 if q.origin.is_some() {
-                    self.plan(self.now, 1)?;
+                    self.plan(self.state.now, 1)?;
                 }
             } else {
                 lengths[n] += 1;
             }
         }
-        self.intents.clear();
+        self.state.intents.clear();
         for i in intents {
             let n = self.st().requests[i].node;
             let reason = self.rejection(i).or_else(|| {
@@ -470,7 +491,7 @@ impl Engine<'_> {
                 self.st_mut().requests[i].status = "queued".into();
                 self.st_mut().resources[n].queue.push_back(i);
             }
-            self.st_mut().resources[n].time = self.now;
+            self.st_mut().resources[n].time = self.state.now;
             self.queue_point(n, Some(self.st().requests[i].id.clone()));
             self.dirty(n)?;
         }
@@ -491,11 +512,11 @@ impl Engine<'_> {
         if !s.refresh_pending || s.ports[0].is_some() {
             return Ok(false);
         }
-        let end = add(self.now, r.times["refresh_ps"])?;
-        let due = add(self.now, r.times["refresh_interval_ps"])?;
+        let end = add(self.state.now, r.times["refresh_ps"])?;
+        let due = add(self.state.now, r.times["refresh_interval_ps"])?;
         self.plan(end, 0)?;
         self.plan(due, 0)?;
-        let now = self.now;
+        let now = self.state.now;
         let s = &mut self.st_mut().resources[n];
         s.time = now;
         s.refresh_pending = false;
@@ -548,11 +569,11 @@ impl Engine<'_> {
             };
             if let Some(reason) = immediate {
                 if self.st().requests[i].origin.is_some() {
-                    self.plan(self.now, 1)?;
+                    self.plan(self.state.now, 1)?;
                 }
                 self.st_mut().resources[n].queue.pop_front();
-                self.st_mut().resources[n].time = self.now;
-                self.st_mut().requests[i].started = Some(self.now);
+                self.st_mut().resources[n].time = self.state.now;
+                self.st_mut().requests[i].started = Some(self.state.now);
                 self.finish(i, "rejected", reason);
                 self.respond(i)?;
                 self.queue_point(n, Some(self.st().requests[i].id.clone()));
@@ -612,13 +633,13 @@ impl Engine<'_> {
                 Kind::Dma => r.times["setup_ps"],
                 Kind::Mailbox => r.times["service_ps"],
             };
-            let end = add(self.now, latency)?;
+            let end = add(self.state.now, latency)?;
             self.plan(end, 0)?;
             let ordinal = s
                 .next_dispatch
                 .checked_add(1)
                 .ok_or_else(|| limit("dispatch ordinal overflow"))?;
-            let now = self.now;
+            let now = self.state.now;
             let request_id = self.st().requests[i].id.clone();
             {
                 let s = &mut self.st_mut().resources[n];
@@ -675,7 +696,7 @@ impl Engine<'_> {
                 .iter()
                 .flatten()
                 .copied()
-                .filter(|&i| self.st().requests[i].planned == Some(self.now))
+                .filter(|&i| self.st().requests[i].planned == Some(self.state.now))
                 .collect::<Vec<_>>()
         } else {
             self.st().resources[n].active.into_iter().collect()
@@ -685,11 +706,14 @@ impl Engine<'_> {
         for &i in &owners {
             let q = &self.st().requests[i];
             if q.origin.is_some() {
-                self.plan(self.now, 1)?;
+                self.plan(self.state.now, 1)?;
                 if q.spec.op == "write" {
                     let parent = &self.st().requests[q.origin.unwrap()];
                     if parent.committed + q.spec.length.unwrap() == parent.spec.length.unwrap() {
-                        add(self.now, self.m.resources[parent.node].times["notify_ps"])?;
+                        add(
+                            self.state.now,
+                            self.m.resources[parent.node].times["notify_ps"],
+                        )?;
                     }
                 }
             }
@@ -697,13 +721,13 @@ impl Engine<'_> {
                 && q.spec.op == "send"
                 && self.st().resources[n].messages.len() < self.m.resources[n].capacity
             {
-                let planned = add(self.now, self.m.resources[n].times["notify_ps"])?;
+                let planned = add(self.state.now, self.m.resources[n].times["notify_ps"])?;
                 self.plan(planned, 1)?;
             }
         }
         for i in owners {
             let spec = self.st().requests[i].spec.clone();
-            let now = self.now;
+            let now = self.state.now;
             match kind {
                 Kind::Ddr | Kind::Sram => {
                     let a = spec.address.unwrap() as usize;
@@ -856,9 +880,9 @@ impl Engine<'_> {
         let index = self.st().requests.len();
         self.offer(row)?;
         self.st_mut().resources[n].child = Some(index);
-        self.st_mut().resources[n].time = self.now;
+        self.st_mut().resources[n].time = self.state.now;
         self.st_mut().requests[parent].status = if write { "writing" } else { "reading" }.into();
-        self.st_mut().requests[parent].time = self.now;
+        self.st_mut().requests[parent].time = self.state.now;
         Ok(())
     }
     fn response(&mut self, i: usize) -> Result<()> {
@@ -876,14 +900,14 @@ impl Engine<'_> {
             if write && self.st().requests[parent].data_done.is_some() {
                 self.plan(self.st().requests[parent].planned_notify.unwrap(), 1)?;
             } else {
-                self.plan(self.now, 1)?;
+                self.plan(self.state.now, 1)?;
             }
         }
         self.st_mut().requests[i].response_consumed = true;
-        self.st_mut().resources[n].time = self.now;
+        self.st_mut().resources[n].time = self.state.now;
         if reason != "ok" {
             self.finish(parent, "failed", &format!("child_{reason}"));
-            let now = self.now;
+            let now = self.state.now;
             let s = &mut self.st_mut().resources[n];
             s.active = None;
             s.child = None;
@@ -897,10 +921,10 @@ impl Engine<'_> {
             } else {
                 self.st_mut().resources[n].chunk_index += 1;
                 self.st_mut().resources[n].chunk_hex = None;
-                self.schedule(self.now, 1, 0, n, Event::Child(parent, false))?;
+                self.schedule(self.state.now, 1, 0, n, Event::Child(parent, false))?;
             }
         } else {
-            self.schedule(self.now, 1, 0, n, Event::Child(parent, true))?;
+            self.schedule(self.state.now, 1, 0, n, Event::Child(parent, true))?;
         }
         Ok(())
     }
@@ -931,23 +955,23 @@ impl Engine<'_> {
             Event::Complete(n, _) => self.complete(n)?,
             Event::RefreshDue(n) => {
                 self.st_mut().resources[n].refresh_pending = true;
-                self.st_mut().resources[n].time = self.now;
+                self.st_mut().resources[n].time = self.state.now;
                 self.dirty(n)?;
             }
             Event::RefreshEnd(n) => {
-                let now = self.now;
+                let now = self.state.now;
                 self.st_mut().resources[n].refresh_ended = Some(now);
                 self.st_mut().resources[n].time = now;
                 self.dirty(n)?;
             }
             Event::Setup(i) => {
-                self.plan(self.now, 1)?;
-                self.schedule(self.now, 1, 0, 0, Event::Child(i, false))?;
+                self.plan(self.state.now, 1)?;
+                self.schedule(self.state.now, 1, 0, 0, Event::Child(i, false))?;
             }
             Event::Response(i) => self.response(i)?,
             Event::DmaNotify(i) => {
                 let n = self.st().requests[i].node;
-                let now = self.now;
+                let now = self.state.now;
                 self.finish(i, "completed", "ok");
                 self.st_mut().requests[i].notified = Some(now);
                 let s = &mut self.st_mut().resources[n];
@@ -964,64 +988,80 @@ impl Engine<'_> {
                         "mailbox notification delivered twice",
                     ));
                 }
-                self.st_mut().notifications[i].delivered = Some(self.now);
+                self.st_mut().notifications[i].delivered = Some(self.state.now);
             }
         }
         Ok(())
     }
-    fn run(mut self) -> Snapshot {
-        let event_loop = super::timing::event_loop();
-        while let Some((&key, _)) = self.events.first_key_value() {
-            if key.0 >= self.p.common.time_limit_ps {
-                break;
-            }
-            self.now = key.0;
-            self.delta = key.1;
-            self.phase = key.2;
-            self.current_event_sequence = key.9;
-            self.effect = 0;
-            let queued = self.events.remove(&key).unwrap();
-            self.scheduled.remove(&(key.0, key.1, key.2, key.3, key.4));
-            let result = if self.s.common.committed_events >= self.p.common.max_events {
-                Err(limit("memory/IPC max-events exceeded"))
-            } else {
-                self.validate_codec(key, &queued)
-                    .and_then(|()| self.handle(queued.event.clone()))
-            };
-            if let Err(d) = result {
-                self.events.insert(key, queued);
-                self.s.common.partial = true;
-                self.s.common.termination = "execution_failed".into();
-                self.s.common.end_ps = self.now;
-                self.s.common.diagnostics.push(d.with_runtime(
-                    "run",
-                    Some(self.now),
-                    Some(key.9),
-                    None,
-                ));
-                break;
-            }
-            self.s.common.committed_events += 1;
-            self.s.common.last_event_time_ps = Some(self.now);
-            if !self.s.common.checkpoint() {
-                break;
-            }
+    fn step(&mut self) -> super::legacy::StepOutcome {
+        let Some((&key, _)) = self.state.events.first_key_value() else {
+            return super::legacy::StepOutcome::Exhausted;
+        };
+        if key.0 >= self.p.common.time_limit_ps {
+            return super::legacy::StepOutcome::Exhausted;
         }
-        drop(event_loop);
-        self.s.common.pending_events = self.events.len() as u64;
-        if !self.s.common.partial {
-            self.s.common.termination =
-                if self.events.is_empty() && self.p.common.time_limit_ps != 0 {
+        self.state.now = key.0;
+        self.state.delta = key.1;
+        self.state.phase = key.2;
+        self.state.current_event_sequence = key.9;
+        self.state.effect = 0;
+        let queued = self.state.events.remove(&key).unwrap();
+        let reservation = (key.0, key.1, key.2, key.3, key.4);
+        let unique = self.state.scheduled.remove(&reservation);
+        let result = if self.state.s.common.committed_events >= self.p.common.max_events {
+            Err(limit("memory/IPC max-events exceeded"))
+        } else {
+            self.validate_codec(key, &queued)
+                .and_then(|()| self.handle(queued.event.clone()))
+        };
+        if let Err(d) = result {
+            self.state.events.insert(key, queued);
+            if unique {
+                self.state.scheduled.insert(reservation);
+            }
+            self.state.s.common.partial = true;
+            self.state.s.common.termination = "execution_failed".into();
+            self.state.s.common.end_ps = self.state.now;
+            self.state.s.common.diagnostics.push(d.with_runtime(
+                "run",
+                Some(self.state.now),
+                Some(key.9),
+                None,
+            ));
+            return super::legacy::StepOutcome::Failed;
+        }
+        self.state.s.common.committed_events += 1;
+        self.state.s.common.last_event_time_ps = Some(self.state.now);
+        super::legacy::StepOutcome::Committed
+    }
+    fn finish_once(&mut self) {
+        self.state.s.common.pending_events = self.state.events.len() as u64;
+        if !self.state.s.common.partial {
+            self.state.s.common.end_ps = self.p.common.time_limit_ps;
+            self.state.s.common.termination =
+                if self.state.events.is_empty() && self.p.common.time_limit_ps != 0 {
                     "events_exhausted"
                 } else {
                     "time_limit"
                 }
                 .into();
         }
-        self.s
+    }
+    fn run(mut self) -> Snapshot {
+        let event_loop = super::timing::event_loop();
+        loop {
+            if !matches!(self.step(), super::legacy::StepOutcome::Committed)
+                || !self.state.s.common.checkpoint()
+            {
+                break;
+            }
+        }
+        drop(event_loop);
+        self.finish_once();
+        self.state.s
     }
 }
-pub(super) fn simulate(p: &PreparedSimulation) -> Result<Snapshot> {
+fn create_engine(p: &PreparedSimulation) -> Result<Engine<'_>> {
     let m = p
         .memory_ipc
         .as_ref()
@@ -1053,38 +1093,51 @@ pub(super) fn simulate(p: &PreparedSimulation) -> Result<Snapshot> {
         resources,
         ..Default::default()
     });
-    let mut e = Engine {
+    let e = Engine {
         p,
         m,
-        s,
-        current_event_sequence: 0,
-        effect: 0,
-        events: BTreeMap::new(),
-        scheduled: BTreeSet::new(),
-        sequence: 0,
-        now: 0,
-        delta: 0,
-        phase: 0,
-        intents: Vec::new(),
+        state: EngineState {
+            s,
+            current_event_sequence: 0,
+            effect: 0,
+            events: BTreeMap::new(),
+            scheduled: BTreeSet::new(),
+            sequence: 0,
+            now: 0,
+            delta: 0,
+            phase: 0,
+            intents: Vec::new(),
+        },
     };
-    for n in 0..m.resources.len() {
-        e.queue_point(n, None);
-        if m.resources[n].kind == Kind::Ddr {
-            e.schedule(
-                m.resources[n].times["refresh_interval_ps"],
-                0,
-                0,
-                n,
-                Event::RefreshDue(n),
-            )?;
+    Ok(e)
+}
+impl Engine<'_> {
+    fn initialize(&mut self) -> Result<()> {
+        let m = self.m;
+        for n in 0..m.resources.len() {
+            self.queue_point(n, None);
+            if m.resources[n].kind == Kind::Ddr {
+                self.schedule(
+                    m.resources[n].times["refresh_interval_ps"],
+                    0,
+                    0,
+                    n,
+                    Event::RefreshDue(n),
+                )?;
+            }
         }
-    }
-    for (g, generator) in m.generators.iter().enumerate() {
-        if let Some(&time) = generator.times.first() {
-            e.schedule(time, 1, 0, 0, Event::Offer(g, 0))?;
+        for (g, generator) in m.generators.iter().enumerate() {
+            if let Some(&time) = generator.times.first() {
+                self.schedule(time, 1, 0, 0, Event::Offer(g, 0))?;
+            }
         }
+        Ok(())
     }
-    Ok(e.run())
+}
+pub(super) fn simulate(p: &PreparedSimulation) -> Result<Snapshot> {
+    let mut engine = create_engine(p)?;
+    engine.initialize()?;
+    Ok(engine.run())
 }
 #[cfg(test)]
 mod tests {
@@ -1104,16 +1157,18 @@ mod tests {
         let mut e = Engine {
             p: &p,
             m,
-            s,
-            current_event_sequence: 0,
-            effect: 0,
-            events: BTreeMap::new(),
-            scheduled: BTreeSet::new(),
-            sequence: 0,
-            now: 0,
-            delta: 0,
-            phase: 0,
-            intents: Vec::new(),
+            state: EngineState {
+                s,
+                current_event_sequence: 0,
+                effect: 0,
+                events: BTreeMap::new(),
+                scheduled: BTreeSet::new(),
+                sequence: 0,
+                now: 0,
+                delta: 0,
+                phase: 0,
+                intents: Vec::new(),
+            },
         };
         e.s.memory_ipc = Some(MemoryIpcSnapshot {
             resources: m
@@ -1185,5 +1240,210 @@ mod tests {
         let queued = e.events[&key].clone();
         e.st_mut().resources[n].ports[0] = None;
         assert!(e.validate_codec(key, &queued).is_err());
+    }
+}
+
+/// Owned continuation for the actual memory/IPC callback engine.
+pub(crate) struct Stepper {
+    prepared: std::sync::Arc<PreparedSimulation>,
+    state: Option<EngineState>,
+    initialized: bool,
+    finished: bool,
+}
+impl Stepper {
+    pub(crate) fn new(prepared: std::sync::Arc<PreparedSimulation>) -> Result<Self> {
+        let state = create_engine(&prepared)?.state;
+        Ok(Self {
+            prepared,
+            state: Some(state),
+            initialized: false,
+            finished: false,
+        })
+    }
+    fn with_engine<T>(&mut self, f: impl FnOnce(&mut Engine<'_>) -> T) -> T {
+        let p = &*self.prepared;
+        let m = p.memory_ipc.as_ref().expect("validated memory/IPC model");
+        let mut engine = Engine {
+            p,
+            m,
+            state: self.state.take().expect("owned continuation"),
+        };
+        let result = f(&mut engine);
+        self.state = Some(engine.state);
+        result
+    }
+    pub(crate) fn initialize(&mut self) -> Result<()> {
+        if !self.initialized {
+            self.with_engine(|engine| engine.initialize())?;
+            self.initialized = true;
+        }
+        Ok(())
+    }
+    pub(crate) fn step(&mut self) -> super::legacy::StepOutcome {
+        debug_assert!(self.initialized && !self.finished);
+        self.with_engine(|engine| engine.step())
+    }
+    pub(crate) fn snapshot(&self) -> &Snapshot {
+        &self.state.as_ref().expect("owned continuation").s
+    }
+    pub(crate) fn snapshot_mut(&mut self) -> &mut Snapshot {
+        &mut self.state.as_mut().expect("owned continuation").s
+    }
+    pub(crate) fn refresh_prefix(&mut self, horizon: u64) -> Result<()> {
+        let state = self.state.as_mut().expect("owned continuation");
+        state.s.common.end_ps = horizon;
+        state.s.common.pending_events = state.events.len() as u64;
+        Ok(())
+    }
+    pub(crate) fn finish_once(&mut self) {
+        if !self.finished {
+            self.with_engine(|engine| engine.finish_once());
+            self.finished = true;
+        }
+    }
+}
+
+#[cfg(test)]
+mod cooperative_tests {
+    use super::super::legacy::StepOutcome;
+    use super::*;
+    use std::sync::Arc;
+    fn fixture(case: &str) -> PreparedSimulation {
+        crate::prepare(
+            &std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../docs/verification/fixtures/memory-ipc")
+                .join(format!("{case}.ini")),
+        )
+        .unwrap()
+    }
+    fn differential(prepared: PreparedSimulation) {
+        let prepared = Arc::new(prepared);
+        let expected = simulate(&prepared).unwrap();
+        let mut stepper = Stepper::new(prepared).unwrap();
+        assert!(stepper.snapshot().common.points.is_empty());
+        assert!(
+            stepper
+                .snapshot()
+                .memory_ipc
+                .as_ref()
+                .unwrap()
+                .requests
+                .is_empty()
+        );
+        stepper.initialize().unwrap();
+        assert_eq!(stepper.snapshot().common.committed_events, 0);
+        loop {
+            let before = stepper.snapshot().common.committed_events;
+            if !matches!(stepper.step(), StepOutcome::Committed) {
+                break;
+            }
+            assert_eq!(stepper.snapshot().common.committed_events, before + 1);
+            let horizon = stepper.snapshot().common.last_event_time_ps.unwrap_or(0);
+            let state = stepper.state.as_ref().unwrap();
+            let events: Vec<_> = state.events.keys().copied().collect();
+            let scheduled = state.scheduled.clone();
+            let result = format!("{:?}", stepper.snapshot().memory_ipc);
+            for _ in 0..2 {
+                stepper.refresh_prefix(horizon).unwrap();
+            }
+            let state = stepper.state.as_ref().unwrap();
+            assert_eq!(state.events.keys().copied().collect::<Vec<_>>(), events);
+            assert_eq!(state.scheduled, scheduled);
+            assert_eq!(format!("{:?}", stepper.snapshot().memory_ipc), result);
+            assert_eq!(stepper.snapshot().common.committed_events, before + 1);
+        }
+        stepper.finish_once();
+        stepper.finish_once();
+        assert_eq!(
+            format!("{:?}", stepper.snapshot().memory_ipc),
+            format!("{:?}", expected.memory_ipc)
+        );
+        assert_eq!(
+            format!("{:?}", stepper.snapshot().common),
+            format!("{:?}", expected.common)
+        );
+    }
+    #[test]
+    fn cooperative_memory_profiles_preserve_full_zero_and_failed_prefixes() {
+        for case in [
+            "sram-ports",
+            "sram-stop",
+            "ddr-row-refresh",
+            "ddr-stop",
+            "shared-ownership",
+            "dma-memory-content",
+            "dma-fault-prefix",
+            "mailbox-fifo",
+            "mailbox-stop",
+        ] {
+            differential(fixture(case));
+            let mut zero = fixture(case);
+            zero.common.time_limit_ps = 0;
+            differential(zero);
+            let mut failed = fixture(case);
+            failed.common.max_events = 2;
+            differential(failed);
+        }
+    }
+    #[test]
+    fn cooperative_memory_write_bytes_stay_invisible_until_completion() {
+        let prepared = Arc::new(fixture("sram-ports"));
+        let node = prepared
+            .memory_ipc
+            .as_ref()
+            .unwrap()
+            .resources
+            .iter()
+            .position(|r| r.kind == Kind::Sram)
+            .unwrap();
+        let initial = prepared.memory_ipc.as_ref().unwrap().resources[node]
+            .initial
+            .clone();
+        let mut stepper = Stepper::new(prepared).unwrap();
+        stepper.initialize().unwrap();
+        let mut saw_pending = false;
+        let mut saw_complete = false;
+        while matches!(stepper.step(), StepOutcome::Committed) {
+            let snapshot = stepper.snapshot().memory_ipc.as_ref().unwrap();
+            if let Some(request) = snapshot.requests.iter().find(|r| r.id == "a:0") {
+                if request.completed.is_none() {
+                    saw_pending = true;
+                    assert_eq!(snapshot.resources[node].bytes, initial);
+                } else if !saw_complete {
+                    saw_complete = true;
+                    assert_eq!(&snapshot.resources[node].bytes[..2], &[0xaa, 0xbb]);
+                }
+            }
+        }
+        assert!(saw_pending && saw_complete);
+    }
+    #[test]
+    fn cooperative_memory_failed_unique_candidate_and_codec_remain_reserved() {
+        let p = fixture("sram-ports");
+        let mut engine = create_engine(&p).unwrap();
+        engine.initialize().unwrap();
+        let (&key, queued) = engine.state.events.first_key_value().unwrap();
+        let mut corrupted = queued.clone();
+        corrupted.body = Some(b"{}".to_vec());
+        engine.state.events.insert(key, corrupted);
+        let state = format!("{:?}", engine.st());
+        assert!(matches!(engine.step(), StepOutcome::Failed));
+        assert_eq!(engine.state.events.first_key_value().unwrap().0, &key);
+        assert_eq!(engine.state.s.common.committed_events, 0);
+        assert_eq!(format!("{:?}", engine.st()), state);
+        let mut engine = create_engine(&p).unwrap();
+        engine.initialize().unwrap();
+        engine.state.events.clear();
+        engine.state.scheduled.clear();
+        engine.unique(0, 2, 0, 0, Event::Admit).unwrap();
+        engine.state.s.common.committed_events = p.common.max_events;
+        let keys: Vec<_> = engine.state.events.keys().copied().collect();
+        let scheduled = engine.state.scheduled.clone();
+        assert!(matches!(engine.step(), StepOutcome::Failed));
+        assert_eq!(
+            engine.state.events.keys().copied().collect::<Vec<_>>(),
+            keys
+        );
+        assert_eq!(engine.state.scheduled, scheduled);
     }
 }

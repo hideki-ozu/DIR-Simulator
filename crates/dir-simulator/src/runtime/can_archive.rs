@@ -45,6 +45,9 @@ impl CanArchive {
         let Some(directory) = super::spool::directory() else {
             return Ok(None);
         };
+        Self::create_in(&directory).map(Some)
+    }
+    fn create_in(directory: &std::path::Path) -> Result<Self, Diagnostic> {
         for _ in 0..32 {
             let path = directory.join(format!(
                 ".dir-can-ledger-{}-{}",
@@ -58,14 +61,14 @@ impl CanArchive {
                 .open(&path)
             {
                 Ok(file) => {
-                    return Ok(Some(Self {
+                    return Ok(Self {
                         path,
                         detached: AtomicBool::new(false),
                         writer: BufWriter::with_capacity(1024 * 1024, file),
                         count: 0,
                         peak_live_requests: 0,
                         peak_live_receivers: 0,
-                    }));
+                    });
                 }
                 Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => continue,
                 Err(e) => return Err(error("create", e)),
@@ -84,6 +87,16 @@ impl CanArchive {
             .map_err(|e| error("write", e))?;
         self.count = count;
         Ok(())
+    }
+    /// Flush committed bytes for a read-only prefix projection; retain the live journal.
+    pub(crate) fn flush_prefix(&mut self) -> Result<(), Diagnostic> {
+        self.writer.flush().map_err(|e| error("flush", e))
+    }
+    pub(crate) fn empty_projection(&self) -> Result<Self, Diagnostic> {
+        let mut projection = Self::create_in(self.path.parent().expect("ledger directory"))?;
+        projection.peak_live_requests = self.peak_live_requests;
+        projection.peak_live_receivers = self.peak_live_receivers;
+        Ok(projection)
     }
     pub(crate) fn finish(&mut self) -> Result<(), Diagnostic> {
         self.writer.flush().map_err(|e| error("flush", e))

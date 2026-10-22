@@ -58,15 +58,17 @@ pub(super) fn limit_error(message: &str) -> Diagnostic {
 
 impl Engine<'_> {
     pub(super) fn preflight(&mut self, events: &[(u64, Event)]) -> Result<(), Diagnostic> {
-        self.next_sequence
+        self.state
+            .next_sequence
             .checked_add(events.len() as u64)
             .ok_or_else(|| limit_error("event sequence overflow"))?;
         for (time, event) in events {
-            if *time < self.now.0 {
+            if *time < self.state.now.0 {
                 return Err(Diagnostic::execution("attempt to schedule in the past"));
             }
-            if *time == self.now.0 && event.phase() < self.now.2 {
-                self.now
+            if *time == self.state.now.0 && event.phase() < self.state.now.2 {
+                self.state
+                    .now
                     .1
                     .checked_add(1)
                     .ok_or_else(|| limit_error("delta overflow"))?;
@@ -74,7 +76,8 @@ impl Engine<'_> {
         }
         // BinaryHeap::push cannot allocate once the complete batch fits.
         reservation_checkpoint("schedule_events")?;
-        self.heap
+        self.state
+            .heap
             .try_reserve(events.len())
             .map_err(|_| allocation_diagnostic("schedule_events"))?;
         Ok(())
@@ -85,6 +88,7 @@ impl Engine<'_> {
         delta: u64,
     ) -> Result<SealedDirty, Diagnostic> {
         let count = self
+            .state
             .dirty
             .range((time, delta, 0)..=(time, delta, usize::MAX))
             .count();
@@ -93,6 +97,7 @@ impl Engine<'_> {
         let mut events = Vec::new();
         reserve_vec(&mut events, count, "seal_arbitration")?;
         for &key in self
+            .state
             .dirty
             .range((time, delta, 0)..=(time, delta, usize::MAX))
         {
@@ -111,19 +116,24 @@ impl Engine<'_> {
         for (time, event) in events {
             self.retain_event(&event);
             let phase = event.phase();
-            let delta = if time == self.now.0 {
-                self.now.1 + u64::from(phase < self.now.2)
+            let delta = if time == self.state.now.0 {
+                self.state.now.1 + u64::from(phase < self.state.now.2)
             } else {
                 0
             };
-            self.heap
-                .push(Reverse(((time, delta, phase, self.next_sequence), event)));
-            self.next_sequence += 1;
+            self.state.heap.push(Reverse((
+                (time, delta, phase, self.state.next_sequence),
+                event,
+            )));
+            self.state.next_sequence += 1;
         }
     }
     pub(super) fn dirty(&mut self, bus: usize) {
-        self.dirty
-            .insert((self.now.0, self.now.1 + u64::from(self.now.2 == 2), bus));
+        self.state.dirty.insert((
+            self.state.now.0,
+            self.state.now.1 + u64::from(self.state.now.2 == 2),
+            bus,
+        ));
     }
 }
 

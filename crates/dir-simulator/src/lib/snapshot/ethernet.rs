@@ -1,6 +1,6 @@
 //! Committed Ethernet rows, including actual and separately planned boundaries.
 use crate::types::ethernet::EthernetWireFrame;
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct EthernetFrameRecord {
     pub frame_id: String,
     pub time_ps: u64,
@@ -13,7 +13,7 @@ pub struct EthernetFrameRecord {
     pub generated_ps: u64,
     pub ready_ps: Option<u64>,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct EthernetTransferRecord {
     pub transfer_id: String,
     pub time_ps: u64,
@@ -37,7 +37,7 @@ pub struct EthernetTransferRecord {
     pub drop_reason: Option<String>,
     pub media: Option<EthernetMediaTransfer>,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct EthernetReceptionRecord {
     pub reception_id: String,
     pub time_ps: u64,
@@ -62,7 +62,7 @@ pub struct EthernetSnapshot {
     pub attempts: Vec<EthernetAttemptRecord>,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct EthernetMediaTransfer {
     pub physical_link: String,
     pub attempt_count: u64,

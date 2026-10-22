@@ -1,7 +1,7 @@
 //! Pure Classical CAN serialization. This is an ideal frame timing model, not a PHY.
 use crate::types::{Diagnostic, Frame};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct WireFrame {
     pub crc_input: Vec<u8>,
     pub crc15: u16,

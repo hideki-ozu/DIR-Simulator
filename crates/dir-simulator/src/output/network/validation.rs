@@ -1,6 +1,7 @@
 //! Profile-local typed reference closure and occupied-interval validation.
 use super::*;
 use std::collections::BTreeSet;
+mod services;
 fn fail(message: impl Into<String>) -> Diagnostic {
     Diagnostic::output(format!("network extension invariant: {}", message.into()))
 }
@@ -32,6 +33,43 @@ fn reference<'a>(
         .find(|r| r.schema.name == schema && r.id == id)
         .ok_or_else(|| fail(format!("unresolved {schema} reference {id}")))
 }
+fn transfer_reference<'a>(
+    n: &crate::types::network::PreparedNetwork,
+    records: &'a BTreeMap<String, crate::registry::ModelRecord>,
+    id: &Value,
+) -> Result<&'a crate::registry::ModelRecord, Diagnostic> {
+    let id = id
+        .as_str()
+        .ok_or_else(|| fail("missing transfer reference ID"))?;
+    let mut matches = records.values().filter(|r| {
+        r.id == id
+            && matches!(
+                r.schema.name.as_str(),
+                "ethernet.dynamic.transfer" | "dir.preemption.transfer"
+            )
+    });
+    let record = matches
+        .next()
+        .ok_or_else(|| fail(format!("unresolved transfer reference {id}")))?;
+    if matches.next().is_some() {
+        return Err(fail("ambiguous transfer reference"));
+    }
+    let direction = n
+        .ethernet
+        .directions
+        .iter()
+        .position(|d| Some(d.from_port.as_str()) == record.data["from_port"].as_str())
+        .ok_or_else(|| fail("transfer reference output missing"))?;
+    let preemption = n
+        .extensions
+        .as_ref()
+        .and_then(|e| e.preemption.as_ref())
+        .is_some_and(|p| p.participating[direction]);
+    if (record.schema.name == "dir.preemption.transfer") != preemption {
+        return Err(fail("transfer schema differs from its MAC owner"));
+    }
+    Ok(record)
+}
 fn ids(value: &Value) -> Result<&Vec<Value>, Diagnostic> {
     value
         .as_array()
@@ -40,6 +78,8 @@ fn ids(value: &Value) -> Result<&Vec<Value>, Diagnostic> {
 const BRANCH: &str = "branch_id origin_id stream_id sequence path_id path_index path_ports hop_index current_transfer_id created_ps first_sof_ps completed_ps status reason recovery_id effect_seq";
 const ORIGIN: &str = "origin_id source_frame_id stream_id sequence created_ps branch_ids target_count completed_count target first_sof_ps completed_ps delivered_branch_id effect_seq";
 const RECOVERY: &str = "recovery_id input_branch origin_id stream_id sequence eliminate_at decision previous_watermark new_watermark history_capacity bitmap_before_hex bitmap_after_hex delivered effect_seq";
+const DISTRIBUTED_ORIGIN: &str = "origin_id placement source_frame_id source_frame_index stream_id sequence created_ps first_sof_ps prefix_reception_id winner_reception_id continuation_created continuation_ps suffix_root delivery_reception_id completed_ps completed_count target_count target prefix_ports branch_ports suffix_ports dropped prefix branches suffix effect_seq";
+const DISTRIBUTED_RECOVERY: &str = "recovery_id placement input_branch reception_id origin_id stream_id sequence eliminate_at decision window_decision continuation_created suppression_reason previous_watermark new_watermark history_capacity bitmap_before_hex bitmap_after_hex delivered effect_seq";
 const TRANSFER: &str = "transfer_id frame_id parent_transfer_id queue_id priority wire vlan_id from_port to_port queued_ps sof_ps eof_ps release_ps arrival_ps planned_eof_ps planned_release_ps planned_arrival_ps status drop_reason kind visit_id copy_id policy_epoch_offer policy_epoch_sof mac_bytes completed_mac_bytes fragment_ids gap_ids occupied_ps effect_seq";
 const FRAGMENT: &str = "fragment_id transfer_id frame_id port ordinal offset_bytes payload_bytes overhead_bytes bitrate_bps start_ps planned_end_ps end_ps tx_epoch status effect_seq";
 const GAP: &str =
@@ -59,6 +99,7 @@ pub(super) fn validate(
         .network
         .as_ref()
         .unwrap();
+    services::validate(n, snapshot)?;
     if n.extensions.is_none() {
         return Ok(());
     }
@@ -69,7 +110,11 @@ pub(super) fn validate(
         let data = &record.data;
         let fields = match record.schema.name.as_str() {
             "dir.redundancy.branch" => BRANCH,
+            "dir.redundancy.origin" if data["placement"] == "bridge_pair_v1" => DISTRIBUTED_ORIGIN,
             "dir.redundancy.origin" => ORIGIN,
+            "dir.redundancy.recovery" if data["placement"] == "bridge_pair_v1" => {
+                DISTRIBUTED_RECOVERY
+            }
             "dir.redundancy.recovery" => RECOVERY,
             "dir.preemption.transfer" => TRANSFER,
             "dir.preemption.fragment" => FRAGMENT,
@@ -79,7 +124,53 @@ pub(super) fn validate(
             "dir.composite.ingress" => INGRESS,
             _ => continue,
         };
-        exact(data, fields)?;
+        let normative = n
+            .extensions
+            .as_ref()
+            .and_then(|e| e.replication.as_ref())
+            .is_some_and(|r| {
+                r.streams.iter().any(|stream| {
+                    stream.stream_id == data["stream_id"]
+                        && stream.recovery_algorithm
+                            == crate::types::network::ReplicationRecoveryAlgorithm::Vector8021cb2017
+                })
+            });
+        let fields = if normative
+            && record.schema.name == "dir.redundancy.origin"
+            && data["placement"] == "bridge_pair_v1"
+        {
+            format!("{fields} continuation_rounds accepted_count")
+        } else if normative && record.schema.name == "dir.redundancy.origin" {
+            format!("{fields} delivery_indications")
+        } else if normative
+            && record.schema.name == "dir.redundancy.recovery"
+            && data["placement"] != "bridge_pair_v1"
+        {
+            format!("{fields} reception_id")
+        } else {
+            fields.into()
+        };
+        let mut fields = fields;
+        let additions: &[&str] = match record.schema.name.as_str() {
+            "dir.preemption.transfer" => &["partial_mac_bytes", "reset_ps"],
+            "dir.preemption.fragment" => &["emitted_payload_bytes"],
+            _ => &[],
+        };
+        for field in additions {
+            if data.get(field).is_some() {
+                fields.push(' ');
+                fields.push_str(field);
+            }
+        }
+        if record.schema.name == "dir.preemption.decision" {
+            for field in ["wire_control_id", "active_transfer_index"] {
+                if data.get(field).is_some() {
+                    fields.push(' ');
+                    fields.push_str(field);
+                }
+            }
+        }
+        exact(data, &fields)?;
         number(&data["effect_seq"])?;
         match record.schema.name.as_str() {
             "dir.redundancy.branch" => {
@@ -98,6 +189,121 @@ pub(super) fn validate(
                     return Err(fail("branch hop out of path"));
                 }
             }
+            "dir.redundancy.origin" if data["placement"] == "bridge_pair_v1" => {
+                reference(records, "ethernet.dynamic.frame", &data["source_frame_id"])?;
+                let stream = n
+                    .extensions
+                    .as_ref()
+                    .and_then(|e| e.replication.as_ref())
+                    .and_then(|r| r.streams.iter().find(|s| s.stream_id == data["stream_id"]))
+                    .ok_or_else(|| fail("distributed stream missing"))?;
+                let crate::types::network::ReplicationPlacement::BridgePair(pair) =
+                    &stream.placement
+                else {
+                    return Err(fail("distributed placement missing"));
+                };
+                if data["prefix_ports"] != json!(pair.prefix.ports)
+                    || data["suffix_ports"] != json!(pair.suffix.ports)
+                    || data["branch_ports"]
+                        != json!(stream.paths.iter().map(|p| &p.ports).collect::<Vec<_>>())
+                {
+                    return Err(fail("distributed resolved paths differ"));
+                }
+                for key in [
+                    "prefix_reception_id",
+                    "winner_reception_id",
+                    "delivery_reception_id",
+                ] {
+                    if !data[key].is_null() {
+                        reference(records, "ethernet.dynamic.reception", &data[key])?;
+                    }
+                }
+                let delivered = !data["delivery_reception_id"].is_null();
+                if (!normative && number(&data["completed_count"])? != u64::from(delivered))
+                    || data["continuation_created"].as_bool()
+                        != Some(!data["winner_reception_id"].is_null())
+                {
+                    return Err(fail("distributed continuation/delivery marker"));
+                }
+                if delivered && !normative {
+                    let rx = reference(
+                        records,
+                        "ethernet.dynamic.reception",
+                        &data["delivery_reception_id"],
+                    )?;
+                    if !n.ethernet.directions.iter().any(|d| {
+                        d.destination == pair.destination_device && d.to_port == rx.data["ingress"]
+                    }) || rx.data["status"] != "received"
+                        || rx.data["ready_ps"] != data["completed_ps"]
+                    {
+                        return Err(fail("distributed actual destination evidence"));
+                    }
+                }
+                if normative {
+                    let rounds = ids(&data["continuation_rounds"])?;
+                    let accepted = records
+                        .values()
+                        .filter(|r| {
+                            r.schema.name == "dir.redundancy.recovery"
+                                && r.data["origin_id"] == record.id
+                                && r.data["continuation_created"] == true
+                        })
+                        .collect::<Vec<_>>();
+                    if rounds.len() != accepted.len()
+                        || number(&data["accepted_count"])? != rounds.len() as u64
+                        || number(&data["completed_count"])?
+                            != rounds
+                                .iter()
+                                .filter(|r| r["delivery_reception_id"].is_string())
+                                .count() as u64
+                    {
+                        return Err(fail("vector continuation counts"));
+                    }
+                    let mut seen = BTreeSet::new();
+                    for round in rounds {
+                        let id = round["id"].as_str().ok_or_else(|| fail("round ID"))?;
+                        if !seen.insert(id) {
+                            return Err(fail("duplicate continuation ID"));
+                        }
+                        let input = reference(
+                            records,
+                            "ethernet.dynamic.reception",
+                            &round["input_reception_id"],
+                        )?;
+                        let root = reference(
+                            records,
+                            "ethernet.dynamic.transfer",
+                            &round["suffix_root_transfer_id"],
+                        )?;
+                        if accepted
+                            .iter()
+                            .filter(|r| r.data["reception_id"] == input.id)
+                            .count()
+                            != 1
+                            || root.data["parent_transfer_id"] != input.data["transfer_id"]
+                            || root.data["queued_ps"] != round["created_ps"]
+                        {
+                            return Err(fail("round input/suffix evidence"));
+                        }
+                        if !round["delivery_reception_id"].is_null() {
+                            let rx = reference(
+                                records,
+                                "ethernet.dynamic.reception",
+                                &round["delivery_reception_id"],
+                            )?;
+                            if rx.data["status"] != "received"
+                                || rx.data["ready_ps"] != round["suffix"]["terminal_ps"]
+                                || !n.ethernet.directions.iter().any(|d| {
+                                    d.destination == pair.destination_device
+                                        && d.to_port == rx.data["ingress"]
+                                })
+                            {
+                                return Err(fail("round actual delivery"));
+                            }
+                        }
+                    }
+                }
+            }
             "dir.redundancy.origin" => {
                 reference(records, "ethernet.dynamic.frame", &data["source_frame_id"])?;
                 for id in ids(&data["branch_ids"])? {
@@ -109,13 +315,47 @@ pub(super) fn validate(
                 let target = number(&data["target_count"])?;
                 let completed = number(&data["completed_count"])?;
                 if target > 1
-                    || completed > target
+                    || (!normative && completed > target)
                     || (target == 0) != data["target"].is_null()
                     || (completed == 0) != data["delivered_branch_id"].is_null()
                 {
                     return Err(fail("origin opportunity mismatch"));
                 }
-                if completed == 1 {
+                if normative {
+                    let delivered = records
+                        .values()
+                        .filter(|r| {
+                            r.schema.name == "dir.redundancy.recovery"
+                                && r.data["origin_id"] == record.id
+                                && r.data["delivered"] == true
+                        })
+                        .count() as u64;
+                    if completed != delivered
+                        || ids(&data["delivery_indications"])?.len() as u64 != completed
+                    {
+                        return Err(fail("endpoint vector delivery count"));
+                    }
+                    for indication in ids(&data["delivery_indications"])? {
+                        let recovery = reference(
+                            records,
+                            "dir.redundancy.recovery",
+                            &indication["recovery_id"],
+                        )?;
+                        let rx = reference(
+                            records,
+                            "ethernet.dynamic.reception",
+                            &indication["reception_id"],
+                        )?;
+                        if recovery.data["origin_id"] != record.id
+                            || recovery.data["delivered"] != true
+                            || recovery.data["reception_id"] != indication["reception_id"]
+                            || rx.data["ready_ps"] != indication["delivered_ps"]
+                        {
+                            return Err(fail("endpoint indication physical evidence"));
+                        }
+                    }
+                }
+                if completed >= 1 {
                     let b = reference(
                         records,
                         "dir.redundancy.branch",
@@ -132,8 +372,32 @@ pub(super) fn validate(
                 let accepted = data["decision"]
                     .as_str()
                     .is_some_and(|s| s.starts_with("accept_"));
-                if data["delivered"].as_bool() != Some(accepted) {
+                if data["placement"] == "bridge_pair_v1" {
+                    let rx =
+                        reference(records, "ethernet.dynamic.reception", &data["reception_id"])?;
+                    let origin = reference(records, "dir.redundancy.origin", &data["origin_id"])?;
+                    let continuation = data["continuation_created"]
+                        .as_bool()
+                        .ok_or_else(|| fail("distributed continuation boolean"))?;
+                    if data["delivered"] != false
+                        || data["window_decision"] != data["decision"]
+                        || continuation
+                            && (!accepted
+                                || !normative
+                                    && origin.data["winner_reception_id"] != data["reception_id"])
+                        || rx.data["ready_ps"].is_null()
+                    {
+                        return Err(fail("distributed recovery physical evidence"));
+                    }
+                } else if data["delivered"].as_bool() != Some(accepted) {
                     return Err(fail("recovery delivery mismatch"));
+                }
+                if normative && data["placement"] != "bridge_pair_v1" {
+                    let rx =
+                        reference(records, "ethernet.dynamic.reception", &data["reception_id"])?;
+                    if rx.data["status"] != "received" || rx.data["ready_ps"].is_null() {
+                        return Err(fail("endpoint vector actual reception"));
+                    }
                 }
                 let capacity = number(&data["history_capacity"])?;
                 for field in ["bitmap_before_hex", "bitmap_after_hex"] {
@@ -150,11 +414,7 @@ pub(super) fn validate(
             "dir.preemption.transfer" => {
                 reference(records, "ethernet.dynamic.frame", &data["frame_id"])?;
                 if !data["parent_transfer_id"].is_null() {
-                    reference(
-                        records,
-                        "dir.preemption.transfer",
-                        &data["parent_transfer_id"],
-                    )?;
+                    transfer_reference(n, records, &data["parent_transfer_id"])?;
                 }
                 for id in ids(&data["fragment_ids"])? {
                     let r = reference(records, "dir.preemption.fragment", id)?;
@@ -165,9 +425,39 @@ pub(super) fn validate(
                 for id in ids(&data["gap_ids"])? {
                     reference(records, "dir.preemption.gap", id)?;
                 }
-                if number(&data["completed_mac_bytes"])? > number(&data["mac_bytes"])? {
-                    return Err(fail("completed bytes exceed MAC"));
+                let completed = number(&data["completed_mac_bytes"])?;
+                let mac_bytes = number(&data["mac_bytes"])?;
+                let partial = data
+                    .get("partial_mac_bytes")
+                    .map(number)
+                    .transpose()?
+                    .unwrap_or(0);
+                if completed
+                    .checked_add(partial)
+                    .is_none_or(|total| total > mac_bytes)
+                {
+                    return Err(fail("emitted bytes exceed MAC"));
                 }
+                let reset = if data["reset_ps"].is_null() {
+                    None
+                } else {
+                    let reset = number(&data["reset_ps"])?;
+                    if reset > h || number(&data["sof_ps"])? > reset {
+                        return Err(fail("serializer reset is outside actual transmission"));
+                    }
+                    for field in ["eof_ps", "release_ps", "arrival_ps"] {
+                        if !data[field].is_null() && number(&data[field])? > reset {
+                            return Err(fail("reset transfer contains a later actual boundary"));
+                        }
+                    }
+                    if data["arrival_ps"].is_null()
+                        && (data["status"] != "dropped"
+                            || data["drop_reason"] != "link_epoch_reset")
+                    {
+                        return Err(fail("retired transmission lacks its reset outcome"));
+                    }
+                    Some(reset)
+                };
                 if data["kind"] == "express" && data["sof_ps"].is_string() {
                     let start = number(&data["sof_ps"])?;
                     let planned = number(&data["planned_release_ps"])?;
@@ -176,6 +466,7 @@ pub(super) fn validate(
                     } else {
                         number(&data["release_ps"])?
                     };
+                    let end = reset.map_or(end, |reset| end.min(reset));
                     intervals
                         .entry(data["from_port"].as_str().unwrap().into())
                         .or_default()
@@ -196,8 +487,18 @@ pub(super) fn validate(
                     h.min(planned)
                 } else {
                     let end = number(&data["end_ps"])?;
-                    if end != planned || end > h {
+                    if end > h
+                        || end < start
+                        || (if data["status"] == "aborted" {
+                            end > planned
+                        } else {
+                            end != planned
+                        })
+                    {
                         return Err(fail("actual/planned interval mismatch"));
+                    }
+                    if data["status"] == "aborted" && t.data["reset_ps"] != data["end_ps"] {
+                        return Err(fail("aborted interval lacks its actual serializer reset"));
                     }
                     end
                 };
@@ -205,6 +506,30 @@ pub(super) fn validate(
                 if !gap {
                     let offset = number(&data["offset_bytes"])?;
                     let payload = number(&data["payload_bytes"])?;
+                    if let Some(emitted) = data.get("emitted_payload_bytes") {
+                        let emitted = number(emitted)?;
+                        if emitted > payload
+                            || (data["status"] == "completed" && emitted != payload)
+                        {
+                            return Err(fail(
+                                "fragment emitted payload exceeds its actual boundary",
+                            ));
+                        }
+                        if data["status"] == "aborted" {
+                            let rate = number(&data["bitrate_bps"])?;
+                            let overhead = number(&data["overhead_bytes"])?;
+                            let actual_octets =
+                                u128::from(end - start) * u128::from(rate) / 8_000_000_000_000u128;
+                            let expected = actual_octets
+                                .saturating_sub(u128::from(overhead))
+                                .min(u128::from(payload));
+                            if u128::from(emitted) != expected {
+                                return Err(fail(
+                                    "aborted fragment payload differs from elapsed serialization",
+                                ));
+                            }
+                        }
+                    }
                     if payload == 0
                         || offset
                             .checked_add(payload)
@@ -221,11 +546,12 @@ pub(super) fn validate(
             "dir.preemption.delivery" => {
                 reference(records, "ethernet.dynamic.frame", &data["frame_id"])?;
                 if !data["source_transfer_id"].is_null() {
-                    reference(
-                        records,
-                        "dir.preemption.transfer",
-                        &data["source_transfer_id"],
-                    )?;
+                    let source = transfer_reference(n, records, &data["source_transfer_id"])?;
+                    if source.data["frame_id"] != data["frame_id"]
+                        || source.data["sof_ps"] != data["first_sof_ps"]
+                    {
+                        return Err(fail("delivery source frame or actual SOF mismatch"));
+                    }
                 }
                 let targets = ids(&data["targets"])?;
                 if targets.len() as u64 != number(&data["target_count"])?
@@ -254,6 +580,40 @@ pub(super) fn validate(
                 }
             }
             "dir.preemption.decision" => {
+                if let Some(index) = data.get("active_transfer_index") {
+                    if index.is_null() != data["active_transfer_id"].is_null() {
+                        return Err(fail(
+                            "abstract serializer source index lacks active transfer",
+                        ));
+                    }
+                    if !index.is_null() {
+                        number(index)?;
+                    }
+                }
+                if !data["wire_control_id"].is_null() {
+                    let id = data["wire_control_id"]
+                        .as_str()
+                        .filter(|id| !id.is_empty())
+                        .ok_or_else(|| fail("invalid Wire serializer identity"))?;
+                    let sequence = number(&data["effect_seq"])?;
+                    if !data["active_transfer_id"].is_null()
+                        || !records.values().any(|r| {
+                            (r.time_ps < record.time_ps
+                                || r.time_ps == record.time_ps
+                                    && number(&r.data["effect_seq"])
+                                        .is_ok_and(|prior| prior < sequence))
+                                && r.data["port"] == data["port"]
+                                && ((r.schema.name == "ethernet.control.wire.event"
+                                    && r.data["packet_id"] == id
+                                    && r.data["event_kind"] == "tx_started")
+                                    || (r.schema.name == "dir.network.mac_control"
+                                        && r.data["kind"] == "tx_started"
+                                        && r.data["evidence"]["packet_id"] == id))
+                        })
+                    {
+                        return Err(fail("Wire serializer decision lacks actual source TX"));
+                    }
+                }
                 for field in ["active_transfer_id", "suspended_transfer_id"] {
                     if !data[field].is_null() {
                         reference(records, "dir.preemption.transfer", &data[field])?;

@@ -1,4 +1,4 @@
-//! CAN FD uses strict external phase counts, never the Classical CAN codec.
+//! CAN FD profiles: strict external phase counts or a content-derived ISO codec.
 use super::ned::{self, Declaration, ModelRules, TypedValue, Values};
 use super::{JsonDocument, Result, error, identifier, object, required_string, unsigned};
 use crate::types::canfd::*;
@@ -88,7 +88,9 @@ impl ModelRules for Rules {
             ("queueCapacity", TypedValue::Integer(n)) => !(0..=u32::MAX as i64).contains(n),
             ("nominalBitrate", TypedValue::Quantity(n)) => !(1..=1_000_000).contains(n),
             ("dataBitrate", TypedValue::Quantity(n)) => !(1..=8_000_000).contains(n),
-            ("profile", TypedValue::String(s)) => s != "can.fd.precomputed.v1",
+            ("profile", TypedValue::String(s)) => {
+                !matches!(s.as_str(), "can.fd.precomputed.v1" | "can.fd.iso.v1")
+            }
             ("rxFilter", TypedValue::String(s)) => {
                 super::can::validate_filter(s).map_err(|e| context(e, "rx_filter", d.name()))?;
                 false
@@ -243,6 +245,10 @@ pub(super) fn resolve(
     }
     Ok((
         PreparedCanFd {
+            profile: match &r.values(&bus_id)["profile"] {
+                TypedValue::String(profile) => profile.clone(),
+                _ => unreachable!(),
+            },
             nominal_rate: number(r.values(&bus_id), "nominalBitrate"),
             data_rate: number(r.values(&bus_id), "dataBitrate"),
             bus_id,
@@ -256,7 +262,7 @@ pub(super) fn resolve(
 fn decode(content: &str) -> Result<JsonDocument<'_>> {
     JsonDocument::parse(content)
 }
-pub(super) fn configure(content: &str, _p: &mut PreparedCanFd, profile: &str) -> Result<()> {
+pub(super) fn configure(content: &str, p: &mut PreparedCanFd, profile: &str) -> Result<()> {
     let result = (|| {
         let document = decode(content)?;
         let _scope = document.enter("model_config_invalid");
@@ -264,6 +270,7 @@ pub(super) fn configure(content: &str, _p: &mut PreparedCanFd, profile: &str) ->
         let o = object(v, &["schema_version", "profile"], "CAN FD model-config")?;
         if o.get("schema_version").and_then(Value::as_u64) != Some(1)
             || required_string(o, "profile")? != profile
+            || p.profile != profile
         {
             let field = if o.get("schema_version").and_then(Value::as_u64) != Some(1) {
                 "schema_version"
@@ -300,8 +307,13 @@ fn duration(n: u64, d: u64, rn: u64, rd: u64) -> Result<u64> {
 }
 fn frame(v: &Value, p: &PreparedCanFd, target: &str) -> Result<CanFdFrame> {
     let _object_scope = super::json_diagnostics::scoped_value(v);
-    let o = object(v, &["format", "id", "data", "brs", "wire"], "CAN FD frame")
-        .map_err(|e| context(e, "frame_schema", target))?;
+    let iso = p.profile == "can.fd.iso.v1";
+    let fields = if iso {
+        &["format", "id", "data", "brs", "esi"][..]
+    } else {
+        &["format", "id", "data", "brs", "wire"][..]
+    };
+    let o = object(v, fields, "CAN FD frame").map_err(|e| context(e, "frame_schema", target))?;
     let format = required_string(o, "format")?;
     let maximum = match format {
         "standard" => 2047,
@@ -338,6 +350,65 @@ fn frame(v: &Value, p: &PreparedCanFd, target: &str) -> Result<CanFdFrame> {
         .get("brs")
         .and_then(Value::as_bool)
         .ok_or_else(|| violation("frame_brs", target, "brs must be bool"))?;
+    if iso {
+        let esi = o.get("esi").and_then(Value::as_bool).ok_or_else(|| {
+            super::json_diagnostics::current_field(
+                "esi",
+                error("esi must be bool").with_reason("invalid_type"),
+            )
+        })?;
+        let bytes = data
+            .as_bytes()
+            .chunks_exact(2)
+            .map(|pair| {
+                let digit = |b: u8| {
+                    if b.is_ascii_digit() {
+                        b - b'0'
+                    } else {
+                        b - b'a' + 10
+                    }
+                };
+                digit(pair[0]) * 16 + digit(pair[1])
+            })
+            .collect();
+        let wire = crate::runtime::canfd::codec::encode(&crate::runtime::canfd::codec::Frame {
+            id,
+            extended: format == "extended",
+            brs,
+            esi,
+            data: bytes,
+        })
+        .map_err(|e| violation("frame_codec", target, e.to_string()))?;
+        let (n, d) = wire.phase_bits();
+        return Ok(CanFdFrame {
+            format: format.into(),
+            id,
+            data,
+            dlc,
+            brs,
+            nominal_bits: n,
+            data_bits: d,
+            evidence: String::new(),
+            binding_sha256: String::new(),
+            nominal_rate: p.nominal_rate,
+            data_rate: p.data_rate,
+            duration_ps: duration(n, d, p.nominal_rate, p.data_rate)?,
+            occupancy_ps: duration(n + 3, d, p.nominal_rate, p.data_rate)?,
+            arbitration: wire.arbitration,
+            iso: Some(IsoCanFdWire {
+                esi,
+                bits: wire.frame,
+                crc_width: wire.crc_width,
+                crc: wire.crc,
+                stuff_count: wire.stuff_count,
+                stuff_count_code: wire.stuff_count_code,
+                dynamic_stuff_positions: wire.dynamic_stuff_positions,
+                fixed_stuff_positions: wire.fixed_stuff_positions,
+                brs_index: wire.brs_index,
+                crc_delimiter_index: wire.crc_delimiter_index,
+            }),
+        });
+    }
     let w = object(
         o.get("wire").ok_or_else(|| error("missing wire"))?,
         &["nominal_bits", "data_bits", "evidence", "binding_sha256"],
@@ -417,9 +488,10 @@ fn frame(v: &Value, p: &PreparedCanFd, target: &str) -> Result<CanFdFrame> {
         duration_ps: duration(n, d, p.nominal_rate, p.data_rate)?,
         occupancy_ps: duration(n + 3, d, p.nominal_rate, p.data_rate)?,
         arbitration,
+        iso: None,
     })
 }
-pub(super) fn workload(content: &str, p: &mut PreparedCanFd, _profile: &str) -> Result<()> {
+pub(super) fn workload(content: &str, p: &mut PreparedCanFd, profile: &str) -> Result<()> {
     let document = decode(content).map_err(|e| context(e, "json", "workload"))?;
     let _scope = document.enter("workload_invalid");
     let v = &document.value;
@@ -452,7 +524,12 @@ pub(super) fn workload(content: &str, p: &mut PreparedCanFd, _profile: &str) -> 
             if !identifier(id) || !ids.insert(id.to_string()) {
                 return Err(error("invalid or duplicate CAN FD generator id"));
             }
-            if required_string(g, "kind")? != "can.fd.explicit.v1" {
+            let kind = if profile == "can.fd.iso.v1" {
+                "can.fd.iso.explicit.v1"
+            } else {
+                "can.fd.explicit.v1"
+            };
+            if required_string(g, "kind")? != kind {
                 return Err(error("unsupported CAN FD generator kind"));
             }
             let node = required_string(g, "node")?;

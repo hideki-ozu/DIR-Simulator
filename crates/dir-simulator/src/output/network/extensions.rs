@@ -78,6 +78,18 @@ pub(super) fn metadata(n: &PreparedNetwork, m: &mut Value) {
             "targets[].completion_reception_id",
             &["can.receiver", "ethernet.dynamic.reception"],
         );
+        if n.has_gateway_replication() {
+            add(
+                "dir.can_ethernet.terminal_indication",
+                "source_frame_id",
+                &["ethernet.dynamic.frame"],
+            );
+            add(
+                "dir.can_ethernet.terminal_indication",
+                "reception_id",
+                &["ethernet.dynamic.reception"],
+            );
+        }
     }
     if n.extensions
         .as_ref()
@@ -126,6 +138,27 @@ pub(super) fn metadata(n: &PreparedNetwork, m: &mut Value) {
     }
     if n.extensions
         .as_ref()
+        .and_then(|e| e.replication.as_ref())
+        .is_some_and(|r| {
+            r.streams.iter().any(|s| {
+                matches!(
+                    s.placement,
+                    crate::types::network::ReplicationPlacement::BridgePair(_)
+                )
+            })
+        })
+    {
+        for (source, field) in [
+            ("dir.redundancy.origin", "prefix_reception_id"),
+            ("dir.redundancy.origin", "winner_reception_id"),
+            ("dir.redundancy.origin", "delivery_reception_id"),
+            ("dir.redundancy.recovery", "reception_id"),
+        ] {
+            add(source, field, &["ethernet.dynamic.reception"]);
+        }
+    }
+    if n.extensions
+        .as_ref()
         .is_some_and(|e| e.preemption.is_some())
     {
         for (source, field, target) in [
@@ -154,6 +187,27 @@ pub(super) fn metadata(n: &PreparedNetwork, m: &mut Value) {
             add(source, field, &[target]);
         }
     }
+    let sparse_preemption = n
+        .extensions
+        .as_ref()
+        .and_then(|e| e.preemption.as_ref())
+        .is_some_and(|p| p.participating.iter().any(|v| *v) && p.participating.iter().any(|v| !*v));
+    if sparse_preemption {
+        for row in &mut references {
+            let targets = row["allowed_target_schemas"].as_array_mut().unwrap();
+            if targets.iter().any(|v| v == "dir.preemption.transfer")
+                && !targets.iter().any(|v| v == "ethernet.dynamic.transfer")
+            {
+                targets.push(json!("ethernet.dynamic.transfer"));
+            }
+        }
+        references.extend([
+            json!({"source_schema":"ethernet.dynamic.transfer","field":"frame_id","allowed_target_schemas":["ethernet.dynamic.frame"]}),
+            json!({"source_schema":"ethernet.dynamic.transfer","field":"parent_transfer_id","allowed_target_schemas":["ethernet.dynamic.transfer","dir.preemption.transfer"]}),
+        ]);
+        m["transfer_reference_schemas"] =
+            json!(["ethernet.dynamic.transfer/1", "dir.preemption.transfer/1"]);
+    }
     if n.extensions.is_some() {
         m["reference_catalog"] = json!(references);
     }
@@ -162,6 +216,33 @@ pub(super) fn metadata(n: &PreparedNetwork, m: &mut Value) {
         m["network_limits"] = json!({"max_pending_branches":e.limits.max_pending_branches,"max_control_events":e.limits.max_control_events});
         if let Some(r) = &e.replication {
             m["ethernet_redundancy"] = json!({"routing_rule":"static-circuit-no-fdb-no-stp","initial_sequence":"0","initial_history":"empty","shared_ports":r.shared_ports,"streams":r.streams.iter().map(|s|json!({"stream_id":s.stream_id,"source_generator":s.source_generator,"replicate_at":s.replicate_at,"eliminate_at":s.eliminate_at,"history_capacity":s.history_capacity.to_string(),"egress_paths":s.paths.iter().enumerate().map(|(i,p)|json!({"id":p.id,"index":i.to_string(),"ports":p.ports})).collect::<Vec<_>>()})).collect::<Vec<_>>()});
+            for (row, stream) in m["ethernet_redundancy"]["streams"]
+                .as_array_mut()
+                .unwrap()
+                .iter_mut()
+                .zip(&r.streams)
+            {
+                if let crate::types::network::ReplicationSource::GatewayEgress {
+                    gateway_id,
+                    rule_id,
+                    egress_index,
+                } = &stream.source
+                {
+                    row.as_object_mut().unwrap().remove("source_generator");
+                    row["source"] = json!({"kind":"gateway_egress", "gateway_id":gateway_id,
+                        "rule_id":rule_id, "egress_index":egress_index.to_string()});
+                    row["source_device"] = json!(n.ethernet.devices[stream.source_device].id);
+                    row["source_port"] = json!(stream.source_port);
+                }
+                if stream.recovery_algorithm
+                    == crate::types::network::ReplicationRecoveryAlgorithm::Vector8021cb2017
+                {
+                    row["recovery_algorithm"] = json!("vector_8021cb_2017");
+                    row["recovery_tick_ps"] = json!("1000000000");
+                    row["recovery_timeout_ps"] =
+                        json!(stream.recovery_timeout_ps.unwrap().to_string());
+                }
+            }
         }
         if let Some(p) = &e.preemption {
             m["ethernet_preemption"] = json!({"fragment_unit":"serialized-mac-byte","fragment_overhead":"all-additional-occupancy","express_rule":"existing-preamble-ifg","gap_rule":"one-after-express-group","outputs":p.outputs.iter().map(|o|json!({"port":o.port,"express_classes":(0..8).filter(|p|o.express_mask&(1<<p)!=0).collect::<Vec<_>>(),"preemptable_classes":(0..8).filter(|p|o.preemptable_mask&(1<<p)!=0).collect::<Vec<_>>(),"fragment_payload_bytes":o.fragment_payload_bytes.to_string(),"fragment_overhead_bytes":o.fragment_overhead_bytes.to_string(),"resume_gap_ps":o.resume_gap_ps.to_string()})).collect::<Vec<_>>()});
@@ -313,6 +394,19 @@ pub(super) fn summary(
             for t in records.values().filter(|r| {
                 r.schema.name == "ethernet.dynamic.transfer"
                     && r.data["sof_ps"].is_string()
+                    && (!matches!(
+                        s.placement,
+                        crate::types::network::ReplicationPlacement::BridgePair(_)
+                    ) || snapshot
+                        .network
+                        .as_ref()
+                        .and_then(|n| n["redundancy"]["transfer_circuits"].as_array())
+                        .is_some_and(|circuits| {
+                            circuits.iter().any(|c| {
+                                c["transfer_id"] == r.id
+                                    && c["distributed"]["leg"]["phase"] == "branch"
+                            })
+                        }))
                     && r.data["frame_id"]
                         .as_str()
                         .is_some_and(|id| source_ids.contains(&id))
@@ -346,16 +440,23 @@ pub(super) fn summary(
         // Existing all-frame occupancy calculation includes suspension. Replace those
         // medium totals with exact fragment and express intervals for this profile.
         summary.retain(|r| {
-            !matches!(
-                r.metric.as_str(),
-                "ethernet.busy_ps"
-                    | "ethernet.link_utilization"
-                    | "ethernet.mac_bits"
-                    | "ethernet.wire_bits"
-                    | "ethernet.occupied_bits"
-            )
+            !p.outputs
+                .iter()
+                .enumerate()
+                .any(|(i, o)| p.participating[i] && o.port == r.target)
+                || !matches!(
+                    r.metric.as_str(),
+                    "ethernet.busy_ps"
+                        | "ethernet.link_utilization"
+                        | "ethernet.mac_bits"
+                        | "ethernet.wire_bits"
+                        | "ethernet.occupied_bits"
+                )
         });
-        for o in &p.outputs {
+        for (i, o) in p.outputs.iter().enumerate() {
+            if !p.participating[i] {
+                continue;
+            }
             let fs = fragments
                 .iter()
                 .copied()
@@ -535,6 +636,22 @@ pub(super) fn aggregate_view(
         }) else {
             return true;
         };
+        if let Some(rounds) = origin.data["continuation_rounds"].as_array() {
+            return rounds
+                .iter()
+                .any(|round| round["delivery_reception_id"] == r.reception_id);
+        }
+        if records.values().any(|row| {
+            row.schema.name == "dir.redundancy.recovery"
+                && row.data["origin_id"] == origin.id
+                && row.data["reception_id"] == r.reception_id
+                && row.data["delivered"] == true
+        }) {
+            return true;
+        }
+        if origin.data["placement"] == "bridge_pair_v1" {
+            return origin.data["delivery_reception_id"] == r.reception_id;
+        }
         let Some(branch) = origin.data["delivered_branch_id"].as_str().and_then(|id| {
             records
                 .values()

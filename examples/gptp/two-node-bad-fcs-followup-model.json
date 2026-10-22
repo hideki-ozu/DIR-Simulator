@@ -1,0 +1,328 @@
+{
+  "schema_name": "dir.ethernet_network_composite.config",
+  "schema_version": 1,
+  "base": {
+    "profile": "ethernet.tsn.v1",
+    "config": {
+      "schema_version": 1,
+      "base": {
+        "profile": "ethernet.l2.dynamic.v1",
+        "config": {
+          "schema_version": 4,
+          "endpoints": [
+            {
+              "instance": "Net.a",
+              "mac": "02:00:00:00:00:01",
+              "multicast": []
+            },
+            {
+              "instance": "Net.b",
+              "mac": "02:00:00:00:00:02",
+              "multicast": []
+            }
+          ],
+          "switches": [],
+          "ports": [
+            {
+              "port": "Net.a.tx",
+              "pvid": 10,
+              "admit": "all",
+              "default_priority": 7,
+              "vlans": [
+                {
+                  "vid": 10,
+                  "tagged": false
+                }
+              ]
+            },
+            {
+              "port": "Net.b.tx",
+              "pvid": 10,
+              "admit": "all",
+              "default_priority": 7,
+              "vlans": [
+                {
+                  "vid": 10,
+                  "tagged": false
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "port": "Net.a.tx",
+              "scheduler": "strict_priority",
+              "queues": [
+                {
+                  "priority": 0,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 1,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 2,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 3,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 4,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 5,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 6,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 7,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                }
+              ]
+            },
+            {
+              "port": "Net.b.tx",
+              "scheduler": "strict_priority",
+              "queues": [
+                {
+                  "priority": 0,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 1,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 2,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 3,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 4,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 5,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 6,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                },
+                {
+                  "priority": 7,
+                  "capacity_frames": "64",
+                  "capacity_bytes": null
+                }
+              ]
+            }
+          ],
+          "dynamic": {
+            "mac_age_ps": "100000000",
+            "convergence_ps": "0",
+            "bridges": [],
+            "links": [
+              {
+                "id": "a-b",
+                "ports": [
+                  "Net.a.tx",
+                  "Net.b.tx"
+                ],
+                "up": true,
+                "cost": "1"
+              }
+            ],
+            "registrable": [],
+            "limits": {
+              "mac_entries": 16,
+              "membership_entries": 16,
+              "sources_per_entry": 16,
+              "registrations": 16,
+              "control_events": 16,
+              "pending_timers": 16,
+              "visits_per_frame": 16
+            }
+          }
+        }
+      },
+      "tsn": {
+        "clock": "ideal_shared",
+        "outputs": [
+          {
+            "port": "Net.a.tx",
+            "tas": null,
+            "cbs": []
+          },
+          {
+            "port": "Net.b.tx",
+            "tas": null,
+            "cbs": []
+          }
+        ],
+        "streams": [],
+        "gcl_updates": []
+      }
+    }
+  },
+  "replication": null,
+  "preemption": null,
+  "limits": {
+    "max_pending_branches": 32,
+    "max_control_events": 32
+  },
+  "clocks": {
+    "nodes": [
+      {
+        "node": "Net.a",
+        "offset_ps": "500000",
+        "rate_num": "1",
+        "rate_den": "1"
+      },
+      {
+        "node": "Net.b",
+        "offset_ps": "1500000",
+        "rate_num": "10001",
+        "rate_den": "10000"
+      }
+    ],
+    "adjustments": []
+  },
+  "gptp": {
+    "profile": "as2020.domain0.two_step_tree.v1",
+    "domain": 0,
+    "nodes": [
+      {
+        "node": "Net.a",
+        "clock_identity": "00:00:00:00:00:00:00:01",
+        "priority1": 128,
+        "clock_class": 248,
+        "clock_accuracy": 254,
+        "offset_scaled_log_variance": 65535,
+        "priority2": 128,
+        "time_source": 160,
+        "ports": [
+          {
+            "port": "Net.a.tx",
+            "port_number": 1,
+            "source_mac": "02:00:00:00:00:01"
+          }
+        ]
+      },
+      {
+        "node": "Net.b",
+        "clock_identity": "00:00:00:00:00:00:00:02",
+        "priority1": 255,
+        "clock_class": 248,
+        "clock_accuracy": 254,
+        "offset_scaled_log_variance": 65535,
+        "priority2": 128,
+        "time_source": 160,
+        "ports": [
+          {
+            "port": "Net.b.tx",
+            "port_number": 1,
+            "source_mac": "02:00:00:00:00:02"
+          }
+        ]
+      }
+    ],
+    "log_sync_interval": -12,
+    "log_announce_interval": -12,
+    "log_pdelay_req_interval": -12,
+    "announce_receipt_timeout": 3,
+    "sync_receipt_timeout": 3,
+    "allowed_lost_responses": 3,
+    "mean_link_delay_threshold_ps": "800000",
+    "priority": 7,
+    "max_pending_exchanges": 10000,
+    "max_journal_entries": 10000
+  },
+  "mac_merge": {
+    "standard": "ieee8023_2022_clause99",
+    "outputs": [
+      {
+        "port": "Net.a.tx",
+        "source_mac": "02:00:00:00:00:01",
+        "express_classes": [
+          7
+        ],
+        "preemptable_classes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "advertised_add_frag_size": 0,
+        "verify_time_ms": 10,
+        "admin_enabled": true
+      },
+      {
+        "port": "Net.b.tx",
+        "source_mac": "02:00:00:00:00:02",
+        "express_classes": [
+          7
+        ],
+        "preemptable_classes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "advertised_add_frag_size": 0,
+        "verify_time_ms": 10,
+        "admin_enabled": true
+      }
+    ],
+    "capability_adapter": {
+      "name": "dir_lldp_capability_v1",
+      "interval_ms": 1000,
+      "ttl_seconds": 3
+    },
+    "limits": {
+      "max_rx_mac_octets": 2048,
+      "max_pending_packets": 128
+    },
+    "packet_faults": [
+      {
+        "port": "Net.a.tx",
+        "packet_ordinal": 13,
+        "action": {
+          "kind": "Corrupt",
+          "octet": 20,
+          "xor": 1
+        }
+      }
+    ]
+  }
+}

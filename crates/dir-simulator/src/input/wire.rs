@@ -1,4 +1,5 @@
 //! Strict wire wrapper and per-protocol preparation, independent of central dispatch.
+use crate::runtime::network::provider_l2::{PortRole, ProviderTopology};
 use crate::types::{Diagnostic, ethernet::PreparedEthernet, wire::*};
 use serde_json::{Map, Value};
 use std::collections::{BTreeMap, BTreeSet};
@@ -121,11 +122,154 @@ fn serialization(bytes: u64, rate: u64) -> Result<u64> {
     let v = (bytes as u128 * 8 * 1_000_000_000_000u128).div_ceil(rate as u128);
     u64::try_from(v).map_err(|_| err("wire duration overflow"))
 }
+fn component_binding(
+    component: &str,
+    provider: &ProviderTopology,
+    eth: &PreparedEthernet,
+) -> Result<ComponentTreeBinding> {
+    let mut attachments = BTreeMap::new();
+    let mut devices = BTreeSet::new();
+    let mut domain = None;
+    let mut customer_edges = 0;
+    for (name, port) in provider
+        .ports
+        .iter()
+        .filter(|(_, p)| p.component == component)
+    {
+        let kind = if port.role.is_customer() {
+            TreeDomain::Customer
+        } else {
+            TreeDomain::Provider
+        };
+        if domain.replace(kind).is_some_and(|old| old != kind) {
+            return Err(err("component mixes customer and provider roles"));
+        }
+        let attachment = match port.role {
+            PortRole::CustomerEdge | PortRole::ProviderNetwork => {
+                let (direction, link) = eth
+                    .directions
+                    .iter()
+                    .enumerate()
+                    .find(|(_, d)| d.from_port == *name)
+                    .ok_or_else(|| err("component physical port lacks direction"))?;
+                devices.insert(eth.devices[link.source].id.clone());
+                if port.role == PortRole::CustomerEdge {
+                    customer_edges += 1;
+                }
+                let ingress = eth
+                    .port_policies
+                    .iter()
+                    .find(|p| p.port == *name)
+                    .map(|p| p.ingress.clone())
+                    .ok_or_else(|| err("component physical port lacks policy"))?;
+                PortAttachment::Physical {
+                    output: name.clone(),
+                    ingress,
+                    direction,
+                }
+            }
+            PortRole::ProviderEdge | PortRole::CustomerNetwork => {
+                let (peer, iss_id) = provider
+                    .mappings
+                    .iter()
+                    .find_map(|m| {
+                        if m.pep == *name {
+                            Some((&m.cnp, format!("{}:{}", m.pep, m.cnp)))
+                        } else if m.cnp == *name {
+                            Some((&m.pep, format!("{}:{}", m.pep, m.cnp)))
+                        } else {
+                            None
+                        }
+                    })
+                    .ok_or_else(|| err("component internal port lacks service mapping"))?;
+                let peer_port = &provider.ports[peer];
+                PortAttachment::Internal {
+                    iss_id,
+                    peer: ComponentPortKey {
+                        component: peer_port.component.clone(),
+                        port: peer.clone(),
+                    },
+                }
+            }
+        };
+        attachments.insert(name.clone(), attachment);
+    }
+    if attachments.is_empty() || devices.len() != 1 {
+        return Err(err("component requires ports on one physical device"));
+    }
+    let domain = domain.ok_or_else(|| err("component domain missing"))?;
+    if domain == TreeDomain::Customer && customer_edges != 1 {
+        return Err(err("protocol-enabled C component requires exactly one CEP"));
+    }
+    let mut service_cardinality = BTreeMap::new();
+    if domain == TreeDomain::Customer {
+        for map in provider
+            .mappings
+            .iter()
+            .filter(|m| m.c_component == component)
+        {
+            // A service can span several S-components. Count interfaces across
+            // its connected provider network, rather than only this device.
+            let mut reached = BTreeSet::from([map.s_component.clone()]);
+            loop {
+                let previous = reached.len();
+                for link in &eth.directions {
+                    let Some(from) = provider.ports.get(&link.from_port) else {
+                        continue;
+                    };
+                    let Some(to) = eth
+                        .port_policies
+                        .iter()
+                        .find(|p| p.ingress == link.to_port)
+                        .and_then(|p| provider.ports.get(&p.port))
+                    else {
+                        continue;
+                    };
+                    if from.role == PortRole::ProviderNetwork
+                        && to.role == PortRole::ProviderNetwork
+                        && from.member_vids.contains(&map.s_vid)
+                        && to.member_vids.contains(&map.s_vid)
+                        && reached.contains(&from.component)
+                    {
+                        reached.insert(to.component.clone());
+                    }
+                }
+                if reached.len() == previous {
+                    break;
+                }
+            }
+            let count = provider
+                .mappings
+                .iter()
+                .filter(|other| reached.contains(&other.s_component) && other.s_vid == map.s_vid)
+                .map(|other| other.c_component.as_str())
+                .collect::<BTreeSet<_>>()
+                .len();
+            service_cardinality.insert(map.pep.clone(), count);
+        }
+    }
+    Ok(ComponentTreeBinding {
+        component: component.to_owned(),
+        device: devices.pop_first().unwrap(),
+        domain,
+        ports: attachments,
+        service_cardinality,
+    })
+}
 /// The caller prepares config.ethernet/workload.ethernet with the existing schema4 decoder first.
 pub(crate) fn prepare(
     config: &Value,
     workload: &Value,
     eth: &PreparedEthernet,
+) -> Result<PreparedWire> {
+    prepare_with_provider(config, workload, eth, None)
+}
+
+pub(crate) fn prepare_with_provider(
+    config: &Value,
+    workload: &Value,
+    eth: &PreparedEthernet,
+    provider: Option<&ProviderTopology>,
 ) -> Result<PreparedWire> {
     let c = object(
         config,
@@ -224,6 +368,7 @@ pub(crate) fn prepare(
             Some("igmp") => WireProtocol::Igmp,
             Some("mld") => WireProtocol::Mld,
             Some("rstp") => WireProtocol::Rstp,
+            Some("mstp") => WireProtocol::Mstp,
             Some("mvrp") => WireProtocol::Mvrp,
             _ => return Err(err("wire protocol unknown")),
         };
@@ -235,6 +380,7 @@ pub(crate) fn prepare(
             "max_pdu_bytes",
         ];
         let mut optional = vec![];
+        optional.push("component");
         if protocol.active() {
             required.extend([
                 "max_state_entries",
@@ -242,8 +388,12 @@ pub(crate) fn prepare(
                 "max_pending_tx",
                 "max_control_steps",
             ]);
-            if protocol == WireProtocol::Rstp {
-                required.push("rstp");
+            if matches!(protocol, WireProtocol::Rstp | WireProtocol::Mstp) {
+                required.push(if protocol == WireProtocol::Rstp {
+                    "rstp"
+                } else {
+                    "mstp"
+                });
             } else {
                 required.push("max_attributes_per_pdu");
                 optional.extend([
@@ -274,12 +424,39 @@ pub(crate) fn prepare(
         if string(o, "protocol_revision")? != protocol.revision() {
             return Err(err("wire revision mismatch"));
         }
+        let component_binding = if let Some(component) = o.get("component") {
+            if !matches!(protocol, WireProtocol::Rstp | WireProtocol::Mstp) {
+                return Err(err("component binding requires spanning-tree protocol"));
+            }
+            let topology = provider.ok_or_else(|| err("component binding requires provider_l2"))?;
+            let binding = component_binding(
+                component
+                    .as_str()
+                    .filter(|s| !s.is_empty())
+                    .ok_or_else(|| err("component requires nonempty string"))?,
+                topology,
+                eth,
+            )?;
+            if binding.domain == TreeDomain::Customer && protocol != WireProtocol::Rstp {
+                return Err(err("C component requires enhanced RSTP adapter"));
+            }
+            Some(binding)
+        } else {
+            None
+        };
         let mut owned = BTreeSet::new();
         let mut bridge = None;
         for port in array(o, "ports")? {
             let name = port
                 .as_str()
                 .ok_or_else(|| err("wire port ID requires string"))?;
+            if let Some(binding) = &component_binding {
+                if !binding.ports.contains_key(name) || !owned.insert(name.to_string()) {
+                    return Err(err("component port missing or duplicate"));
+                }
+                bridge = Some(binding.device.clone());
+                continue;
+            }
             let p = if protocol.active() {
                 ports.get(name)
             } else {
@@ -292,19 +469,31 @@ pub(crate) fn prepare(
             bridge = Some(p.bridge.clone());
         }
         let bridge = bridge.ok_or_else(|| err("wire ports must be nonempty"))?;
-        if !owners.insert((protocol, bridge.clone())) {
+        let owner_id = component_binding
+            .as_ref()
+            .map_or(bridge.clone(), |b| b.component.clone());
+        if !owners.insert((protocol, owner_id)) {
             return Err(err("duplicate wire protocol bridge owner"));
         }
         if protocol.active() {
-            let all: BTreeSet<_> = ports
-                .values()
-                .filter(|p| p.bridge == bridge)
-                .map(|p| p.output.clone())
-                .collect();
+            let all: BTreeSet<_> = if let Some(binding) = &component_binding {
+                binding.ports.keys().cloned().collect()
+            } else {
+                ports
+                    .values()
+                    .filter(|p| p.bridge == bridge)
+                    .map(|p| p.output.clone())
+                    .collect()
+            };
             if owned != all {
                 return Err(err("active wire owner requires all connected bridge ports"));
             }
-            active_ports.extend(owned.iter().cloned());
+            active_ports.extend(
+                owned
+                    .iter()
+                    .filter(|name| ports.contains_key(*name))
+                    .cloned(),
+            );
         }
         let max_pdu_bytes = num(
             o,
@@ -332,6 +521,11 @@ pub(crate) fn prepare(
         let max_pending_tx = capacity("max_pending_tx")?;
         let max_control_steps = capacity("max_control_steps")?;
         let options = match protocol {
+            WireProtocol::MacControl => {
+                return Err(err(
+                    "MAC Control is configured through composite mac_control",
+                ));
+            }
             WireProtocol::Igmp | WireProtocol::Mld => {
                 if string(o, "role")? != "passive_conservative_snooper_v1" {
                     return Err(err("wire membership role unsupported"));
@@ -442,6 +636,150 @@ pub(crate) fn prepare(
                     forward_delay: forward_delay as u16 * 256,
                     tx_hold_count: num(r, "tx_hold_count", Some(6), 1, 10)? as u32,
                     ports: rports,
+                })
+            }
+            WireProtocol::Mstp => {
+                let m = object(
+                    &o["mstp"],
+                    &["bridge_address", "region", "instances", "port_parameters"],
+                    &[
+                        "bridge_priority",
+                        "bridge_max_age_s",
+                        "bridge_forward_delay_s",
+                        "hello_time_s",
+                        "migrate_time_s",
+                        "tx_hold_count",
+                        "max_hops",
+                    ],
+                )?;
+                let address = string(m, "bridge_address")?;
+                if address.len() != 12 || !address.bytes().all(|b| b.is_ascii_hexdigit()) {
+                    return Err(err("MSTP bridge address requires 12 hex digits"));
+                }
+                let address =
+                    u64::from_str_radix(address, 16).map_err(|_| err("MSTP bridge address"))?;
+                if address == 0 || (address >> 40) & 1 != 0 || !rstp_addresses.insert(address) {
+                    return Err(err("MSTP bridge address unicast/nonzero/unique"));
+                }
+                let mut cist_priority = num(m, "bridge_priority", Some(32768), 0, 61440)? as u16;
+                if cist_priority % 4096 != 0 {
+                    return Err(err("MSTP CIST bridge priority granularity"));
+                }
+                num(m, "hello_time_s", Some(2), 2, 2)?;
+                num(m, "migrate_time_s", Some(3), 3, 3)?;
+                let max_hops = num(m, "max_hops", Some(20), 1, 255)? as u8;
+                let max_age = num(m, "bridge_max_age_s", Some(20), 6, 40)?;
+                let forward_delay = num(m, "bridge_forward_delay_s", Some(15), 4, 30)?;
+                if max_age > 2 * (forward_delay - 1) {
+                    return Err(err("MSTP timer inequality"));
+                }
+                let region = object(&m["region"], &["name", "revision", "vlan_to_msti"], &[])?;
+                let region_name = string(region, "name")?;
+                if region_name.len() > 32 {
+                    return Err(err("MSTP region name exceeds 32 bytes"));
+                }
+                let region_revision = num(region, "revision", None, 0, 65535)? as u16;
+                let mappings = region["vlan_to_msti"]
+                    .as_object()
+                    .ok_or_else(|| err("MSTP vlan_to_msti object"))?;
+                let mut vlan_map = vec![0u16; 4096];
+                for (vid, id) in mappings {
+                    let vid: usize = vid.parse().map_err(|_| err("MSTP VLAN key"))?;
+                    if !(1..=4094).contains(&vid) {
+                        return Err(err("MSTP VLAN out of range"));
+                    }
+                    let id = id.as_u64().ok_or_else(|| err("MSTP MSTID integer"))?;
+                    if id > 4094 {
+                        return Err(err("MSTP MSTID out of range"));
+                    }
+                    vlan_map[vid] = id as u16;
+                }
+                let mut instances = vec![];
+                let mut declared = BTreeSet::new();
+                for row in array(m, "instances")? {
+                    let q = object(row, &["mstid"], &["bridge_priority"])?;
+                    let id = num(q, "mstid", None, 0, 4094)? as u16;
+                    if !declared.insert(id) {
+                        return Err(err("MSTP duplicate instance"));
+                    }
+                    let priority = num(q, "bridge_priority", Some(32768), 0, 61440)? as u16;
+                    if priority % 4096 != 0 {
+                        return Err(err("MSTP instance priority granularity"));
+                    }
+                    if id == 0 {
+                        cist_priority = priority;
+                    } else {
+                        instances.push(MstpInstanceConfig {
+                            mstid: id,
+                            bridge_priority: priority,
+                        });
+                    }
+                }
+                if instances.len() > 64
+                    || vlan_map.iter().any(|id| *id != 0 && !declared.contains(id))
+                {
+                    return Err(err("MSTP instances do not cover VLAN map"));
+                }
+                let min_bpdu = 21 + 102 + 16 * instances.len();
+                if max_pdu_bytes < min_bpdu {
+                    return Err(err("MSTP max_pdu_bytes below encoded BPDU"));
+                }
+                if max_state_entries < owned.len() * (instances.len() + 1) {
+                    return Err(err("MSTP state capacity"));
+                }
+                let mut mports = vec![];
+                let mut seen = BTreeSet::new();
+                let mut numbers = BTreeSet::new();
+                for row in array(m, "port_parameters")? {
+                    let q = object(
+                        row,
+                        &["port", "port_number", "external_path_cost"],
+                        &["port_priority", "internal_path_cost", "admin_edge"],
+                    )?;
+                    let name = string(q, "port")?;
+                    if !owned.contains(name) || !seen.insert(name.to_string()) {
+                        return Err(err("MSTP port_parameters ownership/duplicate"));
+                    }
+                    let number = num(q, "port_number", None, 1, 4095)? as u16;
+                    if !numbers.insert(number) {
+                        return Err(err("MSTP duplicate port number"));
+                    }
+                    let priority = num(q, "port_priority", Some(128), 0, 240)? as u16;
+                    if priority % 16 != 0 {
+                        return Err(err("MSTP port priority granularity"));
+                    }
+                    let external = num(q, "external_path_cost", None, 1, 200_000_000)? as u32;
+                    mports.push(MstpPortConfig {
+                        port: name.into(),
+                        port_id: (priority << 8) | number,
+                        external_path_cost: external,
+                        internal_path_cost: num(
+                            q,
+                            "internal_path_cost",
+                            Some(external as u64),
+                            1,
+                            200_000_000,
+                        )? as u32,
+                        admin_edge: boolean(q, "admin_edge", false)?,
+                    });
+                }
+                if seen != owned {
+                    return Err(err("MSTP missing port_parameters"));
+                }
+                if config["ethernet"]["dynamic"]["convergence_ps"] != "0" {
+                    return Err(err("wire MSTP requires convergence_ps=0"));
+                }
+                WireOptions::Mstp(MstpConfig {
+                    bridge_id: ((cist_priority as u64) << 48) | address,
+                    max_age: max_age as u16 * 256,
+                    forward_delay: forward_delay as u16 * 256,
+                    tx_hold_count: num(m, "tx_hold_count", Some(6), 1, 10)? as u32,
+                    max_hops,
+                    region_name: region_name.into(),
+                    region_revision,
+                    vlan_map,
+                    instances,
+                    ports: mports,
                 })
             }
             WireProtocol::Mvrp => {
@@ -565,10 +903,58 @@ pub(crate) fn prepare(
                 })
             }
         };
+        if let Some(binding) = &component_binding {
+            if binding.domain == TreeDomain::Customer {
+                let WireOptions::Rstp(rstp) = &options else {
+                    return Err(err("C component requires RSTP options"));
+                };
+                let cep = binding
+                    .ports
+                    .iter()
+                    .find_map(|(name, attachment)| {
+                        if matches!(attachment, PortAttachment::Physical { .. }) {
+                            Some(name.as_str())
+                        } else {
+                            None
+                        }
+                    })
+                    .ok_or_else(|| err("C component lacks CEP"))?;
+                let expected_mac: [u8; 6] = rstp.bridge_id.to_be_bytes()[2..].try_into().unwrap();
+                if ports.get(cep).and_then(|p| p.source_mac) != Some(expected_mac) {
+                    return Err(err(
+                        "C component bridge address must equal CEP MAC identity",
+                    ));
+                }
+                if binding.service_cardinality.is_empty()
+                    || binding.service_cardinality.len() != binding.ports.len() - 1
+                {
+                    return Err(err("C component PEP/service binding incomplete"));
+                }
+                for p in &rstp.ports {
+                    let number = p.port_id & 0x0fff;
+                    if p.port == cep && number != 0x0fff {
+                        return Err(err("CEP port number must be 4095"));
+                    }
+                    if binding.service_cardinality.contains_key(&p.port) {
+                        let sv_id = provider
+                            .unwrap()
+                            .mappings
+                            .iter()
+                            .find(|m| m.pep == p.port)
+                            .unwrap()
+                            .s_vid;
+                        if number != sv_id {
+                            return Err(err("PEP port number must equal service VID"));
+                        }
+                    }
+                }
+            }
+        }
         adapters.push(PreparedWireAdapter {
             id,
             protocol,
             bridge,
+            component_binding,
             ports: owned.into_iter().collect(),
             max_pdu_bytes,
             max_state_entries,
@@ -581,9 +967,53 @@ pub(crate) fn prepare(
     if adapters.is_empty() || identity_ports != active_ports {
         return Err(err("wire adapters empty or port identity union mismatch"));
     }
+    let mut tree_owners = BTreeSet::new();
+    for a in adapters
+        .iter()
+        .filter(|a| matches!(a.protocol, WireProtocol::Rstp | WireProtocol::Mstp))
+    {
+        let identity = a
+            .component_binding
+            .as_ref()
+            .map_or(a.bridge.as_str(), |b| b.component.as_str());
+        if !tree_owners.insert(identity) {
+            return Err(err("wire bridge has multiple spanning-tree owners"));
+        }
+    }
+    if let Some(topology) = provider {
+        let components: BTreeSet<_> = topology
+            .ports
+            .values()
+            .map(|p| p.component.as_str())
+            .collect();
+        let owned: BTreeSet<_> = adapters
+            .iter()
+            .filter_map(|a| a.component_binding.as_ref())
+            .map(|b| b.component.as_str())
+            .collect();
+        if !owned.is_empty() && owned != components {
+            return Err(err(
+                "provider protocol requires one spanning-tree adapter per component",
+            ));
+        }
+        for adapter in &adapters {
+            if let Some(binding) = &adapter.component_binding {
+                for port in binding.ports.keys() {
+                    for vid in &topology.ports[port].member_vids {
+                        registrar_modes
+                            .entry((port.clone(), *vid))
+                            .or_insert(WireRegistrarMode::FixedIgnoreNew);
+                    }
+                }
+            }
+        }
+    }
     // A physical bridge component cannot mix active tree/registration owners with abstract bridges.
-    for protocol in [WireProtocol::Rstp, WireProtocol::Mvrp] {
+    for protocol in [WireProtocol::Rstp, WireProtocol::Mstp, WireProtocol::Mvrp] {
         for a in adapters.iter().filter(|a| a.protocol == protocol) {
+            if a.component_binding.is_some() {
+                continue;
+            }
             let mut reached = BTreeSet::from([a.bridge.clone()]);
             loop {
                 let old = reached.len();
@@ -602,10 +1032,14 @@ pub(crate) fn prepare(
                     break;
                 }
             }
-            if reached
-                .iter()
-                .any(|b| !owners.contains(&(protocol, b.clone())))
-            {
+            if reached.iter().any(|b| {
+                if protocol == WireProtocol::Mvrp {
+                    !owners.contains(&(protocol, b.clone()))
+                } else {
+                    !owners.contains(&(WireProtocol::Rstp, b.clone()))
+                        && !owners.contains(&(WireProtocol::Mstp, b.clone()))
+                }
+            }) {
                 return Err(err("wire active component requires every bridge owner"));
             }
         }
@@ -886,9 +1320,11 @@ pub(crate) fn prepare(
             &a.bridge,
             match a.protocol {
                 WireProtocol::Rstp => 0,
-                WireProtocol::Mvrp => 1,
-                WireProtocol::Igmp => 2,
-                WireProtocol::Mld => 3,
+                WireProtocol::Mstp => 1,
+                WireProtocol::Mvrp => 2,
+                WireProtocol::Igmp => 3,
+                WireProtocol::Mld => 4,
+                WireProtocol::MacControl => 5,
             },
             &a.id,
         )
@@ -896,9 +1332,11 @@ pub(crate) fn prepare(
                 &b.bridge,
                 match b.protocol {
                     WireProtocol::Rstp => 0,
-                    WireProtocol::Mvrp => 1,
-                    WireProtocol::Igmp => 2,
-                    WireProtocol::Mld => 3,
+                    WireProtocol::Mstp => 1,
+                    WireProtocol::Mvrp => 2,
+                    WireProtocol::Igmp => 3,
+                    WireProtocol::Mld => 4,
+                    WireProtocol::MacControl => 5,
                 },
                 &b.id,
             ))
@@ -916,6 +1354,42 @@ mod tests {
     use super::*;
     use crate::types::ethernet::*;
     use serde_json::json;
+    #[test]
+    fn provider_service_cardinality_includes_remote_customer_interfaces() {
+        let fixture = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../examples/network-composite/provider-l2/protocol.ini");
+        let prepared = crate::prepare(&fixture).unwrap();
+        let network = prepared
+            .registered
+            .as_ref()
+            .unwrap()
+            .network
+            .as_ref()
+            .unwrap();
+        let wire = network.wire.as_ref().unwrap();
+        let mut customer_components = 0;
+        for adapter in &wire.adapters {
+            let binding = adapter.component_binding.as_ref().unwrap();
+            if binding.domain != TreeDomain::Customer {
+                continue;
+            }
+            customer_components += 1;
+            let expected = if binding.component.ends_with(".cb") {
+                2
+            } else {
+                4
+            };
+            assert_eq!(binding.service_cardinality.len(), 1);
+            for (pep, count) in &binding.service_cardinality {
+                assert_eq!(*count, expected, "{}", binding.component);
+                assert!(
+                    wire.registrar_modes.contains_key(&(pep.clone(), 10)),
+                    "logical PEP VLAN must participate in TC scope"
+                );
+            }
+        }
+        assert_eq!(customer_components, 6);
+    }
     pub(super) fn ethernet() -> PreparedEthernet {
         let devices = [("s", "switch"), ("h", "endpoint")]
             .into_iter()
@@ -1020,6 +1494,46 @@ mod tests {
         w["ethernet"]["controls"] =
             json!([{"kind":"membership_leave","family":"ipv4","port":"s/p"}]);
         assert!(prepare(&config(), &w, &ethernet()).is_err());
+    }
+    #[test]
+    fn mstp_preparation_keeps_complete_vlan_allocation() {
+        let mut c = config();
+        c["port_identities"] = json!([{"port":"s/p","source_mac":"02:00:00:00:00:01"}]);
+        c["adapters"] = json!([{
+            "id":"mst", "protocol":"mstp",
+            "protocol_revision":WireProtocol::Mstp.revision(),
+            "ports":["s/p"],"max_pdu_bytes":1500,
+            "max_state_entries":3,"max_pending_timers":8,
+            "max_pending_tx":8,"max_control_steps":1000,
+            "mstp":{"bridge_address":"020000000001",
+                "region":{"name":"region","revision":7,
+                    "vlan_to_msti":{"10":1,"20":2}},
+                "instances":[{"mstid":1,"bridge_priority":4096},
+                    {"mstid":2,"bridge_priority":32768}],
+                "port_parameters":[{"port":"s/p","port_number":1,
+                    "external_path_cost":20000,"internal_path_cost":10000}]}
+        }]);
+        let prepared = prepare(&c, &workload(), &ethernet()).unwrap();
+        let WireOptions::Mstp(m) = &prepared.adapters[0].options else {
+            panic!()
+        };
+        assert_eq!(m.vlan_map.len(), 4096);
+        assert_eq!(
+            (
+                m.vlan_map[0],
+                m.vlan_map[10],
+                m.vlan_map[20],
+                m.vlan_map[4095]
+            ),
+            (0, 1, 2, 0)
+        );
+        assert_eq!(m.ports[0].internal_path_cost, 10000);
+        let mut bad = c.clone();
+        bad["adapters"][0]["mstp"]["region"]["vlan_to_msti"]["20"] = json!(3);
+        assert!(prepare(&bad, &workload(), &ethernet()).is_err());
+        let mut bad = c;
+        bad["adapters"][0]["mstp"]["region"]["name"] = json!("a".repeat(33));
+        assert!(prepare(&bad, &workload(), &ethernet()).is_err());
     }
 }
 

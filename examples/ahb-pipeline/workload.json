@@ -1,0 +1,13 @@
+{
+  "schema":"dir.ahb-pipeline.workload", "version":1,
+  "requests":[
+    {"request_id":"write","source":"low","at_ps":0,"operation":"write","address":0,"size_bytes":4,"beats":4,"burst":"INCR4",
+      "write_data":[[21,22,23,24],[25,26,27,28],[29,30,31,32],[33,34,35,36]]},
+    {"request_id":"split-read","source":"high","at_ps":1,"operation":"read","address":4096,"size_bytes":4,"beats":1,"burst":"SINGLE"},
+    {"request_id":"retry-write","source":"high","at_ps":20,"operation":"write","address":4100,"size_bytes":4,"beats":1,"burst":"SINGLE","write_data":[[41,42,43,44]]},
+    {"request_id":"readback","source":"high","at_ps":30,"operation":"read","address":0,"size_bytes":4,"beats":4,"burst":"INCR4"},
+    {"request_id":"locked-write","source":"low","at_ps":40,"operation":"write","address":16,"size_bytes":4,"beats":4,"burst":"INCR4","locked":true,
+      "write_data":[[51,52,53,54],[55,56,57,58],[59,60,61,62],[63,64,65,66]]},
+    {"request_id":"lock-contender","source":"high","at_ps":42,"operation":"read","address":4112,"size_bytes":4,"beats":2,"burst":"INCR"}
+  ]
+}

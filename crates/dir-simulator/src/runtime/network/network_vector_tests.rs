@@ -507,10 +507,12 @@ fn exact_gate_fit_vector() {
             cycle_ps: cycle,
             entries: vec![
                 GateEntry {
+                    operation: crate::types::ethernet::tsn::GateOperation::SetGateStates,
                     duration_ps: end,
                     open_mask: 1,
                 },
                 GateEntry {
+                    operation: crate::types::ethernet::tsn::GateOperation::SetGateStates,
                     duration_ps: cycle - end,
                     open_mask: 0,
                 },
@@ -544,6 +546,7 @@ fn seed_queue(k: &mut Kernel, direction: usize, priority: usize, count: u64, byt
             pcp: priority as u8,
             dei: 0,
         }),
+        tags: vec![],
         pad_bytes: 0,
         mac_bytes: bytes,
         fcs_hex: String::new(),
@@ -571,6 +574,8 @@ fn seed_queue(k: &mut Kernel, direction: usize, priority: usize, count: u64, byt
             visits: 0,
             lineage: None,
             branch_id: None,
+            gateway_injection: None,
+            terminal_indications: Vec::new(),
         });
         k.s.transfers.push(Transfer {
             circuit: None,
@@ -812,10 +817,12 @@ fn closed_then_open(open: u64, mask: u8) -> crate::types::ethernet::tsn::Schedul
         cycle_ps: cycle,
         entries: vec![
             GateEntry {
+                operation: crate::types::ethernet::tsn::GateOperation::SetGateStates,
                 duration_ps: open,
                 open_mask: 0,
             },
             GateEntry {
+                operation: crate::types::ethernet::tsn::GateOperation::SetGateStates,
                 duration_ps: cycle - open,
                 open_mask: mask,
             },
@@ -997,7 +1004,7 @@ fn exact_replication_terminal_vectors() {
             k.s.replication.as_ref().unwrap().branches[&branch_id].sequence,
             n(&arrival["sequence"])
         );
-        k.call(n(&arrival["time_ps"]), |s, d, c| s.arrive(t, d, c));
+        k.call(n(&arrival["time_ps"]), |s, d, c| s.arrive(t, None, d, c));
     }
     let origins = k.rows("dir.redundancy.origin");
     assert_eq!(origins.len(), 1);
@@ -1034,7 +1041,7 @@ fn exact_replication_terminal_vectors() {
             .enumerate()
         {
             if outcome == "delivered" {
-                k.call(100, |s, d, c| s.arrive(t, d, c));
+                k.call(100, |s, d, c| s.arrive(t, None, d, c));
             } else {
                 k.call(100, |s, d, _| s.replication_drop(t, d, 100, "vector_drop"));
             }
@@ -1267,7 +1274,11 @@ fn exact_selection_and_epoch_vectors() {
     );
     k.arbitrate(0);
     let port = &k.s.preemption.as_ref().unwrap().ports[direction];
-    let selected = port.active.unwrap();
+    let selected = port
+        .active
+        .as_ref()
+        .and_then(preemption::Work::data)
+        .unwrap();
     receipt(
         &v,
         json!({"selected_priority":k.s.transfers[selected].row.priority,"selected_kind":k.s.preemption_transfer(&k.s.transfers[selected],0)["kind"],"suspended_preserved":port.suspended==Some(0)}),
@@ -1521,8 +1532,8 @@ fn exact_replication_atomic_failure_vector() {
     k.generate(0, 0);
     finalize_circuits(&mut k, 0);
     k.call(0, |s, d, _| s.replication_sof(0, d, 0));
-    k.call(50, |s, d, c| s.arrive(0, d, c));
-    k.call(50, |s, d, c| s.arrive(1, d, c));
+    k.call(50, |s, d, c| s.arrive(0, None, d, c));
+    k.call(50, |s, d, c| s.arrive(1, None, d, c));
     k.generate_ordinal(0, 1, 60);
     let t = 2;
     finalize_circuits(&mut k, t);
@@ -1643,4 +1654,49 @@ fn exact_composite_half_open_vector() {
         "exact_composite_half_open_vector",
         "actual common Engine FES [0,T), real CAN conversion ready at 10ps, actual TAS gate opening/SOF at 20ps",
     );
+}
+
+#[test]
+fn provider_customer_bpdu_requires_forwarding_beyond_learning() {
+    use crate::runtime::wire::{WireState, component_envelope};
+    use crate::types::wire::TreeDomain;
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/network-composite/provider-l2/protocol-short.ini");
+    let p = crate::prepare(&fixture).unwrap();
+    let bytes = component_envelope::encode_local(
+        TreeDomain::Customer,
+        [2, 0, 0, 0, 0x10, 1],
+        &[0x42, 0x42, 3, 0, 0, 2, 2],
+    )
+    .unwrap();
+    // Exercise the actual component relay planner in the transient Learning
+    // state. Other S-component outputs can forward, so only the ingress guard
+    // prevents a physical relay and internal ISS indication.
+    for forwarding in [false, true] {
+        let mut k = Kernel::new(p.clone());
+        let protocol = &mut k.s.wire.as_mut().unwrap().protocol;
+        let mut saved = protocol.checkpoint_fields();
+        for tree in saved["mstp"]["provider_east_mstp"]["trees"]
+            .as_object_mut()
+            .unwrap()
+            .values_mut()
+        {
+            for (port, state) in tree["ports"].as_object_mut().unwrap() {
+                state["learning"] = json!(true);
+                state["forwarding"] = json!(port != "Net.east.s.cnp_a" || forwarding);
+            }
+        }
+        *protocol = WireState::restore_fields(&saved, protocol.clone()).unwrap();
+        k.call(1, |s, d, c| {
+            s.provider_bpdu_ingress("Net.east.s.cnp_a", "learning-bpdu", &bytes, false, d, c)
+        });
+        let host = k.s.wire.as_ref().unwrap();
+        assert_eq!(!host.tx.is_empty(), forwarding);
+        assert_eq!(!host.logical.is_empty(), forwarding);
+        let filtered = k
+            .rows("dir.network.provider")
+            .iter()
+            .any(|row| row["reason"] == "service_ingress_tree");
+        assert_eq!(filtered, !forwarding);
+    }
 }

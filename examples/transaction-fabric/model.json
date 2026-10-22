@@ -1,0 +1,13 @@
+{
+  "schema": "dir.transaction-fabric.model", "version": 1,
+  "cycle_ps": 1, "data_bytes": 4,
+  "managers": [
+    {"id":"cpu0", "routes":{"slow":["north"], "fast":["south"]}},
+    {"id":"dma0", "routes":{"slow":["north"], "fast":["south"]}}
+  ],
+  "interconnects":["north","south"],
+  "targets":[
+    {"id":"slow", "base":0, "size":64, "kind":"ddr", "read_latency_cycles":8, "write_response_cycles":4, "initial":[1,2,3,4,5,6,7,8]},
+    {"id":"fast", "base":4096, "size":64, "kind":"shared", "read_latency_cycles":1, "write_response_cycles":1, "initial":[9,10,11,12]}
+  ]
+}

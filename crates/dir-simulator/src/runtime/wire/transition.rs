@@ -428,6 +428,9 @@ pub(crate) fn validate_transition(v: &Value) -> Result<(), String> {
     let machine = v["machine"]
         .as_str()
         .ok_or("wire machine string required")?;
+    if (protocol, machine) == ("mstp", "MSTI_PORT") {
+        return validate_mstp_transition(v);
+    }
     let states = machine_states(protocol, machine).ok_or("unknown wire protocol/machine")?;
     if !member(&v["from_state"], states) || !member(&v["to_state"], states) {
         return Err("unknown wire machine state".into());
@@ -443,6 +446,64 @@ pub(crate) fn validate_transition(v: &Value) -> Result<(), String> {
         return Err("unknown wire trigger".into());
     }
     validate_changes(protocol, machine, port, &v["changes"])
+}
+fn validate_mstp_transition(v: &Value) -> Result<(), String> {
+    const ROLES: &[&str] = &[
+        "Disabled",
+        "Root",
+        "Designated",
+        "Alternate",
+        "Backup",
+        "Master",
+    ];
+    if !nonempty(&v["port"])
+        || !nonempty(&v["trigger"])
+        || !member(&v["from_state"], ROLES)
+        || !member(&v["to_state"], ROLES)
+    {
+        return Err("invalid MSTP transition identity or role".into());
+    }
+    let changes = &v["changes"];
+    exact(
+        changes,
+        &[
+            "mstid",
+            "boundary",
+            "region_digest",
+            "learning",
+            "forwarding",
+            "remaining_hops",
+        ],
+    )?;
+    if changes["mstid"].as_u64().is_none_or(|n| n > 4094)
+        || !changes["boundary"].is_boolean()
+        || !changes["region_digest"].as_str().is_some_and(|s| {
+            s.len() == 32
+                && s.bytes()
+                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+        })
+    {
+        return Err("invalid MSTP transition instance or region".into());
+    }
+    for key in ["learning", "forwarding", "remaining_hops"] {
+        exact(&changes[key], &["before", "after"])?;
+        for side in ["before", "after"] {
+            let valid = if key == "remaining_hops" {
+                changes[key][side].as_u64().is_some_and(|n| n <= 255)
+            } else {
+                changes[key][side].is_boolean()
+            };
+            if !valid {
+                return Err("invalid MSTP transition state value".into());
+            }
+        }
+    }
+    for side in ["before", "after"] {
+        if changes["forwarding"][side] == true && changes["learning"][side] != true {
+            return Err("MSTP forwarding without learning".into());
+        }
+    }
+    Ok(())
 }
 fn priority(p: rstp::Priority) -> Value {
     json!(p.0.map(|n| n.to_string()))
@@ -504,6 +565,12 @@ fn port_projection(v: &Value) -> Result<Value, String> {
         "last_message",
         "received_info",
     ]);
+    if v.get("oper_point_to_point_mac").is_some() {
+        if !v["oper_point_to_point_mac"].is_boolean() {
+            return Err("RSTP operational point-to-point value requires bool".into());
+        }
+        fields.push("oper_point_to_point_mac");
+    }
     exact(v, &fields)?;
     exact(
         &v["counters"],
@@ -564,29 +631,57 @@ fn port_projection(v: &Value) -> Result<Value, String> {
     );
     message(&mut out, p.message.as_ref(), false);
     message(&mut out, p.last_message.as_ref(), true);
+    if v.get("oper_point_to_point_mac").is_some() {
+        out.insert(
+            "operPointToPointMAC".into(),
+            json!(p.oper_point_to_point_mac),
+        );
+    }
     Ok(Value::Object(out))
 }
 fn bridge_projection(v: &Value) -> Result<Value, String> {
     if v.get("ports").is_some() {
-        exact(
-            v,
-            &[
-                "id",
-                "times",
-                "root",
-                "root_times",
-                "root_port",
-                "hold",
-                "pti",
-                "prs",
-                "ports",
-            ],
-        )?;
+        let mut fields = vec![
+            "id",
+            "times",
+            "root",
+            "root_times",
+            "root_port",
+            "hold",
+            "pti",
+            "prs",
+            "ports",
+        ];
+        if v.get("mode").is_some() {
+            fields.push("mode");
+        }
+        if v.get("root_source").is_some() {
+            fields.push("root_source");
+        }
+        exact(v, &fields)?;
     } else {
         exact(v, &["root", "root_times", "root_port"])?;
     }
     if v.get("ports").is_some() {
         let bridge: rstp::Bridge = serde_json::from_value(v.clone()).map_err(|e| e.to_string())?;
+        match &bridge.mode {
+            rstp::RstpMode::Legacy => {
+                if v.get("mode").is_some() || bridge.root_source.is_some() {
+                    return Err("legacy RSTP has component-only state".into());
+                }
+            }
+            rstp::RstpMode::Cep { cep, peps } => {
+                if !bridge.ports.contains_key(cep)
+                    || peps.keys().any(|p| !bridge.ports.contains_key(p))
+                    || bridge
+                        .root_source
+                        .as_ref()
+                        .is_some_and(|p| !bridge.ports.contains_key(p))
+                {
+                    return Err("CEP RSTP source/mode references unknown port".into());
+                }
+            }
+        }
         exact(&v["times"], &["age", "max_age", "hello", "forward_delay"])?;
         for name in bridge.ports.keys() {
             port_projection(&v["ports"][name])?;
@@ -600,7 +695,13 @@ fn bridge_projection(v: &Value) -> Result<Value, String> {
     let t: rstp::Times =
         serde_json::from_value(v["root_times"].clone()).map_err(|e| e.to_string())?;
     let port: u16 = serde_json::from_value(v["root_port"].clone()).map_err(|e| e.to_string())?;
-    Ok(json!({"rootPriority":priority(p),"rootTimes":times(t),"rootPortId":port.to_string()}))
+    let mut out =
+        json!({"rootPriority":priority(p),"rootTimes":times(t),"rootPortId":port.to_string()});
+    if v.get("mode").is_some() {
+        out["componentMode"] = v["mode"].clone();
+        out["rootSource"] = v.get("root_source").cloned().unwrap_or(Value::Null);
+    }
+    Ok(out)
 }
 fn diff(
     protocol: &str,
@@ -652,7 +753,7 @@ pub(crate) fn project_rstp_changes(
             port_projection(after)?,
         )
     } else if machine == "PRS" {
-        for field in ["id", "times", "hold", "pti"] {
+        for field in ["id", "times", "hold", "pti", "mode"] {
             if before.get(field) != after.get(field) {
                 return Err(format!(
                     "immutable/other-machine bridge field {field} changed"
@@ -1343,5 +1444,25 @@ mod tests {
                 assert!(validate_transition(&r).is_err(), "{machine} accepted {key}");
             }
         }
+    }
+    #[test]
+    fn mstp_instance_transition_is_closed_and_typed() {
+        let mut record = json!({
+            "schema_version":1,"adapter_id":"mst","bridge":"s1","port":"s1/p",
+            "protocol":"mstp","time_ps":"1","callback_ordinal":"2",
+            "transition_ordinal":"0","machine":"MSTI_PORT",
+            "from_state":"Designated","to_state":"Master","trigger":"bpdu-1",
+            "changes":{"mstid":1,"boundary":true,
+                "region_digest":"0123456789abcdef0123456789abcdef",
+                "learning":{"before":true,"after":false},
+                "forwarding":{"before":true,"after":false},
+                "remaining_hops":{"before":20,"after":19}}
+        });
+        validate_transition(&record).unwrap();
+        record["changes"]["remaining_hops"]["after"] = json!(256);
+        assert!(validate_transition(&record).is_err());
+        record["changes"]["remaining_hops"]["after"] = json!(19);
+        record["changes"]["forwarding"]["after"] = json!(true);
+        assert!(validate_transition(&record).is_err());
     }
 }

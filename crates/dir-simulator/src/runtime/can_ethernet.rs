@@ -98,6 +98,8 @@ pub(crate) enum BridgeAction {
         bus: usize,
     },
     InjectEthernet {
+        conversion_index: usize,
+        branch_index: usize,
         source: usize,
         wire: EthernetWireFrame,
         vid: u16,
@@ -118,7 +120,8 @@ pub(crate) enum BridgeAction {
         data: Value,
     },
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct Branch {
     row: BranchRecord,
     egress: BridgeEgress,
@@ -127,13 +130,15 @@ struct Branch {
     wire: Option<EthernetWireFrame>,
     policed: bool,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct Conversion {
     row: ConversionRecord,
     gateway: usize,
     branches: Vec<Branch>,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct CanRequest {
     row: Request,
     source: usize,
@@ -142,7 +147,8 @@ struct CanRequest {
     lineage: BridgeLineage,
     branch_id: Option<String>,
 }
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 struct CanQueue {
     waiting: VecDeque<usize>,
 }
@@ -174,7 +180,222 @@ pub(crate) struct BridgeDelta {
     pub actions: Vec<BridgeAction>,
     pub future_generation: bool,
 }
+/// Checked view of a real admitted conversion branch; no independent serialized history.
+pub(crate) struct GatewaySourceEvidence {
+    pub selector: crate::types::network::ReplicationSource,
+    pub child_id: String,
+    pub branch_id: String,
+    pub source: usize,
+    pub vid: u16,
+    pub priority: u8,
+    pub wire: EthernetWireFrame,
+    pub lineage: BridgeLineage,
+    pub injected_ps: u64,
+    pub sof_ps: Option<u64>,
+}
 impl BridgeState {
+    pub(crate) fn gateway_source_evidence(
+        &self,
+        conversion: usize,
+        branch: usize,
+        delta: Option<&BridgeDelta>,
+    ) -> Result<GatewaySourceEvidence> {
+        let c = delta
+            .and_then(|d| {
+                d.conversions
+                    .iter()
+                    .rev()
+                    .find(|(i, _)| *i == conversion)
+                    .map(|(_, c)| c)
+            })
+            .or_else(|| self.conversions.get(conversion))
+            .ok_or_else(|| error("Gateway source conversion missing"))?;
+        let b = c
+            .branches
+            .get(branch)
+            .ok_or_else(|| error("Gateway source branch missing"))?;
+        let gw = self
+            .prepared
+            .gateways
+            .get(c.gateway)
+            .ok_or_else(|| error("Gateway source owner missing"))?;
+        let rule = gw
+            .rules
+            .iter()
+            .find(|r| Some(&r.id) == c.row.rule_id.as_ref())
+            .ok_or_else(|| error("Gateway source rule missing"))?;
+        let Some(BridgeEgress::Ethernet {
+            source,
+            port,
+            dst_mac,
+            vid,
+            pcp,
+        }) = rule.egresses.get(branch)
+        else {
+            return Err(error("Gateway source is not Ethernet"));
+        };
+        let mut requests = delta
+            .into_iter()
+            .flat_map(|d| d.requests.iter().map(|(_, r)| r))
+            .chain(self.requests.iter());
+        let request = requests
+            .find(|r| {
+                gw.can_ports.iter().any(|&i| {
+                    c.row.ingress_record
+                        == format!(
+                            "{}/{}",
+                            r.row.request_id, self.prepared.can.controllers[i].id
+                        )
+                })
+            })
+            .ok_or_else(|| error("Gateway source real CAN ingress missing"))?;
+        let controller = gw
+            .can_ports
+            .iter()
+            .copied()
+            .find(|&i| {
+                c.row.ingress_record
+                    == format!(
+                        "{}/{}",
+                        request.row.request_id, self.prepared.can.controllers[i].id
+                    )
+            })
+            .unwrap();
+        let observed = request
+            .row
+            .eof_ps
+            .and_then(|t| t.checked_add(self.prepared.can.controllers[controller].rx_channel_ps));
+        let receiver = delta
+            .into_iter()
+            .flat_map(|d| d.receivers.iter().map(|(_, r)| r))
+            .chain(self.receivers.iter())
+            .find(|r| {
+                r.request_id == request.row.request_id
+                    && r.receiver == self.prepared.can.controllers[controller].id
+            });
+        let packet = protocol::from_frame(&request.frame)?;
+        let cid = lineage_id(&[
+            &request.lineage.origin_id,
+            &gw.instance,
+            &c.row.ingress_record,
+            &rule.id,
+        ]);
+        let bid = lineage_id(&[&cid, &branch.to_string()]);
+        let child = lineage_id(&[&bid, "child"]);
+        let mut lineage = request.lineage.clone();
+        lineage.visited_gateways.push(gw.instance.clone());
+        lineage.parent_id = bid.clone();
+        lineage.branch_lineage.push(bid.clone());
+        lineage.segment_id = child.clone();
+        let policy = self
+            .prepared
+            .ethernet
+            .port_policies
+            .iter()
+            .find(|p| p.port == *port)
+            .ok_or_else(|| error("Gateway source port missing"))?;
+        let tag = policy.vlans[vid].then_some(EthernetVlanTag {
+            vid: *vid,
+            pcp: *pcp,
+            dei: 0,
+        });
+        let wire = ethernet::serialize_vlan_frame(
+            self.prepared.ethernet.devices[*source]
+                .mac
+                .as_deref()
+                .unwrap(),
+            dst_mac,
+            protocol::ETHERTYPE,
+            &protocol::hex(&protocol::encode(&packet)?),
+            tag,
+        )?;
+        if rule.direction != "can_to_ethernet"
+            || rule.format != packet.format
+            || rule.can_id != packet.id
+            || self.prepared.can.controllers[controller].id != rule.ingress
+            || request.row.status != "success"
+            || observed != Some(c.row.observed_ps)
+            || receiver.is_none_or(|r| r.observed_ps != observed)
+            || c.row.conversion_id != cid
+            || c.row.origin_id != lineage.origin_id
+            || c.row.parent_id != c.row.ingress_record
+            || c.row.reason.is_some()
+            || c.row.ready_ps != c.row.planned_ready_ps
+            || c.row.ready_ps.is_none()
+            || c.row.branch_ids.get(branch) != Some(&bid)
+            || b.row.conversion_id != cid
+            || b.row.branch_id != bid
+            || b.row.planned_child_id != child
+            || b.row.child_id.as_ref() != Some(&child)
+            || b.row.status != "admitted"
+            || b.row
+                .admitted_ps
+                .is_none_or(|t| t < c.row.ready_ps.unwrap())
+            || b.packet != packet
+            || b.lineage != lineage
+            || b.row.pcp != Some(*pcp)
+            || b.row.input_format != packet.format
+            || b.row.output_format != packet.format
+            || b.row.input_can_id != packet.id
+            || b.row.output_can_id != packet.id
+            || b.row.codec_length != protocol::encode(&packet)?.len() as u64
+            || c.row.visited_gateways != lineage.visited_gateways
+            || c.row.planned_ready_ps
+                != observed
+                    .and_then(|t| {
+                        t.checked_add(self.prepared.can.controllers[controller].rx_processing_ps)
+                    })
+                    .and_then(|t| t.checked_add(gw.conversion_delay_ps))
+            || c.row.ready_ps.and_then(|t| {
+                t.checked_add(self.prepared.ethernet.devices[*source].tx_processing_delay_ps)
+            }) != Some(b.row.planned_offer_ps)
+            || b.row.egress != *port
+            || serde_json::to_value(&b.egress).unwrap()
+                != serde_json::to_value(&rule.egresses[branch]).unwrap()
+            || b.wire.as_ref().is_none_or(|w| {
+                serde_json::to_value(w).unwrap() != serde_json::to_value(&wire).unwrap()
+            })
+        {
+            return Err(error(
+                "Gateway source conversion/branch/CAN causality mismatch",
+            ));
+        }
+        Ok(GatewaySourceEvidence {
+            selector: crate::types::network::ReplicationSource::GatewayEgress {
+                gateway_id: gw.instance.clone(),
+                rule_id: rule.id.clone(),
+                egress_index: branch,
+            },
+            child_id: child,
+            branch_id: bid,
+            source: *source,
+            vid: *vid,
+            priority: *pcp,
+            wire,
+            lineage,
+            injected_ps: b.row.admitted_ps.unwrap(),
+            sof_ps: b.row.sof_ps,
+        })
+    }
+    pub(crate) fn gateway_injection_indices(&self) -> Vec<(usize, usize)> {
+        self.conversions
+            .iter()
+            .enumerate()
+            .flat_map(|(ci, c)| {
+                c.branches
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, b)| {
+                        b.row.status == "admitted"
+                            && matches!(b.egress, BridgeEgress::Ethernet { .. })
+                    })
+                    .map(move |(bi, _)| (ci, bi))
+            })
+            .collect()
+    }
+    pub(crate) fn source_segment(&self, segment: &str) -> Option<&SegmentRecord> {
+        self.segments.iter().find(|s| s.segment_id == segment)
+    }
     pub(crate) fn new(p: &PreparedCanEthernet) -> Result<Self> {
         Self::new_with_policing(p, false)
     }
@@ -755,6 +976,8 @@ impl BridgeState {
                     extra.0 = add(extra.0, 1)?;
                     extra.1 = add(extra.1, wire.mac_bytes)?;
                     d.actions.push(BridgeAction::InjectEthernet {
+                        conversion_index: index,
+                        branch_index: branch,
                         source: *source,
                         wire,
                         vid: *vid,
@@ -2802,5 +3025,305 @@ mod tests {
             .is_err()
         );
         assert_eq!(s.snapshot(), before);
+    }
+}
+
+crate::runtime::network::checkpoint::fields!(BridgeState, value; synthetic_policing, conversions, requests, receivers, segments, queues, active, rx, rx_max, future_generation; );
+impl BridgeState {
+    pub(crate) fn validate_checkpoint(&self, horizon: u64) -> Result<()> {
+        if self.queues.len() != self.prepared.can.controllers.len()
+            || self.active.len() != self.prepared.can.buses.len()
+            || self.rx.len() != self.prepared.gateways.len()
+            || self.rx_max.len() != self.rx.len()
+        {
+            return Err(error("bridge checkpoint dimensions"));
+        }
+        for request in &self.requests {
+            if request.source >= self.queues.len() || request.row.generated_ps > horizon {
+                return Err(error("bridge request checkpoint reference/time"));
+            }
+            let expected = can_wire::serialize(&request.frame)?;
+            if serde_json::to_value(&expected).unwrap()
+                != serde_json::to_value(&request.wire).unwrap()
+            {
+                return Err(error("bridge checkpoint CAN wire mismatch"));
+            }
+        }
+        let mut queued = BTreeSet::new();
+        for (source, queue) in self.queues.iter().enumerate() {
+            for i in &queue.waiting {
+                if self.requests.get(*i).is_none_or(|r| r.source != source) || !queued.insert(*i) {
+                    return Err(error("bridge queue checkpoint reference/owner"));
+                }
+            }
+        }
+        for (bus, i) in self.active.iter().enumerate() {
+            if let Some(i) = i {
+                let r = self
+                    .requests
+                    .get(*i)
+                    .ok_or_else(|| error("bridge active checkpoint reference"))?;
+                if self.prepared.can.controller_buses[r.source] != bus {
+                    return Err(error("bridge active checkpoint owner"));
+                }
+            }
+        }
+        for conversion in &self.conversions {
+            if conversion.gateway >= self.prepared.gateways.len() {
+                return Err(error("bridge conversion checkpoint reference"));
+            }
+            for branch in &conversion.branches {
+                let valid = match branch.egress {
+                    BridgeEgress::Can { source, .. } => source < self.queues.len(),
+                    BridgeEgress::Ethernet { source, .. } => {
+                        source < self.prepared.ethernet.devices.len()
+                    }
+                };
+                if !valid {
+                    return Err(error("bridge branch checkpoint reference"));
+                }
+            }
+        }
+        Ok(())
+    }
+    pub(crate) fn validate_checkpoint_timer(&self, timer: &BridgeTimer) -> Result<()> {
+        let valid = match timer {
+            BridgeTimer::NativeCan { generator, .. } => {
+                *generator < self.prepared.can.generators.len()
+            }
+            BridgeTimer::CanReady { request }
+            | BridgeTimer::CanEof { request }
+            | BridgeTimer::CanRelease { request } => *request < self.requests.len(),
+            BridgeTimer::CanObserve {
+                request,
+                controller,
+            }
+            | BridgeTimer::CanReceived {
+                request,
+                controller,
+            } => *request < self.requests.len() && *controller < self.queues.len(),
+            BridgeTimer::ConversionReady { conversion } => *conversion < self.conversions.len(),
+            BridgeTimer::BranchOffer { conversion, branch } => self
+                .conversions
+                .get(*conversion)
+                .is_some_and(|c| *branch < c.branches.len()),
+            BridgeTimer::RetryCan { source } => *source < self.queues.len(),
+            BridgeTimer::RetryEthernet { source } => *source < self.prepared.ethernet.devices.len(),
+        };
+        if valid {
+            Ok(())
+        } else {
+            Err(error("bridge timer checkpoint reference"))
+        }
+    }
+}
+impl BridgeState {
+    pub(crate) fn validate_checkpoint_pending(
+        &self,
+        timers: &[(u64, BridgeTimer)],
+        limit: u64,
+    ) -> Result<()> {
+        let mut pending = BTreeMap::<String, Vec<u64>>::new();
+        for (time, timer) in timers {
+            self.validate_checkpoint_timer(timer)?;
+            pending
+                .entry(serde_json::to_string(timer).unwrap())
+                .or_default()
+                .push(*time);
+        }
+        let mut expect = |timer: BridgeTimer, time: Option<u64>| -> Result<()> {
+            if pending
+                .remove(&serde_json::to_string(&timer).unwrap())
+                .unwrap_or_default()
+                != time.into_iter().collect::<Vec<_>>()
+            {
+                return Err(error("bridge checkpoint lifecycle reservation differs"));
+            }
+            Ok(())
+        };
+        let mut future = false;
+        for (i, generator) in self.prepared.can.generators.iter().enumerate() {
+            let prefix = format!("{}:", generator.id);
+            let mut ordinals = self
+                .requests
+                .iter()
+                .filter(|r| r.branch_id.is_none())
+                .filter_map(|r| r.row.request_id.strip_prefix(&prefix)?.parse::<u64>().ok())
+                .collect::<Vec<_>>();
+            ordinals.sort_unstable();
+            if ordinals.iter().enumerate().any(|(i, n)| *n != i as u64) {
+                return Err(error("bridge checkpoint native source cursor differs"));
+            }
+            let ordinal = ordinals.len() as u64;
+            let next = generator.schedule.time(ordinal);
+            if next.is_some_and(|time| time >= u128::from(limit)) {
+                future = true;
+            }
+            expect(
+                BridgeTimer::NativeCan {
+                    generator: i,
+                    ordinal,
+                },
+                next.filter(|time| *time < u128::from(limit))
+                    .map(|time| time as u64),
+            )?;
+        }
+        if self.future_generation != future {
+            return Err(error("bridge checkpoint future generation differs"));
+        }
+        for (i, request) in self.requests.iter().enumerate() {
+            let row = &request.row;
+            let source = &self.prepared.can.controllers[request.source];
+            let bus = self.prepared.can.controller_buses[request.source];
+            if row.source != source.id || row.bus != self.prepared.can.buses[bus].id {
+                return Err(error("bridge checkpoint request ownership differs"));
+            }
+            expect(
+                BridgeTimer::CanReady { request: i },
+                if row.ready_ps.is_none() {
+                    Some(
+                        row.generated_ps
+                            .checked_add(source.tx_processing_ps)
+                            .and_then(|t| t.checked_add(source.tx_channel_ps))
+                            .ok_or_else(|| error("checkpoint CAN ready overflow"))?,
+                    )
+                } else {
+                    None
+                },
+            )?;
+            if let Some(sof) = row.sof_ps {
+                let eof = can_wire::end_time(sof, row.frame_bits, row.bitrate_bps)?;
+                let release = can_wire::end_time(sof, add(row.frame_bits, 3)?, row.bitrate_bps)?;
+                if (row.planned_eof_ps, row.planned_release_ps) != (Some(eof), Some(release))
+                    || row.release_ps.is_none() && self.active[bus] != Some(i)
+                {
+                    return Err(error("bridge checkpoint active CAN lifecycle differs"));
+                }
+            }
+            expect(
+                BridgeTimer::CanEof { request: i },
+                if row.sof_ps.is_some() && row.eof_ps.is_none() {
+                    row.planned_eof_ps
+                } else {
+                    None
+                },
+            )?;
+            expect(
+                BridgeTimer::CanRelease { request: i },
+                if row.sof_ps.is_some() && row.release_ps.is_none() {
+                    row.planned_release_ps
+                } else {
+                    None
+                },
+            )?;
+            for (controller, c) in self.prepared.can.controllers.iter().enumerate() {
+                let receiver = self
+                    .receivers
+                    .iter()
+                    .find(|r| r.request_id == row.request_id && r.receiver == c.id);
+                let eligible = controller != request.source
+                    && self.prepared.can.controller_buses[controller] == bus
+                    && can_wire::accepts(&c.rx_filter, &request.frame);
+                if receiver.is_some() && !eligible {
+                    return Err(error("bridge checkpoint receiver ownership differs"));
+                }
+                expect(
+                    BridgeTimer::CanObserve {
+                        request: i,
+                        controller,
+                    },
+                    if eligible && receiver.is_none() {
+                        row.eof_ps.map(|t| add(t, c.rx_channel_ps)).transpose()?
+                    } else {
+                        None
+                    },
+                )?;
+                expect(
+                    BridgeTimer::CanReceived {
+                        request: i,
+                        controller,
+                    },
+                    if let Some(receiver) = receiver {
+                        if receiver.received_ps.is_none() {
+                            Some(add(
+                                receiver.observed_ps.ok_or_else(|| {
+                                    error("checkpoint receiver observation missing")
+                                })?,
+                                c.rx_processing_ps,
+                            )?)
+                        } else {
+                            None
+                        }
+                    } else {
+                        None
+                    },
+                )?;
+            }
+        }
+        let mut occupancy = vec![0u64; self.rx.len()];
+        for (i, conversion) in self.conversions.iter().enumerate() {
+            if conversion.row.reason.is_none() && conversion.row.released_ps.is_none() {
+                occupancy[conversion.gateway] += 1;
+            }
+            expect(
+                BridgeTimer::ConversionReady { conversion: i },
+                if conversion.row.ready_ps.is_none() {
+                    conversion.row.planned_ready_ps
+                } else {
+                    None
+                },
+            )?;
+            for (branch, b) in conversion.branches.iter().enumerate() {
+                expect(
+                    BridgeTimer::BranchOffer {
+                        conversion: i,
+                        branch,
+                    },
+                    (conversion.row.ready_ps.is_some() && b.row.offer_ps.is_none())
+                        .then_some(b.row.planned_offer_ps),
+                )?;
+            }
+        }
+        if occupancy != self.rx
+            || self
+                .rx
+                .iter()
+                .zip(&self.rx_max)
+                .enumerate()
+                .any(|(i, (now, max))| now > max || *max > self.prepared.gateways[i].rx_capacity)
+        {
+            return Err(error("bridge checkpoint RX accounting differs"));
+        }
+        // Retry notifications are advisory; every other timer is tied to an
+        // authoritative source, request, receiver, conversion or branch above.
+        for (_, timer) in timers {
+            if matches!(
+                timer,
+                BridgeTimer::RetryCan { .. } | BridgeTimer::RetryEthernet { .. }
+            ) {
+                pending.remove(&serde_json::to_string(timer).unwrap());
+            }
+        }
+        if !pending.is_empty() {
+            return Err(error("bridge checkpoint unexpected lifecycle reservation"));
+        }
+        let mut receiver_ids = BTreeSet::new();
+        for receiver in &self.receivers {
+            if !self
+                .requests
+                .iter()
+                .any(|r| r.row.request_id == receiver.request_id)
+                || !self
+                    .prepared
+                    .can
+                    .controllers
+                    .iter()
+                    .any(|c| c.id == receiver.receiver)
+                || !receiver_ids.insert((&receiver.request_id, &receiver.receiver))
+            {
+                return Err(error("bridge checkpoint receiver identity differs"));
+            }
+        }
+        Ok(())
     }
 }

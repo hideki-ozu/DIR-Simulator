@@ -39,6 +39,12 @@ pub struct Bpdu {
 }
 pub fn decode(b: &[u8], port_id: u16, max: usize) -> DecodeResult<Bpdu> {
     let payload = client(b, DA, None, max)?;
+    decode_llc(payload, port_id)
+}
+
+/// Decode an LLC/BPDU payload after the receiving component has validated the
+/// actual MAC envelope, including its destination address and any service tag.
+pub fn decode_llc(payload: &[u8], port_id: u16) -> DecodeResult<Bpdu> {
     if payload.len() < 7 || payload[..3] != [66, 66, 3] {
         return Err(bad("llc"));
     }
@@ -49,7 +55,7 @@ pub fn decode(b: &[u8], port_id: u16, max: usize) -> DecodeResult<Bpdu> {
     let kind = match (b[3], b[2], b.len()) {
         (0, _, n) if n >= 35 => Kind::Config,
         (128, _, _) => Kind::Tcn,
-        (2, v, n) if v >= 2 && n >= 36 => Kind::Rst,
+        (2, v, n) if v >= 3 && n >= 35 || v == 2 && n >= 36 => Kind::Rst,
         (2, v, _) if v < 2 => return Err(bad("unsupported_version")),
         (2, _, _) => return Err(bad("rst_short")),
         (0, _, _) => return Err(bad("config_short")),
@@ -93,6 +99,12 @@ pub fn decode(b: &[u8], port_id: u16, max: usize) -> DecodeResult<Bpdu> {
     })
 }
 pub fn encode(sa: [u8; 6], m: &Bpdu) -> Vec<u8> {
+    let p = encode_llc(m);
+    frame(DA, sa, p.len() as u16, &p)
+}
+
+/// Encode just the LLC/BPDU bytes for a component-specific MAC envelope.
+pub fn encode_llc(m: &Bpdu) -> Vec<u8> {
     let mut p = vec![
         66,
         66,
@@ -128,7 +140,7 @@ pub fn encode(sa: [u8; 6], m: &Bpdu) -> Vec<u8> {
             p.push(0);
         }
     }
-    frame(DA, sa, p.len() as u16, &p)
+    p
 }
 macro_rules! states {($name:ident {$($v:ident),*})=>{#[allow(non_camel_case_types,clippy::upper_case_acronyms,clippy::enum_variant_names)]#[derive(Debug,Clone,Copy,PartialEq,Eq,Serialize,Deserialize)]pub enum $name{$($v),*}};}
 states!(Pti { ONE_SECOND, TICK });
@@ -273,6 +285,8 @@ impl Counters {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Port {
     pub config: PortConfig,
+    #[serde(default = "default_point_to_point", skip_serializing_if = "is_true")]
+    pub oper_point_to_point_mac: bool,
     pub enabled: bool,
     pub role: Role,
     pub selected_role: Role,
@@ -322,6 +336,51 @@ pub struct Port {
     pub last_message: Option<Bpdu>,
     pub received_info: Option<ReceivedInfo>,
 }
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum RstpMode {
+    #[default]
+    Legacy,
+    /// One customer edge port and the service-interface cardinality of each
+    /// provider edge port in this C-VLAN component (IEEE 802.1Q 13.41).
+    Cep {
+        cep: String,
+        peps: BTreeMap<String, usize>,
+    },
+}
+impl RstpMode {
+    fn is_legacy(&self) -> bool {
+        matches!(self, Self::Legacy)
+    }
+    fn is_pep(&self, name: &str) -> bool {
+        matches!(self, Self::Cep { peps, .. } if peps.contains_key(name))
+    }
+    fn tree_targets(&self, source: &str, ports: &BTreeMap<String, Port>) -> Vec<String> {
+        match self {
+            Self::Legacy => ports.keys().cloned().collect(),
+            Self::Cep { cep, .. } if source == cep => ports.keys().cloned().collect(),
+            Self::Cep { cep, peps } if peps.contains_key(source) => {
+                vec![source.to_owned(), cep.clone()]
+            }
+            Self::Cep { .. } => vec![],
+        }
+    }
+    fn tc_targets(&self, source: &str, ports: &BTreeMap<String, Port>) -> Vec<String> {
+        match self {
+            Self::Legacy => ports
+                .keys()
+                .filter(|n| n.as_str() != source)
+                .cloned()
+                .collect(),
+            Self::Cep { cep, .. } if source == cep => ports
+                .keys()
+                .filter(|n| n.as_str() != source)
+                .cloned()
+                .collect(),
+            Self::Cep { cep, peps } if peps.contains_key(source) => vec![cep.clone()],
+            Self::Cep { .. } => vec![],
+        }
+    }
+}
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Bridge {
     pub id: u64,
@@ -333,6 +392,12 @@ pub struct Bridge {
     pub pti: Pti,
     pub prs: Prs,
     pub ports: BTreeMap<String, Port>,
+    #[serde(default, skip_serializing_if = "RstpMode::is_legacy")]
+    pub mode: RstpMode,
+    /// Port whose received priority vector selected the root. In CEP mode
+    /// other PEPs may also be Root-role ports.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub root_source: Option<String>,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Transition {
@@ -359,6 +424,16 @@ pub enum Input {
     Tick,
     Receive(String, Bpdu),
     Link(String, bool),
+    #[cfg(test)]
+    PointToPoint(String, bool),
+    #[cfg(test)]
+    CepServiceCardinality(String, usize),
+}
+fn default_point_to_point() -> bool {
+    true
+}
+fn is_true(value: &bool) -> bool {
+    *value
 }
 fn received_age_seconds(ticks: u16) -> u32 {
     (ticks as u32 + 384) / 256
@@ -410,7 +485,7 @@ fn record_designated(p: &mut Port, m: &Bpdu, superior: bool) {
     p.proposed |= m.flags & 2 != 0;
     p.rcvd_tc |= m.flags & 1 != 0;
     p.rcvd_tc_ack |= m.kind == Kind::Config && m.flags & 128 != 0;
-    p.agreed = m.flags & 64 != 0 && m.kind == Kind::Rst;
+    p.agreed = p.oper_point_to_point_mac && m.flags & 64 != 0 && m.kind == Kind::Rst;
     if p.agreed {
         p.proposing = false;
     }
@@ -446,6 +521,7 @@ impl Bridge {
                     name,
                     Port {
                         config,
+                        oper_point_to_point_mac: true,
                         enabled,
                         role: Role::Disabled,
                         selected_role: Role::Disabled,
@@ -519,9 +595,74 @@ impl Bridge {
             pti: Pti::ONE_SECOND,
             prs: Prs::INIT_TREE,
             ports,
+            mode: RstpMode::Legacy,
+            root_source: None,
         }
     }
+    pub fn new_cep(
+        id: u64,
+        times: Times,
+        hold: u32,
+        mut ports: BTreeMap<String, (PortConfig, bool)>,
+        cep: String,
+        peps: BTreeMap<String, usize>,
+    ) -> Result<Self, String> {
+        if peps.is_empty()
+            || peps.contains_key(&cep)
+            || ports.len() != peps.len() + 1
+            || !ports.contains_key(&cep)
+            || peps
+                .iter()
+                .any(|(name, count)| !ports.contains_key(name) || *count == 0)
+            || ports[&cep].0.id & 0x0fff != 0x0fff
+            || peps.keys().any(|name| {
+                let number = ports[name].0.id & 0x0fff;
+                !(1..=4094).contains(&number)
+            })
+        {
+            return Err("invalid CEP component port layout or service cardinality".into());
+        }
+        for name in peps.keys() {
+            let p = &mut ports.get_mut(name).unwrap().0;
+            p.admin_edge = false;
+            p.auto_edge = true;
+        }
+        let mut bridge = Self::new(id, times, hold, ports);
+        for (name, count) in &peps {
+            let p = bridge.ports.get_mut(name).unwrap();
+            p.oper_point_to_point_mac = *count <= 2;
+            p.oper_edge = false;
+            p.bdm = Bdm::NOT_EDGE;
+            p.counters.edge = if p.oper_point_to_point_mac {
+                3
+            } else {
+                ceil(times.max_age)
+            };
+        }
+        bridge.mode = RstpMode::Cep { cep, peps };
+        Ok(bridge)
+    }
+    pub fn cep_source_mac(&self) -> Option<[u8; 6]> {
+        if self.mode.is_legacy() {
+            return None;
+        }
+        let bytes = self.id.to_be_bytes();
+        Some(bytes[2..].try_into().unwrap())
+    }
     pub fn plan(&self, input: Input, max_steps: usize) -> Result<Delta, String> {
+        if let RstpMode::Cep { peps, .. } = &self.mode {
+            if peps.iter().any(|(name, count)| {
+                self.ports.get(name).is_none_or(|p| {
+                    *count == 0
+                        || p.config.admin_edge
+                        || !p.config.auto_edge
+                        || p.oper_edge
+                        || p.oper_point_to_point_mac != (*count <= 2)
+                })
+            }) {
+                return Err("CEP PEP properties disagree with service cardinality".into());
+            }
+        }
         let mut d = Delta {
             state: self.clone(),
             tx: vec![],
@@ -586,6 +727,50 @@ impl Bridge {
                     .get_mut(&n)
                     .ok_or("unknown RSTP port")?
                     .enabled = up;
+            }
+            #[cfg(test)]
+            Input::PointToPoint(n, point_to_point) => {
+                if d.state.mode.is_pep(&n) {
+                    return Err(
+                        "CEP PEP point-to-point state is derived from service cardinality".into(),
+                    );
+                }
+                let p = d.state.ports.get_mut(&n).ok_or("unknown RSTP port")?;
+                p.oper_point_to_point_mac = point_to_point;
+                if !point_to_point {
+                    p.agreed = false;
+                    p.proposing = false;
+                }
+                p.counters.edge = if point_to_point {
+                    3
+                } else {
+                    ceil(p.designated_times.max_age)
+                };
+            }
+            #[cfg(test)]
+            Input::CepServiceCardinality(n, count) => {
+                if count == 0 {
+                    return Err("CEP service needs at least one customer interface".into());
+                }
+                let RstpMode::Cep { peps, .. } = &mut d.state.mode else {
+                    return Err("service cardinality applies only to CEP mode".into());
+                };
+                let current = peps.get_mut(&n).ok_or("unknown CEP PEP")?;
+                *current = count;
+                let p = d.state.ports.get_mut(&n).unwrap();
+                let point_to_point = count <= 2;
+                p.oper_point_to_point_mac = point_to_point;
+                if !point_to_point {
+                    p.agreed = false;
+                    p.proposing = false;
+                }
+                p.counters.edge = if point_to_point {
+                    3
+                } else {
+                    ceil(p.designated_times.max_age)
+                };
+                p.reselect = true;
+                p.selected = false;
             }
             Input::Receive(n, m) => {
                 let p = d.state.ports.get_mut(&n).ok_or("unknown RSTP port")?;
@@ -660,6 +845,7 @@ impl Delta {
         let names: Vec<_> = self.state.ports.keys().cloned().collect();
         // Global reset, receive/migration/edge, then information.
         for name in &names {
+            let cep_pep = self.state.mode.is_pep(name);
             let before = self.state.ports[name].clone();
             let p = self.state.ports.get_mut(name).unwrap();
             if !p.enabled {
@@ -758,11 +944,12 @@ impl Delta {
             let old = p.bdm;
             match p.bdm {
                 Bdm::NOT_EDGE
-                    if !p.enabled && p.config.admin_edge
-                        || p.counters.edge == 0
-                            && p.config.auto_edge
-                            && p.send_rstp
-                            && p.proposing =>
+                    if !cep_pep
+                        && (!p.enabled && p.config.admin_edge
+                            || p.counters.edge == 0
+                                && p.config.auto_edge
+                                && p.send_rstp
+                                && p.proposing) =>
                 {
                     p.bdm = Bdm::EDGE;
                     p.oper_edge = true;
@@ -868,7 +1055,8 @@ impl Delta {
                         }
                     } else if received == ReceivedInfo::NotDesignatedInfo {
                         p.pim = Pim::NOT_DESIGNATED;
-                        p.agreed = m.kind == Kind::Rst && m.flags & 64 != 0;
+                        p.agreed =
+                            p.oper_point_to_point_mac && m.kind == Kind::Rst && m.flags & 64 != 0;
                         if p.agreed {
                             p.proposing = false;
                         }
@@ -959,8 +1147,9 @@ impl Delta {
         let b = self.state.id;
         let mut best = Priority([b, 0, b, 0, b, 0, 0]);
         let mut root = 0;
+        let mut root_source = None;
         let mut times = self.state.times;
-        for p in self.state.ports.values() {
+        for (name, p) in &self.state.ports {
             if p.info != Info::Received
                 || p.config.restricted_role
                 || p.priority.0[4] & 0x0000ffffffffffff == b & 0x0000ffffffffffff
@@ -976,6 +1165,7 @@ impl Delta {
             if v < best {
                 best = v;
                 root = p.config.id;
+                root_source = Some(name.clone());
                 times = p.times;
                 let age = received_age_seconds(times.age);
                 times.age = u16::try_from(age * 256).map_err(|_| "RSTP message age overflow")?;
@@ -983,9 +1173,21 @@ impl Delta {
         }
         self.state.root = best;
         self.state.root_port = root;
+        self.state.root_source = if self.state.mode.is_legacy() {
+            None
+        } else {
+            root_source.clone()
+        };
         self.state.root_times = times;
         self.state.prs = Prs::ROLE_SELECTION;
-        for p in self.state.ports.values_mut() {
+        let root_is_pep = root_source
+            .as_deref()
+            .is_some_and(|name| self.state.mode.is_pep(name));
+        let cep_peps = match &self.state.mode {
+            RstpMode::Cep { peps, .. } => Some(peps),
+            RstpMode::Legacy => None,
+        };
+        for (name, p) in &mut self.state.ports {
             p.reselect = false;
             p.designated = best;
             p.designated.0[2] = b;
@@ -1020,6 +1222,13 @@ impl Delta {
                     }
                 }
             };
+            if p.selected_role == Role::Alternate
+                && root_is_pep
+                && cep_peps.is_some_and(|peps| peps.contains_key(name))
+                && root_source.as_deref() != Some(name)
+            {
+                p.selected_role = Role::Root;
+            }
             p.selected = true;
         }
         self.transitions.push(Transition{port:None,machine:"PRS".into(),from_state:from.clone(),to_state:"ROLE_SELECTION".into(),guard:guards::rstp("PRS",&from,"ROLE_SELECTION","PRS_RESELECT",None),tree_before:None,tree_after:None,before:previous,after:serde_json::json!({"root":self.state.root,"root_port":self.state.root_port,"root_times":self.state.root_times})});
@@ -1041,26 +1250,40 @@ impl Delta {
         let tree_before = self.state.clone();
         let before = self.state.ports[name].clone();
         let role = before.role;
-        let all_ready = self
-            .state
-            .ports
-            .values()
-            .all(|q| q.selected && q.role == q.selected_role && !q.update);
-        let all_synced = all_ready
-            && self.state.ports.iter().all(|(n, q)| {
-                if matches!(role, Role::Root | Role::Alternate) {
-                    q.role == Role::Root || q.synced
-                } else if role == Role::Designated {
-                    n == name || q.synced
-                } else {
-                    false
-                }
-            });
-        let rerooted = self
-            .state
-            .ports
-            .iter()
-            .all(|(n, q)| n == name || q.counters.rr == 0);
+        let (all_synced, rerooted) = match &self.state.mode {
+            RstpMode::Cep { cep, peps } if name == cep => (
+                peps.keys().all(|n| self.state.ports[n].synced),
+                peps.keys().all(|n| self.state.ports[n].counters.rr == 0),
+            ),
+            RstpMode::Cep { cep, .. } => (
+                self.state.ports[cep].synced,
+                self.state.ports[cep].counters.rr == 0,
+            ),
+            RstpMode::Legacy => {
+                let all_ready = self
+                    .state
+                    .ports
+                    .values()
+                    .all(|q| q.selected && q.role == q.selected_role && !q.update);
+                (
+                    all_ready
+                        && self.state.ports.iter().all(|(n, q)| {
+                            if matches!(role, Role::Root | Role::Alternate) {
+                                q.role == Role::Root || q.synced
+                            } else if role == Role::Designated {
+                                n == name || q.synced
+                            } else {
+                                false
+                            }
+                        }),
+                    self.state
+                        .ports
+                        .iter()
+                        .all(|(n, q)| n == name || q.counters.rr == 0),
+                )
+            }
+        };
+        let scoped_targets = self.state.mode.tree_targets(name, &self.state.ports);
         let p = self.state.ports.get_mut(name).unwrap();
         let old = p.prt;
         let fd = ceil(p.designated_times.forward_delay);
@@ -1115,8 +1338,10 @@ impl Delta {
                 }
                 Role::Designated => {
                     p.prt = Prt::DESIGNATED_PORT;
-                    p.proposing |=
-                        !p.config.admin_edge && !p.config.auto_edge && p.config.auto_isolate;
+                    p.proposing |= !p.config.admin_edge
+                        && !p.config.auto_edge
+                        && p.config.auto_isolate
+                        && p.oper_point_to_point_mac;
                 }
                 Role::Alternate | Role::Backup => {
                     p.prt = Prt::BLOCK_PORT;
@@ -1192,7 +1417,7 @@ impl Delta {
                     } else if !p.forward && !p.agreed && !p.proposing && !p.oper_edge {
                         p.prt = Prt::DESIGNATED_PROPOSE;
                         p.proposing = true;
-                        p.counters.edge = 3;
+                        p.counters.edge = if p.oper_point_to_point_mac { 3 } else { ma };
                         p.new_info = true;
                     } else if all_synced && (p.proposed || !p.agree) {
                         p.prt = Prt::DESIGNATED_AGREE;
@@ -1225,7 +1450,7 @@ impl Delta {
                             p.prt = Prt::DESIGNATED_FORWARD;
                             p.forward = true;
                             p.counters.fd = 0;
-                            p.agreed = p.send_rstp;
+                            p.agreed = p.send_rstp && p.oper_point_to_point_mac;
                         }
                     }
                 }
@@ -1256,13 +1481,13 @@ impl Delta {
         let changed = *p != before;
         let to = format!("{:?}", p.prt);
         if sync_tree {
-            for q in self.state.ports.values_mut() {
-                q.sync = true;
+            for target in &scoped_targets {
+                self.state.ports.get_mut(target).unwrap().sync = true;
             }
         }
         if reroot_tree {
-            for q in self.state.ports.values_mut() {
-                q.reroot = true;
+            for target in &scoped_targets {
+                self.state.ports.get_mut(target).unwrap().reroot = true;
             }
         }
         if changed || sync_tree || reroot_tree {
@@ -1279,6 +1504,7 @@ impl Delta {
     fn tc_step(&mut self, name: &str) -> bool {
         let tree_before = self.state.clone();
         let before = self.state.ports[name].clone();
+        let tc_targets = self.state.mode.tc_targets(name, &self.state.ports);
         let p = self.state.ports.get_mut(name).unwrap();
         let old = p.tcm;
         let active = matches!(p.role, Role::Root | Role::Designated);
@@ -1373,10 +1599,8 @@ impl Delta {
         propagate &= !p.config.restricted_tcn;
         let to = format!("{:?}", p.tcm);
         if propagate {
-            for (n, p) in &mut self.state.ports {
-                if n != name {
-                    p.tc_prop = true;
-                }
+            for target in &tc_targets {
+                self.state.ports.get_mut(target).unwrap().tc_prop = true;
             }
         }
         if changed {
@@ -1506,6 +1730,9 @@ mod tests {
         };
         let raw = encode([2, 0, 0, 0, 0, 1], &packet);
         assert_eq!(raw.len(), 64);
+        let llc = client(&raw, DA, None, 1500).unwrap();
+        assert_eq!(llc, encode_llc(&packet));
+        assert_eq!(decode_llc(llc, 0x8001).unwrap(), packet);
         let decoded = decode(&raw, 0x8001, 1500).unwrap();
         assert_eq!(decoded, packet);
     }
@@ -1526,6 +1753,43 @@ mod tests {
             .unwrap();
         assert_eq!(receive.state.ports["p"].role, Role::Root);
         assert_eq!(receive.state.root.0[0], a.state.id);
+    }
+    #[test]
+    fn shared_lan_does_not_record_designated_agreement() {
+        let b = bridge(0x8000000000000002)
+            .plan(Input::Initialize, 1000)
+            .unwrap()
+            .state
+            .plan(Input::PointToPoint("p".into(), false), 1000)
+            .unwrap()
+            .state;
+        assert!(!b.ports["p"].oper_point_to_point_mac);
+        let m = Bpdu {
+            kind: Kind::Rst,
+            version: 2,
+            flags: 12 | 64,
+            priority: Priority([
+                0x8000000000000001,
+                0,
+                0x8000000000000001,
+                0,
+                0x8000000000000001,
+                0x8001,
+                0x8001,
+            ]),
+            times: Times::default(),
+        };
+        let next = b
+            .plan(Input::Receive("p".into(), m.clone()), 1000)
+            .unwrap()
+            .state;
+        assert!(!next.ports["p"].agreed);
+        let p2p = b
+            .plan(Input::PointToPoint("p".into(), true), 1000)
+            .unwrap()
+            .state;
+        let next = p2p.plan(Input::Receive("p".into(), m), 1000).unwrap().state;
+        assert!(next.ports["p"].agreed);
     }
     #[test]
     fn tick_autoedge() {
@@ -1775,6 +2039,9 @@ mod closure_tests {
     }
 }
 
+#[cfg(test)]
+#[path = "rstp_cep_tests.rs"]
+mod cep_tests;
 #[cfg(test)]
 #[path = "rstp_vectors.rs"]
 mod supplied_vectors;

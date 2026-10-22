@@ -9,8 +9,8 @@
   const labels={not_generated:'生成前',pending:'待機',queued:'待機',awaiting_admission:'受理待ち',active:'処理中',setup:'DMA準備',reading:'DMA読出し',writing:'DMA書込み',notifying:'通知待ち',completed:'完了',dropped:'破棄',rejected:'拒否',failed:'失敗'};
   function pause(){cancelAnimationFrame(animation);animation=0;playing=false;step=null;if($('play'))$('play').textContent='▶ 再生';}
   function unmount(){pause();if(root)root.hidden=true;model=null;}
-  function mount(raw,filename){
-    const parsed=M.parseResults(raw);unmount();model=parsed;current=model.start;selected=null;
+  function mount(raw,filename,prefixMode=false,parsedModel=null){
+    const parsed=parsedModel??M.parseResults(raw,prefixMode);unmount();model=parsed;current=model.start;selected=null;
     if(!root){root=node('section');root.id='transaction-dashboard';document.querySelector('main').append(root);}root.hidden=false;
     root.innerHTML=`<section class="run-heading"><div><p class="eyebrow">TRANSACTION / MEMORY / IPC</p><h1 id="txn-title"></h1><p id="txn-file"></p></div><span id="txn-termination" class="badge"></span></section>
       <section id="txn-counts" class="summary-grid" aria-label="現在の要求状態"></section>

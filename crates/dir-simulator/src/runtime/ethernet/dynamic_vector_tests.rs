@@ -1362,6 +1362,8 @@ macro_rules! vector_host_private_cases {
                     visits: 0,
                     lineage: None,
                     branch_id: None,
+                    gateway_injection: None,
+                    terminal_indications: Vec::new(),
                 });
                 let mut batch = crate::registry::EffectBatch::default();
                 let mut next = 0;
@@ -1407,7 +1409,7 @@ macro_rules! vector_host_private_cases {
                 assert!(state.transfers[0].row.planned_arrival_ps.is_some());
                 c.now = state.transfers[0].row.planned_arrival_ps.unwrap();
                 let mut d = state.delta();
-                state.arrive(0, &mut d, &mut c).unwrap();
+                state.arrive(0, None, &mut d, &mut c).unwrap();
                 state.reserve(&d).unwrap();
                 state.apply(d);
                 assert_eq!(
@@ -1482,6 +1484,8 @@ macro_rules! vector_host_private_cases {
                 visits: 0,
                 lineage: None,
                 branch_id: None,
+                gateway_injection: None,
+                terminal_indications: Vec::new(),
             });
             let direction = state
                 .prepared
@@ -1618,6 +1622,11 @@ macro_rules! vector_host_private_cases {
                 &[0x42, 0x42, 3],
             );
             let tx = ControlTx {
+                queued_ps: None,
+                arrival_retired_ps: None,
+                transport: None,
+                phy_transfer: None,
+                phy_receivers: BTreeMap::new(),
                 intent: WireTxIntent {
                     adapter_id: a.id.clone(),
                     packet_id: "lane".into(),
@@ -1679,6 +1688,11 @@ macro_rules! vector_host_private_cases {
                 .unwrap();
             let adapter_id = a.id.clone();
             let make = |id| ControlTx {
+                queued_ps: None,
+                arrival_retired_ps: None,
+                transport: None,
+                phy_transfer: None,
+                phy_receivers: BTreeMap::new(),
                 intent: WireTxIntent {
                     adapter_id: adapter_id.clone(),
                     packet_id: format!("capacity-{id}"),

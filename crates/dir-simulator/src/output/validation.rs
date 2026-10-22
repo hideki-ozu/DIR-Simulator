@@ -163,6 +163,7 @@ struct ResultHeader {
 }
 #[derive(Deserialize)]
 struct Metadata {
+    model_profile: Option<String>,
     started_at_utc: String,
     sources: Vec<Source>,
     input_sha256: String,
@@ -180,9 +181,115 @@ struct Simulation {
     partial: bool,
     committed_events: String,
     end_ps: String,
+    pending_events: Option<String>,
     #[serde(deserialize_with = "required_nullable")]
     last_event_time_ps: Option<String>,
 }
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ControlledLegacyHeader {
+    schema_name: String,
+    schema_version: u32,
+    metadata: LegacyMetadata,
+    control: LegacyControl,
+    result: ResultHeader,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct LegacyMetadata {
+    model_profile: String,
+    payload_schema_version: u32,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct LegacyControl {
+    version: String,
+    session_id: String,
+    export_ordinal: String,
+    state: String,
+    commit_ordinal: String,
+    horizon_ps: String,
+    pending_events: String,
+    resume_supported: bool,
+    replay_sha256: String,
+}
+impl ControlledLegacyHeader {
+    fn validate(&self) -> Result<(), Diagnostic> {
+        let c = &self.control;
+        let sim = &self.result.simulation;
+        let profile = self
+            .result
+            .metadata
+            .model_profile
+            .as_deref()
+            .unwrap_or("can.cc.ideal.v1");
+        let expected_schema = if profile == "can.cc.ideal.v1" { 1 } else { 2 };
+        if self.schema_name != "dir.controlled.legacy"
+            || self.schema_version != 4
+            || self.metadata.model_profile != profile
+            || self.metadata.payload_schema_version != self.result.schema_version
+            || self.result.schema_version != expected_schema
+            || !matches!(
+                profile,
+                "can.cc.ideal.v1"
+                    | "can.cc.multibus.v1"
+                    | "can.fd.precomputed.v1"
+                    | "can.fd.iso.v1"
+                    | "axi4.transaction.v1"
+                    | "soc.shared.v1"
+                    | "ahb.transaction.v1"
+                    | "noc.xy.v1"
+                    | "memory.ipc.transaction.v1"
+                    | "ethernet.l2.store-forward.v1"
+                    | "ethernet.l2.qos.v1"
+                    | "ethernet.l2.vlan.v1"
+                    | "ethernet.l2.store-forward.v2"
+                    | "ethernet.l2.100base-t1.v1"
+            )
+            || c.version != "1"
+            || c.session_id.is_empty()
+            || !hash_valid(&c.replay_sha256)
+            || c.resume_supported != (c.state == "Paused")
+            || c.commit_ordinal != sim.committed_events
+            || c.horizon_ps != sim.end_ps
+            || sim.pending_events.as_ref() != Some(&c.pending_events)
+        {
+            return Err(invalid("controlled legacy identity or boundary mismatch"));
+        }
+        decimal(&c.export_ordinal)?;
+        decimal(&c.pending_events)?;
+        decimal(&c.commit_ordinal)?;
+        decimal(&c.horizon_ps)?;
+        let valid = match c.state.as_str() {
+            "Paused" => sim.partial && sim.termination == "paused",
+            "Stopped" => sim.partial && sim.termination == "stopped",
+            "Completed" => {
+                !sim.partial
+                    && matches!(sim.termination.as_str(), "time_limit" | "events_exhausted")
+            }
+            "Failed" => {
+                sim.partial
+                    && !matches!(
+                        sim.termination.as_str(),
+                        "paused" | "stopped" | "time_limit" | "events_exhausted"
+                    )
+            }
+            _ => false,
+        };
+        if !valid
+            || (c.state != "Completed"
+                && sim.last_event_time_ps.as_deref().unwrap_or("0") != c.horizon_ps)
+        {
+            return Err(invalid("controlled legacy state or horizon mismatch"));
+        }
+        Ok(())
+    }
+}
+pub(crate) fn validate_controlled_legacy(value: &serde_json::Value) -> Result<(), Diagnostic> {
+    let header = ControlledLegacyHeader::deserialize(value).map_err(io)?;
+    header.validate()
+}
+
 fn required_nullable<'de, D: serde::Deserializer<'de>>(
     deserializer: D,
 ) -> Result<Option<String>, D::Error> {
@@ -411,10 +518,15 @@ pub(crate) fn validate_result_bundle(
     }
     let manifest: Manifest =
         serde_json::from_reader(BufReader::new(&mut manifest_artifact.file)).map_err(io)?;
-    if ![1, 2, 3].contains(&manifest.schema_version)
+    if ![1, 2, 3, 4].contains(&manifest.schema_version)
         || manifest.run_id != expected.run_id
         || manifest.status != "complete"
-        || manifest.metadata_ref != "results.json#/metadata"
+        || manifest.metadata_ref
+            != if manifest.schema_version == 4 {
+                "results.json#/result/metadata"
+            } else {
+                "results.json#/metadata"
+            }
         || manifest.termination.is_empty()
     {
         return Err(invalid(
@@ -437,9 +549,15 @@ pub(crate) fn validate_result_bundle(
         return Err(invalid("manifest omits a required artifact"));
     }
     let results = artifacts.get_mut("results.json").unwrap();
-    let header: ResultHeader =
-        serde_json::from_reader(BufReader::new(&mut results.file)).map_err(io)?;
-    if header.schema_version != manifest.schema_version
+    let header: ResultHeader = if manifest.schema_version == 4 {
+        let wrapper: ControlledLegacyHeader =
+            serde_json::from_reader(BufReader::new(&mut results.file)).map_err(io)?;
+        wrapper.validate()?;
+        wrapper.result
+    } else {
+        serde_json::from_reader(BufReader::new(&mut results.file)).map_err(io)?
+    };
+    if (manifest.schema_version != 4 && header.schema_version != manifest.schema_version)
         || header.run_id != expected.run_id
         || header.simulation.termination != manifest.termination
         || header.simulation.partial != manifest.partial

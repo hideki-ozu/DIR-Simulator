@@ -1,0 +1,13 @@
+{
+  "schema":"dir.ahb-pipeline.model", "version":1,
+  "cycle_ps":1, "data_bytes":4,
+  "managers":[{"id":"low","priority":1},{"id":"high","priority":0}],
+  "targets":[
+    {"id":"ram0","base":0,"size":1024,"wait_cycles":1,"initial":[1,2,3,4,5,6,7,8]},
+    {"id":"ram1","base":4096,"size":1024,"initial":[9,10,11,12]}
+  ],
+  "responses":[
+    {"request_id":"split-read","beat":0,"attempt":0,"response":"SPLIT","split_release_cycles":5},
+    {"request_id":"retry-write","beat":0,"attempt":0,"response":"RETRY"}
+  ]
+}
